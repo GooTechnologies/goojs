@@ -88,7 +88,7 @@ define([
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/perlin_noise.png');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');
 		this.projRenderable = {
-			meshData : projData,
+			meshData: projData,
 			materials: [materialProj]
 		};
 	}
@@ -208,7 +208,7 @@ define([
 	var waterShaderDef = {
 		attributes: {
 			//vertexPosition: MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
 			viewMatrix: Shader.VIEW_MATRIX,
@@ -444,13 +444,13 @@ define([
 
 	var projShaderDef = {
 		attributes: {
-			vertexPosition : MeshData.POSITION
+			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			//diffuseMap : Shader.TEXTURE0,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			//diffuseMap: Shader.TEXTURE0,
 			//camNear: Shader.NEAR_PLANE,
 			//camFar: Shader.FAR_PLANE,
 			time: Shader.TIME

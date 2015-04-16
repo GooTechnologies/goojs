@@ -166,7 +166,7 @@ define([
 	 * @returns {ClipSource}
 	 */
 	ClipSource.prototype.clone = function () {
-	    var cloned = new ClipSource(this._clip);
+		var cloned = new ClipSource(this._clip);
 
 		cloned._clipInstance = this._clipInstance.clone();
 

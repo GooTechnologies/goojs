@@ -16,7 +16,9 @@ define(function () {
 	var nativeForEach = ArrayProto.forEach;
 
 	_.defaults = function (obj) {
+		// may we don't _really_ need defaults with multiple sources
 		each(slice.call(arguments, 1), function (source) {
+			// this can be eliminated
 			if (source) {
 				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
 				// write a unit test before refactoring to ensure the semantics are the same
@@ -29,7 +31,9 @@ define(function () {
 	};
 
 	_.extend = function (obj) {
+		// may we don't _really_ need extends with multiple sources
 		each(slice.call(arguments, 1), function (source) {
+			// this can be eliminated
 			if (source) {
 				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
 				// write a unit test before refactoring to ensure the semantics are the same

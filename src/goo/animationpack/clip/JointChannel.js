@@ -19,7 +19,7 @@ define([
 	function JointChannel(jointIndex, jointName, times, rotations, translations, scales, blendType) {
 		TransformChannel.call(this, jointName, times, rotations, translations, scales, blendType);
 
-		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes. 
+		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes.
 		this._jointIndex = jointIndex;
 	}
 

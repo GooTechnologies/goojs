@@ -129,9 +129,10 @@ define([
 				if (filter === 'Exclude'
 					&& channelNames
 					&& channelNames.length
-					&& channelNames.indexOf(channelName) > -1) {
-						var data = channel.getData(0);
-						this._data[channelName] = data;
+					&& channelNames.indexOf(channelName) > -1
+				) {
+					var data = channel.getData(0);
+					this._data[channelName] = data;
 				}
 			}
 		}

@@ -58,7 +58,7 @@ define([
 			if (!clip) { return clip; }
 			return that.loadObject(config.binaryRef, options).then(function (bindata) {
 				if (!bindata) {
-					throw new Error("Binary clip data was empty");
+					throw new Error('Binary clip data was empty');
 				}
 				return that._updateAnimationClip(config, bindata, clip);
 			});
@@ -134,7 +134,7 @@ define([
 						channel.guarantee = !!channelConfig.guarantee;
 						break;
 					default:
-						console.warn("Unhandled channel type: " + channelConfig.type);
+						console.warn('Unhandled channel type: ' + channelConfig.type);
 						continue;
 				}
 				clip.addChannel(channel);

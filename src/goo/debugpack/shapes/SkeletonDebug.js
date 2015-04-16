@@ -70,7 +70,7 @@ define([
 				MeshData.POSITION,
 				MeshData.WEIGHTS,
 				MeshData.JOINTIDS
-			]), positions.length/3, indices.length);
+			]), positions.length / 3, indices.length);
 		line.indexModes = ['Lines'];
 		line.getAttributeBuffer(MeshData.POSITION).set(positions);
 		line.getAttributeBuffer(MeshData.WEIGHTS).set(weights);

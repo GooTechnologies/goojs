@@ -332,7 +332,7 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
@@ -350,7 +350,7 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
@@ -368,7 +368,7 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
@@ -393,7 +393,7 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 

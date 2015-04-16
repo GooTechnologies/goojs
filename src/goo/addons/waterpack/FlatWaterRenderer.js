@@ -435,13 +435,13 @@ define([
 			JOINTIDS: true
 		},
 		attributes: {
-			vertexPosition : MeshData.POSITION,
+			vertexPosition: MeshData.POSITION,
 			vertexJointIDs: MeshData.JOINTIDS,
 			vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			waterHeight: 0,
 			waterDensity: 0.05

@@ -69,7 +69,6 @@ define([
 	SkeletonPose.prototype.updateTransforms = function () {
 		var joints = this._skeleton._joints;
 		for (var i = 0, l = joints.length; i < l; i++) {
-
 			var parentIndex = joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model

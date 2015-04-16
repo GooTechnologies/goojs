@@ -10,7 +10,7 @@ define([
 	/**
 	 * Matrix with 2x2 components.
 	 * @extends Matrix
-	 * @param {Matrix2|number...} arguments Initial values for the matrix components.
+	 * @param {number...} arguments Initial values for the matrix components.
 	 */
 	function Matrix2(
 		e00, e10,
@@ -44,34 +44,34 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix2} that Matrix or scalar on the right-hand side.
+	 * @param {Matrix2} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2.prototype.add = function (that) {
+	Matrix2.prototype.add = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] += thatData[0];
-		thisData[1] += thatData[1];
-		thisData[2] += thatData[2];
-		thisData[3] += thatData[3];
+		thisData[0] += rhsData[0];
+		thisData[1] += rhsData[1];
+		thisData[2] += rhsData[2];
+		thisData[3] += rhsData[3];
 
 		return this;
 	};
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix2} that Matrix or scalar on the right-hand side.
+	 * @param {Matrix2} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2.prototype.sub = function (that) {
+	Matrix2.prototype.sub = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] -= thatData[0];
-		thisData[1] -= thatData[1];
-		thisData[2] -= thatData[2];
-		thisData[3] -= thatData[3];
+		thisData[0] -= rhsData[0];
+		thisData[1] -= rhsData[1];
+		thisData[2] -= rhsData[2];
+		thisData[3] -= rhsData[3];
 
 		return this;
 	};
@@ -94,11 +94,11 @@ define([
 
 	/**
 	 * Multiplies this matrix with another matrix
-	 * @param {Matrix2} that Matrix on the left-hand side
+	 * @param {Matrix2} rhs Matrix on the left-hand side
 	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2.prototype.mul = function (that) {
-		var s1d = that.data;
+	Matrix2.prototype.mul = function (rhs) {
+		var s1d = rhs.data;
 		var m00 = s1d[0], m01 = s1d[2],
 			m10 = s1d[1], m11 = s1d[3];
 
@@ -262,39 +262,39 @@ define([
 
 	/**
 	 * Compares two matrices for approximate equality
-	 * @param {Matrix2} that The matrix to compare against
+	 * @param {Matrix2} rhs The matrix to compare against
 	 * @returns {boolean}
 	 */
-	Matrix2.prototype.equals = function (that) {
+	Matrix2.prototype.equals = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		return (Math.abs(thisData[0] - thatData[0]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[1] - thatData[1]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[2] - thatData[2]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[3] - thatData[3]) <= MathUtils.EPSILON);
+		return (Math.abs(thisData[0] - rhsData[0]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[1] - rhsData[1]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[2] - rhsData[2]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[3] - rhsData[3]) <= MathUtils.EPSILON);
 	};
 
 	/**
 	 * Copies component values from another matrix to this matrix
-	 * @param {Matrix2} that Source matrix
+	 * @param {Matrix2} rhs Source matrix
 	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2.prototype.copy = function (that) {
+	Matrix2.prototype.copy = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] = thatData[0];
-		thisData[1] = thatData[1];
-		thisData[2] = thatData[2];
-		thisData[3] = thatData[3];
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[3];
 
 		return this;
 	};
 
 	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
-	 * @param {Matrix2} that Source matrix
+	 * @param {Matrix2} source Source matrix
 	 * @returns {Matrix2} Self to allow chaining
 	 */
 	Matrix2.prototype.set = Matrix2.prototype.copy;

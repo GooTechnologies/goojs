@@ -159,12 +159,12 @@ define([
 	/**
 	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
-	 * @param {Quaternion} that Quaternion on the right-hand side.
+	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
-	Quaternion.prototype.mul = function (that) {
+	Quaternion.prototype.mul = function (rhs) {
 		var ax = this.x, ay = this.y, az = this.z, aw = this.w;
-		var bx = that.x, by = that.y, bz = that.z, bw = that.w;
+		var bx = rhs.x, by = rhs.y, bz = rhs.z, bw = rhs.w;
 
 		this.x = ax * bw + aw * bx + ay * bz - az * by;
 		this.y = ay * bw + aw * by + az * bx - ax * bz;

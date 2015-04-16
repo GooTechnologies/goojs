@@ -251,7 +251,7 @@ define([
 		// TODO : The clipping method will have to be revised to be able to maintain edge connectivity information.
 
 		var outCount = this._categorizeVertices(-cameraNear);
-		var outIndex, origin, origin_x, origin_y, target, target_x, target_y, ratio;
+		var outIndex, origin, originX, originY, target, targetX, targetY, ratio;
 
 		switch (outCount) {
 			case 0:
@@ -262,24 +262,22 @@ define([
 				// All of the vertices are on the outside, dont add them.
 				break;
 			case 1:
-				/*
-				 Update the one vertex to its new position on the near plane and add a new vertex
-				 on the other intersection with the plane.
-				 */
+				// Update the one vertex to its new position on the near plane and add a new vertex
+				// on the other intersection with the plane.
 
 				// TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
 				// perhaps the entire function, in order to make use of them.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.x;
-				origin_y = origin.y;
+				originX = origin.x;
+				originY = origin.y;
 
 				target = globalVertices[insideIndices[0]];
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
-				clipVec.x = origin_x + ratio * (target.x - origin_x);
-				clipVec.y = origin_y + ratio * (target.y - origin_y);
+				clipVec.x = originX + ratio * (target.x - originX);
+				clipVec.y = originY + ratio * (target.y - originY);
 
 				// Overwrite the vertex index with the new vertex.
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
@@ -288,8 +286,8 @@ define([
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// Calculate the new vertex's position
-				clipVec.x = origin_x + ratio * (target.x - origin_x);
-				clipVec.y = origin_y + ratio * (target.y - origin_y);
+				clipVec.x = originX + ratio * (target.x - originX);
+				clipVec.y = originY + ratio * (target.y - originY);
 
 				// Add the new vertex and store the new vertex's index to be added at the last stage.
 				indices[3] = this._triangleData.addVertex(clipVec.data);
@@ -299,7 +297,7 @@ define([
 				 back face culling has been performed.
 
 				 But to construct the right triangles, making use of the outside and inside indices is needed.
-				 */
+				*/
 
 				var insideIndex1 = insideIndices[0];
 				var extraIndex = indices[3];
@@ -318,32 +316,32 @@ define([
 			case 2:
 				// Update the two outside vertices to their new positions on the near plane.
 				target = globalVertices[insideIndices[0]];
-				target_x = target.x;
-				target_y = target.y;
+				targetX = target.x;
+				targetY = target.y;
 
 				// First new vertex.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.x;
-				origin_y = origin.y;
+				originX = origin.x;
+				originY = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.x = origin_x + ratio * (target_x - origin_x);
-				clipVec.y = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = originX + ratio * (targetX - originX);
+				clipVec.y = originY + ratio * (targetY - originY);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
 				// Second new vertex.
 				outIndex = outsideIndices[1];
 				origin = globalVertices[outIndex];
-				origin_x = origin.x;
-				origin_y = origin.y;
+				originX = origin.x;
+				originY = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.x = origin_x + ratio * (target_x - origin_x);
-				clipVec.y = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = originX + ratio * (targetX - originX);
+				clipVec.y = originY + ratio * (targetY - originY);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
@@ -505,29 +503,29 @@ define([
 		// to find out if the face is facing away or not.
 
 		// Create edges for calculating the normal.
-		var v1_x = vert1.x;
-		var v1_y = vert1.y;
-		var v1_z = vert1.z;
+		var v1X = vert1.x;
+		var v1Y = vert1.y;
+		var v1Z = vert1.z;
 
-		var e1_x = vert2.x - v1_x;
-		var e1_y = vert2.y - v1_y;
-		var e1_z = vert2.z - v1_z;
+		var e1X = vert2.x - v1X;
+		var e1Y = vert2.y - v1Y;
+		var e1Z = vert2.z - v1Z;
 
-		var e2_x = vert3.x - v1_x;
-		var e2_y = vert3.y - v1_y;
-		var e2_z = vert3.z - v1_z;
+		var e2X = vert3.x - v1X;
+		var e2Y = vert3.y - v1Y;
+		var e2Z = vert3.z - v1Z;
 
 		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
-		var faceNormal_x = e2_z * e1_y - e2_y * e1_z;
-		var faceNormal_y = e2_x * e1_z - e2_z * e1_x;
-		var faceNormal_z = e2_y * e1_x - e2_x * e1_y;
+		var faceNormal_x = e2Z * e1Y - e2Y * e1Z;
+		var faceNormal_y = e2X * e1Z - e2Z * e1X;
+		var faceNormal_z = e2Y * e1X - e2X * e1Y;
 
 		// Picking the first vertex as the point on the triangle to evaulate the dot product on.
 
 		// No need to normalize the vectors due to only being
 		// interested in the sign of the dot product.
 
-		var dot = faceNormal_x * v1_x + faceNormal_y * v1_y + faceNormal_z * v1_z;
+		var dot = faceNormal_x * v1X + faceNormal_y * v1Y + faceNormal_z * v1Z;
 		return dot > 0.0;
 	};
 
@@ -543,14 +541,14 @@ define([
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
 		// Create edges, only need x and y , since only the z component of the dot product is needed.
-		var v1_x = v1.x;
-		var v1_y = v1.y;
+		var v1X = v1.x;
+		var v1Y = v1.y;
 
-		var e1X = v2.x - v1_x;
-		var e1Y = v2.y - v1_y;
+		var e1X = v2.x - v1X;
+		var e1Y = v2.y - v1Y;
 
-		var e2X = v3.x - v1_x;
-		var e2Y = v3.y - v1_y;
+		var e2X = v3.x - v1X;
+		var e2Y = v3.y - v1Y;
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
@@ -1076,7 +1074,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 
@@ -1146,7 +1143,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 
@@ -1179,7 +1175,6 @@ define([
 			}
 		} else { // LONG EDGE IS ON THE LEFT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
-
 				rightEdgeShared = shortEdgeBetween;
 
 				realLeftX = edgeData.getLongX();
@@ -1215,7 +1210,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 
@@ -1285,7 +1279,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 

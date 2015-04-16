@@ -5,16 +5,14 @@ define([
 	'goo/debugpack/components/MarkerComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
-],
-
-	function (
-		System,
-		Material,
-		ShaderLib,
-		MarkerComponent,
-		Renderer,
-		Transform
-	) {
+], function (
+	System,
+	Material,
+	ShaderLib,
+	MarkerComponent,
+	Renderer,
+	Transform
+) {
 	'use strict';
 
 	/**

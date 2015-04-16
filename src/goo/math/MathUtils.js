@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-define([], function () {
+define(function () {
 	'use strict';
 
 	/**
@@ -122,7 +122,7 @@ define([], function () {
 	 */
 	MathUtils.radialClamp = function (value, min, max) {
 		// Rotating coordinates to be mirrored
-		var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+		var zero = (min + max) / 2 + ((max > min) ? Math.PI : 0);
 		var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
 		var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
 		var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
@@ -300,7 +300,6 @@ define([], function () {
 		// assuming the point is inside the triangle
 		var totalArea = t1Area + t2Area + t3Area;
 		if (!totalArea) {
-
 			if (p[0] === t1[0] && p[2] === t1[2]) {
 				return t1;
 			} else if (p[0] === t2[0] && p[2] === t2[2]) {

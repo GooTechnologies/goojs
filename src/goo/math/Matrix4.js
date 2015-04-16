@@ -61,58 +61,58 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix4} that Matrix or scalar on the right-hand side.
+	 * @param {Matrix4} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4} Self to allow chaining.
 	 */
-	Matrix4.prototype.add = function (that) {
+	Matrix4.prototype.add = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] += thatData[0];
-		thisData[1] += thatData[1];
-		thisData[2] += thatData[2];
-		thisData[3] += thatData[3];
-		thisData[4] += thatData[4];
-		thisData[5] += thatData[5];
-		thisData[6] += thatData[6];
-		thisData[7] += thatData[7];
-		thisData[8] += thatData[8];
-		thisData[9] += thatData[9];
-		thisData[10] += thatData[10];
-		thisData[11] += thatData[11];
-		thisData[12] += thatData[12];
-		thisData[13] += thatData[13];
-		thisData[14] += thatData[14];
-		thisData[15] += thatData[15];
+		thisData[0] += rhsData[0];
+		thisData[1] += rhsData[1];
+		thisData[2] += rhsData[2];
+		thisData[3] += rhsData[3];
+		thisData[4] += rhsData[4];
+		thisData[5] += rhsData[5];
+		thisData[6] += rhsData[6];
+		thisData[7] += rhsData[7];
+		thisData[8] += rhsData[8];
+		thisData[9] += rhsData[9];
+		thisData[10] += rhsData[10];
+		thisData[11] += rhsData[11];
+		thisData[12] += rhsData[12];
+		thisData[13] += rhsData[13];
+		thisData[14] += rhsData[14];
+		thisData[15] += rhsData[15];
 
 		return this;
 	};
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix4} that Matrix or scalar on the right-hand side.
+	 * @param {Matrix4} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4.prototype.sub = function (that) {
+	Matrix4.prototype.sub = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] -= thatData[0];
-		thisData[1] -= thatData[1];
-		thisData[2] -= thatData[2];
-		thisData[3] -= thatData[3];
-		thisData[4] -= thatData[4];
-		thisData[5] -= thatData[5];
-		thisData[6] -= thatData[6];
-		thisData[7] -= thatData[7];
-		thisData[8] -= thatData[8];
-		thisData[9] -= thatData[9];
-		thisData[10] -= thatData[10];
-		thisData[11] -= thatData[11];
-		thisData[12] -= thatData[12];
-		thisData[13] -= thatData[13];
-		thisData[14] -= thatData[14];
-		thisData[15] -= thatData[15];
+		thisData[0] -= rhsData[0];
+		thisData[1] -= rhsData[1];
+		thisData[2] -= rhsData[2];
+		thisData[3] -= rhsData[3];
+		thisData[4] -= rhsData[4];
+		thisData[5] -= rhsData[5];
+		thisData[6] -= rhsData[6];
+		thisData[7] -= rhsData[7];
+		thisData[8] -= rhsData[8];
+		thisData[9] -= rhsData[9];
+		thisData[10] -= rhsData[10];
+		thisData[11] -= rhsData[11];
+		thisData[12] -= rhsData[12];
+		thisData[13] -= rhsData[13];
+		thisData[14] -= rhsData[14];
+		thisData[15] -= rhsData[15];
 
 		return this;
 	};
@@ -147,16 +147,16 @@ define([
 
 	/**
 	 * Multiplies this matrix with another matrix
-	 * @param {Matrix4} that Matrix on the left-hand side
+	 * @param {Matrix4} rhs Matrix on the left-hand side
 	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4.prototype.mul = function (that) {
+	Matrix4.prototype.mul = function (rhs) {
 		var s1d = this.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
 			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
 			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
 			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
-		var s2d = that.data;
+		var s2d = rhs.data;
 		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
 			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
 			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
@@ -612,63 +612,63 @@ define([
 
 	/**
 	 * Compares two matrices for approximate equality
-	 * @param {Matrix4} that The matrix to compare against
+	 * @param {Matrix4} rhs The matrix to compare against
 	 * @returns {boolean}
 	 */
-	Matrix4.prototype.equals = function (that) {
+	Matrix4.prototype.equals = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		return (Math.abs(thisData[0] - thatData[0]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[1] - thatData[1]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[2] - thatData[2]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[3] - thatData[3]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[4] - thatData[4]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[5] - thatData[5]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[6] - thatData[6]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[7] - thatData[7]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[8] - thatData[8]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[9] - thatData[9]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[10] - thatData[10]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[11] - thatData[11]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[12] - thatData[12]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[13] - thatData[13]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[14] - thatData[14]) <= MathUtils.EPSILON) &&
-			(Math.abs(thisData[15] - thatData[15]) <= MathUtils.EPSILON);
+		return (Math.abs(thisData[0] - rhsData[0]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[1] - rhsData[1]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[2] - rhsData[2]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[3] - rhsData[3]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[4] - rhsData[4]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[5] - rhsData[5]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[6] - rhsData[6]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[7] - rhsData[7]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[8] - rhsData[8]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[9] - rhsData[9]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[10] - rhsData[10]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[11] - rhsData[11]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[12] - rhsData[12]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[13] - rhsData[13]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[14] - rhsData[14]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[15] - rhsData[15]) <= MathUtils.EPSILON);
 	};
 
 	/**
 	 * Copies component values and stores them locally.
-	 * @param {Matrix4} that Source matrix.
+	 * @param {Matrix4} rhs Source matrix.
 	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4.prototype.copy = function (that) {
+	Matrix4.prototype.copy = function (rhs) {
 		var thisData = this.data;
-		var thatData = that.data;
+		var rhsData = rhs.data;
 
-		thisData[0] = thatData[0];
-		thisData[1] = thatData[1];
-		thisData[2] = thatData[2];
-		thisData[3] = thatData[3];
-		thisData[4] = thatData[4];
-		thisData[5] = thatData[5];
-		thisData[6] = thatData[6];
-		thisData[7] = thatData[7];
-		thisData[8] = thatData[8];
-		thisData[9] = thatData[9];
-		thisData[10] = thatData[10];
-		thisData[11] = thatData[11];
-		thisData[12] = thatData[12];
-		thisData[13] = thatData[13];
-		thisData[14] = thatData[14];
-		thisData[15] = thatData[15];
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[3];
+		thisData[4] = rhsData[4];
+		thisData[5] = rhsData[5];
+		thisData[6] = rhsData[6];
+		thisData[7] = rhsData[7];
+		thisData[8] = rhsData[8];
+		thisData[9] = rhsData[9];
+		thisData[10] = rhsData[10];
+		thisData[11] = rhsData[11];
+		thisData[12] = rhsData[12];
+		thisData[13] = rhsData[13];
+		thisData[14] = rhsData[14];
+		thisData[15] = rhsData[15];
 
 		return this;
 	};
 
 	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
-	 * @param {Matrix4} that Source matrix
+	 * @param {Matrix4} source Source matrix
 	 * @returns {Matrix4} Self to allow chaining
 	 */
 	Matrix4.prototype.set = Matrix4.prototype.copy;

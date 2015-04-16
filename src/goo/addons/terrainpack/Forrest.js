@@ -60,39 +60,39 @@ define([
 		var loader = new DynamicLoader({
 			world: world,
 			preloadBinaries: true,
-			rootPath: "res/trees2"
+			rootPath: 'res/trees2'
 		});
 		return promise.then(function () {
-			console.log("loading bundle ", bundle);
-			return loader.load("root.bundle");
+			console.log('loading bundle ', bundle);
+			return loader.load('root.bundle');
 		}).then(function (configs) {
 			// find scene and update it.
 			for (var ref in configs) {
 				console.log(ref);
-				// if (ref.indexOf(".scene") != -1) {
+				// if (ref.indexOf('.scene') != -1) {
 				// 	return loader.update(ref, configs[ref]).then(function () {
 				// 		return configs;
 				// 	});
 				// }
 			}
-			console.error("Config in bundle ", bundle, " contained no scene?!");
+			console.error('Config in bundle ', bundle, ' contained no scene?!');
 		});
 	};
 
 	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
 		var p = new RSVP.Promise();
 
-		var bundlesToLoad = ["fish"];
+		var bundlesToLoad = ['fish'];
 		for (var i = 0; i < bundlesToLoad.length; i++) {
 			p = chainBundleLoading(world, p, bundlesToLoad[i]);
 		}
 
 		p.then(function () {
-			console.log("loaded forrest", forrestTypes);
+			console.log('loaded forrest', forrestTypes);
 		}, function (e) {
-			console.log("Error! ", e);
+			console.log('Error! ', e);
 		}).then(null, function (e) {
-			console.log("Error! ", e);
+			console.log('Error! ', e);
 		});
 
 		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);

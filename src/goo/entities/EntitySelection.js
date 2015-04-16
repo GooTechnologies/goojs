@@ -27,17 +27,17 @@ define([
 
 		var union;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		//! AT: this long/short separation only minimizes the number of ifs performed
 		// while costing more memory (which is allocated on the stack anyways since the hashTable array never leaves this function
 		// would love to see a benchmark though
 		var shortArray, longArray;
-		if (that.length > this.top.length) {
+		if (entities.length > this.top.length) {
 			shortArray = this.top;
-			longArray = that;
+			longArray = entities;
 		} else {
-			shortArray = that;
+			shortArray = entities;
 			longArray = this.top;
 		}
 
@@ -72,17 +72,17 @@ define([
 
 		var intersection;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		//! AT: this long/short separation only minimizes the number of ifs performed
 		// while costing more memory (which is allocated on the stack anyways since the hashTable array never leaves this function
 		// would love to see a benchmark though
 		var shortArray, longArray;
-		if (that.length > this.top.length) {
+		if (entities.length > this.top.length) {
 			shortArray = this.top;
-			longArray = that;
+			longArray = entities;
 		} else {
-			shortArray = that;
+			shortArray = entities;
 			longArray = this.top;
 		}
 
@@ -116,11 +116,11 @@ define([
 
 		var difference;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		var hashTable = [];
-		for (var i = 0; i < that.length; i++) {
-			var id = that[i].id;
+		for (var i = 0; i < entities.length; i++) {
+			var id = entities[i].id;
 			hashTable[id] = true;
 		}
 
