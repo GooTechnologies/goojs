@@ -1,9 +1,11 @@
 define([
 	'goo/math/Vector2',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ], function (
 	Vector2,
-	PromiseUtil
+	PromiseUtil,
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -72,11 +74,18 @@ define([
 
 		settings = settings || {};
 
-		this.wrapS = settings.wrapS || 'Repeat';
-		this.wrapT = settings.wrapT || 'Repeat';
-
-		this.magFilter = settings.magFilter || 'Bilinear';
-		this.minFilter = settings.minFilter || 'Trilinear';
+		ObjectUtil.copyOptions(this, settings, {
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
+			magFilter: 'Bilinear',
+			minFilter: 'Trilinear',
+			format: 'RGBA',
+			type: 'UnsignedByte',
+			generateMipmaps: true,
+			premultiplyAlpha: false,
+			unpackAlignment: 1,
+			flipY: true
+		});
 
 		/**
 		 * The anisotropic filtering level.<br>
@@ -85,23 +94,12 @@ define([
 		 */
 		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
 
-		this.format = settings.format || 'RGBA';
-		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = settings.offset ?
-			(settings.offset instanceof Array ? Vector2.fromArray(settings.offset) : settings.offset.clone()) :
-			new Vector2(0, 0);
-		this.repeat = settings.repeat ?
-			(settings.repeat instanceof Array ? Vector2.fromArray(settings.repeat) : settings.repeat.clone()) :
-			new Vector2(1, 1);
+		this.offset = settings.offset ?	Vector2.fromAny(settings.offset) : new Vector2(0, 0);
+		this.repeat = settings.repeat ? Vector2.fromAny(settings.repeat) : new Vector2(1, 1);
 
 		this.lodBias = 0.0;
-
-		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
-		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
-		this.unpackAlignment = settings.unpackAlignment !== undefined ? settings.unpackAlignment : 1;
-		this.flipY = settings.flipY !== undefined ? settings.flipY : true;
 
 		this.hasBorder = false;
 

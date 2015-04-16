@@ -246,6 +246,14 @@ define([
 				expect(Vector4.fromAny({ x: 11, y: 22, z: 33, w: 44 }))
 					.toBeCloseToVector(new Vector4(11, 22, 33, 44));
 			});
+
+			it('clones a Vector4', function () {
+				var original = new Vector4(11, 22, 33, 44);
+				var clone = Vector4.fromAny(original);
+
+				expect(clone).toBeCloseToVector(original);
+				expect(clone).not.toBe(original);
+			});
 		});
 	});
 });
