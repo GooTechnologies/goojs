@@ -1,64 +1,62 @@
-/**
- * Everything we need from underscore.js. Convenience stuff, copied straight off.
- * For documentation, see http://underscorejs.org. Gotta love open source.
- */
 define(function () {
 	'use strict';
 
-	var _ = {};
+	/**
+	 * Underscore-like utilities
+	 */
+	function ObjectUtil() {}
 
-	// Save bytes in the minified (but not gzipped) version:
-	var ArrayProto = Array.prototype;
-
-	// Create quick reference variables for speed access to core prototypes.
-	var slice = ArrayProto.slice;
-
-	var nativeForEach = ArrayProto.forEach;
-
-	_.defaults = function (obj) {
-		// may we don't _really_ need defaults with multiple sources
-		each(slice.call(arguments, 1), function (source) {
-			// this can be eliminated
-			if (source) {
-				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
-				// write a unit test before refactoring to ensure the semantics are the same
-				for (var prop in source) {
-					if (typeof obj[prop] === 'undefined' || obj[prop] === null) { obj[prop] = source[prop]; }
-				}
+	/**
+	 * Copies properties from an object onto another object if they're not already present
+	 * @param {Object} destination Destination object to copy to
+	 * @param {Object} source Source object to copy from
+	 * @returns {Object} Returns the destination object
+	 */
+	ObjectUtil.defaults = function (destination, source) {
+		var keys = Object.keys(source);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			if (typeof destination[key] === 'undefined' || destination[key] === null) {
+				destination[key] = source[key];
 			}
-		});
-		return obj;
+		}
+
+		return destination;
 	};
 
-	_.extend = function (obj) {
-		// may we don't _really_ need extends with multiple sources
-		each(slice.call(arguments, 1), function (source) {
-			// this can be eliminated
-			if (source) {
-				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
-				// write a unit test before refactoring to ensure the semantics are the same
-				for (var prop in source) {
-					obj[prop] = source[prop];
-				}
-			}
-		});
-		return obj;
+	/**
+	 * Copies properties from an object onto another object; overwrites existing properties
+	 * @param {Object} destination Destination object to copy to
+	 * @param {Object} source Source object to copy from
+	 * @returns {Object} Returns the destination object
+	 */
+	ObjectUtil.extend = function (destination, source) {
+		var keys = Object.keys(source);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			destination[key] = source[key];
+		}
+
+		return destination;
 	};
 
-	_.isObject = function (obj) {
+	ObjectUtil.isObject = function (obj) {
 		return obj === Object(obj);
 	};
 
 	// Create a (shallow-cloned) duplicate of an object.
-	_.clone = function (obj) {
-		if (!_.isObject(obj)) { return obj; }
-		return Array.isArray(obj) ? obj.slice() : _.extend({}, obj);
+	ObjectUtil.clone = function (obj) {
+		if (!ObjectUtil.isObject(obj)) { return obj; }
+		return Array.isArray(obj) ? obj.slice() : ObjectUtil.extend({}, obj);
 	};
+
+	// Save bytes in the minified (but not gzipped) version:
+	var nativeForEach = Array.prototype.forEach;
 
 	// The cornerstone, an `each` implementation, aka `forEach`.
 	// Handles objects with the built-in `forEach`, arrays, and raw objects.
 	// Delegates to **ECMAScript 5**'s native `forEach` if available.
-	var each = _.each = _.forEach = function (obj, iterator, context, sortProp) {
+	ObjectUtil.each = ObjectUtil.forEach = function (obj, iterator, context, sortProp) {
 		if (typeof obj === 'undefined' || obj === null) { return; }
 		if (nativeForEach && obj.forEach === nativeForEach) {
 			obj.forEach(iterator, context);
@@ -84,7 +82,7 @@ define(function () {
 	 * @param {*} object Object to clone
 	 * @returns {*}
 	 */
-	_.deepClone = function (object) {
+	ObjectUtil.deepClone = function (object) {
 		// handle primitive types, functions, null and undefined
 		if (object === null || typeof object !== 'object') {
 			return object;
@@ -97,7 +95,7 @@ define(function () {
 
 		// handle arrays (even sparse ones)
 		if (object instanceof Array) {
-			return object.map(_.deepClone);
+			return object.map(ObjectUtil.deepClone);
 		}
 
 		// handle html nodes
@@ -111,12 +109,12 @@ define(function () {
 		var keys = Object.keys(object);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			copy[key] = _.deepClone(object[key]);
+			copy[key] = ObjectUtil.deepClone(object[key]);
 		}
 		return copy;
 	};
 
-	_.shallowSelectiveClone = function (source, keys) {
+	ObjectUtil.shallowSelectiveClone = function (source, keys) {
 		var clone = {};
 
 		keys.forEach(function (key) {
@@ -127,7 +125,7 @@ define(function () {
 	};
 
 	// probably not the best way to copy maps and sets
-	_.cloneMap = function (source) {
+	ObjectUtil.cloneMap = function (source) {
 		var clone = new Map();
 		source.forEach(function (value, key) {
 			clone.set(key, value);
@@ -135,7 +133,7 @@ define(function () {
 		return clone;
 	};
 
-	_.cloneSet = function (source) {
+	ObjectUtil.cloneSet = function (source) {
 		var clone = new Set();
 		source.forEach(function (value) {
 			clone.add(value);
@@ -143,5 +141,5 @@ define(function () {
 		return clone;
 	};
 
-	return _;
+	return ObjectUtil;
 });

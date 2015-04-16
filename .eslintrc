@@ -1,7 +1,11 @@
 {
   "globals": {
     "performance": true,
-    "jasmine": true
+    "jasmine": true,
+    "describe": true,
+    "beforeEach": true,
+    "it": true,
+    "expect": true
   },
   "rules": {
     "quotes": [2, "single", "avoid-escape"],

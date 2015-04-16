@@ -12,21 +12,61 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
+		describe('defaults', function () {
+			it('copies defaults onto an empty object', function () {
+				var destination = {};
+				var source = { a: 1, b: 2 };
+
+				ObjectUtil.defaults(destination, source);
+
+				expect(destination).toEqual(source);
+			});
+
+			it('ignores existing properties on the destination object', function () {
+				var destination = { a: 123, b: 456 };
+				var source = { a: 1, b: 2 };
+
+				ObjectUtil.defaults(destination, source);
+
+				expect(destination).toEqual({ a: 123, b: 456 });
+			});
+		});
+
+		describe('extends', function () {
+			it('copies properties onto an empty object', function () {
+				var destination = {};
+				var source = { a: 1, b: 2 };
+
+				ObjectUtil.extend(destination, source);
+
+				expect(destination).toEqual(source);
+			});
+
+			it('overwrites existing properties on the destination object', function () {
+				var destination = { a: 123, b: 456 };
+				var source = { a: 1, b: 2 };
+
+				ObjectUtil.extend(destination, source);
+
+				expect(destination).toEqual(source);
+			});
+		});
+
 		describe('forEach', function () {
 			it('iterates over objects\' keys', function () {
 				var obj = {
-					'p2': { sortValue: 2, value: 123 },
-					'p1': { sortValue: 1, value: 234 }
+					p2: { sortValue: 2, value: 123 },
+					p1: { sortValue: 1, value: 234 }
 				};
 				var spy = jasmine.createSpy('spy1');
 				ObjectUtil.forEach(obj, spy, null, 'sortValue');
 
 				expect(spy.calls.count()).toEqual(2);
-				expect(spy).toHaveBeenCalledWith(obj['p1'], 'p1', obj);
-				expect(spy).toHaveBeenCalledWith(obj['p2'], 'p2', obj);
+				expect(spy).toHaveBeenCalledWith(obj.p1, 'p1', obj);
+				expect(spy).toHaveBeenCalledWith(obj.p2, 'p2', obj);
 			});
 		});
-		
+
 		describe('cloneMap', function () {
 			it('clones an empty map', function () {
 				var originalMap = new Map();
