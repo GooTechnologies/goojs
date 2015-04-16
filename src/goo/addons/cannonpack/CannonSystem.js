@@ -40,7 +40,7 @@ define([
 		settings = settings || {};
 
 		_.defaults(settings, {
-			gravity:		new Vector3(0, -10, 0),
+			gravity: new Vector3(0, -10, 0),
 			stepFrequency: 60,
 			broadphase: 'naive'
 		});

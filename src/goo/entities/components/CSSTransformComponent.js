@@ -1,6 +1,6 @@
 define([
 	'goo/entities/components/Component'
-],  function (
+], function (
 	Component
 ) {
 	'use strict';
@@ -21,7 +21,7 @@ define([
 		 */
 		this.domElement = domElement;
 
-		/** 
+		/**
 		 * @type {number}
 		 * @default 1
 		 */

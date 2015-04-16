@@ -61,21 +61,26 @@ define([
 				return callback();
 			}
 
-			// Canvas size
-			options.width = options.width ? options.width : img.width;
-			options.height = options.height ? options.height : img.height;
+			ObjectUtil.defaults(options, {
+				// Canvas size
+				width: img.width,
+				height: img.height,
 
-			// Clipping window size & position
-			options.sourceX = options.sourceX ? options.sourceX : 0;
-			options.sourceY = options.sourceY ? options.sourceY : 0;
-			options.sourceWidth = options.sourceWidth ? options.sourceWidth : img.width;
-			options.sourceHeight = options.sourceHeight ? options.sourceHeight : img.height;
+				// Clipping window size & position
+				sourceX: 0,
+				sourceY: 0,
+				sourceWidth: img.width,
+				sourceHeight: img.height,
 
-			// Destination window size & position
-			options.destX = options.destX ? options.destX : 0;
-			options.destY = options.destY ? options.destY : 0;
-			options.destWidth = options.destWidth ? options.destWidth : options.width;
-			options.destHeight = options.destHeight ? options.destHeight : options.height;
+				// Destination window size & position
+				destX: 0,
+				destY: 0
+			});
+
+			ObjectUtil.defaults(options, {
+				destWidth: options.width,
+				destHeight: options.height
+			});
 
 			if (options.resizeToFit) {
 				// preserve aspect ratio of input image and center it
@@ -94,11 +99,13 @@ define([
 			canvas.height = options.height;
 
 			// Render to canvas
-			context.drawImage(	img,
-								options.sourceX,		options.sourceY,
-								options.sourceWidth,	options.sourceHeight,
-								options.destX,			options.destY,
-								options.destWidth,		options.destHeight);
+			context.drawImage(
+				img,
+				options.sourceX, options.sourceY,
+				options.sourceWidth, options.sourceHeight,
+				options.destX, options.destY,
+				options.destWidth, options.destHeight
+			);
 
 			callback(canvas);
 		};

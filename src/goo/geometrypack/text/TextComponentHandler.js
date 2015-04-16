@@ -88,23 +88,7 @@ define([
 					resolve(component);
 				});
 			});
-			/*// Load material
-			return this._load(config.materialRef, options).then(function (material) {
-				// setting this here until the frontend sends good values
-				material.cullState.enabled = true;
-
-				// If the component already has these components, they need to be overridden
-				if (entity.meshDataComponent !== component.meshDataComponent) {
-					entity.setComponent(component.meshDataComponent);
-				}
-
-				component.setMaterial(material);
-				component.setText();
-				component.meshDataComponent.autoCompute = true;
-
-				return component;
-			});*/
-		}.bind(this));
+		});
 	};
 
 	return TextComponentHandler;

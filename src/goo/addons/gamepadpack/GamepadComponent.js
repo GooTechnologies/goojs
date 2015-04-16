@@ -38,7 +38,7 @@ define([
 		this.buttonUpFunctions[buttonIndex] = buttonFunction;
 	};
 
-	GamepadComponent.prototype.setButtonPressedFunction= function (buttonIndex, buttonFunction) {
+	GamepadComponent.prototype.setButtonPressedFunction = function (buttonIndex, buttonFunction) {
 		this.buttonPressedFunctions[buttonIndex] = buttonFunction;
 	};
 

@@ -175,5 +175,4 @@ define([
 	};
 
 	return SceneHandler;
-
 });

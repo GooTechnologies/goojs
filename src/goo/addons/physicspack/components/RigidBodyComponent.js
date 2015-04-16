@@ -11,8 +11,7 @@ define([
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint',
 	'goo/addons/physicspack/components/ColliderComponent'
-],
-function (
+], function (
 	AbstractRigidBodyComponent,
 	Vector3,
 	Quaternion,
@@ -31,7 +30,6 @@ function (
 	/* global CANNON */
 	var tmpQuat = new Quaternion();
 	var tmpCannonVec;
-	var tmpCannonVec2;
 
 	/**
 	 * Adds rigid body dynamics the entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they are added as collision shapes to the rigid body.
@@ -123,7 +121,6 @@ function (
 
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
-			tmpCannonVec2 = new CANNON.Vec3();
 		}
 
 		/**
@@ -132,8 +129,10 @@ function (
 		 */
 		this._colliderEntities = [];
 	}
+
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
+
 	RigidBodyComponent.type = 'RigidBodyComponent';
 
 	/**
@@ -407,7 +406,6 @@ function (
 		var bodyB = (joint.connectedEntity.rigidBodyComponent || joint.connectedEntity.colliderComponent).cannonBody;
 		var constraint;
 		if (joint instanceof BallJoint) {
-
 			// Scale the joint to the world scale
 			var scaledPivotA = joint.localPivot.clone();
 			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
@@ -427,9 +425,7 @@ function (
 			}
 
 			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
-
 		} else if (joint instanceof HingeJoint) {
-
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
 			var axisInA = new CANNON.Vec3();

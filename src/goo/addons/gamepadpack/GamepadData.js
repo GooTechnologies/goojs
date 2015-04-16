@@ -42,7 +42,6 @@ define([
 	};
 
 	GamepadData.prototype.recalculateButtons = function (gamepad) {
-
 		var buttons = gamepad.buttons;
 		var numOfButtons = buttons.length;
 		for (var i = 0; i < numOfButtons; i++) {

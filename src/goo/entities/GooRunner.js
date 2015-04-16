@@ -546,7 +546,7 @@ define([
 		// shift+8 = regular material + wireframe
 		// shift+click = log picked entity
 		var activeKey = 'shiftKey';
-		document.addEventListener("keydown", function (e) {
+		document.addEventListener('keydown', function (e) {
 			if (e.which === 32 && e[activeKey]) { // Space
 				GameUtils.toggleFullScreen();
 			} else if (e.which === 13 && e[activeKey]) { // Enter

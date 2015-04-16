@@ -21,7 +21,7 @@ define([
 		AbstractAnimationChannel.call(this, channelName, times, blendType);
 
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
-			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
+			throw new Error('All provided arrays must be the same length (accounting for type)! Channel: ' + channelName);
 		}
 
 		this._rotations = new Float32Array(rotations);

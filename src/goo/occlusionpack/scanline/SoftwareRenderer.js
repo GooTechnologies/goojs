@@ -375,7 +375,7 @@ define([
 			cameraProjectionMatrix.applyPost(v1);
 
 			// Homogeneous divide.
-			var homogeneousDivide =  1.0 / v1.data[3];
+			var homogeneousDivide = 1.0 / v1.data[3];
 			var divX = v1.x * homogeneousDivide;
 			var divY = v1.y * homogeneousDivide;
 
@@ -389,13 +389,12 @@ define([
 	};
 
 	/**
-	*	Constructs the triangle data which makes up the visible triangles for the given entity.
-	*	@param {Entity} entity the entity from which to create triangles.
-	*   @param cameraProjectionMatrix
-	*   @param cameraViewMatrix
-	*/
+	 * Constructs the triangle data which makes up the visible triangles for the given entity.
+	 * @param {Entity} entity the entity from which to create triangles.
+	 * @param cameraProjectionMatrix
+	 * @param cameraViewMatrix
+	 */
 	SoftwareRenderer.prototype._setupTriangleDataForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
-
 		this._viewSpaceTransformAndCopyVertices(entity, cameraViewMatrix);
 
 		var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
@@ -443,11 +442,10 @@ define([
 	 *   @returns {Number} outCount
 	*/
 	SoftwareRenderer.prototype._categorizeVertices = function (cameraNear) {
-
 		var outCount = 0;
 		var inCount= 0;
 
-		for ( var i = 0; i < 3; i++ ) {
+		for (var i = 0; i < 3; i++) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
 			if (globalVertices[i].z <= cameraNear) {
 				insideIndices[inCount] = i;
@@ -475,7 +473,6 @@ define([
 	*	@param {Number} near The near plane.
 	*/
 	SoftwareRenderer.prototype._calculateIntersectionRatio = function (origin, target, near) {
-
 		// Using a tip from Joel:
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
@@ -494,7 +491,6 @@ define([
 	};
 
 	SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (vert1, vert2, vert3) {
-
 		// Calculate the dot product between the triangle's face normal and the camera's eye direction
 		// to find out if the face is facing away or not.
 
@@ -512,16 +508,16 @@ define([
 		var e2Z = vert3.z - v1Z;
 
 		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
-		var faceNormal_x = e2Z * e1Y - e2Y * e1Z;
-		var faceNormal_y = e2X * e1Z - e2Z * e1X;
-		var faceNormal_z = e2Y * e1X - e2X * e1Y;
+		var faceNormalX = e2Z * e1Y - e2Y * e1Z;
+		var faceNormalY = e2X * e1Z - e2Z * e1X;
+		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
 		// Picking the first vertex as the point on the triangle to evaulate the dot product on.
 
 		// No need to normalize the vectors due to only being
 		// interested in the sign of the dot product.
 
-		var dot = faceNormal_x * v1X + faceNormal_y * v1Y + faceNormal_z * v1Z;
+		var dot = faceNormalX * v1X + faceNormalY * v1Y + faceNormalZ * v1Z;
 		return dot > 0.0;
 	};
 
@@ -535,7 +531,6 @@ define([
 	*	@returns {Boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
-
 		// Create edges, only need x and y , since only the z component of the dot product is needed.
 		var v1X = v1.x;
 		var v1Y = v1.y;
@@ -566,7 +561,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._createOccludeeEdges = function (indices, positions) {
-
 		// Use (x, y, 1/w), the w component is already inverted.
 		// Reuse the global vectors for storing data to send as parameter to create Edges.
 		var vPos = indices[0] * 4;
@@ -598,7 +592,6 @@ define([
 
 
 	SoftwareRenderer.prototype._getLongEdgeAndShortEdgeIndices = function () {
-
 		var maxHeight = edges[0].dy;
 		var longEdge = 0;
 
@@ -627,7 +620,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._calculateOrientationData = function (shortEdge, longEdge) {
-
 		// TODO: Merge orientation data into edgeData.
 		var shortX = edgeData.getShortX();
 		var longX = edgeData.getLongX();
@@ -655,7 +647,6 @@ define([
 	*	Returns true if the triangle is occluded.
 	*/
 	SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (indices, positions) {
-
 		this._createOccludeeEdges(indices, positions);
 
 		var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
@@ -666,7 +657,7 @@ define([
 		// Vertical culling
 		if (this._verticalLongEdgeCull(longEdge)) {
 			// Triangle is outside the view, skipping rendering it;
-			console.log("renderingocclusion : vertical cull");
+			console.log('renderingocclusion : vertical cull');
 			return true;
 		}
 
@@ -679,7 +670,7 @@ define([
 
 			// Horizontal culling
 			if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
-				console.log("renderingocclusion : horizontal cull");
+				console.log('renderingocclusion : horizontal cull');
 				return true;
 			}
 
@@ -695,7 +686,7 @@ define([
 				orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 				// Horizontal culling
 				if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
-					console.log("renderingocclusion : horizontal cull");
+					console.log('renderingocclusion : horizontal cull');
 					return true;
 				}
 			}
@@ -714,7 +705,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._renderTriangle = function (indices) {
-
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
 
@@ -811,7 +801,6 @@ define([
 		if (orientationData[0]) { //RIGHT ORIENTED (long edge on right side)
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -1392,11 +1381,11 @@ define([
 		}
 
 // 		if (leftZ < 0 || leftZ > 1.0000001) {
-// //			console.error("leftZ : ", leftZ);
+// //			console.error('leftZ : ', leftZ);
 // 		}
 
 // 		if (rightZ < 0 || rightZ > 1.0000001) {
-// //			console.error("rightZ : ", rightZ);
+// //			console.error('rightZ : ', rightZ);
 // 		}
 
 		// Horizontal clipping
@@ -1427,7 +1416,7 @@ define([
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
 				// Not occluded
-			   return false;
+				return false;
 			}
 
 			index++;
@@ -1449,12 +1438,12 @@ define([
 		/*
 		if (leftZ < 0 || leftZ > 1.0000001) {
 			// This should not happen.
-			console.error("Rendering depth buffer : leftZ =", leftZ);
+			console.error('Rendering depth buffer : leftZ =', leftZ);
 		}
 
 		if (rightZ < 0 || rightZ > 1.0000001) {
 			// This should not happen.
-			console.error("Rendering depth buffer : rightZ =", rightZ);
+			console.error('Rendering depth buffer : rightZ =', rightZ);
 		}
 		*/
 
@@ -1487,7 +1476,6 @@ define([
 		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
 		for (var i = leftX; i <= rightX; i++) {
-
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
 				this._depthData[index] = depth;  // Store 1/w values in range [1/far, 1/near].
@@ -1500,10 +1488,10 @@ define([
 		/*
 		var lastDepth = depth - depthIncrement;
 		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX >= 0) {
-			console.error("Wrong depth interpolation!");
-			console.log("lastdepth", lastDepth);
-			console.log("rightZ", rightZ);
-			console.log("depthIncrement", depthIncrement);
+			console.error('Wrong depth interpolation!');
+			console.log('lastdepth', lastDepth);
+			console.log('rightZ', rightZ);
+			console.log('depthIncrement', depthIncrement);
 		}
 		*/
 	};
@@ -1515,13 +1503,12 @@ define([
 		var colorIndex = 0;
 
 		for (var i = 0; i < this._depthData.length; i++) {
-
 			// Convert the float value of depth into 8bit.
 			// var depth = this._depthData[i] * 255;
 			var depth = this._depthData[i];
 			if (depth > 0.0 ) {
 				//depth = 255;
-			    depth *= 255;
+				depth *= 255;
 				this._colorData[colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;

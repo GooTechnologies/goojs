@@ -16,7 +16,7 @@ define([
 	function CannonTerrainColliderComponent(settings) {
 		Component.apply(this, arguments);
 
-		this.type = "CannonTerrainColliderComponent";
+		this.type = 'CannonTerrainColliderComponent';
 
 		settings = settings || {
 			data: [],
@@ -26,6 +26,7 @@ define([
 		// Create shape
 		this.cannonShape = new CANNON.Heightfield(settings.data, settings.shapeOptions);
 	}
+
 	CannonTerrainColliderComponent.prototype = Object.create(Component.prototype);
 	CannonTerrainColliderComponent.constructor = CannonTerrainColliderComponent;
 

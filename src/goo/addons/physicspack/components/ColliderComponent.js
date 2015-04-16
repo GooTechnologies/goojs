@@ -8,8 +8,7 @@ define([
 	'goo/addons/physicspack/colliders/Collider',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
-],
-function (
+], function (
 	AbstractColliderComponent,
 	BoxCollider,
 	SphereCollider,
@@ -50,9 +49,11 @@ function (
 		 */
 		this.cannonShape = null;
 	}
+
 	ColliderComponent.prototype = Object.create(AbstractColliderComponent.prototype);
 	ColliderComponent.prototype.constructor = ColliderComponent;
-	ColliderComponent.type = "ColliderComponent";
+
+	ColliderComponent.type = 'ColliderComponent';
 
 	ColliderComponent.prototype.initialize = function () {
 		var material = null;

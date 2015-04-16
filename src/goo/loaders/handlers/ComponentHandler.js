@@ -1,6 +1,6 @@
 define([
 	'goo/util/PromiseUtil'
-],  function (
+], function (
 	PromiseUtil
 ) {
 	'use strict';
@@ -41,7 +41,7 @@ define([
 	 * @abstract
 	 */
 	ComponentHandler.prototype._create = function () {
-		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
+		throw new Error('ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)');
 	};
 
 	/**
@@ -112,5 +112,4 @@ define([
 	};
 
 	return ComponentHandler;
-
 });

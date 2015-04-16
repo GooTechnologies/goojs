@@ -28,13 +28,12 @@ define([
 		} else {
 			this.updateGamepads = function () {};
 
-			var that = this;
 			window.addEventListener('gamepadconnected', function (e) {
-					that.mozGamepadHandler(e, true);
-			}, false);
+				this.mozGamepadHandler(e, true);
+			}.bind(this), false);
 			window.addEventListener('gamepaddisconnected', function (e) {
-					that.mozGamepadHandler(e, false);
-			}, false);
+				this.mozGamepadHandler(e, false);
+			}.bind(this), false);
 		}
 	}
 

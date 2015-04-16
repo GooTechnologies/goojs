@@ -129,7 +129,6 @@ define([
 
 		var collider = CannonRigidbodyComponent.getCollider(entity);
 		if (!collider) {
-
 			// Needed for getting the Rigidbody-local transform of each collider
 			// entity.transformComponent.updateTransform();
 			// entity.transformComponent.updateWorldTransform();
@@ -144,7 +143,6 @@ define([
 			entity.traverse(function (childEntity) {
 				var collider = CannonRigidbodyComponent.getCollider(childEntity);
 				if (collider) {
-
 					// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 					// childEntity.transformComponent.updateTransform();
 					// childEntity.transformComponent.updateWorldTransform();
@@ -180,9 +178,7 @@ define([
 					body.addShape(collider.cannonShape, offset, orientation);
 				}
 			});
-
 		} else {
-
 			// Entity has a collider on the root
 			// Create a simple shape
 			body.addShape(collider.cannonShape);

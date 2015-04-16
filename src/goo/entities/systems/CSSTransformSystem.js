@@ -21,11 +21,11 @@ define([
 
 		this.renderer = renderer;
 
-        if (document.querySelector) {
+		if (document.querySelector) {
 			this.viewDom = document.querySelector('#view');
 			this.containerDom = document.querySelector('#cam1');
 			this.containerDom2 = document.querySelector('#cam2');
-        }
+		}
 	}
 
 	var tmpMatrix = new Matrix4();

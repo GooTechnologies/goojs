@@ -245,7 +245,7 @@ define([
 				this.setCurrentState(state, rewind, globalTime);
 				return true;
 			} else {
-				console.warn("unable to find SteadyState named: " + stateName);
+				console.warn('unable to find SteadyState named: ' + stateName);
 			}
 		}
 		return false;

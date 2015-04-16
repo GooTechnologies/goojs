@@ -73,7 +73,7 @@ define([
 			loop: false,
 			audioRefs: {},
 			volume: 1.0,
-			name: "A Sound"
+			name: 'A Sound'
 		});
 	};
 

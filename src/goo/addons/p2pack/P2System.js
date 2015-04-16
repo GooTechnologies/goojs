@@ -108,7 +108,6 @@ define([
 			var p2Component = entity.p2Component;
 			updateTransform(entity.transformComponent, p2Component);
 		}
-
 	};
 
 	return P2System;

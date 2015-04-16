@@ -111,7 +111,6 @@ define([
 		var diff = tmpVec1.set(max).sub(min);
 
 		for (var a = 0; a < 3; a++) {
-
 			for (var b = 0; b < 3; b++) {
 				if (b !== a) {
 					this._drawAxisLine(min, diff, a, b, 1, 1, color, transformMatrix);

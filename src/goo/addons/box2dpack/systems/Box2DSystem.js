@@ -55,12 +55,12 @@ define([
 		var width = 0;
 
 		var shape = new Box2D.b2PolygonShape();
-		if (p.shape === "box") {
+		if (p.shape === 'box') {
 			shape.SetAsBox(p.width * this.SCALE, p.height * this.SCALE);
-		} else if (p.shape === "circle") {
+		} else if (p.shape === 'circle') {
 			shape = new Box2D.b2CircleShape();
 			shape.set_m_radius(p.radius);
-		} else if (p.shape === "mesh") {
+		} else if (p.shape === 'mesh') {
 			var meshData = entity.meshDataComponent.meshData;
 
 			var verts = meshData.getAttributeBuffer('POSITION');
@@ -92,7 +92,6 @@ define([
 				entity.transformComponent.updateWorldTransform();
 				var v = new Box2D.b2Vec2(x, y);
 				polygon.push(v);
-
 			}
 
 			//polygon.sort(this.sortVertexesClockWise)
@@ -100,7 +99,7 @@ define([
 			shape = this.createPolygonShape(polygon);
 			height = maxY - minY;
 			width = maxX - minX;
-		} else if (p.shape === "polygon") {
+		} else if (p.shape === 'polygon') {
 			var polygon = [];
 			var i = 0;
 			while (i <= p.vertices.length - 2) {

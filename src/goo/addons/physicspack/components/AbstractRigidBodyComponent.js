@@ -4,8 +4,7 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Transform',
 	'goo/entities/SystemBus'
-],
-function (
+], function (
 	Component,
 	Vector3,
 	Quaternion,
@@ -117,7 +116,6 @@ function (
 
 			var collider = childEntity.colliderComponent;
 			if (collider) {
-
 				childEntity.transformComponent.updateTransform();
 				childEntity.transformComponent.updateWorldTransform();
 
