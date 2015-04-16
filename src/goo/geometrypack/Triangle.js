@@ -11,7 +11,7 @@ define([
 	 * Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
 	 * @param {number[]} verts array with 9 elements. These 9 elements must be 3 x, y, z positions.
 	 */
-	 function Triangle(verts) {
+	function Triangle(verts) {
 		this.verts = verts;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]);

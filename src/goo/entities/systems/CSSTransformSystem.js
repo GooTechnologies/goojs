@@ -1,12 +1,12 @@
 define([
-	'goo/entities/systems/System', 
-	'goo/renderer/Renderer', 
+	'goo/entities/systems/System',
+	'goo/renderer/Renderer',
 	'goo/math/Matrix4',
-	'goo/math/MathUtils', 
+	'goo/math/MathUtils',
 	'goo/math/Vector3'
 ], function (
-	System, 
-	Renderer, 
+	System,
+	Renderer,
 	Matrix4,
 	MathUtils,
 	Vector3
@@ -22,9 +22,9 @@ define([
 		this.renderer = renderer;
 
         if (document.querySelector) {
-		    this.viewDom = document.querySelector('#view');
-		    this.containerDom = document.querySelector('#cam1');
-		    this.containerDom2 = document.querySelector('#cam2');
+			this.viewDom = document.querySelector('#view');
+			this.containerDom = document.querySelector('#cam1');
+			this.containerDom2 = document.querySelector('#cam2');
         }
 	}
 

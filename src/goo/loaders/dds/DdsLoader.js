@@ -45,7 +45,7 @@ define([
 		var format = new DdsPixelFormat();
 		format.dwSize = data[DdsPixelFormat.HEADER_OFFSET + 0];
 		if (format.dwSize !== 32) {
-			throw ("invalid pixel format size: " + format.dwSize);
+			throw ('invalid pixel format size: ' + format.dwSize);
 		}
 		format.dwFlags = data[DdsPixelFormat.HEADER_OFFSET + 1];
 		format.dwFourCC = data[DdsPixelFormat.HEADER_OFFSET + 2];
@@ -126,7 +126,7 @@ define([
 		var header = new DdsHeader();
 		header.dwSize = data[1];
 		if (header.dwSize !== 124) {
-			throw ("invalid dds header size: " + header.dwSize);
+			throw ('invalid dds header size: ' + header.dwSize);
 		}
 		header.dwFlags = data[2];
 		header.dwHeight = data[3];
@@ -151,7 +151,7 @@ define([
 			if (!DdsUtils.isSet(header.dwFlags, DdsHeader.DDSD_MIPMAPCOUNT)) {
 				header.dwMipMapCount = expectedMipmaps;
 			} else if (header.dwMipMapCount !== expectedMipmaps) {
-				console.warn("Got " + header.dwMipMapCount + " mipmaps, expected " + expectedMipmaps);
+				console.warn('Got ' + header.dwMipMapCount + ' mipmaps, expected ' + expectedMipmaps);
 			}
 		} else {
 			header.dwMipMapCount = 1;
@@ -211,7 +211,7 @@ define([
 			}
 
 			if (depth !== 6) {
-				throw new Error("Cubemaps without all faces defined are not currently supported.");
+				throw new Error('Cubemaps without all faces defined are not currently supported.');
 			}
 
 			image.depth = depth;
@@ -327,64 +327,64 @@ define([
 		if (compressedFormat) {
 			var fourCC = info.header.ddpf.dwFourCC;
 			// DXT1 format
-			if (fourCC === DdsUtils.getIntFromString("DXT1")) {
+			if (fourCC === DdsUtils.getIntFromString('DXT1')) {
 				info.bpp = 4;
 				// if (isSet(flags, DdsPixelFormat.DDPF_ALPHAPIXELS)) {
 				// XXX: many authoring tools do not set alphapixels, so we'll error on the side of alpha
-//				console.info("DDS format: DXT1A");
-				texture.format = "PrecompressedDXT1A";
+//				console.info('DDS format: DXT1A');
+				texture.format = 'PrecompressedDXT1A';
 				// } else {
-				// logger.finest("DDS format: DXT1");
+				// logger.finest('DDS format: DXT1');
 				// texture.setDataFormat(ImageDataFormat.PrecompressedDXT1);
 				// }
 			}
 
 			// DXT3 format
-			else if (fourCC === DdsUtils.getIntFromString("DXT3")) {
-//				console.info("DDS format: DXT3");
+			else if (fourCC === DdsUtils.getIntFromString('DXT3')) {
+//				console.info('DDS format: DXT3');
 				info.bpp = 8;
-				texture.format = "PrecompressedDXT3";
+				texture.format = 'PrecompressedDXT3';
 			}
 
 			// DXT5 format
-			else if (fourCC === DdsUtils.getIntFromString("DXT5")) {
-//				console.info("DDS format: DXT5");
+			else if (fourCC === DdsUtils.getIntFromString('DXT5')) {
+//				console.info('DDS format: DXT5');
 				info.bpp = 8;
-				texture.format = "PrecompressedDXT5";
+				texture.format = 'PrecompressedDXT5';
 			}
 
 			// DXT10 info present...
-			else if (fourCC === DdsUtils.getIntFromString("DX10")) {
+			else if (fourCC === DdsUtils.getIntFromString('DX10')) {
 				// switch (info.headerDX10.dxgiFormat) {
 				// case DXGI_FORMAT_BC4_UNORM:
-				// console.info("DXGI format: BC4_UNORM");
+				// console.info('DXGI format: BC4_UNORM');
 				// info.bpp = 4;
 				// texture.setDataFormat(ImageDataFormat.PrecompressedLATC_L);
 				// break;
 				// case DXGI_FORMAT_BC5_UNORM:
-				// console.info("DXGI format: BC5_UNORM");
+				// console.info('DXGI format: BC5_UNORM');
 				// info.bpp = 8;
 				// texture.setDataFormat(ImageDataFormat.PrecompressedLATC_LA);
 				// break;
 				// default:
-				// throw new Error("dxgiFormat not supported: " + info.headerDX10.dxgiFormat);
+				// throw new Error('dxgiFormat not supported: ' + info.headerDX10.dxgiFormat);
 				// }
-				throw new Error("dxt10 LATC formats not supported currently: " + info.headerDX10.dxgiFormat);
+				throw new Error('dxt10 LATC formats not supported currently: ' + info.headerDX10.dxgiFormat);
 			}
 
 			// DXT2 format - unsupported
-			else if (fourCC === DdsUtils.getIntFromString("DXT2")) {
-				throw "DXT2 is not supported.";
+			else if (fourCC === DdsUtils.getIntFromString('DXT2')) {
+				throw 'DXT2 is not supported.';
 			}
 
 			// DXT4 format - unsupported
-			else if (fourCC === DdsUtils.getIntFromString("DXT4")) {
-				throw "DXT4 is not supported.";
+			else if (fourCC === DdsUtils.getIntFromString('DXT4')) {
+				throw 'DXT4 is not supported.';
 			}
 
 			// Unsupported compressed type.
 			else {
-				throw "unsupported compressed dds format found (" + fourCC + ")";
+				throw 'unsupported compressed dds format found (' + fourCC + ')';
 			}
 		}
 
@@ -398,35 +398,35 @@ define([
 			// One of the RGB formats?
 			if (rgb) {
 				if (alphaPixels) {
-//					console.info("DDS format: uncompressed rgba");
-					texture.format = "RGBA";
+//					console.info('DDS format: uncompressed rgba');
+					texture.format = 'RGBA';
 				} else {
-//					console.info("DDS format: uncompressed rgb ");
-					texture.format = "RGB";
+//					console.info('DDS format: uncompressed rgb ');
+					texture.format = 'RGB';
 				}
 			}
 
 			// A luminance or alpha format
 			else if (lum || alphaPixels) {
 				if (lum && alphaPixels) {
-//					console.info("DDS format: uncompressed LumAlpha");
-					texture.format = "LuminanceAlpha";
+//					console.info('DDS format: uncompressed LumAlpha');
+					texture.format = 'LuminanceAlpha';
 				}
 
 				else if (lum) {
-//					console.info("DDS format: uncompressed Lum");
-					texture.format = "Luminance";
+//					console.info('DDS format: uncompressed Lum');
+					texture.format = 'Luminance';
 				}
 
 				else if (alpha) {
-//					console.info("DDS format: uncompressed Alpha");
-					texture.format = "Alpha";
+//					console.info('DDS format: uncompressed Alpha');
+					texture.format = 'Alpha';
 				}
 			} // end luminance/alpha type
 
 			// Unsupported type.
 			else {
-				throw new Error("unsupported uncompressed dds format found.");
+				throw new Error('unsupported uncompressed dds format found.');
 			}
 		}
 
@@ -463,10 +463,10 @@ define([
 
 		// Read and check magic word...
 		var dwMagic = header[0];
-		if (dwMagic !== DdsUtils.getIntFromString("DDS ")) {
-			throw "Not a dds file.";
+		if (dwMagic !== DdsUtils.getIntFromString('DDS ')) {
+			throw 'Not a dds file.';
 		}
-//		console.info("Reading DDS file.");
+//		console.info('Reading DDS file.');
 
 		// Create our data store;
 		var info = new DdsImageInfo();
@@ -477,7 +477,7 @@ define([
 		info.header = DdsHeader.read(header);
 
 		// if applicable, read DX10 header
-		info.headerDX10 = info.header.ddpf.dwFourCC === DdsUtils.getIntFromString("DX10") ? DdsHeader.read(Int32Array.create(buffer,
+		info.headerDX10 = info.header.ddpf.dwFourCC === DdsUtils.getIntFromString('DX10') ? DdsHeader.read(Int32Array.create(buffer,
 			arrayByteOffset + 128, 5)) : null;
 
 		// Create our new image
@@ -511,7 +511,7 @@ define([
 	};
 
 	DdsLoader.prototype.toString = function () {
-		return "DdsLoader";
+		return 'DdsLoader';
 	};
 
 	return DdsLoader;

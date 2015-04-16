@@ -122,12 +122,12 @@ define([
 
 	var gridShaderDef = {
 		attributes: {
-			vertexPosition : MeshData.POSITION
+			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
 			color: [0.55, 0.55, 0.55, 1],
 			fogOn: false,
 			fogColor: [0.1, 0.1, 0.1, 1],

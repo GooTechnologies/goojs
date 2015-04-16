@@ -51,7 +51,7 @@ define([
 	 * @returns {Machine}
 	 * @private
 	 */
-	 MachineHandler.prototype._create = function () {
+	MachineHandler.prototype._create = function () {
 		return new Machine();
 	};
 
@@ -63,7 +63,7 @@ define([
 	 * @private
 	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
 	 */
-	 MachineHandler.prototype._update = function (ref, config, options) {
+	MachineHandler.prototype._update = function (ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (machine) {
 			if (!machine) { return; }

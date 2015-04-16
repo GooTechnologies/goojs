@@ -75,14 +75,14 @@ define([
 		};
 
 		LogicSystem.prototype.makeOutputWriteFn = function (sourceEntity, outPortDesc) {
-			// Lets do this the really slow and stupid way for now! 
+			// Lets do this the really slow and stupid way for now!
 
 			// TODO: Make sure this function is cached and only generated once
-			//       
+			//
 			var matches = [];
 			this.forEachLogicObject(function (o) {
 				// Look for entities that point to this here.
-				if (o.type === "LogicNodeEntityProxy" && o.entityRef === sourceEntity.name) {
+				if (o.type === 'LogicNodeEntityProxy' && o.entityRef === sourceEntity.name) {
 					matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
 					// REVIEW: use objects instead of arrays when representing pairs ('0' and '1' are harder to read than some proper names)
 				}

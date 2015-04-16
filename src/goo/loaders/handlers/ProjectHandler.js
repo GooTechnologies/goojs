@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler'
-
 ], function (
 	ConfigHandler
 ) {
@@ -62,7 +61,7 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
-	 ProjectHandler.prototype._update = function (ref, config, options) {
+	ProjectHandler.prototype._update = function (ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (project) {
 			if (!project) { return; }

@@ -95,11 +95,11 @@ define([
 		}
 
 		var typeMatch = {
-			'float32' : 'Float',
-			'uint8' : 'UnsignedByte',
-			'uint16' : 'UnsignedShort',
+			'float32': 'Float',
+			'uint8': 'UnsignedByte',
+			'uint16': 'UnsignedShort',
 			// Not yet supported
-			'uint32' : 'UnsignedInt'
+			'uint32': 'UnsignedInt'
 		};
 
 		if (BufferUtils.browserType === 'Trident') {

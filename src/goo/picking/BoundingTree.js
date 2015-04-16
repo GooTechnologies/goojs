@@ -22,15 +22,15 @@ define([
 		this.boundType = boundType ? boundType : BoundingTree.BOUNDTYPE_BOX;
 	}
 
-	BoundingTree.BOUNDTYPE_SPHERE = "sphere";
-	BoundingTree.BOUNDTYPE_BOX = "box";
+	BoundingTree.BOUNDTYPE_SPHERE = 'sphere';
+	BoundingTree.BOUNDTYPE_BOX = 'box';
 
 	BoundingTree.MAX_PRIMITIVES_PER_LEAF = 16;
 
 	BoundingTree.prototype.construct = function (entity) {
 		// check entity has required components
 		if (!entity.meshRendererComponent || !entity.meshDataComponent || !entity.transformComponent) {
-			console.warn("Entity missing required components for boundingtree construction: ", entity);
+			console.warn('Entity missing required components for boundingtree construction: ', entity);
 			return;
 		}
 

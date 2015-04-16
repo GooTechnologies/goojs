@@ -1,13 +1,12 @@
 define([
 	'goo/entities/systems/System',
 	'goo/shapes/TextureGrid',
-	'goo/entities/components/MeshDataComponent'],
-
-	function (
-		System,
-		TextureGrid,
-		MeshDataComponent
-	) {
+	'goo/entities/components/MeshDataComponent'
+], function (
+	System,
+	TextureGrid,
+	MeshDataComponent
+) {
 	'use strict';
 
 	/**

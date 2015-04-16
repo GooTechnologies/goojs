@@ -8,7 +8,7 @@ define([
 	StateMachineComponent,
 	RSVP,
 	_
-	) {
+) {
 	'use strict';
 
 	/**
@@ -44,7 +44,7 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 StateMachineComponentHandler.prototype.update = function (entity, config, options) {
+	StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }

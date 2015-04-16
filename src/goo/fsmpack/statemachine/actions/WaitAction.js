@@ -1,4 +1,8 @@
-define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
+define([
+	'goo/fsmpack/statemachine/actions/Action'
+], function (
+	Action
+) {
 	'use strict';
 
 	/**
@@ -37,13 +41,13 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 			key: 'waitTime',
 			type: 'number',
 			description: 'Base time in milliseconds before transition fires',
-			"default": 5000
+			'default': 5000
 		}, {
 			name: 'Random (ms)',
 			key: 'randomTime',
 			type: 'number',
 			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
-			"default": 0
+			'default': 0
 		}],
 		transitions: [{
 			key: 'timeUp',

@@ -151,7 +151,7 @@ define([
 			return that._updateObject(ref, config, options);
 		})
 		.then(null, function (err) {
-			console.error("Error updating " + ref + " " + err);
+			console.error('Error updating ' + ref + ' ' + err);
 			throw err;
 		});
 	};

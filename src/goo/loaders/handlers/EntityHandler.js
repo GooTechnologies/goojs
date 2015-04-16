@@ -111,7 +111,7 @@ define([
 					var p = that._updateComponent(entity, type, config.components[type], options);
 					if (p) { promises.push(p); }
 					else {
-						console.error("Error handling component " + type);
+						console.error('Error handling component ' + type);
 					}
 				}
 			}

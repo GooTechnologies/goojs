@@ -25,7 +25,6 @@ define([
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
 	function World(gooRunner) {
-
 		/** GooRunner for updating the world and calling the renderers.
 		 * @type {GooRunner}
 		 */
@@ -137,7 +136,7 @@ define([
 				this.setSystem(argument);
 			} else if (argument instanceof Component) {
 				//! AT: TransformComponent and co and NOT instances of Component
-			    this.registerComponent(argument);
+				this.registerComponent(argument);
 			}
 		}
 
@@ -145,7 +144,7 @@ define([
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components 
+	 * Registers a component type. This is necessary to allow automatic creation of components
 	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
 	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
 	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.

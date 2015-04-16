@@ -67,8 +67,8 @@ define([
 		this._listener.setPosition(0, 0, 0);
 		this._listener.setVelocity(0, 0, 0);
 		this._listener.setOrientation(
-			0,  0, -1, // Orientation
-			0,  1,  0  // Up
+			0, 0, -1, // Orientation
+			0, 1, 0  // Up
 		);
 
 		this.initialized = true;

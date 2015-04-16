@@ -123,18 +123,18 @@ define([
 
 	/**
 	 * Adds a vector to the current vector
-	 * @param that {Vector4}
+	 * @param rhs {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2, 3, 4);
 	 * var v2 = new Vector4(4, 5, 6, 7);
 	 * v1.add(v2); // v1 == (5, 7, 9, 11)
 	 */
-	Vector4.prototype.add = function (that) {
-		this.x += that.x;
-		this.y += that.y;
-		this.z += that.z;
-		this.w += that.w;
+	Vector4.prototype.add = function (rhs) {
+		this.x += rhs.x;
+		this.y += rhs.y;
+		this.z += rhs.z;
+		this.w += rhs.w;
 
 		return this;
 	};
@@ -161,18 +161,18 @@ define([
 
 	/**
 	 * Adds a vector from the current vector
-	 * @param that {Vector4}
+	 * @param rhs {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(4, 5, 6, 7);
 	 * var v2 = new Vector4(1, 2, 3, 4);
 	 * v1.sub(v2); // v1 == (3, 3, 3, 3)
 	 */
-	Vector4.prototype.sub = function (that) {
-		this.x -= that.x;
-		this.y -= that.y;
-		this.z -= that.z;
-		this.w -= that.w;
+	Vector4.prototype.sub = function (rhs) {
+		this.x -= rhs.x;
+		this.y -= rhs.y;
+		this.z -= rhs.z;
+		this.w -= rhs.w;
 
 		return this;
 	};
@@ -212,18 +212,18 @@ define([
 
 	/**
 	 * Multiplies the current vector by another vector
-	 * @param that {Vector4}
+	 * @param rhs {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(4, 5, 6, 7);
 	 * var v2 = new Vector4(1, 2, 3, 4);
 	 * v1.mul(v2); // v1 == (4, 10, 18, 28)
 	 */
-	Vector4.prototype.mul = function (that) {
-		this.x *= that.x;
-		this.y *= that.y;
-		this.z *= that.z;
-		this.w *= that.w;
+	Vector4.prototype.mul = function (rhs) {
+		this.x *= rhs.x;
+		this.y *= rhs.y;
+		this.z *= rhs.z;
+		this.w *= rhs.w;
 
 		return this;
 	};
@@ -264,17 +264,17 @@ define([
 
 	/**
 	 * Divides the current Vector4 by another vector
-	 * @param {Vector4} that
+	 * @param {Vector4} rhs
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v = new Vector4(2, 4, 6, 8);
 	 * v.divDirect(1, 2, 3, 4); // v == (2, 2, 2, 2)
 	 */
-	Vector4.prototype.div = function (that) {
-		this.x /= that.x;
-		this.y /= that.y;
-		this.z /= that.z;
-		this.w /= that.w;
+	Vector4.prototype.div = function (rhs) {
+		this.x /= rhs.x;
+		this.y /= rhs.y;
+		this.z /= rhs.z;
+		this.w /= rhs.w;
 
 		return this;
 	};
@@ -301,14 +301,14 @@ define([
 
 	/**
 	 * Computes the dot product between the current vector and another vector
-	 * @param {Vector4} that
+	 * @param {Vector4} rhs
 	 * @returns {number}
 	 */
-	Vector4.prototype.dot = function (that) {
-		return this.x * that.x +
-			this.y * that.y +
-			this.z * that.z +
-			this.w * that.w;
+	Vector4.prototype.dot = function (rhs) {
+		return this.x * rhs.x +
+			this.y * rhs.y +
+			this.z * rhs.z +
+			this.w * rhs.w;
 	};
 
 	/**
@@ -328,14 +328,14 @@ define([
 
 	/**
 	 * Returns whether this vector is aproximately equal to a given vector
-	 * @param that
+	 * @param rhs
 	 * @returns {boolean}
 	 */
-	Vector4.prototype.equals = function (that) {
-		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
-			(Math.abs(this.y - that.y) <= MathUtils.EPSILON) &&
-			(Math.abs(this.z - that.z) <= MathUtils.EPSILON) &&
-			(Math.abs(this.w - that.w) <= MathUtils.EPSILON);
+	Vector4.prototype.equals = function (rhs) {
+		return (Math.abs(this.x - rhs.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - rhs.y) <= MathUtils.EPSILON) &&
+			(Math.abs(this.z - rhs.z) <= MathUtils.EPSILON) &&
+			(Math.abs(this.w - rhs.w) <= MathUtils.EPSILON);
 	};
 
 	/**
@@ -390,17 +390,17 @@ define([
 
 	/**
 	 * Sets the vector's values from another vector's values
-	 * @param {Vector4} that
+	 * @param {Vector4} rhs
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v = new Vector4(); // v == (0, 0, 0, 0)
 	 * v.set(new Vector4(2, 4, 6, 8)); // v == (2, 4, 6, 8)
 	 */
-	Vector4.prototype.set = function (that) {
-		this.x = that.x;
-		this.y = that.y;
-		this.z = that.z;
-		this.w = that.w;
+	Vector4.prototype.set = function (rhs) {
+		this.x = rhs.x;
+		this.y = rhs.y;
+		this.z = rhs.z;
+		this.w = rhs.w;
 
 		return this;
 	};
@@ -487,18 +487,18 @@ define([
 	 * Computes the squared distance between the current Vector4 and another Vector4.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector4} that Vector4
+	 * @param {Vector4} rhs Vector4
 	 * @returns {number} distance squared
 	 * @example
 	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
 	 * var v2 = new Vector4(0, 9, 0, 0);
 	 * v1.distanceSquared(v2); // 81
 	 */
-	Vector4.prototype.distanceSquared = function (that) {
-		var deltaX = this.x - that.x;
-		var deltaY = this.y - that.y;
-		var deltaZ = this.z - that.z;
-		var deltaW = this.w - that.w;
+	Vector4.prototype.distanceSquared = function (rhs) {
+		var deltaX = this.x - rhs.x;
+		var deltaY = this.y - rhs.y;
+		var deltaZ = this.z - rhs.z;
+		var deltaW = this.w - rhs.w;
 
 		return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ + deltaW * deltaW;
 	};
@@ -507,15 +507,15 @@ define([
 	 * Computes the distance between the current Vector4 and another Vector4.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector4} that Vector4
+	 * @param {Vector4} rhs Vector4
 	 * @returns {number} distance
 	 * @example
 	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
 	 * var v2 = new Vector4(0, 9, 0, 0);
 	 * v1.distance(v2); // 9
 	 */
-	Vector4.prototype.distance = function (that) {
-		return Math.sqrt(this.distanceSquared(that));
+	Vector4.prototype.distance = function (rhs) {
+		return Math.sqrt(this.distanceSquared(rhs));
 	};
 
 	/**

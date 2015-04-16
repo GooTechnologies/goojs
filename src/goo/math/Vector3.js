@@ -111,17 +111,17 @@ define([
 
 	/**
 	 * Adds a vector to the current vector
-	 * @param that {Vector3}
+	 * @param rhs {Vector3}
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
 	 * v1.add(v2); // v1 == (5, 7, 9)
 	 */
-	Vector3.prototype.add = function (that) {
-		this.x += that.x;
-		this.y += that.y;
-		this.z += that.z;
+	Vector3.prototype.add = function (rhs) {
+		this.x += rhs.x;
+		this.y += rhs.y;
+		this.z += rhs.z;
 
 		return this;
 	};
@@ -146,17 +146,17 @@ define([
 
 	/**
 	 * Adds a vector from the current vector
-	 * @param that {Vector3}
+	 * @param rhs {Vector3}
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var v2 = new Vector3(1, 2, 3);
 	 * v1.sub(v2); // v1 == (3, 3, 3)
 	 */
-	Vector3.prototype.sub = function (that) {
-		this.x -= that.x;
-		this.y -= that.y;
-		this.z -= that.z;
+	Vector3.prototype.sub = function (rhs) {
+		this.x -= rhs.x;
+		this.y -= rhs.y;
+		this.z -= rhs.z;
 
 		return this;
 	};
@@ -193,17 +193,17 @@ define([
 
 	/**
 	 * Multiplies the current vector by another vector
-	 * @param that {Vector3}
+	 * @param rhs {Vector3}
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var v2 = new Vector3(1, 2, 3);
 	 * v1.mul(v2); // v1 == (4, 10, 18)
 	 */
-	Vector3.prototype.mul = function (that) {
-		this.x *= that.x;
-		this.y *= that.y;
-		this.z *= that.z;
+	Vector3.prototype.mul = function (rhs) {
+		this.x *= rhs.x;
+		this.y *= rhs.y;
+		this.z *= rhs.z;
 
 		return this;
 	};
@@ -241,16 +241,16 @@ define([
 
 	/**
 	 * Divides the current Vector3 by another vector
-	 * @param {Vector3} that
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v = new Vector3(2, 4, 6);
 	 * v.div(1, 2, 3); // v == (2, 2, 2)
 	 */
-	Vector3.prototype.div = function (that) {
-		this.x /= that.x;
-		this.y /= that.y;
-		this.z /= that.z;
+	Vector3.prototype.div = function (rhs) {
+		this.x /= rhs.x;
+		this.y /= rhs.y;
+		this.z /= rhs.z;
 
 		return this;
 	};
@@ -275,13 +275,13 @@ define([
 
 	/**
 	 * Computes the dot product between the current vector and another vector
-	 * @param {Vector3} that
+	 * @param {Vector3} rhs
 	 * @returns {number}
 	 */
-	Vector3.prototype.dot = function (that) {
-		return this.x * that.x +
-			this.y * that.y +
-			this.z * that.z;
+	Vector3.prototype.dot = function (rhs) {
+		return this.x * rhs.x +
+			this.y * rhs.y +
+			this.z * rhs.z;
 	};
 
 	/**
@@ -299,13 +299,13 @@ define([
 
 	/**
 	 * Returns whether this vector is aproximately equal to a given vector
-	 * @param that
+	 * @param rhs
 	 * @returns {boolean}
 	 */
-	Vector3.prototype.equals = function (that) {
-		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
-			(Math.abs(this.y - that.y) <= MathUtils.EPSILON) &&
-			(Math.abs(this.z - that.z) <= MathUtils.EPSILON);
+	Vector3.prototype.equals = function (rhs) {
+		return (Math.abs(this.x - rhs.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - rhs.y) <= MathUtils.EPSILON) &&
+			(Math.abs(this.z - rhs.z) <= MathUtils.EPSILON);
 	};
 
 	/**
@@ -323,21 +323,21 @@ define([
 
 	/**
 	 * Computes the cross product between the current Vector3 and another vector
-	 * @param {Vector3} that
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(0, 1, 0);
 	 * var v2 = new Vector3(0, 0, -1);
 	 * v1.cross(v2); // v1 == (-1, 0, 0)
 	 */
-	Vector3.prototype.cross = function (that) {
+	Vector3.prototype.cross = function (rhs) {
 		var x = this.x;
 		var y = this.y;
 		var z = this.z;
 
-		this.x = that.z * y - that.y * z;
-		this.y = that.x * z - that.z * x;
-		this.z = that.y * x - that.x * y;
+		this.x = rhs.z * y - rhs.y * z;
+		this.y = rhs.x * z - rhs.z * x;
+		this.z = rhs.y * x - rhs.x * y;
 
 		return this;
 	};
@@ -401,16 +401,16 @@ define([
 
 	/**
 	 * Sets the vector's values from another vector's values
-	 * @param {Vector3} that
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v = new Vector3(); // v == (0, 0, 0)
 	 * v.set(new Vector3(2, 4, 6)); // v == (2, 4, 6)
 	 */
-	Vector3.prototype.set = function (that) {
-		this.x = that.x;
-		this.y = that.y;
-		this.z = that.z;
+	Vector3.prototype.set = function (rhs) {
+		this.x = rhs.x;
+		this.y = rhs.y;
+		this.z = rhs.z;
 
 		return this;
 	};
@@ -492,17 +492,17 @@ define([
 	 * Computes the squared distance between the current Vector3 and another Vector3.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} that Vector3
+	 * @param {Vector3} rhs Vector3
 	 * @returns {number} distance squared
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
 	 * v1.distanceSquared(v2); // 81
 	 */
-	Vector3.prototype.distanceSquared = function (that) {
-		var deltaX = this.x - that.x;
-		var deltaY = this.y - that.y;
-		var deltaZ = this.z - that.z;
+	Vector3.prototype.distanceSquared = function (rhs) {
+		var deltaX = this.x - rhs.x;
+		var deltaY = this.y - rhs.y;
+		var deltaZ = this.z - rhs.z;
 
 		return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
 	};
@@ -511,15 +511,15 @@ define([
 	 * Computes the distance between the current Vector3 and another Vector3.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} that Vector3
+	 * @param {Vector3} rhs Vector3
 	 * @returns {number} distance
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
 	 * v1.distance(v2); // 9
 	 */
-	Vector3.prototype.distance = function (that) {
-		return Math.sqrt(this.distanceSquared(that));
+	Vector3.prototype.distance = function (rhs) {
+		return Math.sqrt(this.distanceSquared(rhs));
 	};
 
 	/**

@@ -44,7 +44,7 @@ define([
 		this.updateSize({ width: width, height: height });
 
 		this.renderable = {
-			meshData : FullscreenUtil.quad,
+			meshData: FullscreenUtil.quad,
 			materials: []
 		};
 
@@ -124,15 +124,15 @@ define([
 		var kernelSize = kernel1.length;
 
 		this.convolutionShader1.defines = {
-			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
+			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
 		};
 
 		kernelSize = kernel2.length;
 
 		this.convolutionShader2.defines = {
-			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
+			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
 		};
 
 		this.convolutionShader1.uniforms.cKernel = kernel1;

@@ -2,13 +2,11 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts'
-],
-
-	function (
-		System,
-		SystemBus,
-		Scripts
-	) {
+], function (
+	System,
+	SystemBus,
+	Scripts
+) {
 	'use strict';
 
 	/**

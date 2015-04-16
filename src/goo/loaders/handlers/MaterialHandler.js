@@ -33,7 +33,7 @@ define([
 	MaterialHandler.prototype.constructor = MaterialHandler;
 	ConfigHandler._registerClass('material', MaterialHandler);
 
-	MaterialHandler.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
+	MaterialHandler.ENGINE_SHADER_PREFIX = 'GOO_ENGINE_SHADERS/';
 
 	/**
 	 * Preparing material config by populating it with defaults.

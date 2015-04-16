@@ -1,11 +1,8 @@
 /*jshint bitwise: false */
-define(
-
-function () {
+define(function () {
 	'use strict';
 
-	function FSMUtil() {
-	}
+	function FSMUtil() {}
 
 	FSMUtil.setParameters = function (settings, externalParameters) {
 		for (var i = 0; i < externalParameters.length; i++) {
@@ -15,7 +12,7 @@ function () {
 			if (typeof settings[key] !== 'undefined') {
 				this[key] = settings[key];
 			} else {
-				this[key] = externalParameter['default'];
+				this[key] = externalParameter.default;
 			}
 		}
 	};

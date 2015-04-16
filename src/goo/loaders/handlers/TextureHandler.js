@@ -194,7 +194,7 @@ function (
 		if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 			return this._loadVideo(texture, config, options);
 		}
-		return PromiseUtil.reject(new Error('Unknown image type: '+ type));
+		return PromiseUtil.reject(new Error('Unknown image type: ' + type));
 	};
 
 	/**

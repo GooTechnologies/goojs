@@ -166,7 +166,7 @@ define([
 		} else {
 			run *= this.modBack;
 		}
-        this.targetVelocity.set(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
+		this.targetVelocity.set(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
 
 	/**
@@ -178,7 +178,7 @@ define([
 	 * @returns {Array}
 	 */
 	GroundBoundMovementScript.prototype.applyTorqueModulation = function (pitch, yaw, roll) {
-        this.targetHeading.set(pitch, yaw * this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
+		this.targetHeading.set(pitch, yaw * this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
 
 	/**

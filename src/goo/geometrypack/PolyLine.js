@@ -1,12 +1,10 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface'
-],
-
-	function (
-		MeshData,
-		Surface
-		) {
+], function (
+	MeshData,
+	Surface
+) {
 	'use strict';
 
 	/**
@@ -59,7 +57,7 @@ define([
 	 */
 	PolyLine.prototype.mul = function (that) {
 		if (!(that instanceof PolyLine)) {
-			return ;
+			return;
 		}
 
 		var thatNVerts = that.verts.length / 3;
@@ -99,14 +97,14 @@ define([
 			p2z = verts[1 * 3 + 2];
 			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI / 2;
 		} else if (index === nVerts-1) {
-			p0x = verts[(nVerts-2) * 3 + 0];
-			p0z = verts[(nVerts-2) * 3 + 2];
-			p1x = verts[(nVerts-1) * 3 + 0];
-			p1z = verts[(nVerts-1) * 3 + 2];
+			p0x = verts[(nVerts - 2) * 3 + 0];
+			p0z = verts[(nVerts - 2) * 3 + 2];
+			p1x = verts[(nVerts - 1) * 3 + 0];
+			p1z = verts[(nVerts - 1) * 3 + 2];
 			return Math.atan2(p1z - p0z, p1x - p0x) - Math.PI / 2;
 		} else {
-			p0x = verts[(index-1) * 3 + 0];
-			p0z = verts[(index-1) * 3 + 2];
+			p0x = verts[(index - 1) * 3 + 0];
+			p0z = verts[(index - 1) * 3 + 2];
 			p1x = verts[(index) * 3 + 0];
 			p1z = verts[(index) * 3 + 2];
 			p2x = verts[(index + 1) * 3 + 0];
@@ -123,7 +121,7 @@ define([
 	PolyLine.prototype.pipe = function (that) {
 		if (!(that instanceof PolyLine)) {
 			console.error('pipe operation can only be applied to PolyLines');
-			return ;
+			return;
 		}
 
 		var thatNVerts = that.verts.length / 3;
@@ -175,7 +173,7 @@ define([
 	PolyLine.prototype.concat = function (that, closed) {
 		if (!(that instanceof PolyLine)) {
 			console.error('concat operation can only be applied to PolyLines');
-			return ;
+			return;
 		}
 
 		return new PolyLine(this.verts.concat(that.verts), closed);
@@ -190,7 +188,7 @@ define([
 	PolyLine.fromCubicBezier = function (verts, nSegments, startFraction) {
 		if (verts.length !== 3 * 4) {
 			console.error('PolyLine.fromCubicBezier takes an array of exactly 12 coordinates');
-			return ;
+			return;
 		}
 		nSegments = nSegments || 16;
 		startFraction = startFraction || 0;
@@ -258,7 +256,7 @@ define([
 
 					p3[0] + 2 / 3 * (p2[0] - p3[0]),
 					p3[1] + 2 / 3 * (p2[1] - p3[1]),
-					p3[2] + 2 / 3 * (p2[2] - p3[2]),
+					p3[2] + 2 / 3 * (p2[2] - p3[2])
 			]);
 		}
 
@@ -277,7 +275,7 @@ define([
 		if (closed) {
 			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
-				return ;
+				return;
 			}
 
 			var nVerts = verts.length / 3;
@@ -298,7 +296,7 @@ define([
 		else {
 			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 1) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
-				return ;
+				return;
 			}
 
 			var nVerts = verts.length / 3;

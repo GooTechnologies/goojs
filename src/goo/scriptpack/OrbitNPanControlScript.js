@@ -52,15 +52,15 @@ define([
 	for (var i = 0; i < params.length; i++) {
 		var param = params[i];
 		switch (param.key) {
-		case 'dragButton':
-			param['default'] = 'Left';
-			break;
-		case 'panButton':
-			param['default'] = 'Right';
-			break;
-		case 'panSpeed':
-			param['default'] = 1;
-			break;
+			case 'dragButton':
+				param.default = 'Left';
+				break;
+			case 'panButton':
+				param.default = 'Right';
+				break;
+			case 'panSpeed':
+				param.default = 1;
+				break;
 		}
 	}
 

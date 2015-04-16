@@ -99,16 +99,16 @@ define([
 
 	/**
 	 * Adds a vector to the current vector
-	 * @param that {Vector2}
+	 * @param rhs {Vector2}
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2);
 	 * var v2 = new Vector2(4, 5);
 	 * v1.add(v2); // v1 == (5, 7)
 	 */
-	Vector2.prototype.add = function (that) {
-		this.x += that.x;
-		this.y += that.y;
+	Vector2.prototype.add = function (rhs) {
+		this.x += rhs.x;
+		this.y += rhs.y;
 
 		return this;
 	};
@@ -131,16 +131,16 @@ define([
 
 	/**
 	 * Adds a vector from the current vector
-	 * @param that {Vector2}
+	 * @param rhs {Vector2}
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(4, 5);
 	 * var v2 = new Vector2(1, 2);
 	 * v1.sub(v2); // v1 == (3, 3)
 	 */
-	Vector2.prototype.sub = function (that) {
-		this.x -= that.x;
-		this.y -= that.y;
+	Vector2.prototype.sub = function (rhs) {
+		this.x -= rhs.x;
+		this.y -= rhs.y;
 
 		return this;
 	};
@@ -174,16 +174,16 @@ define([
 
 	/**
 	 * Multiplies the current vector by another vector
-	 * @param that {Vector2}
+	 * @param rhs {Vector2}
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(4, 5);
 	 * var v2 = new Vector2(1, 2);
 	 * v1.mul(v2); // v1 == (4, 10)
 	 */
-	Vector2.prototype.mul = function (that) {
-		this.x *= that.x;
-		this.y *= that.y;
+	Vector2.prototype.mul = function (rhs) {
+		this.x *= rhs.x;
+		this.y *= rhs.y;
 
 		return this;
 	};
@@ -218,15 +218,15 @@ define([
 
 	/**
 	 * Divides the current Vector2 by another vector
-	 * @param {Vector2} that
+	 * @param {Vector2} rhs
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v = new Vector2(4, 16);
 	 * v.div(2, 4); // v == (2, 16)
 	 */
-	Vector2.prototype.div = function (that) {
-		this.x /= that.x;
-		this.y /= that.y;
+	Vector2.prototype.div = function (rhs) {
+		this.x /= rhs.x;
+		this.y /= rhs.y;
 
 		return this;
 	};
@@ -249,12 +249,12 @@ define([
 
 	/**
 	 * Computes the dot product between the current vector and another vector
-	 * @param {Vector2} that
+	 * @param {Vector2} rhs
 	 * @returns {number}
 	 */
-	Vector2.prototype.dot = function (that) {
-		return this.x * that.x +
-			this.y * that.y;
+	Vector2.prototype.dot = function (rhs) {
+		return this.x * rhs.x +
+			this.y * rhs.y;
 	};
 
 	/**
@@ -270,12 +270,12 @@ define([
 
 	/**
 	 * Returns whether this vector is aproximately equal to a given vector
-	 * @param that
+	 * @param rhs
 	 * @returns {boolean}
 	 */
-	Vector2.prototype.equals = function (that) {
-		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
-			(Math.abs(this.y - that.y) <= MathUtils.EPSILON);
+	Vector2.prototype.equals = function (rhs) {
+		return (Math.abs(this.x - rhs.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - rhs.y) <= MathUtils.EPSILON);
 	};
 
 	/**
@@ -324,15 +324,15 @@ define([
 
 	/**
 	 * Sets the vector's values from another vector's values
-	 * @param {Vector2} that
+	 * @param {Vector2} rhs
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v = new Vector2(); // v == (0, 0)
 	 * v.set(new Vector2(2, 4)); // v == (2, 4)
 	 */
-	Vector2.prototype.set = function (that) {
-		this.x = that.x;
-		this.y = that.y;
+	Vector2.prototype.set = function (rhs) {
+		this.x = rhs.x;
+		this.y = rhs.y;
 
 		return this;
 	};
@@ -409,16 +409,16 @@ define([
 	 * Computes the squared distance between the current Vector2 and another Vector2.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector2} that Vector2
+	 * @param {Vector2} rhs Vector2
 	 * @returns {number} distance squared
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
 	 * var v2 = new Vector2(0, 9);
 	 * v1.distanceSquared(v2); // 81
 	 */
-	Vector2.prototype.distanceSquared = function (that) {
-		var deltaX = this.x - that.x;
-		var deltaY = this.y - that.y;
+	Vector2.prototype.distanceSquared = function (rhs) {
+		var deltaX = this.x - rhs.x;
+		var deltaY = this.y - rhs.y;
 
 		return deltaX * deltaX + deltaY * deltaY;
 	};
@@ -427,15 +427,15 @@ define([
 	 * Computes the distance between the current Vector2 and another Vector2.
 	 * Note: When comparing the relative distances between two points it is usually sufficient
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector2} that Vector2
+	 * @param {Vector2} rhs Vector2
 	 * @returns {number} distance
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
 	 * var v2 = new Vector2(0, 9);
 	 * v1.distance(v2); // 9
 	 */
-	Vector2.prototype.distance = function (that) {
-		return Math.sqrt(this.distanceSquared(that));
+	Vector2.prototype.distance = function (rhs) {
+		return Math.sqrt(this.distanceSquared(rhs));
 	};
 
 	/**

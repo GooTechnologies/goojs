@@ -90,9 +90,9 @@ define([
 				iter = 0;
 
 				target.setDirect(
-					- oldVal.x + (Math.random()-0.5) * this.level * 2,
-					- oldVal.y + (Math.random()-0.5) * this.level * 2,
-					- oldVal.z + (Math.random()-0.5) * this.level * 2
+					-oldVal.x + (Math.random() - 0.5) * this.level * 2,
+					-oldVal.y + (Math.random() - 0.5) * this.level * 2,
+					-oldVal.z + (Math.random() - 0.5) * this.level * 2
 				);
 			}
 

@@ -92,7 +92,7 @@ function (
 		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
 		this._sortContacts = function (contactA, contactB) {
 			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
-		}.bind(this);
+		};
 
 		// Set iterator callback for lastContacts: emits endContact events
 		this._emitEndContactEvents = function (hash) {
@@ -123,6 +123,7 @@ function (
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
+
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 	PhysicsSystem.prototype.constructor = PhysicsSystem;
 
@@ -220,7 +221,6 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
-
 		// TODO: Move this logic to CANNON.js intead?
 
 		// Get overlapping entities
@@ -568,7 +568,6 @@ function (
 
 			var parent = transformComponent.parent;
 			if (parent) {
-
 				// The rigid body is a child, but we have its physics world transform
 				// and need to set the world transform of it.
 				parent.entity.transformComponent.worldTransform.invert(tmpTransform);

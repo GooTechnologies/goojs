@@ -161,7 +161,6 @@ define([
 
 		// Load all textures
 		return RSVP.all(promises).then(function (textures) {
-
 			// Check if skybox is the same
 			if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {
 				return that._skybox;

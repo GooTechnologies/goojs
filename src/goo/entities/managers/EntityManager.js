@@ -1,12 +1,10 @@
 define([
 	'goo/entities/managers/Manager',
 	'goo/entities/EntitySelection'
-],
-
-	function (
-		Manager,
-		EntitySelection
-	) {
+], function (
+	Manager,
+	EntitySelection
+) {
 	'use strict';
 
 	/**

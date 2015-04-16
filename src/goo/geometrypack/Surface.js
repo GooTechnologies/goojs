@@ -1,10 +1,10 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/math/MathUtils'],
-
-	function (
-		MeshData,
-		MathUtils) {
+	'goo/math/MathUtils'
+], function (
+	MeshData,
+	MathUtils
+) {
 	'use strict';
 
 	/**
@@ -170,12 +170,12 @@ define([
 	Surface.createFromHeightMap = function (heightMap, xScale, yScale, zScale) {
 		xScale = xScale || 1;
 		yScale = yScale || 1;
-        zScale = zScale || 1;
+		zScale = zScale || 1;
 
 		var verts = [];
 		for (var i = 0; i < heightMap.length; i++) {
 			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
+				verts.push(i * xScale, heightMap[i][j] * yScale, j * zScale);
 			}
 		}
 		verts.reverse();
@@ -195,11 +195,14 @@ define([
 		var verts = [];
 		for (var i = 0; i < xCount; i++) {
 			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize * 0.5, (j * ySize/yCount) -ySize * 0.5, 0);
+				verts.push(
+					(i * xSize / xCount) - xSize * 0.5,
+					(j * ySize / yCount) - ySize * 0.5,
+					0
+				);
 			}
 		}
-		var surface = new Surface(verts, xCount);
-		return surface;
+		return new Surface(verts, xCount);
 	};
 
 	return Surface;

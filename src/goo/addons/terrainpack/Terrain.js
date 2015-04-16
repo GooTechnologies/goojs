@@ -936,14 +936,14 @@ define([
 
 	var brushShader = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
-			diffuseMap : Shader.DIFFUSE_MAP
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		vshader: [
 		'attribute vec3 vertexPosition;',
@@ -975,16 +975,16 @@ define([
 
 	var brushShader2 = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
 			rgba: [1, 1, 1, 1],
-			diffuseMap : Shader.DIFFUSE_MAP,
-			splatMap : 'SPLAT_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			splatMap: 'SPLAT_MAP'
 		},
 		vshader: [
 		'attribute vec3 vertexPosition;',
@@ -1024,16 +1024,16 @@ define([
 
 	var brushShader3 = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
 			size: 1/512,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			heightMap : 'HEIGHT_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
 		},
 		vshader: [
 		'attribute vec3 vertexPosition;',
@@ -1078,16 +1078,16 @@ define([
 
 	var brushShader4 = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
 			height: 0,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			heightMap : 'HEIGHT_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
 		},
 		vshader: [
 		'attribute vec3 vertexPosition;',
@@ -1127,13 +1127,13 @@ define([
 
 	var extractShader = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.DIFFUSE_MAP
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		vshader: [
 		'attribute vec3 vertexPosition;',
@@ -1195,17 +1195,17 @@ define([
 
 	var terrainPickingShader = {
 		attributes: {
-			vertexPosition : MeshData.POSITION
+			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraFar : Shader.FAR_PLANE,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraFar: Shader.FAR_PLANE,
 			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
 			resolution: [255, 1, 1, 1],
-			id : function (shaderInfo) {
+			id: function (shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
 		},
@@ -1334,15 +1334,15 @@ define([
 
 	var normalmapShader = {
 		attributes: {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			heightMap : Shader.DIFFUSE_MAP,
-			// normalMap : Shader.NORMAL_MAP,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			heightMap: Shader.DIFFUSE_MAP,
+			// normalMap: Shader.NORMAL_MAP,
 			resolution: [512, 512],
 			height	: 0.05
 		},
