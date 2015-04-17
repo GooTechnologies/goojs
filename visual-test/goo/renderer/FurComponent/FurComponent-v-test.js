@@ -44,7 +44,7 @@ function(
 
 	var furSettings = {
 		layerCount: 20,
-		perVertNoisePower: 1.0,
+		perVertNoisePower: 22.0,
 	};
 
 
@@ -94,8 +94,8 @@ function(
 				var noise = Noise.fractal1d(t, scale, octaves, persistance, lacunarity, ValueNoise);
 				var radius = 19;
 				furUniforms.vertDisplacement = furSettings.perVertNoisePower * noise;
-				furUniforms.vertDistancePos[0] = radius * Math.sin(t);
-				furUniforms.vertDistancePos[1] = radius * Math.cos(t);
+				furUniforms.vertDistancePos[0] = radius * Math.sin(t * 0.5);
+				furUniforms.vertDistancePos[1] = radius * Math.cos(t * 0.5);
 			}
 		}
 		var sc = new ScriptComponent([updateFurScript]);
@@ -120,6 +120,9 @@ function(
 		// TODO: Add filter , to only render entities with FurComponents in the FurPass.
 		var furPass = new FurPass(renderList, furSettings.layerCount);
 		furPass.clear = false;
+		furUniforms = furPass.furUniforms;
+		furUniforms.vertDisplacementRadius = 17;
+		furUniforms.specularBlend = 0.25;
 
 		var furFolder = gui.addFolder("Fur Uniforms");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 15);
@@ -130,11 +133,10 @@ function(
 		furFolder.add(furPass.furUniforms, 'specularPower', 0, 200);
 		furFolder.add(furPass.furUniforms, 'specularBlend', 0, 1);
 		furFolder.add(furPass.furUniforms, 'vertDisplacementRadius', 0, 100);
-		furFolder.add(furSettings, 'perVertNoisePower', 0, 20);
+		furFolder.add(furSettings, 'perVertNoisePower', 0, 100);
 		furFolder.open();
 
-		window.furUniforms = furPass.furUniforms;
-		furUniforms = furPass.furUniforms;
+
 
 		var controller = gui.add(furSettings, 'layerCount', 1, 100).step(1);
 		controller.onFinishChange(function(value) {

@@ -246,7 +246,7 @@ function (
 
 			// Displacement 
 			'vec3 displacementDirection = p_0 - vertDistancePos;',
-			'float vertDisplaceAmount = clamp(vertDisplacementRadius - length(displacementDirection), 0.0, 1.0);',
+			'float vertDisplaceAmount = smoothstep(0.0, 1.0, vertDisplacementRadius - length(displacementDirection));',
 			'vec3 vDisplacement = vertDisplaceAmount * vertDisplacement * normalize(displacementDirection);',
 			'vec3 p = displacement + vDisplacement + p_0;',
 
