@@ -26,7 +26,7 @@ function (
 	 * @class A pass that renders provided renderlist to the rendertarget or screen
 	 * Original paper : http://web.media.mit.edu/~bandy/fur/ by Paulo Silva, Yosuke Bando, Bing-Yu Chen and Tomoyuki Nishita
 	 */
-	function FurPass(renderList, layerCount) {
+	function FurPass(renderList, layerCount, diffuseTexture) {
 		this.renderList = renderList;
 
 		this.renderToScreen = true;
@@ -43,12 +43,55 @@ function (
 		// this.furMaterial.depthState.write = false;
 		this.furMaterial.cullState.enabled = false;
 		this.furUniforms = this.furMaterial.shader.uniforms;
+
+		if (diffuseTexture === undefined) {
+			this.generateDiffuseTexture();
+		}
 	}
 
 	FurPass.OPACITY_MAP = 'OPACITY_MAP'
 
 	FurPass.prototype.regenerateLayers = function(layerCount) {
 		this.opacityTextures = this.generateOpacityTextures(layerCount);		
+	}
+
+	FurPass.prototype.generateDiffuseTexture = function(width, height) {
+		if (width === undefined || height === undefined) {
+			width = height = 256 * 1;
+		}
+
+		var textureSettings = {
+			format: "RGB"
+		};
+
+		var channels = 3;
+		var dataLength = width * height * channels;
+
+		// Create an array to hold the image data representaiton.
+		var noiseData = new Uint8Array(dataLength);
+
+		var i = 0;
+		var scale = 10;
+		var octaves = 2;
+		var persistance = 0.5; // Amplitude persistance between octaves.
+		var lacunarity = 2; // Frequency scale between octaves.
+		for (var x=0; x < width; x++) {
+			for (var y=0; y < height; y++) {
+				var n1 = Noise.fractal2d(x, y, scale, octaves, persistance, lacunarity, ValueNoise)
+				var n2 = Noise.fractal2d(x, y, scale * 2, octaves, persistance, lacunarity, ValueNoise)
+				var n3 = Noise.fractal2d(x, y, scale * 0.1, octaves, persistance, lacunarity, ValueNoise)
+				noiseData[i] = Math.round(n1 * 255);
+				i++;
+				noiseData[i] = Math.round(0.1 * n2 * 255);
+				i++;
+				noiseData[i] = Math.round(0.6 * n3 * 255);
+				i++;
+			}
+		}
+
+		var texture = new Texture(noiseData, textureSettings, width, height);
+		this.furMaterial.setTexture('DIFFUSE_MAP', texture);
+
 	}
 
 	/**
@@ -279,9 +322,9 @@ function (
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
 			http://web.media.mit.edu/~bandy/fur/CGI10fur.pdf
 			*/
-			//'vec4 texCol = texture2D(colorTexture, texCoord0);',
-			//'vec3 diffuse = texCol.rgb;',
-			'vec3 diffuse = vec3(0, 0.7, 0);',
+			'vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'vec3 diffuse = texCol.rgb;',
+			//'vec3 diffuse = vec3(0, 0.7, 0);',
 
 			"vec3 specularColor = vec3(1, 1, 1);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
