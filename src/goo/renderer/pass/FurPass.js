@@ -311,8 +311,8 @@ function (
 
 			'void main(void)',
 			'{',
-			'	vec4 opacity = texture2D(opacityTexture, furTexCoord);',
-			'	if (opacity.a <= 0.0) discard;',
+			'vec4 opacity = texture2D(opacityTexture, furTexCoord);',
+			'if (opacity.a <= 0.0) discard;',
 			/*
 			Kajiya and Kay , 1989 , Illumination model
 			https://www.cs.drexel.edu/~david/Classes/CS586/Papers/p271-kajiya.pdf
@@ -324,10 +324,8 @@ function (
 			*/
 			'vec4 texCol = texture2D(colorTexture, texCoord0);',
 			'vec3 diffuse = texCol.rgb;',
-			//'vec3 diffuse = vec3(0, 0.7, 0);',
 
 			"vec3 specularColor = vec3(1, 1, 1);",
-			"vec3 materialAmbient = vec3(0.1,0,0);",
 
 			'vec3 tangent = normalize(T);',
 			'vec3 lightDir = normalize(vec3(1, 1, 0));',
