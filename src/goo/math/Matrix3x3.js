@@ -20,7 +20,7 @@ define([
 	 *
 	 * // Passing in a number Array
 	 * var m2 = new Matrix3x3([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-	 *		
+	 *
 	 * // Passing in numbers
 	 * var m3 = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	 *
@@ -66,7 +66,7 @@ define([
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 * var m2 = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
 	 * var r1 = Matrix3x3.add(m1, m2); // r1 == (1, 1, 0, 1, 1, 0, 1, 0, 1)
-	 * 
+	 *
 	 * // Adds a number to a Matrix3x3, using the original Matrix3x3 to store the result
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 * m1.add(1); // m1 == (2, 1, 1, 1, 2, 1, 1, 1, 2)
@@ -131,7 +131,7 @@ define([
 	 * var left = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 * var right = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
 	 * var result = Matrix3x3.sub(left, right); // result == (1, -1, 0, -1, 1, 0, -1, 0, 1)
-	 * 
+	 *
 	 * // Subtracts a number from a Matrix3x3, using the original Matrix3x3 to store the result
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
@@ -530,7 +530,7 @@ define([
 	 * @example
 	 * var forward = new Vector3(0, 0, -1);
 	 * entity.applyPost(forward); // now 'forward' is in local space
-	 * 
+	 *
 	 */
 	Matrix3x3.prototype.applyPost = function (rhs) {
 		var target = rhs.data;
@@ -595,33 +595,33 @@ define([
 	};
 
 	/**
-	 * Sets the Matrix3x3 from rotational angles in radians.
-	 * @param {number} pitch Pitch (X axis) angle in radians.
-	 * @param {number} yaw Yaw (Y axis) angle in radians.
-	 * @param {number} roll Roll (Z axis) angle in radians.
+	 * Sets the Matrix3x3 from rotational angles in radians (Euler order YZX).
+	 * @param {number} x X axis angle (pitch) in radians.
+	 * @param {number} y Y axis angle (yaw) in radians.
+	 * @param {number} z Z axis angle (roll) in radians.
 	 * @returns {Matrix3x3} Self for chaining.
 	 * @example
 	 * // sets the rotation to Math.PI (180 degrees) on the Y axis
 	 * entity.transformComponent.transform.rotation.fromAngles(0, Math.PI, 0);
 	 */
-	Matrix3x3.prototype.fromAngles = function (pitch, yaw, roll) {
-		var cy = Math.cos(pitch);
-		var sy = Math.sin(pitch);
-		var ch = Math.cos(yaw);
-		var sh = Math.sin(yaw);
-		var cp = Math.cos(roll);
-		var sp = Math.sin(roll);
+	Matrix3x3.prototype.fromAngles = function (x, y, z) {
+		var cosX = Math.cos(x);
+		var sinX = Math.sin(x);
+		var cosY = Math.cos(y);
+		var sinY = Math.sin(y);
+		var cosZ = Math.cos(z);
+		var sinZ = Math.sin(z);
 
 		var d = this.data;
-		d[0] = ch * cp;
-		d[3] = sh * sy - ch * sp * cy;
-		d[6] = ch * sp * sy + sh * cy;
-		d[1] = sp;
-		d[4] = cp * cy;
-		d[7] = -cp * sy;
-		d[2] = -sh * cp;
-		d[5] = sh * sp * cy + ch * sy;
-		d[8] = -sh * sp * sy + ch * cy;
+		d[0] = cosY * cosZ;
+		d[3] = sinY * sinX - cosY * sinZ * cosX;
+		d[6] = cosY * sinZ * sinX + sinY * cosX;
+		d[1] = sinZ;
+		d[4] = cosZ * cosX;
+		d[7] = -cosZ * sinX;
+		d[2] = -sinY * cosZ;
+		d[5] = sinY * sinZ * cosX + cosY * sinX;
+		d[8] = -sinY * sinZ * sinX + cosY * cosX;
 
 		return this;
 	};
@@ -750,7 +750,7 @@ define([
 	};
 
 	/**
-	 * Converts the current Matrix3x3 to Euler rotation angles in radians: (X axis, Y axis, Z axis)
+	 * Converts the current Matrix3x3 to Euler rotation angles in radians (Euler order YZX).
 	 * @param {Vector3} Vector3 to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
 	 * @example
