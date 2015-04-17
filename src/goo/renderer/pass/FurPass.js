@@ -202,10 +202,13 @@ function (
 			curlRadius: 0.2,
 			furRepeat: 5,
 			displacement: [0, 0, 0],
+			vertDistancePos: [0, 0, 0],
+			vertDisplacement: 1.0,
+			vertDisplacementRadius: 10.0,
 			// Color settings
-			specularBlend: 1.0,
+			specularBlend: 0.5,
 			specularPower: 25,
-			shadow: 1.2,
+			shadow: 1.0,
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -223,6 +226,10 @@ function (
 			'uniform float curlRadius;',
 			'uniform float furRepeat;',
 			'uniform vec3 displacement;',
+			'uniform vec3 vertDistancePos;',
+			'uniform float vertDisplacement;',
+			'uniform float vertDisplacementRadius;',
+
 
 			'varying vec2 texCoord0;',
 			'varying vec2 furTexCoord;',
@@ -232,13 +239,16 @@ function (
 			'void main(void) {',
 
 			'vec3 pos;',
-			
 			'vec3 normal = normalize(normalMatrix * vertexNormal);',
 			'vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'vec3 p_0 = p_root + (normal * hairLength);',
 			'float L_0 = length(p_0 - p_root);',
-	
-			'vec3 p = displacement + p_0;',
+
+			// Displacement 
+			'vec3 displacementDirection = p_0 - vertDistancePos;',
+			'float vertDisplaceAmount = clamp(vertDisplacementRadius - length(displacementDirection), 0.0, 1.0);',
+			'vec3 vDisplacement = vertDisplaceAmount * vertDisplacement * normalize(displacementDirection);',
+			'vec3 p = displacement + vDisplacement + p_0;',
 
 			// Curliness Control
 			// Displace the pos in a circle in the surface plane to create curls!

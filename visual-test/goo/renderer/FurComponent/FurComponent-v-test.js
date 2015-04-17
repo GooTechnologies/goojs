@@ -12,6 +12,10 @@ require([
 	'goo/shapes/Torus',
 	'goo/shapes/Box',
 	'goo/util/TangentGenerator',
+
+	'goo/entities/components/ScriptComponent',
+	'goo/noise/Noise',
+	'goo/noise/ValueNoise'
 ],
 function(
 	V,
@@ -26,13 +30,26 @@ function(
 	Quad,
 	Torus,
 	Box,
-	TangentGenerator
+	TangentGenerator,
+
+	ScriptComponent,
+	Noise,
+	ValueNoise
 	) {
 	"use strict";
 
 	var gui;
 
 	var goo;
+
+	var furSettings = {
+		layerCount: 20,
+		perVertNoisePower: 1.0,
+	};
+
+
+
+	var furUniforms;
 
 	function init() {
 		V.describe('Its getting hairy!');
@@ -47,7 +64,7 @@ function(
 
 		//var meshData = new Sphere(32, 32);
 		//var meshData = new Quad();
-		var meshData = new Torus();
+		var meshData = new Torus(32, 32);
 		//var meshData = new Box()
 
 		TangentGenerator.addTangentBuffer(meshData);
@@ -61,18 +78,36 @@ function(
 		entity.addToWorld();
 
 
+		var scriptEntity = goo.world.createEntity();
+		var updateFurScript = {
+			run: function (entity, tpf, ctx, params) {
+				var t = entity._world.time;
+				furUniforms.displacement[2] = Math.sin(t * 0.5 - 10);
+				furUniforms.displacement[1] = Math.sin(t);
+				furUniforms.displacement[0] = Math.cos(t * 0.5);
+				
+
+				var scale = 0.3;
+				var octaves = 3;
+				var persistance = 0.8;
+				var lacunarity = 2.0;
+				var noise = Noise.fractal1d(t, scale, octaves, persistance, lacunarity, ValueNoise);
+				var radius = 19;
+				furUniforms.vertDisplacement = furSettings.perVertNoisePower * noise;
+				furUniforms.vertDistancePos[0] = radius * Math.sin(t);
+				furUniforms.vertDistancePos[1] = radius * Math.cos(t);
+			}
+		}
+		var sc = new ScriptComponent([updateFurScript]);
+		scriptEntity.set(sc);
+		scriptEntity.addToWorld();
+
 		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 		//V.addLights();
 
 		V.process();
 	}
 
-
-	var furSettings = {
-		layerCount: 20
-	};
-
-	var furUniforms;
 
 	function createFurRenderingRoutine() {
 
@@ -94,14 +129,12 @@ function(
 		furFolder.add(furPass.furUniforms, 'shadow', 1, 10);
 		furFolder.add(furPass.furUniforms, 'specularPower', 0, 200);
 		furFolder.add(furPass.furUniforms, 'specularBlend', 0, 1);
+		furFolder.add(furPass.furUniforms, 'vertDisplacementRadius', 0, 100);
+		furFolder.add(furSettings, 'perVertNoisePower', 0, 20);
 		furFolder.open();
 
 		window.furUniforms = furPass.furUniforms;
 		furUniforms = furPass.furUniforms;
-
-		//furPass.furMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
-
-		furPass.furUniforms.displacement = [0, -500, 0];
 
 		var controller = gui.add(furSettings, 'layerCount', 1, 100).step(1);
 		controller.onFinishChange(function(value) {
