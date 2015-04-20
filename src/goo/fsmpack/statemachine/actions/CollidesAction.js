@@ -1,7 +1,9 @@
 define([
+	'goo/entities/EntitySelection',
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/fsmpack/proximity/ProximitySystem'
 ], function (
+	EntitySelection,
 	Action,
 	ProximitySystem
 ) {
@@ -26,10 +28,8 @@ define([
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
-			control: 'dropdown',
 			description: 'Checks for collisions with other objects having this tag',
-			'default': 'red',
-			options: ['red', 'blue', 'green', 'yellow']
+			'default': 'red'
 		}],
 		transitions: [{
 			key: 'collides',
@@ -54,36 +54,41 @@ define([
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 		var proximitySystem = world.getSystem('ProximitySystem');
-		var collection = proximitySystem.getFor(this.tag);
+
+		var entities = new EntitySelection(proximitySystem.getFor(this.tag))
+			.and(world.by.tag(this.tag))
+			.toArray();
 
 		var collides = false;
+
 		entity.traverse(function (entity) {
-			var worldBound;
-			if (entity.meshRendererComponent &&
-				!entity.particleComponent) {
-				worldBound = entity.meshRendererComponent.worldBound;
-				for (var i = 0; i < collection.length; i++) {
-					collection[i].traverse(function (entity) {
-						if (entity.meshRendererComponent &&
-							entity.meshRendererComponent.worldBound &&
-							!entity.particleComponent &&
-							worldBound.intersects(entity.meshRendererComponent.worldBound)) {
-							collides = true;
-							return false;
-						}
-					});
-					if (collides) {
-						return false;
+			// Stop traversing when the entity can't collide with anything.
+			if (!entity.meshRendererComponent || entity.particleComponent) {
+				return false;
+			}
+
+			var worldBound = entity.meshRendererComponent.worldBound;
+
+			for (var i = 0; i < entities.length; i++) {
+				entities[i].traverse(function (entity) {
+					if (!entity.meshRendererComponent || entity.particleComponent) {
+						return true; // Move on to other entities.
 					}
+
+					var otherBound = entity.meshRendererComponent.worldBound;
+					if (otherBound && worldBound.intersects(otherBound)) {
+						collides = true;
+						return false; // Stop traversing.
+					}
+				});
+
+				if (collides) {
+					return false; // Stop traversing.
 				}
 			}
 		});
 
-		if (collides) {
-			fsm.send(this.transitions.collides);
-		} else {
-			fsm.send(this.transitions.notCollides);
-		}
+		fsm.send(collides ? this.transitions.collides : this.transitions.notCollides);
 	};
 
 	return CollidesAction;
