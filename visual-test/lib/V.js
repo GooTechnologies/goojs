@@ -62,7 +62,7 @@ define([
 	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 to a Vector3.
 	 * @param {number[]|Object|Vector3} obj An array of numbers, an {x, y, z} object, or a Vector3.
 	 * @param {Vector3} def The default value.
-	 * @returns {Vector3} The converted Vector3.
+	 * @returns {Vector3} The converted Vector3 or default value.
 	 */
 	V.toVector3 = function (obj, def) {
 		if (Array.isArray(obj)) {
@@ -78,8 +78,8 @@ define([
 
 	/**
 	 * Adds an orbit camera in demo mode.
-	 * @param {Vector3} [spherical=Vector3(20,0,0)] The spherical coordinate of the orbit camera.
-	 * @param {Vector3} [lookAt=Vector3(0,0,0)] The look at position for the orbit camera.
+	 * @param {number[]|Object|Vector3} [spherical=Vector3(20,0,0)] The spherical coordinate of the orbit camera.
+	 * @param {number[]|Object|Vector3} [lookAt=Vector3(0,0,0)] The look at position for the orbit camera.
 	 * @param {string} [dragButton='Any'] The button to use for dragging the camera.
 	 * @returns {Entity} The orbit camera entity.
 	 */
