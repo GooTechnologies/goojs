@@ -212,30 +212,27 @@ define([
 		input[offset + 2] = ((uint24 & 0x00ff0000) >> 16);
 	};
 
-	DdsUtils.ThreeBitMask = 0x7;
+	DdsUtils.ThreeBits = [[0, 0, 0, 0], [0, 0, 0, 0]];
 
 	DdsUtils.flipUInt24 = function (uint24) {
-		var threeBits = [];
-		for (var i = 0; i < 2; i++) {
-			threeBits.push([0, 0, 0, 0]);
-		}
+		var threeBits = DdsUtils.ThreeBits;
 
 		// extract 3 bits each into the array
-		threeBits[0][0] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[0][0] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[0][1] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[0][1] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[0][2] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[0][2] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[0][3] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[0][3] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[1][0] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[1][0] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[1][1] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[1][1] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[1][2] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[1][2] = (uint24 & 0x7);
 		uint24 >>= 3;
-		threeBits[1][3] = (uint24 & DdsUtils.ThreeBitMask);
+		threeBits[1][3] = (uint24 & 0x7);
 
 		// stuff 8x 3bits into 3 bytes
 		var result = 0;
