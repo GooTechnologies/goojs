@@ -53,8 +53,9 @@ require([
 	// create panning cube
 	var meshData = new Box();
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D(resourcePath + 'check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var cubeEntity = world.createEntity(meshData, material).addToWorld();
 

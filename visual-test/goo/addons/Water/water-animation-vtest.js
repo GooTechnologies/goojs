@@ -53,19 +53,20 @@ require([
 	var skybox = null;
 	var cameraEntity;
 
-	function loadSkybox () {
+	function loadSkybox() {
 		var environmentPath = 'resources/skybox/';
+		skybox = createBox(skyboxShader, 10, 10, 10);
 		// left, right, bottom, top, back, front
-		var textureCube = new TextureCreator().loadTextureCube([
+		new TextureCreator().loadTextureCube([
 			environmentPath + '1.jpg',
 			environmentPath + '3.jpg',
 			environmentPath + '5.jpg',
 			environmentPath + '6.jpg',
 			environmentPath + '4.jpg',
 			environmentPath + '2.jpg'
-		]);
-		skybox = createBox(skyboxShader, 10, 10, 10);
-		skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		]).then(function (textureCube) {
+			skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		});
 		skybox.meshRendererComponent.materials[0].cullState.cullFace = 'Front';
 		skybox.meshRendererComponent.materials[0].depthState.enabled = false;
 		skybox.meshRendererComponent.materials[0].renderQueue = 0;
