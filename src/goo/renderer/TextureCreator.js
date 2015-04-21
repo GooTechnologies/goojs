@@ -55,9 +55,9 @@ define([
 	 * @param {object} settings passed to the {Texture} constructor
 	 * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
 	 * @example
-	 * new TextureCreator().loadTexture2D('goo.jpg').then(function(texture){
+	 * new TextureCreator().loadTexture2D('goo.jpg').then(function (texture) {
 	 *     material.setTexture('DIFFUSE_MAP', texture);
-	 * }, function(){
+	 * }, function () {
 	 *     console.error('Error loading image.');
 	 * });
 	 */
@@ -74,45 +74,42 @@ define([
 	/**
 	 * Creates a texture and loads a video into it
 	 * @param {string} videoURL
-	 * @param {boolean} [loop=true]
-	 * @param {object} [config]
 	 * @param {object} [options]
+	 * @param {boolean} [options.loop=true]
+	 * @param {boolean} [options.autoPlay=true]
+	 * @param {boolean} [options.wrapS='EdgeClamp']
+	 * @param {boolean} [options.wrapT='EdgeClamp']
 	 * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
 	 * @example
-	 * new TextureCreator().loadTexture2D('goo.mp4', true).then(function(texture){
+	 * new TextureCreator().loadTexture2D('goo.mp4').then(function (texture) {
 	 *     material.setTexture('DIFFUSE_MAP', texture);
-	 * }, function(){
+	 * }, function () {
 	 *     console.error('Error loading video texture.');
 	 * });
 	 */
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, config, options) {
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, options) {
 		var id = StringUtil.createUniqueId('texture');
-		config = config || {};
-		config.imageRef = videoURL;
-		config.loop = loop === undefined ? true : loop;
-		config.wrapS = 'EdgeClamp';
-		config.wrapT = 'EdgeClamp';
-		config.autoPlay = true;
+		options = options || {};
+		options.imageRef = videoURL;
+		options.loop = options.loop !== undefined ? options.loop : true;
+		options.wrapS = options.wrapS !== undefined ? options.wrapS : 'EdgeClamp';
+		options.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
+		options.autoPlay = options.autoPlay !== undefined ? options.autoPlay : true;
+		options.texture = options.texture !== undefined ? options.texture : { dontwait: true };
 
 		var texture = this.textureHandler._create();
 		this.textureHandler._objects.set(id, texture);
 
-		options = options || {
-			texture: {
-				dontwait: true
-			}
-		};
-
-		return this.textureHandler.update(id, config, options);
+		return this.textureHandler.update(id, options, options);
 	};
 
 	/**
 	 * Creates a video texture streamed from the webcam.
 	 * @returns {RSVP.Promise} A promise that will resolve with the created Texture.
 	 * @example
-	 * new TextureCreator().loadTextureWebCam().then(function(texture){
+	 * new TextureCreator().loadTextureWebCam().then(function (texture) {
 	 *     material.setTexture('DIFFUSE_MAP', texture);
-	 * }, function(){
+	 * }, function () {
 	 *     console.error('Error loading webcam texture.');
 	 * });
 	 */

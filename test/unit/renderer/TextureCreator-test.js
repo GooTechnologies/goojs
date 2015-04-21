@@ -29,10 +29,10 @@ define([
 				var prefix = window.__karma__ ? 'base/test/unit/loaders/res/' : 'loaders/res/';
 				var image = prefix + 'sintel.mp4';
 
-				textureCreator.loadTextureVideo(image, true, { autoPlay: false }, {
-					texture: {
-						dontwait: false
-					}
+				textureCreator.loadTextureVideo(image, {
+					loop: true,
+					autoPlay: false,
+					texture: { dontwait: false }
 				}).then(function (texture) {
 					expect(texture.image).toEqual(jasmine.any(HTMLVideoElement));
 					done();
