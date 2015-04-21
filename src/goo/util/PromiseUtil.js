@@ -117,6 +117,8 @@ define([
 	};
 
 
+	//! AT: this is insane code; the doc is wrong; the function never rejects
+	// there' no mention of special handling of functions - which it does!
 	/**
 	 * Create a promise that resolves or rejects after the specified delay with the given argument.
 	 *
@@ -125,10 +127,10 @@ define([
 	 */
 	PromiseUtil.defer = function (delay, arg) {
 		var p1, p2, promise;
-		promise = new RSVP.Promise();
-		if (arg.apply) {
+		promise = new RSVP.Promise(); //! AT: this is not used in half of the function; why is it created nevertheless?
+		if (arg.apply) { //! AT: vector also has a .apply method; what's wrong with instaceof or typeof?
 			p1 = new RSVP.Promise();
-			p2 = p1.then(function () {
+			p2 = p1.then(function () { //! AT: why the extra wrapping
 				return arg();
 			});
 			setTimeout(function () {
