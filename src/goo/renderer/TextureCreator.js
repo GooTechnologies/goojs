@@ -195,8 +195,7 @@ define([
 					if (width !== image.width || height !== image.height) {
 						texture.generateMipmaps = false;
 						texture.minFilter = 'BilinearNoMipMaps';
-						reject(new Error('Images not all the same size!'));
-
+						reject(new Error('The images passed to loadTextureCube() must be of the same size!'));
 						return;
 					}
 				}

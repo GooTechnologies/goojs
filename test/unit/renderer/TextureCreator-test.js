@@ -7,9 +7,18 @@ define([
 
 	describe('TextureCreator', function () {
 		var textureCreator;
+		var callbacks;
 
 		beforeEach(function () {
 			textureCreator = new TextureCreator();
+			callbacks = {
+				rejectCallback: function () {}
+			};
+			spyOn(callbacks, 'rejectCallback');
+		});
+
+		afterEach(function () {
+			expect(callbacks.rejectCallback).not.toHaveBeenCalled();
 		});
 
 		describe('loadTexture2D', function () {
@@ -20,7 +29,7 @@ define([
 				textureCreator.loadTexture2D(image, null).then(function (texture) {
 					expect(texture.image).toEqual(jasmine.any(Image));
 					done();
-				});
+				}, callbacks.rejectCallback);
 			});
 		});
 
@@ -36,7 +45,7 @@ define([
 				}).then(function (texture) {
 					expect(texture.image).toEqual(jasmine.any(HTMLVideoElement));
 					done();
-				});
+				}, callbacks.rejectCallback);
 			});
 		});
 
@@ -56,7 +65,7 @@ define([
 				textureCreator.loadTextureCube(images, null).then(function (texture) {
 					expect(texture.image.data.length).toEqual(6);
 					done();
-				});
+				}, callbacks.rejectCallback);
 			});
 		});
 	});
