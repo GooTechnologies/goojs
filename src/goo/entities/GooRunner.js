@@ -545,35 +545,44 @@ define([
 		// shift+7 = textured
 		// shift+8 = regular material + wireframe
 		// shift+click = log picked entity
-		var activeKey = 'shiftKey';
-		document.addEventListener('keydown', function (e) {
-			if (e.which === 32 && e[activeKey]) { // Space
-				GameUtils.toggleFullScreen();
-			} else if (e.which === 13 && e[activeKey]) { // Enter
-				GameUtils.togglePointerLock();
-			} else if (e.which === 49 && e[activeKey]) { // 1
-				this.renderSystem.setDebugMaterial();
-			} else if ((e.which === 50 || e.which === 222) && e[activeKey]) { // 2
-				this.renderSystem.setDebugMaterial('normals');
-			} else if (e.which === 51 && e[activeKey]) { // 3
-				this.renderSystem.setDebugMaterial('lit');
-			} else if (e.which === 52 && e[activeKey]) { // 4
-				this.renderSystem.setDebugMaterial('color');
-			} else if (e.which === 53 && e[activeKey]) { // 5
-				this.renderSystem.setDebugMaterial('wireframe');
-			} else if (e.which === 54 && e[activeKey]) { // 6
-				this.renderSystem.setDebugMaterial('flat');
-			} else if ((e.which === 55 || e.which === 191) && e[activeKey]) { // 7
-				this.renderSystem.setDebugMaterial('texture');
-			} else if ((e.which === 56) && e[activeKey]) { // 8
-				this.renderSystem.setDebugMaterial('+wireframe');
+		var ACTIVE_KEY = 'shiftKey';
+
+		var modesByKeyCode = {
+			50: 'normals',
+			222: 'normals',
+			51: 'lit',
+			52: 'color',
+			53: 'wireframe',
+			54: 'flat',
+			55: 'texture',
+			191: 'texture',
+			56: '+wireframe'
+		};
+
+		document.addEventListener('keydown', function (event) {
+			if (!event[ACTIVE_KEY]) { return; }
+
+			switch (event.which) {
+				case 32: // Space
+					GameUtils.toggleFullScreen();
+					break;
+				case 13: // Enter
+					GameUtils.togglePointerLock();
+					break;
+				case 49: // 1
+					this.renderSystem.setDebugMaterial();
+					break;
+				default:
+					if (modesByKeyCode[event.which]) {
+						this.renderSystem.setDebugMaterial(modesByKeyCode[event.which]);
+					}
 			}
 		}.bind(this), false);
 
-		document.addEventListener('mousedown', function (e) {
-			if (e[activeKey]) {
-				var x = e.clientX;
-				var y = e.clientY;
+		document.addEventListener('mousedown', function (event) {
+			if (event[ACTIVE_KEY]) {
+				var x = event.clientX;
+				var y = event.clientY;
 				this.pick(x, y, function (id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
