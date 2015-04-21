@@ -92,6 +92,12 @@ define([
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
 	Ajax.crossOrigin = false;
 
+	var MIME_TYPES = {
+		mp4: 'video/mp4',
+		ogv: 'video/ogg',
+		webm: 'video/webm'
+	};
+
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
 	 *
@@ -111,7 +117,7 @@ define([
 		}
 
 		if (!path) {
-			PromiseUtil.reject('Path was undefined');
+			PromiseUtil.reject('Path was undefined'); //! AT: no return?
 		}
 
 		if (path.indexOf(Ajax.ENGINE_SHADER_PREFIX) === 0) {
@@ -129,18 +135,17 @@ define([
 			}
 		}
 
-		var url = (this._rootPath) ? this._rootPath + path : path;
+		var url = this._rootPath ? this._rootPath + path : path;
+
 		if (typeInGroup(type, 'image')) {
-			return this._cache[path] = this._loadImage(url);
+			this._cache[path] = this._loadImage(url);
+			return this._cache[path];
 		} else if (typeInGroup(type, 'video')) {
-			var mimeTypes = {
-				mp4: 'video/mp4',
-				ogv: 'video/ogg',
-				webm: 'video/webm'
-			};
-			return this._cache[path] = this._loadVideo(url, mimeTypes[type]);
+			this._cache[path] = this._loadVideo(url, MIME_TYPES[type]);
+			return this._cache[path];
 		} else if (typeInGroup(type, 'audio')) {
-			return this._cache[path] = this._loadAudio(url);
+			this._cache[path] = this._loadAudio(url);
+			return this._cache[path];
 		}
 
 		var ajaxProperties = {

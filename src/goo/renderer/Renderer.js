@@ -232,7 +232,15 @@ define([
 	};
 
 	Renderer.prototype.establishContext = function () {
-		if (!!window.WebGLRenderingContext) {
+		if (!window.WebGLRenderingContext) {
+			// WebGL is not supported
+			throw {
+				name: 'GooWebGLError',
+				message: 'WebGL is not supported',
+				supported: false,
+				enabled: false
+			};
+		} else {
 			//! AT: this list may require cleanup
 			var contextNames = ['experimental-webgl', 'webgl', 'moz-webgl', 'webkit-3d'];
 			for (var i = 0; i < contextNames.length; i++) {
@@ -253,14 +261,6 @@ define([
 					enabled: false
 				};
 			}
-		} else {
-			// WebGL is not supported
-			throw {
-				name: 'GooWebGLError',
-				message: 'WebGL is not supported',
-				supported: false,
-				enabled: false
-			};
 		}
 
 		this.context.clearDepth(1);
@@ -612,7 +612,6 @@ define([
 					if (texture instanceof RenderTarget === false &&
 						(texture.image === undefined || texture.checkDataReady() === false)
 					) {
-
 						if (texture.variant === '2D') {
 							texture = TextureCreator.DEFAULT_TEXTURE_2D;
 						} else if (texture.variant === 'CUBE') {
@@ -775,7 +774,7 @@ define([
 		var flatOrWire = null;
 		var originalData = meshData;
 
-		var count = 0;
+		var count;
 		if (this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {

@@ -74,7 +74,6 @@ define([
 	 * @param {SoftwareRenderer} renderer
 	 */
 	function BoundingBoxOcclusionChecker (renderer) {
-
 		this.renderer = renderer;
 
 		this._clipY = renderer.height - 1;
@@ -90,8 +89,8 @@ define([
 	 * @returns {Boolean} occluded or not occluded.
 	 */
 	BoundingBoxOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
-	   return this._doSSAABBOcclusionTest(entity, cameraViewProjectionMatrix);
-	   // return this._doRenderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+		return this._doSSAABBOcclusionTest(entity, cameraViewProjectionMatrix);
+		// return this._doRenderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 	};
 
 	/**
@@ -102,7 +101,6 @@ define([
 	 * @private
 	 */
 	BoundingBoxOcclusionChecker.prototype._doRenderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
-
 		// writes data to the global variable positionArray.
 		this._copyEntityVerticesToPositionArray(entity);
 
@@ -136,7 +134,6 @@ define([
 	 * @private
 	 */
 	BoundingBoxOcclusionChecker.prototype._doSSAABBOcclusionTest = function (entity, cameraViewProjectionMatrix) {
-
 		// writes data to the global variable positionArray.
 		this._copyEntityVerticesToPositionArray(entity);
 
@@ -146,7 +143,6 @@ define([
 		// Projection transform + homogeneous divide. 32 values, due to 8 vertices.
 		var p = 0;
 		while (p < 32) {
-
 			var p1 = p++;
 			var p2 = p++;
 			var p3 = p++;
@@ -389,7 +385,6 @@ define([
 	 * @private
 	 */
 	BoundingBoxOcclusionChecker.prototype._calculateOutCode = function (coordinate) {
-
 		// Regard the coordinate as being inside the clip window initially.
 		var outcode = INSIDE;
 		/*jshint bitwise: false */
@@ -415,7 +410,6 @@ define([
 	 *   @param {Float32Array} minmaxArray  [minX, maxX, minY, maxY, minDepth]
 	 */
 	BoundingBoxOcclusionChecker.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
-
 		// Run the scanline test for each row [maxY, minY] , [minX, maxX]
 		var minX = minmaxArray[0];
 		var maxX = minmaxArray[1];
@@ -448,7 +442,6 @@ define([
 	 * @private
 	 */
 	BoundingBoxOcclusionChecker.prototype._projectionTransformTriangleData = function (entity, cameraViewProjectionMatrix) {
-
 		// first empty the triangleData.
 		triangleData.clear();
 
@@ -461,7 +454,6 @@ define([
 		// Early exit on near plane clip.
 		var p2, p3, p4, wComponent, div;
 		for (var p = 0; p < maxPos; p++) {
-
 			p2 = p + 1;
 			p3 = p + 2;
 			p4 = p + 3;
@@ -484,8 +476,8 @@ define([
 			v1.y *= div;
 
 			// Copy the projected position data to the triangleData object.
-			triangleData.positions[p] =  v1.x;
-			triangleData.positions[p2] =  v1.y;
+			triangleData.positions[p] = v1.x;
+			triangleData.positions[p2] = v1.y;
 			// z-component not used.
 			//triangleData.positions[p3] =  v1.z;
 			// store (1/w)
@@ -500,7 +492,6 @@ define([
 	BoundingBoxOcclusionChecker.prototype._addVisibleTrianglesToTriangleData = function () {
 		var vPos;
 		for (var i = 0; i < triangleIndices.length; i++) {
-
 			indices = [triangleIndices[i], triangleIndices[++i], triangleIndices[++i]];
 
 			vPos = indices[0] * 4;

@@ -8,7 +8,7 @@ define([
 
 	/**
 	 * Handles integration with Ammo.js.
-	 * Depends on the global Ammo object, 
+	 * Depends on the global Ammo object,
 	 * so load ammo.small.js using a script tag before using this system.
 	 * Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld
 	 * See also {@link AmmoComponent}
@@ -25,7 +25,7 @@ define([
 	function AmmoSystem(settings) {
 		System.call(this, 'AmmoSystem', ['AmmoComponent', 'TransformComponent']);
 		this.settings = settings || {};
-		this.fixedTime = 1/(this.settings.stepFrequency || 60);
+		this.fixedTime = 1 / (this.settings.stepFrequency || 60);
 		this.maxSubSteps = this.settings.maxSubSteps || 5;
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );

@@ -76,32 +76,24 @@ define([
 			var entry = timeline[i];
 			trAge += (entry.timeOffset ? entry.timeOffset : 0.0) * lifeSpan;
 			// Color
-			if (nextCEntry === null) {
+			if (nextCEntry === null && entry.color !== undefined) {
 				if (trAge > age) {
-					if (entry.color !== undefined) {
-						nextCAge = trAge;
-						nextCEntry = entry;
-					}
+					nextCAge = trAge;
+					nextCEntry = entry;
 				} else {
-					if (entry.color !== undefined) {
-						prevCAge = trAge;
-						prevCEntry = entry;
-					}
+					prevCAge = trAge;
+					prevCEntry = entry;
 				}
 			}
 
 			// mass
-			if (nextMEntry === null) {
+			if (nextMEntry === null && entry.mass !== undefined) {
 				if (trAge > age) {
-					if (entry.mass !== undefined) {
-						nextMAge = trAge;
-						nextMEntry = entry;
-					}
+					nextMAge = trAge;
+					nextMEntry = entry;
 				} else {
-					if (entry.mass !== undefined) {
-						prevMAge = trAge;
-						prevMEntry = entry;
-					}
+					prevMAge = trAge;
+					prevMEntry = entry;
 				}
 			}
 
@@ -111,39 +103,29 @@ define([
 			}
 
 			// size
-			if (nextSiEntry === null) {
+			if (nextSiEntry === null && entry.size !== undefined) {
 				if (trAge > age) {
-					if (entry.size !== undefined) {
-						nextSiAge = trAge;
-						nextSiEntry = entry;
-					}
+					nextSiAge = trAge;
+					nextSiEntry = entry;
 				} else {
-					if (entry.size !== undefined) {
-						prevSiAge = trAge;
-						prevSiEntry = entry;
-					}
+					prevSiAge = trAge;
+					prevSiEntry = entry;
 				}
 			}
 
 			// spin
-			if (nextSpEntry === null) {
+			if (nextSpEntry === null && entry.spin !== undefined) {
 				if (trAge > age) {
-					if (entry.spin !== undefined) {
-						nextSpAge = trAge;
-						nextSpEntry = entry;
-					}
+					nextSpAge = trAge;
+					nextSpEntry = entry;
 				} else {
-					if (entry.spin !== undefined) {
-						prevSpAge = trAge;
-						prevSpEntry = entry;
-					}
+					prevSpAge = trAge;
+					prevSpEntry = entry;
 				}
 			}
 		}
 
-		//! AT: hope this code is not based on the non-existent block scoping in JS
 		// color
-
 		ratio = (age - prevCAge) / (nextCAge - prevCAge);
 		var start = prevCEntry !== null ? prevCEntry.color : [1, 1, 1, 1];
 		var end = nextCEntry !== null ? nextCEntry.color : start;

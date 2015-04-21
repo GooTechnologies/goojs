@@ -148,7 +148,7 @@ define([
 			try {
 				newScript = newScript();
 				script.id = config.id;
-				safeUp(newScript, script);
+				ScriptHandler.validateParameters(newScript, script);
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
@@ -483,7 +483,7 @@ define([
 
 
 	// The allowed types for the script parameters.
-	var types = [
+	var PARAMETER_TYPES = [
 		'string',
 		'int',
 		'float',
@@ -500,28 +500,31 @@ define([
 	];
 
 	// Specifies which controls can be used with each type.
-	var typesControls = {
-		'string': ['key'],
-		'int': ['spinner', 'slider', 'jointSelector'],
-		'float': ['spinner', 'slider'],
-		'vec2': [],
-		'vec3': ['color'],
-		'vec4': ['color'],
-		'boolean': ['checkbox'],
-		'texture': [],
-		'image': [],
-		'sound': [],
-		'camera': [],
-		'entity': [],
-		'animation': []
-	};
+	var TYPE_CONTROLS = (function () {
+		var typeControls = {
+			'string': ['key'],
+			'int': ['spinner', 'slider', 'jointSelector'],
+			'float': ['spinner', 'slider'],
+			'vec2': [],
+			'vec3': ['color'],
+			'vec4': ['color'],
+			'boolean': ['checkbox'],
+			'texture': [],
+			'image': [],
+			'sound': [],
+			'camera': [],
+			'entity': [],
+			'animation': []
+		};
 
-	// Add the controls that can be used with any type to the mapping of
-	// controls that ca be used for each type.
-	for (var type in typesControls) {
-		Array.prototype.push.apply(typesControls[type], ['dropdown', 'select']);
-	}
+		// Add the controls that can be used with any type to the mapping of
+		// controls that ca be used for each type.
+		for (var type in typeControls) {
+			Array.prototype.push.apply(typeControls[type], ['dropdown', 'select']);
+		}
 
+		return typeControls;
+	})();
 
 	/**
 	 * Load an external script
@@ -562,17 +565,95 @@ define([
 				handled = true;
 				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
 				timeoutHandler = setTimeout(function () {
-					fireError('Loading dependency ' + url + ' failed (time out).');
+					fireError('Loading dependency ' + url + ' failed (time out)');
 				}, DEPENDENCY_LOAD_TIMEOUT);
 			}
 		});
 	}
 
+	var TYPE_VALIDATORS = {
+		string: function (key, value) {
+			if (typeof value !== 'string' || value.length === 0) {
+				return { message: 'Property "' + key + '" must be a non-empty string' };
+			}
+		},
+		number: function (key, value) {
+			if (typeof value !== 'number') {
+				return { message: 'Property "' + key + '" must be a number' };
+			}
+		},
+		boolean: function (key, value) {
+			if (typeof value !== 'boolean') {
+				return { message: 'Property "' + key + '" must be a boolean' };
+			}
+		},
+		array: function (key, value) {
+			if (!(value instanceof Array)) {
+				return { message: 'Property "' + key + '" must be an array' };
+			}
+		}
+	};
+
+	// why does the engine care about these thing si beyond me
+	// there's a lot of very create specific validation done here
+	// `exponential` for instance has NOTHING to do with the engine
+	var PROPERTY_VALIDATORS = [
+		{ name: 'key', validator: TYPE_VALIDATORS.string },
+		{ name: 'name', validator: TYPE_VALIDATORS.string },
+		{ name: 'control', validator: TYPE_VALIDATORS.string },
+		{ name: 'min', validator: TYPE_VALIDATORS.number },
+		{ name: 'max', validator: TYPE_VALIDATORS.number },
+		{ name: 'scale', validator: TYPE_VALIDATORS.number },
+		{ name: 'decimals', validator: TYPE_VALIDATORS.number },
+		{ name: 'precision', validator: TYPE_VALIDATORS.number },
+		{ name: 'exponential', validator: TYPE_VALIDATORS.boolean }
+	];
+
 	/**
-	 * Validate external parameters
-	 * @private
+	 * Validates every property of a parameter defined by a user script.
+	 * Exposed as a static method only for testing purposes.
+	 * @hidden
+	 * @param parameter
+	 * @returns {{message: string}|undefined} May return an error
 	 */
-	function safeUp(script, outScript) {
+	ScriptHandler.validateParameter = function (parameter) {
+		// treat key separately; this needs to always be defined
+		if (typeof parameter.key !== 'string' || parameter.key.length === 0) {
+			return { message: 'Property "key" must be a non-empty string' };
+		}
+
+		// check for types
+		for (var i = 0; i < PROPERTY_VALIDATORS.length; i++) {
+			var entry = PROPERTY_VALIDATORS[i];
+
+			if (typeof parameter[entry.name] !== 'undefined') {
+				var maybeError = entry.validator(entry.name, parameter[entry.name]);
+				if (maybeError) {
+					return maybeError;
+				}
+			}
+		}
+
+		// check for type in a list of allowed types; must be defined
+		if (PARAMETER_TYPES.indexOf(parameter.type) === -1) {
+			return { message: 'Property "type" must be one of: ' + PARAMETER_TYPES.join(', ') };
+		}
+
+		// check for controls in a list of controls; this depends on type
+		var allowedControls = TYPE_CONTROLS[parameter.type];
+		if (parameter.control !== undefined && allowedControls.indexOf(parameter.control) === -1) {
+			return { message: 'Property "control" must be one of: ' + allowedControls.join(', ') };
+		}
+	};
+
+	/**
+	 * Validates every parameter defined in the `externalParameters` collection by a user script.
+	 * Exposed as a static method only for testing purposes.
+	 * @hidden
+	 * @param script
+	 * @param outScript
+	 */
+	ScriptHandler.validateParameters = function (script, outScript) {
 		var errors = script.errors || [];
 		if (typeof script.externals !== 'object') {
 			outScript.externals = {};
@@ -580,7 +661,7 @@ define([
 		}
 		var externals = script.externals;
 		if (externals.parameters && !(externals.parameters instanceof Array)) {
-			errors.push('externals.parameters needs to be an array');
+			errors.push('externals.parameters must be an array');
 		}
 		if (errors.length) {
 			outScript.errors = errors;
@@ -591,81 +672,24 @@ define([
 		}
 		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
-			var param = externals.parameters[i];
+			var parameter = externals.parameters[i];
 
-			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push({ message: 'Parameter "key" needs to be a non-empty string.' });
-				continue;
-			}
-
-			if (param.name !== undefined && (typeof param.name !== 'string' || param.name.length === 0)) {
-				errors.push({ message: 'Parameter "name" needs to be a non-empty string.' });
-				continue;
-			}
-
-			if (types.indexOf(param.type) === -1) {
-				errors.push({ message: 'Parameter "type" needs to be one of: ' + types.join(', ') + '.' });
-				continue;
-			}
-
-			if (param.control !== undefined && (typeof param.control !== 'string' || param.control.length === 0)) {
-				errors.push({ message: 'Parameter "control" needs to be a non-empty string.' });
-				continue;
-			}
-
-			var allowedControls = typesControls[param.type];
-			if (param.control !== undefined && allowedControls.indexOf(param.control) === -1) {
-				errors.push({ message: 'Parameter "control" needs to be one of: ' + allowedControls.join(', ') + '.' });
-				continue;
-			}
-
-			if (param.options !== undefined && !(param.options instanceof Array)) {
-				errors.push({ message: 'Parameter "key" needs to be array' });
-				continue;
-			}
-
-			if (param.min !== undefined && typeof param.min !== 'number') {
-				errors.push({ message: 'Parameter "min" needs to be a number.' });
-				continue;
-			}
-
-			if (param.max !== undefined && typeof param.max !== 'number') {
-				errors.push({ message: 'Parameter "max" needs to be a number.' });
-				continue;
-			}
-
-			if (param.scale !== undefined && typeof param.scale !== 'number') {
-				errors.push({ message: 'Parameter "scale" needs to be a number.' });
-				continue;
-			}
-
-			if (param.decimals !== undefined && typeof param.decimals !== 'number') {
-				errors.push({ message: 'Parameter "decimals" needs to be a number.' });
-				continue;
-			}
-
-			if (param.precision !== undefined && typeof param.precision !== 'number') {
-				errors.push({ message: 'Parameter "precision" needs to be a number.' });
-				continue;
-			}
-
-			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
-				errors.push({ message: 'Parameter "exponential" needs to be a boolean.' });
-				continue;
+			var maybeError = ScriptHandler.validateParameter(parameter);
+			if (maybeError) {
+				errors.push(maybeError);
 			}
 
 			// create cares about this, in order to build the control panel for the script
-			if (param.default === null || param.default === undefined) {
-				param.default = ScriptUtils.defaultsByType[param.type];
+			if (parameter.default === null || parameter.default === undefined) {
+				parameter.default = ScriptUtils.defaultsByType[parameter.type];
 			}
 
-			outScript.externals.parameters.push(param);
+			outScript.externals.parameters.push(parameter);
 		}
 		if (errors.length) {
 			outScript.errors = errors;
 		}
-	}
-
+	};
 
 	/**
 	 * Flag a script with an error. The script will be disabled.
@@ -702,9 +726,7 @@ define([
 		}
 	}
 
-
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
-
 
 	return ScriptHandler;
 });

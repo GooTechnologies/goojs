@@ -50,7 +50,6 @@ define([
 	 * @returns {Boolean} occluded or not occluded
 	 */
 	BoundingSphereOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
-
 		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		combinedMatrix.mul2(cameraViewMatrix, entityWorldTransformMatrix);
 
@@ -317,14 +316,11 @@ define([
 		// Vertical clip.
 		var yH = 1;
 		if (rightCoordinate.y >= this._clipY) {
-
 			// The entire upper part of the circle is above the screen if this is true.
 			// Set y to clipY , the next step shall be the middle of the circle.
 			topRows = 0;
 			y = this._clipY;
-
 		} else {
-
 			// If the top (start) coordinate is above the screen, step down to the right y coordinate (this._clipY),
 			// remove the number of rows to interpolate on, update the interpolation value t.
 			var topDiff = y - this._clipY;
@@ -336,7 +332,7 @@ define([
 
 			// Remove one row for each row that the right y-coordinate is below or equals to -2.
 			// This because lines are checked up until rightcoordinate - 1.
-			var rightUnder = - (rightCoordinate.y + 1);
+			var rightUnder = -(rightCoordinate.y + 1);
 			if (rightUnder > 0) {
 				topRows -= rightUnder;
 			}
@@ -346,7 +342,6 @@ define([
 		// Removes the last iteration.
 		topRows -= 1;
 		for (var i = 0; i < topRows; i++) {
-
 			var b = radius - ratio * yH;
 			var x = Math.sqrt(r2 - b * b);
 			var rightX = Math.ceil(topCoordinate.x + x);
@@ -364,7 +359,6 @@ define([
 			var sampleCoord = y * this.width + leftX;
 
 			for (var xindex = leftX; xindex <= rightX; xindex++) {
-
 				this.renderer._colorData.set(color, sampleCoord * 4);
 				if (this.renderer._depthData[sampleCoord] < nearestDepth) {
 					// Early exit if the sample is visible.
@@ -395,7 +389,6 @@ define([
 			}
 			var midCoord = y * this.width + leftX;
 			for (var i = leftX; i <= rightX; i++) {
-
 				this.renderer._colorData.set(color, midCoord * 4);
 
 				if (this.renderer._depthData[midCoord] < nearestDepth) {
@@ -415,7 +408,7 @@ define([
 			yH -= topDiff;
 		}
 		// Remove one row for each row that the right y-coordinate is below or equals to -2.
-		var botDiff = - (bottomCoordinate.y + 1);
+		var botDiff = -(bottomCoordinate.y + 1);
 		if (botDiff > 0) {
 			botRows -= botDiff;
 		}
@@ -468,7 +461,6 @@ define([
 	 */
 	BoundingSphereOcclusionChecker.prototype._isOccluded = function (coordinate, color, nearestDepth) {
 		if (this._isCoordinateInsideScreen(coordinate)) {
-
 			var coordIndex = coordinate.y * this.renderer.width + coordinate.x;
 
 			// Add color to the color daata (DEBUGGING PURPOSE)

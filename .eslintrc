@@ -21,6 +21,7 @@
     "no-throw-literal": true,
     "indent": [2, "tab", { "indentSwitchCase": true }],
     "consistent-this": [2, "that"],
+    "consistent-return": false,
     "no-lonely-if": true,
     "operator-assignment": [2, "always"],
     "padded-blocks": [2, "never"],

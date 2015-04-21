@@ -1,7 +1,9 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ], function (
-	PromiseUtil
+	PromiseUtil,
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -162,6 +164,7 @@ define([
 	};
 
 	/**
+	 *
 	 * Convert SVG XML content to an HTMLImageElement.
 	 * @param  {string} data
 	 * @returns {RSVP.Promise} Promise that resolves with the Image.
