@@ -22,7 +22,7 @@ define([
 		key: 'Collides',
 		name: 'Collision',
 		type: 'collision',
-		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag objects using the \'Tag\' action.',
+		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag entities via the entity panel or using the \'Tag\' action.',
 		canTransition: true,
 		parameters: [{
 			name: 'Tag',

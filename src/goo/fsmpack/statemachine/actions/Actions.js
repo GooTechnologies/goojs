@@ -80,6 +80,14 @@ define([
 
 	var Actions = {};
 
+	var IGNORED_ACTIONS = [
+		'Eval',
+		'HTMLPick',
+		'Remove',
+		'Collides',
+		'Tag'
+	];
+
 	Actions.register = function (name, actionClass) {
 		_actions[name] = actionClass;
 	};
@@ -93,10 +101,9 @@ define([
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (key === 'Eval' || key === 'HTMLPick' || key === 'Remove') {
-				continue;
+			if (IGNORED_ACTIONS.indexOf(key) == -1) {
+				actions[key] = _actions[key];
 			}
-			actions[key] = _actions[key];
 		}
 		return actions;
 	};
