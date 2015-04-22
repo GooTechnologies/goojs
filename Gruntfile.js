@@ -153,7 +153,9 @@ module.exports = function (grunt) {
 			options: {
 				configFile: '.eslintrc'
 			},
-			target: ['Gruntfile.js', 'src/**/*.js']
+			'src': ['Gruntfile.js', 'src/**/*.js'],
+			'unit-test': ['test/unit/*/**/*.js'],
+			'visual-test': ['visual-test/goo/goofy/**/*.js']
 		}
 	});
 
