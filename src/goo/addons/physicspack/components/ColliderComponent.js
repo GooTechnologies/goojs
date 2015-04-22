@@ -71,6 +71,7 @@ function (
 		});
 		this.system.cannonWorld.addBody(body);
 		this.cannonBody = body;
+		body.aabbNeedsUpdate = true;
 
 		// Register it
 		var entity = this.entity;
