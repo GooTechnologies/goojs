@@ -66,12 +66,10 @@ function (
 		cannonShape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: !this.isTrigger,
-			shape: cannonShape
+			collisionResponse: !this.isTrigger
 		});
 		this.system.cannonWorld.addBody(body);
 		this.cannonBody = body;
-		body.aabbNeedsUpdate = true;
 
 		// Register it
 		var entity = this.entity;
@@ -89,13 +87,15 @@ function (
 		} else if (collider instanceof BoxCollider) {
 			cannonShape.halfExtents.copy(collider.halfExtents);
 			cannonShape.updateConvexPolyhedronRepresentation();
-			cannonShape.updateBoundingSphereRadius();
 		} else if (collider instanceof MeshCollider) {
 			var scale = new CANNON.Vec3();
 			scale.copy(collider.scale);
 			cannonShape.setScale(scale);
 		}
 		cannonShape.updateBoundingSphereRadius();
+		body.computeAABB();
+		body.addShape(cannonShape);
+		body.aabbNeedsUpdate = true;
 	};
 
 	ColliderComponent.prototype.destroy = function () {
