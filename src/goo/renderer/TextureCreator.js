@@ -52,7 +52,7 @@ define([
 	/**
 	 * Creates a texture and loads an image into it.
 	 * @param {string} imageUrl
-	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {Object} settings passed to the {Texture} constructor
 	 * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
 	 * @example
 	 * new TextureCreator().loadTexture2D('goo.jpg').then(function (texture) {
@@ -74,7 +74,7 @@ define([
 	/**
 	 * Creates a texture and loads a video into it
 	 * @param {string} videoURL
-	 * @param {object} [options]
+	 * @param {Object} [options]
 	 * @param {boolean} [options.loop=true]
 	 * @param {boolean} [options.autoPlay=true]
 	 * @param {boolean} [options.wrapS='EdgeClamp']
@@ -131,7 +131,7 @@ define([
 					video.height = video.videoHeight;
 
 					// set minification filter based on pow2
-					if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+					if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
 						texture.generateMipmaps = false;
 						texture.minFilter = 'BilinearNoMipMaps';
 					}
@@ -157,9 +157,7 @@ define([
 				}, function (stream) {
 					video.src = window.URL.createObjectURL(stream);
 					resolve(texture);
-				}, function (err) {
-					reject(err);
-				});
+				}, reject);
 			} else {
 				reject(new Error('No support for WebCam getUserMedia found!'));
 			}
