@@ -50,31 +50,6 @@ define([
 		return promise;
 	};
 
-
-	var createDummyPromiseWarn = false;
-	/**
-	 * Create a promise that resolves or rejects immediately with the given argument.
-	 * @deprecated Use PromiseUtil.resolve/reject instead.
-	 * @param {any} arg
-	 * @param {any} error
-	 * @returns {RSVP.Promise}
-	 */
-	PromiseUtil.createDummyPromise = function (arg, error) {
-		if (!createDummyPromiseWarn) {
-			createDummyPromiseWarn = true;
-			console.warn('PromiseUtil.createDummyPromise is deprecated; please consider using PromiseUtil.resolve/reject instead');
-		}
-
-		var promise = new RSVP.Promise();
-		if (error) {
-			promise.reject(error);
-		} else {
-			promise.resolve(arg);
-		}
-		return promise;
-	};
-
-
 	/**
 	 * Returns a promise that resolves when all given promises are resolved or rejected.
 	 * Like RSVP.all(), except that instead of rejecting, this promise always resolves.
