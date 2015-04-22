@@ -109,39 +109,23 @@ define([
 					});
 				})(i);
 			}
-		}
-		else {
+		} else {
 			promise.resolve(results);
 		}
 		return promise;
 	};
 
-
-	//! AT: this is insane code; the doc is wrong; the function never rejects
-	// there' no mention of special handling of functions - which it does!
 	/**
-	 * Create a promise that resolves or rejects after the specified delay with the given argument.
-	 *
-	 * @param {Number} delay in ms
-	 * @returns {RSVP.Promise}
+	 * Creates a promise that will be resolved within the specified amount of time with a given value
+	 * @param {number} time In milliseconds
+	 * @param {*} value Value to solve the promise with
+	 * @returns {Promise}
 	 */
-	PromiseUtil.defer = function (delay, arg) {
-		var p1, p2, promise;
-		promise = new RSVP.Promise(); //! AT: this is not used in half of the function; why is it created nevertheless?
-		if (arg.apply) { //! AT: vector also has a .apply method; what's wrong with instaceof or typeof?
-			p1 = new RSVP.Promise();
-			p2 = p1.then(function () { //! AT: why the extra wrapping
-				return arg();
-			});
-			setTimeout(function () {
-				p1.resolve();
-			}, delay);
-			return p2;
-		} else {
-			setTimeout(function () {
-				promise.resolve(arg);
-			}, delay);
-		}
+	PromiseUtil.delay = function (time, value) {
+		var promise = new RSVP.Promise();
+		setTimeout(function () {
+			promise.resolve(value);
+		}, time);
 		return promise;
 	};
 
