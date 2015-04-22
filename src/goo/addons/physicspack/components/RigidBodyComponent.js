@@ -396,6 +396,7 @@ function (
 			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(this._entity);
+		body.aabbNeedsUpdate = true;
 		this.emitInitialized(this._entity);
 	};
 
