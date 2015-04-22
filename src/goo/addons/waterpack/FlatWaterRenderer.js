@@ -241,7 +241,7 @@ define([
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-	        normalMatrix: Shader.NORMAL_MATRIX,
+			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
 
 			normalMap: 'NORMAL_MAP',

@@ -51,28 +51,28 @@ define([
 
 	/**
 	 * Builds a surface as a result of multiplying 2 polyLines
-	 * @param {PolyLine} [that] The second operand
+	 * @param {PolyLine} rhs The second operand
 	 * @returns {Surface} The resulting surface
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
 	 */
-	PolyLine.prototype.mul = function (that) {
-		if (!(that instanceof PolyLine)) {
+	PolyLine.prototype.mul = function (rhs) {
+		if (!(rhs instanceof PolyLine)) {
 			return;
 		}
 
-		var thatNVerts = that.verts.length / 3;
+		var rhsNVerts = rhs.verts.length / 3;
 		var verts = [];
 
 		for (var i = 0; i < this.verts.length; i += 3) {
-			for (var j = 0; j < that.verts.length; j += 3) {
+			for (var j = 0; j < rhs.verts.length; j += 3) {
 				verts.push(
-					this.verts[i + 0] + that.verts[j + 0],
-					this.verts[i + 1] + that.verts[j + 1],
-					this.verts[i + 2] + that.verts[j + 2]);
+					this.verts[i + 0] + rhs.verts[j + 0],
+					this.verts[i + 1] + rhs.verts[j + 1],
+					this.verts[i + 2] + rhs.verts[j + 2]);
 			}
 		}
 
-		return new Surface(verts, thatNVerts);
+		return new Surface(verts, rhsNVerts);
 	};
 
 	function getBisectorAngleOfVectors(vx1, vy1, vx2, vy2) {
@@ -96,7 +96,7 @@ define([
 			p2x = verts[1 * 3 + 0];
 			p2z = verts[1 * 3 + 2];
 			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI / 2;
-		} else if (index === nVerts-1) {
+		} else if (index === nVerts - 1) {
 			p0x = verts[(nVerts - 2) * 3 + 0];
 			p0z = verts[(nVerts - 2) * 3 + 2];
 			p1x = verts[(nVerts - 1) * 3 + 0];
@@ -115,29 +115,29 @@ define([
 
 	/**
 	 * Extrudes and rotates a PolyLine along another PolyLine
-	 * @param {PolyLine} [that] The second operand
+	 * @param {PolyLine} rhs The second operand
 	 * @returns {Surface} The resulting surface
 	 */
-	PolyLine.prototype.pipe = function (that) {
-		if (!(that instanceof PolyLine)) {
+	PolyLine.prototype.pipe = function (rhs) {
+		if (!(rhs instanceof PolyLine)) {
 			console.error('pipe operation can only be applied to PolyLines');
 			return;
 		}
 
-		var thatNVerts = that.verts.length / 3;
+		var rhsNVerts = rhs.verts.length / 3;
 		var verts = [];
 
 		for (var i = 0; i < this.verts.length; i += 3) {
 			var k = getBisectorAngle(this.verts, i / 3);
-			for (var j = 0; j < that.verts.length; j += 3) {
+			for (var j = 0; j < rhs.verts.length; j += 3) {
 				verts.push(
-					this.verts[i + 0] + that.verts[j + 2] * Math.cos(k),
-					this.verts[i + 1] + that.verts[j + 1],
-					this.verts[i + 2] + that.verts[j + 2] * Math.sin(k));
+					this.verts[i + 0] + rhs.verts[j + 2] * Math.cos(k),
+					this.verts[i + 1] + rhs.verts[j + 1],
+					this.verts[i + 2] + rhs.verts[j + 2] * Math.sin(k));
 			}
 		}
 
-		return new Surface(verts, thatNVerts);
+		return new Surface(verts, rhsNVerts);
 	};
 
 	/**
@@ -166,17 +166,17 @@ define([
 
 	/**
 	 * Returns a new polyLine as a result of concatenating the 2 polyLines
-	 * @param {PolyLine} [that] The other operand
+	 * @param {PolyLine} rhs The other operand
 	 * @param {boolean} [closed] True if the resulting polyLine should be closed
 	 * @returns {PolyLine} The new polyLine
 	 */
-	PolyLine.prototype.concat = function (that, closed) {
-		if (!(that instanceof PolyLine)) {
+	PolyLine.prototype.concat = function (rhs, closed) {
+		if (!(rhs instanceof PolyLine)) {
 			console.error('concat operation can only be applied to PolyLines');
 			return;
 		}
 
-		return new PolyLine(this.verts.concat(that.verts), closed);
+		return new PolyLine(this.verts.concat(rhs.verts), closed);
 	};
 
 	/**

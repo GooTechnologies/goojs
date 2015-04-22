@@ -13,7 +13,7 @@ define([
 	RenderQueue,
 	RSVP,
 	PromiseUtil,
-	_
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -41,45 +41,33 @@ define([
 	 * @private
 	 */
 	MaterialHandler.prototype._prepare = function (config) {
-		if (!config.blendState) {
-			config.blendState = {};
-		}
-		_.defaults(config.blendState, {
+		ObjectUtil.defaults(config, {
+			blendState: {},
+			cullState: {},
+			depthState: {},
+			renderQueue: -1,
+			dualTransparency: false,
+			wireframe: false,
+			flat: false
+		});
+
+		ObjectUtil.defaults(config.blendState, {
 			blending: 'NoBlending',
 			blendEquation: 'AddEquation',
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		});
 
-		if (!config.cullState) {
-			config.cullState = {};
-		}
-		_.defaults(config.cullState, {
+		ObjectUtil.defaults(config.cullState, {
 			enabled: true,
 			cullFace: 'Back',
 			frontFace: 'CCW'
 		});
 
-		if (!config.depthState) {
-			config.depthState = {};
-		}
-		_.defaults(config.depthState, {
+		ObjectUtil.defaults(config.depthState, {
 			enabled: true,
 			write: true
 		});
-
-		if (config.renderQueue === null || config.renderQueue === undefined) {
-			config.renderQueue = -1;
-		}
-		if (config.dualTransparency === null || config.dualTransparency === undefined) {
-			config.dualTransparency = false;
-		}
-		if (config.wireframe === null || config.wireframe === undefined) {
-			config.wireframe = false;
-		}
-		if (config.flat === null || config.flat === undefined) {
-			config.flat = false;
-		}
 	};
 
 	/**
@@ -112,17 +100,20 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (material) {
 			if (!material) { return; }
+
 			var promises = [];
+
 			// Material settings
-			_.extend(material.blendState, config.blendState);
-			_.extend(material.cullState, config.cullState);
-			_.extend(material.depthState, config.depthState);
+			ObjectUtil.extend(material.blendState, config.blendState);
+			ObjectUtil.extend(material.cullState, config.cullState);
+			ObjectUtil.extend(material.depthState, config.depthState);
 
 			material.id = config.id;
 			material.name = config.name;
 			material.wireframe = config.wireframe;
 			material.flat = config.flat;
 			material.dualTransparency = config.dualTransparency;
+
 			if (config.renderQueue === -1) {
 				if (config.blendState.blending !== 'NoBlending') {
 					material.renderQueue = RenderQueue.TRANSPARENT;
@@ -132,12 +123,13 @@ define([
 			} else {
 				material.renderQueue = config.renderQueue;
 			}
+
 			material.uniforms = {};
 			for (var name in config.uniforms) {
 				if (config.uniforms[name].enabled === undefined) {
-					material.uniforms[name] = _.clone(config.uniforms[name]);
+					material.uniforms[name] = ObjectUtil.clone(config.uniforms[name]);
 				} else if (config.uniforms[name].enabled) {
-					material.uniforms[name] = _.clone(config.uniforms[name].value);
+					material.uniforms[name] = ObjectUtil.clone(config.uniforms[name].value);
 				}
 			}
 

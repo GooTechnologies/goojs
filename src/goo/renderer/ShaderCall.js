@@ -59,7 +59,7 @@ function () {
 					this.call = this.uniformMatrix4fv;
 					break;
 				default:
-					throw 'Uniform type not handled: ' + type;
+					throw new Error('Uniform type not handled: ' + type);
 			}
 		}
 	}

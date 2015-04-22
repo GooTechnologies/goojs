@@ -376,7 +376,7 @@ define([
 
 
 		var dataSets = [];
-		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
+		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y) {
 			if (glyph.path.commands.length > 0) {
 				dataSets.push({
 					data: dataForGlyph(glyph, options),

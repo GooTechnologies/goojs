@@ -1,14 +1,13 @@
 define([
 	'goo/debugpack/components/MarkerComponent',
 	'goo/debugpack/systems/MarkerSystem'
-],
-
-	function (
+], function (
 	MarkerComponent,
 	MarkerSystem
-	) {
+) {
 	'use strict';
 
+	//! AT: unused; should be removed
 	/**
 	 * The debugger utility class adds a way to "select" entities and run a filtered serializer on them. It can also create a REPL and export the selected entity to global scope to aid in debugging with the browser's web console.
 	 * @param {boolean} [exportPicked] True if the debugger should create and update window.picked that points to the currently picked entity
@@ -42,9 +41,6 @@ define([
 				// setup variables for eval scope
 				var entity = this.picked;
 				var goo = this.goo;
-				// manually suppressing "unused variable"
-				void(entity);
-				void(goo);
 
 				var resultStr = '';
 				try {

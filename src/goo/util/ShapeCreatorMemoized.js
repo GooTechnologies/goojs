@@ -5,7 +5,8 @@ define([
 	'goo/shapes/Cylinder',
 	'goo/shapes/Torus',
 	'goo/shapes/Disk',
-	'goo/shapes/Cone'
+	'goo/shapes/Cone',
+	'goo/util/ObjectUtil'
 ], function (
 	Box,
 	Quad,
@@ -13,7 +14,8 @@ define([
 	Cylinder,
 	Torus,
 	Disk,
-	Cone
+	Cone,
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -66,7 +68,10 @@ define([
 
 	ShapeCreatorMemoized.createBox = function (options, oldMeshData) {
 		options = options || {};
-		options.textureMode = options.textureMode || 'Uniform';
+		ObjectUtil.defaults(options, {
+			textureMode: 'Uniform'
+		});
+
 		var width = 1, height = 1, length = 1, tileX = 1, tileY = 1;
 		if (!oldMeshData ||
 			width !== oldMeshData.xExtent ||
@@ -85,10 +90,12 @@ define([
 
 	ShapeCreatorMemoized.createSphere = function (options, oldMeshData) {
 		options = options || {};
-		options.zSamples = options.zSamples || 8;
-		options.radialSamples = options.radialSamples || 8;
-		options.textureMode = options.textureMode || 'Projected';
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			zSamples: 8,
+			radialSamples: 8,
+			textureMode: 'Projected',
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.zSamples !== oldMeshData.zSamples - 1 ||
@@ -105,8 +112,10 @@ define([
 
 	ShapeCreatorMemoized.createCylinder = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.radialSamples ||
@@ -121,10 +130,12 @@ define([
 
 	ShapeCreatorMemoized.createTorus = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.circleSamples = options.circleSamples || 12;
-		options.tubeRadius = options.tubeRadius || 0.2;
-		options.centerRadius = options.centerRadius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			circleSamples: 12,
+			tubeRadius: 0.2,
+			centerRadius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData._radialSamples ||
@@ -141,9 +152,11 @@ define([
 
 	ShapeCreatorMemoized.createDisk = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.pointiness = typeof options.pointiness === 'undefined' ? 0 : options.pointiness;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			pointiness: 0,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.nSegments ||
@@ -163,9 +176,11 @@ define([
 
 	ShapeCreatorMemoized.createCone = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.height = typeof options.height === 'undefined' ? 0 : options.height;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			height: 0,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.radialSamples ||

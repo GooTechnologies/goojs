@@ -293,12 +293,13 @@ define([
 		if (handler) { return handler; }
 		var Handler = ConfigHandler.getHandler(type);
 		if (Handler) {
-			return this._handlers[type] = new Handler(
+			this._handlers[type] = new Handler(
 				this._world,
 				this._loadRef.bind(this),
 				this._updateObject.bind(this),
 				this._loadObject.bind(this)
 			);
+			return this._handlers[type];
 		}
 		return null;
 	};
