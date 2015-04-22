@@ -1,1 +1,1 @@
-define(['goo/animationpack/state/FrozenTransitionState'], function(FrozenTransitionState) {});
+define(['goo/animationpack/state/FrozenTransitionState'], function (FrozenTransitionState) {});

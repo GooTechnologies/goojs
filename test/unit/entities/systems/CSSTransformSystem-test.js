@@ -1,1 +1,1 @@
-define(['goo/entities/systems/CSSTransformSystem'], function(CSSTransformSystem) {});
+define(['goo/entities/systems/CSSTransformSystem'], function (CSSTransformSystem) {});

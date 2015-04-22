@@ -1,7 +1,7 @@
 define([
 	'goo/util/ObjectUtil',
 	'test/CustomMatchers'
-], function(
+], function (
 	ObjectUtil,
 	CustomMatchers
 ) {

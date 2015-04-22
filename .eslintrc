@@ -4,8 +4,10 @@
     "jasmine": true,
     "describe": true,
     "beforeEach": true,
+    "afterEach": true,
     "it": true,
-    "expect": true
+    "expect": true,
+    "spyOn": true
   },
   "rules": {
     "quotes": [2, "single", "avoid-escape"],

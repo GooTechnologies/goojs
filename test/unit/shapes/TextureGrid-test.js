@@ -1,1 +1,1 @@
-define(['goo/shapes/TextureGrid'], function(TextureGrid) {});
+define(['goo/shapes/TextureGrid'], function (TextureGrid) {});

@@ -1,1 +1,1 @@
-define(['goo/animationpack/blendtree/BinaryLERPSource'], function(BinaryLERPSource) {});
+define(['goo/animationpack/blendtree/BinaryLERPSource'], function (BinaryLERPSource) {});

@@ -1,11 +1,11 @@
 define([
-	"goo/util/StringUtil"
-], function(
+	'goo/util/StringUtil'
+], function (
 	StringUtil
 ) {
-	"use strict";
+	'use strict';
 
-	describe("StringUtil", function() {
+	describe('StringUtil', function () {
 		it('parses URLs', function () {
 			var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
 			var parts = StringUtil.parseURL(url);

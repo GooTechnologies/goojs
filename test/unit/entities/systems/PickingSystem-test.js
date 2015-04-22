@@ -1,1 +1,1 @@
-define(['goo/entities/systems/PickingSystem'], function(PickingSystem) {});
+define(['goo/entities/systems/PickingSystem'], function (PickingSystem) {});

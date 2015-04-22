@@ -1,12 +1,12 @@
 define([
 	'goo/util/ObjectUtil'
-], function(
+], function (
 	_
 ) {
 	'use strict';
 
 	return {
-		entity: function(components) {
+		entity: function (components) {
 			components = components || ['transform'];
 			var entity = this.gooObject('entity', 'Dummy');
 			entity.components = {};
@@ -17,10 +17,10 @@ define([
 			return entity;
 		},
 		component: {
-			transform: function(translation, rotation, scale) {
-				translation = (translation) ? translation.slice() : [0,0,0];
-				rotation = (rotation) ? rotation.slice() : [0,0,0];
-				scale = (scale) ? scale.slice() : [1,1,1];
+			transform: function (translation, rotation, scale) {
+				translation = (translation) ? translation.slice() : [0, 0, 0];
+				rotation = (rotation) ? rotation.slice() : [0, 0, 0];
+				scale = (scale) ? scale.slice() : [1, 1, 1];
 
 				return {
 					translation: translation,
@@ -28,7 +28,7 @@ define([
 					scale: scale
 				};
 			},
-			camera: function(aspect, lockedRatio, far, fov, near) {
+			camera: function (aspect, lockedRatio, far, fov, near) {
 				return {
 					aspect: aspect || 1,
 					lockedRatio: !!lockedRatio,
@@ -37,10 +37,10 @@ define([
 					near: near || 1
 				};
 			},
-			light: function(type, options) {
+			light: function (type, options) {
 				var config = _.copyOptions({}, options, {
 					type: type || 'PointLight',
-					color: [1,1,1],
+					color: [1, 1, 1],
 					intensity: 1,
 					shadowCaster: false,
 					specularIntensity: 1
@@ -59,19 +59,19 @@ define([
 						near: 1,
 						far: 1000,
 						resolution: [512, 512],
-						upVector: [0,1,0],
+						upVector: [0, 1, 0],
 						darkness: 0.5
 					});
 				}
 				return config;
 			},
-			animation: function() {
+			animation: function () {
 				return {
 					layersRef: this.animation().id,
 					poseRef: this.skeleton().id
 				};
 			},
-			meshRenderer: function() {
+			meshRenderer: function () {
 				var config = {
 					cullMode: 'Dynamic',
 					castShadows: true,
@@ -107,20 +107,20 @@ define([
 							id: 'c1',
 							sortValue:0,
 							propertyKey: 'scaleX',
-							keyframes  : {
+							keyframes: {
 								'k1': {
-									time  : 10,
-									value : 20,
+									time: 10,
+									value: 20,
 									easing: 'Linear.None'
 								},
 								'k2': {
-									time  : 100,
-									value : 50,
+									time: 100,
+									value: 50,
 									easing: 'Linear.None'
 								},
 								'k3': {
-									time  : 200,
-									value : 50,
+									time: 200,
+									value: 50,
 									easing: 'Linear.None'
 								}
 							}
@@ -129,15 +129,15 @@ define([
 							id: 'c2',
 							sortValue:1,
 							propertyKey: 'translationY',
-							keyframes  : {
+							keyframes : {
 								'k1': {
-									time  : 200,
-									value : 20,
+									time: 200,
+									value: 20,
 									easing: 'Linear.None'
 								},
 								'k2': {
-									time  : 100,
-									value : 50,
+									time: 100,
+									value: 50,
 									easing: 'Linear.None'
 								}
 							}
@@ -182,7 +182,7 @@ define([
 				};
 			}
 		},
-		attachChild: function(parent, child) {
+		attachChild: function (parent, child) {
 			if (!parent.components.transform.children) {
 				parent.components.transform.children = {};
 			}

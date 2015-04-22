@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/RenderTarget'], function(RenderTarget) {});
+define(['goo/renderer/pass/RenderTarget'], function (RenderTarget) {});

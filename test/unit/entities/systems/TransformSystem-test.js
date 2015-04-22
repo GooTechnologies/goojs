@@ -30,7 +30,6 @@ define([
 		});
 
 		it('updates the world transform of a parent-child structure and propagates correctly', function () {
-
 			var grandParent = createEntity(1, 2, 3);
 			var parent = createEntity(1, 2, 3);
 			var child = createEntity(1, 2, 3);
@@ -64,7 +63,6 @@ define([
 		});
 
 		it('updates all children correctly in a chain', function () {
-
 			var entityA = createEntity();
 			var entityB = createEntity();
 			var entityC = createEntity(1, 2, 3);
@@ -82,12 +80,9 @@ define([
 			expect(entityB.transformComponent.worldTransform.translation).toEqual(new Vector3(0, 0, 0));
 			expect(entityD.transformComponent.worldTransform.translation).toEqual(new Vector3(1, 2, 3));
 			expect(entityE.transformComponent.worldTransform.translation).toEqual(new Vector3(1, 2, 3));
-
 		});
 
-
 		it('updates all children correctly in a chain', function () {
-
 			var entityE = createEntity();
 			var entityD = createEntity();
 			var entityC = createEntity(1, 2, 3);
@@ -105,8 +100,6 @@ define([
 			expect(entityB.transformComponent.worldTransform.translation).toEqual(new Vector3(1, 2, 3));
 			expect(entityD.transformComponent.worldTransform.translation).toEqual(new Vector3(2, 4, 6));
 			expect(entityE.transformComponent.worldTransform.translation).toEqual(new Vector3(2, 4, 6));
-
 		});
 	});
-
 });

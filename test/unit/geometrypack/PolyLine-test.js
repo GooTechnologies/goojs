@@ -1,1 +1,1 @@
-define(['goo/geometrypack/PolyLine'], function(PolyLine) {});
+define(['goo/geometrypack/PolyLine'], function (PolyLine) {});

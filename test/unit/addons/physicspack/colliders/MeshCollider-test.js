@@ -19,7 +19,6 @@ define([
 			});
 			var clone = collider.clone();
 			expect(collider).toEqual(clone);
-
 		});
 
 		it('can transform', function () {

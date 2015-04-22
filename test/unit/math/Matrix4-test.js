@@ -1,13 +1,13 @@
 define([
 	'goo/math/Matrix4',
-	'goo/math/Vector3', 
-	'goo/math/Vector4', 
+	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'goo/math/Quaternion',
 	'test/CustomMatchers'
 ], function (
 	Matrix4,
-	Vector3, 
-	Vector4, 
+	Vector3,
+	Vector4,
 	Quaternion,
 	CustomMatchers
 	) {
@@ -122,13 +122,13 @@ define([
 		it('can be set from a vector of angles', function () {
 			var a = 1.0 / Math.sqrt(2.0);
 
-			expect(new Matrix4().setRotationFromVector(new Vector3(0, Math.PI/4, 0))).toBeCloseToMatrix(new Matrix4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
+			expect(new Matrix4().setRotationFromVector(new Vector3(0, Math.PI / 4, 0))).toBeCloseToMatrix(new Matrix4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
 		});
 
 		it('can be set from a quaternion', function () {
 			var a = 1.0 / Math.sqrt(2.0);
 
-			expect(new Matrix4().setRotationFromQuaternion(new Quaternion(0.0, Math.sin(Math.PI/8), 0.0, Math.cos(Math.PI/8)))).toBeCloseToMatrix(new Matrix4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
+			expect(new Matrix4().setRotationFromQuaternion(new Quaternion(0.0, Math.sin(Math.PI / 8), 0.0, Math.cos(Math.PI / 8)))).toBeCloseToMatrix(new Matrix4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
 		});
 
 		it('can set the translation part', function () {

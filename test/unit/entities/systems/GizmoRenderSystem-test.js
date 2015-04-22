@@ -1,1 +1,1 @@
-define(['goo/entities/systems/GizmoRenderSystem'], function(GizmoRenderSystem) {});
+define(['goo/entities/systems/GizmoRenderSystem'], function (GizmoRenderSystem) {});

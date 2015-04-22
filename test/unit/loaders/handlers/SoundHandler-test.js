@@ -1,1 +1,1 @@
-define(['goo/loaders/handlers/SoundHandler'], function(SoundHandler) {});
+define(['goo/loaders/handlers/SoundHandler'], function (SoundHandler) {});

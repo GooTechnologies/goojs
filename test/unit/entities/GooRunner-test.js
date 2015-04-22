@@ -1,1 +1,1 @@
-define(['goo/entities/GooRunner'], function(GooRunner) {});
+define(['goo/entities/GooRunner'], function (GooRunner) {});

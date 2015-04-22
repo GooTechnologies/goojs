@@ -1,1 +1,1 @@
-define(['goo/particles/ParticleEmitter'], function(ParticleEmitter) {});
+define(['goo/particles/ParticleEmitter'], function (ParticleEmitter) {});

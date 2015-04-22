@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/JointChannel'], function(JointChannel) {});
+define(['goo/animationpack/clip/JointChannel'], function (JointChannel) {});

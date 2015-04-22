@@ -1,11 +1,11 @@
 define([
 	'goo/systems/MovementSystem'
-], function(
+], function (
 
 ) {
 	'use strict';
 
-	describe('test that movement updates transform', function() {
+	describe('test that movement updates transform', function () {
 		// what happened here?
 	});
 });

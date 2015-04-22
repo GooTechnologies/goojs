@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/DoGPass'], function(DoGPass) {});
+define(['goo/renderer/pass/DoGPass'], function (DoGPass) {});

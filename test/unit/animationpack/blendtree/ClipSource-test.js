@@ -1,1 +1,1 @@
-define(['goo/animationpack/blendtree/ClipSource'], function(ClipSource) {});
+define(['goo/animationpack/blendtree/ClipSource'], function (ClipSource) {});

@@ -150,20 +150,20 @@ define([
 		});
 
 		describe('copy', function () {
-		    it('can copy from another matrix', function () {
-    			var original = new Matrix2(11, 22, 33, 44);
-    			var copy = new Matrix2(55, 66, 77, 88);
-    			copy.copy(original);
-    			expect(copy).toBeCloseToMatrix(new Matrix2(11, 22, 33, 44));
-    		});
+			it('can copy from another matrix', function () {
+				var original = new Matrix2(11, 22, 33, 44);
+				var copy = new Matrix2(55, 66, 77, 88);
+				copy.copy(original);
+				expect(copy).toBeCloseToMatrix(new Matrix2(11, 22, 33, 44));
+			});
 		});
 
 		describe('clone', function () {
-		    it('clones a matrix', function () {
-    			var original = new Matrix2(11, 22, 33, 44);
-    			var clone = original.clone();
-    
-    			expect(clone).toBeCloseToMatrix(original);
+			it('clones a matrix', function () {
+				var original = new Matrix2(11, 22, 33, 44);
+				var clone = original.clone();
+
+				expect(clone).toBeCloseToMatrix(original);
 				expect(clone).not.toBe(original);
 			});
 		});

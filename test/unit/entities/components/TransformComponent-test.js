@@ -78,8 +78,8 @@ define([
 		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation', function () {
 			var tc = new TransformComponent();
-			tc.setRotation(1,2,2);
-			tc.addRotation(0,0,1);
+			tc.setRotation(1, 2, 2);
+			tc.addRotation(0, 0, 1);
 			tc.getRotation();
 		});
 
@@ -87,29 +87,29 @@ define([
 		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation with array', function () {
 			var tc = new TransformComponent();
-			tc.setRotation([1,2,2]);
-			tc.addRotation([0,0,1]);
+			tc.setRotation([1, 2, 2]);
+			tc.addRotation([0, 0, 1]);
 		});
 
 		//! AT: if any method fails the whole spec fails
 		it('can set, add and get translation', function () {
 			var tc = new TransformComponent();
-			tc.setTranslation(1,2,2);
+			tc.setTranslation(1, 2, 2);
 			var vec = tc.getTranslation();
-			expect(vec).toEqual(new Vector3(1,2,2));
-			tc.addTranslation(0,0,1);
-			expect(vec).toEqual(new Vector3(1,2,3));
+			expect(vec).toEqual(new Vector3(1, 2, 2));
+			tc.addTranslation(0, 0, 1);
+			expect(vec).toEqual(new Vector3(1, 2, 3));
 		});
 
 		it('can move', function () {
 			var tc = new TransformComponent();
-			tc.lookAt(new Vector3(1,0,0)); // look along the positive x axis
-			tc.move(0,0,-10); // this moves forward in a right handed coordinate system.
+			tc.lookAt(new Vector3(1, 0, 0)); // look along the positive x axis
+			tc.move(0, 0,-10); // this moves forward in a right handed coordinate system.
 			// in our case this will move us 10 unity in the direction of the positive x axis.
 			var translation = tc.getTranslation();
-			expect(translation).toBeCloseToVector(new Vector3(10,0,0));
-			tc.move(new Vector3(0,0,1));
-			expect(translation).toBeCloseToVector(new Vector3(9,0,0));
+			expect(translation).toBeCloseToVector(new Vector3(10, 0, 0));
+			tc.move(new Vector3(0, 0, 1));
+			expect(translation).toBeCloseToVector(new Vector3(9, 0, 0));
 		});
 
 		it('handles attaching itself to an entity', function () {
@@ -262,7 +262,7 @@ define([
 				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
-			it('applies all of the API functions correctly', function(){
+			it('applies all of the API functions correctly', function (){
 				var entity = new Entity(world);
 				var childEntity = new Entity(world);
 				function traverseFunction(entity){
@@ -271,21 +271,21 @@ define([
 				entity.set(new TransformComponent());
 				childEntity.set(new TransformComponent());
 
-				entity.setTranslation(1,2,3);
-				expect(entity.getTranslation()).toEqual(new Vector3(1,2,3));
+				entity.setTranslation(1, 2, 3);
+				expect(entity.getTranslation()).toEqual(new Vector3(1, 2, 3));
 
-				entity.setRotation(0,0,0);
-				expect(entity.getRotation()).toEqual(new Vector3(0,0,0));
+				entity.setRotation(0, 0, 0);
+				expect(entity.getRotation()).toEqual(new Vector3(0, 0, 0));
 
-				entity.setScale(1,2,3);
-				expect(entity.getScale()).toEqual(new Vector3(1,2,3));
+				entity.setScale(1, 2, 3);
+				expect(entity.getScale()).toEqual(new Vector3(1, 2, 3));
 
-				entity.lookAt(0,0,0);
+				entity.lookAt(0, 0, 0);
 
-				entity.addTranslation(1,0,0);
+				entity.addTranslation(1, 0, 0);
 
-				entity.setTranslation(1,2,3).addTranslation(1,2,3);
-				expect(entity.getTranslation()).toEqual(new Vector3(2,4,6));
+				entity.setTranslation(1, 2, 3).addTranslation(1, 2, 3);
+				expect(entity.getTranslation()).toEqual(new Vector3(2, 4, 6));
 
 				entity.attachChild(childEntity);
 				expect(entity.children().size()).toEqual(1);
@@ -506,7 +506,7 @@ define([
 					expect(entity2.isHidden()).toBeTruthy();
 					entity2.show();
 					expect(entity2.isHidden()).toBeFalsy();
-			    });
+				});
 
 				it('returns the correct hidden status for an entity in a hierarchy', function () {
 					var grandparent = getEntity();

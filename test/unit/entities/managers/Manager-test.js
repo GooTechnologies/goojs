@@ -1,1 +1,1 @@
-define(['goo/entities/managers/Manager'], function(Manager) {});
+define(['goo/entities/managers/Manager'], function (Manager) {});

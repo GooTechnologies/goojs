@@ -1,27 +1,27 @@
 define([
-], function(
+], function (
 ) {
 	'use strict';
 	return {
-		skeleton: function() {
+		skeleton: function () {
 			var skeleton = this.gooObject('skeleton', 'Dummy');
 			skeleton.joints = {};
 			for (var i = 0; i < 6; i++) {
 				skeleton.joints[this.randomRef()] = {
 					index: i,
 					parentIndex: i > 0 ? i - 1 : -32768,
-					name: 'Joint_'+i,
+					name: 'Joint_' + i,
 					inverseBindPose: [
-						1,0,0,0,
-						0,1,0,0,
-						0,0,1,0,
-						0,0,0,1
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1
 					]
 				};
 			}
 			return skeleton;
 		},
-		animation: function() {
+		animation: function () {
 			var layers = this.gooObject('animation', 'Dummy');
 
 			layers.layers = {};
@@ -50,7 +50,7 @@ define([
 			}
 			return layers;
 		},
-		animstate: function() {
+		animstate: function () {
 			var state = this.gooObject('animstate', 'Dummy');
 
 			state.clipSource = {
@@ -61,7 +61,7 @@ define([
 			};
 			return state;
 		},
-		clip: function() {
+		clip: function () {
 			var clip = this.gooObject('clip', 'Dummy');
 			clip.binaryRef = this.binary(128);
 
@@ -71,7 +71,7 @@ define([
 			}
 			return clip;
 		},
-		clipChannel: function(index, samples) {
+		clipChannel: function (index, samples) {
 			index = (index !== undefined) ? index : 0;
 			samples = samples || 4;
 

@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/TransformData'], function(TransformData) {});
+define(['goo/animationpack/clip/TransformData'], function (TransformData) {});

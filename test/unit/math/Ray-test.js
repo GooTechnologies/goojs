@@ -48,26 +48,30 @@ define([
 		});
 
 		it('intersects triangle', function () {
-			var ray = new Ray(new Vector3(0,0,-1),new Vector3(0,0,1));
-			var triangle = [new Vector3(-0.1, -0.1, 0),
-							new Vector3(   1, -0.1, 0),
-							new Vector3(   1,    1, 0)];
-			var store = new Vector3(1,1,1);
-			ray.intersects(triangle,false,store);
-			expect(store).toEqual(new Vector3(0,0,0));
+			var ray = new Ray(new Vector3(0, 0, -1), new Vector3(0, 0, 1));
+			var triangle = [
+				new Vector3(-0.1, -0.1, 0),
+				new Vector3(1.0, -0.1, 0),
+				new Vector3(1.0, 1.0, 0)
+			];
+			var store = new Vector3(1, 1, 1);
+			ray.intersects(triangle, false, store);
+			expect(store).toEqual(new Vector3(0, 0, 0));
 		});
 
 		it('intersects quad', function () {
-			var ray = new Ray(new Vector3(0,0,-1),new Vector3(0,0,1));
-			var quad = [new Vector3(-1, -1, 0),
-						new Vector3( 1, -1, 0),
-						new Vector3( 1,  1, 0),
-						new Vector3(-1,  1, 0)];
-			var store = new Vector3(1,1,1);
-			ray.intersects(quad,false,store);
-			expect(store).toEqual(new Vector3(0,0,0));
+			var ray = new Ray(new Vector3(0, 0, -1), new Vector3(0, 0, 1));
+			var quad = [
+				new Vector3(-1, -1, 0),
+				new Vector3(1, -1, 0),
+				new Vector3(1, 1, 0),
+				new Vector3(-1, 1, 0)
+			];
+			var store = new Vector3(1, 1, 1);
+			ray.intersects(quad, false, store);
+			expect(store).toEqual(new Vector3(0, 0, 0));
 		});
-		
+
 		describe('intersectsTriangle', function () {
 
 		});

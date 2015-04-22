@@ -1,1 +1,1 @@
-define(['goo/renderer/RendererRecord'], function(RendererRecord) {});
+define(['goo/renderer/RendererRecord'], function (RendererRecord) {});

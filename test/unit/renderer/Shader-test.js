@@ -8,9 +8,9 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/RendererUtils',
+	'goo/util/ObjectUtil',
 	'goo/shapes/Box'
-], function(
+], function (
 	Shader,
 	ShaderCall,
 	Material,
@@ -20,24 +20,27 @@ define([
 	Texture,
 	ShaderLib,
 	DirectionalLight,
-	RendererUtils,
+	ObjectUtil,
 	Box
 ) {
 	'use strict';
 
-	describe('Shader', function() {
-		describe('DefineKey', function() {
+	describe('Shader', function () {
+		describe('DefineKey', function () {
 			var shader;
-			beforeEach(function() {
-				shader = new Shader('TestName', RendererUtils.clone(ShaderLib.simple));
+
+			beforeEach(function () {
+				shader = new Shader('TestName', ObjectUtil.clone(ShaderLib.simple));
 			});
-			it('can generate define key when no defines', function() {
+
+			it('can generate define key when no defines', function () {
 				var defineIndices = [];
 				var key = shader.getDefineKey(defineIndices);
 				expect(key).toEqual('Key:TestName');
 				expect(defineIndices).toEqual([]);
 			});
-			it('can generate define key with one define', function() {
+
+			it('can generate define key with one define', function () {
 				var defineIndices = [];
 
 				shader.setDefine('TEST_DEFINE', true);
@@ -46,7 +49,8 @@ define([
 				expect(key).toEqual('Key:TestName_1:true');
 				expect(defineIndices).toEqual(['TEST_DEFINE']);
 			});
-			it('can generate define key with various define types (added)', function() {
+
+			it('can generate define key with various define types (added)', function () {
 				var defineIndices = [];
 
 				shader.setDefine('TEST_DEFINE1', true);
@@ -56,7 +60,8 @@ define([
 				expect(key).toEqual('Key:TestName_1:true_2:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE1', 'TEST_DEFINE2']);
 			});
-			it('can generate define key with various define types (added+removed)', function() {
+
+			it('can generate define key with various define types (added+removed)', function () {
 				var defineIndices = [];
 
 				shader.setDefine('TEST_DEFINE1', true);
@@ -67,7 +72,8 @@ define([
 				expect(key).toEqual('Key:TestName_1:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE2']);
 			});
-			it('only re-generate key when dirty', function() {
+
+			it('only re-generate key when dirty', function () {
 				var defineIndices = [];
 
 				shader.defineKey = 'unset';
@@ -85,17 +91,21 @@ define([
 				expect(key).toEqual('unset');
 			});
 		});
-		describe('ShaderCall', function() {
+
+		describe('ShaderCall', function () {
 			var context;
-			beforeEach(function() {
+
+			beforeEach(function () {
 				context = createContext();
 			});
+
 			var testSingleCall = function (shaderCall, method, value) {
 				shaderCall.call(value);
 				expect(method).toHaveBeenCalled();
 				var args = method.calls.mostRecent().args;
 				expect(args[args.length - 1]).toEqual(value);
 			};
+
 			var testShaderCall = function (context, method, type, value1, value2) {
 				var shaderCall = new ShaderCall(context, {}, type);
 				spyOn(context, method);
@@ -114,7 +124,8 @@ define([
 				// check that methods are correctly called for value2
 				testSingleCall(shaderCall, context[method], value2);
 			};
-			it('can optimize calls to ShaderCall uniforms', function() {
+
+			it('can optimize calls to ShaderCall uniforms', function () {
 				testShaderCall(context, 'uniform1f', 'float', 2.3, 5.5);
 				testShaderCall(context, 'uniform1i', 'int', 5, 8);
 
@@ -143,14 +154,15 @@ define([
 				);
 			});
 		});
-		describe('Build and compile shader', function() {
+		describe('Build and compile shader', function () {
 			var createRenderer = function () {
 				return {
 					context: createContext(),
-					bindVertexAttribute: function() {},
+					bindVertexAttribute: function () {},
 					rendererRecord: new RendererRecord()
 				};
 			};
+
 			var createShaderInfo = function (shaderDefinition) {
 				var material = new Material('test', shaderDefinition);
 				material.setTexture(Shader.DIFFUSE_MAP, new Texture());
@@ -163,6 +175,7 @@ define([
 					renderer: renderer
 				};
 			};
+
 			var updateShader = function (shaderInfo) {
 				var shader = shaderInfo.material.shader;
 				shader.updateProcessors(shaderInfo);
@@ -172,7 +185,7 @@ define([
 				shader.apply(shaderInfo, shaderInfo.renderer);
 			};
 
-			it('has applied the correct mappings to simple shader (simple)', function() {
+			it('has applied the correct mappings to simple shader (simple)', function () {
 				var shaderDefinition = miniShaderDefinition;
 				var shaderInfo = createShaderInfo(shaderDefinition);
 				updateShader(shaderInfo);
@@ -217,7 +230,8 @@ define([
 				expect(shaderInfo.renderer.context.uniform1f).toHaveBeenCalledWith({value:1}, 1);
 				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(4);
 			});
-			it('has applied the correct mappings to complex shader (uber)', function() {
+
+			it('has applied the correct mappings to complex shader (uber)', function () {
 				var shaderDefinition = ShaderLib.uber;
 				var shaderInfo = createShaderInfo(shaderDefinition);
 
@@ -247,9 +261,11 @@ define([
 				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(2);
 			});
 		});
-		describe('investigateShader', function() {
+
+		describe('investigateShader', function () {
 			var target;
-			beforeEach(function() {
+
+			beforeEach(function () {
 				target = {
 					uniforms: {},
 					attributeMapping: {},
@@ -258,7 +274,8 @@ define([
 					textureSlotsNaming: {}
 				};
 			});
-			it('can parse a uniform declaration', function() {
+
+			it('can parse a uniform declaration', function () {
 				var source = 'uniform vec3 foo;';
 				Shader.investigateShader(source, target);
 				expect(target.uniformMapping).toEqual({
@@ -267,7 +284,8 @@ define([
 					}
 				});
 			});
-			it('can parse an attribute declaration', function() {
+
+			it('can parse an attribute declaration', function () {
 				var source = 'attribute float foo;';
 				Shader.investigateShader(source, target);
 				expect(target.attributeMapping).toEqual({
@@ -276,7 +294,8 @@ define([
 					}
 				});
 			});
-			it('can parse a texture sampler', function() {
+
+			it('can parse a texture sampler', function () {
 				var source = 'uniform sampler2D tex;';
 				Shader.investigateShader(source, target);
 				expect(target.uniformMapping).toEqual({
@@ -299,44 +318,44 @@ define([
 	var createContext = function () {
 		/* jshint unused:false */
 		return {
-			createShader: function(type) { return {}; },
-			shaderSource: function(shader, source) {},
-			compileShader: function(shader) {},
-			getShaderParameter: function(shader, parameter) { return true; },
-			getProgramParameter: function(shader, parameter) { return true; },
-			getShaderInfoLog: function(shader) { return ''; },
-			getProgramInfoLog: function(shader) { return ''; },
-			createProgram: function(shader) { return {}; },
-			getError: function() { return 0; },
-			attachShader: function(program, source) {},
-			linkProgram: function(program) {},
-			useProgram: function(program) {},
+			createShader: function (type) { return {}; },
+			shaderSource: function (shader, source) {},
+			compileShader: function (shader) {},
+			getShaderParameter: function (shader, parameter) { return true; },
+			getProgramParameter: function (shader, parameter) { return true; },
+			getShaderInfoLog: function (shader) { return ''; },
+			getProgramInfoLog: function (shader) { return ''; },
+			createProgram: function (shader) { return {}; },
+			getError: function () { return 0; },
+			attachShader: function (program, source) {},
+			linkProgram: function (program) {},
+			useProgram: function (program) {},
 
-			getAttribLocation: function(program, key) { return {}; },
-			getUniformLocation: function(program, key) { return {}; },
+			getAttribLocation: function (program, key) { return {}; },
+			getUniformLocation: function (program, key) { return {}; },
 
-			uniform1f: function(location, v0) {},
-			uniform1i: function(location, v0) {},
-			uniform2f: function(location, v0, v1) {},
-			uniform2i: function(location, v0, v1) {},
-			uniform3f: function(location, v0, v1, v2) {},
-			uniform3i: function(location, v0, v1, v2) {},
-			uniform4f: function(location, v0, v1, v2, v3) {},
-			uniform4i: function(location, v0, v1, v2, v3) {},
+			uniform1f: function (location, v0) {},
+			uniform1i: function (location, v0) {},
+			uniform2f: function (location, v0, v1) {},
+			uniform2i: function (location, v0, v1) {},
+			uniform3f: function (location, v0, v1, v2) {},
+			uniform3i: function (location, v0, v1, v2) {},
+			uniform4f: function (location, v0, v1, v2, v3) {},
+			uniform4i: function (location, v0, v1, v2, v3) {},
 
-			uniform1iv: function(location, values) {},
-			uniform2iv: function(location, values) {},
-			uniform3iv: function(location, values) {},
-			uniform4iv: function(location, values) {},
+			uniform1iv: function (location, values) {},
+			uniform2iv: function (location, values) {},
+			uniform3iv: function (location, values) {},
+			uniform4iv: function (location, values) {},
 
-			uniform1fv: function(location, values) {},
-			uniform2fv: function(location, values) {},
-			uniform3fv: function(location, values) {},
-			uniform4fv: function(location, values) {},
+			uniform1fv: function (location, values) {},
+			uniform2fv: function (location, values) {},
+			uniform3fv: function (location, values) {},
+			uniform4fv: function (location, values) {},
 
-			uniformMatrix2fv: function(location, transpose, data) {},
-			uniformMatrix3fv: function(location, transpose, data) {},
-			uniformMatrix4fv: function(location, transpose, data) {},
+			uniformMatrix2fv: function (location, transpose, data) {},
+			uniformMatrix3fv: function (location, transpose, data) {},
+			uniformMatrix4fv: function (location, transpose, data) {},
 		};
 	};
 

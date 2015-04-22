@@ -1,1 +1,1 @@
-define(['goo/entities/systems/GridRenderSystem'], function(GridRenderSystem) {});
+define(['goo/entities/systems/GridRenderSystem'], function (GridRenderSystem) {});

@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/TriggerChannel'], function(TriggerChannel) {});
+define(['goo/animationpack/clip/TriggerChannel'], function (TriggerChannel) {});

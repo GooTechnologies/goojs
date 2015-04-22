@@ -1,1 +1,1 @@
-define(['goo/entities/SystemBus'], function(SystemBus) {});
+define(['goo/entities/SystemBus'], function (SystemBus) {});

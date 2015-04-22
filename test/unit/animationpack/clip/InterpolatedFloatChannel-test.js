@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/InterpolatedFloatChannel'], function(InterpolatedFloatChannel) {});
+define(['goo/animationpack/clip/InterpolatedFloatChannel'], function (InterpolatedFloatChannel) {});

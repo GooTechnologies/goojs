@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/TriggerData'], function(TriggerData) {});
+define(['goo/animationpack/clip/TriggerData'], function (TriggerData) {});

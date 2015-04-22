@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	describe('MovementComponent', function () {
-		describe('Test velocity deltas', function() {
+		describe('Test velocity deltas', function () {
 			var spatialMovementComponent;
 
 			beforeEach(function () {

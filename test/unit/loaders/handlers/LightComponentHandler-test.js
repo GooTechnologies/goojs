@@ -16,11 +16,11 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('LightComponentHandler', function () {
 		var loader;
-	
-			beforeEach(function () {
+
+		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
@@ -37,7 +37,7 @@ define([
 				done();
 			});
 		});
-		
+
 		it('manages to update between light types', function (done) {
 			var component;
 			var config = Configs.entity();
@@ -55,7 +55,7 @@ define([
 				expect(entity.lightComponent).toBe(component);
 				expect(entity.lightComponent.light).toEqual(jasmine.any(SpotLight));
 				done();
-			});			
+			});
 		});
 	});
 });

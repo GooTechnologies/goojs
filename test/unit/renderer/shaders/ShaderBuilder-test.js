@@ -1,1 +1,1 @@
-define(['goo/renderer/shaders/ShaderBuilder'], function(ShaderBuilder) {});
+define(['goo/renderer/shaders/ShaderBuilder'], function (ShaderBuilder) {});

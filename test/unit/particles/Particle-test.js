@@ -1,1 +1,1 @@
-define(['goo/particles/Particle'], function(Particle) {});
+define(['goo/particles/Particle'], function (Particle) {});

@@ -15,7 +15,7 @@ define([
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
 		});
-		
+
 		describe('constructor', function () {
 			it('creates a zero quaternion when given no parameters', function () {
 				var quaternion = new Quaternion();
@@ -166,7 +166,7 @@ define([
 			var q = new Quaternion();
 			var axis = new Vector3(1, 0, 0);
 			var axisResult = new Vector3();
-			var angle = Math.PI/2;
+			var angle = Math.PI / 2;
 			q.fromAngleNormalAxis(angle, axis);
 			var angleResult = q.toAngleAxis(axisResult);
 			expect(angleResult).toBeCloseTo(angle);

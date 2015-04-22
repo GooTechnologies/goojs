@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/DepthPass'], function(DepthPass) {});
+define(['goo/renderer/pass/DepthPass'], function (DepthPass) {});

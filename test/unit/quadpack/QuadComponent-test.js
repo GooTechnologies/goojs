@@ -1,1 +1,1 @@
-define(['goo/quadpack/QuadComponent'], function(QuadComponent) {});
+define(['goo/quadpack/QuadComponent'], function (QuadComponent) {});

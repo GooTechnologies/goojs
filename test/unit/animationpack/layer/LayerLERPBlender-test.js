@@ -1,1 +1,1 @@
-define(['goo/animationpack/layer/LayerLERPBlender'], function(LayerLERPBlender) {});
+define(['goo/animationpack/layer/LayerLERPBlender'], function (LayerLERPBlender) {});
