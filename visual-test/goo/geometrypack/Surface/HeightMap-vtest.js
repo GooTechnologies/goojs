@@ -25,7 +25,7 @@ require([
 				var value =
 					Math.sin(i * 0.3) +
 					Math.cos(j * 0.3) +
-					Math.sin(Math.sqrt(i*i + j*j) * 0.7) * 2;
+					Math.sin(Math.sqrt(i * i + j * j) * 0.7) * 2;
 				matrix[i].push(value);
 			}
 		}
@@ -41,8 +41,9 @@ require([
 	var meshData = Surface.createFromHeightMap(matrix);
 
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	world.createEntity(meshData, material, [-heightMapSize / 2, 0, -heightMapSize / 2]).addToWorld();
 
