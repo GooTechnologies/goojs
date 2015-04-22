@@ -36,7 +36,7 @@ define([
 		describe('loadTextureVideo', function () {
 			it('loads a video texture', function (done) {
 				var prefix = window.__karma__ ? 'base/test/unit/loaders/res/' : 'loaders/res/';
-				var image = prefix + 'sintel.mp4';
+				var image = prefix + 'small.mp4';
 
 				textureCreator.loadTextureVideo(image, {
 					loop: true,
