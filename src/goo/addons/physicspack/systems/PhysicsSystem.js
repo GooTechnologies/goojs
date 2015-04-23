@@ -89,6 +89,12 @@ function (
 		 */
 		this._lastContacts = new Set();
 
+		/**
+		 * Turns on or off rigid body position and quaternion interpolation. Interpolation gives smoother movement of bodies.
+		 * @type {Boolean}
+		 */
+		this.enableInterpolation = true;
+
 		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
 		this._sortContacts = function (contactA, contactB) {
 			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
@@ -555,8 +561,13 @@ function (
 			rigidBodyComponent._updated = true;
 
 			// Get physics orientation
-			rigidBodyComponent.getPosition(tmpVec);
-			rigidBodyComponent.getQuaternion(tmpQuat);
+			if (this.enableInterpolation) {
+				rigidBodyComponent.getInterpolatedPosition(tmpVec);
+				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat);
+			} else {
+				rigidBodyComponent.getPosition(tmpVec);
+				rigidBodyComponent.getQuaternion(tmpQuat);
+			}
 
 			// Set local transform of the entity
 			transform.translation.setVector(tmpVec);

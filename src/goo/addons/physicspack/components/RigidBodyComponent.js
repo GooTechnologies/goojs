@@ -151,8 +151,12 @@ function (
 		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(transform.translation);
+		body.previousPosition.copy(transform.translation);
+		body.interpolatedPosition.copy(transform.translation);
 		tmpQuat.fromRotationMatrix(transform.rotation);
 		body.quaternion.copy(tmpQuat);
+		body.previousQuaternion.copy(tmpQuat);
+		body.interpolatedQuaternion.copy(tmpQuat);
 	};
 
 	/**
@@ -222,6 +226,16 @@ function (
 	};
 
 	/**
+	 * @param {Vector3} targetVector
+	 */
+	RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector) {
+		if (this.cannonBody) {
+			var position = this.cannonBody.interpolatedPosition;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
+	};
+
+	/**
 	 * @param {Quaternion} quaternion
 	 */
 	RigidBodyComponent.prototype.setQuaternion = function (quaternion) {
@@ -236,6 +250,21 @@ function (
 	RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
 			var cannonQuaternion = this.cannonBody.quaternion;
+			targetQuat.setDirect(
+				cannonQuaternion.x,
+				cannonQuaternion.y,
+				cannonQuaternion.z,
+				cannonQuaternion.w
+			);
+		}
+	};
+
+	/**
+	 * @param {Quaternion} targetQuat
+	 */
+	RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat) {
+		if (this.cannonBody) {
+			var cannonQuaternion = this.cannonBody.interpolatedQuaternion;
 			targetQuat.setDirect(
 				cannonQuaternion.x,
 				cannonQuaternion.y,
