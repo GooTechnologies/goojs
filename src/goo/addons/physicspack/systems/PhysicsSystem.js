@@ -142,6 +142,16 @@ function (
 	};
 
 	/**
+	 * @param {Vector3} store
+	 */
+	PhysicsSystem.prototype.getGravity = function (store) {
+		var gravity = this.cannonWorld.gravity;
+		store.x = gravity.x;
+		store.y = gravity.y;
+		store.z = gravity.z;
+	};
+
+	/**
 	 * @private
 	 * @param {number} deltaTime
 	 */
