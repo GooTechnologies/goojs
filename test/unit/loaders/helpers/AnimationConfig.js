@@ -2,6 +2,7 @@ define([
 ], function (
 ) {
 	'use strict';
+
 	return {
 		skeleton: function () {
 			var skeleton = this.gooObject('skeleton', 'Dummy');
@@ -66,7 +67,7 @@ define([
 			clip.binaryRef = this.binary(128);
 
 			clip.channels = {};
-			for(var i = 0; i < 6; i++) {
+			for (var i = 0; i < 6; i++) {
 				clip.channels[this.randomRef()] = this.clipChannel(i);
 			}
 			return clip;
@@ -78,8 +79,8 @@ define([
 			var channel = {
 				blendType: 'Linear',
 				jointIndex: index,
-				name: 'dummy_joint_'+index,
-				times: [0,samples,'float32'],
+				name: 'dummy_joint_' + index,
+				times: [0, samples, 'float32'],
 				translationSamples: [4, samples * 3, 'float32'],
 				rotationSamples: [16, samples * 4, 'float32'],
 				scaleSamples: [32, samples * 3, 'float32'],

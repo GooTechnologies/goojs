@@ -126,14 +126,14 @@ define([
 		});
 
 		it('can be set from a vector of angles', function () {
-			var a = 1.0/Math.sqrt(2.0);
+			var a = 1.0 / Math.sqrt(2.0);
 
 			expect(new Matrix3().fromAngles(0, Math.PI / 4, 0))
 				.toBeCloseToMatrix(new Matrix3(a, 0, -a, 0, 1, 0, a, 0, a));
 		});
 
 		it('can be set from an axis and angle', function () {
-			var a = 1.0/Math.sqrt(2.0);
+			var a = 1.0 / Math.sqrt(2.0);
 
 			expect(new Matrix3().fromAngleNormalAxis(Math.PI / 4, 0, 1, 0))
 				.toBeCloseToMatrix(new Matrix3(a, 0, -a, 0, 1, 0, a, 0, a));

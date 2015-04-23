@@ -10,7 +10,7 @@ define([
 
 		it('Number of vertices and indices', function () {
 			expect(a.vertexCount).toEqual(9);
-			expect(a.indexCount).toEqual(8*3);
+			expect(a.indexCount).toEqual(8 * 3);
 		});
 	});
 });

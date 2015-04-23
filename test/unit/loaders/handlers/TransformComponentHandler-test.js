@@ -32,7 +32,7 @@ define([
 		it('loads an entity with a transformComponent', function (done) {
 			var config = Configs.entity(['transform']);
 			loader.preload(Configs.get());
-			loader.load(config.id).then(function (entity) {
+			loader.load(config.id).then(function (entity) {
 				expect(entity.transformComponent).toEqual(jasmine.any(TransformComponent));
 				done();
 			});
@@ -58,16 +58,16 @@ define([
 		});
 
 		it('updates existing transformcomponent', function (done) {
-			var component;
+			//var component;
 			var config = Configs.entity(['transform']);
 
 			var newConfig = Configs.entity(['transform']);
-			newConfig.components.transform.translation = [1,2,3];
+			newConfig.components.transform.translation = [1, 2, 3];
 			newConfig.id = config.id;
 
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
-				component = entity.transformComponent;
+				//component = entity.transformComponent;
 
 				return loader.update(config.id, newConfig);
 			}).then(function (entity) {

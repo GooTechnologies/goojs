@@ -16,10 +16,12 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
-		//! AT: what does this test? that calling Plane does not throw an exception?
-		// where's the `expect` statement?!
-		it('constructs', function () {
-			var p = new Plane();
+		describe('constructor', function () {
+			it('creates a new vector pointing upwards if no parameters were passed', function () {
+				var plane = new Plane();
+				expect(plane.normal).toBeCloseToVector(Vector3.UNIT_Y);
+				expect(plane.constant).toBeCloseTo(0);
+			});
 		});
 
 		it('computes pseudodistance', function () {
@@ -30,9 +32,11 @@ define([
 
 		it('can set from points', function () {
 			var p = new Plane();
-			p.setPlanePoints(	new Vector3(1, 0, 0),
-								new Vector3(0, 1, 0),
-								new Vector3(0, 0, 0)  );
+			p.setPlanePoints(
+				new Vector3(1, 0, 0),
+				new Vector3(0, 1, 0),
+				new Vector3(0, 0, 0)
+			);
 			expect(p.normal).toEqual(new Vector3(0, 0, 1));
 		});
 

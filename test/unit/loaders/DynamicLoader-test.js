@@ -10,7 +10,7 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
-	"goo/animationpack/systems/AnimationSystem",
+	'goo/animationpack/systems/AnimationSystem',
 
 	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem',
@@ -69,7 +69,7 @@ define([
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (bundle) {
+			loader.load(bundleRef).then(function (bundle) {
 				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
@@ -116,7 +116,7 @@ define([
 				}
 
 				// No objects in handlers
-				for (var key in loader._handlers) {
+				for (var key in loader._handlers) {
 					expect(loader._handlers[key]._objects.size).toBe(0);
 				}
 
@@ -134,7 +134,7 @@ define([
 			var entities = [];
 			for (var i = 0; i < 4; i++) {
 				entities[i] = Configs.entity(['transform', 'meshData']);
-				if (i > 0) {
+				if (i > 0) {
 					Configs.attachChild(entities[i - 1], entities[i]);
 				}
 			}

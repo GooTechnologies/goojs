@@ -33,13 +33,13 @@ define([
 	}
 
 	describe('Transform', function () {
-		var t, v1, v2, v3;
+		var t, v1, v2;
 
 		//! AT: refactor this out of here; MathUtil should have something like this
 		function rnd(n) {
-			if(n) {
+			if (n) {
 				return Math.random() * n;
-			} else {
+			} else {
 				return Math.random();
 			}
 		}
@@ -49,7 +49,6 @@ define([
 			t = new Transform();
 			v1 = new Vector3(10, 20, 30);
 			v2 = new Vector3(0, 0, 0);
-			v3 = new Vector3(0, 0, 0);
 		});
 
 		it('is identity by default', function () {
@@ -186,7 +185,6 @@ define([
 
 		describe('multiply', function () {
 			it('can multiply and keep scaling correct', function () {
-
 				var transform1 = new Transform();
 				transform1.scale.setDirect(1, 2, 3);
 
@@ -196,7 +194,6 @@ define([
 				transform1.multiply(transform1, transform2);
 
 				expect(transform1.scale).toBeCloseToVector(new Vector3(1 * 4, 2 * 5, 3 * 6));
-
 			});
 		});
 

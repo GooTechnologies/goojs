@@ -87,6 +87,7 @@ define([
 
 		var attributeMap = meshData.attributeMap;
 		var keys = Object.keys(attributeMap);
+
 		for (var ii = 0, l = keys.length; ii < l; ii++) {
 			var key = keys[ii];
 			var map = attributeMap[key];

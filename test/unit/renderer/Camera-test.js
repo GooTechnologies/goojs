@@ -24,7 +24,7 @@ define([
 		it('can pack frustum around bounds', function () {
 			var bound = new BoundingSphere();
 			bound.radius = 10.0;
-			bound.center.setDirect(0,0,-20);
+			bound.center.setDirect(0, 0, -20);
 
 			camera.pack(bound);
 
@@ -76,7 +76,7 @@ define([
 				[0, 100, -10, Camera.Outside], // place to be outside top plane
 				[0, -100, -10, Camera.Outside], // place to be outside bottom plane
 				[0, 0, 10, Camera.Outside], // place to be outside near plane
-				[0, 0, -1000, Camera.Outside], // place to be outside far plane
+				[0, 0, -1000, Camera.Outside] // place to be outside far plane
 			];
 			var testBounds = function (bounding, testdata) {
 				for (var i = 0; i < testdata.length; i++) {

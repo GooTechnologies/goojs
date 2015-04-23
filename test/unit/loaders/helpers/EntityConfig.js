@@ -10,7 +10,7 @@ define([
 			components = components || ['transform'];
 			var entity = this.gooObject('entity', 'Dummy');
 			entity.components = {};
-			for (var i = 0; i < components.length; i++) {
+			for (var i = 0; i < components.length; i++) {
 				entity.components[components[i]] = this.component[components[i]]();
 			}
 			this.addToBundle(entity);
@@ -18,9 +18,9 @@ define([
 		},
 		component: {
 			transform: function (translation, rotation, scale) {
-				translation = (translation) ? translation.slice() : [0, 0, 0];
-				rotation = (rotation) ? rotation.slice() : [0, 0, 0];
-				scale = (scale) ? scale.slice() : [1, 1, 1];
+				translation = translation ? translation.slice() : [0, 0, 0];
+				rotation = rotation ? rotation.slice() : [0, 0, 0];
+				scale = scale ? scale.slice() : [1, 1, 1];
 
 				return {
 					translation: translation,
@@ -89,7 +89,7 @@ define([
 				return config;
 			},
 			meshData: function (shape, options) {
-				if (shape) {
+				if (shape) {
 					return {
 						shape: shape,
 						shadeOptions: options
@@ -105,7 +105,7 @@ define([
 					channels: {
 						'c1': {
 							id: 'c1',
-							sortValue:0,
+							sortValue: 0,
 							propertyKey: 'scaleX',
 							keyframes: {
 								'k1': {
@@ -127,9 +127,9 @@ define([
 						},
 						'c2': {
 							id: 'c2',
-							sortValue:1,
+							sortValue: 1,
 							propertyKey: 'translationY',
-							keyframes : {
+							keyframes: {
 								'k1': {
 									time: 200,
 									value: 20,

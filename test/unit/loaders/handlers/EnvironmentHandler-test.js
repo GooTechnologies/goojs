@@ -18,7 +18,7 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('EnvironmentHandler', function () {
 		var loader, world;
 

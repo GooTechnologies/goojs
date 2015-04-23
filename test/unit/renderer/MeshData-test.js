@@ -73,7 +73,6 @@ define([
 			expect(box.dataViews.POSITION[9]).toBeCloseTo( 0.5);  //  0.5
 			expect(box.dataViews.POSITION[10]).toBeCloseTo(-Math.sqrt(2) / 4); // -Math.sqrt(2) / 4
 			expect(box.dataViews.POSITION[11]).toBeCloseTo(-Math.sqrt(2) / 4); // -Math.sqrt(2) / 4
-
 		});
 
 		it('can apply a function on vertices', function () {
