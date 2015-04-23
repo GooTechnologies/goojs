@@ -3,9 +3,11 @@
     "performance": true,
     "jasmine": true,
     "describe": true,
+    "xdescribe": true,
     "beforeEach": true,
     "afterEach": true,
     "it": true,
+    "xit": true,
     "expect": true,
     "spyOn": true
   },

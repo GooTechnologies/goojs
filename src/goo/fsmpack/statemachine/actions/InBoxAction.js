@@ -85,7 +85,7 @@ define([
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 
-		var inside = checkInside(translation.data, this.point1, this.point2);
+		var inside = checkInside([translation.x, translation.y, translation.z], this.point1, this.point2);
 
 		if (inside) {
 			fsm.send(this.transitions.inside);

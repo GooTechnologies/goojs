@@ -72,15 +72,15 @@ define([
 
 	/**
 	 * Returns the script relevant to a given position
-	 * @param {Array} [pos] data, typically use entity transform.data
+	 * @param {Vector3} [pos] data, typically use entity transform
 	 * @returns {Object} container object with script and its world dimensions
 	 */
 	WorldFittedTerrainScript.prototype.getHeightDataForPosition = function (pos) {
 		for (var i = 0; i < this.heightMapData.length; i++) {
 			var dim = this.heightMapData[i].dimensions;
-			if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
-				if (pos[1] < dim.maxY + this.yMargin && pos[1] > dim.minY - this.yMargin) {
-					if (pos[2] <= dim.maxZ && pos[2] >= dim.minZ) {
+			if (pos.x <= dim.maxX && pos.x >= dim.minX) {
+				if (pos.y < dim.maxY + this.yMargin && pos.y > dim.minY - this.yMargin) {
+					if (pos.z <= dim.maxZ && pos.z >= dim.minZ) {
 						return this.heightMapData[i];
 					}
 				}
@@ -118,7 +118,7 @@ define([
 
 	/**
 	 * Looks through height data and returns the elevation of the ground at a given position
-	 * @param {Array} pos Position as [x, y, z]
+	 * @param {Vector3} pos Position
 	 * @returns {Number} height in units
 	 */
 	WorldFittedTerrainScript.prototype.getTerrainHeightAt = function (pos) {
@@ -128,15 +128,15 @@ define([
 		}
 		var dims = heightData.dimensions;
 
-		var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
-		var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+		var tx = this.displaceAxisDimensions(pos.x, dims.minX, dims.maxX, heightData.sideQuadCount);
+		var tz = this.displaceAxisDimensions(pos.z, dims.minZ, dims.maxZ, heightData.sideQuadCount);
 		var matrixHeight = heightData.script.getPreciseHeight(tx, tz);
 		return matrixHeight * (dims.maxY - dims.minY) + dims.minY;
 	};
 
 	/**
 	 * Returns the a normalized terrain normal for the provided position
-	 * @param {Array} [pos] the position as [x, y, z]
+	 * @param {Vector3} [pos] the position
 	 * @returns {Vector3} the normal vector
 	 */
 	WorldFittedTerrainScript.prototype.getTerrainNormalAt = function (pos) {
@@ -146,8 +146,8 @@ define([
 		}
 		var dims = heightData.dimensions;
 
-		var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
-		var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+		var x = this.displaceAxisDimensions(pos.x, dims.minX, dims.maxX, heightData.sideQuadCount);
+		var y = this.displaceAxisDimensions(pos.z, dims.minZ, dims.maxZ, heightData.sideQuadCount);
 		var tri = heightData.script.getTriangleAt(x, y);
 
 		for (var i = 0; i < tri.length; i++) {
@@ -156,8 +156,8 @@ define([
 			tri[i].y = this.returnToWorldDimensions(tri[i].y, dims.minZ, dims.maxZ, heightData.sideQuadCount);
 		}
 
-		calcVec1.set((tri[1].x - tri[0].x), (tri[1].z - tri[0].z), (tri[1].y - tri[0].y));
-		calcVec2.set((tri[2].x - tri[0].x), (tri[2].z - tri[0].z), (tri[2].y - tri[0].y));
+		calcVec1.setDirect((tri[1].x - tri[0].x), (tri[1].z - tri[0].z), (tri[1].y - tri[0].y));
+		calcVec2.setDirect((tri[2].x - tri[0].x), (tri[2].z - tri[0].z), (tri[2].y - tri[0].y));
 		calcVec1.cross(calcVec2);
 		if (calcVec1.y < 0) {
 			calcVec1.scale(-1);

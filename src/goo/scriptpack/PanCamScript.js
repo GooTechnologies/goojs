@@ -199,7 +199,7 @@ define([
 				}
 				//}
 				calcVector.add(calcVector2);
-				transform.rotation.applyPost(calcVector);
+				calcVector.applyPost(transform.rotation);
 				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 				if (camera.projectionMode === Camera.Perspective) {

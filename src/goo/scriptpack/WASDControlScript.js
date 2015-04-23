@@ -129,7 +129,7 @@ define([
 			var orient = transform.rotation;
 
 			// reorient our movement to entity space
-			orient.applyPost(calcVector);
+			calcVector.applyPost(orient);
 
 			// add to our transform
 			transform.translation.add(calcVector);

@@ -1,10 +1,12 @@
 define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
+	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
 ], function (
 	AudioContext,
 	MathUtils,
+	PromiseUtil,
 	RSVP
 ) {
 	'use strict';
@@ -131,11 +133,7 @@ define([
 	Sound.prototype.fade = function (volume, time) {
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		var p = new RSVP.Promise();
-		setTimeout(function () {
-			p.resolve();
-		}, time * 1000);
-		return p;
+		return PromiseUtil.delay(time * 1000);
 	};
 
 	Sound.prototype.isPlaying = function () {

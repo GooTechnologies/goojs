@@ -223,7 +223,6 @@ define([
 			// go through all the properties of a function
 			for (var prop in obj) {
 				if (obj.hasOwnProperty(prop)) {
-
 					// skip if function
 					if (typeof obj[prop] === 'function') { continue; }
 

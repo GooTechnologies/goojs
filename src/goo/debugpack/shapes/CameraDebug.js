@@ -6,12 +6,12 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
 ], function (
-		MeshData,
-		MeshBuilder,
-		Transform,
-		Vector3,
-		Box,
-		Cylinder
+	MeshData,
+	MeshBuilder,
+	Transform,
+	Vector3,
+	Box,
+	Cylinder
 ) {
 	'use strict';
 
@@ -30,7 +30,7 @@ define([
 		var tanFar, tanNear;
 
 		if (camera.projectionMode === 0) {
-			var tan = Math.tan(camera.fov / 2 * Math.PI/180);
+			var tan = Math.tan(camera.fov / 2 * Math.PI / 180);
 			tanFar = tan * far;
 			tanNear = tan * near;
 		} else {
@@ -42,7 +42,7 @@ define([
 		var f0, f1, f2, f3;
 		f0 = {
 			x: -tanFar * aspect,
-			y:  tanFar,
+			y: tanFar,
 			z: -far
 		};
 
@@ -53,21 +53,21 @@ define([
 		};
 
 		f2 = {
-			x:  tanFar * aspect,
+			x: tanFar * aspect,
 			y: -tanFar,
 			z: -far
 		};
 
 		f3 = {
-			x:  tanFar * aspect,
-			y:  tanFar,
+			x: tanFar * aspect,
+			y: tanFar,
 			z: -far
 		};
 
 		var n0, n1, n2, n3;
 		n0 = {
 			x: -tanNear * aspect,
-			y:  tanNear,
+			y: tanNear,
 			z: -near
 		};
 
@@ -78,14 +78,14 @@ define([
 		};
 
 		n2 = {
-			x:  tanNear * aspect,
+			x: tanNear * aspect,
 			y: -tanNear,
 			z: -near
 		};
 
 		n3 = {
-			x:  tanNear * aspect,
-			y:  tanNear,
+			x: tanNear * aspect,
+			y: tanNear,
 			z: -near
 		};
 

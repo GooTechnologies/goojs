@@ -81,7 +81,7 @@ define([
 	 * @returns {Number} Height of ground
 	 */
 	GroundBoundMovementScript.prototype.getTerrainHeight = function (translation) {
-		var height = this.getTerrainSystem().getTerrainHeightAt(translation.data);
+		var height = this.getTerrainSystem().getTerrainHeightAt(translation);
 		if (height === null) {
 			height = this.worldFloor;
 		}
@@ -95,7 +95,7 @@ define([
 	 * @returns {Vector3} The terrain normal vector.
 	 */
 	GroundBoundMovementScript.prototype.getTerrainNormal = function (translation) {
-		return this.getTerrainSystem().getTerrainNormalAt(translation.data);
+		return this.getTerrainSystem().getTerrainNormalAt(translation);
 	};
 
 	/**
@@ -166,7 +166,7 @@ define([
 		} else {
 			run *= this.modBack;
 		}
-		this.targetVelocity.set(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
+		this.targetVelocity.setDirect(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
 
 	/**
@@ -178,7 +178,7 @@ define([
 	 * @returns {Array}
 	 */
 	GroundBoundMovementScript.prototype.applyTorqueModulation = function (pitch, yaw, roll) {
-		this.targetHeading.set(pitch, yaw * this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
+		this.targetHeading.setDirect(pitch, yaw * this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
 
 	/**
@@ -202,7 +202,7 @@ define([
 	 */
 	GroundBoundMovementScript.prototype.updateTargetVectors = function (transform) {
 		this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run);
-		transform.rotation.applyPost(this.targetVelocity);
+		this.targetVelocity.applyPost(transform.rotation);
 		this.applyGroundNormalInfluence();
 		this.applyTorqueModulation(this.controlState.pitch, this.controlState.yaw, this.controlState.roll);
 	};
@@ -217,7 +217,7 @@ define([
 	 */
 	GroundBoundMovementScript.prototype.computeAcceleration = function (entity, current, target) {
 		calcVec.set(target);
-		entity.transformComponent.transform.rotation.applyPost(calcVec);
+		calcVec.applyPost(entity.transformComponent.transform.rotation);
 		calcVec.sub(current);
 		calcVec.lerp(target, this.accLerp);
 		calcVec.y = target.y; // Ground is not soft...
