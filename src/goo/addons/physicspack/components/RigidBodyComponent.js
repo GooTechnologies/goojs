@@ -165,6 +165,28 @@ function (
 	};
 
 	/**
+	 * Apply an impulse to the body.
+	 * @param {Vector3} impulse The impulse vector, oriented in world space.
+	 * @param {Vector3} relativePoint Where the impulse should be applied
+	 */
+	RigidBodyComponent.prototype.applyImpulse = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyImpulse(tmpCannonVec, tmpCannonVec2);
+	};
+
+	/**
+	 * Apply an impulse to the center of mass of the body.
+	 * @param {Vector3} impulse The force vector, oriented in local space.
+	 * @param {Vector3} relativePoint
+	 */
+	RigidBodyComponent.prototype.applyImpulseLocal = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyLocalImpulse(tmpCannonVec, tmpCannonVec2);
+	};
+
+	/**
 	 * @param {Vector3} velocity
 	 */
 	RigidBodyComponent.prototype.setVelocity = function (velocity) {

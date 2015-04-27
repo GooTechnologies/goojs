@@ -70,7 +70,9 @@ define([
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
 
 	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
-	'goo/fsmpack/statemachine/actions/TriggerLeaveAction'
+	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
+
+	'goo/fsmpack/statemachine/actions/ApplyImpulseAction'
 ], function (
 
 ) {
