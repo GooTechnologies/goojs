@@ -43,28 +43,16 @@ define([
 		transitions: []
 	};
 
-	ApplyImpulseAction.prototype.configure = function (settings) {
-		this.impulse = settings.impulse;
-		this.point = settings.point;
-		this.space = settings.space;
-	};
-
-	ApplyImpulseAction.prototype._setup = function (/*fsm*/) {
-	};
-
-	ApplyImpulseAction.prototype.cleanup = function (/*fsm*/) {
-	};
-
-	var tempVector1 = new Vector3();
-	var tempVector2 = new Vector3();
+	var impulseVector = new Vector3();
+	var applyPoint = new Vector3();
 	ApplyImpulseAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		tempVector1.setArray(this.impulse);
-		tempVector2.setArray(this.point);
+		impulseVector.setArray(this.impulse);
+		applyPoint.setArray(this.point);
 		if (this.space === 'World') {
-			entity.rigidBodyComponent.applyImpulse(tempVector1, tempVector2);
+			entity.rigidBodyComponent.applyImpulse(impulseVector, applyPoint);
 		} else {
-			entity.rigidBodyComponent.applyImpulseLocal(tempVector1, tempVector2);
+			entity.rigidBodyComponent.applyImpulseLocal(impulseVector, applyPoint);
 		}
 	};
 
