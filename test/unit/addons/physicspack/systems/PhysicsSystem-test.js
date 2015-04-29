@@ -355,6 +355,13 @@ define([
 			expect(system.passive).toBeFalsy();
 		});
 
+		it('can set and get gravity', function () {
+			system.setGravity(new Vector3(1, 2, 3));
+			var gravity = new Vector3();
+			system.getGravity(gravity);
+			expect(gravity).toEqual(new Vector3(1, 2, 3));
+		});
+
 		it('can stop and play', function () {
 
 			var rbcA = new RigidBodyComponent({ mass: 1 });
