@@ -9,7 +9,7 @@ define(['goo/math/Transform'], function (Transform) {
 		this._name = name;
 
 		this._index = 0;
-		this._parentIndex = 0;
+		this._parentIndex = Joint.NO_PARENT;
 		this._inverseBindPose = new Transform();
 	}
 

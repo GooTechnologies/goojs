@@ -42,6 +42,8 @@ require([
 
 	var j1 = new Joint('rootjoint');
 	j1._index = 0;
+	j1._parentIndex = Joint.NO_PARENT;
+	
 	var j2 = new Joint('j2');
 	j2._index = 1;
 	j2._parentIndex = Joint.NO_PARENT;
