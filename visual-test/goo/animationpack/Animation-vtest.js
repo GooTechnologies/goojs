@@ -52,21 +52,24 @@ require([
 	var skeletonPose = new SkeletonPose(skeleton);
 	var animComp = new AnimationComponent(skeletonPose);
 
-	var times = [0.0, 3.0];
+	var times = [0.0, 1.0, 2.0];
 
 	var rots = [];
 	var q1 = new Quaternion();
 	var q2 = new Quaternion();
-	q2.fromAngleNormalAxis(Math.PI / 60, Vector3.UNIT_Y);
+	q2.fromAngleNormalAxis(Math.PI * 0.1, Vector3.UNIT_Y);
 	Array.prototype.push.apply(rots, q1.data);
 	Array.prototype.push.apply(rots, q2.data);
+	Array.prototype.push.apply(rots, q1.data);
 
 	var trans = [
 		0,0,0,
+		0,.1,0,
 		0,0,0
 	];
 
 	var scales = [
+		1,1,1,
 		1,1,1,
 		1,1,1,
 	];
@@ -104,7 +107,7 @@ require([
 	meshData.type = MeshData.SKINMESH;
 
 	var weightData = meshData.dataViews.WEIGHTS;
-	for (var i = 0; i < weightData.length; i++) {
+	for (var i = 0; i < weightData.length; i+=4) {
 		weightData[i] = 1.0;
 	}
 
@@ -138,7 +141,7 @@ require([
 			localMap[localIndex] = jointIndex;
 		}
 	}
-	meshData.paletteMap = localMap;
+	meshData.paletteMap = localMap;  // The palettemap is used in the animation shader code.
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -152,8 +155,7 @@ require([
 	var boxEntity = world.createEntity(meshData, new Material(ShaderLib.uber));
 	boxEntity.set(animComp);
 
-	// OMG!
-	console.log(boxEntity);
+	// The entity's meshdatacomponent needs the currentPose to be set to the SkeletonPose.
 	boxEntity.meshDataComponent.currentPose = skeletonPose;
 	boxEntity.addToWorld();
 
