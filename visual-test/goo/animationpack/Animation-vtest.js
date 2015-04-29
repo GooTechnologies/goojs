@@ -9,7 +9,10 @@ require([
 	'goo/animationpack/components/AnimationComponent',
 	'goo/animationpack/SkeletonPose',
 	'goo/animationpack/Skeleton',
-	'goo/animationpack/Joint'
+	'goo/animationpack/Joint',
+	'goo/animationpack/state/SteadyState',
+	'goo/animationpack/blendtree/ClipSource',
+	'goo/animationpack/clip/AnimationClip'
 ], function (
 	V,
 	Material,
@@ -21,7 +24,10 @@ require([
 	AnimationComponent,
 	SkeletonPose,
 	Skeleton,
-	Joint
+	Joint,
+	SteadyState,
+	ClipSource,
+	AnimationClip
 ) {
 	'use strict';
 
@@ -39,18 +45,30 @@ require([
 	var skeletonPose = new SkeletonPose(skeleton);
 	var animComp = new AnimationComponent(skeletonPose);
 
-	var goo = V.initGoo();
+	var animChannels = [];
+	var clip = new AnimationClip('My animation Clip', animChannels);
+	var clipSource = new ClipSource(clip);
+	var animState = new SteadyState('My animation state');
+	animState.setClipSource(clipSource);
+	var animLayer = animComp.layers[0];  // Default animation layer
 
-	var world = goo.world;
-	// Ubershader contains the animation shader logic , plus any other feature.
+	
 	var meshData = new Box();
-
-	meshData.weightsPerVertex = 4;
+	// The Box does not create skeleton related attributes, doin' it manually
+	var skeletonMaps = MeshData.defaultMap([MeshData.JOINTIDS, MeshData.WEIGHTS]);
+	meshData.attributeMap[MeshData.JOINTIDS] = skeletonMaps[MeshData.JOINTIDS];
+	meshData.attributeMap[MeshData.WEIGHTS] = skeletonMaps[MeshData.WEIGHTS];
+	// rebuildData generates dataviews on the new attributes.
+	meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
+	// These are probably used somewhere.
+	meshData.weightsPerVertex = 4; // Default weights count
 	meshData.type = MeshData.SKINMESH;
-	meshData.attributeMap[MeshData.JOINTIDS] = MeshData.defaultMap([MeshData.JOINTIDS]);
 
 	console.log(meshData);
 
+	var goo = V.initGoo();
+	var world = goo.world;
+	// Ubershader contains the animation shader logic , plus any other feature.
 	var boxEntity = world.createEntity(meshData, new Material(ShaderLib.uber));
 	boxEntity.set(animComp);
 
