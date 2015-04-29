@@ -43,7 +43,7 @@ require([
 	var j1 = new Joint('rootjoint');
 	j1._index = 0;
 	j1._parentIndex = Joint.NO_PARENT;
-	
+
 	var j2 = new Joint('j2');
 	j2._index = 1;
 	j2._parentIndex = Joint.NO_PARENT;
@@ -59,14 +59,14 @@ require([
 	var rots = [];
 	var q1 = new Quaternion();
 	var q2 = new Quaternion();
-	q2.fromAngleNormalAxis(Math.PI * 0.1, Vector3.UNIT_Y);
+	q2.fromAngleNormalAxis(Math.PI, Vector3.UNIT_Y);
 	Array.prototype.push.apply(rots, q1.data);
 	Array.prototype.push.apply(rots, q2.data);
 	Array.prototype.push.apply(rots, q1.data);
 
 	var trans = [
 		0,0,0,
-		0,.1,0,
+		0,1,0,
 		0,0,0
 	];
 
