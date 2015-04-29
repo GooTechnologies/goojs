@@ -52,26 +52,23 @@ require([
 	var skeletonPose = new SkeletonPose(skeleton);
 	var animComp = new AnimationComponent(skeletonPose);
 
-	var times = [0.0, 3.0, 6.0];
+	var times = [0.0, 3.0];
 
 	var rots = [];
 	var q1 = new Quaternion();
 	var q2 = new Quaternion();
-	q2.fromAngleNormalAxis(Math.PI * 0.25 , Vector3.UNIT_Y);
+	q2.fromAngleNormalAxis(Math.PI / 60, Vector3.UNIT_Y);
 	Array.prototype.push.apply(rots, q1.data);
 	Array.prototype.push.apply(rots, q2.data);
-	Array.prototype.push.apply(rots, q1.data);
 
 	var trans = [
 		0,0,0,
-		0,0,0,
-		0,0,0,
+		0,0,0
 	];
 
 	var scales = [
 		1,1,1,
 		1,1,1,
-		1,1,1
 	];
 
 	var rootChannel = new JointChannel(
@@ -86,8 +83,7 @@ require([
 	var animChannels = [rootChannel];
 	var clip = new AnimationClip('My animation Clip', animChannels);
 	var clipSource = new ClipSource(clip);
-	clipSource._clipInstance._loopCount += -1;
-	clipSource._startTime = 0;
+	clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
 	var animState = new SteadyState('My animation state');
 	animState.setClipSource(clipSource);
 	var animLayer = animComp.layers[0];  // Default animation layer
@@ -118,7 +114,6 @@ require([
 	}
 
 	// Code stolen from meshdatahandler
-
 	var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
 
 	// Map skeleton joint index local joint index
@@ -144,8 +139,6 @@ require([
 		}
 	}
 	meshData.paletteMap = localMap;
-
-	console.log(meshData);
 
 	var goo = V.initGoo();
 	var world = goo.world;
