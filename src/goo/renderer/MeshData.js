@@ -773,7 +773,7 @@ define([
 
 	/**
 	 * Destroys all attached vertex and index data.
-	 * @param {WebGLContext} context
+	 * @param {WebGLRenderingContext} context
 	 */
 	MeshData.prototype.destroy = function (context) {
 		if (this.vertexData) {
