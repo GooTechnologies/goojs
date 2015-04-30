@@ -83,8 +83,8 @@ require([
 		}
 		meshData.paletteMap = [0,1];  // The palettemap is used in the animation shader code.
 	}
-	
-	function init() {
+
+	function addWeirdCube(world) {
 
 		var j2 = new Joint('j2');
 		j2._index = 0;
@@ -129,7 +129,7 @@ require([
 			rots,
 			trans,
 			scales,
-			'Linear'
+			'SCurve3'
 			);
 
 		var j2Channel = new JointChannel(
@@ -141,10 +141,10 @@ require([
 			0,0,0,1,],
 			[
 			0,0,0,
-			0,0,0,
+			0,1,0,
 			0,0,0],
 			scales,
-			'Linear');
+			'SCurve3');
 
 		var animChannels = [rootChannel, j2Channel];
 		var clip = new AnimationClip('My animation Clip', animChannels);
@@ -185,14 +185,6 @@ require([
 
 		addPaletteMap(meshData);
 
-		var goo = V.initGoo();
-		var world = goo.world;
-		
-		// The animationsystem calls the animation components, updating 
-		// the animation data every frame.
-		var animSystem = new AnimationSystem();
-		world.setSystem(animSystem);
-
 		// Ubershader contains the animation shader logic , plus any other feature.
 		var boxEntity = world.createEntity(meshData, new Material(ShaderLib.uber));
 		boxEntity.set(animComp);
@@ -200,6 +192,36 @@ require([
 		// The entity's meshdatacomponent needs the currentPose to be set to the SkeletonPose.
 		boxEntity.meshDataComponent.currentPose = boxEntity.animationComponent._skeletonPose;
 		boxEntity.addToWorld();
+	}
+
+	function addFoldingPaper(world) {
+
+		// Create skeleton joint hierarchy
+		var rootJoint = new Joint()
+
+
+		var size = 10;
+		var vertCount = 100;
+		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
+		var material = new Material(ShaderLib.uber);
+		material.cullState.enabled = false;
+		var surfaceEntity = world.createEntity(meshData, material);
+		surfaceEntity.addToWorld();
+	}
+	
+	function init() {
+
+		var goo = V.initGoo();
+		var world = goo.world;
+
+		// The animationsystem calls the animation components, updating 
+		// the animation data every frame.
+		var animSystem = new AnimationSystem();
+		world.setSystem(animSystem);
+
+		addWeirdCube(world);
+
+		//addFoldingPaper(world);
 
 		V.addLights();
 

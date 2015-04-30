@@ -1,7 +1,7 @@
 define([
-/*	'goo/math/MathUtils' */
+	'goo/math/MathUtils'
 ], function (
-/*	MathUtils */
+	MathUtils
 ) {
 	'use strict';
 
@@ -24,6 +24,11 @@ define([
 
 		this._lastStartFrame = 0;
 	}
+
+	AbstractAnimationChannel.BLENDTYPES = {};
+	AbstractAnimationChannel.BLENDTYPES.LINEAR = 'Linear';
+	AbstractAnimationChannel.BLENDTYPES.CUBIC = 'SCurve3';
+	AbstractAnimationChannel.BLENDTYPES.QUINTIC = 'SCurve5';
 
 	/*
 	 * @returns {number} number of samples
@@ -75,6 +80,17 @@ define([
 				}
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
+			
+			switch (this._blendType) {
+				case AbstractAnimationChannel.BLENDTYPES.CUBIC:
+					progressPercent = MathUtils.scurve3(progressPercent);
+					break;
+				case AbstractAnimationChannel.BLENDTYPES.QUINTIC:
+					progressPercent = MathUtils.scurve5(progressPercent);
+					break;
+				default:
+			}
+
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
 
 			this._lastStartFrame = startFrame;
