@@ -10,10 +10,11 @@ define([
 	 *        joint, or the play back of a specific sound, etc.) These channels are grouped together in an {@link AnimationClip} to describe a full animation.
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param {number[]} times our time indices. Copied into the channel.
+	 * @param {string} blendType the blendtype between transform keyframes of the channel. Defaults to AbstractAnimationChannel.BLENDTYPES.LINEAR
 	 * @private
 	 */
 	function AbstractAnimationChannel (channelName, times, blendType) {
-		this._blendType = blendType || 'Linear';
+		this._blendType = blendType || AbstractAnimationChannel.BLENDTYPES.LINEAR;
 		this._channelName = channelName;
 
 		if ((times instanceof Array || times instanceof Float32Array) && times.length) {

@@ -219,9 +219,9 @@ require([
 		var animSystem = new AnimationSystem();
 		world.setSystem(animSystem);
 
-		addWeirdCube(world);
+		//addWeirdCube(world);
 
-		//addFoldingPaper(world);
+		addFoldingPaper(world);
 
 		V.addLights();
 
