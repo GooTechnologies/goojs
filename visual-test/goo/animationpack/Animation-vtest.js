@@ -81,7 +81,7 @@ require([
 				localMap[localIndex] = jointIndex;
 			}
 		}
-		meshData.paletteMap = [0,1];  // The palettemap is used in the animation shader code.
+		meshData.paletteMap = localMap;  // The palettemap is used in the animation shader code.
 	}
 
 	function addWeirdCube(world) {
@@ -219,13 +219,22 @@ require([
 		var leftSideJoint = new Joint('Ls');
 		leftSideJoint._index = 1;
 		leftSideJoint._parentIndex = rootJoint._index
+		var trans = leftSideJoint._inverseBindPose;
+		console.log(trans.rotation.data);
+		trans.setIdentity();
+		//trans.setRotationXYZ(0, 0, -Math.PI/4);
+		trans.translation.setDirect(0,0,0);
+		var it = trans.invert();
+		it.update();
+		leftSideJoint._inverseBindPose = it;
+		console.log(it.rotation.data);
 		joints.push(leftSideJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0.0, 1.0, 2.0];
+		var times = [0.0, 3.0, 6.0];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
@@ -235,7 +244,7 @@ require([
 
 		var trans = [
 			0,0,0,
-			0,1,0,
+			0,0,0,
 			0,0,0
 		];
 
@@ -245,10 +254,10 @@ require([
 			1,1,1,
 		];
 
-		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'SCurve3');
+		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.5, Vector3.UNIT_Y);
+		q2.fromAngleNormalAxis(Math.PI * 0.6, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -265,7 +274,7 @@ require([
 			1,1,1,
 		];
 
-		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve3');
+		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
 
 		var animChannels = [rootChannel, leftChannel];
 		var clip = new AnimationClip('My animation Clip', animChannels);
@@ -282,7 +291,8 @@ require([
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
-		addPaletteMap(meshData);
+		//addPaletteMap(meshData);
+		//console.log(meshData.paletteMap);
 		meshData.paletteMap = [0, 1];
 
 		var weightData = meshData.dataViews.WEIGHTS;
@@ -293,10 +303,25 @@ require([
 			weightData[i+3] = 0;
 		}
 
+		var leftVertIndices = [];
+		var positions = meshData.dataViews.POSITION;
+		for (var i = 0; i < positions.length; i+=3) {
+			var x = positions[i];
+			var y = positions[i+1];
+			if (x + y < 0) {
+				leftVertIndices.push(i/3);
+			}
+		}
+
 		var jointData = meshData.dataViews.JOINTIDS;
+		for (var i = 0; i < leftVertIndices.length; i++) {
+			jointData[leftVertIndices[i]*4] = leftSideJoint._index;
+		}
+
+		/*
 		for (var i = 0; i < jointData.length; i+=4) {
 			jointData[i] = 1;
-		}
+		}*/
 
 		var material = new Material(ShaderLib.uber);
 		material.cullState.enabled = false;
