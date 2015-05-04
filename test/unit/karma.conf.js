@@ -15,6 +15,7 @@ module.exports = function(config) {
 	// list of files / patterns to load in the browser
 	files: [
 		{ pattern: 'test/unit/**/*.png', included: false },
+		{ pattern: 'test/unit/**/*.mp4', included: false },
 		{ pattern: 'test/unit/all-tests.js', included: false },
 		'test/unit/karma-main.js',
 		'visual-test/lib/Tween.js',

@@ -21,8 +21,9 @@ require([
 	var world = goo.world;
 
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cylinder.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cylinder.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	// add normal cylinder
 	var normalCylinderMeshData = new Cylinder(8, 4, 4, 8);

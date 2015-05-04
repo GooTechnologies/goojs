@@ -28,10 +28,11 @@ require([
 	function addHalo(x, y, z) {
 		var quadMeshData = new Quad(3, 3);
 		var quadMaterial = new Material(ShaderLibExtra.billboard);
-		var quadTexture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
-		quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
 		quadMaterial.blendState.blending = 'AlphaBlending';
 		quadMaterial.renderQueue = 2001;
+		new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (quadTexture) {
+			quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
+		});
 
 		goo.world.createEntity(quadMeshData, quadMaterial, [x, y, z]).addToWorld();
 	}

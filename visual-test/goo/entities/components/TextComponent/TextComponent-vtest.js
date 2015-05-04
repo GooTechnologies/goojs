@@ -32,8 +32,9 @@ require([
 
 	// get a font
 	var material = new Material(ShaderLibExtra.billboard);
-	var texture = new TextureCreator().loadTexture2D(resourcesPath + 'font.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D(resourcesPath + 'font.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 	material.blendState.blending = 'AlphaBlending';
 
 	// create text component with an initial text

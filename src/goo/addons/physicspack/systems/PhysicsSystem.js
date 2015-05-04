@@ -142,6 +142,16 @@ function (
 	};
 
 	/**
+	 * @param {Vector3} store
+	 */
+	PhysicsSystem.prototype.getGravity = function (store) {
+		var gravity = this.cannonWorld.gravity;
+		store.x = gravity.x;
+		store.y = gravity.y;
+		store.z = gravity.z;
+	};
+
+	/**
 	 * @private
 	 * @param {number} deltaTime
 	 */
@@ -271,7 +281,7 @@ function (
 
 	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
 		if (cannonResult.hasHit) {
-			gooResult.entity = this._entities[cannonResult.body.id];
+			gooResult.entity = this._entities[cannonResult.body.id] || this._shapeIdToColliderEntityMap.get(cannonResult.shape.id);
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
 			gooResult.point.setDirect(point.x, point.y, point.z);
@@ -555,8 +565,13 @@ function (
 			rigidBodyComponent._updated = true;
 
 			// Get physics orientation
-			rigidBodyComponent.getPosition(tmpVec);
-			rigidBodyComponent.getQuaternion(tmpQuat);
+			if (rigidBodyComponent.interpolation === RigidBodyComponent.INTERPOLATE) {
+				rigidBodyComponent.getInterpolatedPosition(tmpVec);
+				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat);
+			} else {
+				rigidBodyComponent.getPosition(tmpVec);
+				rigidBodyComponent.getQuaternion(tmpQuat);
+			}
 
 			// Set local transform of the entity
 			transform.translation.set(tmpVec);

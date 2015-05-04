@@ -131,10 +131,27 @@ function (
 		 * @type {Array}
 		 */
 		this._colliderEntities = [];
+
+		/**
+		 * How smoothing of the rigid body movement should be done. Set it to {@link RigidBodyComponent.NONE} or {@link RigidBodyComponent.INTERPOLATE}.
+		 * @type {number}
+		 */
+		this.interpolation = RigidBodyComponent.INTERPOLATE;
 	}
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
 	RigidBodyComponent.type = 'RigidBodyComponent';
+
+	/**
+	 * No rigid body smoothing.
+	 */
+	RigidBodyComponent.NONE = 1;
+
+	/**
+	 * Transform is smoothed based on the Transform of the previous frame.
+	 */
+	RigidBodyComponent.INTERPOLATE = 2;
+	//! SH: Making room for future "EXTRAPOLATE"
 
 	/**
 	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
@@ -151,8 +168,12 @@ function (
 		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(transform.translation);
+		body.previousPosition.copy(transform.translation);
+		body.interpolatedPosition.copy(transform.translation);
 		tmpQuat.fromRotationMatrix(transform.rotation);
 		body.quaternion.copy(tmpQuat);
+		body.previousQuaternion.copy(tmpQuat);
+		body.interpolatedQuaternion.copy(tmpQuat);
 	};
 
 	/**
@@ -162,6 +183,28 @@ function (
 	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
 		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
+	};
+
+	/**
+	 * Apply an impulse to the body.
+	 * @param {Vector3} impulse The impulse vector, oriented in world space.
+	 * @param {Vector3} relativePoint Where the impulse should be applied
+	 */
+	RigidBodyComponent.prototype.applyImpulse = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyImpulse(tmpCannonVec, tmpCannonVec2);
+	};
+
+	/**
+	 * Apply an impulse to the center of mass of the body.
+	 * @param {Vector3} impulse The force vector, oriented in local space.
+	 * @param {Vector3} relativePoint
+	 */
+	RigidBodyComponent.prototype.applyImpulseLocal = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyLocalImpulse(tmpCannonVec, tmpCannonVec2);
 	};
 
 	/**
@@ -222,6 +265,17 @@ function (
 	};
 
 	/**
+	 * Get the interpolated position from the rigid body. Use this for rendering. The resulting vector is a linear interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Vector3} targetVector
+	 */
+	RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector) {
+		if (this.cannonBody) {
+			var position = this.cannonBody.interpolatedPosition;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
+	};
+
+	/**
 	 * @param {Quaternion} quaternion
 	 */
 	RigidBodyComponent.prototype.setQuaternion = function (quaternion) {
@@ -236,6 +290,22 @@ function (
 	RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
 			var cannonQuaternion = this.cannonBody.quaternion;
+			targetQuat.setDirect(
+				cannonQuaternion.x,
+				cannonQuaternion.y,
+				cannonQuaternion.z,
+				cannonQuaternion.w
+			);
+		}
+	};
+
+	/**
+	 * Get the interpolated quaternion from the rigid body. Use this for rendering. The resulting quaternion is a spherical interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Quaternion} targetQuat
+	 */
+	RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat) {
+		if (this.cannonBody) {
+			var cannonQuaternion = this.cannonBody.interpolatedQuaternion;
 			targetQuat.setDirect(
 				cannonQuaternion.x,
 				cannonQuaternion.y,
@@ -396,6 +466,7 @@ function (
 			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(this._entity);
+		body.aabbNeedsUpdate = true;
 		this.emitInitialized(this._entity);
 	};
 

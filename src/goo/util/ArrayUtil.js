@@ -8,7 +8,6 @@ define([], function () {
 	 * Utilities for arrays and typed arrays
 	 */
 
-
 	/**
 	 * Create a typed array view on an ArrayBuffer, using the supplied pointer. Notice that this
 	 * does not copy any elements, if you make changes to the returned array, the original

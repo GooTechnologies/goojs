@@ -203,6 +203,13 @@ define([
 		});
 
 		it('emits contact events', function () {
+			function sortEntitiesByName(a, b) {
+				if (a.name === b.name) {
+					return 0;
+				}
+				return a.name > b.name ? 1 : -1;
+			}
+
 			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
@@ -213,6 +220,7 @@ define([
 			});
 			var entityA = world.createEntity(rbcA, ccA).addToWorld();
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			var entities = [entityA, entityB].sort(sortEntitiesByName);
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
 
@@ -222,18 +230,15 @@ define([
 
 			var listeners = {
 				'goo.physics.beginContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numBeginContact++;
 				},
 				'goo.physics.duringContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numDuringContact++;
 				},
 				'goo.physics.endContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numEndContact++;
 				}
 			};
@@ -348,6 +353,13 @@ define([
 			expect(system.passive).toBeTruthy();
 			system.play();
 			expect(system.passive).toBeFalsy();
+		});
+
+		it('can set and get gravity', function () {
+			system.setGravity(new Vector3(1, 2, 3));
+			var gravity = new Vector3();
+			system.getGravity(gravity);
+			expect(gravity).toEqual(new Vector3(1, 2, 3));
 		});
 
 		it('can stop and play', function () {
