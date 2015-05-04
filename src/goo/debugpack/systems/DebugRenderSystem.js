@@ -48,15 +48,16 @@ define([
 		this.currentTpf = 0.0;
 		this.scale = 20;
 
-		// no more that!
-		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+		this.cameraListener = function (newCam) {
+			this.camera = newCam.camera;
+		}.bind(this);
 
-		SystemBus.addListener('goo.setLights', function (lights) {
-			that.lights = lights;
-		});
+		this.lightsListener = function (lights) {
+			this.lights = lights;
+		}.bind(this);
+
+		SystemBus.addListener('goo.setCurrentCamera', this.cameraListener);
+		SystemBus.addListener('goo.setLights', this.lightsListener);
 
 		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
 		this.selectionActive = false;
@@ -176,6 +177,11 @@ define([
 		});
 
 		renderer.invalidateMeshData(this.selectionRenderable[0].meshData);
+	};
+
+	DebugRenderSystem.prototype.cleanup = function () {
+		SystemBus.removeListener('goo.setCurrentCamera', this.cameraListener);
+		SystemBus.removeListener('goo.setLights', this.lightsListener);
 	};
 
 	return DebugRenderSystem;
