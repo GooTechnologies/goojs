@@ -40,7 +40,8 @@ def build_engine(version, grunt_build_task, tmp_relase_dir):
 def copy_to_release_dir(release_dir, engine_folders):
 
 	if os.path.isdir(release_dir):
-		print 'Release directory already exists:', release_dir
+		print 'Release directory "%s" already exist, clearing it out' % release_dir
+		shutil.rmtree(release_dir)
 	else:
 		os.makedirs(release_dir)
 		print 'Created directory for release:', release_dir
