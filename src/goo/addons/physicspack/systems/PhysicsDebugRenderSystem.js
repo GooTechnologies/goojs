@@ -6,6 +6,9 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
 	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsCylinderDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsSphereDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsBoxDebugShape',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
@@ -26,6 +29,9 @@ function (
 	Box,
 	Cylinder,
 	PhysicsPlaneDebugShape,
+	PhysicsCylinderDebugShape,
+	PhysicsSphereDebugShape,
+	PhysicsBoxDebugShape,
 	SphereCollider,
 	BoxCollider,
 	CylinderCollider,
@@ -70,9 +76,9 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.sphereMeshData = new Sphere(8, 8, 1);
-		this.boxMeshData = new Box(1, 1, 1);
-		this.cylinderMeshData = new Cylinder(10, 1, 1, 1);
+		this.sphereMeshData = new PhysicsSphereDebugShape(32);
+		this.boxMeshData = new PhysicsBoxDebugShape();
+		this.cylinderMeshData = new PhysicsCylinderDebugShape(32);
 		this.planeMeshData = new PhysicsPlaneDebugShape();
 
 		this.material = new Material(ShaderLib.simpleColored);
