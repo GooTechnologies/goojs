@@ -60,7 +60,7 @@ function (
 
 		/**
 		 * If set to true, all entities with a ColliderComponent attached is rendered, and the selection is disregarded.
-		 * @type {Boolean}
+		 * @type {boolean}
 		 */
 		this.renderAll = true;
 

@@ -45,8 +45,9 @@ require([
 
 	// --- test shape
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cone.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var coneMeshData = new Cone(64, 4, 8);
 	var coneEntity = world.createEntity(coneMeshData, material).addToWorld();

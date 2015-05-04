@@ -129,6 +129,35 @@ define([
 
 			expect(systemA.cleanup).toHaveBeenCalled();
 		});
+
+		it('tries to add existing entities to a late added system', function () {
+			function SystemA() {
+				System.call(this, 'SystemA', ['ComponentA']);
+			}
+
+			SystemA.prototype = Object.create(System.prototype);
+			var systemA = new SystemA();
+			spyOn(systemA, '_check').and.callThrough();
+
+			// ---
+			function ComponentA() {
+				Component.apply(this, arguments);
+				this.type = 'ComponentA';
+			}
+
+			ComponentA.prototype = Object.create(Component.prototype);
+
+			// ---
+			var entity1 = world.createEntity(new ComponentA()).addToWorld();
+			var entity2 = world.createEntity().addToWorld();
+
+			world.process();
+
+			world.setSystem(systemA);
+
+			expect(systemA._check.calls.argsFor(0)[0]).toBe(entity1);
+			expect(systemA._check.calls.argsFor(1)[0]).toBe(entity2);
+		});
 	});
 
 	describe('World with Components', function () {

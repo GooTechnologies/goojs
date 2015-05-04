@@ -56,7 +56,9 @@ define([
 		var waterMaterial = this.waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
 
-		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D('../resources/water/waternormals3.png'));
+		new TextureCreator().loadTexture2D('../resources/water/waternormals3.png').then(function (texture) {
+			waterMaterial.setTexture('NORMAL_MAP', texture);
+		});
 		waterMaterial.setTexture('REFLECTION_MAP', this.renderTarget);
 		waterMaterial.setTexture('BUMP_MAP', this.heightTarget);
 		waterMaterial.setTexture('NORMAL_MAP_COARSE', this.normalTarget);
@@ -84,9 +86,6 @@ define([
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
 		var materialProj = new Material(projShaderDef, 'mat');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/uniformclouds.jpg');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/perlin_noise.png');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');
 		this.projRenderable = {
 			meshData: projData,
 			materials: [materialProj]

@@ -36,15 +36,17 @@ require([
 	function createBox(size, x, y, textureUrl, goo) {
 		var meshData = new Box(size, size, size, 1, 1);
 
-		var texture = new TextureCreator({
-			verticalFlip : true
-		}).loadTexture2D(resourcePath + textureUrl);
-
 		var material = new Material('TestMaterial');
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
-		material.setTexture('DIFFUSE_MAP', texture);
+		new TextureCreator({
+			verticalFlip : true
+		}).loadTexture2D(resourcePath + textureUrl).then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		}, function (err) {
+			console.error(err);
+		});
 
-		var box = goo.world.createEntity(meshData, material, [x, y, 0]).addToWorld();
+		goo.world.createEntity(meshData, material, [x, y, 0]).addToWorld();
 	}
 
 	// Create typical goo application

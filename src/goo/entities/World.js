@@ -211,6 +211,8 @@ define([
 		}
 		this._systems.splice(i, 0, system);
 
+		if (system.setup) { system.setup(this); }
+
 		return this;
 	};
 

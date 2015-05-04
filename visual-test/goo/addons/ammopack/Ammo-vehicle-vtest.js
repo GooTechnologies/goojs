@@ -113,9 +113,10 @@ require([
 		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScriptObject).addToWorld();
 	}
 
-	var texture = new TextureCreator().loadTexture2D('../../../resources/goo.png');
 	var material = new Material(ShaderLib.texturedLit);
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 	function createEntity(goo, meshData, ammoSettings, pos) {
 		var entity = goo.world.createEntity(meshData, material, pos);
 		if (ammoSettings !== undefined) {

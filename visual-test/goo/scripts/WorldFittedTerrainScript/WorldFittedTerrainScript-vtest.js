@@ -139,8 +139,9 @@ require([
         var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
         var material = new Material(ShaderLib.texturedLit, '');
 
-        var texture = new TextureCreator().loadTexture2D(txPath);
-        material.setTexture('DIFFUSE_MAP', texture);
+        new TextureCreator().loadTexture2D(txPath).then(function (texture) {
+            material.setTexture('DIFFUSE_MAP', texture);
+        });
 
         material.uniforms.materialAmbient = [
             0.310305785123966943,

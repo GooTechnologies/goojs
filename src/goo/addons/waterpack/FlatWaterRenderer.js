@@ -65,12 +65,14 @@ define([
 			texture = settings.normalsTexture;
 		} else if (settings.normalsUrl) {
 			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
-			texture = new TextureCreator().loadTexture2D(normalsTextureUrl);
+			new TextureCreator().loadTexture2D(normalsTextureUrl).then(function (texture) {
+				waterMaterial.setTexture('NORMAL_MAP', texture);
+			});
 		} else {
 			var flatNormalData = new Uint8Array([127, 127, 255, 255]);
 			texture = new Texture(flatNormalData, null, 1, 1);
+			waterMaterial.setTexture('NORMAL_MAP', texture);
 		}
-		waterMaterial.setTexture('NORMAL_MAP', texture);
 		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 

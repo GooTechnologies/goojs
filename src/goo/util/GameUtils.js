@@ -55,9 +55,10 @@ function () {
 	/**
 	 * Attempts to lock the mouse pointer in the window.
 	 */
-	GameUtils.requestPointerLock = function () {
-		if (document.documentElement.requestPointerLock) {
-			document.documentElement.requestPointerLock();
+	GameUtils.requestPointerLock = function (optionalTarget) {
+		var target = optionalTarget || document.documentElement;
+		if (target.requestPointerLock) {
+			target.requestPointerLock();
 		}
 	};
 
@@ -73,15 +74,11 @@ function () {
 	/**
 	 * Attempts to toggle the lock on the mouse pointer in the window.
 	 */
-	GameUtils.togglePointerLock = function () {
+	GameUtils.togglePointerLock = function (optionalTarget) {
 		if (!document.pointerLockElement) {
-			if (document.documentElement.requestPointerLock) {
-				document.documentElement.requestPointerLock();
-			}
+			GameUtils.requestPointerLock(optionalTarget);
 		} else {
-			if (document.exitPointerLock) {
-				document.exitPointerLock();
-			}
+			GameUtils.exitPointerLock();
 		}
 	};
 
@@ -316,7 +313,7 @@ function () {
 		document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
 		document.addEventListener('mozpointerlockerror', pointerlockerror, false);
 
-		if (!document.hasOwnProperty('pointerLockElement')) {
+		if (!("pointerLockElement" in document)) {
 			var getter = (function () {
 				if ('webkitPointerLockElement' in document) {
 					return function () {

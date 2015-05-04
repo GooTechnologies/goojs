@@ -23,25 +23,6 @@ require([
 	) {
 	'use strict';
 
-	V.describe([
-		'Both the sphere and the cube have sound components',
-		'',
-		'Controls:',
-		'1: boing',
-		'2: squigly',
-		'3: pause boing',
-		'4: pause squigly',
-		'5: remove cube',
-		'6: add cube'
-	].join('\n'));
-
-	V.button('1', key1);
-	V.button('2', key2);
-	V.button('3', key3);
-	V.button('4', key4);
-	V.button('5', key5);
-	V.button('6', key6);
-
 	var resourcePath = '../../../resources/';
 
 	var goo = V.initGoo();
@@ -53,8 +34,9 @@ require([
 	// create panning cube
 	var meshData = new Box();
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D(resourcePath + 'check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var cubeEntity = world.createEntity(meshData, material).addToWorld();
 
@@ -70,10 +52,9 @@ require([
 	var sounds = [];
 
 	var soundCreator = new SoundCreator();
-	urls.forEach(loadSound);
 
 	function loadSound(url) {
-		soundCreator.loadSound(url, {}, function (sound) {
+		soundCreator.loadSound(url).then(function (sound) {
 			// Make the sounds loop when played.
 			sound._loop = true;
 			sounds.push(sound);
@@ -82,6 +63,8 @@ require([
 			}
 		});
 	}
+
+	urls.forEach(loadSound);
 
 	function allLoaded() {
 		console.log('all loaded');
@@ -140,7 +123,7 @@ require([
 	// ---
 
 	function setupKeys() {
-		document.body.addEventListener('keypress', function(e) {
+		document.body.addEventListener('keypress', function (e) {
 			switch(e.which) {
 				case 49: key1(); break;
 				case 50: key2(); break;
@@ -157,6 +140,25 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera();
+
+	V.describe([
+		'Both the sphere and the cube have sound components',
+		'',
+		'Controls:',
+		'1: boing',
+		'2: squigly',
+		'3: pause boing',
+		'4: pause squigly',
+		'5: remove cube',
+		'6: add cube'
+	].join('\n'));
+
+	V.button('1', key1);
+	V.button('2', key2);
+	V.button('3', key3);
+	V.button('4', key4);
+	V.button('5', key5);
+	V.button('6', key6);
 
 	V.process();
 });

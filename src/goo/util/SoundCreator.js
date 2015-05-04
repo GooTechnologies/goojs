@@ -2,12 +2,14 @@ define([
 	'goo/loaders/handlers/SoundHandler',
 	'goo/sound/AudioContext',
 	'goo/util/Ajax',
-	'goo/util/StringUtil'
+	'goo/util/StringUtil',
+	'goo/util/PromiseUtil'
 ], function (
 	SoundHandler,
 	AudioContext,
 	Ajax,
-	StringUtil
+	StringUtil,
+	PromiseUtil
 ) {
 	'use strict';
 
@@ -37,9 +39,15 @@ define([
 		this.soundHandler.clear();
 	};
 
-	SoundCreator.prototype.loadSound = function (url, settings, callback) {
+	/**
+	 * Load a sound.
+	 * @param  {string}   url
+	 * @param  {object}   settings
+	 * @return {RSVP.Promise}
+	 */
+	SoundCreator.prototype.loadSound = function (url, settings) {
 		if (!AudioContext.isSupported()) {
-			return null;
+			return PromiseUtil.reject(new Error('AudioContext is not supported!'));
 		}
 
 		var id = StringUtil.createUniqueId('sound');
@@ -51,12 +59,8 @@ define([
 
 		var sound = this.soundHandler._create();
 		this.soundHandler._objects.set(id, sound);
-		this.soundHandler.update(id, settings, {}).then(function () {
-			if (callback) {
-				callback(sound);
-			}
-		});
-		return sound;
+
+		return this.soundHandler.update(id, settings, {});
 	};
 
 	return SoundCreator;
