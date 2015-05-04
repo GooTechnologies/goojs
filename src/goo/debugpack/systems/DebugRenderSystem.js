@@ -56,9 +56,6 @@ define([
 			this.lights = lights;
 		}.bind(this);
 
-		SystemBus.addListener('goo.setCurrentCamera', this.cameraListener);
-		SystemBus.addListener('goo.setLights', this.lightsListener);
-
 		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
 		this.selectionActive = false;
 		this.oldSelectionActive = false;
@@ -66,6 +63,11 @@ define([
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
 	DebugRenderSystem.prototype.constructor = DebugRenderSystem;
+
+	DebugRenderSystem.prototype.setup = function () {
+		SystemBus.addListener('goo.setCurrentCamera', this.cameraListener);
+		SystemBus.addListener('goo.setLights', this.lightsListener);
+	};
 
 	DebugRenderSystem.prototype.inserted = function (/*entity*/) {
 	};
