@@ -156,7 +156,9 @@
 
 	var anchorsByName = setupActiveClass();
 
+
 	var parameters = window.purl().param();
+
 	if (parameters.c) {
 		iframe.addEventListener('load', function () {
 			iframe.contentWindow.postMessage(parameters.c, '*');
@@ -167,6 +169,12 @@
 			element.scrollIntoView();
 			setActiveClass(element.parentNode);
 		}
+	}
+
+	if (parameters.h) {
+		iframe.addEventListener('load', function () {
+			iframe.contentWindow.postMessage(parameters.h, '*');
+		});
 	}
 
 	setupSearch();
