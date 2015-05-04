@@ -83,14 +83,15 @@ define(['goo/math/Vector3'], function (Vector3) {
 		for (var bucketIndex = 0, l = bucketSortList.length; bucketIndex < l; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
-			if (key >= 0) {
+			var bl = bucket.length;
+			if (bl > 1 && key >= 0) {
 				if (key < RenderQueue.TRANSPARENT) {
 					bucket.sort(this.opaqueSorter);
 				} else {
 					bucket.sort(this.transparentSorter);
 				}
 			}
-			for (var i = 0, bl = bucket.length; i < bl; i++) {
+			for (var i = 0; i < bl; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}

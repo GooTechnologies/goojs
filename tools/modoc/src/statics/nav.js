@@ -10,7 +10,7 @@
 	}
 
 	function itemClickListener() {
-		iframe.contentWindow.postMessage(this.innerText, '*');
+		iframe.contentWindow.postMessage(this.textContent, '*');
 		setActiveClass(this.parentNode);
 	}
 
@@ -119,7 +119,7 @@
 
 			if (searchText.length > 0) {
 				element = resultsContainer.find('a').filter(function (index, element) {
-					return element.innerText === event.data;
+					return element.textContent === event.data;
 				})[0];
 			} else {
 				element = anchorsByName[event.data];
