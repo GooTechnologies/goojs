@@ -267,20 +267,15 @@ require([
 		var leftSideJoint = createNewJoint('side.left', 1, rootJoint);
 		joints.push(leftSideJoint);
 
-		var offsetJoint = createNewJoint('corner.offset.left', 2, leftSideJoint);
+		var offsetJoint = createNewJoint('corner.left', 2, leftSideJoint);
 		setJointBindPose(offsetJoint, [-3.5, -3.5, 0]);
 		joints.push(offsetJoint);
-
-		var leftCornerJoint = createNewJoint('Corner.left', 3, offsetJoint);
-		console.log(leftCornerJoint);
-		//setJointBindPose(leftCornerJoint, [-3.5, -3.5, 0]);
-		joints.push(leftCornerJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0.0, 3.0, 6.0];
+		var times = [0.0, 1.0, 2.0];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
@@ -303,7 +298,7 @@ require([
 		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.8, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(Math.PI * 0.92, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
@@ -322,25 +317,14 @@ require([
 		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
-		q2.fromAngleNormalAxis(-Math.PI * 0.5, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(-Math.PI * 0.7, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 
 		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'SCurve5');
 		
-		rots = [];
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		var trans = [
-			3.5, 3.5, 0,
-			3.5, 3.5, 0,
-			3.5, 3.5, 0,
-		];
-		var leftCornerChannel = createJointChannel(leftCornerJoint, times, trans, rots, scales, 'SCurve5');
-
-		var animChannels = [rootChannel, leftChannel, offsetChannel, leftCornerChannel];
+		var animChannels = [rootChannel, leftChannel, offsetChannel];
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
@@ -384,7 +368,7 @@ require([
 				leftVertIndices.push(vertIndex);
 			}
 
-			if (x + y < -7) {
+			if (x + y <= -7) {
 				leftCornerVerts.push(vertIndex);
 			}
 		}
@@ -394,11 +378,8 @@ require([
 			jointData[leftVertIndices[i]*4] = leftSideJoint._index;
 		}
 		for (var i = 0; i < leftCornerVerts.length; i++) {
-			jointData[leftCornerVerts[i]*4] = leftCornerJoint._index;
+			jointData[leftCornerVerts[i]*4] = offsetJoint._index;
 		}
-
-		
-
 
 		/*
 		for (var i = 0; i < jointData.length; i+=4) {
@@ -416,6 +397,7 @@ require([
 	function init() {
 
 		var goo = V.initGoo();
+		goo._addDebugKeys();
 		var world = goo.world;
 
 		// The animationsystem calls the animation components, updating 
