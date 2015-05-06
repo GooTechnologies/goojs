@@ -51,6 +51,7 @@ define([
 		 * There was an idea to specify and jsdoc uniforms.materialDiffuse etc instead,
 		 * since those are the ones we use now
 		 */
+
 		/* Specification of colors for this Material
 		 * @type {Object}
 		 * @property {number[]} ambient The ambient color, [r, g, b, a]
@@ -58,14 +59,16 @@ define([
 		 * @property {number[]} emissive The emissive color, [r, g, b, a]
 		 * @property {number[]} specular The specular color, [r, g, b, a]
 		 * @property {number} shininess The shininess exponent.
-		 * */
-		/*this.materialState = {
+		 */
+		/*
+		this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
 			diffuse: Shader.DEFAULT_DIFFUSE,
 			emissive: Shader.DEFAULT_EMISSIVE,
 			specular: Shader.DEFAULT_SPECULAR,
 			shininess: Shader.DEFAULT_SHININESS
 		};
+		*/
 
 		/** Specification of culling for this Material
 		 * @type {Object}
@@ -81,7 +84,7 @@ define([
 
 		/** Specification of blending for this Material
 		 * @type {Object}
-		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
+		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'TransparencyBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
 		 * @property {String} blendSrc possible values: <strong>'SrcAlphaFactor'</strong>, 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 		 * @property {String} blendDst possible values: 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', <strong>'OneMinusSrcAlphaFactor'</strong>, 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'DstAlphaFactor'
