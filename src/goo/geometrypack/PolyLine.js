@@ -79,68 +79,69 @@ define([
 		return new Surface(verts, thatNVerts);
 	};
 
-	function getRotationMatrix(verts, index, up) {
-		var matrix = new Matrix3x3();
-		var oldIndex, futureIndex;
+	(function () {
+		function getRotationMatrix(verts, index, up, store) {
+			var oldIndex, futureIndex;
 
-		if (index >= verts.length / 3 - 1) {
-			oldIndex = index - 1;
-			futureIndex = index;
-		} else {
-			oldIndex = index;
-			futureIndex = index + 1;
+			if (index >= verts.length / 3 - 1) {
+				oldIndex = index - 1;
+				futureIndex = index;
+			} else {
+				oldIndex = index;
+				futureIndex = index + 1;
+			}
+
+			var lookAtVector = new Vector3(
+				verts[futureIndex * 3 + 0] - verts[oldIndex * 3 + 0],
+				verts[futureIndex * 3 + 1] - verts[oldIndex * 3 + 1],
+				verts[futureIndex * 3 + 2] - verts[oldIndex * 3 + 2]
+			);
+
+			lookAtVector.normalize();
+
+			store.lookAt(lookAtVector, up);
 		}
-
-		var lookAtVector = new Vector3(
-			verts[futureIndex * 3 + 0] - verts[oldIndex * 3 + 0],
-			verts[futureIndex * 3 + 1] - verts[oldIndex * 3 + 1],
-			verts[futureIndex * 3 + 2] - verts[oldIndex * 3 + 2]
-		);
-
-		lookAtVector.normalize();
-
-		matrix.lookAt(lookAtVector, up);
-
-		return matrix;
-	}
-
-	/**
-	 * Extrudes and rotates a PolyLine along another PolyLine.
-	 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
-	 * @param {(number) -> number} [thickness] Takes values between 0 and 1 and its value is used to scale the extruded PolyLine
-	 * @returns {Surface} The resulting surface
-	 */
-	PolyLine.prototype.pipe = function (that, thickness) {
-		var thatNVerts = that.verts.length / 3;
-		var verts = [];
 
 		var FORWARD = Vector3.UNIT_Z.clone().scale(-1);
 
-		var forward = new Vector3();
-		var up = Vector3.UNIT_Y.clone();
-		var right = new Vector3();
+		/**
+		 * Extrudes and rotates a PolyLine along another PolyLine.
+		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
+		 * @param {(number) -> number} [thickness] Takes values between 0 and 1 and its value is used to scale the extruded PolyLine
+		 * @returns {Surface} The resulting surface
+		 */
+		PolyLine.prototype.pipe = function (that, thickness) {
+			var thatNVerts = that.verts.length / 3;
+			var verts = [];
 
-		for (var i = 0; i < this.verts.length; i += 3) {
-			var rotation = getRotationMatrix(this.verts, i / 3, up);
+			var forward = new Vector3();
+			var up = Vector3.UNIT_Y.clone();
+			var right = new Vector3();
 
-			forward.copy(FORWARD); rotation.applyPost(forward);
-			right.copy(forward).cross(up).normalize();
-			up.copy(right).cross(forward).normalize();
+			var rotation = new Matrix3x3();
 
-			var scale = thickness ? thickness(i / (this.verts.length - 1)) : 1;
+			for (var i = 0; i < this.verts.length; i += 3) {
+				getRotationMatrix(this.verts, i / 3, up, rotation);
 
-			for (var j = 0; j < that.verts.length; j += 3) {
-				var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
-				rotation.applyPost(vertex);
-				vertex.scale(scale);
-				vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
+				forward.copy(FORWARD); rotation.applyPost(forward);
+				right.copy(forward).cross(up).normalize();
+				up.copy(right).cross(forward);
 
-				verts.push(vertex.x, vertex.y, vertex.z);
+				var scale = thickness ? thickness(i / (this.verts.length - 1)) : 1;
+
+				for (var j = 0; j < that.verts.length; j += 3) {
+					var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
+					rotation.applyPost(vertex);
+					vertex.scale(scale);
+					vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
+
+					verts.push(vertex.x, vertex.y, vertex.z);
+				}
 			}
-		}
 
-		return new Surface(verts, thatNVerts);
-	};
+			return new Surface(verts, thatNVerts);
+		};
+	})();
 
 	/**
 	 * Builds a surface as a result of rotating this polyLine around the Y axis
