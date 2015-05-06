@@ -206,6 +206,24 @@ require([
 		);
 	}
 
+	function setJointBindPose(joint, T, R) {
+		
+		var trans = joint._inverseBindPose;
+		trans.setIdentity();
+		
+		if (T) {
+			trans.translation.setDirect(T[0], T[1], T[2]);	
+		}
+		
+		if (R) {
+			trans.setRotationXYZ(0, 0, -Math.PI/4);	
+		}
+
+		var it = trans.invert();
+		it.update();
+		joint._inverseBindPose = it;
+	}
+
 	function addFoldingPaper(world) {
 
 		var joints = [];
@@ -219,15 +237,7 @@ require([
 		var leftSideJoint = new Joint('Ls');
 		leftSideJoint._index = 1;
 		leftSideJoint._parentIndex = rootJoint._index
-		var trans = leftSideJoint._inverseBindPose;
-		console.log(trans.rotation.data);
-		trans.setIdentity();
-		//trans.setRotationXYZ(0, 0, -Math.PI/4);
-		trans.translation.setDirect(0,0,0);
-		var it = trans.invert();
-		it.update();
-		leftSideJoint._inverseBindPose = it;
-		console.log(it.rotation.data);
+		setJointBindPose(leftSideJoint);
 		joints.push(leftSideJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
