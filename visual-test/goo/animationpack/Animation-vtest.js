@@ -258,18 +258,21 @@ require([
 
 	function addFoldingPaper(world) {
 
+		var size = 1;
+
 		var joints = [];
 
 		// Create skeleton joint hierarchy
 		var rootJoint = createNewJoint('RootJoint', 0);
 		joints.push(rootJoint);
 
-		var leftSideJoint = createNewJoint('side.left', 1, rootJoint);
-		joints.push(leftSideJoint);
+		var topJoint = createNewJoint('top.first', 1, rootJoint);
+		setJointBindPose(topJoint, [-0.5, 0, 0]);
+		joints.push(topJoint);
 
-		var offsetJoint = createNewJoint('corner.left', 2, leftSideJoint);
-		setJointBindPose(offsetJoint, [-3.5, -3.5, 0]);
-		joints.push(offsetJoint);
+		var botJoint = createNewJoint('bottom.first', 2, rootJoint);
+		setJointBindPose(botJoint, [0.25, 0, 0]);
+		joints.push(botJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -298,7 +301,7 @@ require([
 		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.92, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(Math.PI * 0.95, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
@@ -314,17 +317,17 @@ require([
 			1,1,1,
 			1,1,1,
 		];
-		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
+		var topchan = createJointChannel(topJoint, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
-		q2.fromAngleNormalAxis(-Math.PI * 0.7, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(-Math.PI * 0.9, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 
-		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'SCurve5');
+		var botchan = createJointChannel(botJoint, times, trans, rots, scales, 'SCurve5');
 		
-		var animChannels = [rootChannel, leftChannel, offsetChannel];
+		var animChannels = [rootChannel, topchan, botchan];
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
@@ -334,8 +337,8 @@ require([
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
 
-		var size = 10;
-		var vertCount = 200;
+		
+		var vertCount = 300;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
@@ -364,31 +367,27 @@ require([
 
 			var vertIndex = i/3;
 
-			if (x + y < 0) {
+			if (x + y <= -0.5) {
 				leftVertIndices.push(vertIndex);
 			}
 
-			if (x + y <= -7) {
+			if (x + y >= 0.25) {
 				leftCornerVerts.push(vertIndex);
 			}
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
 		for (var i = 0; i < leftVertIndices.length; i++) {
-			jointData[leftVertIndices[i]*4] = leftSideJoint._index;
+			jointData[leftVertIndices[i]*4] = topJoint._index;
 		}
 		for (var i = 0; i < leftCornerVerts.length; i++) {
-			jointData[leftCornerVerts[i]*4] = offsetJoint._index;
+			jointData[leftCornerVerts[i]*4] = botJoint._index;
 		}
-
-		/*
-		for (var i = 0; i < jointData.length; i+=4) {
-			jointData[i] = 1;
-		}*/
 
 		var material = new Material(ShaderLib.uber);
 		material.cullState.enabled = false;
 		var surfaceEntity = world.createEntity(meshData, material);
+		//surfaceEntity.transformComponent.setRotation(0, 0, -Math.PI * 0.75);
 		surfaceEntity.set(animComp);
 		surfaceEntity.meshDataComponent.currentPose = surfaceEntity.animationComponent._skeletonPose;
 		surfaceEntity.addToWorld();
