@@ -216,11 +216,12 @@ require([
 		}
 		
 		if (R) {
-			//trans.setRotationXYZ(0, 0, -Math.PI/4);	
+			trans.setRotationXYZ(R[0], R[1], R[2]);
 		}
 
 		var it = trans.invert();
 		it.update();
+		console.log(it.translation.data);
 		joint._inverseBindPose = it;
 	}
 
@@ -249,12 +250,12 @@ require([
 		joints.push(leftSideJoint);
 
 		var offsetJoint = createNewJoint('corner.offset.left', 2, leftSideJoint);
-		setJointBindPose(offsetJoint, [5, 5, 0]);
+		setJointBindPose(offsetJoint, [-5, -5, 0]);
 		joints.push(offsetJoint);
 
 		var leftCornerJoint = createNewJoint('Corner.left', 3, offsetJoint);
 		console.log(leftCornerJoint);
-		setJointBindPose(leftCornerJoint, [5, 5, 0]);
+		setJointBindPose(leftCornerJoint, [-5, -5, 0]);
 		joints.push(leftCornerJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
@@ -284,7 +285,7 @@ require([
 		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		
+		q2.fromAngleNormalAxis(Math.PI * 0.3, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -303,13 +304,27 @@ require([
 
 		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
 
-		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'Linear');
-
 		rots = [];
 		q2.fromAngleNormalAxis(Math.PI * 0.5, new Vector3(0,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var trans = [
+			-5,-5,0,
+			-5,-5,0,
+			-5,-5,0,
+		];
+		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'SCurve5');
+		
+		rots = [];
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0
+		];
 		var leftCornerChannel = createJointChannel(leftCornerJoint, times, trans, rots, scales, 'SCurve5');
 
 		var animChannels = [rootChannel, leftChannel, offsetChannel, leftCornerChannel];
