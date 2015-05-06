@@ -7,7 +7,7 @@ function (
 	'use strict';
 
 	/**
-	 * A wireframe mesh indicating the position and orientation of a plane collider.
+	 * A wireframe mesh indicating the position and orientation of a PlaneCollider.
 	 * @extends MeshData
 	 */
 	function PhysicsPlaneDebugShape() {

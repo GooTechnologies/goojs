@@ -20,11 +20,10 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var textureCreator = new TextureCreator();
-	var texture = textureCreator.loadTexture2D('../../../resources/check.png');
-
 	var material = new Material(ShaderLib.texturedLit);
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var polarSphereMeshData = new Sphere(32, 32, 0.5, Sphere.TextureModes.Polar);
 	world.createEntity(polarSphereMeshData, material, 'Polar', [-6, 0, 0]).addToWorld();

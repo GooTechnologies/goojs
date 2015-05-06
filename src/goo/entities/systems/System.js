@@ -65,6 +65,17 @@ function () {
 	};
 
 	/**
+	 * Called when the system is added to the world.
+	 * This method is called automatically when the system is added to a world.
+	 * By default it will go through all entities
+	 * accounted by the entity manager and try to add them to this system.
+	 * @param world {World}
+	 */
+	System.prototype.setup = function (world) {
+		world.entityManager.getEntities().forEach(this._check.bind(this));
+	};
+
+	/**
 	 * Called when the system is removed from the world.
 	 * By default it will call the deleted method on all entities it is keeping track of.
 	 */

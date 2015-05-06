@@ -65,7 +65,7 @@ define([
 			var entity = world.createEntity(cc).addToWorld();
 
 			// Initialize
-			world.process();
+			cc.initialize();
 
 			expect(cc.bodyEntity).toBeFalsy();
 			expect(cc.cannonBody).toBeTruthy();
@@ -77,7 +77,7 @@ define([
 			entity.removeFromWorld();
 
 			// Cleanup
-			world.process();
+			cc.destroy();
 
 			expect(cc.bodyEntity).toBeFalsy();
 			expect(cc.cannonBody).toBeFalsy();

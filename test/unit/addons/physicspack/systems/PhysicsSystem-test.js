@@ -52,7 +52,9 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.fixedProcess(); // Needed to initialize bodies
+
+			rbcA.initialize(); // Needed to initialize bodies
+			rbcB.initialize();
 
 			var result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
@@ -86,7 +88,9 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.fixedProcess(); // Needed to initialize bodies
+
+			rbcA.initialize(); // Needed to initialize bodies
+			rbcB.initialize();
 
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, {}, result);
@@ -111,10 +115,12 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.fixedProcess(); // Needed to initialize bodies
+
+			rbcA.initialize(); // Needed to initialize bodies
+			rbcB.initialize();
 
 			var numHits = 0;
-			system.raycastAll(start, direction, distance, {}, function (/*result*/) {
+			system.raycastAll(start, direction, distance, { skipBackfaces: false }, function (/*result*/) {
 				numHits++;
 			});
 			expect(numHits).toBe(4);
@@ -138,7 +144,8 @@ define([
 			});
 			var entity = world.createEntity(rbc, cc).addToWorld();
 			entity.setTranslation(0, 0, 3);
-			world.fixedProcess(); // Needed to initialize bodies
+
+			rbc.initialize(); // Needed to initialize body
 
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, { collisionGroup: -1 }, result);
@@ -159,7 +166,7 @@ define([
 				collider: new SphereCollider({ radius: 1 })
 			});
 			world.createEntity(rbc, cc).addToWorld();
-			world.fixedProcess(); // Needed to initialize bodies
+			rbc.initialize(); // Needed to initialize body
 
 			var numHits = 0;
 			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function (result) {
@@ -195,13 +202,24 @@ define([
 		});
 
 		it('emits contact events', function () {
+			function sortEntitiesByName(a, b) {
+				if (a.name === b.name) {
+					return 0;
+				}
+				return a.name > b.name ? 1 : -1;
+			}
+
 			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var rbcB = new RigidBodyComponent({ mass: 1 });
-			var cc = new ColliderComponent({
+			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			var entityA = world.createEntity(rbcA, cc).addToWorld();
-			var entityB = world.createEntity(rbcB, cc).addToWorld();
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			var entities = [entityA, entityB].sort(sortEntitiesByName);
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
 
@@ -211,18 +229,15 @@ define([
 
 			var listeners = {
 				'goo.physics.beginContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numBeginContact++;
 				},
 				'goo.physics.duringContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numDuringContact++;
 				},
 				'goo.physics.endContact': function (evt) {
-					expect(evt.entityA).toBe(entityA);
-					expect(evt.entityB).toBe(entityB);
+					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
 					numEndContact++;
 				}
 			};
@@ -230,7 +245,10 @@ define([
 				SystemBus.addListener(key, listeners[key]);
 			}
 
-			world.fixedProcess(); // Needed to initialize bodies
+			rbcA.initialize(); // Needed to initialize bodies
+			rbcB.initialize();
+
+			world.fixedProcess();
 
 			expect(numBeginContact).toEqual(0);
 			expect(numDuringContact).toEqual(0);
@@ -311,7 +329,9 @@ define([
 			entityA.setTranslation(0, 0, 0.1);
 			entityB.setTranslation(0, 0, -0.1);
 
-			world.fixedProcess(); // Needed to initialize bodies
+			rbcA.initialize();
+			rbcB.initialize();
+			world.fixedProcess();
 
 			expect(numBeginContact).toEqual(1);
 
@@ -334,6 +354,13 @@ define([
 			expect(system.passive).toBeFalsy();
 		});
 
+		it('can set and get gravity', function () {
+			system.setGravity(new Vector3(1, 2, 3));
+			var gravity = new Vector3();
+			system.getGravity(gravity);
+			expect(gravity).toEqual(new Vector3(1, 2, 3));
+		});
+
 		it('can stop and play', function () {
 
 			var rbcA = new RigidBodyComponent({ mass: 1 });
@@ -343,17 +370,13 @@ define([
 			world.createEntity(rbcA, ccA).addToWorld();
 
 			world.fixedProcess();
-			expect(rbcA._dirty).toBeFalsy();
 
 			system.stop();
-			expect(rbcA._dirty).toBeTruthy();
 
 			world.fixedProcess();
-			expect(rbcA._dirty).toBeTruthy();
 
 			system.play();
-			world.fixedProcess();
-			expect(rbcA._dirty).toBeFalsy();
+			world.process();
 		});
 	});
 });

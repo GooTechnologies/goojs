@@ -22,12 +22,6 @@ function () {
 		 * @type {boolean}
 		 */
 		this.collideConnected = settings.collideConnected !== undefined ? settings.collideConnected : false;
-
-		/**
-		 * @private
-		 * @type {boolean}
-		 */
-		this._dirty = true;
 	}
 
 	return PhysicsJoint;

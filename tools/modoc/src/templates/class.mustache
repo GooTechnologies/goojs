@@ -3,7 +3,7 @@
 <head lang="en">
 	<meta charset="UTF-8">
 	<title>Goo Engine Documentation</title>
-	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+	<link href='//fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="lib/styles/goo.css">
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -32,7 +32,7 @@
 			<div>{{{constructor.comment.description}}}</div>
 
 			{{#constructor.comment.exampleLink}}
-				<div>Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+				<div>Example: <a class="example-link" href="{{link}}" target="_blank">{{text}}</a></div>
 			{{/constructor.comment.exampleLink}}
 
 			{{#constructor.comment.example}}
@@ -77,8 +77,13 @@
 
 			{{#members}}
 				<div>
-					<a class="method-name" id="{{name}}" href="#{{name}}">
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a>
+					<a
+						class="method-name"
+						id="_mbr_{{../constructor.name}}_{{name}}"
+						href="#_mbr_{{../constructor.name}}_{{name}}"
+					>
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+					--></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
 					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
@@ -92,9 +97,13 @@
 
 			{{#constructor.comment.property}}
 				<div>
-					<a class="method-name" id="{{name}}" href="#{{name}}">
-						<span>{{name}}</span>
-					</a>
+					<a
+						class="method-name"
+						id="_mbr_{{../constructor.name}}_{{name}}"
+						href="#_mbr_{{../constructor.name}}_{{name}}"
+					>
+						<span>{{name}}</span><!--
+					--></a>
 					{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
 					{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
 					{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
@@ -113,8 +122,13 @@
 
 			{{#staticMembers}}
 				<div>
-					<a class="method-name" id="{{name}}" href="#{{name}}">
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a>
+					<a
+						class="method-name"
+						id="_smbr_{{../constructor.name}}_{{name}}"
+						href="#_smbr_{{../constructor.name}}_{{name}}"
+					>
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+					--></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
 					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
@@ -139,8 +153,13 @@
 					{{#comment.virtual}}
 						<span class="icon-warning-gray virtual roboto"> virtual</span>
 					{{/comment.virtual}}
-					<a class="method-name" id="{{name}}" href="#{{name}}">
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a> :: (
+					<a
+						class="method-name"
+						id="_met_{{../constructor.name}}_{{name}}"
+						href="#_met_{{../constructor.name}}_{{name}}"
+					>
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+					--></a> :: (
 					{{#params}}
 						<span class="parameter">{{.}}</span>
 					{{/params}}
@@ -162,7 +181,7 @@
 						{{/comment.param}}
 
 						{{#comment.exampleLink}}
-							<div class="roboto">Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+							<div class="roboto">Example: <a class="example-link" href="{{link}}" target="_blank">{{text}}</a></div>
 						{{/comment.exampleLink}}
 
 						{{#comment.example}}
@@ -182,8 +201,13 @@
 
 			{{#staticMethods}}
 				<div>
-					<a class="method-name" id="{{name}}" href="#{{name}}">
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a> :: (
+					<a
+						class="method-name"
+						id="_smet_{{../constructor.name}}_{{name}}"
+						href="#_smet_{{../constructor.name}}_{{name}}"
+					>
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+					--></a> :: (
 					{{#params}}
 						<span class="parameter">
 							{{.}}
@@ -206,7 +230,7 @@
 						{{/comment.param}}
 
 						{{#comment.exampleLink}}
-							<a class="example-link" href="{{link}}">{{text}}</a>
+							<a class="example-link" href="{{link}}" target="_blank">{{text}}</a>
 						{{/comment.exampleLink}}
 
 						{{#comment.example}}

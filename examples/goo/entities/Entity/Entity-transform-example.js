@@ -39,10 +39,10 @@ require([
 	var boxMesh = new Box();
 	var sphereMesh = new Sphere(32, 32);
 
-	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
 	var material = new Material(ShaderLib.texturedLit);
-	material.setTexture('DIFFUSE_MAP', texture);
-
+	new TextureCreator().loadTexture2D(resourcePath + 'check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var box1 = world.createEntity(boxMesh, material).addToWorld();
 	var box2 = world.createEntity(boxMesh, material, [2, 2, 0]).addToWorld();

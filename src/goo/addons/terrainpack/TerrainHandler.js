@@ -10,7 +10,7 @@ define([
 		'goo/renderer/TextureCreator',
 		'goo/util/rsvp'
 	],
-	function(
+	function (
 		Terrain,
 		Vegetation,
 		Forrest,
@@ -159,13 +159,9 @@ define([
 		};
 
 		TerrainHandler.prototype._textureLoad = function (url) {
-			var promise = new RSVP.Promise();
-			new TextureCreator().loadTexture2D(url, {
+			return new TextureCreator().loadTexture2D(url, {
 				anisotropy: 4
-			}, function (texture) {
-				promise.resolve(texture);
 			});
-			return promise;
 		};
 
 		TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
@@ -377,30 +373,25 @@ define([
                     }.bind(this)
 				};
 
-				var texturesPromise = new RSVP.Promise();
-				var loadCount = 3;
-				var onLoaded = function() {
-					if (!--loadCount) {
-						texturesPromise.resolve();
-					}
-				};
+				return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas).then(function (vegetationAtlasTexture) {
 
-				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas, {}, onLoaded);
+					vegetationAtlasTexture.anisotropy = 4;
+					var vegetationTypes = terrainData.vegetationTypes;
 
-				vegetationAtlasTexture.anisotropy = 4;
-				var vegetationTypes = terrainData.vegetationTypes;
+					return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas).then(function (forrestAtlasTexture) {
 
-				var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas, {}, onLoaded);
+						forrestAtlasTexture.anisotropy = 4;
 
-				forrestAtlasTexture.anisotropy = 4;
-				var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals, {}, onLoaded);
+						return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals).then(function (forrestAtlasNormals) {
 
-				var forrestTypes = terrainData.forrestTypes;
+							var forrestTypes = terrainData.forrestTypes;
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+							this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
+							this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 
-				return texturesPromise;
+						}.bind(this));
+					}.bind(this));
+				}.bind(this));
 			}.bind(this));
 		};
 
@@ -412,7 +403,7 @@ define([
 			this.ammoBody = this.terrain.initAmmoBody();
 		};
 
-		TerrainHandler.prototype.useLightmap = function(data, size) {
+		TerrainHandler.prototype.useLightmap = function (data, size) {
 			if (data) {
 				var lightMap = new Texture(data, {
 					magFilter: 'Bilinear',
