@@ -216,7 +216,7 @@ require([
 		}
 		
 		if (R) {
-			trans.setRotationXYZ(0, 0, -Math.PI/4);	
+			//trans.setRotationXYZ(0, 0, -Math.PI/4);	
 		}
 
 		var it = trans.invert();
@@ -224,21 +224,38 @@ require([
 		joint._inverseBindPose = it;
 	}
 
+	function createNewJoint (jointName, jointIndex, parentJoint) {
+		
+		var joint = new Joint(jointName);
+		joint._index = jointIndex;
+		if (parentJoint) {
+			joint._parentIndex = parentJoint._index;
+		} else {
+			joint._parentIndex = Joint.NO_PARENT;
+		}
+
+		return joint;
+	}
+
 	function addFoldingPaper(world) {
 
 		var joints = [];
 
 		// Create skeleton joint hierarchy
-		var rootJoint = new Joint('RootJoint');
-		rootJoint._parentIndex = Joint.NO_PARENT;
-		rootJoint._index = 0;
+		var rootJoint = createNewJoint('RootJoint', 0);
 		joints.push(rootJoint);
 
-		var leftSideJoint = new Joint('Ls');
-		leftSideJoint._index = 1;
-		leftSideJoint._parentIndex = rootJoint._index
-		setJointBindPose(leftSideJoint);
+		var leftSideJoint = createNewJoint('side.left', 1, rootJoint);
 		joints.push(leftSideJoint);
+
+		var offsetJoint = createNewJoint('corner.offset.left', 2, leftSideJoint);
+		setJointBindPose(offsetJoint, [5, 5, 0]);
+		joints.push(offsetJoint);
+
+		var leftCornerJoint = createNewJoint('Corner.left', 3, offsetJoint);
+		console.log(leftCornerJoint);
+		setJointBindPose(leftCornerJoint, [5, 5, 0]);
+		joints.push(leftCornerJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -267,9 +284,9 @@ require([
 		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.6, new Vector3(-1,1,0).normalize());
+		
 		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 
 		var trans = [
@@ -286,7 +303,16 @@ require([
 
 		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
 
-		var animChannels = [rootChannel, leftChannel];
+		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'Linear');
+
+		rots = [];
+		q2.fromAngleNormalAxis(Math.PI * 0.5, new Vector3(0,1,0).normalize());
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q1.data);
+		var leftCornerChannel = createJointChannel(leftCornerJoint, times, trans, rots, scales, 'SCurve5');
+
+		var animChannels = [rootChannel, leftChannel, offsetChannel, leftCornerChannel];
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
@@ -301,9 +327,13 @@ require([
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
-		//addPaletteMap(meshData);
-		//console.log(meshData.paletteMap);
-		meshData.paletteMap = [0, 1];
+
+		// Just map 1to1,
+		meshData.paletteMap = [];
+		for (var i =0; i < joints.length; i++) {
+			meshData.paletteMap[i] = i;
+		}
+		
 
 		var weightData = meshData.dataViews.WEIGHTS;
 		for (var i = 0; i < weightData.length; i+=4) {
@@ -314,18 +344,26 @@ require([
 		}
 
 		var leftVertIndices = [];
+		var leftCornerVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		for (var i = 0; i < positions.length; i+=3) {
 			var x = positions[i];
 			var y = positions[i+1];
+
+			var vertIndex = i/3;
+
 			if (x + y < 0) {
-				leftVertIndices.push(i/3);
+				leftVertIndices.push(vertIndex);
+			}
+
+			if (x + y < -8) {
+				leftCornerVerts.push(vertIndex);
 			}
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
-		for (var i = 0; i < leftVertIndices.length; i++) {
-			jointData[leftVertIndices[i]*4] = leftSideJoint._index;
+		for (var i = 0; i < leftCornerVerts.length; i++) {
+			jointData[leftCornerVerts[i]*4] = leftCornerJoint._index;
 		}
 
 		/*
