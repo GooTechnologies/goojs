@@ -32,40 +32,41 @@ require([
 		 0, -1,  1,
 
 		 1, -1,  1,
-		 1, -1,  0,
-		 1,  0,  0,
+		 1, -1,  2,
+		 1,  0,  2,
 
-		 1,  1,  0,
-		 1,  1,  1,
-		 0,  1,  1,
+		 1,  1,  2,
+		 1,  1,  3,
+		 0,  1,  3,
 
-		-1,  1,  1,
-		-1,  1,  0,
-		-1,  0,  0
-	], 14);
+		-1,  1,  3,
+		-1,  1,  4,
+		-1,  0,  4
+	], 32);
 
-	var section = new PolyLine([
-		-0.1,  0.0, 0,
-		 0.0, -0.1, 0,
-		 0.1,  0.0, 0,
-		 0.0,  0.1, 0,
-		-0.1,  0.0, 0
-	]);
+	var section = new PolyLine.fromCubicSpline([
+		-0.1,  0.00, 0,
 
-	function addBox(rotation, translation) {
-		var box = world.createEntity(new Box(), V.getColoredMaterial()).addToWorld();
+		-0.1, -0.04, 0,
+		-0.0, -0.04, 0,
+		 0.0, -0.04, 0,
 
-		var cone = world.createEntity(new Cone(), V.getColoredMaterial(), [0, 1, 0]).addToWorld();
-		cone.setScale(0.2, 0.2, 50);
-		box.attachChild(cone);
+		 0.1, -0.04, 0,
+		 0.1, -0.04, 0,
+		 0.1,  0.00, 0,
 
-		box.transformComponent.transform.rotation.copy(rotation);
-		box.transformComponent.transform.translation.copy(translation);
-		box.setScale(0.3, 0.3, 0.002);
-		box.transformComponent.setUpdated();
-	}
+		 0.1,  0.04, 0,
+		 0.1,  0.04, 0,
+		 0.0,  0.04, 0,
 
-	var pipeMeshData = path.pipe(section, addBox);
+		-0.1,  0.04, 0,
+		-0.1,  0.04, 0,
+		-0.1,  0.00, 0
+	], 6);
+
+	var pipeMeshData = path.pipe(section, function (progress) {
+		return Math.sin(progress * Math.PI * 10) * 0.4 + 1.0;
+	});
 
 	var material = new Material(ShaderLib.simpleLit);
 	world.createEntity(pipeMeshData, material).addToWorld();

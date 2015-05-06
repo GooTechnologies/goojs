@@ -81,7 +81,6 @@ define([
 
 	function getRotationMatrix(verts, index, up) {
 		var matrix = new Matrix3x3();
-		// this is a bad solution when verts are aligned with the up vector
 		var oldIndex, futureIndex;
 
 		if (index >= verts.length / 3 - 1) {
@@ -106,11 +105,12 @@ define([
 	}
 
 	/**
-	 * Extrudes and rotates a PolyLine along another PolyLine
-	 * @param {PolyLine} [that] The second operand
+	 * Extrudes and rotates a PolyLine along another PolyLine.
+	 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
+	 * @param {(number) -> number} [thickness] Takes values between 0 and 1 and its value is used to scale the extruded PolyLine
 	 * @returns {Surface} The resulting surface
 	 */
-	PolyLine.prototype.pipe = function (that) {
+	PolyLine.prototype.pipe = function (that, thickness) {
 		var thatNVerts = that.verts.length / 3;
 		var verts = [];
 
@@ -122,15 +122,17 @@ define([
 
 		for (var i = 0; i < this.verts.length; i += 3) {
 			var rotation = getRotationMatrix(this.verts, i / 3, up);
-			console.log(rotation.determinant());
 
 			forward.copy(FORWARD); rotation.applyPost(forward);
 			right.copy(forward).cross(up).normalize();
 			up.copy(right).cross(forward).normalize();
 
+			var scale = thickness ? thickness(i / (this.verts.length - 1)) : 1;
+
 			for (var j = 0; j < that.verts.length; j += 3) {
 				var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
 				rotation.applyPost(vertex);
+				vertex.scale(scale);
 				vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
 
 				verts.push(vertex.x, vertex.y, vertex.z);
@@ -178,7 +180,7 @@ define([
 			this.verts[length - 1] === that.verts[1] &&
 			this.verts[length - 0] === that.verts[2]
 		) {
-			return new PolyLine(this.verts.concat(that.verts.slice(3)), closed);
+			return new PolyLine(this.verts.slice(0, -3).concat(that.verts), closed);
 		} else {
 			return new PolyLine(this.verts.concat(that.verts), closed);
 		}
