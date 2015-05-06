@@ -134,9 +134,9 @@ function () {
 		}
 	};
 
-	System.prototype._fixedProcess = function (fixedTpf) {
+	System.prototype._fixedProcess = function (fixedDeltaTime) {
 		if (this.fixedProcess) {
-			this.fixedProcess(this._activeEntities, fixedTpf);
+			this.fixedProcess(this._activeEntities, fixedDeltaTime);
 		}
 	};
 

@@ -55,9 +55,9 @@ define([
 		/** Accumulated fixed time steps the world has been running. Calculated at the start of each fixed process.
 		 * @type {number}
 		 */
-		this.fixedTpfTime = 0;
+		this.fixedTime = 0;
 
-		this.fixedTpf = 1 / 60;
+		this.fixedDeltaTime = 1 / 60;
 		this.maxSubSteps = 10;
 
 		/** Time since last frame in seconds.
@@ -456,7 +456,7 @@ define([
 		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
 			if (!system.passive) {
-				system._fixedProcess(this.fixedTpf);
+				system._fixedProcess(this.fixedDeltaTime);
 			}
 		}
 	};

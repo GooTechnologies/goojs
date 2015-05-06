@@ -504,11 +504,11 @@ function (
 		this.initialized = false;
 	};
 
-	PhysicsSystem.prototype.fixedProcess = function (entities, fixedTpf) {
+	PhysicsSystem.prototype.fixedProcess = function (entities, fixedDeltaTime) {
 		if (!this.initialized) {
 			this.initialize();
 		}
-		this.step(fixedTpf);
+		this.step(fixedDeltaTime);
 	};
 
 	/**
@@ -562,7 +562,7 @@ function (
 
 			// Get physics orientation
 			if (rigidBodyComponent.interpolation === RigidBodyComponent.INTERPOLATE) {
-				var t = (entity._world.time - entity._world.fixedTpfTime) / entity._world.fixedTpf;
+				var t = (entity._world.time - entity._world.fixedTime) / entity._world.fixedDeltaTime;
 				rigidBodyComponent.getInterpolatedPosition(tmpVec, t);
 				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat, t);
 			} else {

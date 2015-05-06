@@ -113,7 +113,7 @@ define([
 			// var oldV = rigidBodyComponent.cannonBody.velocity.y;
 			// var contTime = this.startTime;
 
-			var progress = (world.fixedTpfTime - this.startTime) / timeSeconds;
+			var progress = (world.fixedTime - this.startTime) / timeSeconds;
 			newPos.copy(this.fromVector);
 			if (progress < 1) {
 
@@ -143,12 +143,12 @@ define([
 
 		if (entity.rigidBodyComponent) {
 
-			this.startTime = entity._world.fixedTpfTime;
+			this.startTime = entity._world.fixedTime;
 			this.fromVector = initialTranslation.clone();
 			this.toVector = this.relative ? new Vector3(this.to).addVector(initialTranslation) : new Vector3(this.to);
 			this.directionVector = new Vector3().setVector(this.toVector).subVector(this.fromVector);
 			this.fixedUpdate(fsm);
-			this.startTime = entity._world.fixedTpfTime + entity._world.fixedTpf;
+			this.startTime = entity._world.fixedTime + entity._world.fixedDeltaTime;
 
 		} else {
 

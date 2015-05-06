@@ -77,7 +77,7 @@ define([
 	 * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
 	 * If the parameter is of type object then the logo will be positioned according to the 'position' key and will be colored according to the 'color' key
 	 * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
-	 * @param {number} [parameters.fixedTpf=1/60] The delta time for the fixed update loop.
+	 * @param {number} [parameters.fixedDeltaTime=1/60] The delta time for the fixed update loop.
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
@@ -111,7 +111,7 @@ define([
 
 		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
-		this.fixedTpf = parameters.fixedTpf !== undefined ? parameters.fixedTpf : 1 / 60;
+		this.fixedDeltaTime = parameters.fixedDeltaTime !== undefined ? parameters.fixedDeltaTime : 1 / 60;
 		this.maxSubSteps = 10;
 
 		if (parameters.showStats) {
@@ -357,7 +357,7 @@ define([
 		this.world.time += this.world.tpf;
 		World.time = this.world.time;
 		World.tpf = this.world.tpf;
-		World.fixedTpf = this.world.fixedTpf = this.fixedTpf;
+		World.fixedDeltaTime = this.world.fixedDeltaTime = this.fixedDeltaTime;
 		this.world.maxSubSteps = this.maxSubSteps;
 		this.start = time;
 
@@ -396,8 +396,8 @@ define([
 
 			// Fixed step process, to catch up with the world time
 			var numSteps = 0;
-			while (this.world.fixedTpfTime + this.fixedTpf < this.world.time && numSteps < this.maxSubSteps) {
-				this.world.fixedTpfTime += this.fixedTpf;
+			while (this.world.fixedTime + this.fixedDeltaTime < this.world.time && numSteps < this.maxSubSteps) {
+				this.world.fixedTime += this.fixedDeltaTime;
 				numSteps++;
 				this.world.fixedProcess();
 			}
