@@ -79,7 +79,7 @@ define([
 		return new Surface(verts, thatNVerts);
 	};
 
-	function getRotationMatrix(verts, index) {
+	function getRotationMatrix(verts, index, up) {
 		var matrix = new Matrix3x3();
 		// this is a bad solution when verts are aligned with the up vector
 		var oldIndex, futureIndex;
@@ -98,7 +98,9 @@ define([
 			verts[futureIndex * 3 + 2] - verts[oldIndex * 3 + 2]
 		);
 
-		matrix.lookAt(lookAtVector, Vector3.UNIT_Y);
+		lookAtVector.normalize();
+
+		matrix.lookAt(lookAtVector, up);
 
 		return matrix;
 	}
@@ -112,12 +114,23 @@ define([
 		var thatNVerts = that.verts.length / 3;
 		var verts = [];
 
+		var FORWARD = Vector3.UNIT_Z.clone().scale(-1);
+
+		var forward = new Vector3();
+		var up = Vector3.UNIT_Y.clone();
+		var right = new Vector3();
+
 		for (var i = 0; i < this.verts.length; i += 3) {
-			var matrix = getRotationMatrix(this.verts, i / 3);
+			var rotation = getRotationMatrix(this.verts, i / 3, up);
+			console.log(rotation.determinant());
+
+			forward.copy(FORWARD); rotation.applyPost(forward);
+			right.copy(forward).cross(up).normalize();
+			up.copy(right).cross(forward).normalize();
 
 			for (var j = 0; j < that.verts.length; j += 3) {
 				var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
-				matrix.applyPost(vertex);
+				rotation.applyPost(vertex);
 				vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
 
 				verts.push(vertex.x, vertex.y, vertex.z);

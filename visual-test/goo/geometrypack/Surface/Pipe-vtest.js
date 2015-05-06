@@ -44,21 +44,6 @@ require([
 		-1,  0,  0
 	], 14);
 
-	console.log(path);
-
-	//var path = new PolyLine([
-	//	-1, -1, -1,
-	//	-1, -1,  1,
-	//	 1, -1,  1,
-	//	 1, -1, -1,
-	//
-	//	 1,  1, -1,
-	//	 1,  1,  1,
-	//	-1,  1,  1,
-	//	-1,  1, -1
-	//]);
-
-
 	var section = new PolyLine([
 		-0.1,  0.0, 0,
 		 0.0, -0.1, 0,
@@ -66,14 +51,6 @@ require([
 		 0.0,  0.1, 0,
 		-0.1,  0.0, 0
 	]);
-
-	//var section = new PolyLine([
-	//	-0.1, 0,  0.0,
-	//	 0.0, 0, -0.1,
-	//	 0.1, 0,  0.0,
-	//	 0.0, 0,  0.1,
-	//	-0.1, 0,  0.0,
-	//]);
 
 	function addBox(rotation, translation) {
 		var box = world.createEntity(new Box(), V.getColoredMaterial()).addToWorld();
