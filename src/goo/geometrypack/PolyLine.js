@@ -1,12 +1,14 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/geometrypack/Surface'
-],
-
-	function (
-		MeshData,
-		Surface
-		) {
+	'goo/geometrypack/Surface',
+	'goo/math/Matrix3x3',
+	'goo/math/Vector3'
+], function (
+	MeshData,
+	Surface,
+	Matrix3x3,
+	Vector3
+) {
 	'use strict';
 
 	/**
@@ -59,7 +61,7 @@ define([
 	 */
 	PolyLine.prototype.mul = function (that) {
 		if(!(that instanceof PolyLine)) {
-			return ;
+			return;
 		}
 
 		var thatNVerts = that.verts.length / 3;
@@ -77,42 +79,28 @@ define([
 		return new Surface(verts, thatNVerts);
 	};
 
-	function getBisectorAngleOfVectors(vx1, vy1, vx2, vy2) {
-		var d1 = Math.sqrt(vx1*vx1 + vy1*vy1);
-		var nx1 = vx1 / d1;
-		var ny1 = vy1 / d1;
+	function getRotationMatrix(verts, index) {
+		var matrix = new Matrix3x3();
+		// this is a bad solution when verts are aligned with the up vector
+		var oldIndex, futureIndex;
 
-		var d2 = Math.sqrt(vx2*vx2 + vy2*vy2);
-		var nx2 = vx2 / d2;
-		var ny2 = vy2 / d2;
-
-		return Math.atan2(ny1 + ny2, nx1 + nx2) - Math.PI/2;
-	}
-
-	function getBisectorAngle(verts, index) {
-		var nVerts = verts.length / 3;
-		var p0x, p0z, p1x, p1z, p2x, p2z;
-		if(index === 0) {
-			p1x = verts[0 * 3 + 0];
-			p1z = verts[0 * 3 + 2];
-			p2x = verts[1 * 3 + 0];
-			p2z = verts[1 * 3 + 2];
-			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI/2;
-		} else if(index === nVerts-1) {
-			p0x = verts[(nVerts-2) * 3 + 0];
-			p0z = verts[(nVerts-2) * 3 + 2];
-			p1x = verts[(nVerts-1) * 3 + 0];
-			p1z = verts[(nVerts-1) * 3 + 2];
-			return Math.atan2(p1z - p0z, p1x - p0x) - Math.PI/2;
+		if (index >= verts.length / 3 - 1) {
+			oldIndex = index - 1;
+			futureIndex = index;
 		} else {
-			p0x = verts[(index-1) * 3 + 0];
-			p0z = verts[(index-1) * 3 + 2];
-			p1x = verts[(index) * 3 + 0];
-			p1z = verts[(index) * 3 + 2];
-			p2x = verts[(index+1) * 3 + 0];
-			p2z = verts[(index+1) * 3 + 2];
-			return getBisectorAngleOfVectors(p1x - p0x, p1z - p0z, p2x - p1x, p2z - p1z);
+			oldIndex = index;
+			futureIndex = index + 1;
 		}
+
+		var lookAtVector = new Vector3(
+			verts[futureIndex * 3 + 0] - verts[oldIndex * 3 + 0],
+			verts[futureIndex * 3 + 1] - verts[oldIndex * 3 + 1],
+			verts[futureIndex * 3 + 2] - verts[oldIndex * 3 + 2]
+		);
+
+		matrix.lookAt(lookAtVector, Vector3.UNIT_Y);
+
+		return matrix;
 	}
 
 	/**
@@ -121,21 +109,18 @@ define([
 	 * @returns {Surface} The resulting surface
 	 */
 	PolyLine.prototype.pipe = function (that) {
-		if(!(that instanceof PolyLine)) {
-			console.error('pipe operation can only be applied to PolyLines');
-			return ;
-		}
-
 		var thatNVerts = that.verts.length / 3;
 		var verts = [];
 
 		for (var i = 0; i < this.verts.length; i += 3) {
-			var k = getBisectorAngle(this.verts, i / 3);
+			var matrix = getRotationMatrix(this.verts, i / 3);
+
 			for (var j = 0; j < that.verts.length; j += 3) {
-				verts.push(
-					this.verts[i + 0] + that.verts[j + 2] * Math.cos(k),
-					this.verts[i + 1] + that.verts[j + 1],
-					this.verts[i + 2] + that.verts[j + 2] * Math.sin(k));
+				var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
+				matrix.applyPost(vertex);
+				vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
+
+				verts.push(vertex.x, vertex.y, vertex.z);
 			}
 		}
 
@@ -173,12 +158,17 @@ define([
 	 * @returns {PolyLine} The new polyLine
 	 */
 	PolyLine.prototype.concat = function(that, closed) {
-		if(!(that instanceof PolyLine)) {
-			console.error('concat operation can only be applied to PolyLines');
-			return ;
-		}
+		var length = this.verts.length - 1;
 
-		return new PolyLine(this.verts.concat(that.verts), closed);
+		if (
+			this.verts[length - 2] === that.verts[0] &&
+			this.verts[length - 1] === that.verts[1] &&
+			this.verts[length - 0] === that.verts[2]
+		) {
+			return new PolyLine(this.verts.concat(that.verts.slice(3)), closed);
+		} else {
+			return new PolyLine(this.verts.concat(that.verts), closed);
+		}
 	};
 
 	/**
@@ -188,9 +178,9 @@ define([
 	 * @returns {PolyLine} The resulting polyLine
 	 */
 	PolyLine.fromCubicBezier = function (verts, nSegments, startFraction) {
-		if(verts.length !== 3 * 4) {
+		if (verts.length !== 3 * 4) {
 			console.error('PolyLine.fromCubicBezier takes an array of exactly 12 coordinates');
-			return ;
+			return;
 		}
 		nSegments = nSegments || 16;
 		startFraction = startFraction || 0;
@@ -252,13 +242,13 @@ define([
 				p1[1],
 				p1[2],
 
-					p1[0] + 2 / 3 * (p2[0] - p1[0]),
-					p1[1] + 2 / 3 * (p2[1] - p1[1]),
-					p1[2] + 2 / 3 * (p2[2] - p1[2]),
+				p1[0] + 2 / 3 * (p2[0] - p1[0]),
+				p1[1] + 2 / 3 * (p2[1] - p1[1]),
+				p1[2] + 2 / 3 * (p2[2] - p1[2]),
 
-					p3[0] + 2 / 3 * (p2[0] - p3[0]),
-					p3[1] + 2 / 3 * (p2[1] - p3[1]),
-					p3[2] + 2 / 3 * (p2[2] - p3[2]),
+				p3[0] + 2 / 3 * (p2[0] - p3[0]),
+				p3[1] + 2 / 3 * (p2[1] - p3[1]),
+				p3[2] + 2 / 3 * (p2[2] - p3[2])
 			]);
 		}
 
@@ -274,10 +264,10 @@ define([
 	 * @returns {PolyLine} The resulting polyLine
 	 */
 	PolyLine.fromCubicSpline = function (verts, nSegments, closed) {
-		if(closed) {
-			if(verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
+		if (closed) {
+			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
-				return ;
+				return;
 			}
 
 			var nVerts = verts.length / 3;
