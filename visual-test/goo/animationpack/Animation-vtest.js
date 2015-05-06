@@ -195,12 +195,30 @@ require([
 	}
 
 	function createJointChannel(joint, times, t, r, s, blendType) {
+
+		// The channel's transform keyframes needs to be cobined with the joint's 
+		// inverse bind pose, it uses the offset from it to create the resulting transform
+
+		// TODO : Rotation and scale.
+
+		var invT = joint._inverseBindPose.translation.data;
+
+		var translation = [];
+
+		for (var i = 0; i < t.length; i+=3) {
+			translation[i] = -invT[0] + t[i];
+			translation[i+1] = -invT[1] + t[i+1];
+			translation[i+2] = -invT[2] + t[i+2];
+		}
+
+		console.log(joint._name, translation);
+
 		return new JointChannel(
 			joint._index,
 			joint._name,
 			times,
 			r,
-			t,
+			translation,
 			s,
 			blendType
 		);
@@ -250,12 +268,12 @@ require([
 		joints.push(leftSideJoint);
 
 		var offsetJoint = createNewJoint('corner.offset.left', 2, leftSideJoint);
-		setJointBindPose(offsetJoint, [-5, -5, 0]);
+		setJointBindPose(offsetJoint, [-3.5, -3.5, 0]);
 		joints.push(offsetJoint);
 
 		var leftCornerJoint = createNewJoint('Corner.left', 3, offsetJoint);
 		console.log(leftCornerJoint);
-		setJointBindPose(leftCornerJoint, [-5, -5, 0]);
+		//setJointBindPose(leftCornerJoint, [-3.5, -3.5, 0]);
 		joints.push(leftCornerJoint);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
@@ -285,10 +303,10 @@ require([
 		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.3, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(Math.PI * 0.8, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 
 		var trans = [
 			0,0,0,
@@ -301,19 +319,14 @@ require([
 			1,1,1,
 			1,1,1,
 		];
-
 		var leftChannel = createJointChannel(leftSideJoint, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.5, new Vector3(0,1,0).normalize());
+		q2.fromAngleNormalAxis(-Math.PI * 0.5, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
-		var trans = [
-			-5,-5,0,
-			-5,-5,0,
-			-5,-5,0,
-		];
+
 		var offsetChannel = createJointChannel(offsetJoint, times, trans, rots, scales, 'SCurve5');
 		
 		rots = [];
@@ -321,9 +334,9 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		var trans = [
-			0,0,0,
-			0,0,0,
-			0,0,0
+			3.5, 3.5, 0,
+			3.5, 3.5, 0,
+			3.5, 3.5, 0,
 		];
 		var leftCornerChannel = createJointChannel(leftCornerJoint, times, trans, rots, scales, 'SCurve5');
 
@@ -338,7 +351,7 @@ require([
 		animLayer.setCurrentState(animState, true);
 
 		var size = 10;
-		var vertCount = 100;
+		var vertCount = 200;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
@@ -371,15 +384,21 @@ require([
 				leftVertIndices.push(vertIndex);
 			}
 
-			if (x + y < -8) {
+			if (x + y < -7) {
 				leftCornerVerts.push(vertIndex);
 			}
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
+		for (var i = 0; i < leftVertIndices.length; i++) {
+			jointData[leftVertIndices[i]*4] = leftSideJoint._index;
+		}
 		for (var i = 0; i < leftCornerVerts.length; i++) {
 			jointData[leftCornerVerts[i]*4] = leftCornerJoint._index;
 		}
+
+		
+
 
 		/*
 		for (var i = 0; i < jointData.length; i+=4) {
