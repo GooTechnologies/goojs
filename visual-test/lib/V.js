@@ -50,19 +50,19 @@ define([
 
 	/**
 	 * @class
-	 * A collection of useful methods for visual tests.
+	 * A collection of useful methods for visual tests
 	 */
 	var V = {};
 
-	// Determine if we're running the visual test for people or for machines.
+	// determine if we're running the visual test for people or for machines
 	V.deterministic = !!purl().param().deterministic;
 	V.minimal = !!purl().param().minimal;
 
 	/**
-	 * Converts a Vector3-like to a Vector3.
-	 * @param {number[]|Object|Vector3} obj The Vector3-like object to convert.
-	 * @param {Vector3} def The default value of the conversion.
-	 * @returns {Vector3} The converted Vector3 or default value.
+	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 a Vector3
+	 * @param obj
+	 * @param def
+	 * @returns {*}
 	 */
 	V.toVector3 = function (obj, def) {
 		if (Array.isArray(obj)) {
@@ -77,17 +77,17 @@ define([
 	};
 
 	/**
-	 * Adds an orbit camera in demo mode.
-	 * @param {number[]|Object|Vector3} [spherical=Vector3(20,0,0)] A Vector3-like spherical coordinate for the orbit camera.
-	 * @param {number[]|Object|Vector3} [lookAt=Vector3(0,0,0)] A Vector3-like look-at position for the orbit camera.
-	 * @param {string} [dragButton='Any'] The button to use for dragging the camera.
-	 * @returns {Entity} The orbit camera entity.
+	 * Adds an orbit camera in demo mode
+	 * @param spherical
+	 * @param lookAt
+	 * @param dragButton
+	 * @returns {Entity}
 	 */
 	V.addOrbitCamera = function (spherical, lookAt, dragButton) {
 		spherical = V.toVector3(spherical, new Vector3(20, 0, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
-		// Convert to degrees since the script uses degrees.
+		// Convert to degrees since the script uses degrees
 		spherical.y = MathUtils.degFromRad(spherical.y);
 		spherical.z = MathUtils.degFromRad(spherical.z);
 
@@ -115,8 +115,8 @@ define([
 	};
 
 	/**
-	 * Creates a random bright color.
-	 * @returns {number[]} Random bright color [red, green, blue]
+	 * Creates a random bright color
+	 * @returns {Array}
 	 */
 	V.getRandomColor = function () {
 		var angle = V.rng.nextFloat() * Math.PI * 2;
@@ -133,31 +133,30 @@ define([
 	};
 
 	/**
-	 * Returns a material from the supplied colors or a random brightly colored material.
-	 * @param {number} [red] Red value.
-	 * @param {number} [green] Green value.
-	 * @param {number} [blue] Blue value.
-	 * @param {number} [alpha=1] Alpha value.
-	 * @returns {goo.renderer.Material} The generated material.
+	 * Returns a material from the supplied colors or a random brightly colored material
+	 * @param r Red value
+	 * @param g Green value
+	 * @param b Blue value
+	 * @param a Alpha value
+	 * @returns {goo.renderer.Material}
 	 */
-	V.getColoredMaterial = function (red, green, blue, alpha) {
+	V.getColoredMaterial = function (r, g, b, a) {
 		var material = new Material(ShaderLib.simpleLit);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
 			material.uniforms.materialDiffuse = V.getRandomColor();
 		} else {
 			//material.materialState.diffuse = [r, g, b, a || 1];
-			material.uniforms.materialDiffuse = [red, green, blue, alpha || 1];
+			material.uniforms.materialDiffuse = [r, g, b, a || 1];
 		}
 		return material;
 	};
 
 	/**
-	 * Adds a grid of shapes.
-	 * @param {number} [nShapes=15] The number of shapes.
-	 * @param {MeshData} [meshData=Sphere(32,32)] The MeshData shape to duplicate in a grid.
-	 * @param {number[]} [rotation=[0,0,0]] The rotation of the shapes.
-	 * @returns {EntitySelection} An EntitySelection of all the created entity's in the grid.
+	 * Adds a grid of shapes
+	 * @param nShapes
+	 * @param meshData
+	 * @param rotation
 	 */
 		//! AT: more clear with code duplication
 	V.addShapes = function (nShapes, meshData, rotation) {
@@ -185,27 +184,26 @@ define([
 	};
 
 	/**
-	 * Adds a grid of spheres.
-	 * @param {number} [nSpheres=15] The number of shapes to add.
+	 * Adds a grid of spheres
+	 * @param [nSpheres=15]
 	 */
 	V.addSpheres = function (nSpheres) {
 		return V.addShapes(nSpheres, new Sphere(32, 32));
 	};
 
 	/**
-	 * Adds a grid of boxes to the scene.
-	 * @param {number} [nBoxes=15] The number of boxes to add.
+	 * Adds a grid of boxes to the scene
+	 * @param [nBoxes=15]
 	 */
 	V.addBoxes = function (nBoxes) {
 		return V.addShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
 	/**
-	 * Adds a grid of colored shapes.
-	 * @param {number} [nShapes=15] The number of shapes to add.
-	 * @param {MeshData} [meshData=Sphere(32,32)] The MeshData shape to duplicate in a grid.
-	 * @param {number[]} [rotation=[0,0,0]] The rotation of the shapes.
-	 * @returns {EntitySelection} An EntitySelection of all the created entity's in the grid.
+	 * Adds a grid of colored shapes
+	 * @param [nShapes=15]
+	 * @param [meshData=new Sphere]
+	 * @param [rotation=(0, 0, 0)]
 	 */
 	V.addColoredShapes = function (nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
@@ -233,23 +231,23 @@ define([
 	};
 
 	/**
-	 * Adds a grid of colored spheres.
-	 * @param [nSpheres=15] The number of shapes to add.
+	 * Adds a grid of colored spheres
+	 * @param [nSpheres=15]
 	 */
 	V.addColoredSpheres = function (nSpheres) {
 		return V.addColoredShapes(nSpheres, new Sphere(32, 32));
 	};
 
 	/**
-	 * Adds a grid of colored boxes to the scene.
-	 * @param [nBoxes=15] The number of boxes to add.
+	 * Adds a grid of colored boxes to the scene
+	 * @param [nBoxes=15]
 	 */
 	V.addColoredBoxes = function (nBoxes) {
 		return V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
 	/**
-	 * Adds a standard lighting to the scene of 3 point lights.
+	 * Adds standard lighting to the scene
 	 */
 	V.addLights = function () {
 		var world = V.goo.world;
@@ -259,9 +257,9 @@ define([
 	};
 
 	/**
-	 * Creates a new entity that renders the normals of the given entity.
-	 * @param {Entity} entity The entity to show normals of.
-	 * @returns {Entity} The entity with normals in, a line for each normal.
+	 * Displays the normals of an object
+	 * @param entity
+	 * @returns {Entity}
 	 */
 	V.showNormals = function (entity) {
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
@@ -274,7 +272,7 @@ define([
 	};
 
 	/**
-	 * Initializes Goo.
+	 * Initializes Goo
 	 * @param _options
 	 * @returns {GooRunner}
 	 */
@@ -339,7 +337,7 @@ define([
 	}
 
 	/**
-	 * Required in 'deterministic' mode.
+	 * Required in 'deterministic' mode
 	 */
 	V.process = function (renderLoops) {
 		if (!V.deterministic) { return; }
@@ -358,7 +356,7 @@ define([
 	};
 
     /**
-     * Adds a debug quad for the picking buffer.
+     * Adds a debug quad for the picking buffer
      * @returns {Entity}
      */
 	V.addDebugQuad = function () {
@@ -417,8 +415,8 @@ define([
 	};
 
     /**
-     * Creates the panel that holds a project's description.
-     * @param {string} text Text to describe the visual-test.
+     * Creates the panel that holds a project's description
+     * @param text
      */
 	function createPanel(text) {
 		text = text.replace(/\n/g, '<br>');
@@ -450,7 +448,7 @@ define([
 
     /**
      * Adds a description panel to the visual test. Also outputs the description to the web console.
-     * @param {string} text Text to describe the visual-test.
+     * @param text
      */
 	V.describe = function (text) {
 		if (!V.deterministic && !V.minimal) {
@@ -461,9 +459,9 @@ define([
 	};
 
     /**
-     * Adds a button to the description panel.
-     * @param {string} text Text of the button.
-     * @param {function} onClick Function to be called when the button is clicked.
+     * Adds a button to the description panel
+     * @param text
+     * @param onClick
      */
     V.button = function (text, onClick) {
         if (V.deterministic || V.minimal) { return; }

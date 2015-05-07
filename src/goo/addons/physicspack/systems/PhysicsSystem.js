@@ -565,13 +565,8 @@ function (
 			rigidBodyComponent._updated = true;
 
 			// Get physics orientation
-			if (rigidBodyComponent.interpolation === RigidBodyComponent.INTERPOLATE) {
-				rigidBodyComponent.getInterpolatedPosition(tmpVec);
-				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat);
-			} else {
-				rigidBodyComponent.getPosition(tmpVec);
-				rigidBodyComponent.getQuaternion(tmpQuat);
-			}
+			rigidBodyComponent.getPosition(tmpVec);
+			rigidBodyComponent.getQuaternion(tmpQuat);
 
 			// Set local transform of the entity
 			transform.translation.setVector(tmpVec);

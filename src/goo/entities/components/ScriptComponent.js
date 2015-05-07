@@ -129,7 +129,7 @@ define([
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.context) {
-				if (script.cleanup && script.enabled) {
+				if (script.cleanup) {
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {

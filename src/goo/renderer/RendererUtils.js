@@ -49,7 +49,7 @@ define([
 	/**
 	 * Check if the webgl context contains any errors in the current state
 	 *
-	 * @param {WebGLRenderingContext} gl A valid WebGL context
+	 * @param {WebGLContext} gl A valid WebGL context
 	 */
 	RendererUtils.checkGLError = function (gl) {
 		var error = gl.getError();

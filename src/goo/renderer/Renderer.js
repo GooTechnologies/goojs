@@ -50,16 +50,15 @@ define([
 	/**
 	 * The renderer handles displaying of graphics data to a render context.
 	 * It accepts an object containing the settings for the renderer.
-	 *
 	 * @param {object} parameters Renderer settings.
-	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels.
+	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
 	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
 	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
-	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc).
-	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas.
-	 * @param {function(string)} [parameters.onError] Called with message when error occurs.
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
+	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
+	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
 	function Renderer(parameters) {
 		parameters = parameters || {};
@@ -205,12 +204,6 @@ define([
 		// #endif
 	}
 
-	/**
-	 *Enables debug mode on the webgl context for easier development.
-	 *
-	 * @param {Object} parameters
-	 * @param {boolean} parameters.validate
-	 */
 	Renderer.prototype.setupDebugging = function (parameters) {
 		// XXX: This is a temporary solution to easily enable webgl debugging during development...
 		var request = new XMLHttpRequest();
@@ -239,10 +232,6 @@ define([
 		}
 	};
 
-	/**
-	 *Fetches a working webgl context element and sets it to the Renderer.
-	 *
-	 */
 	Renderer.prototype.establishContext = function () {
 		if (!!window.WebGLRenderingContext) {
 			//! AT: this list may require cleanup
@@ -286,7 +275,7 @@ define([
 	};
 
 	/**
-	 * Sets up handlers for context lost/restore.
+	 * Sets up handlers for context lost/restore
 	 * @private
 	 */
 	Renderer.prototype._setupContextLost = function () {
@@ -302,7 +291,7 @@ define([
 	};
 
 	/**
-	 * Restores the webgl context.
+	 * Restores thw webgl context
 	 * @private
 	 */
 	Renderer.prototype._restoreContext = STUB_METHOD; // will be overriden
@@ -316,13 +305,6 @@ define([
 		}
 	}
 
-	/**
-	 *Outputs the webgl errors with the respective erroring function name and arguments using console.error.
-	 *
-	 * @param {Object} err
-	 * @param {string} functionName
-	 * @param {[]} args
-	 */
 	Renderer.prototype.onDebugError = function (err, functionName, args) {
 		// Based on the default error handler in WebGLDebugUtils
 		// apparently we can't do args.join(",");
@@ -341,11 +323,10 @@ define([
 	Renderer.mainCamera = null;
 
 	/**
-	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height.
-	 * If that is the case it will call this.setSize.
-	 * Also checks if the camera aspect changed and updates it by calling camera.setFrustumPerspective().
-	 *
-	 * @param {Camera} [camera] optional camera argument.
+	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
+	 * if that is the case it will call this.setSize
+	 * It also checks if the camera aspect changed and will update it calling camera.setFrustumPerspective()
+	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
@@ -385,12 +366,11 @@ define([
 	/**
 	 * Sets this.domElement.width and height using the parameters.
 	 * Then it calls this.setViewport(0, 0, width, height);
-	 * Finally it resets the hardwarePicking.pickingTarget.
-	 *
-	 * @param {number} width Aspect ratio corrected width.
-	 * @param {number} height Aspect ratio corrected height.
-	 * @param {number} [fullWidth] Full viewport width.
-	 * @param {number} [fullHeight] Full viewport height.
+	 * Finally it resets the hardwarePicking.pickingTarget
+	 * @param {number} width aspect ratio corrected width
+	 * @param {number} height aspect ratio corrected height
+	 * @param {number} [fullWidth] full viewport width
+	 * @param {number} [fullHeight] full viewport height
 	 */
 	Renderer.prototype.setSize = function (width, height, fullWidth, fullHeight) {
 		if (fullWidth === undefined) {
@@ -423,14 +403,13 @@ define([
 	};
 
 	/**
-	 * Sets this.viewportX and viewportY to the parameters or to 0.
+	 * Sets this.viewportX and viewportY to the parameters or to 0
 	 * Sets this.viewportWidth and viewportHeight to the parameters or to this.domElement.width and height.
 	 * Finally it calls this.context.viewport(x,y,w,h) with the resulting values.
-	 *
-	 * @param {number} [x] optional x coordinate.
-	 * @param {number} [y] optional y coordinate.
-	 * @param {number} [width] optional width coordinate.
-	 * @param {number} [height] optional height coordinate.
+	 * @param {number} [x] optional x coordinate
+	 * @param {number} [y] optional y coordinate
+	 * @param {number} [width] optional width coordinate
+	 * @param {number} [height] optional height coordinate
 	 */
 	Renderer.prototype.setViewport = function (x, y, width, height) {
 		this.viewportX = x !== undefined ? x : 0;
@@ -450,12 +429,11 @@ define([
 	};
 
 	/**
-	 * Set the background color of the 3D view. All colors are defined in the range 0.0 - 1.0.
-	 *
-	 * @param {number} r Red value.
-	 * @param {number} g Green value.
-	 * @param {number} b Blue value.
-	 * @param {number} a Alpha value.
+	 * Set the background color of the 3D view. All colors are defined in the range 0.0 - 1.0
+	 * @param {number} r Red
+	 * @param {number} g Green
+	 * @param {number} b Blue
+	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
 		if (this._clearColor[0] === r
@@ -472,11 +450,6 @@ define([
 		this.context.clearColor(r, g, b, a);
 	};
 
-	/**
-	 * Binds the given BufferData's buffer, or creates a buffer and bind it if none exist.
-	 *
-	 * @param {BufferData} bufferData BufferData to bind.
-	 */
 	Renderer.prototype.bindData = function (bufferData) {
 		var glBuffer = bufferData.glBuffer;
 		if (glBuffer !== null) {
@@ -495,12 +468,6 @@ define([
 		}
 	};
 
-	/**
-	 * Update the data buffer of an attribute at it's offset location.
-	 *
-	 * @param {ArrayBuffer} attributeData New attribute data buffer.
-	 * @param {number} offset The starting location offset to the attribute buffer.
-	 */
 	Renderer.prototype.updateAttributeData = function (attributeData, offset) {
 		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, offset, attributeData);
 	};
@@ -509,22 +476,14 @@ define([
 		this.shadowHandler.shadowType = type;
 	};
 
-	/**
-	 * Update the shadowHandler for the provided entities and lights.
-	 *
-	 * @param {SimplePartitioner} partitioner The partitioner used to determine what gets to be shadowed.
-	 * @param {Entity[]} entities Array of all the entities to cast shadows.
-	 * @param {Light[]} lights Array of all the lights to cast shadows for.
-	 */
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
 	};
 
 	/**
-	 * Preloads a texture.
-	 *
-	 * @param {WebGLRenderingContext} context
-	 * @param {Texture} texture
+	 * Preloads a texture
+	 * @param context
+	 * @param texture
 	 */
 	Renderer.prototype.preloadTexture = function (context, texture) {
 		//! schteppe: Is there any case where we want to preload a texture to another context than this.context?
@@ -620,11 +579,10 @@ define([
 	};
 
 	/**
-	 * Preloads the textures of a material.
-	 *
+	 * Preloads the textures of a material
 	 * @private
-	 * @param {Material} material
-	 * @param {Array} queue
+	 * @param material
+	 * @param queue
 	 */
 	Renderer.prototype.preloadTextures = function (material, queue) {
 		var context = this.context;
@@ -676,9 +634,8 @@ define([
 	var preloadMaterialsRenderInfo = new RenderInfo();
 
 	/**
-	 * Preloads textures that come with the materials on the supplied "renderables".
-	 *
-	 * @param {Object[]} renderList An array of all the "renderables".
+	 * Preloads textures that come with the materials on the supplied "renderables"
+	 * @param renderList
 	 * @returns {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
@@ -712,11 +669,10 @@ define([
 	};
 
 	/**
-	 * Preprocesses a shader and compiles it.
-	 *
+	 * Preprocesses a shader and compiles it
 	 * @private
-	 * @param {Material} material
-	 * @param {RenderInfo} renderInfo
+	 * @param material
+	 * @param renderInfo
 	 */
 	Renderer.prototype.precompileShader = function (material, renderInfo) {
 		var shader = material.shader;
@@ -735,10 +691,9 @@ define([
 	};
 
 	/**
-	 * Precompiles shaders of the supplied "renderables".
-	 *
-	 * @param {Object[]} renderList An array of all the "renderables".
-	 * @param {Light[]} lights
+	 * Precompiles shaders of the supplied "renderables"
+	 * @param renderList
+	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
 		var renderInfo = new RenderInfo();
@@ -773,13 +728,6 @@ define([
 		return TaskScheduler.each(queue);
 	};
 
-	//! MF: This method appears to be unused, and it's way of using renderInfo.fill might be questionable.
-	/**
-	 * Creates buffers of the supplied renderList.
-	 *
-	 * @hidden
-	 * @param {Object[]} renderList An array of "renderables".
-	 */
 	Renderer.prototype.preloadBuffers = function (renderList) {
 		var renderInfo = new RenderInfo();
 
@@ -805,14 +753,12 @@ define([
 	};
 
 	/**
-	 * Creates buffers of the supplied "renderables".
-	 *
-	 * @hidden
-	 * @param {Object[]} renderables
-	 * @param {Material} material
-	 * @param {RenderInfo} renderInfo
+	 * Creates buffers of the supplied "renderables"
+	 * @param renderList
+	 * @param material
+	 * @param renderInfo
 	 */
-	Renderer.prototype.preloadBuffer = function (renderables, material, renderInfo) {
+	Renderer.prototype.preloadBuffer = function (renderable, material, renderInfo) {
 		var meshData = renderInfo.meshData;
 		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
 			&& meshData.indexData.data.byteLength === 0) {
@@ -891,13 +837,11 @@ define([
 
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
-	 *
-	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
-	 * @param {Camera} camera Main camera for rendering.
-	 * @param {Light[]} lights Lights used in the rendering.
-	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen.
-	 * @param {boolean|Object} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
-	 * @param {Material[]} [overrideMaterials] Optional list of materials to override the renderList materials.
+	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
+	 * @param {Camera} camera Main camera for rendering
+	 * @param {Light[]} lights Lights used in the rendering
+	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
+	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
@@ -957,14 +901,6 @@ define([
 	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
 	+ it could also use a description of what it's supposed to do
 	 */
-
-	/**
-	 * Fills the store parameter with the combined properties of mat1 and mat2.
-	 *
-	 * @param {Material} mat1
-	 * @param {Material} mat2
-	 * @param {Material} store
-	 */
 	Renderer.prototype._override = function(mat1, mat2, store) {
 		store.empty();
 		var keys = Object.keys(store);
@@ -997,11 +933,6 @@ define([
 		}
 	};
 
-	/**
-	 * Renders a mesh from a RenderInfo.
-	 *
-	 * @param {RenderInfo} renderInfo
-	 */
 	Renderer.prototype.renderMesh = function (renderInfo) {
 		var meshData = renderInfo.meshData;
 		if (!meshData || meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
@@ -1042,27 +973,12 @@ define([
 		}
 	};
 
-	/**
-	 * Call the shader processors of the given material and update material cache.
-	 *
-	 * @param {Material} material
-	 * @param {RenderInfo} renderInfo
-	 */
 	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
 		// Check for caching of shader that use defines
 		material.shader.updateProcessors(renderInfo);
 		this.findOrCacheMaterialShader(material, renderInfo);
 	};
 
-	/**
-	 * Render a material with the given parameters.
-	 *
-	 * @param {number} materialIndex
-	 * @param {Material[]} materials
-	 * @param {boolean} flatOrWire
-	 * @param {MeshData} originalData
-	 * @param {RenderInfo} renderInfo
-	 */
 	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
 		var material = null, orMaterial = null;
 
@@ -1098,11 +1014,6 @@ define([
 		this.info.indices += meshData.indexCount;
 	};
 
-	/**
-	 * Draw the buffers of a MeshData using the specified index-mode.
-	 *
-	 * @param {MeshData} meshData
-	 */
 	Renderer.prototype._drawBuffers = function (meshData) {
 		if (meshData.getIndexBuffer() !== null) {
 			this.bindData(meshData.getIndexData());
@@ -1120,18 +1031,6 @@ define([
 		}
 	};
 
-
-	/**
-	 * Decides which MeshData and Material to set on the renderInfo parameter object, also returns the specified material.
-	 *
-	 * @param {RenderInfo} renderInfo
-	 * @param {number} materialIndex
-	 * @param {Material} material
-	 * @param {Material} orMaterial
-	 * @param {MeshData} originalData
-	 * @param {boolean} flatOrWire
-	 * @returns {Material}
-	 */
 	Renderer.prototype.configureRenderInfo = function(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
 
 		var meshData = renderInfo.meshData;
@@ -1182,12 +1081,6 @@ define([
 		return material;
 	};
 
-	/**
-	 * Finds shader of the material in the cache, or add it to the cache if not added yet. Then update the uniforms to the cached shader.
-	 *
-	 * @param {Material} material
-	 * @param {RenderInfo} renderInfo
-	 */
 	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
@@ -1221,12 +1114,6 @@ define([
 		}
 	};
 
-	/**
-	 * Checks a material for dualTransparency and if enabled, draws the MeshData buffers again with inverse cullFace.
-	 *
-	 * @param {Material} material
-	 * @param {MeshData} meshData
-	 */
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
 		if (material.dualTransparency) {
 			var savedCullFace = material.cullState.cullFace;
@@ -1241,13 +1128,13 @@ define([
 	};
 
 	/**
-	 * Read pixels from current framebuffer to a typed array (ArrayBufferView).
+	 * Read pixels from current framebuffer to a typed array (ArrayBufferView)
 	 *
-	 * @param {number} x x offset of rectangle to read from.
-	 * @param {number} y y offset of rectangle to read from.
-	 * @param {number} width width of rectangle to read from.
-	 * @param {number} height height of rectangle to read from.
-	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array).
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readPixels = function (x, y, width, height, store) {
 		store = store || new Uint8Array(width * height * 4);
@@ -1256,14 +1143,14 @@ define([
 	};
 
 	/**
-	 * Read pixels from a texture to a typed array (ArrayBufferView).
+	 * Read pixels from a texture to a typed array (ArrayBufferView)
 	 *
-	 * @param {Texture} texture texture to read pixels from.
-	 * @param {number} x x offset of rectangle to read from.
-	 * @param {number} y y offset of rectangle to read from.
-	 * @param {number} width width of rectangle to read from.
-	 * @param {number} height height of rectangle to read from.
-	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array).
+	 * @param {Texture} texture texture to read pixels from
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readTexturePixels = function (texture, x, y, width, height, store) {
 		store = store || new Uint8Array(width * height * 4);
@@ -1277,13 +1164,6 @@ define([
 		return store;
 	};
 
-	/**
-	 * Draws a vertex buffer object (VBO) using drawElements.
-	 *
-	 * @param {BufferData} indices The index-buffer.
-	 * @param {string[]} indexModes Array of index-modes.
-	 * @param {number[]} indexLengths Array of index-counts per index-mode.
-	 */
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
@@ -1304,12 +1184,6 @@ define([
 		}
 	};
 
-	/**
-	 * Draws a vertex buffer object (VBO) using drawArrays.
-	 *
-	 * @param {string[]} indexModes Array of index-modes.
-	 * @param {number[]} indexLengths Array of index-counts per index-mode.
-	 */
 	Renderer.prototype.drawArraysVBO = function (indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
@@ -1328,19 +1202,7 @@ define([
 		}
 	};
 
-	/**
-	 * Render entities to be used with the Renderer.pick.
-	 *
-	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
-	 * @param {Camera} camera Main camera for rendering to pick.
-	 * @param {boolean|Object} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
-	 * @param {boolean} skipUpdateBuffer
-	 * @param {boolean} doScissor
-	 * @param {number} clientX scissor position X.
-	 * @param {number} clientY scissor position Y.
-	 * @param {Material} customPickingMaterial Custom picking material.
-	 * @param {boolean} skipOverride
-	 */
+	// Hardware picking
 	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial, skipOverride) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
@@ -1407,14 +1269,6 @@ define([
 		}
 	};
 
-	/**
-	 * Determine what entity ID is at a specific pixel of the camera.
-	 *
-	 * @param {number} clientX pixel position X to pick at.
-	 * @param {number} clientY pixel position Y to pick at.
-	 * @param {Object} pickingStore An object with variables 'id' and 'depth' to be populated by the function.
-	 * @param {Camera} camera Same camera that was used with Renderer.renderToPick.
-	 */
 	Renderer.prototype.pick = function (clientX, clientY, pickingStore, camera) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			pickingStore.id = -1;
@@ -1435,11 +1289,6 @@ define([
 		pickingStore.depth = depth;
 	};
 
-	/**
-	 * Update the webgl contexts line and point settings.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateLineAndPointSettings = function (material) {
 		var record = this.rendererRecord.lineRecord;
 		var lineWidth = material.lineWidth || 1;
@@ -1450,11 +1299,6 @@ define([
 		}
 	};
 
-	/**
-	 * Update the webgl contexts depth test settings.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateDepthTest = function (material) {
 		var record = this.rendererRecord.depthRecord;
 		var depthState = material.depthState;
@@ -1478,11 +1322,6 @@ define([
 		// this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 
-	/**
-	 * Update the webgl contexts culling settings.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateCulling = function (material) {
 		var record = this.rendererRecord.cullRecord;
 		var cullFace = material.cullState.cullFace;
@@ -1518,12 +1357,6 @@ define([
 		}
 	};
 
-	/**
-	 * Update the webgl contexts settings concerning textures.
-	 * updates the material textures if necessary.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateTextures = function (material) {
 		var context = this.context;
 		var textureSlots = material.shader.textureSlots;
@@ -1579,12 +1412,6 @@ define([
 		}
 	};
 
-	/**
-	 * Update the webgl contexts settings of a single texture, such as filtering and wrapping.
-	 *
-	 * @param {Texture} texture
-	 * @param {boolean} isImagePowerOfTwo
-	 */
 	Renderer.prototype.updateTextureParameters = function (texture, isImagePowerOfTwo) {
 		var context = this.context;
 
@@ -1623,14 +1450,6 @@ define([
 		}
 	};
 
-	/**
-	 * Binds a texture to webgl.
-	 *
-	 * @param {WebGLRenderingContext} context
-	 * @param {Texture} texture
-	 * @param {number} unit The index for the textureRecord.
-	 * @param {Object} record
-	 */
 	Renderer.prototype.bindTexture = function (context, texture, unit, record) {
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
 			context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
@@ -1639,28 +1458,12 @@ define([
 		}
 	};
 
-	/**
-	 * Unbinds a texture from webgl.
-	 *
-	 * @param {WebGLRenderingContext} context
-	 * @param {Texture} texture
-	 * @param {number} unit The index for the textureRecord.
-	 * @param {Object} record
-	 */
 	Renderer.prototype.unbindTexture = function (context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		context.bindTexture(RendererUtils.getGLType(texture.variant), null);
 		record.boundTexture = undefined;
 	};
 
-	/**
-	 * Loads a compressed texture into webgl and optionally generates mipmaps.
-	 *
-	 * @param {WebGLRenderingContext} context
-	 * @param {number} target For example WebGLRenderingContext.TEXTURE_2D.
-	 * @param {Texture} texture
-	 * @param {Uint8Array|ArrayBufferView} imageData The image data object.
-	 */
 	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
@@ -1719,14 +1522,6 @@ define([
 		}
 	};
 
-	/**
-	 * Updates a texture in webgl with the Texture objects settings.
-	 *
-	 * @param {WebGLRenderingContext} context
-	 * @param {Texture} texture
-	 * @param {number} unit
-	 * @param {Object} record
-	 */
 	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
 		// this.bindTexture(context, texture, unit, record);
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
@@ -1813,25 +1608,10 @@ define([
 		}
 	};
 
-	/**
-	 * Updates a texture in webgl with the Texture objects settings.
-	 *
-	 * @param {Texture} texture
-	 * @param {Image} image Can be an Image, TypedArray or an array of Images (for cubemaps).
-	 * @param {number} width The new image width.
-	 * @param {number} height The new image height.
-	 * @param {number} maxSize
-	 * @param {number} index
-	 */
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
 		Util.scaleImage(texture, image, width, height, maxSize, index);
 	};
 
-	/**
-	 * Update the blend settings on the webgl context.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateBlending = function (material) {
 		var blendRecord = this.rendererRecord.blendRecord;
 		var context = this.context;
@@ -1915,11 +1695,6 @@ define([
 		}
 	};
 
-	/**
-	 * Updates the polygon offset settings on the webgl context.
-	 *
-	 * @param {Material} material
-	 */
 	Renderer.prototype.updateOffset = function (material) {
 		var offsetRecord = this.rendererRecord.offsetRecord;
 		var context = this.context;
@@ -1946,12 +1721,6 @@ define([
 		}
 	};
 
-	/**
-	 * Binds a buffer to the webgl context.
-	 *
-	 * @param {WebGLBuffer} buffer
-	 * @param {string} target for example 'ArrayBuffer'.
-	 */
 	Renderer.prototype.setBoundBuffer = function (buffer, target) {
 		var targetBuffer = this.rendererRecord.currentBuffer[target];
 		if (!targetBuffer.valid || targetBuffer.buffer !== buffer) {
@@ -1964,12 +1733,6 @@ define([
 		}
 	};
 
-	/**
-	 * Binds vertex attributes to the webgl context.
-	 *
-	 * @param {number} attribIndex
-	 * @param {Object} attribute See MeshData.createAttribute for definition.
-	 */
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
 		var hashKey = this.rendererRecord.attributeCache[attribIndex];
 		if (hashKey !== attribute.hashKey) {
@@ -1978,13 +1741,6 @@ define([
 		}
 	};
 
-	/**
-	 * Clears the webgl context with the specified options.
-	 *
-	 * @param {boolean} color
-	 * @param {boolean} depth
-	 * @param {boolean} stencil
-	 */
 	Renderer.prototype.clear = function (color, depth, stencil) {
 		var bits = 0;
 
@@ -2009,43 +1765,22 @@ define([
 		}
 	};
 
-	/**
-	 * Flushes the webgl context.
-	 *
-	 */
 	Renderer.prototype.flush = function () {
 		this.context.flush();
 	};
 
-	/**
-	 * calls finish on the webgl context.
-	 *
-	 */
 	Renderer.prototype.finish = function () {
 		this.context.finish();
 	};
 
 	// ---------------------------------------------
 
-	/**
-	 * Setup a Frame Buffer Object with the supplied render target.
-	 *
-	 * @param {WebGLFramebuffer} framebuffer
-	 * @param {RenderTarget} renderTarget
-	 * @param {number} textureTarget For instance WebGLRenderingContext.TEXTURE_2D.
-	 */
 	Renderer.prototype.setupFrameBuffer = function (framebuffer, renderTarget, textureTarget) {
 		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
 		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, textureTarget,
 			renderTarget.glTexture, 0);
 	};
 
-	/**
-	 * Setup an Render Buffer Object with the supplied render target.
-	 *
-	 * @param {WebGLRenderbuffer} renderbuffer
-	 * @param {RenderTarget} renderTarget
-	 */
 	Renderer.prototype.setupRenderBuffer = function (renderbuffer, renderTarget) {
 		this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderbuffer);
 
@@ -2065,12 +1800,6 @@ define([
 		}
 	};
 
-	/**
-	 * Binds the supplied render target's FBO to the webgl context.
-	 * Creates FBO and RBO for the render target if not set already.
-	 *
-	 * @param {RenderTarget} renderTarget
-	 */
 	Renderer.prototype.setRenderTarget = function (renderTarget) {
 		if (renderTarget && !renderTarget._glFrameBuffer) {
 			if (renderTarget.depthBuffer === undefined) {
@@ -2141,49 +1870,24 @@ define([
 		this.currentHeight = height;
 	};
 
-	/**
-	 * Updates the render targets mipmaps.
-	 *
-	 * @param {RenderTarget} renderTarget
-	 */
 	Renderer.prototype.updateRenderTargetMipmap = function (renderTarget) {
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
 	};
 
-	/**
-	 * Deallocates a meshdata with the Renderer's webgl context.
-	 *
-	 * @param {MeshData} meshData
-	 */
 	Renderer.prototype._deallocateMeshData = function (meshData) {
 		meshData.destroy(this.context);
 	};
 
-	/**
-	 * Deallocates a texture with the Renderer's webgl context.
-	 *
-	 * @param {Texture} texture
-	 */
 	Renderer.prototype._deallocateTexture = function (texture) {
 		texture.destroy(this.context);
 	};
 
-	/**
-	 * Deallocates a render target with the Renderer's webgl context.
-	 *
-	 * @param {RenderTarget} renderTarget
-	 */
 	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
 		renderTarget.destroy(this.context);
 	};
 
-	/**
-	 * Deallocates a shader.
-	 *
-	 * @param {Shader} shader
-	 */
 	Renderer.prototype._deallocateShader = function (shader) {
 		shader.destroy();
 	};

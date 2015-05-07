@@ -57,7 +57,7 @@ define([
 		this.fragmentShader = null;
 
 		/** The renderer where the program and shaders were allocated.
-		 * @type {WebGLRenderingContext|null}
+		 * @type {WebGLContext|null}
 		 */
 		this.renderer = null;
 

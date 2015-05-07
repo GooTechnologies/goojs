@@ -92,7 +92,7 @@ define(['goo/math/Vector2'],
 
 	/**
 	 * Deallocates all allocated resources from the WebGL context.
-	 * @param  {WebGLRenderingContext} context
+	 * @param  {WebGLContext} context
 	 */
 	RenderTarget.prototype.destroy = function (context) {
 		if (this.glTexture) {
