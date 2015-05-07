@@ -298,8 +298,21 @@ require([
 		joints.push(botLeft2);
 
 		var botTipLeft = createNewJoint('bottom.tip.left', 5, botLeft);
-		setJointBindPose(botTipLeft, [0.92, -0, 0]);
+		setJointBindPose(botTipLeft, [0.92, 0, 0]);
 		joints.push(botTipLeft);
+
+
+		var botRight = createNewJoint('bottom.1.right', 6, rootJoint);
+		setJointBindPose(botRight, [0, 0.125, 0]);
+		joints.push(botRight);
+
+		var botRight2 = createNewJoint('bottom.2.right', 7, botRight);
+		setJointBindPose(botRight2, [0.25, 0, 0]);
+		joints.push(botRight2);
+
+		var botTipRight = createNewJoint('bottom.tip.right', 8, botRight);
+		setJointBindPose(botTipRight, [-0.92, 0, 0]);
+		joints.push(botTipRight);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -369,6 +382,14 @@ require([
 		];
 
 		var botchanLeft = createJointChannel(botLeft, joints, times, trans, rots, scales, 'SCurve5');
+		rots = [];
+		q2.fromAngleNormalAxis(Math.PI * 0.95, new Vector3(1,0,0).normalize());
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var botchanRight = createJointChannel(botRight, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(-1,1,0).normalize());
@@ -385,6 +406,7 @@ require([
 			0,0,0,
 		];
 		var botchanLeft2 = createJointChannel(botLeft2, joints, times, trans, rots, scales, 'SCurve5');
+		var botchanRight2 = createJointChannel(botRight2, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(1,1,0).normalize());
@@ -394,8 +416,16 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		var botchanTipLeft = createJointChannel(botTipLeft, joints, times, trans, rots, scales, 'SCurve5');
+		rots = [];
+		q2.fromAngleNormalAxis(Math.PI * 0.98, new Vector3(1,1,0).normalize());
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var botchanTipRight = createJointChannel(botTipRight, joints, times, trans, rots, scales, 'SCurve5');
 		
-		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2, botchanTipLeft];
+		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2, botchanTipLeft, botchanRight, botchanRight2, botchanTipRight];
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
@@ -429,8 +459,11 @@ require([
 		var topVerts = [];
 		var botVerts = [];
 		var botLeft2Verts = [];
+		var botRight2Verts = [];
 		var botLeftVerts = [];
+		var botRightVerts = [];
 		var botTipLeftVerts = [];
+		var botTipRightVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		var posLen = positions.length;
 		for (var i = 0; i < posLen; i+=3) {
@@ -446,6 +479,8 @@ require([
 			if (x + y >= 0.25) {
 				if ( y < 0.125 ){
 					botLeft2Verts.push(vertIndex);
+				} else if ( x < 0.125 ) {
+					botRight2Verts.push(vertIndex);
 				} else  {
 					botVerts.push(vertIndex);
 				}
@@ -455,8 +490,16 @@ require([
 				botLeftVerts.push(vertIndex);
 			}
 
+			if (x < 0.125 && y > 0.125) {
+				botRightVerts.push(vertIndex);
+			}
+
 			if (x - y > 0.92) {
 				botTipLeftVerts.push(vertIndex);
+			}
+
+			if (y - x > 0.92) {
+				botTipRightVerts.push(vertIndex);
 			}
 			
 		}
@@ -479,6 +522,18 @@ require([
 
 		for (var i = 0; i < botTipLeftVerts.length; i++) {
 			jointData[botTipLeftVerts[i]*4] = botTipLeft._index;
+		}
+
+		for (var i = 0; i < botRightVerts.length; i++) {
+			jointData[botRightVerts[i]*4] = botRight._index;
+		}
+
+		for (var i = 0; i < botRight2Verts.length; i++) {
+			jointData[botRight2Verts[i]*4] = botRight2._index;
+		}
+
+		for (var i = 0; i < botTipRightVerts.length; i++) {
+			jointData[botTipRightVerts[i]*4] = botTipRight._index;
 		}
 		
 		var material = new Material(ShaderLib.uber);
