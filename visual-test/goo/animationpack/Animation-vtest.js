@@ -406,7 +406,7 @@ require([
 		animLayer.setCurrentState(animState, true);
 
 		
-		var vertCount = 300;
+		var vertCount = 200;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
@@ -432,7 +432,8 @@ require([
 		var botLeftVerts = [];
 		var botTipLeftVerts = [];
 		var positions = meshData.dataViews.POSITION;
-		for (var i = 0; i < positions.length; i+=3) {
+		var posLen = positions.length;
+		for (var i = 0; i < posLen; i+=3) {
 			var x = positions[i];
 			var y = positions[i+1];
 
