@@ -131,6 +131,13 @@ require([
 		return joint;
 	}
 
+	function smoothWeights(d, bleedD, weightData, quadIndex) {
+		var b = MathUtils.clamp( d / bleedD, 0, 1);
+		var w = MathUtils.scurve3(b);
+		weightData[quadIndex] = w;
+		weightData[quadIndex + 1] = 1.0 - w;
+	}
+
 	function addFoldingPaper(world) {
 
 		var size = 1;
@@ -416,18 +423,19 @@ require([
 			if (x < 0.125 && y > 0.125) {
 				botRightVerts.push(vertIndex);
 			}
-
-			if (x - y > 0.92) {
+			
+			// BOT TIP LEFT		
+			var d = x - y - 0.92;
+			if (d > 0) {
 				botTipLeftVerts.push(vertIndex);
+				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 
+			// BOT TIP RIGHT
 			var d = y - x - 0.92;
 			if (d > 0) {
 				botTipRightVerts.push(vertIndex);
-				var b = MathUtils.clamp( d / bleedD, 0, 1);
-				var w = MathUtils.scurve3(b);
-				weightData[quadIndex] = w;
-				weightData[quadIndex + 1] = 1.0 - w;
+				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 			
 		}
@@ -450,6 +458,7 @@ require([
 
 		for (var i = 0; i < botTipLeftVerts.length; i++) {
 			jointData[botTipLeftVerts[i]*4] = botTipLeft._index;
+			jointData[botTipLeftVerts[i]*4 + 1] = botTipLeft._parentIndex;
 		}
 
 		for (var i = 0; i < botRightVerts.length; i++) {
@@ -462,7 +471,7 @@ require([
 
 		for (var i = 0; i < botTipRightVerts.length; i++) {
 			jointData[botTipRightVerts[i]*4] = botTipRight._index;
-			jointData[botTipRightVerts[i]*4 + 1] = botRight._index;
+			jointData[botTipRightVerts[i]*4 + 1] = botTipRight._parentIndex;
 		}
 		
 		var material = new Material(ShaderLib.uber);
