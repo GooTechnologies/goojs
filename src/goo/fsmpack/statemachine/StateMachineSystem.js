@@ -64,7 +64,8 @@ define([
 
 	StateMachineSystem.prototype.process = function (entities /*, tpf */) {
 		this._callMeMaybe(entities);
-		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
+		// This should not stay here. It should be updated in both the fixed loop and the render loop, but that would make other state machine actions update when they probably won't have to.
+		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); }
 		this._updateComponents(entities, false);
 	};
 

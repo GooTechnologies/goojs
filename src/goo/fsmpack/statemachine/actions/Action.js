@@ -16,12 +16,11 @@ define([
 	}
 
 	/* this gets executed on enter - override this if needed */
-	Action.prototype._setup = function (/*fsm*/) {
-	};
+	Action.prototype._setup = function (/*fsm*/) {};
 
 	/* this gets executed on enter or on update depending on `everyFrame` - override this */
-	Action.prototype._run = function (/*fsm*/) {
-	};
+	//! schteppe: why have separate methods for the subclasses to override? They could just override the "update" method themselves. The current solution feels unnatural and less OO-like to me.
+	Action.prototype._run = function (/*fsm*/) {};
 
 	/* this should be called by the constructor and by the handlers when new options are loaded */
 	Action.prototype.configure = function (settings) {
@@ -44,17 +43,17 @@ define([
 		}
 	};
 
+	/* this is called by external functions - called on every frame */
+	Action.prototype.fixedUpdate = function (/*fsm*/) {};
+
 	/* this is called when the machine just started */
-	Action.prototype.ready = function (/*fsm*/) {
-	};
+	Action.prototype.ready = function (/*fsm*/) {};
 
 	/* this is called when the machine stops and makes sure that any changes not undone by exit methods get undone */
-	Action.prototype.cleanup = function (/*fsm*/) {
-	};
+	Action.prototype.cleanup = function (/*fsm*/) {};
 
 	/* this is called by external functions; also the place to cleanup whatever _setup did */
-	Action.prototype.exit = function (/*fsm*/) {
-	};
+	Action.prototype.exit = function (/*fsm*/) {};
 
 	return Action;
 });

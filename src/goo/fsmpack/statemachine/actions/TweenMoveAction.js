@@ -1,8 +1,10 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/util/TweenUtil',
 	'goo/math/Vector3'
 ], function (
 	Action,
+	TweenUtil,
 	Vector3
 ) {
 	'use strict';
@@ -84,21 +86,6 @@ define([
 		}
 	};
 
-	function getApproxTweenDerivative(f, t, eps) {
-		if (t - eps > 0 && t + eps < 1) {
-			// Midpoint
-			return (f(t + eps) - f(t - eps)) / (2 * eps);
-		} else if (t > 0.5) {
-			// Upper
-			t = Math.min(1, t);
-			return (f(t) - f(t - eps)) / eps;
-		} else {
-			// Lower
-			t = Math.max(0, t);
-			return (f(t + eps) - f(t)) / eps;
-		}
-	}
-
 	var newPos = new Vector3();
 	var newVelocity = new Vector3();
 
@@ -109,17 +96,13 @@ define([
 		var timeSeconds = this.time / 1000;
 
 		if (this.startTime >= 0) {
-			// var oldX = rigidBodyComponent.cannonBody.position.y;
-			// var oldV = rigidBodyComponent.cannonBody.velocity.y;
-			// var contTime = this.startTime;
-
 			var progress = (world.fixedTime - this.startTime) / timeSeconds;
 			newPos.copy(this.fromVector);
 			if (progress < 1) {
 
 				newPos.lerp(this.toVector, this.easing(progress));
 				rigidBodyComponent.setPosition(newPos);
-				var speed = getApproxTweenDerivative(this.easing, progress, 0.01);
+				var speed = TweenUtil.getApproxDerivative(this.easing, progress, 0.01);
 				newVelocity.copy(this.directionVector).scale(speed / timeSeconds);
 				rigidBodyComponent.setVelocity(newVelocity);
 
@@ -128,6 +111,7 @@ define([
 				// At end of the path
 				rigidBodyComponent.setPosition(this.toVector);
 				entity.transformComponent.transform.translation.copy(this.toVector);
+				newVelocity.setDirect(0, 0, 0);
 				rigidBodyComponent.setVelocity(newVelocity);
 				this.startTime = -1;
 				fsm.send(this.eventToEmit.channel);
