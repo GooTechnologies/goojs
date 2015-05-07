@@ -107,10 +107,13 @@ define([
 		/**
 		 * Extrudes and rotates a PolyLine along another PolyLine.
 		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
-		 * @param {(number) -> number} [thickness] Takes values between 0 and 1 and its value is used to scale the extruded PolyLine
+		 * @param {Object} [options]
+		 * @param {(number) -> number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
+		 * @param {(number) -> number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine
 		 * @returns {Surface} The resulting surface
 		 */
-		PolyLine.prototype.pipe = function (that, thickness) {
+		PolyLine.prototype.pipe = function (that, options) {
+			options = options || {};
 			var thatNVerts = that.verts.length / 3;
 			var verts = [];
 
@@ -119,15 +122,23 @@ define([
 			var right = new Vector3();
 
 			var rotation = new Matrix3x3();
+			var twist = new Matrix3x3();
+			var scale;
 
 			for (var i = 0; i < this.verts.length; i += 3) {
 				getRotationMatrix(this.verts, i / 3, up, rotation);
 
+				var progress = i / (this.verts.length - 1);
+				if (options.twist) {
+					twist.fromAngles(0, 0, options.twist(progress));
+					rotation.combine(twist);
+				}
+
+				scale = options.scale ? options.scale(progress) : 1;
+
 				forward.copy(FORWARD); rotation.applyPost(forward);
 				right.copy(forward).cross(up).normalize();
 				up.copy(right).cross(forward);
-
-				var scale = thickness ? thickness(i / (this.verts.length - 1)) : 1;
 
 				for (var j = 0; j < that.verts.length; j += 3) {
 					var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
