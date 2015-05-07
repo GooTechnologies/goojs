@@ -86,7 +86,6 @@ require([
 			translation[i] = -invT[0] + t[i];
 			translation[i+1] = -invT[1] + t[i+1];
 			translation[i+2] = -invT[2] + t[i+2];
-
 		}
 
 		return new JointChannel(
@@ -136,6 +135,13 @@ require([
 		var w = MathUtils.scurve3(b);
 		weightData[quadIndex] = w;
 		weightData[quadIndex + 1] = 1.0 - w;
+	}
+
+	function loopSetJoints(joint, vertIndexArray, jointData) {
+		for (var i = 0; i < vertIndexArray.length; i++) {
+			jointData[vertIndexArray[i]*4] = joint._index;
+			jointData[vertIndexArray[i]*4 + 1] = joint._parentIndex;
+		}
 	}
 
 	function addFoldingPaper(world) {
@@ -424,12 +430,13 @@ require([
 			var quadIndex = vertIndex * 4;
 
 			var d = - x - y - 0.5;
-			if (d >= 0) {
+			if (d > 0) {
 				topVerts.push(vertIndex);
 				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
-			
-			if (x + y >= 0.25) {
+
+			var d = x + y - 0.25;
+			if (d > 0) {
 				if ( y < 0.125 ){
 					botLeft2Verts.push(vertIndex);
 				} else if ( x < 0.125 ) {
@@ -437,6 +444,7 @@ require([
 				} else  {
 					botVerts.push(vertIndex);
 				}
+				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 
 			if (x > 0.125 && y < 0.125) {
@@ -484,18 +492,11 @@ require([
 			jointData[botTipLeftVerts[i]*4 + 1] = botTipLeft._parentIndex;
 		}
 
-		for (var i = 0; i < botRightVerts.length; i++) {
-			jointData[botRightVerts[i]*4] = botRight._index;
-		}
+		loopSetJoints(botRight, botRightVerts, jointData);
 
-		for (var i = 0; i < botRight2Verts.length; i++) {
-			jointData[botRight2Verts[i]*4] = botRight2._index;
-		}
+		loopSetJoints(botRight2, botRight2Verts, jointData);
 
-		for (var i = 0; i < botTipRightVerts.length; i++) {
-			jointData[botTipRightVerts[i]*4] = botTipRight._index;
-			jointData[botTipRightVerts[i]*4 + 1] = botTipRight._parentIndex;
-		}
+		loopSetJoints(botTipRight, botTipRightVerts, jointData);
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = [0.92, 0.1, 0.85, 1];
