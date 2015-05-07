@@ -54,7 +54,7 @@ require([
 		meshData.weightsPerVertex = 4; // Default weights count
 		meshData.type = MeshData.SKINMESH;
 	}
-	
+
 	function getInvT(joint, joints, tArray) {
 		
 		if (joint._parentIndex != Joint.NO_PARENT) {
@@ -279,6 +279,17 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0.02,
+			0,0,0.02,
+			0,0,0.02,
+			0,0,0.02,
+			0,0,0.02,
+		];
 		var botchanRight = createJointChannel(botRight, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
