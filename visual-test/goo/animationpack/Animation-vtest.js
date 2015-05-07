@@ -236,6 +236,17 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
+		var trans = [
+			0,0,0,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+			0,0,0.01,
+		];
 		var topchan = createJointChannel(topJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
@@ -249,7 +260,17 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
-
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+		];
 		var botchan = createJointChannel(botJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
@@ -402,10 +423,12 @@ require([
 			var vertIndex = i/3;
 			var quadIndex = vertIndex * 4;
 
-			if (x + y <= -0.5) {
+			var d = - x - y - 0.5;
+			if (d >= 0) {
 				topVerts.push(vertIndex);
+				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
-
+			
 			if (x + y >= 0.25) {
 				if ( y < 0.125 ){
 					botLeft2Verts.push(vertIndex);
