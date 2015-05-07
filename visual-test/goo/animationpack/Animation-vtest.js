@@ -194,7 +194,7 @@ require([
 		boxEntity.addToWorld();
 	}
 
-	function createJointChannel(joint, times, t, r, s, blendType) {
+	function createJointChannel(joint, joints, times, t, r, s, blendType) {
 
 		// The channel's transform keyframes needs to be cobined with the joint's 
 		// inverse bind pose, it uses the offset from it to create the resulting transform
@@ -309,7 +309,7 @@ require([
 			1,1,1,
 		];
 
-		var rootChannel = createJointChannel(rootJoint, times, trans, rots, scales, 'Linear');
+		var rootChannel = createJointChannel(rootJoint, joints, times, trans, rots, scales, 'Linear');
 
 		rots = [];
 		q2.fromAngleNormalAxis(Math.PI * 0.99, new Vector3(-1,1,0).normalize());
@@ -331,7 +331,7 @@ require([
 			1,1,1,
 			1,1,1,
 		];
-		var topchan = createJointChannel(topJoint, times, trans, rots, scales, 'SCurve5');
+		var topchan = createJointChannel(topJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(-1,1,0).normalize());
@@ -340,15 +340,15 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 
-		var botchan = createJointChannel(botJoint, times, trans, rots, scales, 'SCurve5');
+		var botchan = createJointChannel(botJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
-		q2.fromAngleNormalAxis(-Math.PI * 0.97, new Vector3(0,1,0).normalize());
+		q2.fromAngleNormalAxis(-Math.PI * 0.95, new Vector3(0,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		var botchanLeft = createJointChannel(botLeft, times, trans, rots, scales, 'SCurve5');
+		Array.prototype.push.apply(rots, q2.data);
+		var botchanLeft = createJointChannel(botLeft, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(-1,1,0).normalize());
@@ -356,7 +356,13 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
-		var botchanLeft2 = createJointChannel(botLeft2, times, trans, rots, scales, 'SCurve5');
+		var trans = [
+			-0.125,0,0,
+			-0.125,0,0,
+			-0.125,0,0,
+			-0.125,0,0,
+		];
+		var botchanLeft2 = createJointChannel(botLeft2, joints, times, trans, rots, scales, 'SCurve5');
 		
 		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2];
 		var clip = new AnimationClip('My animation Clip', animChannels);
