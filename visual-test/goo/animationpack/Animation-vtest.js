@@ -5,6 +5,7 @@ require([
 	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
+	'goo/math/MathUtils',
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface',
 
@@ -25,6 +26,7 @@ require([
 	Box,
 	Vector3,
 	Quaternion,
+	MathUtils,
 	MeshData,
 	Surface,
 
@@ -318,7 +320,7 @@ require([
 		var botchanRight2 = createJointChannel(botRight2, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
-		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(1,1,0).normalize());
+		q2.fromAngleNormalAxis(-Math.PI * 0.7, new Vector3(1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -330,7 +332,7 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		var botchanTipLeft = createJointChannel(botTipLeft, joints, times, trans, rots, scales, 'SCurve5');
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.98, new Vector3(1,1,0).normalize());
+		q2.fromAngleNormalAxis(Math.PI * 0.9, new Vector3(1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -354,6 +356,7 @@ require([
 
 		
 		var vertCount = 200;
+		var bleedD = 0.1;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData);
@@ -373,6 +376,8 @@ require([
 			weightData[i+3] = 0;
 		}
 
+		
+
 		var topVerts = [];
 		var botVerts = [];
 		var botLeft2Verts = [];
@@ -388,6 +393,7 @@ require([
 			var y = positions[i+1];
 
 			var vertIndex = i/3;
+			var quadIndex = vertIndex * 4;
 
 			if (x + y <= -0.5) {
 				topVerts.push(vertIndex);
@@ -415,8 +421,13 @@ require([
 				botTipLeftVerts.push(vertIndex);
 			}
 
-			if (y - x > 0.92) {
+			var d = y - x - 0.92;
+			if (d > 0) {
 				botTipRightVerts.push(vertIndex);
+				var b = MathUtils.clamp( d / bleedD, 0, 1);
+				var w = MathUtils.scurve3(b);
+				weightData[quadIndex] = w;
+				weightData[quadIndex + 1] = 1.0 - w;
 			}
 			
 		}
@@ -451,6 +462,7 @@ require([
 
 		for (var i = 0; i < botTipRightVerts.length; i++) {
 			jointData[botTipRightVerts[i]*4] = botTipRight._index;
+			jointData[botTipRightVerts[i]*4 + 1] = botRight._index;
 		}
 		
 		var material = new Material(ShaderLib.uber);
