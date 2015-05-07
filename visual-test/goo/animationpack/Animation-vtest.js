@@ -318,10 +318,14 @@ require([
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0.0, 1.0, 2.0, 3.0, 4.0];
+		var times = [0, 1, 2, 3, 4, 4.5, 5, 6, 9];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -334,9 +338,17 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
 		];
 
 		var scales = [
+			1,1,1,
+			1,1,1,
+			1,1,1,
+			1,1,1,
 			1,1,1,
 			1,1,1,
 			1,1,1,
@@ -353,12 +365,20 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		var topchan = createJointChannel(topJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
@@ -372,11 +392,19 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 
 		var trans = [
 			0,0,0,
 			0,0,0,
 			0,0,0,
+			0,0,0.02,
+			0,0,0.02,
+			0,0,0.02,
+			0,0,0.02,
 			0,0,0.02,
 			0,0,0.02,
 		];
@@ -387,6 +415,10 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		var botchanRight = createJointChannel(botRight, joints, times, trans, rots, scales, 'SCurve5');
@@ -398,7 +430,15 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
 			0,0,0,
 			0,0,0,
 			0,0,0,
@@ -414,6 +454,10 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		var botchanTipLeft = createJointChannel(botTipLeft, joints, times, trans, rots, scales, 'SCurve5');
 		rots = [];
@@ -422,6 +466,10 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		var botchanTipRight = createJointChannel(botTipRight, joints, times, trans, rots, scales, 'SCurve5');
 		
