@@ -194,14 +194,28 @@ require([
 		boxEntity.addToWorld();
 	}
 
+	function getInvT(joint, joints, tArray) {
+		
+		if (joint._parentIndex != Joint.NO_PARENT) {
+			var parentJoint = joints[joint._parentIndex];
+			var invT = parentJoint._inverseBindPose.translation.data;
+			tArray[0] -= invT[0];
+			tArray[1] -= invT[1];
+			tArray[2] -= invT[2];
+			getInvT(parentJoint, joints, tArray);
+		}
+
+		return tArray;
+	}
+
 	function createJointChannel(joint, joints, times, t, r, s, blendType) {
 
 		// The channel's transform keyframes needs to be cobined with the joint's 
 		// inverse bind pose, it uses the offset from it to create the resulting transform
 
 		// TODO : Rotation and scale.
-
 		var invT = joint._inverseBindPose.translation.data;
+		getInvT(joint, joints, invT);
 
 		var translation = [];
 
@@ -209,6 +223,7 @@ require([
 			translation[i] = -invT[0] + t[i];
 			translation[i+1] = -invT[1] + t[i+1];
 			translation[i+2] = -invT[2] + t[i+2];
+
 		}
 
 		console.log(joint._name, translation);
@@ -356,12 +371,7 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
-		var trans = [
-			-0.125,0,0,
-			-0.125,0,0,
-			-0.125,0,0,
-			-0.125,0,0,
-		];
+
 		var botchanLeft2 = createJointChannel(botLeft2, joints, times, trans, rots, scales, 'SCurve5');
 		
 		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2];
