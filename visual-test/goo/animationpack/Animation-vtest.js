@@ -297,14 +297,19 @@ require([
 		setJointBindPose(botLeft2, [0.25, 0, 0]);
 		joints.push(botLeft2);
 
+		var botTipLeft = createNewJoint('bottom.tip.left', 5, botLeft);
+		setJointBindPose(botTipLeft, [0.92, -0, 0]);
+		joints.push(botTipLeft);
+
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0.0, 1.0, 2.0, 3.0];
+		var times = [0.0, 1.0, 2.0, 3.0, 4.0];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
+		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -314,10 +319,12 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
-			0,0,0
+			0,0,0,
+			0,0,0,
 		];
 
 		var scales = [
+			1,1,1,
 			1,1,1,
 			1,1,1,
 			1,1,1,
@@ -332,26 +339,14 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
-
-		var trans = [
-			0,0,0,
-			0,0,0,
-			0,0,0,
-			0,0,0
-		];
-
-		var scales = [
-			1,1,1,
-			1,1,1,
-			1,1,1,
-			1,1,1,
-		];
+		Array.prototype.push.apply(rots, q2.data);
 		var topchan = createJointChannel(topJoint, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
 
@@ -363,6 +358,16 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q2.data);
+
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0.02,
+			0,0,0.02,
+		];
+
 		var botchanLeft = createJointChannel(botLeft, joints, times, trans, rots, scales, 'SCurve5');
 
 		rots = [];
@@ -371,10 +376,26 @@ require([
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
-
+		Array.prototype.push.apply(rots, q2.data);
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+			0,0,0,
+		];
 		var botchanLeft2 = createJointChannel(botLeft2, joints, times, trans, rots, scales, 'SCurve5');
+
+		rots = [];
+		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(1,1,0).normalize());
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var botchanTipLeft = createJointChannel(botTipLeft, joints, times, trans, rots, scales, 'SCurve5');
 		
-		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2];
+		var animChannels = [rootChannel, topchan, botchan, botchanLeft, botchanLeft2, botchanTipLeft];
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
@@ -409,6 +430,7 @@ require([
 		var botVerts = [];
 		var botLeft2Verts = [];
 		var botLeftVerts = [];
+		var botTipLeftVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		for (var i = 0; i < positions.length; i+=3) {
 			var x = positions[i];
@@ -431,6 +453,10 @@ require([
 			if (x > 0.125 && y < 0.125) {
 				botLeftVerts.push(vertIndex);
 			}
+
+			if (x - y > 0.92) {
+				botTipLeftVerts.push(vertIndex);
+			}
 			
 		}
 
@@ -449,13 +475,19 @@ require([
 		for (var i = 0; i < botLeft2Verts.length; i++) {
 			jointData[botLeft2Verts[i]*4] = botLeft2._index;
 		}
+
+		for (var i = 0; i < botTipLeftVerts.length; i++) {
+			jointData[botTipLeftVerts[i]*4] = botTipLeft._index;
+		}
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = [0.92, 0.1, 0.85, 1];
 		material.cullState.enabled = false;
 		var surfaceEntity = world.createEntity(meshData, material);
-		//surfaceEntity.transformComponent.setRotation(0, 0, -Math.PI * 0.75);
-		surfaceEntity.transformComponent.setScale(10, 10, 10);
+		surfaceEntity.transformComponent.setRotation(0, 0, -Math.PI * 0.75);
+
+		var scale = 8;
+		surfaceEntity.transformComponent.setScale(scale, scale, scale);
 		surfaceEntity.set(animComp);
 		surfaceEntity.meshDataComponent.currentPose = surfaceEntity.animationComponent._skeletonPose;
 		surfaceEntity.addToWorld();
