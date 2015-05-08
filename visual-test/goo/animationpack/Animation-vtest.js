@@ -295,12 +295,12 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
+			0.01,-0.01,0.01,
+			0.01,-0.01,0.01,
+			0.01,-0.01,0.01,
+			0.01,-0.01,0.01,
+			0.01,-0.01,0.01,
+			0.01,-0.01,0.01,
 		];
 
 		var botchanLeft = createJointChannel(botLeft, joints, times, trans, rots, scales, 'SCurve5');
@@ -320,11 +320,11 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
-			0,0,0.02,
+			-0.01,0.01,0.01,
+			-0.01,0.01,0.01,
+			-0.01,0.01,0.01,
+			-0.01,0.01,0.01,
+			-0.01,0.01,0.01,
 		];
 		var botchanRight = createJointChannel(botRight, joints, times, trans, rots, scales, 'SCurve5');
 
@@ -439,16 +439,24 @@ require([
 			if (d > 0) {
 				if ( y < 0.125 ){
 					botLeft2Verts.push(vertIndex);
+					smoothWeights(d, bleedD, weightData, quadIndex);
 				} else if ( x < 0.125 ) {
 					botRight2Verts.push(vertIndex);
+					smoothWeights(d, bleedD, weightData, quadIndex);
 				} else  {
 					botVerts.push(vertIndex);
 				}
-				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 
+
+			var botsideOff = 0.125;
+
 			if (x > 0.125 && y < 0.125) {
+				var d1 = x - botsideOff;
+				var d2 = botsideOff - y;
+				var d = Math.min(d1, d2);
 				botLeftVerts.push(vertIndex);
+				//smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 
 			if (x < 0.125 && y > 0.125) {
@@ -472,25 +480,16 @@ require([
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
-		for (var i = 0; i < topVerts.length; i++) {
-			jointData[topVerts[i]*4] = topJoint._index;
-		}
-		for (var i = 0; i < botVerts.length; i++) {
-			jointData[botVerts[i]*4] = botJoint._index;
-		}
 
-		for (var i = 0; i < botLeftVerts.length; i++) {
-			jointData[botLeftVerts[i]*4] = botLeft._index;
-		}
+		loopSetJoints(topJoint, topVerts, jointData);
 
-		for (var i = 0; i < botLeft2Verts.length; i++) {
-			jointData[botLeft2Verts[i]*4] = botLeft2._index;
-		}
+		loopSetJoints(botJoint, botVerts, jointData);
 
-		for (var i = 0; i < botTipLeftVerts.length; i++) {
-			jointData[botTipLeftVerts[i]*4] = botTipLeft._index;
-			jointData[botTipLeftVerts[i]*4 + 1] = botTipLeft._parentIndex;
-		}
+		loopSetJoints(botLeft, botLeftVerts, jointData);
+
+		loopSetJoints(botLeft2, botLeft2Verts, jointData);
+
+		loopSetJoints(botTipLeft, botTipLeftVerts, jointData);
 
 		loopSetJoints(botRight, botRightVerts, jointData);
 
@@ -502,6 +501,7 @@ require([
 		material.uniforms.materialDiffuse = [0.92, 0.1, 0.85, 1];
 		material.cullState.enabled = false;
 		var surfaceEntity = world.createEntity(meshData, material);
+		
 		surfaceEntity.transformComponent.setRotation(0, 0, -Math.PI * 0.75);
 
 		var scale = 8;
