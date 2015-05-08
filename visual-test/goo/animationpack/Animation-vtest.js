@@ -232,7 +232,7 @@ require([
 		var rootChannel = createJointChannel(rootJoint, joints, times, trans, rots, scales, 'Linear');
 
 		rots = [];
-		q2.fromAngleNormalAxis(Math.PI * 0.99, new Vector3(-1,1,0).normalize());
+		q2.fromAngleNormalAxis(Math.PI * 0.98, new Vector3(-1,1,0).normalize());
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
@@ -295,12 +295,12 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
-			0.01,-0.01,0.01,
-			0.01,-0.01,0.01,
-			0.01,-0.01,0.01,
-			0.01,-0.01,0.01,
-			0.01,-0.01,0.01,
-			0.01,-0.01,0.01,
+			0.01,-0.01,0.02,
+			0.01,-0.01,0.02,
+			0.01,-0.01,0.02,
+			0.01,-0.01,0.02,
+			0.01,-0.01,0.02,
+			0.01,-0.01,0.02,
 		];
 
 		var botchanLeft = createJointChannel(botLeft, joints, times, trans, rots, scales, 'SCurve5');
@@ -320,11 +320,11 @@ require([
 			0,0,0,
 			0,0,0,
 			0,0,0,
-			-0.01,0.01,0.01,
-			-0.01,0.01,0.01,
-			-0.01,0.01,0.01,
-			-0.01,0.01,0.01,
-			-0.01,0.01,0.01,
+			-0.01,0.01,0.02,
+			-0.01,0.01,0.02,
+			-0.01,0.01,0.02,
+			-0.01,0.01,0.02,
+			-0.01,0.01,0.02,
 		];
 		var botchanRight = createJointChannel(botRight, joints, times, trans, rots, scales, 'SCurve5');
 
@@ -410,8 +410,6 @@ require([
 			weightData[i+3] = 0;
 		}
 
-		
-
 		var topVerts = [];
 		var botVerts = [];
 		var botLeft2Verts = [];
@@ -435,32 +433,25 @@ require([
 				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 
-			var d = x + y - 0.25;
-			if (d > 0) {
-				if ( y < 0.125 ){
-					botLeft2Verts.push(vertIndex);
-					smoothWeights(d, bleedD, weightData, quadIndex);
-				} else if ( x < 0.125 ) {
-					botRight2Verts.push(vertIndex);
-					smoothWeights(d, bleedD, weightData, quadIndex);
-				} else  {
-					botVerts.push(vertIndex);
-				}
+			if (x >= 0.125 && y <= 0.125) {
+				botLeftVerts.push(vertIndex);
 			}
 
+			if (x <= 0.125 && y >= 0.125) {
+				botRightVerts.push(vertIndex);
+			}
 
 			var botsideOff = 0.125;
-
-			if (x > 0.125 && y < 0.125) {
-				var d1 = x - botsideOff;
-				var d2 = botsideOff - y;
-				var d = Math.min(d1, d2);
-				botLeftVerts.push(vertIndex);
-				//smoothWeights(d, bleedD, weightData, quadIndex);
-			}
-
-			if (x < 0.125 && y > 0.125) {
-				botRightVerts.push(vertIndex);
+			var d = x + y - 0.25;
+			if (d > 0) {
+				if ( y <= 0.125 ) {
+					botLeft2Verts.push(vertIndex);
+				} else if ( x <= 0.125 ) {
+					botRight2Verts.push(vertIndex);
+				} else {
+					botVerts.push(vertIndex);
+				}
+				smoothWeights(d, bleedD, weightData, quadIndex);
 			}
 			
 			// BOT TIP LEFT		
