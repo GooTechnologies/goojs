@@ -156,6 +156,13 @@ define([
 		 */
 		this.devicePixelRatio = 1;
 
+		this.adjustWidth = 0;
+		this.adjustHeight = 0;
+		window.addEventListener('resize', function () {
+			this.adjustWidth = 0;
+			this.adjustHeight = 0;
+		}.bind(this), false);
+
 		//this.overrideMaterial = null;
 		this._overrideMaterials = [];
 		this._mergedMaterial = new Material('Merged Material');
@@ -331,16 +338,17 @@ define([
 	Renderer.prototype.checkResize = function (camera) {
 		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
-		var adjustWidth, adjustHeight;
-		if (document.querySelector) {
-			adjustWidth = this.domElement.offsetWidth;
-			adjustHeight = this.domElement.offsetHeight;
-		} else {
-			adjustWidth = window.innerWidth;
-			adjustHeight = window.innerHeight;
+		if (this.adjustWidth === 0 || this.adjustHeight === 0) {
+			if (document.querySelector) {
+				this.adjustWidth = this.domElement.offsetWidth;
+				this.adjustHeight = this.domElement.offsetHeight;
+			} else {
+				this.adjustWidth = window.innerWidth;
+				this.adjustHeight = window.innerHeight;
+			}
 		}
-		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
-		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
+		var adjustWidth = this.adjustWidth * devicePixelRatio / this.downScale;
+		var adjustHeight = this.adjustHeight * devicePixelRatio / this.downScale;
 
 		var fullWidth = adjustWidth;
 		var fullHeight = adjustHeight;

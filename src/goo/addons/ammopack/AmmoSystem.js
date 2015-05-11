@@ -32,10 +32,7 @@ define([
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
 		var solver = new Ammo.btSequentialImpulseConstraintSolver();
 		this.ammoWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, overlappingPairCache, solver, collisionConfiguration );
-		var gravity = this.settings.gravity;
-		if (gravity == null) {
-			gravity = -9.81;
-		}
+		var gravity = this.settings.gravity !== undefined ? this.settings.gravity : -9.81;
 		this.ammoWorld.setGravity(new Ammo.btVector3(0, gravity, 0));
 	}
 
@@ -57,7 +54,9 @@ define([
 	};
 
 	AmmoSystem.prototype.process = function(entities, tpf) {
-		this.ammoWorld.stepSimulation( tpf, this.maxSubSteps, this.fixedTime);
+		if (tpf > 0 && entities.length > 0) {
+			this.ammoWorld.stepSimulation( tpf, this.maxSubSteps, this.fixedTime);
+		}
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
