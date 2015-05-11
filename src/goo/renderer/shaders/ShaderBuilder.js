@@ -37,6 +37,23 @@ define([
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
 
+	var attributeSkip = new Set();
+	attributeSkip.add('SHADOW_TYPE');
+	attributeSkip.add('JOINT_COUNT');
+	attributeSkip.add('WEIGHTS');
+	attributeSkip.add('PHYSICALLY_BASED_SHADING');
+	attributeSkip.add('ENVIRONMENT_TYPE');
+	attributeSkip.add('REFLECTIVE');
+	attributeSkip.add('DISCARD');
+	attributeSkip.add('OPACITY');
+	attributeSkip.add('FOG');
+	attributeSkip.add('REFLECTION_TYPE');
+	attributeSkip.add('SKIP_SPECULAR');
+	attributeSkip.add('LIGHT');
+	attributeSkip.add('COOKIE');
+	attributeSkip.add('TRANSPARENCY_BW');
+	attributeSkip.add('WRAP_AROUND');
+
 	ShaderBuilder.uber = {
 		defines: function(shader, attributeMap) {
 			var keys = Object.keys(attributeMap);
@@ -115,21 +132,7 @@ define([
 			var keys = Object.keys(shader.defines);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
-				if (attribute === 'SHADOW_TYPE' ||
-					attribute === 'JOINT_COUNT' ||
-					attribute === 'WEIGHTS' ||
-					attribute === 'PHYSICALLY_BASED_SHADING' ||
-					attribute === 'ENVIRONMENT_TYPE' ||
-					attribute === 'REFLECTIVE' ||
-					attribute === 'DISCARD' ||
-					attribute === 'OPACITY' ||
-					attribute === 'FOG' ||
-					attribute === 'REFLECTION_TYPE' ||
-					attribute === 'SKIP_SPECULAR' ||
-					attribute === 'LIGHT' ||
-					attribute === 'COOKIE' ||
-					attribute === 'TRANSPARENCY_BW' ||
-					attribute === 'WRAP_AROUND') {
+				if (attributeSkip.has(attribute)) {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
