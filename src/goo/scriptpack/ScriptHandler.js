@@ -56,6 +56,7 @@ define([
 			externals: {},
 			setup: null,
 			update: null,
+			fixedUpdate: null,
 			run: null,
 			cleanup: null,
 			parameters: {},
@@ -128,6 +129,9 @@ define([
 			' if (typeof update !== "undefined") {',
 			'  obj.update = update;',
 			' }',
+			' if (typeof fixedUpdate !== "undefined") {',
+			'  obj.fixedUpdate = fixedUpdate;',
+			' }',
 			' return obj;',
 			'};'
 		].join('\n');
@@ -151,6 +155,7 @@ define([
 				safeUp(newScript, script);
 				script.setup = newScript.setup;
 				script.update = newScript.update;
+				script.fixedUpdate = newScript.fixedUpdate;
 				script.cleanup = newScript.cleanup;
 				script.parameters = {};
 				script.enabled = false;
@@ -197,6 +202,7 @@ define([
 			script.externals = newScript.externals;
 			script.setup = newScript.setup;
 			script.update = newScript.update;
+			script.fixedUpdate = newScript.fixedUpdate;
 			script.run = newScript.run;
 			script.cleanup = newScript.cleanup;
 			script.parameters = newScript.parameters || {};
@@ -694,6 +700,7 @@ define([
 
 			script.setup = null;
 			script.update = null;
+			script.fixedUpdate = null;
 			script.run = null;
 			script.cleanup = null;
 

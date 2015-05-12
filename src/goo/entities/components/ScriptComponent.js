@@ -102,7 +102,7 @@ define([
 	 * @param tpf {number}
 	 * @param context
 	 */
-	ScriptComponent.prototype.run = function (entity) {
+	ScriptComponent.prototype.update = function (entity) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script && script.run && (script.enabled === undefined || script.enabled)) {
@@ -116,6 +116,23 @@ define([
 					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
 					this._handleError(script, e, 'update');
+				}
+			}
+		}
+	};
+
+	/**
+	 * Runs the fixedUpdate function on every script attached to this entity.
+	 * @private
+	 */
+	ScriptComponent.prototype.fixedUpdate = function () {
+		for (var i = 0; i < this.scripts.length; i++) {
+			var script = this.scripts[i];
+			if (script.fixedUpdate && (script.enabled === undefined || script.enabled)) {
+				try {
+					script.fixedUpdate(script.parameters, script.context, this._gooClasses);
+				} catch (e) {
+					this._handleError(script, e, 'fixedUpdate');
 				}
 			}
 		}

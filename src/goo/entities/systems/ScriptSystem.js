@@ -60,7 +60,15 @@ define([
 		// Update scripts
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
-			scriptComponent.run(entities[i], tpf);
+			scriptComponent.update(entities[i], tpf);
+		}
+	};
+
+	ScriptSystem.prototype.fixedProcess = function (entities, deltaTime) {
+		// Update scripts
+		for (var i = 0; i < entities.length; i++) {
+			var scriptComponent = entities[i].scriptComponent;
+			scriptComponent.fixedUpdate(entities[i], deltaTime);
 		}
 	};
 
