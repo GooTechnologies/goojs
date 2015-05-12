@@ -103,15 +103,13 @@ define([
 		delete this._transitions[eventName];
 	};
 
-	State.prototype.update = function (fixedUpdate) {
+	State.prototype.update = function () {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
 			var action = this._actions[i];
-			if (fixedUpdate && action.fixedUpdate) {
-				action.fixedUpdate(this.proxy);
-			} else if (!fixedUpdate) {
-				action.update(this.proxy);
-			}
+
+			action.update(this.proxy);
+
 			if (this.transitionTarget) {
 				var tmp = this.transitionTarget;
 				this.transitionTarget = null;
@@ -123,7 +121,36 @@ define([
 		// propagate on update
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
-			jump = machine.update(fixedUpdate);
+
+			jump = machine.update();
+
+			if (jump) {
+				return jump;
+			}
+		}
+	};
+
+	State.prototype.fixedUpdate = function () {
+		// do on update of self
+		for (var i = 0; i < this._actions.length; i++) {
+			var action = this._actions[i];
+
+			action.fixedUpdate(this.proxy);
+
+			if (this.transitionTarget) {
+				var tmp = this.transitionTarget;
+				this.transitionTarget = null;
+				return tmp;
+			}
+		}
+
+		var jump;
+		// propagate on update
+		for (var i = 0; i < this._machines.length; i++) {
+			var machine = this._machines[i];
+
+			jump = machine.fixedUpdate();
+
 			if (jump) {
 				return jump;
 			}

@@ -20,9 +20,18 @@ define([], function (
 		}
 	};
 
-	Machine.prototype.update = function (fixedUpdate) {
+	Machine.prototype.update = function () {
+		return this.updateAndTransition(false);
+	};
+
+	Machine.prototype.fixedUpdate = function () {
+		return this.updateAndTransition(true);
+	};
+
+	Machine.prototype.updateAndTransition = function (fixedUpdate) {
 		if (this.currentState) {
-			var jump = this.currentState.update(fixedUpdate);
+
+			var jump = fixedUpdate ? this.currentState.fixedUpdate() : this.currentState.update();
 
 			if (jump && this.contains(jump)) {
 				this.currentState.kill();

@@ -72,7 +72,11 @@ define([
 	StateMachineSystem.prototype._updateComponents = function (entities, fixedUpdate) {
 		for (var i = 0; i < entities.length; i++) {
 			var component = entities[i].stateMachineComponent;
-			component.update(fixedUpdate);
+			if (fixedUpdate) {
+				component.fixedUpdate();
+			} else {
+				component.update();
+			}
 		}
 	};
 

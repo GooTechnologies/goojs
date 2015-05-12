@@ -124,11 +124,23 @@ define([
 	/**
 	 * Updates the state machines
 	 */
-	StateMachineComponent.prototype.update = function (fixedUpdate) {
+	StateMachineComponent.prototype.update = function () {
 		if (this.active) {
 			for (var i = 0; i < this._machines.length; i++) {
 				var machine = this._machines[i];
-				machine.update(fixedUpdate);
+				machine.update();
+			}
+		}
+	};
+
+	/**
+	 * Updates the state machines
+	 */
+	StateMachineComponent.prototype.fixedUpdate = function () {
+		if (this.active) {
+			for (var i = 0; i < this._machines.length; i++) {
+				var machine = this._machines[i];
+				machine.fixedUpdate();
 			}
 		}
 	};
