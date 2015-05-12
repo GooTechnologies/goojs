@@ -102,7 +102,7 @@ define([
 			store.lookAt(lookAtVector, up);
 		}
 
-		var FORWARD = Vector3.UNIT_Z.clone().scale(-1);
+		var FORWARD = Vector3.UNIT_Z;
 
 		/**
 		 * Extrudes and rotates a PolyLine along another PolyLine.
