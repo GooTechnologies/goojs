@@ -143,7 +143,7 @@ function (
 		 *
 		 * @type {number}
 		 */
-		this._constraints = RigidBodyComponent.NONE;
+		this._constraints = RigidBodyComponent.FREEZE_NONE;
 	}
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
