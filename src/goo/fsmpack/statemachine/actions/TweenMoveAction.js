@@ -92,10 +92,10 @@ define([
 	TweenMoveAction.prototype.fixedUpdate = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var rigidBodyComponent = entity.rigidBodyComponent;
-		var world = entity._world;
-		var timeSeconds = this.time / 1000;
 
-		if (this.startTime >= 0) {
+		if (rigidBodyComponent && this.startTime >= 0) {
+			var world = entity._world;
+			var timeSeconds = this.time / 1000;
 			var progress = (world.fixedTime - this.startTime) / timeSeconds;
 			newPos.copy(this.fromVector);
 			if (progress < 1) {
