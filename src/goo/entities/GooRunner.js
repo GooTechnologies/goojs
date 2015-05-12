@@ -111,8 +111,19 @@ define([
 
 		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
+		/**
+		 * The fixed process tick size.
+		 * @type {number}
+		 * @default 1/60
+		 */
 		this.fixedDeltaTime = parameters.fixedDeltaTime !== undefined ? parameters.fixedDeltaTime : 1 / 60;
-		this.maxSubSteps = 10;
+
+		/**
+		 * The maximum number of fixed process loop ticks to use per process call.
+		 * @type {number}
+		 * @default 1/60
+		 */
+		this.maxSubSteps = parameters.maxSubSteps !== undefined ? parameters.maxSubSteps : 10;
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -401,6 +412,8 @@ define([
 				numSteps++;
 				this.world.fixedProcess();
 			}
+
+			this.world.interpolationFraction = ((this.world.time - this.world.fixedTime) % this.world.fixedDeltaTime) / this.world.fixedDeltaTime;
 
 			// Frame dependent process
 			this.world.process();

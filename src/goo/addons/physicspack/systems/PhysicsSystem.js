@@ -562,7 +562,7 @@ function (
 
 			// Get physics orientation
 			if (rigidBodyComponent.interpolation === RigidBodyComponent.INTERPOLATE) {
-				var t = (entity._world.time - entity._world.fixedTime) / entity._world.fixedDeltaTime;
+				var t = entity._world.interpolationFraction;
 				rigidBodyComponent.getInterpolatedPosition(tmpVec, t);
 				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat, t);
 			} else {

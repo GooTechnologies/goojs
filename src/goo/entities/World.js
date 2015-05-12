@@ -54,19 +54,25 @@ define([
 
 		/** Accumulated fixed time steps the world has been running. Re-calculated before each fixedProcess.
 		 * @type {number}
+		 * @readonly
 		 */
 		this.fixedTime = 0;
 
 		/** The time step (delta time) to use in the fixed step loop.
 		 * @type {number}
+		 * @readonly
 		 */
 		this.fixedDeltaTime = 1 / 60;
 
-		/**
-		 * Max number of fixed steps to use for catching up with the wall clock time (the .time property).
+		/** A fraction to be used when interpolating states set in the fixed step loop (fixedProcess) so they match the render loop (process).
 		 * @type {Number}
+		 * @readonly
+		 * @example
+		 *     // assume that currentState and previousState are set in the fixedProcess loop.
+		 *     // The computed state can be used in the process loop.
+		 *     var state = currentState * interpolationFraction + previousState * (1 - interpolationFraction);
 		 */
-		this.maxSubSteps = 10;
+		this.interpolationFraction = 0;
 
 		/** Time since last frame in seconds.
 		 * @type {number}
