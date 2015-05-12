@@ -269,7 +269,7 @@ function (
 	/**
 	 * Get the interpolated position from the rigid body. Use this for rendering. The resulting vector is a linear interpolation between the current and previous physics position, that matches the current rendering frame.
 	 * @param {Vector3} targetVector
-	 * @param {number} t
+	 * @param {number} t Interpolation fraction
 	 */
 	RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector, t) {
 		if (this.cannonBody) {
@@ -310,7 +310,7 @@ function (
 	/**
 	 * Get the interpolated quaternion from the rigid body. Use this for rendering. The resulting quaternion is a spherical interpolation between the current and previous physics position, that matches the current rendering frame.
 	 * @param {Quaternion} targetQuat
-	 * @param {number} t
+	 * @param {number} t Interpolation fraction
 	 */
 	RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat, t) {
 		if (this.cannonBody) {
