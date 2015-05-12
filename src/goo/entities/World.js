@@ -52,12 +52,20 @@ define([
 		 */
 		this.time = 0.0;
 
-		/** Accumulated fixed time steps the world has been running. Calculated at the start of each fixed process.
+		/** Accumulated fixed time steps the world has been running. Re-calculated before each fixedProcess.
 		 * @type {number}
 		 */
 		this.fixedTime = 0;
 
+		/** The time step (delta time) to use in the fixed step loop.
+		 * @type {number}
+		 */
 		this.fixedDeltaTime = 1 / 60;
+
+		/**
+		 * Max number of fixed steps to use for catching up with the wall clock time (the .time property).
+		 * @type {Number}
+		 */
 		this.maxSubSteps = 10;
 
 		/** Time since last frame in seconds.
@@ -451,6 +459,10 @@ define([
 		});
 	};
 
+	/**
+	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each fixed step.
+	 * Has to be called between adding an entity to the world and getting it back.
+	 */
 	World.prototype.fixedProcess = function () {
 		this.processEntityChanges();
 		for (var i = 0; i < this._systems.length; i++) {
