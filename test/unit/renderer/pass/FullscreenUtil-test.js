@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/FullscreenUtil'], function(FullscreenUtil) {});
+define(['goo/renderer/pass/FullscreenUtils'], function(FullscreenUtils) {});

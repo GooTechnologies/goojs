@@ -5,8 +5,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/renderer/light/DirectionalLight',
 	'goo/math/Vector',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	LightComponent,

@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
 	Vector3,
@@ -308,7 +308,7 @@ define([
 
 		var iZStart = 0;
 		if (!this._useSharedPoleVertices) {
-			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be 
+			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be
 			// used only for the pole.
 			iZStart = this.radialSamples + 1;
 		}
@@ -370,7 +370,7 @@ define([
 
 			var i0, i1, i2;
 			if (!this._useSharedPoleVertices) {
-				// as we are in the last pole ring (with iOffset added), step back to the 
+				// as we are in the last pole ring (with iOffset added), step back to the
 				// next-to-last as there is no pole vertex in this mode.
 				i0 = i + iOffset - this.radialSamples - 1;
 				i1 = i + iOffset - this.radialSamples;

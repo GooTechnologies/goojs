@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!

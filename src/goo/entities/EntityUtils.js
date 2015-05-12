@@ -1,7 +1,7 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Scripts,
 	BoundingBox,

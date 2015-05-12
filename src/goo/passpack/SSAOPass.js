@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
@@ -13,7 +13,7 @@ define([
 ], function (
 	Material,
 	RenderTarget,
-	ObjectUtil,
+	ObjectUtils,
 	MeshData,
 	Shader,
 	ShaderFragment,
@@ -54,7 +54,7 @@ define([
 	SSAOPass.prototype.updateSize = function (size) {
 		var width = Math.floor(size.width / this.downsampleAmount);
 		var height = Math.floor(size.height / this.downsampleAmount);
-		var shader = ObjectUtil.deepClone(ShaderLibExtra.ssao);
+		var shader = ObjectUtils.deepClone(ShaderLibExtra.ssao);
 		shader.uniforms.size = [width, height];
 		this.outPass = new FullscreenPass(shader);
 		this.outPass.useReadBuffer = false;

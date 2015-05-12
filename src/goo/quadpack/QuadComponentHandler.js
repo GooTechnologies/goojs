@@ -1,13 +1,13 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils',
 	'goo/quadpack/QuadComponent'
 ], function (
 	ComponentHandler,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_,
 	QuadComponent
 ) {

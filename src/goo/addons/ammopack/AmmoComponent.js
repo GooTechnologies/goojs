@@ -10,7 +10,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	EntityUtils,
 	Component,

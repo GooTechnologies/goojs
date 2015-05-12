@@ -2,7 +2,7 @@ define([
 	'goo/scripts/Scripts',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/scriptpack/PanCamScript',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Scripts,
 	OrbitCamControlScript,

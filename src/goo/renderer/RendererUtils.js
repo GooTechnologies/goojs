@@ -1,8 +1,8 @@
 /* jshint bitwise: false */
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -100,11 +100,11 @@ define([
 
 	/**
 	 * Clones an object recursively
-	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtil.deepClone` instead
+	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtils.deepClone` instead
 	 * @param {*} object Object to clone
 	 * @returns {*} Cloned object
 	 */
-	RendererUtils.clone = ObjectUtil.deepClone;
+	RendererUtils.clone = ObjectUtils.deepClone;
 
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function (texture, color, width, height, maxSize, index) {

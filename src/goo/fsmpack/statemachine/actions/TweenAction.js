@@ -1,12 +1,12 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FSMUtils'
 	],
 
 
 function(
 	Action,
-	FSMUtil
+	FSMUtils
 ) {
 	'use strict';
 
@@ -87,7 +87,7 @@ function(
 
 		var object = eval('entity.' + this.objectName);
 		var from = object[this.propertyName];
-		FSMUtil.createComposableTween(entity, this.propertyName, from, this.to, this.time);
+		FSMUtils.createComposableTween(entity, this.propertyName, from, this.to, this.time);
 	};
 
 	return TweenAction;

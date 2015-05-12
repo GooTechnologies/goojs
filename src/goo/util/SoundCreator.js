@@ -3,15 +3,15 @@ define([
 	'goo/loaders/handlers/SoundHandler',
 	'goo/sound/AudioContext',
 	'goo/util/Ajax',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil'
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils'
 ], function (
 	Util,
 	SoundHandler,
 	AudioContext,
 	Ajax,
-	StringUtil,
-	PromiseUtil
+	StringUtils,
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -49,14 +49,14 @@ define([
 	 */
 	SoundCreator.prototype.loadSound = function (url, settings) {
 		if (!AudioContext.isSupported()) {
-			return PromiseUtil.reject(new Error('AudioContext is not supported!'));
+			return PromiseUtils.reject(new Error('AudioContext is not supported!'));
 		}
 
-		var id = StringUtil.createUniqueId('sound');
+		var id = StringUtils.createUniqueId('sound');
 		settings = settings || {};
 		settings.audioRefs = {};
 
-		var fileExtension = StringUtil.getAfterLast(url, '.');
+		var fileExtension = StringUtils.getAfterLast(url, '.');
 		settings.audioRefs[fileExtension] = url;
 
 		var sound = this.soundHandler._create();

@@ -6,8 +6,8 @@ define([
 	'goo/animationpack/blendtree/BinaryLERPSource',
 	'goo/animationpack/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	SteadyState,
@@ -16,7 +16,7 @@ define([
 	BinaryLERPSource,
 	FrozenClipSource,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -115,7 +115,7 @@ define([
 						return clipSource;
 					});
 				} else {
-					return PromiseUtil.resolve(clipSource);
+					return PromiseUtils.resolve(clipSource);
 				}
 				break;
 			case 'Lerp':
@@ -143,7 +143,7 @@ define([
 				});
 			default:
 				console.error('Unable to parse clip source');
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 		}
 	};
 

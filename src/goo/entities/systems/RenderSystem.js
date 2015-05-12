@@ -4,14 +4,14 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -136,22 +136,22 @@ define([
 		switch(key) {
 			case 'wireframe':
 			case 'color':
-				fshader = ObjectUtil.deepClone(ShaderLib.simpleColored.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simpleColored.fshader);
 				break;
 			case 'lit':
-				fshader = ObjectUtil.deepClone(ShaderLib.simpleLit.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simpleLit.fshader);
 				break;
 			case 'texture':
-				fshader = ObjectUtil.deepClone(ShaderLib.textured.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.textured.fshader);
 				break;
 			case 'normals':
-				fshader = ObjectUtil.deepClone(ShaderLib.showNormals.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.showNormals.fshader);
 				break;
 			case 'simple':
-				fshader = ObjectUtil.deepClone(ShaderLib.simple.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simple.fshader);
 				break;
 		}
-		var shaderDef = ObjectUtil.deepClone(ShaderLib.uber);
+		var shaderDef = ObjectUtils.deepClone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
 		if(key !== 'flat') {
 			this._debugMaterials[key] = new Material(shaderDef, key);

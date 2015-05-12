@@ -4,10 +4,10 @@ define(
 function() {
 	'use strict';
 
-	function FSMUtil() {
+	function FSMUtils() {
 	}
 
-	FSMUtil.setParameters = function (settings, externalParameters) {
+	FSMUtils.setParameters = function (settings, externalParameters) {
 		for (var i = 0; i < externalParameters.length; i++) {
 			var externalParameter = externalParameters[i];
 			var key = externalParameter.key;
@@ -20,7 +20,7 @@ function() {
 		}
 	};
 
-	FSMUtil.setTransitions = function (settings, externalTransitions) {
+	FSMUtils.setTransitions = function (settings, externalTransitions) {
 		for (var i = 0; i < externalTransitions.length; i++) {
 			var externalTransition = externalTransitions[i];
 			var key = externalTransition.key;
@@ -30,15 +30,15 @@ function() {
 		}
 	};
 
-	FSMUtil.getKey = function (str) {
-		if (FSMUtil.keys[str]) {
-			return FSMUtil.keys[str];
+	FSMUtils.getKey = function (str) {
+		if (FSMUtils.keys[str]) {
+			return FSMUtils.keys[str];
 		} else {
 			return str.charCodeAt(0);
 		}
 	};
 
-	FSMUtil.keys = {
+	FSMUtils.keys = {
 		'Backspace': 8,
 		'Tab': 9,
 		'Enter': 13,
@@ -154,7 +154,7 @@ function() {
 		'Backslash': 220
 	};
 
-	FSMUtil.keyInverse = [];
+	FSMUtils.keyInverse = [];
 
 	function buildKeyInverse(assoc) {
 		var inverseAssoc = [];
@@ -167,13 +167,13 @@ function() {
 		return inverseAssoc;
 	}
 
-	FSMUtil.keyInverse = buildKeyInverse(FSMUtil.keys);
+	FSMUtils.keyInverse = buildKeyInverse(FSMUtils.keys);
 
-	FSMUtil.keyForCode = function(code) {
-		if (FSMUtil.keyInverse[code]) {
-			return FSMUtil.keyInverse[code];
+	FSMUtils.keyForCode = function(code) {
+		if (FSMUtils.keyInverse[code]) {
+			return FSMUtils.keyInverse[code];
 		}
-		return 'FSMUtil.keyForCode: key not found for code ' + code;
+		return 'FSMUtils.keyForCode: key not found for code ' + code;
 	};
 
 	var s4 = function () {
@@ -183,12 +183,12 @@ function() {
 	};
 
 	// Random unique id
-	FSMUtil.guid = function() {
+	FSMUtils.guid = function() {
 		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 			s4() + '-' + s4() + s4() + s4();
 	};
 
-	FSMUtil.getValue = function(par, fsm) {
+	FSMUtils.getValue = function(par, fsm) {
 		if (typeof par === 'number') {
 			return par;
 		} else {
@@ -196,7 +196,7 @@ function() {
 		}
 	};
 
-	FSMUtil.createComposableTween = function(object, propertyName, from, to, time, callback) {
+	FSMUtils.createComposableTween = function(object, propertyName, from, to, time, callback) {
 		var tween = new window.TWEEN.Tween();
 		var old = from;
 		return tween.from({ v: from }).to({ v: to }).onUpdate(function() {
@@ -208,5 +208,5 @@ function() {
 		});
 	};
 
-	return FSMUtil;
+	return FSMUtils;
 });

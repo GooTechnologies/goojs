@@ -1,15 +1,15 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
-	describe('PromiseUtil', function () {
+	describe('PromiseUtils', function () {
 	    describe('createDummyPromise', function () {
 	        it('resolves asynchronously', function (done) {
 				var solvedValue;
-	            var promise = PromiseUtil.createDummyPromise('some value').then(function (value) {
+	            var promise = PromiseUtils.createDummyPromise('some value').then(function (value) {
 					solvedValue = value; // store this guy or outside access
 					expect(solvedValue).toEqual('some value');
 					done();

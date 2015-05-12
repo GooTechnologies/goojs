@@ -2,8 +2,8 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/ScriptComponent',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
-	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtils',
+	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus',
 
 	'goo/scripts/Scripts',
@@ -13,7 +13,7 @@ define([
 	ScriptComponent,
 	RSVP,
 	_,
-	PromiseUtil,
+	PromiseUtils,
 	SystemBus,
 
 	Scripts,
@@ -98,7 +98,7 @@ define([
 
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
 		if (!externals || !externals.parameters) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 
 		var promises = [];
@@ -115,7 +115,7 @@ define([
 		if (external.type === 'texture') {
 			if (!config || !config.textureRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			} else {
 				return this._load(config.textureRef, options).then(function (texture) {
 					parameters[key] = texture;
@@ -124,7 +124,7 @@ define([
 		} else if (external.type === 'entity') {
 			if (!config || !config.entityRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			} else {
 				return this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
@@ -132,7 +132,7 @@ define([
 			}
 		} else {
 			parameters[key] = _.extend(config);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 	};
 
@@ -158,7 +158,7 @@ define([
 			externals: script.externals
 		});
 
-		return PromiseUtil.resolve(script);
+		return PromiseUtils.resolve(script);
 	}
 
 	return ScriptComponentHandler;

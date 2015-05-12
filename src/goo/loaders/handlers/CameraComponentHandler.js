@@ -3,8 +3,8 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	CameraComponent,
