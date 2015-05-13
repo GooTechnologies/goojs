@@ -195,19 +195,19 @@ function (
 	 * Freeze motion along all axes.
 	 * @type {number}
 	 */
-	RigidBodyComponent.FREEZE_POSITION = 7;
+	RigidBodyComponent.FREEZE_POSITION = RigidBodyComponent.FREEZE_POSITION_X | RigidBodyComponent.FREEZE_POSITION_Y | RigidBodyComponent.FREEZE_POSITION_Z;
 
 	/**
 	 * Freeze rotation along all axes.
 	 * @type {number}
 	 */
-	RigidBodyComponent.FREEZE_ROTATION = 56;
+	RigidBodyComponent.FREEZE_ROTATION = RigidBodyComponent.FREEZE_ROTATION_X | RigidBodyComponent.FREEZE_ROTATION_Y | RigidBodyComponent.FREEZE_ROTATION_Z;
 
 	/**
 	 * Freeze rotation and motion along all axes.
 	 * @type {number}
 	 */
-	RigidBodyComponent.FREEZE_ALL = 63;
+	RigidBodyComponent.FREEZE_ALL = RigidBodyComponent.FREEZE_POSITION | RigidBodyComponent.FREEZE_ROTATION;
 
 	/**
 	 * No rigid body smoothing.
