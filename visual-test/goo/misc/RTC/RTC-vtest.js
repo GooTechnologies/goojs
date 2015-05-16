@@ -118,13 +118,14 @@ require([
 
 		var mesh = new Box();
 
-		var box = world.createEntity(mesh, V.getColoredMaterial(), [0,0,0]);
-		box.addToWorld();
-
 		var tc = new TextureCreator();
-		var texture = tc.fromMediaStream(event.stream);
 
-		console.log(texture);
+		var material = new Material('mmhm', ShaderLib.uber);
+		tc.fromMediaStream(event.stream).then(function(texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+			var box = world.createEntity(mesh, material, [0,0,0]);
+			box.addToWorld();
+		});
 
 	}
 

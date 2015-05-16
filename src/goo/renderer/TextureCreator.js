@@ -165,41 +165,43 @@ define([
 	};
 
 	TextureCreator.prototype.fromMediaStream = function(stream) {
-		var video = document.createElement('video');
-		video.autoplay = true;
-		video.loop = true;
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var video = document.createElement('video');
+			video.autoplay = true;
+			video.loop = true;
 
-		var texture = new Texture(video, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
-		});
+			var texture = new Texture(video, {
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp'
+			});
 
-		texture.readyCallback = function () {
-			if (video.readyState >= 3) {
-				video.width = video.videoWidth;
-				video.height = video.videoHeight;
+			texture.readyCallback = function () {
+				if (video.readyState >= 3) {
+					video.width = video.videoWidth;
+					video.height = video.videoHeight;
 
-				// set minification filter based on pow2
-				if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
+					// set minification filter based on pow2
+					if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
+						texture.generateMipmaps = false;
+						texture.minFilter = 'BilinearNoMipMaps';
+					}
+
+					video.dataReady = true;
+
+					return true;
 				}
 
-				video.dataReady = true;
+				return false;
+			};
 
-				return true;
-			}
+			texture.updateCallback = function () {
+				return !video.paused;
+			};
 
-			return false;
-		};
-
-		texture.updateCallback = function () {
-			return !video.paused;
-		};
-
-		video.src = window.URL.createObjectURL(stream);
-
-		return texture;
+			
+			video.src = window.URL.createObjectURL(stream);
+			resolve(texture);
+		});
 	};
 
 	/**
