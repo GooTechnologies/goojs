@@ -164,6 +164,44 @@ define([
 		});
 	};
 
+	TextureCreator.prototype.fromMediaStream = function(stream) {
+		var video = document.createElement('video');
+		video.autoplay = true;
+		video.loop = true;
+
+		var texture = new Texture(video, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp'
+		});
+
+		texture.readyCallback = function () {
+			if (video.readyState >= 3) {
+				video.width = video.videoWidth;
+				video.height = video.videoHeight;
+
+				// set minification filter based on pow2
+				if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+				}
+
+				video.dataReady = true;
+
+				return true;
+			}
+
+			return false;
+		};
+
+		texture.updateCallback = function () {
+			return !video.paused;
+		};
+
+		video.src = window.URL.createObjectURL(stream);
+
+		return texture;
+	};
+
 	/**
 	 * Loads an array of six images into a Texture.
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
