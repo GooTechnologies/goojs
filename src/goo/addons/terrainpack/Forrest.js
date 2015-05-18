@@ -100,8 +100,9 @@ define([
 		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
 	};
 
-	Forrest.prototype.loadLODTrees = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
+	Forrest.prototype.loadLODTrees = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, terrainData, entityMap) {
 		this.terrainQuery = terrainQuery;
+		var forrestTypes = terrainData.forrestTypes;
 		this.forrestTypes = forrestTypes;
 		this.entityMap = entityMap || {};
 		this.world = world;
@@ -130,9 +131,10 @@ define([
 		// this.patchDensity = 10;
 		// this.gridSize = 7;
 		// this.minDist = 0;
-		this.patchSize = 128;
-		this.patchDensity = 35;
-		this.gridSize = 7;
+
+		this.patchSize = terrainData.forrestDensity.patchSize || 128;
+		this.patchDensity = terrainData.forrestDensity.patchDensity || 35;
+		this.gridSize = terrainData.forrestDensity.gridSize || 7;
 		this.minDist = 0;
 		// this.patchSize = 64;
 		// this.patchDensity = 8;
@@ -148,11 +150,11 @@ define([
 			this.grid[x] = [];
 			this.gridState[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
-				var entity = world.createEntity(this.material);
+				var entity = world.createEntity('ForrestPatch'+x+'_'+z, this.material);
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
-				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.xExtent = this.patchSize * 0.5;
 				meshDataComponent.modelBound.yExtent = 500;
-				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.modelBound.zExtent = this.patchSize * 0.5;
 				meshDataComponent.autoCompute = false;
 				entity.set(meshDataComponent);
 				entity.addToWorld();

@@ -46,9 +46,11 @@ define([
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings, terrainTextures) {
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, terrainData, terrainTextures) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
+
+		var vegetationTypes = terrainData.vegetationTypes;
 
 		this.vegetationList = {};
 		for (var type in vegetationTypes) {
@@ -70,15 +72,9 @@ define([
 		material.renderQueue = 3001;
 		this.material = material;
 
-		this.patchSize = 15;
-		this.patchDensity = 25;
-		this.gridSize = 7;
-
-		if (settings) {
-			this.patchSize = settings.patchSize || this.patchSize;
-			this.patchDensity = settings.patchDensity || this.patchDensity;
-			this.gridSize = settings.gridSize || this.gridSize;
-		}
+		this.patchSize = terrainData.vegetationDensity.patchSize || 15;
+		this.patchDensity = terrainData.vegetationDensity.patchDensity || 25;
+		this.gridSize = terrainData.vegetationDensity.gridSize || 7;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -87,11 +83,11 @@ define([
 		for (var x = 0; x < this.gridSize; x++) {
 			this.grid[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
-				var entity = this.world.createEntity(this.material);
+				var entity = this.world.createEntity('VegetationPatch'+x+'_'+z, this.material);
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
-				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.xExtent = this.patchSize * 0.5;
 				meshDataComponent.modelBound.yExtent = 500;
-				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.modelBound.zExtent = this.patchSize * 0.5;
 				meshDataComponent.autoCompute = false;
 				entity.set(meshDataComponent);
 				entity.addToWorld();
@@ -465,7 +461,7 @@ define([
 				'vec3 N = normalize(normal);',
 
 				// ShaderBuilder.light.fragment,
-				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 2.0;',
+				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 1.0;',
 
 				'final_color.a = pow(final_color.a, 0.5);',
 

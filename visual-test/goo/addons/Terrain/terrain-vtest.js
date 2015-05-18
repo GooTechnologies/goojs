@@ -59,6 +59,16 @@ require([
 		"normalMap": "maps/l3dt/normals.png",
 		"lightMap": "maps/l3dt/lightmap.jpg",
 		"terrainConfig": "legend01",
+		"vegetationDensity": {
+			"patchSize": 15,
+			"patchDensity": 25,
+			"gridSize": -1
+		},
+		"forrestDensity": {
+			"patchSize": 128,
+			"patchDensity": 35,
+			"gridSize": -1
+		},
 		"ground1": {
 			"texture": "images/legend_02/ground/grass_01.jpg",
 			"material": "ground_dirt_hit",
@@ -390,10 +400,6 @@ require([
 			"sunStrength": 0.8,
 			"sunRayRatio": 0.3,
 			"sunRaySpread": 0.05
-		},
-		"vegetationSettings": {
-			"patchSize": 15,
-			"patchDensity": 19
 		}
 	};
 
@@ -473,7 +479,8 @@ require([
 	};
 
 	var goo = V.initGoo({
-		showStats: false
+		showStats: false,
+		manuallyStartGameLoop: true,
 	});
 	var world = goo.world;
 
@@ -486,7 +493,6 @@ require([
 	});
 	var camera = new Camera(80, undefined, 1, 10000);
 	var cameraEntity = goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
-	cameraEntity.setTranslation(512, 180, 512);
 
 	// V.addLights();
 	// var directionalLight = new DirectionalLight(new Vector3(1, 1, 0.9));
@@ -691,26 +697,13 @@ require([
 	ShaderBuilder.FOG_COLOR = levelData.fog.color;
 
 	// ShaderBuilder.GLOBAL_AMBIENT = [0.5, 0.5, 0.5];
+	cameraEntity.lookAt(new Vector3(1, 0, 1), Vector3.UNIT_Y);
+	cameraEntity.setTranslation(512, 180, 512);
 
+	var accel = 0;
 	terrainHandler.initLevel(terrainData, terrainEditSettings, forrestLODMap).then(function() {
-
-		// curLightmap = lightMapData;
-		// if (curLightmap) {
-		// var size = Math.sqrt(curLightmap.byteLength);
-		// terrainHandler.useLightmap(new Uint8Array(curLightmap), size);
-		// }
-
-		// if (options.disableForrestLOD) {
-		// terrainHandler.forrest.patchSize = 128;
-		// terrainHandler.forrest.patchDensity = 35;
-		// terrainHandler.forrest.gridSize = 7;
-		// terrainHandler.forrest.minDist = 0;
-		// terrainHandler.forrest.material.uniforms.materialAmbient = [0.1, 0.1, 0.1, 1];
-		// terrainHandler.forrest.material.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
-		// }
-
 		console.log("LOADED TERRAIN ", terrainHandler.terrain);
-		console.log("HEIGHTMAP = ", terrainHandler.terrain.heightMap);
+		console.log("HEIGHTMAP = ", terrainHandler.terrain.floatTexture);
 
 		goo.callbacks.push(function(tpf) {
 			if (!goo.doProcess) {
@@ -718,7 +711,17 @@ require([
 			}
 
 			var pos = cameraEntity.transformComponent.transform.translation;
-			pos.y = Math.max(pos.y, terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 3);
+			pos.x += tpf * 30;
+			pos.z += tpf * 30;
+			accel += tpf * 0.5;
+			pos.y -= accel;
+			var terrainHeight = terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 5;
+			if (pos.y < terrainHeight) {
+				accel = 0;
+			}
+			pos.y = Math.max(pos.y, terrainHeight);
+			// pos.y = terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 5;
+			cameraEntity.transformComponent.setUpdated();
 
 			terrainHandler.update(cameraEntity);
 		});
@@ -727,7 +730,7 @@ require([
 
 		// return skyboxPromise;
 	}).then(function() {
-		// SystemBus.emit('onLevelLoaded');
+		goo.startGameLoop();
 	});
 
 	V.process();

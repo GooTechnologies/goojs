@@ -12,13 +12,11 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/TextureCreator',
-	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Texture',
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
-	'goo/renderer/light/DirectionalLight',
-	'goo/shapes/Quad'
+	'goo/renderer/light/DirectionalLight'
 ], function(
 	EntityUtils,
 	MeshDataComponent,
@@ -33,13 +31,11 @@ define([
 	ShaderLib,
 	ShaderFragment,
 	TextureCreator,
-	RenderTarget,
 	Texture,
 	Renderer,
 	FullscreenPass,
 	FullscreenUtil,
-	DirectionalLight,
-	Quad
+	DirectionalLight
 ) {
 	'use strict';
 
@@ -173,7 +169,7 @@ define([
 			material.setTexture('NORMAL_MAP', terrainTextures.normalMap);
 			material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
 			material.shader.setDefine('LIGHTMAP', true);
-			material.setTexture('DETAIL_MAP', this.detailMap);
+			// material.setTexture('DETAIL_MAP', this.detailMap);
 
 			material.setTexture('SPLAT_MAP', terrainTextures.attributesMap);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -257,27 +253,18 @@ define([
 		var toData = to.image.data;
 		for (var x = 0; x < to._originalWidth; x++) {
 			for (var y = 0; y < to._originalHeight; y++) {
-				var offsetX = (x % 2 === 0) ? 0 : 0;
-				var offsetY = (y % 2 === 0) ? 0 : 0;
+				var offsetX = (x % 2 === 0) ? 0 : 1;
+				var offsetY = (y % 2 === 0) ? -1 : 0;
 
 				var xx = Math.floor(x / 2);
 				var yy = Math.floor(y / 2);
 
 				var fromIndex1 = (yy * from._originalWidth + xx);
-				// var fromIndex2 = (yy * from._originalWidth + xx);
 				var fromIndex2 = (MathUtils.moduloPositive(yy + offsetY, from._originalHeight) * from._originalWidth +
 					MathUtils.moduloPositive(xx + offsetX, from._originalWidth));
 				var toIndex = y * to._originalWidth + x;
 
-				// toData[toIndex * 4 + 0] = origData[toIndex * 4];
 				toData[toIndex * 4 + 1] = (fromData[fromIndex1 * 4 + 0] + fromData[fromIndex2 * 4 + 0]) / 2;
-				// toData[toIndex * 4 + 1] = fromData[fromIndex1 * 4 + 0];
-				// if (isNaN(toData[toIndex * 4 + 0]) || isNaN(toData[toIndex * 4 + 1])) {
-				// 	debugger;
-				// }
-				// toData[toIndex * 4 + 1] = (fromData[fromIndex1 * 4 + 1] + fromData[fromIndex2 * 4 + 1]) * 0.5;
-				// toData[toIndex * 4 + 2] = (fromData[fromIndex1 * 4 + 2] + fromData[fromIndex2 * 4 + 2]) * 0.5;
-				// toData[toIndex * 4 + 3] = (fromData[fromIndex1 * 4 + 3] + fromData[fromIndex2 * 4 + 3]) * 0.5;
 			}
 		}
 	};
@@ -403,6 +390,8 @@ define([
 
 			// this.upsamplePass.material.setTexture('MAIN_MAP', mipmap);
 			// this.upsamplePass.material.uniforms.res = [size, size, 2 / size, 2 / size];
+			mipmap.magFilter = 'NearestNeighbor';
+			mipmap.minFilter = 'NearestNeighborNoMipMaps';
 
 			if (child) {
 				child.magFilter = 'NearestNeighbor';
