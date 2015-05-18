@@ -279,13 +279,14 @@ function (
 		return tmpOptions;
 	};
 
-	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
+	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult, rayStart) {
 		if (cannonResult.hasHit) {
 			gooResult.entity = this._entities[cannonResult.body.id] || this._shapeIdToColliderEntityMap.get(cannonResult.shape.id);
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
 			gooResult.point.setDirect(point.x, point.y, point.z);
 			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
+			gooResult.distance = rayStart.distance(gooResult.point);
 		}
 		return cannonResult.hasHit;
 	};
@@ -321,7 +322,7 @@ function (
 
 		this.cannonWorld.raycastAny(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
-		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result, start);
 	};
 
 	/**
@@ -347,7 +348,7 @@ function (
 
 		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
-		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result, start);
 	};
 
 	var tmpResult = new RaycastResult();
@@ -375,7 +376,7 @@ function (
 		var that = this;
 		var hitAny = false;
 		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
-			var hit = that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			var hit = that._copyCannonRaycastResultToGoo(cannonResult, tmpResult, start);
 			if (hit) {
 				hitAny = true;
 			}

@@ -60,6 +60,7 @@ define([
 			system.raycastClosest(start, direction, distance, {}, result);
 			expect(result.normal).toEqual(new Vector3(0, 0, -1));
 			expect(result.entity.name).toBe(entityB.name);
+			expect(result.distance).toBe(6);
 
 			// Now swap so that entityA is closer
 			start.setDirect(0, 0, 10);
@@ -69,6 +70,7 @@ define([
 			system.raycastClosest(start, direction, distance, {}, result);
 			expect(result.entity.name).toBe(entityA.name);
 			expect(result.normal).toEqual(new Vector3(0, 0, 1));
+			expect(result.distance).toEqual(6);
 		});
 
 		it('can raycast any', function () {
