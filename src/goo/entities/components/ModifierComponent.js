@@ -28,7 +28,6 @@ function(
 		this.modifierTargets = new Map();
 
 		this.objectModifiers = [];
-		this.vertexModifiers = [];
 
 		this.clones = [];
 
@@ -55,15 +54,8 @@ function(
 		return newMeshData;
 	};
 
-	ModifierComponent.prototype.shallowClone = function() {
-	};
-
 	ModifierComponent.prototype.update = function(mod) {
-		// if (mod.type === 'Vertex') {
-			this.updateVertexModifiers();
-		// } else {
-			this.updateObjectModifiers();
-		// }
+		this.updateObjectModifiers();
 	};
 
 	ModifierComponent.prototype.updateObjectModifiers = function() {
@@ -80,7 +72,6 @@ function(
 
 			var index = 0;
 			this.modifierTargets.forEach(function(modifierTarget) {
-
 				this.calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
 				this.calcvec2.setVector(Vector3.ONE).scale(2.0).div(this.calcvec);
 				this.calcvec.setVector(modifierTarget.transform.translation);
@@ -92,73 +83,7 @@ function(
 		}
 	};
 
-	ModifierComponent.prototype.updateVertexModifiers = function() {
-		this.modifierTargets.forEach(function(modifierTarget) {
-			var posSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.POSITION);
-			var posTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.POSITION);
-			var normalSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.NORMAL);
-			var normalTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.NORMAL);
-
-			this.calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
-			this.calcvec2.setVector(Vector3.ONE).scale(2.0).div(this.calcvec);
-
-			var worldTrans = modifierTarget.entity.transformComponent.worldTransform.matrix;
-			var worldTransInv = Matrix4x4.invert(modifierTarget.entity.transformComponent.worldTransform.matrix);
-
-			var datas = modifierTarget.datas;
-			var viewLength = posSource.length;
-			var vertexCount = viewLength / 3;
-			var modifierCount = this.vertexModifiers.length;
-			for (var i = 0; i < vertexCount; i++) {
-				var data = datas[i];
-				if (!data) {
-					data = datas[i] = {
-						position: new Vector3(),
-						normal: new Vector3(),
-						normalizedVert: new Vector3()
-					};
-				}
-
-				data.position.setDirect(posSource[i * 3 + 0], posSource[i * 3 + 1], posSource[i * 3 + 2]);
-				worldTrans.applyPostPoint(data.position);
-				data.position.subVector(modifierTarget.bound.center);
-
-				data.normal.setDirect(normalSource[i * 3 + 0], normalSource[i * 3 + 1], normalSource[i * 3 + 2]);
-				worldTrans.applyPostVector(data.normal);
-
-				data.normalizedVert.setVector(data.position);
-				data.normalizedVert.mulVector(this.calcvec2);
-			}
-
-			// apply modifiers
-			for (var j = 0; j < modifierCount; j++) {
-				for (var i = 0; i < vertexCount; i++) {
-					this.vertexModifiers[j].updateVertex(datas[i]);
-				}
-			}
-
-			for (var i = 0; i < vertexCount; i++) {
-				var data = datas[i];
-
-				data.position.addVector(modifierTarget.bound.center);
-				worldTransInv.applyPostPoint(data.position);
-
-				worldTransInv.applyPostVector(data.normal);
-
-				posTarget[i * 3 + 0] = data.position.x;
-				posTarget[i * 3 + 1] = data.position.y;
-				posTarget[i * 3 + 2] = data.position.z;
-
-				normalTarget[i * 3 + 0] = data.normal.x;
-				normalTarget[i * 3 + 1] = data.normal.y;
-				normalTarget[i * 3 + 2] = data.normal.z;
-			}
-
-			modifierTarget.newMeshData.setVertexDataUpdated();
-		}.bind(this));
-	};
-
-	ModifierComponent.prototype._cloneDeep = function(entity) {
+	ModifierComponent.prototype.shallowClone = function(entity) {
 		// var newMeshData = this._copyMeshData(entity.meshDataComponent.meshData);
 		var ent = entity._world.createEntity(entity.meshDataComponent.meshData, entity.meshRendererComponent.materials[0]);
 		ent.addToWorld();
@@ -179,7 +104,7 @@ function(
 		for (var i = 0; i < count; i++) {
 			entity.traverse(function(entity) {
 				if (entity.meshRendererComponent) {
-					var clone = this._cloneDeep(entity);
+					var clone = this.shallowClone(entity);
 					this.clones.push(clone);
 				}
 			}.bind(this));
@@ -223,21 +148,16 @@ function(
 
 		entity.traverse(function(entity) {
 			if (entity.meshDataComponent) {
-				var newMeshData = this._copyMeshData(entity.meshDataComponent.meshData);
 				var origTransform = new Transform();
 				origTransform.copy(entity.transformComponent.transform);
 
 				var modifierTarget = {
 					bound: bound,
 					origMeshData: entity.meshDataComponent.meshData,
-					newMeshData: newMeshData,
 					entity: entity,
 					transform: entity.transformComponent.transform,
-					origTransform: origTransform,
-					datas: []
+					origTransform: origTransform
 				};
-				entity.meshDataComponent.autoCompute = true;
-				entity.meshDataComponent.meshData = newMeshData;
 				this.modifierTargets.set(entity, modifierTarget);
 			}
 		}.bind(this));

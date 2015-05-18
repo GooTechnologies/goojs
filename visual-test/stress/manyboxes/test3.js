@@ -105,20 +105,21 @@ require([
 	var sphere = new Sphere(8, 8, 0.2);
 	var box2 = new Box(0.2, 1, 0.2);
 
-	var positionStore = new Vector3();
-	var normalStore = new Vector3();
-	var vec = new Vector3();
-	for (var i = 0; i < 200; i++) {
-		Util.getRandomSurfacePosition(box, positionStore, normalStore);
+	// var positionStore = new Vector3();
+	// var normalStore = new Vector3();
+	// var vec = new Vector3();
+	// for (var i = 0; i < 200; i++) {
+	// 	Util.getRandomSurfacePosition(box, positionStore, normalStore);
 
-		var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
-		vec.setVector(Vector3.ZERO);
-		while (vec.lengthSquared() < MathUtils.EPSILON) {
-			vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
-		}
-		entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
-		entity.transformComponent.setUpdated();
-	}
+	// 	var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
+	// 	vec.setVector(Vector3.ZERO);
+	// 	while (vec.lengthSquared() < MathUtils.EPSILON) {
+	// 		vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
+	// 	}
+	// 	entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
+	// 	entity.transformComponent.setUpdated();
+	// }
+	
 	// for (var i = 0; i < 200; i++) {
 	// 	Util.getRandomSurfacePosition(cool, positionStore, normalStore);
 
@@ -130,29 +131,23 @@ require([
 	// 	entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
 	// 	entity.transformComponent.setUpdated();
 	// }
-	for (var i = 0; i < 200; i++) {
-		Util.getRandomSurfacePosition(torus, positionStore, normalStore);
+	// for (var i = 0; i < 200; i++) {
+	// 	Util.getRandomSurfacePosition(torus, positionStore, normalStore);
 
-		var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
-		vec.setVector(Vector3.ZERO);
-		while (vec.lengthSquared() < MathUtils.EPSILON) {
-			vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
-		}
-		entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
-		entity.transformComponent.setUpdated();
-	}
+	// 	var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
+	// 	vec.setVector(Vector3.ZERO);
+	// 	while (vec.lengthSquared() < MathUtils.EPSILON) {
+	// 		vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
+	// 	}
+	// 	entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
+	// 	entity.transformComponent.setUpdated();
+	// }
 
 	world.setSystem(new ModifierSystem());
 
 	var modifierComponent = new ModifierComponent();
 
-	modifierComponent.vertexModifiers.push(new ScaleModifier());
-	modifierComponent.vertexModifiers.push(new SpinModifier());
-	modifierComponent.vertexModifiers.push(new OffsetModifier());
-	modifierComponent.vertexModifiers.push(new BendModifier());
-	modifierComponent.vertexModifiers.push(new BendModifier());
-	modifierComponent.vertexModifiers.push(new NoiseModifier());
-
+	modifierComponent.objectModifiers.push(new ObjectScaleModifier());
 	modifierComponent.objectModifiers.push(new PlaceModifier());
 	modifierComponent.objectModifiers.push(new AlignModifier());
 	modifierComponent.objectModifiers.push(new ObjectScaleModifier());
@@ -259,12 +254,6 @@ require([
 				})(mod, key, modifierComponent);
 			}
 		}
-	}
-
-	var vert = gui.addFolder('Vertex Modifiers');
-	for (var i = 0; i < modifierComponent.vertexModifiers.length; i++) {
-		var mod = modifierComponent.vertexModifiers[i];
-		addGui(mod, vert);
 	}
 
 	var obj = gui.addFolder('Object Modifiers');
