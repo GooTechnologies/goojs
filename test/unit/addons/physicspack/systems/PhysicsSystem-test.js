@@ -362,8 +362,9 @@ define([
 			expect(gravity).toEqual(new Vector3(1, 2, 3));
 		});
 
+		//! AT: what is this supposed to test?
 		it('can stop and play', function () {
-
+			//! AT: bad variable names
 			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
