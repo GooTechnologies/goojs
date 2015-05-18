@@ -117,7 +117,8 @@ define([
 
 				// At end of the path
 				rigidBodyComponent.setQuaternion(this.toQuaternion);
-				//entity.transformComponent.transform.rotation.copy(this.toQuaternion);
+				entity.transformComponent.transform.rotation.copyQuaternion(this.toQuaternion);
+				entity.transformComponent.transform.update();
 				newVelocity.setDirect(0, 0, 0);
 				rigidBodyComponent.setAngularVelocity(newVelocity);
 				this.startTime = -1;
@@ -142,7 +143,9 @@ define([
 
 			// Get rotation axis - for the angular velocity
 			this.rotationAxis = new Vector3();
-			this.rotationAngle = this.fromQuaternion.clone().conjugate().mul(this.toQuaternion).toAngleAxis(this.rotationAxis);
+			var diffQuat = this.fromQuaternion.clone().conjugate().mul(this.toQuaternion);
+			this.rotationAngle = Math.abs(diffQuat.toAngleAxis(this.rotationAxis));
+			this.rotationAxis.scale(MathUtils.sign(diffQuat.w));
 
 			this.fixedUpdate(fsm);
 			this.startTime = entity._world.fixedTime + entity._world.fixedDeltaTime;
