@@ -74,21 +74,18 @@ define([
 			expect(parentEntity.transformComponent.children).not.toContain(childEntity.transformComponent);
 		});
 
-		//! AT: if any method fails the whole spec fails
-		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation', function () {
-			var tc = new TransformComponent();
-			tc.setRotation(1,2,2);
-			tc.addRotation(0,0,1);
-			tc.getRotation();
+			var transformComponent = new TransformComponent();
+			transformComponent.setRotation(0.2, 0.4, 0.6); // keep these values under PI / 2
+			transformComponent.addRotation(0.0, 0.0, 0.5);
+			expect(transformComponent.getRotation()).toBeCloseToVector(new Vector3(0.2, 0.4, 0.6 + 0.5));
 		});
 
-		//! AT: if any method fails the whole spec fails
-		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation with array', function () {
-			var tc = new TransformComponent();
-			tc.setRotation([1,2,2]);
-			tc.addRotation([0,0,1]);
+			var transformComponent = new TransformComponent();
+			transformComponent.setRotation([0.2, 0.4, 0.6]); // keep these values under PI / 2
+			transformComponent.addRotation([0.0, 0.0, 0.5]);
+			expect(transformComponent.getRotation()).toBeCloseToVector(new Vector3(0.2, 0.4, 0.6 + 0.5));
 		});
 
 		//! AT: if any method fails the whole spec fails
@@ -390,7 +387,7 @@ define([
 				var child1 = world.createEntity('child1');
 				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
 
-				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+				world.createEntity().attachChild(child1).attachChild(child2);
 
 				var traversed = [];
 				child22.traverseUp(function (entity) {
