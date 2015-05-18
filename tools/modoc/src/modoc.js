@@ -15,7 +15,7 @@
 var fs = require('fs');
 var childProcess = require('child_process');
 var glob = require('glob');
-var mustache = require('mustache');
+var handlebars = require('handlebars');
 var marked = require('marked');
 var _ = require('underscore');
 
@@ -199,7 +199,7 @@ function buildClasses(classes) {
 		return classes[className];
 	});
 
-	var result = mustache.render(classTemplate, { classes: classesArray });
+	var result = handlebars.compile(classTemplate)({ classes: classesArray });
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'everything.html', result);
 }
@@ -208,8 +208,7 @@ function buildIndex(index) {
 	var navTemplate = fs.readFileSync(
 		args.templatesPath + util.PATH_SEPARATOR + 'nav.mustache', { encoding: 'utf8' });
 
-	var data = { index: index };
-	var result = mustache.render(navTemplate, data);
+	var result = handlebars.compile(navTemplate)({ index: index });
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'index.html', result);
 }
@@ -219,8 +218,8 @@ function buildChangelog(file) {
 	var formatted = marked(changelog);
 
 	var changelogTemplate = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.mustache', { encoding: 'utf8' });
-	var data = { content: formatted };
-	var result = mustache.render(changelogTemplate, data);
+
+	var result = handlebars.compile(changelogTemplate)({ content: formatted });
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'changelog.html', result);
 }
@@ -291,7 +290,7 @@ function buildDeprecated(classes) {
 
 	var data = compileDeprecated(classes);
 
-	var result = mustache.render(deprecatedTemplate, data);
+	var result = handlebars.compile(deprecatedTemplate)(data);
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'deprecated.html', result);
 }
