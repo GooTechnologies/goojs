@@ -97,7 +97,16 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (object) {
 			if (!object) { return; }
-			object.backgroundColor = config.backgroundColor.slice(0);
+
+			var backgroundColor = config.backgroundColor;
+			var alpha = backgroundColor[3];
+			// Premultiply alpha
+			object.backgroundColor = [
+				backgroundColor[0] * alpha,
+				backgroundColor[1] * alpha,
+				backgroundColor[2] * alpha,
+				backgroundColor[3]
+			];
 			object.globalAmbient = config.globalAmbient.slice(0, 3);
 
 			object.fog = _.deepClone(config.fog);

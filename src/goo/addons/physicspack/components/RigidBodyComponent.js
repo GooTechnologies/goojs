@@ -134,12 +134,79 @@ define([
 		 * @type {number}
 		 */
 		this.interpolation = RigidBodyComponent.INTERPOLATE;
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 *
+		 * @type {number}
+		 */
+		this._constraints = RigidBodyComponent.FREEZE_NONE;
 	}
 
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
 
 	RigidBodyComponent.type = 'RigidBodyComponent';
+
+	/**
+	 * No constraints.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_NONE = 0;
+
+	/**
+	 * Freeze motion along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_X = 1;
+
+	/**
+	 * Freeze motion along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Y = 2;
+
+	/**
+	 * Freeze motion along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Z = 4;
+
+	/**
+	 * Freeze rotation along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_X = 8;
+
+	/**
+	 * Freeze rotation along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Y = 16;
+
+	/**
+	 * Freeze rotation along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Z = 32;
+
+	/**
+	 * Freeze motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION = RigidBodyComponent.FREEZE_POSITION_X | RigidBodyComponent.FREEZE_POSITION_Y | RigidBodyComponent.FREEZE_POSITION_Z;
+
+	/**
+	 * Freeze rotation along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION = RigidBodyComponent.FREEZE_ROTATION_X | RigidBodyComponent.FREEZE_ROTATION_Y | RigidBodyComponent.FREEZE_ROTATION_Z;
+
+	/**
+	 * Freeze rotation and motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ALL = RigidBodyComponent.FREEZE_POSITION | RigidBodyComponent.FREEZE_ROTATION;
 
 	/**
 	 * No rigid body smoothing.
@@ -412,6 +479,24 @@ define([
 					this.cannonBody.sleepTimeLimit = value;
 				}
 			}
+		},
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @type {number}
+		 */
+		constraints: {
+			get: function () {
+				return this._constraints;
+			},
+			set: function (value) {
+				this._constraints = value;
+				var body = this.cannonBody;
+				if (body) {
+					RigidBodyComponent.constraintsToCannonFactors(value, body.linearFactor, body.angularFactor);
+				}
+			}
 		}
 	});
 
@@ -436,6 +521,19 @@ define([
 		this._colliderEntities.length = 0;
 	};
 
+	RigidBodyComponent.constraintsToCannonFactors = function (constraints, linear, angular) {
+		linear.set(
+			constraints & RigidBodyComponent.FREEZE_POSITION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Z ? 0 : 1
+		);
+		angular.set(
+			constraints & RigidBodyComponent.FREEZE_ROTATION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Z ? 0 : 1
+		);
+	};
+
 	/**
 	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if the intention is to work with the CANNON.Body instance directly after the component is created.
 	 */
@@ -449,6 +547,7 @@ define([
 			sleepSpeedLimit: this._sleepingThreshold,
 			sleepTimeLimit: this._sleepingTimeLimit
 		});
+		RigidBodyComponent.constraintsToCannonFactors(this.constraints, body.linearFactor, body.angularFactor);
 		this._system.cannonWorld.addBody(body);
 		this._system._entities[body.id] = this._entity;
 

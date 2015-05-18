@@ -3,4 +3,5 @@
 # Continuous test script (unit and e2e)
 #
 
+npm install
 grunt unittest # test # e2e will fail until I update the screenshots

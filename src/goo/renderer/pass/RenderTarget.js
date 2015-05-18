@@ -92,7 +92,7 @@ define([
 
 	/**
 	 * Deallocates all allocated resources from the WebGL context.
-	 * @param  {WebGLContext} context
+	 * @param  {WebGLRenderingContext} context
 	 */
 	RenderTarget.prototype.destroy = function (context) {
 		if (this.glTexture) {

@@ -59,6 +59,40 @@ define([
 			expect(rigidBodyComponent.cannonBody.angularDamping).toEqual(123);
 		});
 
+		it('can set constraints', function () {
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_NONE;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(1, 1, 1));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_POSITION_X;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(0, 1, 1));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_POSITION_Y;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(1, 0, 1));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_POSITION_Z;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(1, 1, 0));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_ROTATION_X;
+			expect(rigidBodyComponent.cannonBody.angularFactor).toEqual(new CANNON.Vec3(0, 1, 1));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_ROTATION_Y;
+			expect(rigidBodyComponent.cannonBody.angularFactor).toEqual(new CANNON.Vec3(1, 0, 1));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_ROTATION_Z;
+			expect(rigidBodyComponent.cannonBody.angularFactor).toEqual(new CANNON.Vec3(1, 1, 0));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_POSITION;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(0, 0, 0));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_ROTATION;
+			expect(rigidBodyComponent.cannonBody.angularFactor).toEqual(new CANNON.Vec3(0, 0, 0));
+
+			rigidBodyComponent.constraints = RigidBodyComponent.FREEZE_ALL;
+			expect(rigidBodyComponent.cannonBody.linearFactor).toEqual(new CANNON.Vec3(0, 0, 0));
+			expect(rigidBodyComponent.cannonBody.angularFactor).toEqual(new CANNON.Vec3(0, 0, 0));
+
+		});
+
 		it('can set transform from entity', function () {
 			entity.setTranslation(1, 2, 3);
 			entity.transformComponent.updateWorldTransform();
