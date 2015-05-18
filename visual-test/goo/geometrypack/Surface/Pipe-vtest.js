@@ -3,20 +3,14 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/geometrypack/PolyLine',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cone',
 	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
 	Vector3,
 	PolyLine,
-	Sphere,
-	Box,
-	Cone,
 	V
-	) {
+) {
 	'use strict';
 
 	V.describe('Extruding a path along another path');

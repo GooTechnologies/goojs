@@ -136,7 +136,9 @@ define([
 
 				scale = options.scale ? options.scale(progress) : 1;
 
-				forward.copy(FORWARD); rotation.applyPost(forward);
+				forward.copy(FORWARD);
+				rotation.applyPost(forward);
+
 				right.copy(forward).cross(up).normalize();
 				up.copy(right).cross(forward);
 
