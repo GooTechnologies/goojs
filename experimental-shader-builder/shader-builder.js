@@ -63,6 +63,7 @@
 			return node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name + ';';
 		}).join('\n');
 
+
 		// declare the inputs of all nodes
 		var copyIn = nodes.filter(function (node) {
 			if (node.type === 'external') { return false; }
@@ -76,41 +77,40 @@
 				}).join('\n');
 		}).join('\n');
 
+
 		var stringifiedNodes = nodes.map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
 
+			var outputDeclarations = '', copyOut, processedBody = '';
 
-			// declare outputs of the node
-			var outputDeclarations = '';
-			if (node.type !== 'external') {
+			if (node.type === 'external') {
+				// copy the outputs of this node to the inputs of the next node
+				copyOut = node.outputsTo.map(function (outputTo) {
+					return '\t' + getInputVar(outputTo.to, outputTo.input) +
+						' = ' + node.external.name + ';';
+				}).join('\n');
+			} else {
 				if (nodeDefinition.outputs) {
 					outputDeclarations = nodeDefinition.outputs.map(function (output) {
 						return '\t' + output.type + ' ' + output.name + ';';
 					}).join('\n');
 				}
-			}
 
 
-			// copy the outputs of this node to the inputs of the next node
-			var copyOut = node.outputsTo.map(function (outputTo) {
-				return '\t' + getInputVar(outputTo.to, outputTo.input) +
-					' = ' + (outputTo.output || node.external.name) + ';';
-			}).join('\n');
+				// copy the outputs of this node to the inputs of the next node
+				copyOut = node.outputsTo.map(function (outputTo) {
+					return '\t' + getInputVar(outputTo.to, outputTo.input) +
+						' = ' + outputTo.output + ';';
+				}).join('\n');
 
 
-			// body
-			var bodyCode = '';
-			if (node.type !== 'external') {
+				// body
 				var bodyGenerator = jsTemplate.getCodeGenerator(node.type, nodeDefinition.body);
-
 				// have global and local defines (local ones shadow global ones)
-				bodyCode = bodyGenerator(node.defines);
-			}
+				var bodyCode = bodyGenerator(node.defines);
 
 
-			// process inputs (from other shader's outputs)
-			var processedBody = bodyCode;
-			if (node.type !== 'external') {
+				// process inputs (from other shader's outputs)
 				processedBody = nodeDefinition.inputs.reduce(function (partial, input) {
 					// should do a tokenization of the shader coder instead
 					// this regex will fail for comments, strings
@@ -118,9 +118,8 @@
 						new RegExp('\\b' + input.name + '\\b', 'g'),
 						getInputVar(node.id, input.name)
 					);
-				}, processedBody);
+				}, bodyCode);
 			}
-
 
 			// put everything together
 			return '// node ' + node.id + ', ' + node.type + '\n' +
