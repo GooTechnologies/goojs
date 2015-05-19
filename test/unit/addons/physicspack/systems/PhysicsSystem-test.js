@@ -6,7 +6,8 @@ define([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'test/CustomMatchers'
 ], function (
 	World,
 	PhysicsSystem,
@@ -15,7 +16,8 @@ define([
 	ColliderComponent,
 	RaycastResult,
 	SphereCollider,
-	SystemBus
+	SystemBus,
+	CustomMatchers
 ) {
 	'use strict';
 
@@ -23,6 +25,7 @@ define([
 		var world, system;
 
 		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
 			world = new World();
 			system = new PhysicsSystem({
 				maxSubSteps: 1
@@ -58,8 +61,9 @@ define([
 
 			var result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
-			expect(result.normal).toEqual(new Vector3(0, 0, -1));
-			expect(result.entity.name).toBe(entityB.name);
+			expect(result.normal).toBeCloseToVector(new Vector3(0, 0, -1));
+			expect(result.entity).toBe(entityB);
+			expect(result.distance).toBeCloseTo(6);
 
 			// Now swap so that entityA is closer
 			start.setDirect(0, 0, 10);
@@ -67,8 +71,9 @@ define([
 
 			result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
-			expect(result.entity.name).toBe(entityA.name);
-			expect(result.normal).toEqual(new Vector3(0, 0, 1));
+			expect(result.entity).toBe(entityA);
+			expect(result.normal).toBeCloseToVector(new Vector3(0, 0, 1));
+			expect(result.distance).toBeCloseTo(6);
 		});
 
 		it('can raycast any', function () {
@@ -95,7 +100,7 @@ define([
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, {}, result);
 			expect(result.entity).toBeTruthy();
-			expect(result.normal).toEqual(new Vector3(0, 0, -1));
+			expect(result.normal).toBeCloseToVector(new Vector3(0, 0, -1));
 		});
 
 		it('can raycast all', function () {
@@ -171,7 +176,7 @@ define([
 
 			var numHits = 0;
 			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function (result) {
-				expect(result.normal).toEqual(new Vector3(0, 0, -1));
+				expect(result.normal).toBeCloseToVector(new Vector3(0, 0, -1));
 				numHits++;
 			});
 			expect(numHits).toBe(1);
