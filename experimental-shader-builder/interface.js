@@ -184,7 +184,7 @@
 
 			this.activateTypeName = function (typeName) {
 				this.activeTypeName = typeName;
-				var shaderBit = shaderInputProcessor.pack(this.nodeTypes[typeName]);
+				var shaderBit = shaderProcessor.pack(this.nodeTypes[typeName]);
 				this.shaderEditor.setValue(shaderBit, -1);
 			};
 
@@ -203,7 +203,7 @@
 
 			function onInput() {
 				var shaderBit = this.shaderEditor.getValue();
-				this.nodeTypes[this.activeTypeName] = shaderInputProcessor.unpack(shaderBit);
+				this.nodeTypes[this.activeTypeName] = shaderProcessor.unpack(shaderBit);
 				this.updateIOByType();
 				$scope.$apply();
 				this._replaceBox();

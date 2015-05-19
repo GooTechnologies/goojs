@@ -18,7 +18,6 @@
 		if (!structure) { return []; }
 
 		structure.forEach(function (node) {
-			node.externalInputs = node.externalInputs || [];
 			node.outputsTo = node.outputsTo || [];
 		});
 
