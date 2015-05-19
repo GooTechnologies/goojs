@@ -230,8 +230,8 @@ define([
 			var ccB = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			var entityA = world.createEntity(rbcA, ccA).addToWorld();
-			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			var entityA = world.createEntity(rbcA, ccA, 'entityA').addToWorld();
+			var entityB = world.createEntity(rbcB, ccB, 'entityB').addToWorld();
 			var entities = [entityA, entityB].sort(sortEntitiesByName);
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
@@ -251,8 +251,8 @@ define([
 					expect(contacts[1].entity).toBe(entityB);
 					expect(contacts[1].otherEntity).toBe(entityA);
 
-					expect(contacts[0].normal).toBeCloseToVector(new Vector3(-1, 0, 0));
-					expect(contacts[1].normal).toBeCloseToVector(new Vector3(1, 0, 0));
+					expect(contacts[0].normal).toBeCloseToVector(new Vector3(0, 0, -1));
+					expect(contacts[1].normal).toBeCloseToVector(new Vector3(0, 0, 1));
 
 					numBeginContact++;
 				},
@@ -265,6 +265,10 @@ define([
 					expect(contacts[0].otherEntity).toBe(entityB);
 					expect(contacts[1].entity).toBe(entityB);
 					expect(contacts[1].otherEntity).toBe(entityA);
+
+					expect(contacts[0].normal).toBeCloseToVector(new Vector3(0, 0, -1));
+					expect(contacts[1].normal).toBeCloseToVector(new Vector3(0, 0, 1));
+
 					numDuringContact++;
 				},
 				'goo.physics.endContact': function (evt) {

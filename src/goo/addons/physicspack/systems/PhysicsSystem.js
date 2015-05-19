@@ -281,8 +281,18 @@ function (
 					var pointA = contacts[j].ri;
 					var pointB = contacts[j].rj;
 
-					var contactPointA = this._contactPointPool.get(entityA, entityB, pointA, normal, 1);
-					var contactPointB = this._contactPointPool.get(entityB, entityA, pointB, normal, -1);
+					var contactPointA;
+					var contactPointB;
+
+					var cannonBody = (entityA.rigidBodyComponent && entityA.rigidBodyComponent.cannonBody) || (entityA.rigidBodyComponent && entityA.colliderComponent.cannonBody);
+
+					if (contacts[j].bi === cannonBody) {
+						contactPointA = this._contactPointPool.get(entityA, entityB, pointA, normal, 1);
+						contactPointB = this._contactPointPool.get(entityB, entityA, pointB, normal, -1);
+					} else {
+						contactPointA = this._contactPointPool.get(entityA, entityB, pointB, normal, -1);
+						contactPointB = this._contactPointPool.get(entityB, entityA, pointA, normal, 1);
+					}
 
 					contactList.push(contactPointA, contactPointB);
 				}
