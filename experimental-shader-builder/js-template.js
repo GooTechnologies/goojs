@@ -25,6 +25,24 @@
 		return new Function('data', templateCode);
 	}
 
+	/**
+	 * Returns a code generator for a given template.
+	 * Code generators are cached and referenced by their their node type.
+	 */
+	var getCodeGenerator = (function () {
+		var generators = new Map();
+
+		return function (key, body) {
+			if (!generators.has(key)) {
+				var codeGenerator = jsTemplate.compile(body);
+				generators.set(key, codeGenerator);
+				return codeGenerator;
+			}
+			return generators.get(key);
+		};
+	})();
+
 	window.jsTemplate = window.jsTemplate || {};
 	window.jsTemplate.compile = compile;
+	window.jsTemplate.getCodeGenerator = getCodeGenerator;
 })();

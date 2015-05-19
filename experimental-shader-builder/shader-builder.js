@@ -1,6 +1,11 @@
 (function () {
 	'use strict';
 
+	/**
+	 * Perform a topological sort of a graph
+	 * @param graph
+	 * @returns {Array} Ordered nodes
+	 */
 	function sort(graph) {
 		var unvisited = new Set(graph.keys());
 		var visited = new Set();
@@ -30,7 +35,7 @@
 		return order;
 	}
 
-	// just converts a structure (array) to an map (id -> node)
+	// just converts a structure (array) to a map (id -> node)
 	function toGraph(structure) {
 		var graph = new Map();
 
@@ -41,23 +46,13 @@
 		return graph;
 	}
 
-	// nodes are sorted
+	/**
+	 * Generate code given node types and an array of sorted nodes
+	 * @param nodeTypes
+	 * @param nodes
+	 * @returns {string}
+	 */
 	function generateCode(nodeTypes, nodes) {
-		// caching compiled templates ("code generators")
-		// the same node can be instantiated more than once
-		var getCodeGenerator = (function () {
-			var generatorsByType = new Map();
-
-			return function (type, body) {
-				if (!generatorsByType.has(type)) {
-					var codeGenerator = jsTemplate.compile(body);
-					generatorsByType.set(type, codeGenerator);
-					return codeGenerator;
-				}
-				return generatorsByType.get(type);
-			};
-		})();
-
 		function getInputVar(nodeId, varName) {
 			return 'inp_' + nodeId + '_' + varName;
 		}
@@ -112,7 +107,7 @@
 
 
 			// body
-			var bodyGenerator = getCodeGenerator(node.type, nodeDefinition.body);
+			var bodyGenerator = jsTemplate.getCodeGenerator(node.type, nodeDefinition.body);
 			var bodyCode = bodyGenerator(node.defines);
 
 
@@ -155,6 +150,12 @@
 			'}';
 	}
 
+	/**
+	 * Generate code given node types and the graph-like structure of nodes
+	 * @param types
+	 * @param structure
+	 * @returns {string}
+	 */
 	function buildShader(types, structure) {
 		var graph = toGraph(structure);
 		var sorted = sort(graph);

@@ -1,6 +1,11 @@
 (function () {
 	'use strict';
 
+	/**
+	 * Stringifies a shader type definition (inputs, outputs, body)
+	 * @param definition
+	 * @returns {string}
+	 */
 	function pack(definition) {
 		var inputs = definition.inputs.map(function (input) {
 			return '#input ' + input.type + ' ' + input.name;
@@ -13,6 +18,14 @@
 		return inputs + '\n' + outputs + '\n\n' + definition.body;
 	}
 
+	/**
+	 * Composes 2 functions in inverse order.
+	 * Using "normal" composition `(f . g)(x) = f(g(x))` while under
+	 * "reverse" composition `(f ; g)(x) = g(f(x))`
+	 * @param fun1
+	 * @param fun2
+	 * @returns {Function}
+	 */
 	function pipe(fun1, fun2) {
 		return function () {
 			return fun2.call(this, fun1.apply(this, arguments));
@@ -44,6 +57,11 @@
 		};
 	});
 
+	/**
+	 * Parses a shader definition given as code
+	 * @param {string} code
+	 * @returns {{inputs: Array, outputs: Array, body: string}}
+	 */
 	function unpack(code) {
 		var lines = code.split('\n');
 
