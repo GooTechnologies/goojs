@@ -46,6 +46,68 @@
 		return graph;
 	}
 
+
+
+	function getInputVar(nodeId, varName) {
+		return 'inp_' + nodeId + '_' + varName;
+	}
+
+	/**
+	 * Generates code for "external" nodes (that just bridge a uniform/attribute/varying)
+	 * @param node
+	 * @param typeDefinition
+	 * @returns {string}
+	 */
+	function generateExternalCode(node, typeDefinition) {
+		return node.outputsTo.map(function (outputTo) {
+			return '\t' + getInputVar(outputTo.to, outputTo.input) +
+				' = ' + node.external.name + ';';
+		}).join('\n');
+	}
+
+	/**
+	 * Generates code for "normal" nodes
+	 * @param node
+	 * @param typeDefinition
+	 * @returns {string}
+	 */
+	function generateNodeCode(node, typeDefinition) {
+		var outputDeclarations = '';
+		if (typeDefinition.outputs) {
+			outputDeclarations = typeDefinition.outputs.map(function (output) {
+				return '\t' + output.type + ' ' + output.name + ';';
+			}).join('\n');
+		}
+
+
+		// copy the outputs of this node to the inputs of the next node
+		var copyOut = node.outputsTo.map(function (outputTo) {
+			return '\t' + getInputVar(outputTo.to, outputTo.input) +
+				' = ' + outputTo.output + ';';
+		}).join('\n');
+
+
+		// body
+		var bodyGenerator = jsTemplate.getCodeGenerator(node.type, typeDefinition.body);
+		// have global and local defines (local ones shadow global ones)
+		var bodyCode = bodyGenerator(node.defines);
+
+
+		// process inputs (from other shader's outputs)
+		var processedBody = typeDefinition.inputs.reduce(function (partial, input) {
+			// should do a tokenization of the shader coder instead
+			// this regex will fail for comments, strings
+			return partial.replace(
+				new RegExp('\\b' + input.name + '\\b', 'g'),
+				getInputVar(node.id, input.name)
+			);
+		}, bodyCode);
+
+		return outputDeclarations + '\n' +
+			'\t' + processedBody + '\n' +
+			copyOut;
+	}
+
 	/**
 	 * Generate code given node types and an array of sorted nodes
 	 * @param nodeTypes
@@ -53,10 +115,6 @@
 	 * @returns {string}
 	 */
 	function generateCode(nodeTypes, nodes) {
-		function getInputVar(nodeId, varName) {
-			return 'inp_' + nodeId + '_' + varName;
-		}
-
 		var stringifiedExternals = nodes.filter(function (node) {
 			return node.type === 'external';
 		}).map(function (node) {
@@ -71,7 +129,7 @@
 		}).map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
 
-			return '// node ' + node.id + '\n' +
+			return '// node ' + node.id + ', ' + node.type + '\n' +
 				nodeDefinition.inputs.map(function (input) {
 					return input.type + ' ' + getInputVar(node.id, input.name) + ';';
 				}).join('\n');
@@ -79,59 +137,22 @@
 
 
 		var stringifiedNodes = nodes.map(function (node) {
-			var nodeDefinition = nodeTypes[node.type];
+			var typeDefinition = nodeTypes[node.type];
 
-			var outputDeclarations = '', copyOut, processedBody = '';
+			var nodeCode = (
+				node.type === 'external' ?
+				generateExternalCode :
+				generateNodeCode
+			)(node, typeDefinition);
 
-			if (node.type === 'external') {
-				// copy the outputs of this node to the inputs of the next node
-				copyOut = node.outputsTo.map(function (outputTo) {
-					return '\t' + getInputVar(outputTo.to, outputTo.input) +
-						' = ' + node.external.name + ';';
-				}).join('\n');
-			} else {
-				if (nodeDefinition.outputs) {
-					outputDeclarations = nodeDefinition.outputs.map(function (output) {
-						return '\t' + output.type + ' ' + output.name + ';';
-					}).join('\n');
-				}
-
-
-				// copy the outputs of this node to the inputs of the next node
-				copyOut = node.outputsTo.map(function (outputTo) {
-					return '\t' + getInputVar(outputTo.to, outputTo.input) +
-						' = ' + outputTo.output + ';';
-				}).join('\n');
-
-
-				// body
-				var bodyGenerator = jsTemplate.getCodeGenerator(node.type, nodeDefinition.body);
-				// have global and local defines (local ones shadow global ones)
-				var bodyCode = bodyGenerator(node.defines);
-
-
-				// process inputs (from other shader's outputs)
-				processedBody = nodeDefinition.inputs.reduce(function (partial, input) {
-					// should do a tokenization of the shader coder instead
-					// this regex will fail for comments, strings
-					return partial.replace(
-						new RegExp('\\b' + input.name + '\\b', 'g'),
-						getInputVar(node.id, input.name)
-					);
-				}, bodyCode);
-			}
-
-			// put everything together
 			return '// node ' + node.id + ', ' + node.type + '\n' +
 				'{\n' +
-				outputDeclarations + '\n' +
-				'\t' + processedBody + '\n'
-				+ copyOut +
-				'\n}\n';
+				nodeCode + '\n' +
+				'}\n';
 		}).join('\n');
 
 		return stringifiedExternals + '\n\nvoid main(void) {\n' +
-			copyIn + '\n' +
+			copyIn + '\n\n' +
 			stringifiedNodes + '\n' +
 			'}';
 	}
