@@ -19,6 +19,10 @@
 
 		structure.forEach(function (node) {
 			node.outputsTo = node.outputsTo || [];
+
+			if (node.type !== 'external') {
+				node.defines = node.defines || {};
+			}
 		});
 
 		return structure;

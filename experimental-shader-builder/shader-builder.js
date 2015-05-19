@@ -35,7 +35,12 @@
 		return order;
 	}
 
-	// just converts a structure (array) to a map (id -> node)
+	/**
+	 * Converts a node structure (an array) into something
+	 * usable by the topological sorter (a map)
+	 * @param {Array} structure
+	 * @returns {Map<string, node>}
+	 */
 	function toGraph(structure) {
 		var graph = new Map();
 
@@ -46,8 +51,12 @@
 		return graph;
 	}
 
-
-
+	/**
+	 * Generates an input variable name for transfering data between nodes
+	 * @param nodeId
+	 * @param varName
+	 * @returns {string}
+	 */
 	function getInputVar(nodeId, varName) {
 		return 'inp_' + nodeId + '_' + varName;
 	}
