@@ -210,6 +210,13 @@ define([
 				return a.name > b.name ? 1 : -1;
 			}
 
+			function sortContactsByEntityName(a, b) {
+				if (a.entity.name === b.entity.name) {
+					return 0;
+				}
+				return a.entity.name > b.entity.name ? 1 : -1;
+			}
+
 			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
@@ -231,10 +238,28 @@ define([
 			var listeners = {
 				'goo.physics.beginContact': function (evt) {
 					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
+
+					var contacts = evt.contacts.sort(sortContactsByEntityName);
+					expect(contacts.length).toBe(2);
+					expect(contacts[0].entity).toBe(entityA);
+					expect(contacts[0].otherEntity).toBe(entityB);
+					expect(contacts[1].entity).toBe(entityB);
+					expect(contacts[1].otherEntity).toBe(entityA);
+
+					expect(contacts[0].normal).toBeCloseToVector(new Vector3(-1, 0, 0));
+					expect(contacts[1].normal).toBeCloseToVector(new Vector3(1, 0, 0));
+
 					numBeginContact++;
 				},
 				'goo.physics.duringContact': function (evt) {
 					expect([evt.entityA, evt.entityB].sort(sortEntitiesByName)).toEqual(entities);
+
+					var contacts = evt.contacts.sort(sortContactsByEntityName);
+					expect(contacts.length).toBe(2);
+					expect(contacts[0].entity).toBe(entityA);
+					expect(contacts[0].otherEntity).toBe(entityB);
+					expect(contacts[1].entity).toBe(entityB);
+					expect(contacts[1].otherEntity).toBe(entityA);
 					numDuringContact++;
 				},
 				'goo.physics.endContact': function (evt) {

@@ -1,19 +1,23 @@
 define([
 	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
+	'goo/addons/physicspack/ContactPoint',
 	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/entities/EntityUtils',
+	'goo/addons/physicspack/util/Pool',
 	'goo/math/Transform'
 ],
 function (
 	AbstractPhysicsSystem,
 	RaycastResult,
+	ContactPoint,
 	RigidBodyComponent,
 	Vector3,
 	Quaternion,
 	EntityUtils,
+	Pool,
 	Transform
 ) {
 	'use strict';
@@ -120,6 +124,22 @@ function (
 		}.bind(this);
 
 		this.initialized = false;
+
+		this._contactPointPool = new Pool({
+			create: function () {
+				return new ContactPoint();
+			},
+			init: function (entity, otherEntity, point, normal, normalScale) {
+				this.entity = entity;
+				this.otherEntity = otherEntity;
+				this.point.setDirect(point.x, point.y, point.z);
+				this.normal.setDirect(normal.x, normal.y, normal.z).scale(normalScale);
+			},
+			destroy: function (contactPoint) {
+				contactPoint.entity = null;
+				contactPoint.otherEntity = null;
+			}
+		});
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
@@ -231,12 +251,13 @@ function (
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
 
-		// TODO: Move this logic to CANNON.js intead?
+		// TODO: Move this begin/during/end logic to CANNON.js instead?
 
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
 			currentContacts = this._currentContacts,
 			lastContacts = this._lastContacts;
+		var contactList = [];
 
 		// Make the shape pairs unique
 		this._fillContactsMap(contacts, currentContacts);
@@ -252,13 +273,29 @@ function (
 
 			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
 			if (hash !== lastHash) {
+
+				// Get contact objects
+				for (var j = i; contacts[j] && ((contacts[j].si === shapeA && contacts[j].sj === shapeB) || (contacts[j].si === shapeB && contacts[j].sj === shapeA)); j++) {
+
+					var normal = contacts[j].ni;
+					var pointA = contacts[j].ri;
+					var pointB = contacts[j].rj;
+
+					var contactPointA = this._contactPointPool.get(entityA, entityB, pointA, normal, 1);
+					var contactPointB = this._contactPointPool.get(entityB, entityA, pointB, normal, -1);
+
+					contactList.push(contactPointA, contactPointB);
+				}
+
 				var wasInContact = this._lastContacts.has(hash);
 
 				if (wasInContact) {
-					this.emitDuringContact(entityA, entityB);
+					this.emitDuringContact(entityA, entityB, contactList);
 				} else {
-					this.emitBeginContact(entityA, entityB);
+					this.emitBeginContact(entityA, entityB, contactList);
 				}
+
+				contactList.length = 0;
 			}
 
 			lastHash = hash;

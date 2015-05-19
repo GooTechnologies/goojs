@@ -55,7 +55,8 @@ function (
 
 	var event = {
 		entityA: null,
-		entityB: null
+		entityB: null,
+		contacts: []
 	};
 
 	/**
@@ -70,8 +71,8 @@ function (
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
-	AbstractPhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
-		this._emitEvent('goo.physics.beginContact', entityA, entityB);
+	AbstractPhysicsSystem.prototype.emitBeginContact = function (entityA, entityB, contacts) {
+		this._emitEvent('goo.physics.beginContact', entityA, entityB, contacts);
 	};
 
 	/**
@@ -79,8 +80,8 @@ function (
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
-	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
-		this._emitEvent('goo.physics.duringContact', entityA, entityB);
+	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB, contacts) {
+		this._emitEvent('goo.physics.duringContact', entityA, entityB, contacts);
 	};
 
 	/**
@@ -92,10 +93,13 @@ function (
 		this._emitEvent('goo.physics.endContact', entityA, entityB);
 	};
 
-	AbstractPhysicsSystem.prototype._emitEvent = function (channel, entityA, entityB) {
+	AbstractPhysicsSystem.prototype._emitEvent = function (channel, entityA, entityB, contacts) {
 		event.entityA = entityA;
 		event.entityB = entityB;
+		var tmp = event.contacts;
+		event.contacts = contacts;
 		SystemBus.emit(channel, event);
+		event.contacts = tmp;
 		event.entityA = null;
 		event.entityB = null;
 	};
