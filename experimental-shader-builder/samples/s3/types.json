@@ -1,0 +1,101 @@
+{
+  "const": {
+    "inputs": [],
+    "outputs": [{
+      "name": "value",
+      "type": "float"
+    }],
+    "body": "value = 0.8;"
+  },
+  "add": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "sum",
+      "type": "float"
+    }],
+    "body": "sum = x + y;"
+  },
+  "sin01": {
+    "defines": [{
+      "name": "multiplier",
+      "type": "float"
+    }],
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "s",
+      "type": "float"
+    }],
+    "body": "s = sin(x * /*data.multiplier*/) * 0.5 + 0.5;"
+  },
+  "mul": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "float"
+    }],
+    "body": "product = x * y;"
+  },
+  "out": {
+    "inputs": [{
+      "name": "r",
+      "type": "float"
+    }, {
+      "name": "g",
+      "type": "float"
+    }, {
+      "name": "b",
+      "type": "float"
+    }],
+    "outputs": [],
+    "body": "gl_FragColor = vec4(r, g, b, 1.0);"
+  },
+  "vec3": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "vec",
+      "type": "vec3"
+    }],
+    "body": "vec = vec3(x, y, z);"
+  },
+  "vec3-comp": {
+    "inputs": [{
+      "name": "vec",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z;"
+  }
+}
