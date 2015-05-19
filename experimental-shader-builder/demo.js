@@ -44,7 +44,7 @@
 		var structure = JSON.parse(structureEditor.getValue());
 
 		var result = shaderBits.buildShader(types, structure);
-		
+
 		outputEditor.setValue(result);
 
 		replaceBox(result);
@@ -68,7 +68,7 @@
 
 	setupEditors();
 
-	getSample('s2');
+	getSample('s3');
 
 
 	var box;

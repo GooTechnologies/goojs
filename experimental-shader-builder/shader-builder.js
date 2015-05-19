@@ -60,11 +60,14 @@
 		var stringifiedExternals = nodes.filter(function (node) {
 			return node.type === 'external';
 		}).map(function (node) {
-			return node.inputType + ' ' + node.dataType + ' ' + node.externalName + ';';
+			return node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name + ';';
 		}).join('\n');
 
 		// declare the inputs of all nodes
-		var copyIn = nodes.map(function (node) {
+		var copyIn = nodes.filter(function (node) {
+			if (node.type === 'external') { return false; }
+			return nodeTypes[node.type].inputs.length > 0;
+		}).map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
 
 			return '// node ' + node.id + '\n' +
@@ -78,30 +81,26 @@
 
 
 			// declare outputs of the node
-			var outputDeclarations;
-			if (nodeDefinition.outputs) {
-				outputDeclarations = nodeDefinition.outputs.map(function (output) {
-					return '\t' + output.type + ' ' + output.name + ';';
-				}).join('\n');
-			} else {
-				outputDeclarations = '';
+			var outputDeclarations = '';
+			if (node.type !== 'external') {
+				if (nodeDefinition.outputs) {
+					outputDeclarations = nodeDefinition.outputs.map(function (output) {
+						return '\t' + output.type + ' ' + output.name + ';';
+					}).join('\n');
+				}
 			}
 
 
 			// copy the outputs of this node to the inputs of the next node
 			var copyOut = node.outputsTo.map(function (outputTo) {
 				return '\t' + getInputVar(outputTo.to, outputTo.input) +
-					' = ' + outputTo.output + ';';
+					' = ' + (outputTo.output || node.external.name) + ';';
 			}).join('\n');
 
 
 			// body
-			var bodyCode;
-			if (node.type === 'external') {
-				// just alias the external for now
-				bodyCode = nodeDefinition.outputs[0].type + ' ' +
-					nodeDefinition.outputs[0].name + ' = ' + node.externalName + ';';
-			} else {
+			var bodyCode = '';
+			if (node.type !== 'external') {
 				var bodyGenerator = jsTemplate.getCodeGenerator(node.type, nodeDefinition.body);
 
 				// have global and local defines (local ones shadow global ones)
@@ -110,14 +109,17 @@
 
 
 			// process inputs (from other shader's outputs)
-			var processedBody = nodeDefinition.inputs.reduce(function (partial, input) {
-				// should do a tokenization of the shader coder instead
-				// this regex will fail for comments, strings
-				return partial.replace(
-					new RegExp('\\b' + input.name + '\\b', 'g'),
-					getInputVar(node.id, input.name)
-				);
-			}, bodyCode);
+			var processedBody = bodyCode;
+			if (node.type !== 'external') {
+				processedBody = nodeDefinition.inputs.reduce(function (partial, input) {
+					// should do a tokenization of the shader coder instead
+					// this regex will fail for comments, strings
+					return partial.replace(
+						new RegExp('\\b' + input.name + '\\b', 'g'),
+						getInputVar(node.id, input.name)
+					);
+				}, processedBody);
+			}
 
 
 			// put everything together
