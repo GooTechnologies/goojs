@@ -53,7 +53,7 @@
 
 			this.reset = function () {
 				// --- fetch the samples ---
-				var p1 = $http.get('samples/s2/types.json')
+				var p1 = $http.get('samples/s3/types.json')
 					.success(function (data) {
 						this.nodeTypes = data;
 						this.updateNodeTypeNames();
@@ -62,7 +62,7 @@
 						this.activateTypeName(Object.keys(this.nodeTypes)[0]);
 					}.bind(this));
 
-				var p2 = $http.get('samples/s2/structure.json')
+				var p2 = $http.get('samples/s3/structure.json')
 					.success(function (data) {
 						this.structure = data;
 						this.updateNodeNames();
@@ -184,7 +184,7 @@
 
 			this.activateTypeName = function (typeName) {
 				this.activeTypeName = typeName;
-				var shaderBit = shaderProcessor.pack(this.nodeTypes[typeName]);
+				var shaderBit = shaderProcessor.stringifyNodeDefinition(this.nodeTypes[typeName]);
 				this.shaderEditor.setValue(shaderBit, -1);
 			};
 
@@ -203,7 +203,7 @@
 
 			function onInput() {
 				var shaderBit = this.shaderEditor.getValue();
-				this.nodeTypes[this.activeTypeName] = shaderProcessor.unpack(shaderBit);
+				this.nodeTypes[this.activeTypeName] = shaderProcessor.parseNodeDefinition(shaderBit);
 				this.updateIOByType();
 				$scope.$apply();
 				this._replaceBox();

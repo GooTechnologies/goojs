@@ -41,7 +41,7 @@
 	};
 
 	var isWhite = function (line) {
-		return line.trim().length > 0;
+		return line.trim().length === 0;
 	};
 
 	var processDeclaration = function (trimmed) {
@@ -75,8 +75,7 @@
 
 		// figure out where the declarations end and the body starts
 		while (
-			isWhite(lines[lineCounter]) &&
-			isDeclaration(lines[lineCounter]) &&
+			(isWhite(lines[lineCounter]) || isDeclaration(lines[lineCounter])) &&
 			lineCounter < lines.length - 1
 		) {
 			lineCounter++;
@@ -88,11 +87,11 @@
 
 		var inputs = declarations.filter(function (declaration) {
 			return declaration.directive === 'input';
-		}).map(objMapper({ part1: 'name', part2: 'type' }));
+		}).map(objMapper({ part1: 'type', part2: 'name' }));
 
 		var outputs = declarations.filter(function (declaration) {
 			return declaration.directive === 'output';
-		}).map(objMapper({ part1: 'name', part2: 'type' }));
+		}).map(objMapper({ part1: 'type', part2: 'name' }));
 
 		var body = lines.slice(lineCounter).join('\n');
 
