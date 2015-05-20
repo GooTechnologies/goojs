@@ -26,16 +26,16 @@
 	 */
 	function stringifyNodeInstance(node) {
 		if (node.type === 'external') {
-			return '#' + node.inputType + ' ' + node.dataType + ' ' + node.externalName;
+			return '#' + node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name;
 		} else {
-			return node.defines.map(function (define) {
-				return '#define ' + define.name + ' ' + define.value;
+			return Object.keys(node.defines).map(function (key) {
+				return '#define ' + key + ' ' + node.defines[key];
 			}).join('\n');
 		}
 	}
 
 
-	var declarationRegex = /^\s*#(\w+)\s+(\w+)\s+(\w+)\s*$/;
+	var declarationRegex = /^\s*#(\w+)\s+(\w+)\s+([\w\d.-]+)\s*$/;
 	var isDeclaration = function (line) {
 		return declarationRegex.test(line);
 	};
@@ -120,14 +120,16 @@
 			return declaration.directive === 'uniform' ||
 				declaration.directive === 'attribute' ||
 				declaration.directive === 'varying';
-		}).map(objMapper({ directive: 'inputType', part1: 'dataType', part2: 'externalName' }));
+		}).map(objMapper({ directive: 'inputType', part1: 'dataType', part2: 'name' }));
 
 		if (externals.length) {
 			return {
 				type: 'external',
-				inputType: externals[0].inputType,
-				dataType: externals[0].dataType,
-				externalName: externals[0].externalName
+				external: {
+					inputType: externals[0].inputType,
+					dataType: externals[0].dataType,
+					name: externals[0].name
+				}
 			};
 		} else {
 			var defines = declarations.filter(function (declaration) {
@@ -135,7 +137,7 @@
 			})
 				.map(objMapper({ part1: 'name', part2: 'value' }))
 				.reduce(function (defines, entry) {
-					defines[entry.key] = entry.value;
+					defines[entry.name] = entry.value;
 					return defines;
 				}, {});
 

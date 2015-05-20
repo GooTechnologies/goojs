@@ -183,9 +183,18 @@
 			this.activeTypeName = null;
 
 			this.activateTypeName = function (typeName) {
+				this.activeSort = 'type';
 				this.activeTypeName = typeName;
 				var shaderBit = shaderProcessor.stringifyNodeDefinition(this.nodeTypes[typeName]);
 				this.shaderEditor.setValue(shaderBit, -1);
+			};
+
+			this.activateNodeInstance = function (node) {
+				this.activeSort = 'instance';
+				this.activeNodeInstance = node;
+				this.activeInstanceName = node.id;
+				var instanceString = shaderProcessor.stringifyNodeInstance(node);
+				this.shaderEditor.setValue(instanceString, -1);
 			};
 
 			// --- shader editor ---
@@ -202,11 +211,26 @@
 			};
 
 			function onInput() {
-				var shaderBit = this.shaderEditor.getValue();
-				this.nodeTypes[this.activeTypeName] = shaderProcessor.parseNodeDefinition(shaderBit);
-				this.updateIOByType();
-				$scope.$apply();
-				this._replaceBox();
+				if (this.activeSort === 'type') {
+					var shaderBit = this.shaderEditor.getValue();
+					this.nodeTypes[this.activeTypeName] = shaderProcessor.parseNodeDefinition(shaderBit);
+					this.updateIOByType();
+					$scope.$apply();
+					this._replaceBox();
+				} else {
+					var instanceString = this.shaderEditor.getValue();
+					var parsed = shaderProcessor.parseNodeInstance(instanceString);
+
+					if (parsed.type === 'external') {
+						this.activeNodeInstance.type = parsed.type;
+						this.activeNodeInstance.external = parsed.external;
+					} else {
+						this.activeNodeInstance.defines = parsed.defines;
+					}
+
+					$scope.$apply();
+					this._replaceBox();
+				}
 			}
 
 			this.setupEditor();

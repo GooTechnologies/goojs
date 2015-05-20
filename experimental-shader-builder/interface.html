@@ -69,7 +69,10 @@
 	<section class="structure">
 		<h2>Node structure</h2>
 		<ul>
-			<li ng-repeat="node in shaderController.structure">
+			<li ng-repeat="node in shaderController.structure"
+				ng-click="shaderController.activateNodeInstance(node)"
+				ng-class="{ selected: node.id === shaderController.activeInstanceName }"
+			>
 				<div ng-if="node.type !== 'external'">
 					<span class="node-name">{{node.id}}</span> ::
 					<span class="node-type">{{node.type}}</span>
