@@ -749,7 +749,7 @@ define([
 				// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
 				'#ifdef LIGHTMAP',
-				'final_color = final_color * texture2D(lightMap, mapcoord);',
+				'final_color = final_color * texture2D(lightMap, mapcoord) * 1.5;',
 				'#else',
 				ShaderBuilder.light.fragment,
 				'#endif',

@@ -461,7 +461,7 @@ define([
 				'vec3 N = normalize(normal);',
 
 				// ShaderBuilder.light.fragment,
-				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 1.0;',
+				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 1.5;',
 
 				'final_color.a = pow(final_color.a, 0.5);',
 
