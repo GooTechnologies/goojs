@@ -38,6 +38,22 @@ function (
 	 * @param {Vector3} [settings.gravity]
 	 * @param {number} [settings.stepFrequency=60]
 	 * @param {number} [settings.maxSubSteps=10]
+	 *
+	 * @example
+	 * var physicsSystem = new PhysicsSystem();
+	 * world.setSystem(physicsSystem);
+	 * world.setSystem(new ColliderSystem());
+	 * var rigidBodyComponent = new RigidBodyComponent();
+	 * var entity = world.createEntity(new Box(), material);
+	 * var colliderComponent = new ColliderComponent({
+	 *     collider: new BoxCollider()
+	 * });
+	 * entity.set(rigidBodyComponent).set(colliderComponent).addToWorld();
+	 * rigidBodyComponent.initialize();
+	 *
+	 * SystemBus.addListener('goo.physics.beginContact', function(evt){
+	 *     // evt.entityA and evt.entityB collided, with contact points given by evt.contacts
+	 * });
 	 */
 	function PhysicsSystem(settings) {
 		settings = settings || {};
