@@ -20,7 +20,9 @@
 		structure.forEach(function (node) {
 			node.outputsTo = node.outputsTo || [];
 
-			if (node.type !== 'external') {
+			if (node.type === 'external') {
+				node.external = node.external || {};
+			} else {
 				node.defines = node.defines || {};
 			}
 		});
