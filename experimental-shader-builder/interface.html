@@ -92,6 +92,29 @@
 							</button>
 						</li>
 					</ul>
+
+					<div ng-show="shaderController.ioByType[node.type].outputs.length > 0">
+						<select class="short-select"
+								ng-options="output for output in shaderController.ioByType[node.type].outputs"
+								ng-model="shaderController.newOutput[node.id].output">
+						</select>
+						--->
+						<select class="long-select"
+								ng-options="node.id for node in shaderController.structure"
+								ng-model="shaderController.newOutput[node.id].to">
+						</select>
+
+						<select class="short-select"
+								ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
+								ng-model="shaderController.newOutput[node.id].input">
+						</select>
+
+						<button class="neutral"
+								ng-click="shaderController.addNodeOutput($index, node.id)"
+							>
+							Add Output
+						</button>
+					</div>
 				</div>
 
 				<div ng-if="node.type === 'external'">
@@ -99,26 +122,60 @@
 					<span class="external-input-type">{{node.external.inputType}}</span>
 					<span class="external-data-type">{{node.external.dataType}}</span>
 					<span class="external-name">{{node.external.name}}</span>
-				</div>
 
-				<div ng-show="shaderController.ioByType[node.type].outputs.length > 0">
-					<select class="short-select"
-						ng-options="output for output in shaderController.ioByType[node.type].outputs"
-						ng-model="shaderController.newOutput[node.id].output">
-					</select>
+					<button class="warn" ng-click="shaderController.removeNode($index)">X</button>
+
+					<ul>
+						<li class="connection" ng-repeat="output in node.outputsTo">
+							--->[<span class="plug-name">{{output.input}}</span>]
+							<span ng-class="{
+								'node-name': true,
+								warn: !shaderController.nodeNames[output.to]
+							}">{{output.to}}</span>
+							<button class="warn"
+									ng-click="shaderController.removeNodeOutput($parent.$index, $index)"
+								>
+								X
+							</button>
+						</li>
+					</ul>
+
+					<div ng-show="shaderController.ioByType[node.type].outputs.length > 0">
+						<select class="short-select"
+								ng-options="output for output in shaderController.ioByType[node.type].outputs"
+								ng-model="shaderController.newOutput[node.id].output">
+						</select>
+						--->
+						<select class="long-select"
+								ng-options="node.id for node in shaderController.structure"
+								ng-model="shaderController.newOutput[node.id].to">
+						</select>
+
+						<select class="short-select"
+								ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
+								ng-model="shaderController.newOutput[node.id].input">
+						</select>
+
+						<button class="neutral"
+								ng-click="shaderController.addNodeOutput($index, node.id)"
+							>
+							Add Output
+						</button>
+					</div>
+
 					--->
 					<select class="long-select"
-						ng-options="node.id for node in shaderController.structure"
-						ng-model="shaderController.newOutput[node.id].to">
+							ng-options="node.id for node in shaderController.structure"
+							ng-model="shaderController.newOutput[node.id].to">
 					</select>
 
 					<select class="short-select"
-						ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
-						ng-model="shaderController.newOutput[node.id].input">
+							ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
+							ng-model="shaderController.newOutput[node.id].input">
 					</select>
 
 					<button class="neutral"
-						ng-click="shaderController.addNodeOutput($index, node.id)"
+							ng-click="shaderController.addNodeOutput($index, node.id)"
 					>
 						Add Output
 					</button>
