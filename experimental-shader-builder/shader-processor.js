@@ -26,7 +26,9 @@
 	 */
 	function stringifyNodeInstance(node) {
 		if (node.type === 'external') {
-			return '#' + node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name;
+			return node.external ?
+				('#' + node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name) :
+				'';
 		} else {
 			return Object.keys(node.defines).map(function (key) {
 				return '#define ' + key + ' ' + node.defines[key];

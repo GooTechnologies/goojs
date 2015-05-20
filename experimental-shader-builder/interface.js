@@ -104,7 +104,7 @@
 			this.nodeTypeNames = [];
 
 			this.updateNodeTypeNames = function () {
-				this.nodeTypeNames = Object.keys(this.nodeTypes);
+				this.nodeTypeNames = ['external'].concat(Object.keys(this.nodeTypes));
 			};
 
 			this.nodeNames = {};
