@@ -663,6 +663,7 @@ define([
 					} else if (light instanceof DirectionalLight) {
 						fragment.push(
 							'vec3 directionalLightDirection'+i+' = directionalLights['+(directionalIndex * 2 + 0)+'].xyz;',
+							'float directionalLightDirectionAngle'+i+' = directionalLights['+(directionalIndex * 2 + 0)+'].w;',
 							'vec4 directionalLightColor'+i+' = directionalLights['+(directionalIndex * 2 + 1)+'];'
 						);
 
@@ -678,7 +679,15 @@ define([
 						);
 						if (useLightCookie) {
 							fragment.push(
-								'vec4 cookieTex = texture2D(lightCookie'+i+', depth.xy);',
+								// Translate to middle of the texture to rotate about texture center.
+								'vec2 textureCenter = vec2(0.5, 0.5);',
+								'vec2 cookieCoord = depth.xy - textureCenter;',
+								// Rotate
+								'float cosDir = cos(directionalLightDirectionAngle'+i+');',
+								'float sinDir = sin(directionalLightDirectionAngle'+i+');',
+								'cookieCoord = vec2(cookieCoord.x * cosDir + cookieCoord.y * sinDir, cookieCoord.y * cosDir - cookieCoord.x * sinDir);',
+								// Translate back.
+								'vec4 cookieTex = texture2D(lightCookie'+i+', cookieCoord + textureCenter);',
 								'cookie = cookieTex.rgb * cookieTex.a;'
 							);
 						}
