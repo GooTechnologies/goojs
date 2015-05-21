@@ -735,9 +735,11 @@ define([
 							fragment.push(
 								'vec2 cd = vec2(1.0);',
 								// TODO: Optimize by storing trigonometry results to  variables
+								// Translate to middle of the texture to rotate about texture center.
 								'vec2 a = vec2(depth.x - 0.5, depth.y - 0.5);',
 								'cd.x = a.x * cos(spotLightDirectionAngle'+i+') + a.y * sin(spotLightDirectionAngle'+i+');',
 								'cd.y = a.y * cos(spotLightDirectionAngle'+i+') - a.x * sin(spotLightDirectionAngle'+i+');',
+								// Translate back.
 								'cd.x += 0.5;',
 								'cd.y += 0.5;',
 								'cookie = texture2D(lightCookie'+i+', cd).rgb;'
