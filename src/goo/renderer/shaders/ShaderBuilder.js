@@ -733,16 +733,16 @@ define([
 						);
 						if (useLightCookie) {
 							fragment.push(
-								'vec2 cd = vec2(1.0);',
-								// TODO: Optimize by storing trigonometry results to  variables
 								// Translate to middle of the texture to rotate about texture center.
-								'vec2 a = vec2(depth.x - 0.5, depth.y - 0.5);',
-								'cd.x = a.x * cos(spotLightDirectionAngle'+i+') + a.y * sin(spotLightDirectionAngle'+i+');',
-								'cd.y = a.y * cos(spotLightDirectionAngle'+i+') - a.x * sin(spotLightDirectionAngle'+i+');',
+								'vec2 textureCenter = vec2(0.5, 0.5);',
+								'vec2 cookieCoord = depth.xy - textureCenter;',
+								// Rotate
+								'float cosDir = cos(spotLightDirectionAngle'+i+');',
+								'float sinDir = sin(spotLightDirectionAngle'+i+');',
+								'cookieCoord = vec2(cookieCoord.x * cosDir + cookieCoord.y * sinDir, cookieCoord.y * cosDir - cookieCoord.x * sinDir);',
 								// Translate back.
-								'cd.x += 0.5;',
-								'cd.y += 0.5;',
-								'cookie = texture2D(lightCookie'+i+', cd).rgb;'
+								'vec4 cookieTex = texture2D(lightCookie'+i+', cookieCoord + textureCenter);',
+								'cookie = cookieTex.rgb * cookieTex.a;'
 							);
 						}
 						fragment.push(
