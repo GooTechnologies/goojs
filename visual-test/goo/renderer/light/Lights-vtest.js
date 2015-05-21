@@ -87,6 +87,7 @@ require([
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
 				entity.addRotation([0, 0, Math.PI * 0.1 * tpf]);
+				//entity.setTranslation(0, Math.sin(entity._world.time) * 3, 7);
 			}
 		}));
 		spotEntity.addToWorld();
