@@ -735,8 +735,8 @@ define([
 							fragment.push(
 								'vec2 cd = vec2(1.0);',
 								// TODO: Optimize by storing trigonometry results to  variables
-								'cd.x = depth.x * cos(spotLightDirectionAngle) - depth.y * sin(spotLightDirectionAngle);',
-								'cd.y = depth.y * cos(spotLightDirectionAngle) + depth.x * sin(spotLightDirectionAngle);',
+								'cd.x = depth.x * cos(spotLightDirectionAngle'+i+') - depth.y * sin(spotLightDirectionAngle'+i+');',
+								'cd.y = depth.y * cos(spotLightDirectionAngle'+i+') + depth.x * sin(spotLightDirectionAngle'+i+');',
 								'cookie = texture2D(lightCookie'+i+', cd).rgb;'
 							);
 						}

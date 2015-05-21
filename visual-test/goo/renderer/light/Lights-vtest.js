@@ -4,6 +4,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/debugpack/systems/DebugRenderSystem',
+	'goo/renderer/TextureCreator',
 	'lib/V'
 ], function (
 	Vector3,
@@ -11,6 +12,7 @@ require([
 	DirectionalLight,
 	SpotLight,
 	DebugRenderSystem,
+	TextureCreator,
 	V
 	) {
 	'use strict';
@@ -74,6 +76,10 @@ require([
 		spotLight.angle = 25;
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
+		var tc = new TextureCreator();
+		tc.loadTexture2D('../../../resources/check.png').then(function (texture) {
+			spotLight.lightCookie = texture;
+		});
 
 		goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
 
