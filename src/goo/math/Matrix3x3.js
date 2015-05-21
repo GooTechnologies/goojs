@@ -786,6 +786,21 @@ define([
 		return result;
 	};
 
+	Matrix3x3.prototype.getZAngle = function () {
+
+		var d = this.data;
+		var result;
+		if (d[3] > 1 - MathUtils.EPSILON) { // singularity at north pole
+			result = Math.PI / 2;
+		} else if (d[3] < -1 + MathUtils.EPSILON) { // singularity at south pole
+			result = -Math.PI / 2;
+		} else {
+			result = Math.asin(d[1]);
+		}
+
+		return result;	
+	};
+
 	/**
 	 * Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
 	 * @param {number} angle the angle to rotate (in radians).

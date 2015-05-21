@@ -49,6 +49,17 @@ define([
 		this.lightCookie = null;
 
 		/**
+		* The rotation angle in radians,
+		* along the light's direction.
+		* Used for rotating the lightCookie.
+		* This property is updated automatically
+		* from the parenting entity.
+		* @readonly
+		* @type {number}
+		*/
+		this.directionRotation = 0.0;
+
+		/**
 		 * @type {object}
 		 * @property {number} size 2000
 		 * @property {number} near 1
