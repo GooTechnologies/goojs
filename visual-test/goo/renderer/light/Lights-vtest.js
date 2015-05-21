@@ -5,6 +5,7 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/debugpack/systems/DebugRenderSystem',
 	'goo/renderer/TextureCreator',
+	'goo/entities/components/ScriptComponent',
 	'lib/V'
 ], function (
 	Vector3,
@@ -13,6 +14,7 @@ require([
 	SpotLight,
 	DebugRenderSystem,
 	TextureCreator,
+	ScriptComponent,
 	V
 	) {
 	'use strict';
@@ -72,8 +74,8 @@ require([
 	}
 
 	function addSpotLight() {
-		var spotLight = new SpotLight(new Vector3(0.2, 0.4, 1.0));
-		spotLight.angle = 25;
+		var spotLight = new SpotLight(new Vector3(1, 1, 1));
+		spotLight.angle = 45;
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 		var tc = new TextureCreator();
@@ -81,7 +83,13 @@ require([
 			spotLight.lightCookie = texture;
 		});
 
-		goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
+		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5]);
+		spotEntity.set(new ScriptComponent({
+			run: function(entity, tpf) {
+				entity.addRotation([0, 0, Math.PI * 0.1 * tpf]);
+			}
+		}));
+		spotEntity.addToWorld();
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
