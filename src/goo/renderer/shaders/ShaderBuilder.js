@@ -244,7 +244,7 @@ define([
 			uniform[ind + 0] = direction[0];
 			uniform[ind + 1] = direction[1];
 			uniform[ind + 2] = direction[2];
-			uniform[ind + 3] = 0; // padding
+			uniform[ind + 3] = light.directionRotation;
 
 			var color = light.color.data;
 			uniform[ind + 4] = color[0] * light.intensity;
@@ -271,7 +271,7 @@ define([
 			uniform[ind + 8] = light.direction.data[0];
 			uniform[ind + 9] = light.direction.data[1];
 			uniform[ind + 10] = light.direction.data[2];
-			uniform[ind + 11] = 0; // padding
+			uniform[ind + 11] = light.directionRotation;
 
 			uniform[ind + 12] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
 			uniform[ind + 13] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
