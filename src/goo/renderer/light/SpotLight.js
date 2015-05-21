@@ -68,7 +68,6 @@ define([
 		transform.matrix.applyPostVector(this.direction);
 
 		this.directionRotation = transform.rotation.getZAngle();
-		console.debug(this.directionRotation);
 	};
 
 	SpotLight.prototype.copy = function (source) {

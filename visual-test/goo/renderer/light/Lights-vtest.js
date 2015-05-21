@@ -83,7 +83,7 @@ require([
 			spotLight.lightCookie = texture;
 		});
 
-		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5]);
+		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
 				entity.addRotation([0, 0, Math.PI * 0.1 * tpf]);
@@ -133,8 +133,8 @@ require([
 	// add some spheres to cast the light on
 	V.addSpheres();
 
-	addPointLight();
-	addDirectionalLight();
+	//addPointLight();
+	//addDirectionalLight();
 	addSpotLight();
 
 	// camera
