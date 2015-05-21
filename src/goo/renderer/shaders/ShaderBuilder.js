@@ -704,6 +704,7 @@ define([
 							'vec4 spotLight'+i+' = spotLights['+(spotIndex * 4 + 0)+'];',
 							'vec4 spotLightColor'+i+' = spotLights['+(spotIndex * 4 + 1)+'];',
 							'vec3 spotLightDirection'+i+' = spotLights['+(spotIndex * 4 + 2)+'].xyz;',
+							'float spotLightDirectionAngle'+i+' = spotLights['+(spotIndex * 4 + 2)+'].w;',
 							'float spotLightAngle'+i+' = spotLights['+(spotIndex * 4 + 3)+'].x;',
 							'float spotLightPenumbra'+i+' = spotLights['+(spotIndex * 4 + 3)+'].y;'
 						);
@@ -732,7 +733,11 @@ define([
 						);
 						if (useLightCookie) {
 							fragment.push(
-								'cookie = texture2D(lightCookie'+i+', depth.xy).rgb;'
+								'vec2 cd = vec2(1.0);',
+								// TODO: Optimize by storing trigonometry results to  variables
+								'cd.x = depth.x * cos(spotLightDirectionAngle) - depth.y * sin(spotLightDirectionAngle);',
+								'cd.y = depth.y * cos(spotLightDirectionAngle) + depth.x * sin(spotLightDirectionAngle);',
+								'cookie = texture2D(lightCookie'+i+', cd).rgb;'
 							);
 						}
 						fragment.push(
