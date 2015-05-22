@@ -94,8 +94,6 @@ define([
 				this.directionRotation = Math.PI + this.directionRotation;
 			}
 
-
-
 			console.debug('Angle', this.directionRotation);
 		}
 		

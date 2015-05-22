@@ -89,7 +89,9 @@ require([
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
-				//entity.addRotation([0, 0, Math.PI * 0.2 * tpf]);
+				var rot = Math.PI * 0.25 * tpf;
+				actualAngle += rot;
+				entity.setRotation([0, 0, actualAngle]);
 			}
 		}));
 		spotEntity.addToWorld();
@@ -116,14 +118,7 @@ require([
 				actualAngle = 0;
 			}
 			console.debug('actualAngle', actualAngle);
-			
-			/*
-			xvec [0.9510565400123596, 0.30901700258255005, -0]
-			yvec [-0.30901700258255005, 0.9510565400123596, 0]
 
-			xvec [0.9510565400123596, 0.30901697278022766, -0]
-			yvec [-0.30901697278022766, 0.9510565400123596, 0]
-			*/
 		});
 
 		var spotLightGui = gui.addFolder('Spot Light');
