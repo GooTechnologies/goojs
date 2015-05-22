@@ -67,7 +67,21 @@ define([
 		this.direction.setDirect(0.0, 0.0, -1.0);
 		transform.matrix.applyPostVector(this.direction);
 
-		this.directionRotation = transform.rotation.getZAngle();
+		if (this.lightCookie) {
+			//this.directionRotation = transform.rotation.getZAngle();
+			
+			if (this.directionRotation < 0) {
+				//this.directionRotation = Math.PI+ this.directionRotation;
+			}
+
+			this.directionRotation += Math.PI * 0.01;
+			if (this.directionRotation > Math.PI * 2) {
+				this.directionRotation = 0;
+			}
+
+			console.log(this.directionRotation);
+		}
+		
 	};
 
 	SpotLight.prototype.copy = function (source) {

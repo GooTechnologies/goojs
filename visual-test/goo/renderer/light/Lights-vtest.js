@@ -79,14 +79,15 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 		var tc = new TextureCreator();
-		tc.loadTexture2D('../../../resources/check.png').then(function (texture) {
+		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
-				entity.addRotation([0, 0, Math.PI * 0.1 * tpf]);
+				var zrot = entity.getRotation().z;
+				entity.setRotation([0, 0, zrot + Math.PI * 0.2 * tpf]);
 				//entity.setTranslation(0, Math.sin(entity._world.time) * 3, 7);
 			}
 		}));
