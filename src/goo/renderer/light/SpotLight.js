@@ -61,6 +61,9 @@ define([
 	 * @hidden
 	 * @param {Transform} transform
 	 */
+
+	var xvec = new Vector3();
+	var yvec = new Vector3();
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
@@ -69,17 +72,24 @@ define([
 
 		if (this.lightCookie) {
 			//this.directionRotation = transform.rotation.getZAngle();
+			var d = transform.rotation.data;
+			xvec.setDirect(d[0], d[1], d[2]);
+			yvec.setDirect(d[3], d[4], d[5]);
+			var xdot = Vector3.dot(xvec, Vector3.UNIT_X);
 			
-			if (this.directionRotation < 0) {
-				//this.directionRotation = Math.PI+ this.directionRotation;
+			console.log('xvec', xvec.data);
+			console.log('yvec', yvec.data);
+			console.log('xdot', xdot);
+			this.directionRotation = Math.acos(xdot);
+			if (xvec.y < 0) {
+				this.directionRotation = Math.PI - this.directionRotation;
+			} else {
+				if (xvec.x > 0 && yvec.x < 0 && yvec.x > -0.5) {
+					console.debug('missing piece?');
+				}
 			}
 
-			this.directionRotation += Math.PI * 0.01;
-			if (this.directionRotation > Math.PI * 2) {
-				this.directionRotation = 0;
-			}
-
-			console.log(this.directionRotation);
+			console.debug('Angle', this.directionRotation);
 		}
 		
 	};

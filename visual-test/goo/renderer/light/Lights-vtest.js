@@ -86,12 +86,27 @@ require([
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
-				var zrot = entity.getRotation().z;
-				entity.setRotation([0, 0, zrot + Math.PI * 0.2 * tpf]);
-				//entity.setTranslation(0, Math.sin(entity._world.time) * 3, 7);
+				//entity.addRotation([0, 0, Math.PI * 0.2 * tpf]);
 			}
 		}));
 		spotEntity.addToWorld();
+
+		window.addEventListener('keydown', function(event) {
+			console.log(event);
+			var m = 1;
+			switch (event.keyCode) {
+				case 37:
+					m = 1;
+					break;
+				case 39:
+					m = -1;
+					break;
+			}
+			var rot = m * Math.PI * 0.01;
+			console.debug('Rot',rot);
+			spotEntity.addRotation([0, 0, rot]);
+			
+		});
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
