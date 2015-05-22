@@ -19,6 +19,8 @@ require([
 	) {
 	'use strict';
 
+	var actualAngle = 0;
+
 	V.describe('All supported light types are featured in this scene');
 
 	function addPointLight() {
@@ -81,6 +83,7 @@ require([
 		var tc = new TextureCreator();
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
+			spotEntity.setRotation([0,0,0]);
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
@@ -91,21 +94,36 @@ require([
 		}));
 		spotEntity.addToWorld();
 
+
 		window.addEventListener('keydown', function(event) {
 			console.log(event);
-			var m = 1;
+			var rot = Math.PI * 0.1;
 			switch (event.keyCode) {
-				case 37:
-					m = 1;
+				case 37:					
+					actualAngle += rot;
+					spotEntity.setRotation([0, 0, actualAngle]);
 					break;
 				case 39:
-					m = -1;
+					actualAngle += -rot;
+					spotEntity.setRotation([0, 0, actualAngle]);
 					break;
+				case 40:
+					spotEntity.setRotation([0, 0, 0]);
+					actualAngle = 0;
 			}
-			var rot = m * Math.PI * 0.01;
-			console.debug('Rot',rot);
-			spotEntity.addRotation([0, 0, rot]);
 			
+			if (actualAngle >= Math.PI * 2) {
+				actualAngle = 0;
+			}
+			console.debug('actualAngle', actualAngle);
+			
+			/*
+			xvec [0.9510565400123596, 0.30901700258255005, -0]
+			yvec [-0.30901700258255005, 0.9510565400123596, 0]
+
+			xvec [0.9510565400123596, 0.30901697278022766, -0]
+			yvec [-0.30901697278022766, 0.9510565400123596, 0]
+			*/
 		});
 
 		var spotLightGui = gui.addFolder('Spot Light');

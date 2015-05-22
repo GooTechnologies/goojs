@@ -38,6 +38,8 @@ define([
 			Matrix.prototype.set.apply(this, arguments);
 		}
 
+		this.negY = false;
+
 		// #ifdef DEBUG
 		Object.seal(this);
 		// #endif
@@ -611,6 +613,22 @@ define([
 		var sinY = Math.sin(y);
 		var cosZ = Math.cos(z);
 		var sinZ = Math.sin(z);
+
+		console.log('fromangle', z);
+
+		if (Math.sign(cosZ) === 1) {
+			console.log('cosZ: +');
+		} else {
+			console.log('cosZ: -');
+		}
+
+		if (Math.sign(sinZ) === 1) {
+			console.log('sinZ: +');
+			this.negY = false;
+		} else {
+			console.log('sinZ -');
+			this.negY = true;
+		}
 
 		var d = this.data;
 		d[0] = cosY * cosZ;

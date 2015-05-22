@@ -1,9 +1,11 @@
 define([
 	'goo/math/Vector3',
-	'goo/renderer/light/Light'
+	'goo/renderer/light/Light',
+	'goo/math/MathUtils'
 ], function (
 	Vector3,
-	Light
+	Light,
+	MathUtils
 ) {
 	'use strict';
 
@@ -71,23 +73,28 @@ define([
 		transform.matrix.applyPostVector(this.direction);
 
 		if (this.lightCookie) {
-			//this.directionRotation = transform.rotation.getZAngle();
+			var eulerAngles = transform.rotation.toAngles().data;
+			console.log('Eulerangles', transform.rotation.toAngles().data);
 			var d = transform.rotation.data;
 			xvec.setDirect(d[0], d[1], d[2]);
 			yvec.setDirect(d[3], d[4], d[5]);
+			
 			var xdot = Vector3.dot(xvec, Vector3.UNIT_X);
 			
 			console.log('xvec', xvec.data);
 			console.log('yvec', yvec.data);
 			console.log('xdot', xdot);
+			
 			this.directionRotation = Math.acos(xdot);
 			if (xvec.y < 0) {
 				this.directionRotation = Math.PI - this.directionRotation;
-			} else {
-				if (xvec.x > 0 && yvec.x < 0 && yvec.x > -0.5) {
-					console.debug('missing piece?');
-				}
+			} 
+
+			if (transform.rotation.negY && this.directionRotation != 0) {
+				this.directionRotation = Math.PI + this.directionRotation;
 			}
+
+
 
 			console.debug('Angle', this.directionRotation);
 		}
