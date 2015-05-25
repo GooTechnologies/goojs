@@ -92,6 +92,33 @@ function (
 		this._emitEvent('goo.physics.endContact', entityA, entityB);
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerEnter = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerEnter', triggerEntity, otherEntity);
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerStay = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerStay', triggerEntity, otherEntity);
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerExit = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerExit', triggerEntity, otherEntity);
+	};
+
 	AbstractPhysicsSystem.prototype._emitEvent = function (channel, entityA, entityB) {
 		event.entityA = entityA;
 		event.entityB = entityB;
