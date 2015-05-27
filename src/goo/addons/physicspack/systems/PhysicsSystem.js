@@ -47,8 +47,8 @@ function (
 
 		var that = this;
 		this.cannonWorld.addEventListener('postStep', function () {
-			that.emitContactEvents();
-			that.emitSubStepEvent();
+			that._emitContactEvents();
+			that._emitSubStepEvent();
 		});
 
 		this._entities = {};
@@ -105,9 +105,9 @@ function (
 			var found = this._currentContacts.has(hash);
 			if (!found) {
 				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
-					this.emitTriggerExit(entityA, entityB);
+					this._emitTriggerExit(entityA, entityB);
 				} else {
-					this.emitEndContact(entityA, entityB);
+					this._emitEndContact(entityA, entityB);
 				}
 			}
 		}.bind(this);
@@ -233,7 +233,7 @@ function (
 	/**
 	 * @private
 	 */
-	PhysicsSystem.prototype.emitContactEvents = function () {
+	PhysicsSystem.prototype._emitContactEvents = function () {
 
 		// TODO: Move this logic to CANNON.js intead?
 
@@ -260,15 +260,15 @@ function (
 
 				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
 					if (wasInContact) {
-						this.emitTriggerStay(entityA, entityB);
+						this._emitTriggerStay(entityA, entityB);
 					} else {
-						this.emitTriggerEnter(entityA, entityB);
+						this._emitTriggerEnter(entityA, entityB);
 					}
 				} else {
 					if (wasInContact) {
-						this.emitDuringContact(entityA, entityB);
+						this._emitDuringContact(entityA, entityB);
 					} else {
-						this.emitBeginContact(entityA, entityB);
+						this._emitBeginContact(entityA, entityB);
 					}
 				}
 			}

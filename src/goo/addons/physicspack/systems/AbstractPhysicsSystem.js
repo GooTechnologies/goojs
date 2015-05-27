@@ -61,7 +61,7 @@ function (
 	/**
 	 * @private
 	 */
-	AbstractPhysicsSystem.prototype.emitSubStepEvent = function () {
+	AbstractPhysicsSystem.prototype._emitSubStepEvent = function () {
 		SystemBus.emit('goo.physics.substep');
 	};
 
@@ -70,7 +70,7 @@ function (
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
-	AbstractPhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
+	AbstractPhysicsSystem.prototype._emitBeginContact = function (entityA, entityB) {
 		this._emitEvent('goo.physics.beginContact', entityA, entityB);
 	};
 
@@ -79,7 +79,7 @@ function (
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
-	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
+	AbstractPhysicsSystem.prototype._emitDuringContact = function (entityA, entityB) {
 		this._emitEvent('goo.physics.duringContact', entityA, entityB);
 	};
 
@@ -88,7 +88,7 @@ function (
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
-	AbstractPhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
+	AbstractPhysicsSystem.prototype._emitEndContact = function (entityA, entityB) {
 		this._emitEvent('goo.physics.endContact', entityA, entityB);
 	};
 
@@ -97,7 +97,7 @@ function (
 	 * @param  {Entity} triggerEntity
 	 * @param  {Entity} otherEntity
 	 */
-	AbstractPhysicsSystem.prototype.emitTriggerEnter = function (triggerEntity, otherEntity) {
+	AbstractPhysicsSystem.prototype._emitTriggerEnter = function (triggerEntity, otherEntity) {
 		this._emitEvent('goo.physics.triggerEnter', triggerEntity, otherEntity);
 	};
 
@@ -106,7 +106,7 @@ function (
 	 * @param  {Entity} triggerEntity
 	 * @param  {Entity} otherEntity
 	 */
-	AbstractPhysicsSystem.prototype.emitTriggerStay = function (triggerEntity, otherEntity) {
+	AbstractPhysicsSystem.prototype._emitTriggerStay = function (triggerEntity, otherEntity) {
 		this._emitEvent('goo.physics.triggerStay', triggerEntity, otherEntity);
 	};
 
@@ -115,7 +115,7 @@ function (
 	 * @param  {Entity} triggerEntity
 	 * @param  {Entity} otherEntity
 	 */
-	AbstractPhysicsSystem.prototype.emitTriggerExit = function (triggerEntity, otherEntity) {
+	AbstractPhysicsSystem.prototype._emitTriggerExit = function (triggerEntity, otherEntity) {
 		this._emitEvent('goo.physics.triggerExit', triggerEntity, otherEntity);
 	};
 

@@ -58,7 +58,7 @@ function (
 	 * Should be called by subclasses when initializing the physics engine body.
 	 * @param  {Entity} entity
 	 */
-	AbstractRigidBodyComponent.prototype.emitInitialized = function (entity) {
+	AbstractRigidBodyComponent.prototype._emitInitialized = function (entity) {
 		var event = AbstractRigidBodyComponent.initializedEvent;
 		event.entity = entity;
 		SystemBus.emit('goo.physics.initialized', event);

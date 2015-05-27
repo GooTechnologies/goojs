@@ -566,7 +566,7 @@ function (
 		}
 		this.setTransformFromEntity(this._entity);
 		body.aabbNeedsUpdate = true;
-		this.emitInitialized(this._entity);
+		this._emitInitialized(this._entity);
 	};
 
 	/**
