@@ -3,7 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BloomPass',
 	'goo/passpack/BlurPass',
-	'goo/passpack/DoGPass',
+	'goo/passpack/DogPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/util/ObjectUtils'
 ], function (
@@ -11,7 +11,7 @@ define([
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
-	DoGPass,
+	DogPass,
 	MotionBlurPass,
 	ObjectUtils
 ) {
@@ -85,12 +85,12 @@ define([
 	];
 
 	function DiffOfGaussians(id) {
-		DoGPass.call(this, arguments);
+		DogPass.call(this, arguments);
 		this.id = id;
 	}
 
 	//! AT: we use both "DiffOfGaussians" and "DoG"
-	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
+	DiffOfGaussians.prototype = Object.create(DogPass.prototype);
 	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
 
 	DiffOfGaussians.prototype.update = function (config) {

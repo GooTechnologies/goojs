@@ -27,7 +27,7 @@ define([
 	* http://en.wikipedia.org/wiki/Difference_of_Gaussians
 	* http://www.tara.tcd.ie/bitstream/2262/12840/1/eg07.pdf , Adaptive Abstraction of 3D Scenes in Real-Time by Redmond and Dingliana, 2007
 	*/
-	function DoGPass(settings) {
+	function DogPass(settings) {
 		settings = settings || {};
 
 		this.target = settings.target !== undefined ? settings.target : null;
@@ -62,10 +62,10 @@ define([
 		this.needsSwap = true;
 	}
 
-	DoGPass.prototype = Object.create(Pass.prototype);
-	DoGPass.prototype.constructor = DoGPass;
+	DogPass.prototype = Object.create(Pass.prototype);
+	DogPass.prototype.constructor = DogPass;
 
-	DoGPass.prototype.destroy = function (renderer) {
+	DogPass.prototype.destroy = function (renderer) {
 		var context = renderer.context;
 		if (this.convolutionMaterial1) {
 			this.convolutionMaterial1.shader.destroy();
@@ -88,23 +88,23 @@ define([
 		}
 	};
 
-	DoGPass.prototype.updateThreshold = function (threshold) {
+	DogPass.prototype.updateThreshold = function (threshold) {
 		this.differenceMaterial.shader.uniforms.threshold = threshold;
 	};
 
-	DoGPass.prototype.updateEdgeColor = function (color) {
+	DogPass.prototype.updateEdgeColor = function (color) {
 		this.differenceMaterial.shader.uniforms.edgeColor = [color[0], color[1], color[2], 1.0];
 	};
 
-	DoGPass.prototype.updateBackgroundColor = function (color) {
+	DogPass.prototype.updateBackgroundColor = function (color) {
 		this.differenceMaterial.shader.uniforms.backgroundColor = [color[0], color[1], color[2], 1.0];
 	};
 
-	DoGPass.prototype.updateBackgroundMix = function (amount) {
+	DogPass.prototype.updateBackgroundMix = function (amount) {
 		this.differenceMaterial.shader.uniforms.backgroundMix = amount;
 	};
 
-	DoGPass.prototype.updateSize = function (size) {
+	DogPass.prototype.updateSize = function (size) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
 		this.renderTargetX = new RenderTarget(sizeX, sizeY);
@@ -115,7 +115,7 @@ define([
 		this.blurY = [0.0, 0.5 / sizeY];
 	};
 
-	DoGPass.prototype.updateSigma = function (sigma) {
+	DogPass.prototype.updateSigma = function (sigma) {
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].
 		// The max kernelsize is 2.5 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
 		var kernel1 = this.convolutionShader1.buildKernel(sigma);
@@ -143,7 +143,7 @@ define([
 
 	};
 
-	DoGPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
+	DogPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;
@@ -185,7 +185,7 @@ define([
 		}
 	};
 
-	DoGPass.prototype.invalidateHandles = function (renderer) {
+	DogPass.prototype.invalidateHandles = function (renderer) {
 		renderer.invalidateMaterial(this.convolutionMaterial1);
 		renderer.invalidateMaterial(this.convolutionMaterial2);
 		renderer.invalidateMaterial(this.differenceMaterial);
@@ -196,5 +196,5 @@ define([
 		renderer.invalidateRenderTarget(this.gaussian2);
 	};
 
-	return DoGPass;
+	return DogPass;
 });
