@@ -21,8 +21,7 @@ define([
 			name: 'Name',
 			key: 'name',
 			type: 'string',
-			description: 'Counter name',
-			'default': 0
+			description: 'Counter name'
 		}, {
 			name: 'Value',
 			key: 'value',
@@ -34,7 +33,11 @@ define([
 	};
 
 	SetCounterAction.prototype._run = function (fsm) {
-		fsm.getFsm().defineVariable(this.name, this.value);
+		fsm.getFsm().defineVariable(this.name, +this.value);
+	};
+
+	SetCounterAction.prototype.cleanup = function (fsm) {
+		fsm.getFsm().removeVariable(this.name);
 	};
 
 	return SetCounterAction;

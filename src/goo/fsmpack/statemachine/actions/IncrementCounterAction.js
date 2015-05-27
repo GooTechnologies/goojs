@@ -21,23 +21,38 @@ define([
 			name: 'Name',
 			key: 'name',
 			type: 'string',
-			description: 'Counter name',
-			'default': 0
+			description: 'Counter name'
 		}, {
 			name: 'Increment',
 			key: 'increment',
 			type: 'number',
 			description: 'Value to increment the counter with',
-			'default': 0
+			'default': 1
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Repeat this action every frame',
+			'default': true
 		}],
 		transitions: []
 	};
 
 	IncrementCounterAction.prototype._run = function (fsm) {
+		var increment = +this.increment;
+
+		if (fsm.getFsm().vars[this.name] === undefined) {
+			fsm.getFsm().defineVariable(this.name, increment);
+			return;
+		}
+
 		fsm.getFsm().applyOnVariable(this.name, function (oldValue) {
-			if (!oldValue) { return this.increment; }
-			return oldValue + this.increment;
+			return oldValue + increment;
 		});
+	};
+
+	IncrementCounterAction.prototype.cleanup = function (fsm) {
+		fsm.getFsm().removeVariable(this.name);
 	};
 
 	return IncrementCounterAction;

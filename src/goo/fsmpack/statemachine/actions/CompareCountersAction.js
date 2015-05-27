@@ -22,14 +22,18 @@ define([
 			name: 'First counter',
 			key: 'name1',
 			type: 'string',
-			description: 'First counter name',
-			'default': 0
+			description: 'First counter name'
 		}, {
 			name: 'Second counter',
 			key: 'name2',
 			type: 'string',
-			description: 'Second counter name',
-			'default': 0
+			description: 'Second counter name'
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Repeat this action every frame',
+			'default': true
 		}],
 		transitions: [{
 			key: 'less',
@@ -47,8 +51,8 @@ define([
 	};
 
 	CompareCountersAction.prototype._run = function (fsm) {
-		var value1 = fsm.getFsm().getVariable(this.name1);
-		var value2 = fsm.getFsm().getVariable(this.name2);
+		var value1 = +fsm.getFsm().getVariable(this.name1);
+		var value2 = +fsm.getFsm().getVariable(this.name2);
 
 		if (value1 > value2) {
 			fsm.send(this.transitions.greater);
