@@ -30,7 +30,7 @@ define([
 	 * @param renderList
 	 * @param outShader
 	 */
-	function DOFPass(renderList, outShader) {
+	function DofPass(renderList, outShader) {
 		this.depthPass = new RenderPass(renderList, function(item) {
 			return !(item instanceof Skybox);
 		});
@@ -57,10 +57,10 @@ define([
 		this.needsSwap = true;
 	}
 
-	DOFPass.prototype = Object.create(Pass.prototype);
-	DOFPass.prototype.constructor = DOFPass;
+	DofPass.prototype = Object.create(Pass.prototype);
+	DofPass.prototype.constructor = DofPass;
 
-	DOFPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+	DofPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		this.depthPass.render(renderer, null, this.depthTarget, delta);
 		this.regularPass.render(renderer, null, this.regularTarget, delta);
 		this.regularPass.render(renderer, null, this.regularTarget2, delta);
@@ -181,5 +181,5 @@ define([
 		'}'
 	};
 
-	return DOFPass;
+	return DofPass;
 });
