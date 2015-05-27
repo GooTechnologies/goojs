@@ -16,8 +16,8 @@ define([
 	/**
 	 * @extends System
 	 */
-	function CSSTransformSystem(renderer) {
-		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
+	function CssTransformSystem(renderer) {
+		System.call(this, 'CssTransformSystem', ['TransformComponent', 'CssTransformComponent']);
 
 		this.renderer = renderer;
 
@@ -32,8 +32,8 @@ define([
 	var tmpMatrix2 = new Matrix4x4();
 	var tmpVector = new Vector3();
 
-	CSSTransformSystem.prototype = Object.create(System.prototype);
-	CSSTransformSystem.prototype.constructor = CSSTransformSystem;
+	CssTransformSystem.prototype = Object.create(System.prototype);
+	CssTransformSystem.prototype.constructor = CssTransformSystem;
 
 	var epsilon = function (value) {
 		return Math.abs(value) < 0.000001 ? 0 : value;
@@ -56,7 +56,7 @@ define([
 			+ epsilon(elements[12]) + ',' + epsilon(-elements[13]) + ',' + epsilon(elements[14]) + ',' + epsilon(elements[15]) + ')';
 	};
 
-	CSSTransformSystem.prototype.process = function (entities) {
+	CssTransformSystem.prototype.process = function (entities) {
 		if (entities.length === 0) {
 			return;
 		}
@@ -100,7 +100,7 @@ define([
 
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var component = entity.getComponent('CSSTransformComponent');
+			var component = entity.getComponent('CssTransformComponent');
 			var domElement = component.domElement;
 			var scale = component.scale;
 			scale = [scale, -scale, scale].join(',');
@@ -122,5 +122,5 @@ define([
 		}
 	};
 
-	return CSSTransformSystem;
+	return CssTransformSystem;
 });

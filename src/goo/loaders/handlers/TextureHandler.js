@@ -6,7 +6,7 @@ define([
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/util/ObjectUtils',
 	'goo/util/CanvasUtils',
 	'goo/util/StringUtils',
@@ -20,7 +20,7 @@ function (
 	TgaLoader,
 	RSVP,
 	PromiseUtils,
-	Util,
+	RendererUtils,
 	_,
 	CanvasUtils,
 	StringUtils,
@@ -162,7 +162,7 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (!Util.isPowerOfTwo(video.width) || !Util.isPowerOfTwo(video.height)) {
+			if (!RendererUtils.isPowerOfTwo(video.width) || !RendererUtils.isPowerOfTwo(video.height)) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}
