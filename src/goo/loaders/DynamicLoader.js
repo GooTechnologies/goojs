@@ -239,7 +239,7 @@ define([
 			}
 
 			// When all binary refs are loaded, we're done
-			return RSVP.all(refs.map(function (ref) { return load(ref); }));
+			return RSVP.all(refs.map(load));
 		}
 
 		function traverse(refs) {
@@ -257,10 +257,11 @@ define([
 				if (config.lazy === true) {
 					return PromiseUtil.resolve();
 				}
-				var refs = that._getRefsFromConfig(config);
 
-				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
-					var ref = refs[keys[i]];
+				var refs = DynamicLoader._getRefsFromConfig(config);
+
+				for (var i = 0, len = refs.length; i < len; i++) {
+					var ref = refs[i];
 					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
 						// If it's a binary ref, store it in the list
 						binaryRefs.add(ref);
@@ -313,8 +314,15 @@ define([
 
 	var refRegex = new RegExp('\\S+refs?$', 'i');
 
-	DynamicLoader.prototype._getRefsFromConfig = function (config) {
+	/**
+	 * Traverses a json-like structure and collects refs in an array
+	 * @param config
+	 * @returns {Array}
+	 * @hidden
+	 */
+	DynamicLoader._getRefsFromConfig = function (config) {
 		var refs = [];
+
 		function traverse(key, value) {
 			if (refRegex.test(key) && key !== 'thumbnailRef') {
 				// Refs
@@ -328,13 +336,18 @@ define([
 					// Ref
 					refs.push(value);
 				}
-			} else if (value instanceof Object && key !== 'assets') {
+			} else if (
+				value instanceof Object &&
+				key !== 'assets' &&
+				!(value instanceof Array)
+			) {
 				// Go down a level
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
 					traverse(keys[i], value[keys[i]]);
 				}
 			}
 		}
+
 		traverse('', config);
 		return refs;
 	};
