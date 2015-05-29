@@ -38,8 +38,6 @@ define([
 			Matrix.prototype.set.apply(this, arguments);
 		}
 
-		this.negY = false;
-
 		// #ifdef DEBUG
 		Object.seal(this);
 		// #endif
@@ -614,22 +612,6 @@ define([
 		var cosZ = Math.cos(z);
 		var sinZ = Math.sin(z);
 
-		console.log('fromangle', z);
-
-		if (Math.sign(cosZ) === 1) {
-			console.log('cosZ: +');
-		} else {
-			console.log('cosZ: -');
-		}
-
-		if (Math.sign(sinZ) === 1) {
-			console.log('sinZ: +');
-			this.negY = false;
-		} else {
-			console.log('sinZ -');
-			this.negY = true;
-		}
-
 		var d = this.data;
 		d[0] = cosY * cosZ;
 		d[3] = sinY * sinX - cosY * sinZ * cosX;
@@ -803,22 +785,7 @@ define([
 
 		return result;
 	};
-
-	Matrix3x3.prototype.getZAngle = function () {
-
-		var d = this.data;
-		var result;
-		if (d[3] > 1 - MathUtils.EPSILON) { // singularity at north pole
-			result = Math.PI / 2;
-		} else if (d[3] < -1 + MathUtils.EPSILON) { // singularity at south pole
-			result = -Math.PI / 2;
-		} else {
-			result = Math.asin(d[1]);
-		}
-
-		return result;	
-	};
-
+	
 	/**
 	 * Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
 	 * @param {number} angle the angle to rotate (in radians).

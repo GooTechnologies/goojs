@@ -90,15 +90,14 @@ require([
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
 				var rot = Math.PI * 0.25 * tpf;
-				actualAngle += rot;
-				entity.setRotation([0, 0, actualAngle]);
+				//actualAngle += rot;
+				//entity.setRotation([0, 0, actualAngle]);
 			}
 		}));
 		spotEntity.addToWorld();
 
 
 		window.addEventListener('keydown', function(event) {
-			console.log(event);
 			var rot = Math.PI * 0.1;
 			switch (event.keyCode) {
 				case 37:					
@@ -168,7 +167,7 @@ require([
 	addSpotLight();
 
 	// camera
-	V.addOrbitCamera();
+	V.addOrbitCamera([20, Math.PI/2, 0]);
 
 	V.process();
 });

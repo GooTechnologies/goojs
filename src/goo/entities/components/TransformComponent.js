@@ -666,8 +666,6 @@ define([
 			this.worldTransform.copy(this.transform);
 		}
 
-		this.worldTransform.rotation.negY = this.transform.rotation.negY;
-
 		this.worldTransform.updateNormalMatrix();
 
 		this._dirty = false;
