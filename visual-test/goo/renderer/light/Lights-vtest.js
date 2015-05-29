@@ -171,15 +171,6 @@ require([
 			spotLight.changedProperties = true;
 		});
 
-		var controller = spotLightGui.add({'angle': actualAngle}, 'angle', 0.0, Math.PI * 2);
-		controller.onChange(function(e) {
-			console.debug('Angle', e);
-			rotQuat.fromAngleNormalAxis(e, targetPos);
-			var rotMat = spotEntity.transformComponent.transform.rotation;
-			rotQuat.toRotationMatrix(rotMat);
-			spotEntity.transformComponent._dirty = true;
-		});
-
 		spotLightGui.open();
 	}
 
@@ -196,8 +187,8 @@ require([
 	// add some spheres to cast the light on
 	V.addSpheres();
 
-	//addPointLight();
-	//addDirectionalLight();
+	addPointLight();
+	addDirectionalLight();
 	addSpotLight();
 
 	// camera
