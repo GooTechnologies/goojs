@@ -1,11 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
+	'goo/math/Quaternion',
 	'goo/renderer/light/Light',
 	'goo/math/MathUtils'
 ], function (
 	Vector3,
 	Matrix3x3,
+	Quaternion,
 	Light,
 	MathUtils
 ) {
@@ -67,10 +69,10 @@ define([
 	 */
 
 	var xvec = new Vector3();
-	var yvec = new Vector3();
 	var zvec = new Vector3();
 	var xBase = new Vector3();
 	var rotMat = new Matrix3x3();
+	var rotQuat = new Quaternion();
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
@@ -80,31 +82,10 @@ define([
 		if (this.lightCookie) {
 			var d = transform.rotation.data;
 			xvec.setDirect(d[0], d[1], d[2]);
-			yvec.setDirect(d[3], d[4], d[5]);
 			zvec.setDirect(d[6], d[7], d[8]);
 
-			var zdot = Vector3.dot(zvec, Vector3.UNIT_Z);
-			var zanglX = 0;
-			if (zvec.x.toPrecision(4) != 0) {
-				if (zvec.x < 0) {
-					zanglX = Math.PI + Math.acos(-zdot);
-				} else {
-					zanglX = Math.acos(zdot);
-				}
-			} 
-
-			var zanglY = 0;
-			if (zvec.y.toPrecision(4) != 0) {
-				if (zvec.y < 0) {
-					zanglY =  Math.PI + Math.acos(-zdot);
-				} else {
-					zanglY = Math.acos(zdot);
-				}
-			}
-
-			rotMat.fromAngles(zanglY, zanglX, 0);
-			console.log('zanglX', zanglX);
-			console.log('zanglY', zanglY);
+			rotQuat.fromVectorToVector(Vector3.UNIT_Z, zvec);
+			rotQuat.toRotationMatrix(rotMat);
 			xBase.setDirect(1, 0, 0);
 			rotMat.applyPost(xBase);
 			var xdot = Vector3.dot(xvec, xBase);
@@ -112,17 +93,11 @@ define([
 			// precision error, use first 3 decimals to overcome.
 			xdot = xdot.toPrecision(4);
 
-			console.log('xdot', xdot);
-			console.log('zdot', zdot);
-			console.log('zvec', zvec.data);
-
 			if (xvec.y < 0) {
 				this.directionRotation = Math.PI + Math.acos(-xdot);
 			} else {
 				this.directionRotation = Math.acos(xdot);
 			}
-
-			console.debug('Angle', this.directionRotation);
 		}
 		
 	};

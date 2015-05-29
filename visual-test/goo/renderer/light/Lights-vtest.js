@@ -88,10 +88,13 @@ require([
 		var yRot = -Math.PI * 0.1;
 		var xRot = yRot;
 
+		//targetPos.setDirect(0, 0.25, 1);
+		targetPos.setDirect(0, 0.2, 1);
+		targetPos.normalize();
+
 		
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
-			spotEntity.setRotation([xRot, yRot, actualAngle]);
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
@@ -101,10 +104,8 @@ require([
 				var rot = Math.PI * 0.2 * tpf;
 				actualAngle += rot;
 				var ypan = Math.sin(entity._world.time) * 0.3;
-				targetPos.setDirect(ypan, 0, -1);
+				targetPos.setDirect(0,ypan, 1);
 				targetPos.normalize();
-
-				console.log('Targetpos', targetPos.data);
 
 				rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
 
@@ -118,6 +119,7 @@ require([
 				}
 			}
 		}));
+
 
 		spotEntity.addToWorld();
 
@@ -134,7 +136,10 @@ require([
 					actualAngle = 0;
 			}
 
-			spotEntity.setRotation([xRot, yRot, actualAngle]);
+			rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
+			var rotMat = spotEntity.transformComponent.transform.rotation;
+			rotQuat.toRotationMatrix(rotMat);
+			spotEntity.transformComponent._dirty = true;
 			
 			if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
 				actualAngle = 0;
