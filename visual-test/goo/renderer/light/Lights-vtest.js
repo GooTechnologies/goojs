@@ -87,10 +87,9 @@ require([
 		var tc = new TextureCreator();
 		var yRot = -Math.PI * 0.1;
 		var xRot = yRot;
-
-		targetPos.setDirect(0, 0.2, 1);
+		
+		targetPos.setDirect(0.25, 0.25, 1);
 		targetPos.normalize();
-
 		
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
@@ -111,8 +110,13 @@ require([
 				var rotMat = spotEntity.transformComponent.transform.rotation;
 				rotQuat.toRotationMatrix(rotMat);
 				spotEntity.transformComponent._dirty = true;
+			
+				if (actualAngle >= Math.PI * 2) {
+					actualAngle = Math.PI * 2 - actualAngle;
+				}
 			}
 		}));
+		
 
 		spotEntity.addToWorld();
 
@@ -140,6 +144,15 @@ require([
 		var controller = spotLightGui.add(spotLight, 'range', 0, 10);
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
+		});
+
+		var controller = spotLightGui.add({'angle': actualAngle}, 'angle', 0.0, Math.PI * 2);
+		controller.onChange(function(e) {
+			console.debug('Angle', e);
+			rotQuat.fromAngleNormalAxis(e, targetPos);
+			var rotMat = spotEntity.transformComponent.transform.rotation;
+			rotQuat.toRotationMatrix(rotMat);
+			spotEntity.transformComponent._dirty = true;
 		});
 
 		spotLightGui.open();

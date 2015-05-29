@@ -88,14 +88,17 @@ define([
 			rotQuat.toRotationMatrix(rotMat);
 			xBase.setDirect(1, 0, 0);
 			rotMat.applyPost(xBase);
+			var rotAngle = rotQuat.toAngleAxis(null);
 			var xdot = Vector3.dot(xvec, xBase);
 			// the dotproduct returns values above 1 , probably due to
 			// precision error, use first 3 decimals to overcome.
 			xdot = xdot.toPrecision(4);
-
+			
 			if (xvec.y < 0) {
 				this.directionRotation = Math.PI + Math.acos(-xdot);
 			} else {
+				console.debug('xvec', xvec.data);
+				//console.debug('zvec', zvec.data);
 				this.directionRotation = Math.acos(xdot);
 			}
 		}
