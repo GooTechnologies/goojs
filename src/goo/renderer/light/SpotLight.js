@@ -1,9 +1,11 @@
 define([
 	'goo/math/Vector3',
+	'goo/math/Matrix3x3',
 	'goo/renderer/light/Light',
 	'goo/math/MathUtils'
 ], function (
 	Vector3,
+	Matrix3x3,
 	Light,
 	MathUtils
 ) {
@@ -66,6 +68,9 @@ define([
 
 	var xvec = new Vector3();
 	var yvec = new Vector3();
+	var zvec = new Vector3();
+	var xBase = new Vector3();
+	var rotMat = new Matrix3x3();
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
@@ -73,20 +78,26 @@ define([
 		transform.matrix.applyPostVector(this.direction);
 
 		if (this.lightCookie) {
-			var eulerAngles = transform.rotation.toAngles().data;
-			
 			var d = transform.rotation.data;
 			xvec.setDirect(d[0], d[1], d[2]);
 			yvec.setDirect(d[3], d[4], d[5]);
+			zvec.setDirect(d[6], d[7], d[8]);
+
+			var zdot = Vector3.dot(zvec, Vector3.UNIT_Z);
+			var zangl = Math.acos(zdot)
+
+			rotMat.fromAngles(0, zangl, 0);
+			console.log('zangl', zangl);
+			xBase.setDirect(1, 0, 0);
+			rotMat.applyPost(xBase);
+			var xdot = Vector3.dot(xvec, xBase);
+			// the dotproduct returns values above 1 , probably due to
+			// precision error, use first 3 decimals to overcome.
+			xdot = xdot.toPrecision(4);
 			
-			var xdot = Vector3.dot(xvec, Vector3.UNIT_X);
-			
-			console.log('xvec', xvec.data);
-			//console.log('Eulerangles', transform.rotation.toAngles().data);
-			//console.log('yvec', yvec.data);
-			//console.log('xdot', xdot);
-			
-			
+			console.log('xdot', xdot);
+			console.log('zvec', zvec.data);
+
 			if (xvec.y < 0) {
 				this.directionRotation = Math.PI + Math.acos(-xdot);
 			} else {

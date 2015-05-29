@@ -81,39 +81,46 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 		var tc = new TextureCreator();
+		var yRot = Math.PI * 0.1;
+		var xRot = 0;
+		
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
-			spotEntity.setRotation([0,0,0]);
+			spotEntity.setRotation([xRot, yRot, actualAngle]);
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
+		/*
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
-				var rot = Math.PI * 0.25 * tpf;
-				//actualAngle += rot;
-				//entity.setRotation([0, 0, actualAngle]);
+				var rot = Math.PI * 0.1 * tpf;
+				actualAngle += rot;
+				spotEntity.setRotation([xRot, Math.sin(entity._world.time) * Math.PI / 6, actualAngle]);
+				if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
+					actualAngle = 0;
+				}
 			}
 		}));
+*/
+		
 		spotEntity.addToWorld();
-
 
 		window.addEventListener('keydown', function(event) {
 			var rot = Math.PI * 0.1;
 			switch (event.keyCode) {
 				case 37:					
 					actualAngle += rot;
-					spotEntity.setRotation([0, 0, actualAngle]);
 					break;
 				case 39:
 					actualAngle += -rot;
-					spotEntity.setRotation([0, 0, actualAngle]);
 					break;
 				case 40:
-					spotEntity.setRotation([0, 0, 0]);
 					actualAngle = 0;
 			}
+
+			spotEntity.setRotation([xRot, yRot, actualAngle]);
 			
-			if (actualAngle >= Math.PI * 2) {
+			if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
 				actualAngle = 0;
 			}
 			console.debug('actualAngle', actualAngle);
