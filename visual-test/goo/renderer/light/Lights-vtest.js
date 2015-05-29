@@ -88,7 +88,6 @@ require([
 		var yRot = -Math.PI * 0.1;
 		var xRot = yRot;
 
-		//targetPos.setDirect(0, 0.25, 1);
 		targetPos.setDirect(0, 0.2, 1);
 		targetPos.normalize();
 
@@ -104,49 +103,18 @@ require([
 				var rot = Math.PI * 0.2 * tpf;
 				actualAngle += rot;
 				var ypan = Math.sin(entity._world.time) * 0.3;
-				targetPos.setDirect(0,ypan, 1);
+				var xpan = Math.cos(entity._world.time) * 0.1;
+				targetPos.setDirect(0.25, 0.25, 1);
 				targetPos.normalize();
-
 				rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
 
 				var rotMat = spotEntity.transformComponent.transform.rotation;
 				rotQuat.toRotationMatrix(rotMat);
 				spotEntity.transformComponent._dirty = true;
-
-				//spotEntity.setRotation([ypan, ypan, actualAngle]);
-				if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
-					actualAngle = 0;
-				}
 			}
 		}));
 
-
 		spotEntity.addToWorld();
-
-		window.addEventListener('keydown', function(event) {
-			var rot = Math.PI * 0.1;
-			switch (event.keyCode) {
-				case 37:					
-					actualAngle += rot;
-					break;
-				case 39:
-					actualAngle += -rot;
-					break;
-				case 40:
-					actualAngle = 0;
-			}
-
-			rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
-			var rotMat = spotEntity.transformComponent.transform.rotation;
-			rotQuat.toRotationMatrix(rotMat);
-			spotEntity.transformComponent._dirty = true;
-			
-			if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
-				actualAngle = 0;
-			}
-			console.debug('actualAngle', actualAngle);
-
-		});
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
