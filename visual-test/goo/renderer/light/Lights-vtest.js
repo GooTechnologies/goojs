@@ -81,8 +81,8 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 		var tc = new TextureCreator();
-		var yRot = -Math.PI * 0.1;
-		var xRot = 0;
+		var yRot = 0;
+		var xRot = -Math.PI * 0.1;
 		
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
@@ -90,18 +90,18 @@ require([
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 7]);
-		/*
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
-				var rot = Math.PI * 0.1 * tpf;
+				var rot = Math.PI * 0.2 * tpf;
 				actualAngle += rot;
-				spotEntity.setRotation([xRot, Math.sin(entity._world.time) * Math.PI / 6, actualAngle]);
+				var ypan = Math.sin(entity._world.time) * Math.PI / 6;
+				spotEntity.setRotation([ypan, 0, actualAngle]);
 				if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
 					actualAngle = 0;
 				}
 			}
 		}));
-*/
+		
 		
 		spotEntity.addToWorld();
 

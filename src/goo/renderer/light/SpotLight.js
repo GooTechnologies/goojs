@@ -84,15 +84,27 @@ define([
 			zvec.setDirect(d[6], d[7], d[8]);
 
 			var zdot = Vector3.dot(zvec, Vector3.UNIT_Z);
-			if (zvec.x < 0) {
-				var zangl = Math.PI + Math.acos(-zdot);	
-			} else {
-				var zangl = Math.acos(zdot);
-			}
-			
+			var zanglX = 0;
+			if (zvec.x != 0) {
+				if (zvec.x < 0) {
+					zanglX = Math.PI + Math.acos(-zdot);
+				} else {
+					zanglX = Math.acos(zdot);
+				}
+			} 
 
-			rotMat.fromAngles(0, zangl, 0);
-			console.log('zangl', zangl);
+			var zanglY = 0;
+			if (zvec.y != 0) {
+				if (zvec.y < 0) {
+					zanglY =  Math.PI + Math.acos(-zdot);
+				} else {
+					zanglY = Math.acos(zdot);
+				}
+			}
+
+			rotMat.fromAngles(zanglY, zanglX, 0);
+			console.log('zanglX', zanglX);
+			console.log('zanglY', zanglY);
 			xBase.setDirect(1, 0, 0);
 			rotMat.applyPost(xBase);
 			var xdot = Vector3.dot(xvec, xBase);
