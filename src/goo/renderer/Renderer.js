@@ -351,12 +351,12 @@ define([
 		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
-		if (document.querySelector) {
-			adjustWidth = this.domElement.offsetWidth;
-			adjustHeight = this.domElement.offsetHeight;
-		} else {
+		if (navigator.isCocoonJS) {
 			adjustWidth = window.innerWidth;
 			adjustHeight = window.innerHeight;
+		} else {
+			adjustWidth = this.domElement.offsetWidth;
+			adjustHeight = this.domElement.offsetHeight;
 		}
 		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
 		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;

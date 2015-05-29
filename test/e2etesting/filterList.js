@@ -34,7 +34,8 @@ var filterList = [
 	'Spline',
 	'TextComponent',
 	'TextMeshGenerator',
-	'linerenderpack'
+	'linerenderpack',
+	'Pipe'
 ];
 
 exports.filterList = filterList;
