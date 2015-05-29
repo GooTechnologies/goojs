@@ -84,7 +84,12 @@ define([
 			zvec.setDirect(d[6], d[7], d[8]);
 
 			var zdot = Vector3.dot(zvec, Vector3.UNIT_Z);
-			var zangl = Math.acos(zdot)
+			if (zvec.x < 0) {
+				var zangl = Math.PI + Math.acos(-zdot);	
+			} else {
+				var zangl = Math.acos(zdot);
+			}
+			
 
 			rotMat.fromAngles(0, zangl, 0);
 			console.log('zangl', zangl);
@@ -94,7 +99,7 @@ define([
 			// the dotproduct returns values above 1 , probably due to
 			// precision error, use first 3 decimals to overcome.
 			xdot = xdot.toPrecision(4);
-			
+
 			console.log('xdot', xdot);
 			console.log('zvec', zvec.data);
 

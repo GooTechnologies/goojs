@@ -81,7 +81,7 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 		var tc = new TextureCreator();
-		var yRot = Math.PI * 0.1;
+		var yRot = -Math.PI * 0.1;
 		var xRot = 0;
 		
 		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
