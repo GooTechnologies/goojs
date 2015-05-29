@@ -85,7 +85,7 @@ define([
 
 			var zdot = Vector3.dot(zvec, Vector3.UNIT_Z);
 			var zanglX = 0;
-			if (zvec.x != 0) {
+			if (zvec.x.toPrecision(4) != 0) {
 				if (zvec.x < 0) {
 					zanglX = Math.PI + Math.acos(-zdot);
 				} else {
@@ -94,7 +94,7 @@ define([
 			} 
 
 			var zanglY = 0;
-			if (zvec.y != 0) {
+			if (zvec.y.toPrecision(4) != 0) {
 				if (zvec.y < 0) {
 					zanglY =  Math.PI + Math.acos(-zdot);
 				} else {
@@ -113,6 +113,7 @@ define([
 			xdot = xdot.toPrecision(4);
 
 			console.log('xdot', xdot);
+			console.log('zdot', zdot);
 			console.log('zvec', zvec.data);
 
 			if (xvec.y < 0) {
