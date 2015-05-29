@@ -93,12 +93,10 @@ define([
 			// the dotproduct returns values above 1 , probably due to
 			// precision error, use first 3 decimals to overcome.
 			xdot = xdot.toPrecision(4);
-			
-			if (xvec.y < 0) {
+			// Magic solution, probably not. Math anyone?
+			if (xvec.y + xBase.y < 0) {
 				this.directionRotation = Math.PI + Math.acos(-xdot);
 			} else {
-				console.debug('xvec', xvec.data);
-				//console.debug('zvec', zvec.data);
 				this.directionRotation = Math.acos(xdot);
 			}
 		}
