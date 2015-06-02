@@ -27,7 +27,7 @@
 			sourceNode.outputsTo.push({
 				output: link.attributes.source.port,
 				to: link.attributes.target.id,
-				intput: link.attributes.target.port
+				input: link.attributes.target.port
 			});
 		});
 	}
