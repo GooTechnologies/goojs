@@ -37,7 +37,13 @@
       "name": "s",
       "type": "float"
     }],
-    "body": "s = sin(x * /*data.multiplier*/) * 0.5 + 0.5;"
+    "body": "s = sin(x * /*data.multiplier*/) * 0.5 + 0.5;",
+    "defines": {
+      "multiplier": {
+        "name": "multiplier",
+        "default": "1.0"
+      }
+    }
   },
   "mul": {
     "id": "mul",
