@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="lib/jointjs/joint.css">
+	<style>
+		#node-editor {
+			display: inline-block;
+			height: 512px;
+			width: 512px;
+		}
+	</style>
+</head>
+<body>
+	<div id="panel1">
+		<div id="container"></div>
+
+		<div>
+			<button id="add-external">Add</button>
+			<select id="external-input-type">
+				<option>uniform</option>
+				<option>attribute</option>
+				<option>varying</option>
+			</select>
+			<select id="external-data-type">
+				<option>float</option>
+				<option>vec2</option>
+				<option>vec3</option>
+				<option>vec4</option>
+			</select>
+			<input id="external-name" type="text">
+		</div>
+
+		<div>
+			<button id="add-node">Add</button>
+			<select id="node-types"></select>
+		</div>
+	</div>
+
+	<div id="node-editor"></div>
+
+	<script src="lib/ace/ace.js"></script>
+	<script src="lib/ace/theme-monokai.js"></script>
+	<script src="lib/ace/mode-glsl.js"></script>
+
+
+
+	<script src="lib/jointjs/joint.js"></script>
+	<script src="lib/jointjs/joint.shapes.devs.js"></script>
+
+	<script src="shader-processor.js"></script>
+
+	<script src="graph-to-structure.js"></script>
+	<script src="joint.js"></script>
+</body>
+</html>
