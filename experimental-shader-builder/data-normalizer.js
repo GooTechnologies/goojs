@@ -14,11 +14,23 @@
 		return nodeTypes;
 	}
 
+	function safenIdentifier(string) {
+		return string.replace(/-/g, '_');
+	}
+
 	function normalizeStructure(structure) {
 		if (!structure) { return []; }
 
 		structure.forEach(function (node) {
-			node.outputsTo = node.outputsTo || [];
+			node.id = safenIdentifier(node.id);
+
+			if (node.outputsTo) {
+				node.outputsTo.forEach(function (entry) {
+					entry.to = safenIdentifier(entry.to);
+				});
+			} else {
+				node.outputsTo = [];
+			}
 
 			if (node.type === 'external') {
 				node.external = node.external || {};
