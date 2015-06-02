@@ -113,6 +113,13 @@
 		} else {
 			cell.attributes.defines = partial.defines;
 		}
+
+		var structure = graphToStructure.toStructure(graph);
+
+		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
+		var _structure = dataNormalizer.normalizeStructure(structure);
+
+		replaceBox(typeDefinitions, _structure);
 	}
 
 	var editor = setupEditor(onInput);
@@ -183,10 +190,62 @@
 
 		populateTypes(Object.keys(typeDefinitions));
 
-		var node1 = createNode(typeDefinitions['add']);
+		var node1 = createNode(typeDefinitions['const']);
 		graph.addCell(node1);
+
+		var node2 = createNode(typeDefinitions['out']);
+		graph.addCell(node2);
 
 		setupListeners();
 	});
 
+
+	function demo() {
+		var world = v.initGoo().world;
+		v.addOrbitCamera(new goo.Vector3(5, Math.PI / 2, 0));
+
+		var box;
+
+		function replaceBox(shaderSource) {
+			if (box) {
+				box.removeFromWorld();
+			}
+
+			var material = new goo.Material({
+				attributes: {
+					vertexPosition: goo.MeshData.POSITION
+				},
+				uniforms: {
+					viewProjectionMatrix: goo.Shader.VIEW_PROJECTION_MATRIX,
+					worldMatrix: goo.Shader.WORLD_MATRIX,
+					time: function () {
+						return world.time;
+					}
+				},
+				vshader: [
+					'attribute vec3 vertexPosition;',
+
+					'uniform mat4 viewProjectionMatrix;',
+					'uniform mat4 worldMatrix;',
+
+					'void main(void) {',
+					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+					'}'
+				].join('\n'),
+				fshader: shaderSource
+			});
+
+			box = world.createEntity(new goo.Box(), material).addToWorld();
+		}
+
+		return replaceBox;
+	}
+
+	var _replaceBox = demo();
+
+	var replaceBox = function (nodeTypes, structure) {
+		var result = shaderBits.buildShader(nodeTypes, structure);
+		window._result = result;
+		_replaceBox(result);
+	};
 })();
