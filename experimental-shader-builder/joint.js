@@ -149,6 +149,8 @@
 
 
 		paper.on('cell:pointerdown', function (cellView, evt, x, y) {
+			if (cellView.model.attributes.type !== 'devs.Model') { return; }
+
 			clickedNewId = cellView.model.id;
 
 			if (clickedOldId !== clickedNewId) {
