@@ -54,6 +54,9 @@ function (
 	ColliderComponent.prototype.constructor = ColliderComponent;
 	ColliderComponent.type = "ColliderComponent";
 
+	/**
+	 * Initialize the collider as a static rigid body in the physics world.
+	 */
 	ColliderComponent.prototype.initialize = function () {
 		var material = null;
 		if (this.material) {
@@ -64,22 +67,28 @@ function (
 		this.updateWorldCollider();
 		var cannonShape = this.cannonShape = ColliderComponent.getCannonShape(this.worldCollider);
 		cannonShape.material = material;
+
+		cannonShape.collisionResponse = !this.isTrigger;
+
+		// Get transform from entity
+		var entity = this.entity;
+		var transform = entity.transformComponent.worldTransform;
+		var position = new CANNON.Vec3();
+		var quaternion = new CANNON.Quaternion();
+		position.copy(transform.translation);
+		tmpQuat.fromRotationMatrix(transform.rotation);
+		quaternion.copy(tmpQuat);
+
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: !this.isTrigger
+			position: position,
+			quaternion: quaternion
 		});
 		this.system.cannonWorld.addBody(body);
 		this.cannonBody = body;
 
 		// Register it
-		var entity = this.entity;
 		this.system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
-
-		// Set transform from entity
-		var transform = entity.transformComponent.worldTransform;
-		body.position.copy(transform.translation);
-		tmpQuat.fromRotationMatrix(transform.rotation);
-		body.quaternion.copy(tmpQuat);
 
 		var collider = this.worldCollider;
 		if (collider instanceof SphereCollider) {
@@ -98,6 +107,9 @@ function (
 		body.aabbNeedsUpdate = true;
 	};
 
+	/**
+	 * Remove the collider from the physics world. Does the opposite of .initialize()
+	 */
 	ColliderComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
 		body.shapes.forEach(function (shape) {

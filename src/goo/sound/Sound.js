@@ -81,7 +81,11 @@ define([
 		this._playStart = AudioContext.getContext().currentTime - this._pausePos;
 		var duration = this._duration - this._pausePos;
 
-		this._currentSource.start(0, this._pausePos + this._offset, duration);
+		if (this._loop) {
+			this._currentSource.start();
+		} else {
+			this._currentSource.start(0, this._pausePos + this._offset, duration);
+		}
 
 		return this._endPromise;
 	};

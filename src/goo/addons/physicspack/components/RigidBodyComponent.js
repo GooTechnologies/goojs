@@ -131,10 +131,94 @@ function (
 		 * @type {Array}
 		 */
 		this._colliderEntities = [];
+
+		/**
+		 * How smoothing of the rigid body movement should be done. Set it to {@link RigidBodyComponent.NONE} or {@link RigidBodyComponent.INTERPOLATE}.
+		 * @type {number}
+		 */
+		this.interpolation = RigidBodyComponent.INTERPOLATE;
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 *
+		 * @type {number}
+		 */
+		this._constraints = RigidBodyComponent.FREEZE_NONE;
 	}
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
 	RigidBodyComponent.type = 'RigidBodyComponent';
+
+	/**
+	 * No constraints.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_NONE = 0;
+
+	/**
+	 * Freeze motion along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_X = 1;
+
+	/**
+	 * Freeze motion along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Y = 2;
+
+	/**
+	 * Freeze motion along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Z = 4;
+
+	/**
+	 * Freeze rotation along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_X = 8;
+
+	/**
+	 * Freeze rotation along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Y = 16;
+
+	/**
+	 * Freeze rotation along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Z = 32;
+
+	/**
+	 * Freeze motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION = RigidBodyComponent.FREEZE_POSITION_X | RigidBodyComponent.FREEZE_POSITION_Y | RigidBodyComponent.FREEZE_POSITION_Z;
+
+	/**
+	 * Freeze rotation along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION = RigidBodyComponent.FREEZE_ROTATION_X | RigidBodyComponent.FREEZE_ROTATION_Y | RigidBodyComponent.FREEZE_ROTATION_Z;
+
+	/**
+	 * Freeze rotation and motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ALL = RigidBodyComponent.FREEZE_POSITION | RigidBodyComponent.FREEZE_ROTATION;
+
+	/**
+	 * No rigid body smoothing.
+	 */
+	RigidBodyComponent.NONE = 1;
+
+	/**
+	 * Transform is smoothed based on the Transform of the previous frame.
+	 */
+	RigidBodyComponent.INTERPOLATE = 2;
+	//! SH: Making room for future "EXTRAPOLATE"
 
 	/**
 	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
@@ -151,8 +235,12 @@ function (
 		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(transform.translation);
+		body.previousPosition.copy(transform.translation);
+		body.interpolatedPosition.copy(transform.translation);
 		tmpQuat.fromRotationMatrix(transform.rotation);
 		body.quaternion.copy(tmpQuat);
+		body.previousQuaternion.copy(tmpQuat);
+		body.interpolatedQuaternion.copy(tmpQuat);
 	};
 
 	/**
@@ -162,6 +250,28 @@ function (
 	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
 		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
+	};
+
+	/**
+	 * Apply an impulse to the body.
+	 * @param {Vector3} impulse The impulse vector, oriented in world space.
+	 * @param {Vector3} relativePoint Where the impulse should be applied
+	 */
+	RigidBodyComponent.prototype.applyImpulse = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyImpulse(tmpCannonVec, tmpCannonVec2);
+	};
+
+	/**
+	 * Apply an impulse to the center of mass of the body.
+	 * @param {Vector3} impulse The force vector, oriented in local space.
+	 * @param {Vector3} relativePoint
+	 */
+	RigidBodyComponent.prototype.applyImpulseLocal = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyLocalImpulse(tmpCannonVec, tmpCannonVec2);
 	};
 
 	/**
@@ -222,6 +332,17 @@ function (
 	};
 
 	/**
+	 * Get the interpolated position from the rigid body. Use this for rendering. The resulting vector is a linear interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Vector3} targetVector
+	 */
+	RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector) {
+		if (this.cannonBody) {
+			var position = this.cannonBody.interpolatedPosition;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
+	};
+
+	/**
 	 * @param {Quaternion} quaternion
 	 */
 	RigidBodyComponent.prototype.setQuaternion = function (quaternion) {
@@ -236,6 +357,22 @@ function (
 	RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
 			var cannonQuaternion = this.cannonBody.quaternion;
+			targetQuat.setDirect(
+				cannonQuaternion.x,
+				cannonQuaternion.y,
+				cannonQuaternion.z,
+				cannonQuaternion.w
+			);
+		}
+	};
+
+	/**
+	 * Get the interpolated quaternion from the rigid body. Use this for rendering. The resulting quaternion is a spherical interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Quaternion} targetQuat
+	 */
+	RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat) {
+		if (this.cannonBody) {
+			var cannonQuaternion = this.cannonBody.interpolatedQuaternion;
 			targetQuat.setDirect(
 				cannonQuaternion.x,
 				cannonQuaternion.y,
@@ -343,6 +480,24 @@ function (
 					this.cannonBody.sleepTimeLimit = value;
 				}
 			}
+		},
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @type {number}
+		 */
+		constraints: {
+			get: function () {
+				return this._constraints;
+			},
+			set: function (value) {
+				this._constraints = value;
+				var body = this.cannonBody;
+				if (body) {
+					RigidBodyComponent.constraintsToCannonFactors(value, body.linearFactor, body.angularFactor);
+				}
+			}
 		}
 	});
 
@@ -367,6 +522,19 @@ function (
 		this._colliderEntities.length = 0;
 	};
 
+	RigidBodyComponent.constraintsToCannonFactors = function (constraints, linear, angular) {
+		linear.set(
+			constraints & RigidBodyComponent.FREEZE_POSITION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Z ? 0 : 1
+		);
+		angular.set(
+			constraints & RigidBodyComponent.FREEZE_ROTATION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Z ? 0 : 1
+		);
+	};
+
 	/**
 	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if the intention is to work with the CANNON.Body instance directly after the component is created.
 	 */
@@ -380,6 +548,7 @@ function (
 			sleepSpeedLimit: this._sleepingThreshold,
 			sleepTimeLimit: this._sleepingTimeLimit
 		});
+		RigidBodyComponent.constraintsToCannonFactors(this.constraints, body.linearFactor, body.angularFactor);
 		this._system.cannonWorld.addBody(body);
 		this._system._entities[body.id] = this._entity;
 

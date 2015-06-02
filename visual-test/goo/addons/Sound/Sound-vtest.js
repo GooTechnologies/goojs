@@ -53,10 +53,10 @@ require([
 
 	var soundCreator = new SoundCreator();
 
-	function loadSound(url) {
+	function loadSound(url, loop) {
 		soundCreator.loadSound(url).then(function (sound) {
 			// Make the sounds loop when played.
-			sound._loop = true;
+			sound._loop = loop;
 			sounds.push(sound);
 			if (sounds.length >= urls.length) {
 				allLoaded();
@@ -64,7 +64,8 @@ require([
 		});
 	}
 
-	urls.forEach(loadSound);
+	loadSound(urls[0], true);
+	loadSound(urls[1], false);
 
 	function allLoaded() {
 		console.log('all loaded');
@@ -142,7 +143,7 @@ require([
 	V.addOrbitCamera();
 
 	V.describe([
-		'Both the sphere and the cube have sound components',
+		'Both the sphere and the cube have sound components (boing is looping, squigly is not)',
 		'',
 		'Controls:',
 		'1: boing',

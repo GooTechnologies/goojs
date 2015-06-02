@@ -104,7 +104,11 @@ function (
 
 			var found = this._currentContacts.has(hash);
 			if (!found) {
-				this.emitEndContact(entityA, entityB);
+				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+					this.emitTriggerExit(entityA, entityB);
+				} else {
+					this.emitEndContact(entityA, entityB);
+				}
 			}
 		}.bind(this);
 
@@ -254,10 +258,18 @@ function (
 			if (hash !== lastHash) {
 				var wasInContact = this._lastContacts.has(hash);
 
-				if (wasInContact) {
-					this.emitDuringContact(entityA, entityB);
+				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+					if (wasInContact) {
+						this.emitTriggerStay(entityA, entityB);
+					} else {
+						this.emitTriggerEnter(entityA, entityB);
+					}
 				} else {
-					this.emitBeginContact(entityA, entityB);
+					if (wasInContact) {
+						this.emitDuringContact(entityA, entityB);
+					} else {
+						this.emitBeginContact(entityA, entityB);
+					}
 				}
 			}
 
@@ -279,13 +291,14 @@ function (
 		return tmpOptions;
 	};
 
-	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
+	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult, rayStart) {
 		if (cannonResult.hasHit) {
 			gooResult.entity = this._entities[cannonResult.body.id] || this._shapeIdToColliderEntityMap.get(cannonResult.shape.id);
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
 			gooResult.point.setDirect(point.x, point.y, point.z);
 			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
+			gooResult.distance = rayStart.distance(gooResult.point);
 		}
 		return cannonResult.hasHit;
 	};
@@ -302,12 +315,15 @@ function (
 	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects. Note that there's no given order in the traversal, and there's no control over what will be returned.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
-	 * @param  {number} distance
+	 * @param  {number} maxDistance
 	 * @param  {Object} [options]
+	 * @param  {number} [options.collisionMask=-1]
+	 * @param  {number} [options.collisionGroup=-1]
+	 * @param  {number} [options.skipBackFaces=true]
 	 * @param  {RaycastResult} [result]
 	 * @returns {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastAny = function (start, direction, distance, options, result) {
+	PhysicsSystem.prototype.raycastAny = function (start, direction, maxDistance, options, result) {
 		if (options instanceof RaycastResult) {
 			result = options;
 			options = {};
@@ -317,23 +333,26 @@ function (
 
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
+		this._getCannonStartEnd(start, direction, maxDistance, cannonStart, cannonEnd);
 
 		this.cannonWorld.raycastAny(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
-		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result, start);
 	};
 
 	/**
 	 * Make a ray cast into the world of colliders, and only return the closest hit.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
-	 * @param  {number} distance
+	 * @param  {number} maxDistance
 	 * @param  {Object} [options]
+	 * @param  {number} [options.collisionMask=-1]
+	 * @param  {number} [options.collisionGroup=-1]
+	 * @param  {number} [options.skipBackFaces=true]
 	 * @param  {RaycastResult} [result]
 	 * @returns {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastClosest = function (start, direction, distance, options, result) {
+	PhysicsSystem.prototype.raycastClosest = function (start, direction, maxDistance, options, result) {
 		if (options instanceof RaycastResult) {
 			result = options;
 			options = {};
@@ -343,11 +362,11 @@ function (
 
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
+		this._getCannonStartEnd(start, direction, maxDistance, cannonStart, cannonEnd);
 
 		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
-		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result, start);
 	};
 
 	var tmpResult = new RaycastResult();
@@ -356,12 +375,15 @@ function (
 	 * Make a ray cast into the world of colliders, evaluating the given callback once at every hit.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
-	 * @param  {number} distance
+	 * @param  {number} maxDistance
 	 * @param  {Object} [options]
-	 * @param  {Function} callback
+	 * @param  {number} [options.collisionMask=-1]
+	 * @param  {number} [options.collisionGroup=-1]
+	 * @param  {number} [options.skipBackFaces=true]
+	 * @param  {(RaycastResult) -> boolean} callback
 	 * @returns {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastAll = function (start, direction, distance, options, callback) {
+	PhysicsSystem.prototype.raycastAll = function (start, direction, maxDistance, options, callback) {
 		if (typeof(options) === 'function') {
 			callback = options;
 			options = {};
@@ -370,12 +392,12 @@ function (
 
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
+		this._getCannonStartEnd(start, direction, maxDistance, cannonStart, cannonEnd);
 
 		var that = this;
 		var hitAny = false;
 		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
-			var hit = that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			var hit = that._copyCannonRaycastResultToGoo(cannonResult, tmpResult, start);
 			if (hit) {
 				hitAny = true;
 			}
@@ -565,8 +587,13 @@ function (
 			rigidBodyComponent._updated = true;
 
 			// Get physics orientation
-			rigidBodyComponent.getPosition(tmpVec);
-			rigidBodyComponent.getQuaternion(tmpQuat);
+			if (rigidBodyComponent.interpolation === RigidBodyComponent.INTERPOLATE) {
+				rigidBodyComponent.getInterpolatedPosition(tmpVec);
+				rigidBodyComponent.getInterpolatedQuaternion(tmpQuat);
+			} else {
+				rigidBodyComponent.getPosition(tmpVec);
+				rigidBodyComponent.getQuaternion(tmpQuat);
+			}
 
 			// Set local transform of the entity
 			transform.translation.setVector(tmpVec);
