@@ -42,7 +42,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Skeleton Animation Test');
+	V.describe('Origami Animation Test');
 
 
 	function addSkeltonAttributeData(meshData) {
