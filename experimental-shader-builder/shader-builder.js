@@ -146,13 +146,11 @@
 
 
 		var stringifiedNodes = nodes.map(function (node) {
-			var typeDefinition = nodeTypes[node.type];
-
 			var nodeCode = (
 				node.type === 'external' ?
 				generateExternalCode :
 				generateNodeCode
-			)(node, typeDefinition);
+			)(node, nodeTypes[node.type]);
 
 			return '// node ' + node.id + ', ' + node.type + '\n' +
 				'{\n' +

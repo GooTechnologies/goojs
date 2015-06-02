@@ -3,10 +3,21 @@
 
 	function createNodes(elements) {
 		return elements.reduce(function (nodes, element) {
-			nodes.push({
+			var node = {
 				id: element.attributes.id,
 				type: element.attributes.nodeType
-			});
+			};
+
+			if (element.attributes.external) {
+				node.external = element.attributes.external;
+			}
+
+			if (element.attributes.defines) {
+				node.defines = element.attributes.defines;
+			}
+
+			nodes.push(node);
+
 			return nodes;
 		}, []);
 	}
@@ -41,7 +52,6 @@
 
 		addConnections(structure, links);
 
-		console.log(structure);
 		return structure;
 	}
 
