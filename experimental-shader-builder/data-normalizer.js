@@ -9,6 +9,7 @@
 
 			nodeType.inputs = nodeType.inputs || [];
 			nodeType.outputs = nodeType.outputs || [];
+			nodeType.defines = nodeType.defines || {};
 		});
 
 		return nodeTypes;

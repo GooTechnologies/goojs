@@ -77,10 +77,6 @@
 		});
 	}
 
-	graph.on('change:source change:target', function () {
-		console.log(graphToStructure.toStructure(graph));
-	});
-
 	function getSample(name, callback) {
 		$.ajax({
 			url: 'samples/' + name + '/types.json'
@@ -121,6 +117,10 @@
 
 		replaceBox(typeDefinitions, _structure);
 	}
+
+	graph.on('change:source change:target', function () {
+		console.log(graphToStructure.toStructure(graph));
+	});
 
 	var editor = setupEditor(onInput);
 
@@ -176,11 +176,15 @@
 
 		function selectionChanged(oldId, newId) {
 			var cell = graph.getCell(newId);
-			var str = shaderProcessor.stringifyNodeInstance({
+
+			var node = {
 				type: cell.attributes.nodeType,
 				defines: cell.attributes.defines,
 				external: cell.attributes.external
-			});
+			};
+
+			var str = shaderProcessor.stringifyNodeInstance(node, typeDefinitions[node.type]);
+
 			editor.setValue(str, 1);
 		}
 	}
@@ -189,6 +193,8 @@
 
 	getSample('s3', function (_typeDefinitions) {
 		typeDefinitions = _typeDefinitions;
+
+		dataNormalizer.normalizeNodeTypes(typeDefinitions);
 
 		populateTypes(Object.keys(typeDefinitions));
 

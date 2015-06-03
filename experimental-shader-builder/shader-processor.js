@@ -20,18 +20,24 @@
 
 
 	/**
-	 * Stringifies a shader instance (defines, externals)
+	 * Stringifies a shader instance (defines, externals).
+	 * Fetches defines from the node type definition if they are not present on the node instance.
 	 * @param node
+	 * @param definition
 	 * @returns {string}
 	 */
-	function stringifyNodeInstance(node) {
+	function stringifyNodeInstance(node, definition) {
 		if (node.type === 'external') {
 			return node.external ?
 				('#' + node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name) :
 				'';
 		} else {
-			return Object.keys(node.defines).map(function (key) {
-				return '#define ' + key + ' ' + node.defines[key];
+			return Object.keys(definition.defines).map(function (key) {
+				if (node.defines[key] !== undefined) {
+					return '#define ' + key + ' ' + node.defines[key];
+				} else {
+					return '#define ' + key + ' ' + definition.defines[key].default;
+				}
 			}).join('\n');
 		}
 	}
