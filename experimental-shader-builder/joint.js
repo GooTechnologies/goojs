@@ -127,6 +127,8 @@
 	var clickedNewId, clickedOldId;
 
 	function setupListeners() {
+		$('#save').click(firebase.save);
+
 		$('#add-external').click(function () {
 			var name = $('#external-name').val();
 			var inputType = $('#external-input-type').val();
@@ -189,7 +191,36 @@
 		}
 	}
 
+	function setupFirebase() {
+		var firebaseRef = new Firebase('https://blinding-heat-7806.firebaseio.com/');
+		var shaderBitRef = firebaseRef.child('shader-bit');
+
+		shaderBitRef.on('value', function (snapshot) {
+			var rawData = snapshot.val();
+			var data = JSON.parse(rawData)
+
+			graph.fromJSON(data.graph);
+			typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
+		});
+
+		return {
+			save: function () {
+				var data = {
+					graph: graph.toJSON(),
+					typeDefinitions: typeDefinitions
+				};
+
+				var rawData = JSON.stringify(data);
+
+				shaderBitRef.set(rawData, function () {
+					console.log('save ok');
+				});
+			}
+		}
+	}
+
 	var typeDefinitions;
+	var firebase;
 
 	getSample('s3', function (_typeDefinitions) {
 		typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
@@ -201,6 +232,8 @@
 
 		var node2 = createNode(typeDefinitions['out']);
 		graph.addCell(node2);
+
+		firebase = setupFirebase();
 
 		setupListeners();
 	});
