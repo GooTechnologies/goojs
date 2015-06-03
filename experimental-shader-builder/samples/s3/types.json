@@ -152,5 +152,14 @@
       "type": "float"
     }],
     "body": "x = vec.x; y = vec.y; z = vec.z; w = vec.w;"
+  },
+  "frag-coord": {
+    "id": "frag-coord",
+    "inputs": [],
+    "outputs": [{
+      "name": "coord",
+      "type": "vec4"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z; w = vec.w;"
   }
 }
