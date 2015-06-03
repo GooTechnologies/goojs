@@ -197,10 +197,12 @@
 
 		shaderBitRef.on('value', function (snapshot) {
 			var rawData = snapshot.val();
-			var data = JSON.parse(rawData)
+			var data = JSON.parse(rawData);
 
 			graph.fromJSON(data.graph);
-			typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
+			//typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
+
+			replaceBox(typeDefinitions, graph);
 		});
 
 		return {
@@ -226,12 +228,6 @@
 		typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
 
 		populateTypes(Object.keys(typeDefinitions));
-
-		var node1 = createNode(typeDefinitions['const']);
-		graph.addCell(node1);
-
-		var node2 = createNode(typeDefinitions['out']);
-		graph.addCell(node2);
 
 		firebase = setupFirebase();
 

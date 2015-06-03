@@ -166,6 +166,6 @@
       "name": "coord",
       "type": "vec4"
     }],
-    "body": "x = vec.x; y = vec.y; z = vec.z; w = vec.w;"
+    "body": "coord = gl_FragCoord;"
   }
 }
