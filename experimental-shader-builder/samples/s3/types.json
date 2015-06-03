@@ -110,5 +110,47 @@
       "type": "float"
     }],
     "body": "x = vec.x; y = vec.y; z = vec.z;"
+  },
+  "vec4": {
+    "id": "vec4",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }, {
+      "name": "w",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "vec",
+      "type": "vec4"
+    }],
+    "body": "vec = vec4(x, y, z, w);"
+  },
+  "vec4-comp": {
+    "id": "vec4-comp",
+    "inputs": [{
+      "name": "vec",
+      "type": "vec4"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }, {
+      "name": "w",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z; w = vec.w;"
   }
 }
