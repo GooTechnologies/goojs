@@ -111,16 +111,7 @@
 			cell.attributes.defines = partial.defines;
 		}
 
-		refreshBox();
-	}
-
-	function refreshBox() {
-		var structure = graphToStructure.toStructure(graph);
-
-		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
-		var _structure = dataNormalizer.normalizeStructure(structure);
-
-		replaceBox(typeDefinitions, _structure);
+		replaceBox(typeDefinitions, graph);
 	}
 
 	graph.on('change:source change:target', function (event) {
@@ -128,7 +119,7 @@
 		// some filtering is necessary
 		if (!event.get('source').id || !event.get('target').id) { return; }
 
-		refreshBox();
+		replaceBox(typeDefinitions, graph);
 	});
 
 	var editor = setupEditor(onInput);
@@ -214,53 +205,21 @@
 		setupListeners();
 	});
 
+	// crap functions that do the same thing but take in different sort of data
+	var __replaceBox = shaderBitsCommon.makeDemo();
 
-	function demo() {
-		var world = v.initGoo().world;
-		v.addOrbitCamera(new goo.Vector3(5, Math.PI / 2, 0));
-
-		var box;
-
-		function replaceBox(shaderSource) {
-			if (box) {
-				box.removeFromWorld();
-			}
-
-			var material = new goo.Material({
-				attributes: {
-					vertexPosition: goo.MeshData.POSITION
-				},
-				uniforms: {
-					viewProjectionMatrix: goo.Shader.VIEW_PROJECTION_MATRIX,
-					worldMatrix: goo.Shader.WORLD_MATRIX,
-					time: function () {
-						return world.time;
-					}
-				},
-				vshader: [
-					'attribute vec3 vertexPosition;',
-
-					'uniform mat4 viewProjectionMatrix;',
-					'uniform mat4 worldMatrix;',
-
-					'void main(void) {',
-					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-					'}'
-				].join('\n'),
-				fshader: shaderSource
-			});
-
-			box = world.createEntity(new goo.Box(), material).addToWorld();
-		}
-
-		return replaceBox;
-	}
-
-	var _replaceBox = demo();
-
-	var replaceBox = function (nodeTypes, structure) {
+	function _replaceBox(nodeTypes, structure) {
 		var result = shaderBits.buildShader(nodeTypes, structure);
 		window._result = result;
-		_replaceBox(result);
-	};
+		__replaceBox(result);
+	}
+
+	function replaceBox(typeDefinitions, graph) {
+		var structure = graphToStructure.toStructure(graph);
+
+		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
+		var _structure = dataNormalizer.normalizeStructure(structure);
+
+		_replaceBox(typeDefinitions, _structure);
+	}
 })();
