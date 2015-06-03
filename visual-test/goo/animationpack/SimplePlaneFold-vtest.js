@@ -183,7 +183,7 @@ require([
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0, 0.5, 1];
+		var times = [0, 0.5, 1.2];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
@@ -236,7 +236,7 @@ require([
 
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
-		clipSource._clipInstance._loopCount = 1;  // -1 for looping infinetly
+		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
 		clipSource.setTimeScale(1);
 		var animState = new SteadyState('My animation state');
 		animState.setClipSource(clipSource);
@@ -301,13 +301,41 @@ require([
 		// The animationsystem calls the animation components, updating 
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
-		//animSystem.stop();
+		animSystem.stop();
 		world.setSystem(animSystem);
 
 		var paperEntity = addFoldingPaper(world);
 
+		var animT = 0;
+		var tstep = 0.05;
+		window.addEventListener('keydown', function(event) {
+			switch (event.keyCode) {
+				case 37:					
+					animT -= tstep;
+					break;
+				case 39:
+					animT += tstep;
+					break;
+				case 40:
+					animT = 0;
+			}
 
-		//paperEntity.animationComponent.pause();
+			// If the animstate is updated to equal maxtime, the 
+			// animation loops to first keyframe
+			animT = MathUtils.clamp(animT, 0, 0.999999);
+
+			var animationComponent = paperEntity.animationComponent;
+			var layer = animationComponent.layers[0];
+			var animState = layer._currentState;
+			var clipSource = animState._sourceTree;
+
+			var maxTime = clipSource._clip._maxTime;
+
+			animState.update(animT * maxTime);
+			animationComponent.apply(paperEntity.transformComponent);
+			animationComponent.postUpdate();
+		});
+
 
 		V.addLights();
 
