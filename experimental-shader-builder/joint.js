@@ -114,9 +114,28 @@
 		replaceBox(typeDefinitions, graph);
 	}
 
+	function cleanupLinks(paper) {
+		paper.model.getLinks().forEach(function (link) {
+			if (
+				link.get('source').id === undefined ||
+				link.get('target').id === undefined
+			) {
+				link.remove();
+			}
+		});
+	}
+
+	function deleteElement(graph, element) {
+		graph.removeLinks(element);
+		element.remove();
+	}
+
 	graph.on('change:source change:target', function (event) {
 		// this event trigger on everything (move included)
 		// some filtering is necessary
+
+		console.log(!event.get('source').id && !event.get('target').id);
+
 		if (!event.get('source').id || !event.get('target').id) { return; }
 
 		replaceBox(typeDefinitions, graph);
@@ -128,6 +147,10 @@
 
 	function setupListeners() {
 		$('#save').click(firebase.save);
+
+		$('#delete').click(function () {
+			deleteElement(graph, graph.getCell(clickedNewId));
+		});
 
 		$('#add-external').click(function () {
 			var name = $('#external-name').val();
