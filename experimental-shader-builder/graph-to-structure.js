@@ -1,6 +1,12 @@
 (function () {
 	'use strict';
 
+	/**
+	 * Create nodes given a jspipe graph's elements.
+	 * These nodes contain no information regarding connections.
+	 * @param {Array} elements
+	 * @returns {Array}
+	 */
 	function createNodes(elements) {
 		return elements.reduce(function (nodes, element) {
 			var node = {
@@ -22,6 +28,12 @@
 		}, []);
 	}
 
+	/**
+	 * Transform an array into a map indexed by a specified property
+	 * @param {Array} array
+	 * @param {string} idProperty
+	 * @returns {Map<string, *>}
+	 */
 	function toMap(array, idProperty) {
 		return array.reduce(function (map, element) {
 			map.set(element[idProperty], element);
@@ -29,6 +41,11 @@
 		}, new Map());
 	}
 
+	/**
+	 * Creates connections between nodes based on pipejs graph links
+	 * @param structure
+	 * @param links
+	 */
 	function addConnections(structure, links) {
 		var nodesById = toMap(structure, 'id');
 
@@ -43,6 +60,11 @@
 		});
 	}
 
+	/**
+	 * Converts a pipejs graph into a node structure
+	 * @param graph
+	 * @returns {Array}
+	 */
 	function toStructure(graph) {
 		var elements = graph.getElements();
 
