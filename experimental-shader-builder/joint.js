@@ -97,6 +97,7 @@
 		editor.getSession().setUseWrapMode(true);
 		editor.on('input', onInput);
 		editor.setFontSize(16);
+		editor.$blockScrolling = Infinity;
 		return editor;
 	}
 
