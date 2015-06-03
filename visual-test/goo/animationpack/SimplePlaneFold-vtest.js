@@ -237,7 +237,7 @@ require([
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
-		clipSource.setTimeScale(1);
+		clipSource.setTimeScale(0.1);
 		var animState = new SteadyState('My animation state');
 		animState.setClipSource(clipSource);
 		var animLayer = animComp.layers[0];  // Default animation layer
@@ -307,7 +307,7 @@ require([
 		var paperEntity = addFoldingPaper(world);
 
 		var animT = 0;
-		var tstep = 0.05;
+		var tstep = 0.01;
 		window.addEventListener('keydown', function(event) {
 			switch (event.keyCode) {
 				case 37:					
@@ -330,8 +330,9 @@ require([
 			var clipSource = animState._sourceTree;
 
 			var maxTime = clipSource._clip._maxTime;
-
-			animState.update(animT * maxTime);
+			var timeScale = clipSource._clipInstance._timeScale;
+			var t = (animT * maxTime) / timeScale;
+			animState.update(t);
 			animationComponent.apply(paperEntity.transformComponent);
 			animationComponent.postUpdate();
 		});
