@@ -10,7 +10,7 @@
     "defines": {
       "value": {
         "name": "value",
-        "default": 1.0
+        "default": "1.0"
       }
     }
   },
