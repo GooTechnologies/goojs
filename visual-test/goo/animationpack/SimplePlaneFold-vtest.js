@@ -8,6 +8,7 @@ require([
 	'goo/math/MathUtils',
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface',
+	'goo/renderer/Camera',
 
 	'goo/animationpack/components/AnimationComponent',
 	'goo/animationpack/SkeletonPose',
@@ -17,6 +18,7 @@ require([
 	'goo/animationpack/blendtree/ClipSource',
 	'goo/animationpack/clip/AnimationClip',
 	'goo/animationpack/clip/JointChannel',
+	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/animationpack/systems/AnimationSystem'
 
 ], function (
@@ -29,6 +31,7 @@ require([
 	MathUtils,
 	MeshData,
 	Surface,
+	Camera,
 
 	AnimationComponent,
 	SkeletonPose,
@@ -38,6 +41,7 @@ require([
 	ClipSource,
 	AnimationClip,
 	JointChannel,
+	AbstractAnimationChannel,
 	AnimationSystem
 ) {
 	'use strict';
@@ -156,9 +160,11 @@ require([
 	}
 
 	function loopSetJoints(joint, vertIndexArray, jointData) {
+		var quadIndex; 
 		for (var i = 0; i < vertIndexArray.length; i++) {
-			jointData[vertIndexArray[i]*4] = joint._index;
-			jointData[vertIndexArray[i]*4 + 1] = joint._parentIndex;
+			quadIndex = vertIndexArray[i] * 4; 
+			jointData[quadIndex] = joint._index;
+			jointData[quadIndex + 1] = joint._parentIndex;
 		}
 	}
 
@@ -177,7 +183,7 @@ require([
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
 		
-		var times = [0, 1, 2];
+		var times = [0, 0.5, 1];
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
@@ -208,7 +214,7 @@ require([
 			trans, 
 			rots, 
 			scales, 
-			'SCurve5',
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
 			animChannels
 		);
 
@@ -224,21 +230,22 @@ require([
 			trans, 
 			rots, 
 			scales, 
-			'SCurve5',
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
 			animChannels
 		);
 
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
-		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
+		clipSource._clipInstance._loopCount = 1;  // -1 for looping infinetly
+		clipSource.setTimeScale(1);
 		var animState = new SteadyState('My animation state');
 		animState.setClipSource(clipSource);
 		var animLayer = animComp.layers[0];  // Default animation layer
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
 		
-		var vertCount = 100;
-		var bleedD = 0.1;
+		var vertCount = 50;
+		var bleedD = 0;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData, joints);
@@ -282,6 +289,7 @@ require([
 		surfaceEntity.set(animComp);
 		surfaceEntity.meshDataComponent.currentPose = surfaceEntity.animationComponent._skeletonPose;
 		surfaceEntity.addToWorld();
+		return surfaceEntity;
 	}
 	
 	function init() {
@@ -293,13 +301,17 @@ require([
 		// The animationsystem calls the animation components, updating 
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
+		//animSystem.stop();
 		world.setSystem(animSystem);
 
-		addFoldingPaper(world);
+		var paperEntity = addFoldingPaper(world);
+
+
+		//paperEntity.animationComponent.pause();
 
 		V.addLights();
 
-		V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+		world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);
 
 		V.process();
 	}
