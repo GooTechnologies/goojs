@@ -110,6 +110,10 @@
 			cell.attributes.defines = partial.defines;
 		}
 
+		refreshBox();
+	}
+
+	function refreshBox() {
 		var structure = graphToStructure.toStructure(graph);
 
 		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
@@ -118,8 +122,12 @@
 		replaceBox(typeDefinitions, _structure);
 	}
 
-	graph.on('change:source change:target', function () {
-		console.log(graphToStructure.toStructure(graph));
+	graph.on('change:source change:target', function (event) {
+		// this event trigger on everything (move included)
+		// some filtering is necessary
+		if (!event.get('source').id || !event.get('target').id) { return; }
+
+		refreshBox();
 	});
 
 	var editor = setupEditor(onInput);
@@ -192,9 +200,7 @@
 	var typeDefinitions;
 
 	getSample('s3', function (_typeDefinitions) {
-		typeDefinitions = _typeDefinitions;
-
-		dataNormalizer.normalizeNodeTypes(typeDefinitions);
+		typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
 
 		populateTypes(Object.keys(typeDefinitions));
 
