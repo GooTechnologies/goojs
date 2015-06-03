@@ -6,7 +6,13 @@
       "name": "value",
       "type": "float"
     }],
-    "body": "value = 0.8;"
+    "body": "value = /*data.value*/;",
+    "defines": {
+      "value": {
+        "name": "value",
+        "default": 1.0
+      }
+    }
   },
   "add": {
     "id": "add",
