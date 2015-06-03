@@ -133,12 +133,15 @@
 	graph.on('change:source change:target', function (event) {
 		// this event trigger on everything (move included)
 		// some filtering is necessary
-
-		console.log(!event.get('source').id && !event.get('target').id);
-
 		if (!event.get('source').id || !event.get('target').id) { return; }
 
 		replaceBox(typeDefinitions, graph);
+	});
+
+	graph.on('remove', function(cell, collection, opt) {
+		if (cell.isLink()) {
+			replaceBox(typeDefinitions, graph);
+		}
 	});
 
 	var editor = setupEditor(onInput);
