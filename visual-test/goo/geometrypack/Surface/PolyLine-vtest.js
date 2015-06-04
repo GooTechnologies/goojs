@@ -55,7 +55,7 @@ require([
 	var surfaceMeshData = xGenerator.mul(yGenerator);
 
 	// surface material
-	var surfaceMaterial = new Material(ShaderLib.simpleLit);
+	var surfaceMaterial = new Material(ShaderLib.texturedLit);
 
 	// surface entity
 	world.createEntity(surfaceMeshData, surfaceMaterial, [0, -1, 0]).addToWorld();
