@@ -9,6 +9,9 @@ require([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface',
 	'goo/renderer/Camera',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+
 
 	'goo/animationpack/components/AnimationComponent',
 	'goo/animationpack/SkeletonPose',
@@ -32,6 +35,8 @@ require([
 	MeshData,
 	Surface,
 	Camera,
+	MeshDataComponent,
+	MeshRendererComponent,
 
 	AnimationComponent,
 	SkeletonPose,
@@ -154,7 +159,7 @@ require([
 
 	function smoothWeights(d, bleedD, weightData, quadIndex) {
 		var b = MathUtils.clamp( d / bleedD, 0, 1);
-		var w = MathUtils.scurve3(b);
+		var w = MathUtils.scurve5(b);
 		weightData[quadIndex] = w;
 		weightData[quadIndex + 1] = 1.0 - w;
 	}
@@ -168,16 +173,24 @@ require([
 		}
 	}
 
-	function addFoldingPaper(world) {
+	/*
+	* Adds AnimationComponent, MeshDataComponent, MeshRendererComponent to
+	* an "empty" entity, 
+	*/
+	function addFoldingPaper(entity, vertCount, diffuse, loopCount, timeScale) {
+
+		if (entity.getComponent('AnimationComponent') || entity.getComponent('MeshDataComponent') || entity.getComponent('MeshRendererComponent')) {
+			throw Error('The entity cannot have any prior animation- or meshdata/renderer- components');
+		}
 
 		var size = 1;
 
 		var joints = [];
 
 		// Create skeleton joint hierarchy
-		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, -0.5, 0]);
+		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
 
-		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0.0, 0]);
+		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0.5, 0]);
 		
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -236,16 +249,15 @@ require([
 
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
-		clipSource._clipInstance._loopCount = -1;  // -1 for looping infinetly
-		clipSource.setTimeScale(0.1);
+		clipSource._clipInstance._loopCount = loopCount;  // -1 for looping infinetly
+		clipSource.setTimeScale(timeScale);
 		var animState = new SteadyState('My animation state');
 		animState.setClipSource(clipSource);
 		var animLayer = animComp.layers[0];  // Default animation layer
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
 		
-		var vertCount = 50;
-		var bleedD = 0;
+		var bleedD = 0.0;
 		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 
 		addSkeltonAttributeData(meshData, joints);
@@ -263,12 +275,14 @@ require([
 		var posLen = positions.length;
 		for (var i = 0; i < posLen; i+=3) {
 			var x = positions[i];
+			// Translate up to set mesh origin at entity's transform
+			positions[i+1] += 0.5;
 			var y = positions[i+1];
 
 			var vertIndex = i/3;
 			var quadIndex = vertIndex * 4;
 
-			if (y > 0) {
+			if (y > 0.5) {
 				midVerts.push(vertIndex);
 				smoothWeights(y, bleedD, weightData, quadIndex);
 			}
@@ -280,16 +294,15 @@ require([
 		loopSetJoints(midJoint, midVerts, jointData);
 		
 		var material = new Material(ShaderLib.uber);
-		material.uniforms.materialDiffuse = [0.4, 0.8, 0.4, 1];
+		material.uniforms.materialDiffuse = diffuse;
 		material.cullState.enabled = false;
-		var surfaceEntity = world.createEntity(meshData, material);
-
-		var scale = 8;
-		surfaceEntity.transformComponent.setScale(scale, scale, scale);
-		surfaceEntity.set(animComp);
-		surfaceEntity.meshDataComponent.currentPose = surfaceEntity.animationComponent._skeletonPose;
-		surfaceEntity.addToWorld();
-		return surfaceEntity;
+		
+		entity.setComponent(new MeshDataComponent(meshData));
+		entity.setComponent(new MeshRendererComponent(material));
+		
+		entity.setComponent(animComp);
+		entity.meshDataComponent.currentPose = entity.animationComponent._skeletonPose;
+		return entity;
 	}
 	
 	function init() {
@@ -301,10 +314,17 @@ require([
 		// The animationsystem calls the animation components, updating 
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
-		animSystem.stop();
+		//animSystem.stop();
 		world.setSystem(animSystem);
 
-		var paperEntity = addFoldingPaper(world);
+		paperEntity = world.createEntity().addToWorld();
+		var color = [0.4, 0.8, 0.4, 1];
+		var loopCount = -1;
+		var timeScale = 1;
+		var vertCount = 50;
+		var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
+		var scale = 8;
+		paperEntity.transformComponent.setScale(scale, scale, scale);
 
 		var animT = 0;
 		var tstep = 0.01;
@@ -340,7 +360,8 @@ require([
 
 		V.addLights();
 
-		world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);
+		V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+		//world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);
 
 		V.process();
 	}
