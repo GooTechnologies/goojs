@@ -11,6 +11,7 @@ require([
 	'goo/renderer/Camera',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
+	'goo/renderer/TextureCreator',
 
 
 	'goo/animationpack/components/AnimationComponent',
@@ -37,6 +38,7 @@ require([
 	Camera,
 	MeshDataComponent,
 	MeshRendererComponent,
+	TextureCreator,
 
 	AnimationComponent,
 	SkeletonPose,
@@ -296,6 +298,9 @@ require([
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
 		material.cullState.enabled = false;
+		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 		
 		entity.setComponent(new MeshDataComponent(meshData));
 		entity.setComponent(new MeshRendererComponent(material));
@@ -357,6 +362,15 @@ require([
 			animationComponent.postUpdate();
 		});
 
+
+		var meshData = Surface.createTessellatedFlat(1, 1, vertCount, vertCount);
+		var material = new Material(ShaderLib.uber);
+		material.cullState.enabled = false;
+		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
+		
+		world.createEntity(meshData, material, [5, 0, 0]).addToWorld();
 
 		V.addLights();
 
