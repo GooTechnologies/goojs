@@ -30,8 +30,9 @@ require([
 	V.addLights();
 
 	var material = new Material(ShaderLib.uber);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var sphere0 = new Sphere(32, 32);
 	var sphere1 = new Sphere(32, 32);

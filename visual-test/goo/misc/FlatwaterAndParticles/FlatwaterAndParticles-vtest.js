@@ -30,13 +30,14 @@ require([
 	function addFire(goo) {
 		// particle material
 		var material = new Material(ShaderLib.particles);
-		var texture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
-		texture.generateMipmaps = true;
-		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';
 		material.cullState.enabled = false;
 		material.depthState.write = false;
 		material.renderQueue = 2001;
+		new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
+			texture.generateMipmaps = true;
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 
 		// create particle component of the particle cloud entity
 		var particleComponent = new ParticleComponent({

@@ -65,6 +65,7 @@ require([
 			})
 		});
 		entity.set(rigidBodyComponent).set(colliderComponent).addToWorld().setScale(0.9, 0.9, 0.9);
+		rigidBodyComponent.initialize();
 		return entity;
 	}
 
@@ -97,6 +98,7 @@ require([
 				)
 			)
 		);
+	rbComponent.initialize();
 
 	V.addLights();
 

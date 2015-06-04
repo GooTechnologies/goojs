@@ -110,14 +110,6 @@ define([
 			component.material.friction = config.friction;
 			component.material.restitution = config.restitution;
 			component.isTrigger = config.isTrigger;
-			component.setToDirty();
-
-			entity.traverseUp(function (entity) {
-				if (entity.rigidBodyComponent) {
-					entity.rigidBodyComponent.initialize();
-					entity.rigidBodyComponent.setToDirty();
-				}
-			});
 
 			return component;
 		});

@@ -50,14 +50,18 @@ define([
 	};
 
 	/**
-	 * Creates a texture and loads image into it
-	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
+	 * Creates a texture and loads an image into it.
 	 * @param {string} imageUrl
-	 * @param {object} settings passed to the {Texture} constructor
-	 * @param {Function} callback
-	 * @returns {Texture}
+	 * @param {Object} settings passed to the {Texture} constructor
+	 * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
+	 * @example
+	 * new TextureCreator().loadTexture2D('goo.jpg').then(function (texture) {
+	 *     material.setTexture('DIFFUSE_MAP', texture);
+	 * }, function () {
+	 *     console.error('Error loading image.');
+	 * });
 	 */
-	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings, callback) {
+	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings) {
 		var id = StringUtil.createUniqueId('texture');
 		settings = settings || {};
 		settings.imageRef = imageUrl;
@@ -65,137 +69,144 @@ define([
 
 		var texture = this.textureHandler._create();
 		this.textureHandler._objects.set(id, texture);
-		// texture.setImage(TextureHandler.WHITE, 1, 1);
-		this.textureHandler.update(id, settings).then(function () {
-			if (callback) {
-				callback(texture);
-			}
-		});
-
-		return texture;
+		return this.textureHandler.update(id, settings);
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, settings, errorCallback) {
+	/**
+	 * Creates a texture and loads a video into it
+	 * @param {string} videoURL
+	 * @param {Object} [options]
+	 * @param {boolean} [options.loop=true]
+	 * @param {boolean} [options.autoPlay=true]
+	 * @param {boolean} [options.wrapS='EdgeClamp']
+	 * @param {boolean} [options.wrapT='EdgeClamp']
+	 * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
+	 * @example
+	 * new TextureCreator().loadTexture2D('goo.mp4').then(function (texture) {
+	 *     material.setTexture('DIFFUSE_MAP', texture);
+	 * }, function () {
+	 *     console.error('Error loading video texture.');
+	 * });
+	 */
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, options) {
 		var id = StringUtil.createUniqueId('texture');
-		settings = settings || {};
-		settings.imageRef = videoURL;
-		settings.loop = loop;
-		settings.wrapS = 'EdgeClamp';
-		settings.wrapT = 'EdgeClamp';
-		settings.autoPlay = true;
+		options = options || {};
+		options.imageRef = videoURL;
+		options.loop = options.loop !== undefined ? options.loop : true;
+		options.wrapS = options.wrapS !== undefined ? options.wrapS : 'EdgeClamp';
+		options.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
+		options.autoPlay = options.autoPlay !== undefined ? options.autoPlay : true;
+		options.texture = options.texture !== undefined ? options.texture : { dontwait: true };
 
 		var texture = this.textureHandler._create();
 		this.textureHandler._objects.set(id, texture);
 
-		this.textureHandler.update(id, settings, {
-			texture: {
-				dontwait: true
-			}
-		}).then(null, function (err) {
-			errorCallback(err);
-		});
-
-		return texture;
+		return this.textureHandler.update(id, options, options);
 	};
 
 	/**
-	 * Creates a video texture streamed from the webcam
-	 * @example yourMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
-	 * @returns {Texture}
+	 * Creates a video texture streamed from the webcam.
+	 * @returns {RSVP.Promise} A promise that will resolve with the created Texture.
+	 * @example
+	 * new TextureCreator().loadTextureWebCam().then(function (texture) {
+	 *     material.setTexture('DIFFUSE_MAP', texture);
+	 * }, function () {
+	 *     console.error('Error loading webcam texture.');
+	 * });
 	 */
 	TextureCreator.prototype.loadTextureWebCam = function () {
-		var video = document.createElement('video');
-		video.autoplay = true;
-		video.loop = true;
 
-		var texture = new Texture(video, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
-		});
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var video = document.createElement('video');
+			video.autoplay = true;
+			video.loop = true;
 
-		texture.readyCallback = function () {
-			if (video.readyState >= 3) {
-				console.log('WebCam video ready: ' + video.videoWidth + ', ' + video.videoHeight);
-				video.width = video.videoWidth;
-				video.height = video.videoHeight;
+			var texture = new Texture(video, {
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp'
+			});
 
-				// set minification filter based on pow2
-				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
+			texture.readyCallback = function () {
+				if (video.readyState >= 3) {
+					video.width = video.videoWidth;
+					video.height = video.videoHeight;
+
+					// set minification filter based on pow2
+					if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
+						texture.generateMipmaps = false;
+						texture.minFilter = 'BilinearNoMipMaps';
+					}
+
+					video.dataReady = true;
+
+					return true;
 				}
 
-				video.dataReady = true;
-				return true;
+				return false;
+			};
+
+			texture.updateCallback = function () {
+				return !video.paused;
+			};
+
+			// Webcam video
+			window.URL = window.URL || window.webkitURL;
+			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+			if (navigator.getUserMedia) {
+				navigator.getUserMedia({
+					video: true
+				}, function (stream) {
+					video.src = window.URL.createObjectURL(stream);
+					resolve(texture);
+				}, reject);
+			} else {
+				reject(new Error('No support for WebCam getUserMedia found!'));
 			}
-			return false;
-		};
-		texture.updateCallback = function () {
-			return !video.paused;
-		};
-
-		// Webcam video
-		window.URL = window.URL || window.webkitURL;
-		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-		if (navigator.getUserMedia) {
-			navigator.getUserMedia({
-				video: true
-			}, function (stream) {
-				video.src = window.URL.createObjectURL(stream);
-			}, function (e) {
-				console.warn('Unable to capture WebCam. Please reload the page.', e);
-			});
-		} else {
-			console.warn('No support for WebCam getUserMedia found!');
-		}
-
-		return texture;
+		});
 	};
 
 	/**
-	 *
+	 * Loads an array of six images into a Texture.
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
-	 * @param {Object} settings
-	 * @param {Function} callback Called when loading has finished
-	 * @returns {Texture} cubemap
+	 * @param {Object} settings Settings object to pass to the Texture constructor
+	 * @returns {RSVP.Promise} A promise that will resolve with the resulting Texture
 	 */
-	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
+	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
 		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
 
 		var promises = imageDataArray.map(function (queryImage) {
 			return PromiseUtil.createPromise(function (resolve, reject) {
 				if (typeof queryImage === 'string') {
-					this.ajax._loadImage(queryImage).then(resolve);
+					this.ajax._loadImage(queryImage).then(resolve, reject);
 				} else {
 					resolve(queryImage);
 				}
 			}.bind(this));
 		}.bind(this));
 
-		RSVP.all(promises).then(function (images) {
-			var width = images[0].width;
-			var height = images[0].height;
-			for (var i = 0; i < 6; i++) {
-				var image = images[i];
-				if (width !== image.width || height !== image.height) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
-					console.error('Images not all the same size!');
+		return RSVP.all(promises).then(function (images) {
+			return PromiseUtil.createPromise(function (resolve, reject) {
+				var width = images[0].width;
+				var height = images[0].height;
+				for (var i = 0; i < 6; i++) {
+					var image = images[i];
+					if (width !== image.width || height !== image.height) {
+						texture.generateMipmaps = false;
+						texture.minFilter = 'BilinearNoMipMaps';
+						reject(new Error('The images passed to loadTextureCube() must be of the same size!'));
+						return;
+					}
 				}
-			}
 
-			texture.setImage(images);
-			texture.image.dataReady = true;
-			texture.image.width = width;
-			texture.image.height = height;
+				texture.setImage(images);
+				texture.image.dataReady = true;
+				texture.image.width = width;
+				texture.image.height = height;
 
-			if (callback) {
-				callback();
-			}
+				resolve(texture);
+			});
 		});
-
-		return texture;
 	};
 
 	//! AT: unused

@@ -30,8 +30,9 @@ require([
 	];
 	var meshData = new FilledPolygon(verts);
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	world.createEntity(meshData, material).addToWorld();
 

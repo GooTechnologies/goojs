@@ -26,9 +26,12 @@ require([
 
 	var textureCreator = new TextureCreator();
 
-	var texture = textureCreator.loadTexture2D('../../../resources/check.png', {}, createClones);
 	var originalMaterial = new Material(ShaderLib.uber);
-	originalMaterial.setTexture('DIFFUSE_MAP', texture);
+	textureCreator.loadTexture2D('../../../resources/check.png').then(function (texture) {
+		originalMaterial.setTexture('DIFFUSE_MAP', texture);
+
+		createClones();
+	});
 
 	world.createEntity(new Box(), originalMaterial, [0, 0, 0]).addToWorld();
 
