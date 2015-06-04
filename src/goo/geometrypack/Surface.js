@@ -129,7 +129,7 @@ define([
 
 		for (var i = 0; i < this.verts.length; i += 3) {
 			var x = (this.verts[i + 0] - bounds.minX) / extentX;
-			var y = (this.verts[i + 1] - bounds.minY) / extentY;
+			var y = (this.verts[i + 2] - bounds.minY) / extentY;
 			tex.push(x, y);
 		}
 
@@ -141,14 +141,14 @@ define([
 	function getBounds(verts) {
 		var minX = verts[0];
 		var maxX = verts[0];
-		var minY = verts[1];
-		var maxY = verts[1];
+		var minY = verts[2];
+		var maxY = verts[2];
 
 		for (var i = 3; i < verts.length; i += 3) {
 			minX = minX < verts[i + 0] ? minX : verts[i + 0];
 			maxX = maxX > verts[i + 0] ? maxX : verts[i + 0];
-			minY = minY < verts[i + 1] ? minY : verts[i + 1];
-			maxY = maxY > verts[i + 1] ? maxY : verts[i + 1];
+			minY = minY < verts[i + 2] ? minY : verts[i + 2];
+			maxY = maxY > verts[i + 2] ? maxY : verts[i + 2];
 		}
 
 		return {
@@ -195,9 +195,10 @@ define([
 		var verts = [];
 		for (var i = 0; i < xCount; i++) {
 			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+				verts.push((i * xSize / xCount)-xSize*0.5, 0, (j*ySize/yCount) -ySize*0.5);
 			}
 		}
+		verts.reverse(); // Reverse to get frontface in positive Y, as in createFromHeightMap()
 		var surface = new Surface(verts, xCount);
 		return surface;
 	};
