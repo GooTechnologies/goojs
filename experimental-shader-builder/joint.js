@@ -86,7 +86,7 @@
 	function populateTypes(types) {
 		var selectElement = $('#node-types');
 		$.each(types, function () {
-			selectElement.append($("<option />").val(this).text(this));
+			selectElement.append($('<option />').val(this).text(this));
 		});
 	}
 

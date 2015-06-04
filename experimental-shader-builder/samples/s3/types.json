@@ -66,6 +66,21 @@
     }],
     "body": "product = x * y;"
   },
+  "texture2D": {
+    "id": "texture2D",
+    "inputs": [{
+      "name": "sampler",
+      "type": "sampler2D"
+    }, {
+      "name": "coords",
+      "type": "vec2"
+    }],
+    "outputs": [{
+      "name": "value",
+      "type": "vec4"
+    }],
+    "body": "value = texture2D(sampler, coords);"
+  },
   "out": {
     "id": "out",
     "inputs": [{
