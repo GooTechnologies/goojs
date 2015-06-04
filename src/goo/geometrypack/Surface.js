@@ -129,7 +129,7 @@ define([
 
 		for (var i = 0; i < this.verts.length; i += 3) {
 			var x = (this.verts[i + 0] - bounds.minX) / extentX;
-			var y = (this.verts[i + 1] - bounds.minY) / extentY;
+			var y = (this.verts[i + 2] - bounds.minY) / extentY;
 			tex.push(x, y);
 		}
 
@@ -147,8 +147,8 @@ define([
 		for (var i = 3; i < verts.length; i += 3) {
 			minX = minX < verts[i + 0] ? minX : verts[i + 0];
 			maxX = maxX > verts[i + 0] ? maxX : verts[i + 0];
-			minY = minY < verts[i + 1] ? minY : verts[i + 1];
-			maxY = maxY > verts[i + 1] ? maxY : verts[i + 1];
+			minY = minY < verts[i + 2] ? minY : verts[i + 2];
+			maxY = maxY > verts[i + 2] ? maxY : verts[i + 2];
 		}
 
 		return {
