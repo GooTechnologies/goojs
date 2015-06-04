@@ -3,14 +3,12 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/geometrypack/PolyLine',
-	'goo/renderer/TextureCreator',
 	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
 	Vector3,
 	PolyLine,
-	TextureCreator,
 	V
 	) {
 	'use strict';
@@ -58,9 +56,6 @@ require([
 
 	// surface material
 	var surfaceMaterial = new Material(ShaderLib.texturedLit);
-	new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
-		surfaceMaterial.setTexture('DIFFUSE_MAP', texture);
-	});
 
 	// surface entity
 	world.createEntity(surfaceMeshData, surfaceMaterial, [0, -1, 0]).addToWorld();
