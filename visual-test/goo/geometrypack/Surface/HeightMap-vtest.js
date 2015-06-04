@@ -47,6 +47,12 @@ require([
 
 	world.createEntity(meshData, material, [-heightMapSize / 2, 0, -heightMapSize / 2]).addToWorld();
 
+
+	var size = 50;
+	var vertCount = 100;
+	var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
+	world.createEntity(meshData, material, [-size, 0, 0]).addToWorld();
+
 	V.addLights();
 
 	V.addOrbitCamera(new Vector3(100, Math.PI / 2, 0));
