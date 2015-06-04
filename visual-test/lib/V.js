@@ -141,7 +141,7 @@ define([
 	 * @returns {goo.renderer.Material} The generated material.
 	 */
 	V.getColoredMaterial = function (red, green, blue, alpha) {
-		var material = new Material(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.uber);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
 			material.uniforms.materialDiffuse = V.getRandomColor();

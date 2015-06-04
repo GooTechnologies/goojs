@@ -316,7 +316,7 @@ define([
 
 					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
-				
+
 				if (useLightCookie) {
 					uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
 					shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
@@ -362,6 +362,8 @@ define([
 						if (useLightCookie) {
 							shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
 						}
+					} else {
+						shaderInfo.material.removeTexture('SHADOW_MAP' + i);
 					}
 				}
 
@@ -459,7 +461,7 @@ define([
 				var directionalIndex = 0;
 				var spotIndex = 0;
 				var shadowIndex = 0;
-			
+
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
 					if (light instanceof PointLight) {
