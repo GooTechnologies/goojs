@@ -26,12 +26,15 @@ define([
 	) {
 		'use strict';
 
-		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
+		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder, useStatic) {
 			this.goo = goo;
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
-			// this.terrain = new Terrain(goo, terrainSize, clipmapLevels);
-			this.terrain = new TerrainStatic(goo, terrainSize, clipmapLevels);
+			if (useStatic) {
+				this.terrain = new TerrainStatic(goo, terrainSize, clipmapLevels);
+			} else {
+				this.terrain = new Terrain(goo, terrainSize, clipmapLevels);
+			}
 			this.vegetation = new Vegetation();
 			this.forrest = new Forrest();
 
