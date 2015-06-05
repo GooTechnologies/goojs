@@ -134,7 +134,7 @@ require([
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
 		});
-		var controller = spotLightGui.add(spotLight, 'range', 0, 10);
+		var controller = spotLightGui.add(spotLight, 'range', 0, 100);
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
 		});
