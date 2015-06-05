@@ -189,19 +189,19 @@ define([
 	/**
 	 * Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
 	 * @param {number} xSize x axis size in units
-	 * @param {number} ySize y axis size in numbers
+	 * @param {number} zSize z axis size in numbers
 	 * @param {number} xCount x axis vertex count
-	 * @param {number} yCount y axis vertex count
+	 * @param {number} zCount z axis vertex count
 	 * @returns {Surface} The surface mesh
 	 */
-	Surface.createTessellatedFlat = function (xSize, ySize, xCount, yCount) {
+	Surface.createTessellatedFlat = function (xSize, zSize, xCount, zCount) {
 		var verts = [];
-		for (var x = 0; x < xCount; x++) {
-			for (var y = 0; y < yCount; y++) {
+		for (var z = 0; z < zCount; z++) {
+			for (var x = 0; x < xCount; x++) {
 				verts.push(
-					(y * ySize / yCount) - ySize * 0.5,
+					(x * xSize / xCount) - xSize * 0.5,
 					0, 
-					(x * xSize / xCount) - xSize * 0.5
+					(z * zSize / zCount) - zSize * 0.5
 				);
 			}
 		}
