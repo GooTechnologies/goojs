@@ -31,7 +31,7 @@ require([
 			lightRotationAngle += rot;
 			var ypan = Math.sin(entity._world.time) * 0.45;
 			var xpan = Math.cos(entity._world.time) * 0.25;
-			targetPos.setDirect(0, 0, 1);
+			targetPos.setDirect(xpan, ypan, 1);
 			targetPos.normalize();
 			rotQuat.fromAngleNormalAxis(lightRotationAngle, targetPos);
 

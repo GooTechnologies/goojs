@@ -15,7 +15,7 @@ define([
 
 	/**
 	 * Superclass for lights implementing light cookies.
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/LightCookie-vtest.html Working example
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/ProjectionalLight-vtest.html Working example
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -48,15 +48,26 @@ define([
 		this.directionRotation = 0.0;
 
 		// Private working variables for lightCookie rotation calculations
-		this.xvec = new Vector3();
-		this.zvec = new Vector3();
-		this.xBase = new Vector3();
-		this.rotMat = new Matrix3x3();
-		this.rotQuat = new Quaternion();
-
-		// #ifdef DEBUG
-		Object.seal(this);
-		// #endif
+		/**
+		* @hidden
+		*/
+		this._entityXBase = new Vector3();
+		/**
+		* @hidden
+		*/
+		this._entityZBase = new Vector3();
+		/**
+		* @hidden
+		*/
+		this._worldXBase = new Vector3();
+		/**
+		* @hidden
+		*/
+		this._rotationMatrix = new Matrix3x3();
+		/**
+		* @hidden
+		*/
+		this._directionQuaternion = new Quaternion();
 	}
 
 	ProjectionalLight.prototype = Object.create(Light.prototype);
@@ -79,22 +90,23 @@ define([
 	/**
 	* Updates the light's directionRotation, used when projecting the
 	* lightCookie texture.
+	* @hidden
 	* @param {Transform} transform
 	*/
 	ProjectionalLight.prototype.updateDirectionRotation = function (transform) {
 		var matrixData = transform.rotation.data;
-		this.xvec.setDirect(matrixData[0], matrixData[1], matrixData[2]);
-		this.zvec.setDirect(matrixData[6], matrixData[7], matrixData[8]);
+		this._entityXBase.setDirect(matrixData[0], matrixData[1], matrixData[2]);
+		this._entityZBase.setDirect(matrixData[6], matrixData[7], matrixData[8]);
 
-		this.rotQuat.fromVectorToVector(Vector3.UNIT_Z, this.zvec);
-		this.rotQuat.toRotationMatrix(this.rotMat);
-		this.xBase.setDirect(1, 0, 0);
-		this.rotMat.applyPost(this.xBase);
-		var xdot = Vector3.dot(this.xvec, this.xBase);
+		this._directionQuaternion.fromVectorToVector(Vector3.UNIT_Z, this._entityZBase);
+		this._directionQuaternion.toRotationMatrix(this._rotationMatrix);
+		this._worldXBase.setDirect(1, 0, 0);
+		this._rotationMatrix.applyPost(this._worldXBase);
+		var xdot = Vector3.dot(this._entityXBase, this._worldXBase);
 		// The dot product goes above 1.0 at zero rotation
 		xdot = Math.min(xdot, 1.0);
 		// Magic solution, probably not. Math anyone?
-		if (this.xvec.y + this.xBase.y < 0) {
+		if (this._entityXBase.y + this._worldXBase.y < 0) {
 			this.directionRotation = Math.PI + Math.acos(-xdot);
 		} else {
 			this.directionRotation = Math.acos(xdot);
