@@ -164,6 +164,7 @@ define([
 	 * @param {number[]} [heightMap] The height map
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
+	 * @param {number} [zScale=1]
 	 * @returns {Surface} The created surface
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example
 	 */
@@ -173,12 +174,12 @@ define([
         zScale = zScale || 1;
 
 		var verts = [];
-		for (var x = 0; x < heightMap.length; x++) {
-			for (var y = 0; y < heightMap[x].length; y++) {
+		for (var z = 0; z < heightMap.length; z++) {
+			for (var x = 0; x < heightMap[z].length; x++) {
 				verts.push(
-					y * zScale,
-					heightMap[x][y] * yScale, 
-					x * xScale
+					x * xScale,
+					heightMap[z][x] * yScale, 
+					z * zScale
 				);
 			}
 		}

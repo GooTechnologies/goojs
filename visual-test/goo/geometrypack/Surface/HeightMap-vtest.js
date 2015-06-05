@@ -38,7 +38,10 @@ require([
 	var heightMapSize = 64;
 
 	var matrix = getHeightMap(heightMapSize, heightMapSize);
-	var meshData = Surface.createFromHeightMap(matrix);
+	var xScale = 1;
+	var yScale = 1;
+	var zScale = 1;
+	var meshData = Surface.createFromHeightMap(matrix, xScale, yScale, zScale);
 
 	var material = new Material(ShaderLib.texturedLit);
 	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
