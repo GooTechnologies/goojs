@@ -173,13 +173,15 @@ define([
         zScale = zScale || 1;
 
 		var verts = [];
-		for (var i = 0; i < heightMap.length; i++) {
-			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
+		for (var x = 0; x < heightMap.length; x++) {
+			for (var y = 0; y < heightMap[x].length; y++) {
+				verts.push(
+					y * zScale,
+					heightMap[x][y] * yScale, 
+					x * xScale
+				);
 			}
 		}
-		verts.reverse();
-
 		return new Surface(verts, heightMap[0].length);
 	};
 
@@ -193,12 +195,15 @@ define([
 	 */
 	Surface.createTessellatedFlat = function (xSize, ySize, xCount, yCount) {
 		var verts = [];
-		for (var i = 0; i < xCount; i++) {
-			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize*0.5, 0, (j*ySize/yCount) -ySize*0.5);
+		for (var x = 0; x < xCount; x++) {
+			for (var y = 0; y < yCount; y++) {
+				verts.push(
+					(y * ySize / yCount) - ySize * 0.5,
+					0, 
+					(x * xSize / xCount) - xSize * 0.5
+				);
 			}
 		}
-		verts.reverse(); // Reverse to get frontface in positive Y, as in createFromHeightMap()
 		var surface = new Surface(verts, xCount);
 		return surface;
 	};
