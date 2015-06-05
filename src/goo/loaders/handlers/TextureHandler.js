@@ -141,7 +141,6 @@ function (
 		// Special (dds, tga, crn)
 		var Loader = TextureHandler.loaders[type];
 		var imageRef = config.imageRef;
-		texture.a = imageRef;
 		return this.loadObject(imageRef)
 		.then(function (data) {
 			if (data && data.preloaded) {
