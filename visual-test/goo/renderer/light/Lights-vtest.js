@@ -116,32 +116,6 @@ require([
 				}
 			}
 		}));
-		
-
-		window.addEventListener('keydown', function(event) {
-			var rot = Math.PI * 0.01;
-			switch (event.keyCode) {
-				case 37:					
-					actualAngle += rot;
-					break;
-				case 39:
-					actualAngle += -rot;
-					break;
-				case 40:
-					actualAngle = 0;
-			}
-
-			rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
-			var rotMat = spotEntity.transformComponent.transform.rotation;
-			rotQuat.toRotationMatrix(rotMat);
-			spotEntity.transformComponent._dirty = true;
-			
-			if (actualAngle >= Math.PI * 2 || actualAngle <=  -Math.PI * 2) {
-				actualAngle = 0;
-			}
-			console.debug('actualAngle', actualAngle);
-
-		});
 
 		spotEntity.addToWorld();
 
