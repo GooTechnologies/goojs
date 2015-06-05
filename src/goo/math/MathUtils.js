@@ -100,7 +100,7 @@ define([], function () {
 	 * @returns {number} Clamped value.
 	 * @example
 	 * var a = -1;
-	 * a = Math.clamp(a, 0, 9); // a == 0
+	 * a = MathUtils.clamp(a, 0, 9); // a == 0
 	 */
 	MathUtils.clamp = function (value, min, max) {
 		if (min < max) {
@@ -118,7 +118,7 @@ define([], function () {
 	 * @returns {number} Clamped value.
 	 * @example
 	 * var a = -1;
-	 * a = Math.radialClamp(a, 0, 9); // a == 0
+	 * a = MathUtils.radialClamp(a, 0, 9); // a == 0
 	 */
 	MathUtils.radialClamp = function (value, min, max) {
 		// Rotating coordinates to be mirrored
