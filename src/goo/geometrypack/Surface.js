@@ -193,6 +193,7 @@ define([
 	 * @param {number} xCount x axis vertex count
 	 * @param {number} zCount z axis vertex count
 	 * @returns {Surface} The surface mesh
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example
 	 */
 	Surface.createTessellatedFlat = function (xSize, zSize, xCount, zCount) {
 		var verts = [];
