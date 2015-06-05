@@ -84,14 +84,8 @@ require([
 		spotLight.angle = 45;
 		spotLight.range = 100;
 		spotLight.penumbra = 5;
-		var tc = new TextureCreator();
-		var yRot = -Math.PI * 0.1;
-		var xRot = yRot;
 		
-		targetPos.setDirect(0.25, -0.25, 1);
-		targetPos.normalize();
-		
-		tc.loadTexture2D('../../../resources/goo.png').then(function (texture) {
+		new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
 		});
 
