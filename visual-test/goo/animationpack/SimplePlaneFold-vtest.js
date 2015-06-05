@@ -320,17 +320,17 @@ require([
 		// The animationsystem calls the animation components, updating 
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
-		animSystem.stop();
 		world.setSystem(animSystem);
 
 		paperEntity = world.createEntity().addToWorld();
 		var color = [1, 1, 1, 1];
-		var loopCount = -1;
+		var loopCount = 1;
 		var timeScale = 1;
 		var vertCount = 50;
 		var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var scale = 8;
 		paperEntity.transformComponent.setScale(scale, scale, scale);
+		paperEntity.animationComponent.stop();
 
 		var animT = 0;
 		var tstep = 0.01;
@@ -348,24 +348,25 @@ require([
 
 			// If the animstate is updated to equal maxtime, the 
 			// animation loops to first keyframe
-			animT = MathUtils.clamp(animT, 0, 0.999999);
+			animT = MathUtils.clamp(animT, 0, .999999);
 
 			var animationComponent = paperEntity.animationComponent;
 			var layer = animationComponent.layers[0];
-			var animState = layer._currentState;
+			var animState = layer.getStateById('RootRotateState');
 			var clipSource = animState._sourceTree;
+			clipSource._clipInstance._active = true;
 
 			var maxTime = clipSource._clip._maxTime;
 			var timeScale = clipSource._clipInstance._timeScale;
 			var t = (animT * maxTime) / timeScale;
-			animState.update(t);
+			clipSource.setTime(t);
 			animationComponent.apply(paperEntity.transformComponent);
-			animationComponent.postUpdate();
+			animState.postUpdate();
 		});
 
 		V.addLights();
 
-		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 1));
+		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0.3));
 		//world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);
 
 		V.process();
