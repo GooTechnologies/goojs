@@ -80,15 +80,16 @@ define([
 		transform.matrix.applyPostVector(this.direction);
 
 		if (this.lightCookie) {
-			var d = transform.rotation.data;
-			xvec.setDirect(d[0], d[1], d[2]);
-			zvec.setDirect(d[6], d[7], d[8]);
+			var matrixData = transform.rotation.data;
+			xvec.setDirect(matrixData[0], matrixData[1], matrixData[2]);
+			zvec.setDirect(matrixData[6], matrixData[7], matrixData[8]);
 
 			rotQuat.fromVectorToVector(Vector3.UNIT_Z, zvec);
 			rotQuat.toRotationMatrix(rotMat);
 			xBase.setDirect(1, 0, 0);
 			rotMat.applyPost(xBase);
 			var xdot = Vector3.dot(xvec, xBase);
+			// The dot product goes above 1.0 at zero rotation
 			xdot = Math.min(xdot, 1.0);
 			// Magic solution, probably not. Math anyone?
 			if (xvec.y + xBase.y < 0) {

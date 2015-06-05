@@ -21,7 +21,7 @@ require([
 	) {
 	'use strict';
 
-	var actualAngle = 0;
+	var spotLightAngle = 0;
 
 	V.describe('All supported light types are featured in this scene');
 
@@ -94,19 +94,19 @@ require([
 		spotEntity.set(new ScriptComponent({
 			run: function(entity, tpf) {
 				var rot = Math.PI * 0.2 * tpf;
-				actualAngle += rot;
+				spotLightAngle += rot;
 				var ypan = Math.sin(entity._world.time) * 0.3;
 				var xpan = Math.cos(entity._world.time) * 0.1;
 				targetPos.setDirect(xpan, ypan, 1);
 				targetPos.normalize();
-				rotQuat.fromAngleNormalAxis(actualAngle, targetPos);
+				rotQuat.fromAngleNormalAxis(spotLightAngle, targetPos);
 
 				var rotMat = spotEntity.transformComponent.transform.rotation;
 				rotQuat.toRotationMatrix(rotMat);
 				spotEntity.transformComponent._dirty = true;
 			
-				if (actualAngle >= Math.PI * 2) {
-					actualAngle = Math.PI * 2 - actualAngle;
+				if (spotLightAngle >= Math.PI * 2) {
+					spotLightAngle = Math.PI * 2 - spotLightAngle;
 				}
 			}
 		}));
