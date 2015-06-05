@@ -135,7 +135,13 @@ require([
 		sphere.meshRendererComponent.castShadows = true;
 	});
 
-	goo.world.createEntity(new Box(30, 30, 0.5), V.getColoredMaterial(1, 1, 1, 1), [0, 0, -6]).addToWorld();
+	var plane = goo.world.createEntity(
+		new Box(30, 30, 0.5),
+		V.getColoredMaterial(1, 1, 1, 1),
+		[0, 0, -6]
+	).addToWorld();
+
+	gui.add(plane.meshRendererComponent, 'receiveShadows');
 
 	addPointLight(goo);
 	addDirectionalLight(goo);
