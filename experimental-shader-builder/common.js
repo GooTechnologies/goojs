@@ -16,14 +16,17 @@
 
 			var material = new goo.Material({
 				attributes: {
-					vertexPosition: goo.MeshData.POSITION
+					vertexPosition: goo.MeshData.POSITION,
+					vertexNormal : goo.MeshData.NORMAL,
+					vertexUV0 : goo.MeshData.TEXCOORD0
 				},
 				uniforms: {
 					viewProjectionMatrix: goo.Shader.VIEW_PROJECTION_MATRIX,
 					worldMatrix: goo.Shader.WORLD_MATRIX,
 					time: function () {
 						return world.time;
-					}
+					},
+					diffuseMap: goo.Shader.DIFFUSE_MAP
 				},
 				vshader: [
 					'attribute vec3 vertexPosition;',
