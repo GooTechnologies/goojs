@@ -53,6 +53,10 @@ define([
 		this.xBase = new Vector3();
 		this.rotMat = new Matrix3x3();
 		this.rotQuat = new Quaternion();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	ProjectionalLight.prototype = Object.create(Light.prototype);
@@ -64,7 +68,6 @@ define([
 	 */
 	ProjectionalLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
-
 		this.direction.setDirect(0.0, 0.0, -1.0);
 		transform.matrix.applyPostVector(this.direction);
 
@@ -73,6 +76,11 @@ define([
 		}
 	};
 
+	/**
+	* Updates the light's directionRotation, used when projecting the
+	* lightCookie texture.
+	* @param {Transform} transform
+	*/
 	ProjectionalLight.prototype.updateDirectionRotation = function (transform) {
 		var matrixData = transform.rotation.data;
 		this.xvec.setDirect(matrixData[0], matrixData[1], matrixData[2]);
@@ -96,6 +104,10 @@ define([
 	ProjectionalLight.prototype.copy = function (source) {
 		Light.prototype.copy.call(this, source);
 		this.direction.copy(source.direction);
+		this.directionRotation = source.directionRotation;
+		if (source.lightCookie) {
+			this.lightCookie = source.lightCookie.clone();
+		}
 		return this;
 	};
 

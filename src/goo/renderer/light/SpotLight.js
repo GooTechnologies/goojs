@@ -50,7 +50,6 @@ define([
 	SpotLight.prototype.copy = function (source) {
 		ProjectionalLight.prototype.copy.call(this, source);
 
-		source.direction.copy(this.direction);
 		this.range = source.range;
 		this.angle = source.angle;
 		this.penumbra = source.penumbra;
@@ -60,7 +59,7 @@ define([
 	};
 
 	SpotLight.prototype.clone = function () {
-		var clone = new SpotLight(this.color.clone());
+		var clone = new SpotLight();
 		clone.copy(this);
 		return clone;
 	};

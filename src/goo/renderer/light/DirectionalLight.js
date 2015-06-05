@@ -23,7 +23,7 @@ define([
 	DirectionalLight.prototype.constructor = DirectionalLight;
 
 	DirectionalLight.prototype.clone = function () {
-		var clone = new DirectionalLight(this.color.clone());
+		var clone = new DirectionalLight();
 		clone.copy(this);
 		return clone;
 	};

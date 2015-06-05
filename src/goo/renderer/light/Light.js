@@ -106,10 +106,6 @@ define([
 		this.specularIntensity = source.specularIntensity;
 		this.shadowCaster = source.shadowCaster;
 
-		if (source.lightCookie) {
-			this.lightCookie = source.lightCookie.clone();
-		}
-
 		this.shadowSettings.size = source.shadowSettings.size;
 		this.shadowSettings.near = source.shadowSettings.near;
 		this.shadowSettings.far = source.shadowSettings.far;
