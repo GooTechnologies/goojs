@@ -69,8 +69,8 @@
 	 */
 	function generateExternalCode(node, typeDefinition) {
 		return node.outputsTo.map(function (outputTo) {
-			return '\t' + getInputVar(outputTo.to, outputTo.input) +
-				' = ' + node.external.name + ';';
+			return '\t#define ' + getInputVar(outputTo.to, outputTo.input) +
+				' ' + node.external.name;
 		}).join('\n');
 	}
 
@@ -130,6 +130,16 @@
 			return node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name + ';';
 		}).join('\n');
 
+		// mark node inputs that get their data from externals
+		var externalConnected = nodes.filter(function (node) {
+			return node.type === 'external';
+		}).reduce(function (externalConnected, node) {
+			return node.outputsTo.reduce(function (externalConnected, outputTo) {
+				var inputVar = getInputVar(outputTo.to, outputTo.input);
+				externalConnected.add(inputVar);
+				return externalConnected;
+			}, externalConnected);
+		}, new Set());
 
 		// declare the inputs of all nodes
 		var copyIn = nodes.filter(function (node) {
@@ -139,7 +149,10 @@
 			var nodeDefinition = nodeTypes[node.type];
 
 			return '// node ' + node.id + ', ' + node.type + '\n' +
-				nodeDefinition.inputs.map(function (input) {
+				nodeDefinition.inputs.filter(function (input) {
+					var inputVar = getInputVar(node.id, input.name);
+					return !externalConnected.has(inputVar);
+				}).map(function (input) {
 					return input.type + ' ' + getInputVar(node.id, input.name) + ';';
 				}).join('\n');
 		}).join('\n');
