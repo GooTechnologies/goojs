@@ -43,23 +43,6 @@ define([
 		this.shadowCaster = false;
 
 		/**
-		 * By default lights shine a single color on surfaces. If however this parameter is used then the light will project a texture (called 'light cookie') on surfaces. The light cookie will be multiplied with the color of the light
-		 * @type {null}
-		 */
-		this.lightCookie = null;
-
-		/**
-		* The rotation angle in radians,
-		* along the light's direction.
-		* Used for rotating the lightCookie.
-		* This property is updated automatically
-		* from the parenting entity.
-		* @readonly
-		* @type {number}
-		*/
-		this.directionRotation = 0.0;
-
-		/**
 		 * @type {object}
 		 * @property {number} size 2000
 		 * @property {number} near 1

@@ -25,15 +25,37 @@ require([
 	var targetPos = new Vector3();
 	var rotQuat = new Quaternion();
 
-	V.describe('Test the light cookie functionality of DirectionalLight and SpotLight.');
+	var rotationScriptComponent = new ScriptComponent({
+		run: function(entity, tpf) {
+			var rot = Math.PI * 0.2 * tpf;
+			lightRotationAngle += rot;
+			var ypan = Math.sin(entity._world.time) * 0.45;
+			var xpan = Math.cos(entity._world.time) * 0.25;
+			targetPos.setDirect(0, 0, 1);
+			targetPos.normalize();
+			rotQuat.fromAngleNormalAxis(lightRotationAngle, targetPos);
+
+			var rotMat = entity.transformComponent.transform.rotation;
+			rotQuat.toRotationMatrix(rotMat);
+			entity.transformComponent._dirty = true;
+		
+			if (lightRotationAngle >= Math.PI * 2) {
+				lightRotationAngle = Math.PI * 2 - lightRotationAngle;
+			}
+		}
+	});
+
+	V.describe('Test the texture projection functionality of DirectionalLight and SpotLight.');
 
 	function addDirectionalLight() {
 		var directionalLight = new DirectionalLight(new Vector3(1, 1, 1));
 		directionalLight.intensity = 0.5;
 		var directionalEntity = goo.world.createEntity(directionalLight, [50, 0, 100]).addToWorld();
-		new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
+		new TextureCreator().loadTexture2D('../../../resources/collectedBottles_diffuse_1024.dds').then(function (texture) {
 			directionalLight.lightCookie = texture;
 		});
+
+		directionalEntity.setComponent(rotationScriptComponent);
 
 		return directionalEntity;
 	}
@@ -44,31 +66,13 @@ require([
 		spotLight.range = 400;
 		spotLight.penumbra = 5;
 		
-		new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
 			spotLight.lightCookie = texture;
 		});
 
 		var spotEntity = goo.world.createEntity('spotLight', spotLight, [0, 0, 40]);
 		
-		spotEntity.set(new ScriptComponent({
-			run: function(entity, tpf) {
-				var rot = Math.PI * 0.2 * tpf;
-				lightRotationAngle += rot;
-				var ypan = Math.sin(entity._world.time) * 0.45;
-				var xpan = Math.cos(entity._world.time) * 0.25;
-				targetPos.setDirect(xpan, ypan, 1);
-				targetPos.normalize();
-				rotQuat.fromAngleNormalAxis(lightRotationAngle, targetPos);
-
-				var rotMat = entity.transformComponent.transform.rotation;
-				rotQuat.toRotationMatrix(rotMat);
-				entity.transformComponent._dirty = true;
-			
-				if (lightRotationAngle >= Math.PI * 2) {
-					lightRotationAngle = Math.PI * 2 - lightRotationAngle;
-				}
-			}
-		}));
+		spotEntity.setComponent(rotationScriptComponent);
 
 		return spotEntity.addToWorld();
 	}

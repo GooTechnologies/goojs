@@ -1,15 +1,7 @@
 define([
-	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/math/Quaternion',
-	'goo/renderer/light/Light',
-	'goo/math/MathUtils'
+	'goo/renderer/light/ProjectionalLight'
 ], function (
-	Vector3,
-	Matrix3x3,
-	Quaternion,
-	Light,
-	MathUtils
+	ProjectionalLight
 ) {
 	'use strict';
 
@@ -20,18 +12,11 @@ define([
 	 * The angle property is also known as the outer angle or falloff. The exponent property is also known as
 	 * the inner angle or hotspot.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
-	 * @extends Light
+	 * @extends ProjectionalLight
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
 	function SpotLight(color) {
-		Light.call(this, color);
-
-		/**
-		 * The direction vector of the light
-		 * @readonly
-		 * @type {Vector3}
-		 */
-		this.direction = new Vector3();
+		ProjectionalLight.call(this, color);
 
 		/**
 		 * The range of the light (default is 1000)
@@ -59,50 +44,11 @@ define([
 		// #endif
 	}
 
-	SpotLight.prototype = Object.create(Light.prototype);
+	SpotLight.prototype = Object.create(ProjectionalLight.prototype);
 	SpotLight.prototype.constructor = SpotLight;
 
-	/**
-	 * Updates the light's translation and orientation
-	 * @hidden
-	 * @param {Transform} transform
-	 */
-
-	var xvec = new Vector3();
-	var zvec = new Vector3();
-	var xBase = new Vector3();
-	var rotMat = new Matrix3x3();
-	var rotQuat = new Quaternion();
-	SpotLight.prototype.update = function (transform) {
-		transform.matrix.getTranslation(this.translation);
-
-		this.direction.setDirect(0.0, 0.0, -1.0);
-		transform.matrix.applyPostVector(this.direction);
-
-		if (this.lightCookie) {
-			var matrixData = transform.rotation.data;
-			xvec.setDirect(matrixData[0], matrixData[1], matrixData[2]);
-			zvec.setDirect(matrixData[6], matrixData[7], matrixData[8]);
-
-			rotQuat.fromVectorToVector(Vector3.UNIT_Z, zvec);
-			rotQuat.toRotationMatrix(rotMat);
-			xBase.setDirect(1, 0, 0);
-			rotMat.applyPost(xBase);
-			var xdot = Vector3.dot(xvec, xBase);
-			// The dot product goes above 1.0 at zero rotation
-			xdot = Math.min(xdot, 1.0);
-			// Magic solution, probably not. Math anyone?
-			if (xvec.y + xBase.y < 0) {
-				this.directionRotation = Math.PI + Math.acos(-xdot);
-			} else {
-				this.directionRotation = Math.acos(xdot);
-			}
-		}
-		
-	};
-
 	SpotLight.prototype.copy = function (source) {
-		Light.prototype.copy.call(this, source);
+		ProjectionalLight.prototype.copy.call(this, source);
 
 		source.direction.copy(this.direction);
 		this.range = source.range;
