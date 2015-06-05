@@ -98,17 +98,24 @@ require([
 	var quadSize = 1000;
 	world.createEntity(new Quad(quadSize, quadSize), V.getColoredMaterial(1,1,1,1), [0, 0, -50]).addToWorld();
 
-	var spheres = V.addSpheres(1).toArray();
+	var spheres = V.addSpheres(5).toArray();
+
 	var scale = 50;
+	var rootEntity = world.createEntity();
+	rootEntity.setComponent(new ScriptComponent({
+		run: function(entity, tpf) {
+			var t = Math.sin(entity._world.time) * scale;
+			entity.setTranslation(t, t * 0.5, -Math.abs(t * 1.45))	
+		}
+	}));
+	rootEntity.addToWorld();
+
 	for (var i = 0; i < spheres.length; i++) {
 		var sphere = spheres[i];
 		sphere.setScale(scale, scale, scale);
-		sphere.setComponent(new ScriptComponent({
-			run: function(entity, tpf) {
-				var t = Math.sin(entity._world.time) * scale;
-				sphere.setTranslation(t, t * 0.5, -Math.abs(t * 1.3))	
-			}
-		}));
+		var translation = sphere.getTranslation();
+		translation.mul(scale);
+		rootEntity.attachChild(sphere, true);
 	}
 
 
