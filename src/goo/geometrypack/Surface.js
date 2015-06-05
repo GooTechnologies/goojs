@@ -141,8 +141,8 @@ define([
 	function getBounds(verts) {
 		var minX = verts[0];
 		var maxX = verts[0];
-		var minY = verts[1];
-		var maxY = verts[1];
+		var minY = verts[2];
+		var maxY = verts[2];
 
 		for (var i = 3; i < verts.length; i += 3) {
 			minX = minX < verts[i + 0] ? minX : verts[i + 0];
@@ -173,13 +173,15 @@ define([
         zScale = zScale || 1;
 
 		var verts = [];
-		for (var i = 0; i < heightMap.length; i++) {
-			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
+		for (var x = 0; x < heightMap.length; x++) {
+			for (var y = 0; y < heightMap[x].length; y++) {
+				verts.push(
+					y * zScale,
+					heightMap[x][y] * yScale, 
+					x * xScale
+				);
 			}
 		}
-		verts.reverse();
-
 		return new Surface(verts, heightMap[0].length);
 	};
 
@@ -193,9 +195,13 @@ define([
 	 */
 	Surface.createTessellatedFlat = function (xSize, ySize, xCount, yCount) {
 		var verts = [];
-		for (var i = 0; i < xCount; i++) {
-			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+		for (var x = 0; x < xCount; x++) {
+			for (var y = 0; y < yCount; y++) {
+				verts.push(
+					(y * ySize / yCount) - ySize * 0.5,
+					0, 
+					(x * xSize / xCount) - xSize * 0.5
+				);
 			}
 		}
 		var surface = new Surface(verts, xCount);
