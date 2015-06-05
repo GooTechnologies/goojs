@@ -150,7 +150,9 @@
 
 	function setupListeners() {
 		$('#save').click(function () {
-			firebase.save($('#shader-name').val());
+			var id = $('#shader-name').val();
+			firebase.save(id);
+			window.parent.history.replaceState('Object', 'Title', 'joint.html?id=' + id);
 		});
 
 		$('#load').click(function () {
@@ -227,16 +229,6 @@
 		var firebaseRef = new Firebase('https://blinding-heat-7806.firebaseio.com/');
 		var shaderBitRef = firebaseRef.child('shader-bit');
 
-		shaderBitRef.on('value', function (snapshot) {
-			var rawData = snapshot.val();
-			var data = JSON.parse(rawData.shader1);
-
-			graph.fromJSON(data.graph);
-			//typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
-
-			replaceBox(typeDefinitions, graph);
-		});
-
 		return {
 			save: function (name) {
 				var data = {
@@ -276,6 +268,14 @@
 		firebase = setupFirebase();
 
 		setupListeners();
+
+		var params = purl().param();
+		if (params.id) {
+			firebase.load(params.id);
+		} else {
+			firebase.load('shader1');
+			window.parent.history.replaceState('Object', 'Title', 'joint.html?id=shader1');
+		}
 	});
 
 	// crap functions that do the same thing but take in different sort of data
