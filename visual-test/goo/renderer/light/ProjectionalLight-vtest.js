@@ -88,11 +88,29 @@ require([
 	addDirectionalLight();
 	addSpotLight();
 
+	var backLight = new DirectionalLight(new Vector3(0.5, 0.5, 1.0));
+	backLight.intensity = 0.1;
+	var backLightEntity = world.createEntity(backLight, [-100, 0, 100]);
+	backLightEntity.setRotation([0, Math.PI * 0.8, 0]);
+	backLightEntity.addToWorld();
+
 	// Backdrop
 	var quadSize = 1000;
 	world.createEntity(new Quad(quadSize, quadSize), V.getColoredMaterial(1,1,1,1), [0, 0, -50]).addToWorld();
 
-	//var spheres = V.addSpheres(5).toArray();
+	var spheres = V.addSpheres(1).toArray();
+	var scale = 50;
+	for (var i = 0; i < spheres.length; i++) {
+		var sphere = spheres[i];
+		sphere.setScale(scale, scale, scale);
+		sphere.setComponent(new ScriptComponent({
+			run: function(entity, tpf) {
+				var t = Math.sin(entity._world.time) * scale;
+				sphere.setTranslation(t, t * 0.5, -Math.abs(t * 1.3))	
+			}
+		}));
+	}
+
 
 	// camera
 	V.addOrbitCamera([300, Math.PI/2, 0]);
