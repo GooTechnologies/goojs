@@ -192,7 +192,7 @@ require([
 		// Create skeleton joint hierarchy
 		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
 
-		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0.5, 0]);
+		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0, -0.5]);
 		
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -202,8 +202,8 @@ require([
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
-		q1.fromAngleNormalAxis(-0.05, new Vector3(1,0,0).normalize());
-		q2.fromAngleNormalAxis(-MathUtils.HALF_PI, new Vector3(1,0,0).normalize());
+		q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, new Vector3(1,0,0).normalize());
+		q2.fromAngleNormalAxis(0.04, new Vector3(1,0,0).normalize());
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -234,6 +234,7 @@ require([
 		);
 
 		rots = [];
+		q1.fromAngleNormalAxis(-0.05, new Vector3(1,0,0).normalize());
 		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(1,0,0).normalize());
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q2.data);
@@ -278,15 +279,15 @@ require([
 		for (var i = 0; i < posLen; i+=3) {
 			var x = positions[i];
 			// Translate up to set mesh origin at entity's transform
-			positions[i+1] += 0.5;
-			var y = positions[i+1];
+			positions[i+2] -= 0.5;
+			var z = positions[i+2];
 
 			var vertIndex = i/3;
 			var quadIndex = vertIndex * 4;
 
-			if (y > 0.5) {
+			if (z < -0.5) {
 				midVerts.push(vertIndex);
-				smoothWeights(y, bleedD, weightData, quadIndex);
+				smoothWeights(-z, bleedD, weightData, quadIndex);
 			}
 
 		}
@@ -319,11 +320,11 @@ require([
 		// The animationsystem calls the animation components, updating 
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
-		//animSystem.stop();
+		animSystem.stop();
 		world.setSystem(animSystem);
 
 		paperEntity = world.createEntity().addToWorld();
-		var color = [0.4, 0.8, 0.4, 1];
+		var color = [1, 1, 1, 1];
 		var loopCount = -1;
 		var timeScale = 1;
 		var vertCount = 50;
@@ -362,19 +363,9 @@ require([
 			animationComponent.postUpdate();
 		});
 
-
-		var meshData = Surface.createTessellatedFlat(1, 1, vertCount, vertCount);
-		var material = new Material(ShaderLib.uber);
-		material.cullState.enabled = false;
-		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
-			material.setTexture('DIFFUSE_MAP', texture);
-		});
-		
-		world.createEntity(meshData, material, [5, 0, 0]).addToWorld();
-
 		V.addLights();
 
-		V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 1));
 		//world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);
 
 		V.process();
