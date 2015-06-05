@@ -149,7 +149,13 @@
 	var clickedNewId, clickedOldId;
 
 	function setupListeners() {
-		$('#save').click(firebase.save);
+		$('#save').click(function () {
+			firebase.save($('#shader-name').val());
+		});
+
+		$('#load').click(function () {
+			firebase.load($('#shader-name').val());
+		});
 
 		$('#delete').click(function () {
 			deleteElement(graph, graph.getCell(clickedNewId));
@@ -223,7 +229,7 @@
 
 		shaderBitRef.on('value', function (snapshot) {
 			var rawData = snapshot.val();
-			var data = JSON.parse(rawData);
+			var data = JSON.parse(rawData.shader1);
 
 			graph.fromJSON(data.graph);
 			//typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
@@ -232,16 +238,28 @@
 		});
 
 		return {
-			save: function () {
+			save: function (name) {
 				var data = {
 					graph: graph.toJSON(),
-					typeDefinitions: typeDefinitions
+					//typeDefinitions: typeDefinitions
 				};
 
+				// why stringify it? because firebase chokes on certain characters in keys
 				var rawData = JSON.stringify(data);
 
-				shaderBitRef.set(rawData, function () {
+				shaderBitRef.child(name).set(rawData, function () {
 					console.log('save ok');
+				});
+			},
+			load: function (name) {
+				shaderBitRef.child(name).once('value', function (snapshot) {
+					var rawData = snapshot.val();
+					var data = JSON.parse(rawData);
+
+					graph.fromJSON(data.graph);
+					//typeDefinitions = dataNormalizer.normalizeNodeTypes(data.typeDefinitions);
+
+					replaceBox(typeDefinitions, graph);
 				});
 			}
 		}
