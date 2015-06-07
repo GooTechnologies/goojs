@@ -396,13 +396,11 @@ define([
 
 				return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas).then(function (vegetationAtlasTexture) {
 					vegetationAtlasTexture.anisotropy = 4;
-					var vegetationTypes = terrainData.vegetationTypes;
 					return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas).then(function (forrestAtlasTexture) {
 						forrestAtlasTexture.anisotropy = 4;
 						return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals).then(function (forrestAtlasNormals) {
-							var forrestTypes = terrainData.forrestTypes;
-							this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-							this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+							this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, terrainData, terrainTextures);
+							this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, terrainData, forrestLODEntityMap, terrainTextures);
 						}.bind(this));
 					}.bind(this));
 				}.bind(this));
