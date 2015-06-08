@@ -23,25 +23,25 @@
 <body>
 
 {{! CONTENT }}
-{{#classes}}
+{{#each classes}}
 <article>
 	{{! title and description }}
 	<section class="header">
 		<h1>
 			<span
 				id="{{constructor.name}}"
-				class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}"
+				class="{{#if constructor.comment.deprecated}}deprecated{{/if}}"
 			>
 				{{constructor.name}}
 			</span>
 
-			{{#if constructor.comment.extends}}
+			{{#constructor.comment.extends}}
 				<span class="extends">extends
-					<a href="#{{constructor.comment.extends.base}}">
-						{{constructor.comment.extends.base}}
+					<a href="#{{base}}">
+						{{base}}
 					</a>
 				</span>
-			{{/if}}
+			{{/constructor.comment.extends}}
 		</h1>
 		<span class="path">goo/{{requirePath}}</span>
 		<div class="class-description roboto">
@@ -66,14 +66,14 @@
 		<section>
 			<span class="method-name">constructor</span>
 			 :: (
-			{{#constructor.params}}
+			{{#each constructor.params}}
 				<span class="parameter">{{.}}</span>
-			{{/constructor.params}}
+			{{/each}}
 			)
 			{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
 			<div class="comment">
-				{{#param}}
+				{{#each param}}
 					<div class="parameter-doc">
 						<span class="parameter-name">{{name}}</span>
 						{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
@@ -81,24 +81,24 @@
 						{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
 						<span class="parameter-description">{{{description}}}</span>
 					</div>
-				{{/param}}
+				{{/each}}
 			</div>
 		</section>
 	{{/constructor.comment}}
 
 	{{! members }}
-	{{#hasMembers}}
+	{{#if hasMembers}}
 		<section>
 			<h2>Members</h2>
 
-			{{#members}}
+			{{#each members}}
 				<div>
 					<a
 						class="method-name"
 						id="_mbr_{{../constructor.name}}_{{name}}"
 						href="#_mbr_{{../constructor.name}}_{{name}}"
 					>
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
 					--></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
@@ -109,9 +109,9 @@
 				{{#comment.deprecated}}
 					<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
 				{{/comment.deprecated}}
-			{{/members}}
+			{{/each}}
 
-			{{#constructor.comment.property}}
+			{{#each constructor.comment.property}}
 				<div>
 					<a
 						class="method-name"
@@ -125,25 +125,25 @@
 					{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
 					<span class="parameter-description">{{{description}}}</span>
 				</div>
-			{{/constructor.comment.property}}
+			{{/each}}
 
 		</section>
-	{{/hasMembers}}
+	{{/if}}
 
 
 	{{! static members }}
-	{{#hasStaticMembers}}
+	{{#if hasStaticMembers}}
 		<section>
 			<h2>Static members</h2>
 
-			{{#staticMembers}}
+			{{#each staticMembers}}
 				<div>
 					<a
 						class="method-name"
 						id="_smbr_{{../constructor.name}}_{{name}}"
 						href="#_smbr_{{../constructor.name}}_{{name}}"
 					>
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
 					--></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
@@ -154,17 +154,17 @@
 				{{#comment.deprecated}}
 					<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
 				{{/comment.deprecated}}
-			{{/staticMembers}}
+			{{/each}}
 		</section>
-	{{/hasStaticMembers}}
+	{{/if}}
 
 
 	{{! instance methods }}
-	{{#hasMethods}}
+	{{#if hasMethods}}
 		<section>
 			<h2>Instance methods</h2>
 
-			{{#methods}}
+			{{#each methods}}
 				<div class="bottom-30">
 					{{#comment.virtual}}
 						<span class="icon-warning-gray virtual roboto"> virtual</span>
@@ -174,11 +174,11 @@
 						id="_met_{{../constructor.name}}_{{name}}"
 						href="#_met_{{../constructor.name}}_{{name}}"
 					>
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
 					--></a> :: (
-					{{#params}}
+					{{#each params}}
 						<span class="parameter">{{.}}</span>
-					{{/params}}
+					{{/each}}
 					)
 					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
@@ -188,7 +188,8 @@
 						{{#comment.deprecated}}
 							<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
 						{{/comment.deprecated}}
-						{{#comment.param}}
+
+						{{#each comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>
 								{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
@@ -196,7 +197,7 @@
 								{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
 								<span class="parameter-description">{{{description}}}</span>
 							</div>
-						{{/comment.param}}
+						{{/each}}
 
 						{{#comment.exampleLink}}
 							<div class="roboto">Example: <a class="example-link" href="{{link}}" target="_blank">{{text}}</a></div>
@@ -207,24 +208,24 @@
 						{{/comment.example}}
 					</div>
 				</div>
-			{{/methods}}
+			{{/each}}
 
 		</section>
-	{{/hasMethods}}
+	{{/if}}
 
 	{{! static methods }}
-	{{#hasStaticMethods}}
+	{{#if hasStaticMethods}}
 		<section>
 			<h2>Static methods</h2>
 
-			{{#staticMethods}}
+			{{#each staticMethods}}
 				<div>
 					<a
 						class="method-name"
 						id="_smet_{{../constructor.name}}_{{name}}"
 						href="#_smet_{{../constructor.name}}_{{name}}"
 					>
-						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span><!--
+						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
 					--></a> :: (
 					{{#params}}
 						<span class="parameter">
@@ -238,7 +239,7 @@
 						<span class="description">{{{comment.description}}}</span>
 						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
 						{{/comment.deprecated}}
-						{{#comment.param}}
+						{{#each comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>
 								{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
@@ -246,7 +247,7 @@
 								{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
 								<span class="parameter-description">{{{description}}}</span>
 							</div>
-						{{/comment.param}}
+						{{/each}}
 
 						{{#comment.exampleLink}}
 							<a class="example-link" href="{{link}}" target="_blank">{{text}}</a>
@@ -257,12 +258,12 @@
 						{{/comment.example}}
 					</div>
 				</div>
-			{{/staticMethods}}
+			{{/each}}
 
 		</section>
-	{{/hasStaticMethods}}
+	{{/if}}
 </article>
-{{/classes}}
+{{/each}}
 
 {{! FOOTER }}
 <!--<script>window.parent.history.replaceState('Object', 'Title', 'index.html?c={{constructor.name}}');</script>-->
