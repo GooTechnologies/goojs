@@ -163,7 +163,7 @@ require([
 		var b = MathUtils.clamp( d / bleedD, 0, 1);
 		var w = MathUtils.scurve5(b);
 		weightData[quadIndex] = w;
-		weightData[quadIndex + 1] = 1.0 - w;
+		weightData[quadIndex + 1] = MathUtils.clamp(1.0 - w, 0.1, 1);
 	}
 
 	function loopSetJoints(joint, vertIndexArray, jointData) {
@@ -329,6 +329,11 @@ require([
 		
 		var leftTopJoint = createNewJoint('left.top', 2, leftYJoint, joints, [-0.25, 0, -0.5]);
 
+
+		var rightZJoint = createNewJoint('right.z', 3, rootJoint, joints, [0, 0, -0.5]);
+		
+		var rightTopJoint = createNewJoint('right.top', 4, rightZJoint, joints, [0.25, 0, -0.5]);
+
 		
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -369,8 +374,8 @@ require([
 		);
 
 		rots = [];
-		q1.fromAngleNormalAxis(0.03, Vector3.UNIT_Z);
 		q2.fromAngleNormalAxis(MathUtils.HALF_PI * 0.88, Vector3.UNIT_Z);
+		q1.fromAngleNormalAxis(0.1, Vector3.UNIT_Z);
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -386,15 +391,55 @@ require([
 			animChannels
 		);
 
+		rots = [];
+		q2.fromAngleNormalAxis(-MathUtils.HALF_PI * 0.88, Vector3.UNIT_Z);
+		q1.fromAngleNormalAxis(-0.1, Vector3.UNIT_Z);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		var rightZChannel = createJointChannel(
+			rightZJoint,
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
+
+		// TOPS
+
+
+		// Hide mesh penetration by scaling 
+		var scales = [
+			.5, 1, 1,
+			1,1,1,
+			1,1,1,
+		];
 
 		rots = [];
-		q1.fromAngleNormalAxis(-Math.PI * 0.88, Vector3.UNIT_X);
-		q2.fromAngleNormalAxis(0.03, Vector3.UNIT_X);
+		q1.fromAngleNormalAxis(-Math.PI * 0.98, Vector3.UNIT_X);
+		q2.fromAngleNormalAxis(-0.05, Vector3.UNIT_X);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q2.data);
+
+
 		var leftTopChannel = createJointChannel(
 			leftTopJoint,
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
+		var rightTopChannel = createJointChannel(
+			rightTopJoint,
 			joints, 
 			times, 
 			trans, 
@@ -428,7 +473,9 @@ require([
 		}
 
 		var leftVerts = [];
+		var rightVerts = [];
 		var leftTopVerts = [];
+		var rightTopVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		var posLen = positions.length;
 		for (var i = 0; i < posLen; i+=3) {
@@ -442,11 +489,18 @@ require([
 
 			if (x < 0) {
 				leftVerts.push(vertIndex);
-				smoothWeights(-x, bleedD, weightData, quadIndex);
+				//smoothWeights(-x, bleedD, weightData, quadIndex);
 
 				if (z < -0.5) {
 					leftTopVerts.push(vertIndex);
-					smoothWeights(-z, bleedD, weightData, quadIndex);
+					//smoothWeights(-z, bleedD, weightData, quadIndex);
+				}
+			} else {
+				rightVerts.push(vertIndex);
+				//smoothWeights(x, bleedD, weightData, quadIndex);
+				if (z < -0.5) {
+					rightTopVerts.push(vertIndex);
+					//smoothWeights(-z, bleedD, weightData, quadIndex);
 				}
 			}
 
@@ -454,8 +508,13 @@ require([
 
 		var jointData = meshData.dataViews.JOINTIDS;
 
+
 		loopSetJoints(leftYJoint, leftVerts, jointData);
 		loopSetJoints(leftTopJoint, leftTopVerts, jointData);
+
+		loopSetJoints(rightZJoint, rightVerts, jointData);
+		loopSetJoints(rightTopJoint, rightTopVerts, jointData);
+		
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
@@ -487,12 +546,11 @@ require([
 		var color = [1, 1, 1, 1];
 		var loopCount = -1;
 		var timeScale = 1;
-		var vertCount = 50;
+		var vertCount = 21;
 		//var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var paperEntity = addVerticalFoldPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var scale = 8;
 		paperEntity.transformComponent.setScale(scale, scale, scale);
-		//paperEntity.animationComponent.stop();
 
 		var animT = 0;
 		var tstep = 0.01;
@@ -513,6 +571,8 @@ require([
 			animT = MathUtils.clamp(animT, 0, .999999);
 
 			var animationComponent = paperEntity.animationComponent;
+			animationComponent.stop();
+
 			var layer = animationComponent.layers[0];
 			var animState = layer.getStateById('RootRotateState');
 			var clipSource = animState._sourceTree;
