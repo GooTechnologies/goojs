@@ -135,13 +135,30 @@ require([
 		sphere.meshRendererComponent.castShadows = true;
 	});
 
+	// plane
 	var plane = goo.world.createEntity(
 		new Box(30, 30, 0.5),
 		V.getColoredMaterial(1, 1, 1, 1),
 		[0, 0, -6]
 	).addToWorld();
 
-	gui.add(plane.meshRendererComponent, 'receiveShadows');
+	var planeGui = gui.addFolder('Plane');
+	planeGui.add(plane.meshRendererComponent, 'receiveShadows');
+	planeGui.open();
+
+	// extra sphere
+	var extraSphere = world.createEntity(
+		new Sphere(32, 32, 0.5),
+		V.getColoredMaterial(),
+		[0, 5, 0]
+	).addToWorld();
+
+	extraSphere.meshRendererComponent.castShadows = true;
+
+	var sphereGui = gui.addFolder('Sphere');
+	sphereGui.add(extraSphere.meshRendererComponent, 'receiveShadows');
+	sphereGui.open();
+
 
 	addPointLight(goo);
 	addDirectionalLight(goo);
