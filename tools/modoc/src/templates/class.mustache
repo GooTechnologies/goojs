@@ -28,17 +28,20 @@
 	{{! title and description }}
 	<section class="header">
 		<h1>
-		<span id="{{constructor.name}}" class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}">
-			{{constructor.name}}
-		</span>
+			<span
+				id="{{constructor.name}}"
+				class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}"
+			>
+				{{constructor.name}}
+			</span>
 
-			{{#constructor.comment.extends}}
+			{{#if constructor.comment.extends}}
 				<span class="extends">extends
 					<a href="#{{constructor.comment.extends.base}}">
 						{{constructor.comment.extends.base}}
 					</a>
 				</span>
-			{{/constructor.comment.extends}}
+			{{/if}}
 		</h1>
 		<span class="path">goo/{{requirePath}}</span>
 		<div class="class-description roboto">
@@ -182,7 +185,9 @@
 					<div class="comment">
 						<span class="description">{{{comment.description}}}</span>
 
-						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>{{/comment.deprecated}}
+						{{#comment.deprecated}}
+							<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+						{{/comment.deprecated}}
 						{{#comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>
@@ -231,7 +236,8 @@
 
 					<div class="comment">
 						<span class="description">{{{comment.description}}}</span>
-						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>{{/comment.deprecated}}
+						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+						{{/comment.deprecated}}
 						{{#comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>

@@ -121,9 +121,9 @@ var compileComment = function (rawComment) {
 		}
 	});
 
-	booleanTags.forEach(function (copyTag) {
-		if (parsed[copyTag.tag]) {
-			comment[copyTag.identifier] = !!parsed[copyTag.tag];
+	booleanTags.forEach(function (booleanTag) {
+		if (parsed[booleanTag.tag]) {
+			comment[booleanTag.identifier] = true;
 		}
 	});
 
