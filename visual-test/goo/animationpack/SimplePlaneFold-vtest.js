@@ -325,7 +325,10 @@ require([
 		// Create skeleton joint hierarchy
 		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
 
-		var leftYJoint = createNewJoint('left.y', 1, rootJoint, joints, [0, 0, -0.5]);
+		var leftYJoint = createNewJoint('left.z', 1, rootJoint, joints, [0, 0, -0.5]);
+		
+		var leftTopJoint = createNewJoint('left.top', 2, leftYJoint, joints, [-0.25, 0, -0.5]);
+
 		
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -371,8 +374,27 @@ require([
 		Array.prototype.push.apply(rots, q2.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
+		
 		var leftYChannel = createJointChannel(
 			leftYJoint,
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
+
+		rots = [];
+		q1.fromAngleNormalAxis(-Math.PI * 0.88, Vector3.UNIT_X);
+		q2.fromAngleNormalAxis(0.03, Vector3.UNIT_X);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var leftTopChannel = createJointChannel(
+			leftTopJoint,
 			joints, 
 			times, 
 			trans, 
@@ -406,6 +428,7 @@ require([
 		}
 
 		var leftVerts = [];
+		var leftTopVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		var posLen = positions.length;
 		for (var i = 0; i < posLen; i+=3) {
@@ -420,6 +443,11 @@ require([
 			if (x < 0) {
 				leftVerts.push(vertIndex);
 				smoothWeights(-x, bleedD, weightData, quadIndex);
+
+				if (z < -0.5) {
+					leftTopVerts.push(vertIndex);
+					smoothWeights(-z, bleedD, weightData, quadIndex);
+				}
 			}
 
 		}
@@ -427,6 +455,7 @@ require([
 		var jointData = meshData.dataViews.JOINTIDS;
 
 		loopSetJoints(leftYJoint, leftVerts, jointData);
+		loopSetJoints(leftTopJoint, leftTopVerts, jointData);
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
