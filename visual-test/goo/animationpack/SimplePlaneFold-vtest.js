@@ -256,6 +256,7 @@ require([
 		clipSource.setTimeScale(timeScale);
 		var animState = new SteadyState('My animation state');
 		animState.setClipSource(clipSource);
+		animState._targetState = animState;
 		var animLayer = animComp.layers[0];  // Default animation layer
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
@@ -323,7 +324,7 @@ require([
 		var joints = [];
 
 		// Create skeleton joint hierarchy
-		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
+		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, -0.05]);
 
 		var leftYJoint = createNewJoint('left.z', 1, rootJoint, joints, [0, 0, -0.5]);
 		
@@ -544,9 +545,9 @@ require([
 
 		paperEntity = world.createEntity().addToWorld();
 		var color = [1, 1, 1, 1];
-		var loopCount = -1;
+		var loopCount = 2;
 		var timeScale = 1;
-		var vertCount = 21;
+		var vertCount = 51;
 		//var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var paperEntity = addVerticalFoldPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var scale = 8;
@@ -555,6 +556,9 @@ require([
 		var animT = 0;
 		var tstep = 0.01;
 		window.addEventListener('keydown', function(event) {
+
+			var animationComponent = paperEntity.animationComponent;
+
 			switch (event.keyCode) {
 				case 37:					
 					animT -= tstep;
@@ -564,18 +568,19 @@ require([
 					break;
 				case 40:
 					animT = 0;
+					animationComponent.stop();
+
 			}
 
 			// If the animstate is updated to equal maxtime, the 
 			// animation loops to first keyframe
 			animT = MathUtils.clamp(animT, 0, .999999);
 
-			var animationComponent = paperEntity.animationComponent;
-			animationComponent.stop();
 
 			var layer = animationComponent.layers[0];
 			var animState = layer.getStateById('RootRotateState');
 			var clipSource = animState._sourceTree;
+			layer.setCurrentState(animState); // Set currentstate 
 			clipSource._clipInstance._active = true;
 
 			var maxTime = clipSource._clip._maxTime;
@@ -583,10 +588,12 @@ require([
 			var t = (animT * maxTime) / timeScale;
 			clipSource.setTime(t);
 			animationComponent.apply(paperEntity.transformComponent);
-			animState.postUpdate();
 		});
 
 		V.addLights();
+
+		// Add Ground plane.
+		world.createEntity(Surface.createTessellatedFlat(100, 100, 20, 20), new Material(ShaderLib.simpleLit)).addToWorld();
 
 		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0.3));
 		//world.createEntity(new Camera(), [0, 1, 15]).addToWorld().lookAt([0, 0, 0]);

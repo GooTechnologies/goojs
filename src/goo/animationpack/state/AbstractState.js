@@ -10,6 +10,11 @@ define([
 	function AbstractState () {
 		this._globalStartTime = 0;
 		this.onFinished = null;
+
+		/**
+		* Changes to this target state when the onFinished callback is run.
+		*/
+		this._targetState = null;
 	}
 
 	AbstractState.prototype.update = function() {};
