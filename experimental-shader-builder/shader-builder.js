@@ -190,6 +190,41 @@
 		return generateCode(types, sorted);
 	}
 
+	/**
+	 * Gathers uniforms, attributes and varyings
+	 * @param structure
+	 * @returns {{uniforms: {name, type}[], attributes: {name, type}[], varyings: {name, type}[]}}
+	 */
+	function getExternals(structure) {
+		var externals = structure.filter(function (node) {
+			return node.type === 'external';
+		});
+
+		var inputTypeFilter = function (inputType) {
+			return function (node) {
+				return node.external.inputType === inputType;
+			};
+		};
+
+		var extractExternal = function (node) {
+			return {
+				name: node.external.name,
+				type: node.external.dataType
+			};
+		};
+
+		var uniforms = externals.filter(inputTypeFilter('uniform')).map(extractExternal);
+		var attributes = externals.filter(inputTypeFilter('attribute')).map(extractExternal);
+		var varyings = externals.filter(inputTypeFilter('varying')).map(extractExternal);
+
+		return {
+			uniforms: uniforms,
+			attributes: attributes,
+			varyings: varyings
+		};
+	}
+
 	window.shaderBits = window.shaderBits || {};
 	window.shaderBits.buildShader = buildShader;
+	window.shaderBits.getExternals = getExternals;
 })();
