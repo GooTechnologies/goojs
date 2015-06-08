@@ -46,6 +46,25 @@ define([
 		this.initDone = false;
 	}
 
+	Vegetation.prototype.cleanup = function () {
+		// clean all textures!
+		var renderer = this.world.gooRunner.renderer;
+
+		// renderer._deallocateTexture(this.material.getTexture('DIFFUSE_MAP'));
+		// this.material.removeTexture('DIFFUSE_MAP');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				if (entity.meshDataComponent) {
+					renderer._deallocateMeshData(entity.meshDataComponent.meshData);
+				}
+				entity.removeFromWorld();
+			}
+		}
+		this.grid = [];
+	};
+
 	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, terrainData, terrainTextures) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;

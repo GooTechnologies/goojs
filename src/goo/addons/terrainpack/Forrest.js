@@ -56,6 +56,27 @@ define([
 		this.initDone = false;
 	}
 
+	Forrest.prototype.cleanup = function () {
+		// clean all textures!
+		var renderer = this.world.gooRunner.renderer;
+
+		// renderer._deallocateTexture(this.material.getTexture('DIFFUSE_MAP'));
+		// this.material.removeTexture('DIFFUSE_MAP');
+		// renderer._deallocateTexture(this.material.getTexture('NORMAL_MAP'));
+		// this.material.removeTexture('NORMAL_MAP');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				if (entity.meshDataComponent) {
+					renderer._deallocateMeshData(entity.meshDataComponent.meshData);
+				}
+				entity.removeFromWorld();
+			}
+		}
+		this.grid = [];
+	};
+
 	var chainBundleLoading = function (world, promise, bundle) {
 		var loader = new DynamicLoader({
 			world: world,

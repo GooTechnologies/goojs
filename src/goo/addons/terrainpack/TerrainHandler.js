@@ -47,6 +47,19 @@ define([
 			this.eventY = 0;
 		}
 
+		TerrainHandler.prototype.cleanup = function() {
+			this.terrain.cleanup();
+			this.terrain = null;
+			this.vegetation.cleanup();
+			this.vegetation = null;
+			this.forrest.cleanup();
+			this.forrest = null;
+
+			this.terrainInfo = null;
+			this.terrainQuery = null;
+			this.lightMapData = null;
+		};
+
 		TerrainHandler.prototype.isEditing = function() {
 			return !this.hidden;
 		};
@@ -181,27 +194,39 @@ define([
 		};
 
 		TerrainHandler.prototype._load = function(terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
-			var promises = [];
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground3.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.lightMap));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.normalMap));
-			return RSVP.all(promises).then(function(textures) {
+			// var promises = [];
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.ground3.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.lightMap));
+			// promises.push(this._textureLoad(this.resourceFolder + terrainData.normalMap));
+			// return RSVP.all(promises).then(function(textures) {
+				// var terrainTextures = {
+				// 	heightMap: parentMipmap,
+				// 	splatMap: splatMap,
+				// 	ground1: textures[0],
+				// 	ground2: textures[1],
+				// 	ground3: textures[2],
+				// 	ground4: textures[3],
+				// 	ground5: textures[4],
+				// 	stone: textures[5],
+				// 	lightMap: textures[6],
+				// 	normalMap: textures[7]
+				// };
 				var terrainTextures = {
 					heightMap: parentMipmap,
 					splatMap: splatMap,
-					ground1: textures[0],
-					ground2: textures[1],
-					ground3: textures[2],
-					ground4: textures[3],
-					ground5: textures[4],
-					stone: textures[5],
-					lightMap: textures[6],
-					normalMap: textures[7]
+					ground1: terrainData.ground1.texture,
+					ground2: terrainData.ground2.texture,
+					ground3: terrainData.ground3.texture,
+					ground4: terrainData.ground4.texture,
+					ground5: terrainData.ground5.texture,
+					stone: terrainData.stone.texture,
+					lightMap: terrainData.lightMap,
+					normalMap: terrainData.normalMap
 				};
 				this.terrain.init(terrainTextures);
 				this.terrainInfo = this.terrain.getTerrainData();
@@ -404,7 +429,7 @@ define([
 						}.bind(this));
 					}.bind(this));
 				}.bind(this));
-			}.bind(this));
+			// }.bind(this));
 		};
 
 		TerrainHandler.prototype.updatePhysics = function() {

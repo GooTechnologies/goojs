@@ -143,6 +143,24 @@ define([
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
 
+	Terrain.prototype.cleanup = function () {
+		// clean all textures!
+		// for (var name in this.terrainTextures) {
+		// 	var texture = this.terrainTextures[name];
+		// 	if (texture instanceof Texture) {
+		// 		this.renderer._deallocateTexture(texture);
+		// 	}
+		// }
+		// this.terrainTextures = null;
+
+		// this.renderer._deallocateRenderTarget(this.normalMap);
+		// this.renderer._deallocateRenderTarget(this.outputTarget);
+		// this.renderer._deallocateRenderTarget(this.splat);
+		// this.renderer._deallocateRenderTarget(this.splatCopy);
+
+		this.terrainRoot.removeFromWorld();
+	};
+
 	Terrain.prototype.init = function (terrainTextures) {
 		var world = this.world;
 		var count = this.count;
