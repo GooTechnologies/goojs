@@ -310,6 +310,138 @@ require([
 		entity.meshDataComponent.currentPose = entity.animationComponent._skeletonPose;
 		return entity;
 	}
+
+
+	function addVerticalFoldPaper(entity, vertCount, diffuse, loopCount, timeScale) {
+
+		if (entity.getComponent('AnimationComponent') || entity.getComponent('MeshDataComponent') || entity.getComponent('MeshRendererComponent')) {
+			throw Error('The entity cannot have any prior animation- or meshdata/renderer- components');
+		}
+
+		var size = 1;
+
+		var joints = [];
+
+		// Create skeleton joint hierarchy
+		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
+
+		var leftYJoint = createNewJoint('left.y', 1, rootJoint, joints, [0, 0, -0.5]);
+		
+		var skeleton = new Skeleton('PaperSkeleton', joints);
+		var skeletonPose = new SkeletonPose(skeleton);
+		var animComp = new AnimationComponent(skeletonPose);
+		
+		var times = [0, 0.5, 1.2];
+		var rots = [];
+		var q1 = new Quaternion();
+		var q2 = new Quaternion();
+		q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, Vector3.UNIT_X);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+
+		var trans = [
+			0,0,0,
+			0,0,0,
+			0,0,0,
+		];
+
+		var scales = [
+			1,1,1,
+			1,1,1,
+			1,1,1,
+		];
+
+		var animChannels = [];
+
+		var rootChannel = createJointChannel(
+			rootJoint, 
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
+		rots = [];
+		q1.fromAngleNormalAxis(0.03, Vector3.UNIT_Z);
+		q2.fromAngleNormalAxis(MathUtils.HALF_PI * 0.88, Vector3.UNIT_Z);
+		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		var leftYChannel = createJointChannel(
+			leftYJoint,
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
+		var clip = new AnimationClip('My animation Clip', animChannels);
+		var clipSource = new ClipSource(clip);
+		clipSource._clipInstance._loopCount = loopCount;
+		clipSource.setTimeScale(timeScale);
+		var animState = new SteadyState('My animation state');
+		animState.setClipSource(clipSource);
+		var animLayer = animComp.layers[0];  // Default animation layer
+		animLayer.setState('RootRotateState', animState);
+		animLayer.setCurrentState(animState, true);
+		
+		var bleedD = 0.0;
+		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
+
+		addSkeltonAttributeData(meshData, joints);
+
+		var weightData = meshData.dataViews.WEIGHTS;
+		for (var i = 0; i < weightData.length; i+=4) {
+			weightData[i] = 1;
+			weightData[i+1] = 0;
+			weightData[i+2] = 0;
+			weightData[i+3] = 0;
+		}
+
+		var leftVerts = [];
+		var positions = meshData.dataViews.POSITION;
+		var posLen = positions.length;
+		for (var i = 0; i < posLen; i+=3) {
+			var x = positions[i];
+			// Translate up to set mesh origin at entity's transform
+			positions[i+2] -= 0.5;
+			var z = positions[i+2];
+
+			var vertIndex = i/3;
+			var quadIndex = vertIndex * 4;
+
+			if (x < 0) {
+				leftVerts.push(vertIndex);
+				smoothWeights(-x, bleedD, weightData, quadIndex);
+			}
+
+		}
+
+		var jointData = meshData.dataViews.JOINTIDS;
+
+		loopSetJoints(leftYJoint, leftVerts, jointData);
+		
+		var material = new Material(ShaderLib.uber);
+		material.uniforms.materialDiffuse = diffuse;
+		material.cullState.enabled = false;
+		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
+		
+		entity.setComponent(new MeshDataComponent(meshData));
+		entity.setComponent(new MeshRendererComponent(material));
+		
+		entity.setComponent(animComp);
+		entity.meshDataComponent.currentPose = entity.animationComponent._skeletonPose;
+		return entity;
+	}
 	
 	function init() {
 
@@ -324,13 +456,14 @@ require([
 
 		paperEntity = world.createEntity().addToWorld();
 		var color = [1, 1, 1, 1];
-		var loopCount = 1;
+		var loopCount = -1;
 		var timeScale = 1;
 		var vertCount = 50;
-		var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
+		//var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
+		var paperEntity = addVerticalFoldPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var scale = 8;
 		paperEntity.transformComponent.setScale(scale, scale, scale);
-		paperEntity.animationComponent.stop();
+		//paperEntity.animationComponent.stop();
 
 		var animT = 0;
 		var tstep = 0.01;
