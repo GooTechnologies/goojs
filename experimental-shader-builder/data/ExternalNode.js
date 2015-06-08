@@ -12,6 +12,9 @@
 		this.outputsTo = [];
 	}
 
+	ExternalNode.prototype.addConnection = NodeCommons.addConnection;
+	ExternalNode.prototype.removeConnection = NodeCommons.removeConnection;
+
 	ExternalNode.prototype.toJSON = function () {
 		return {
 			id: this.id,
@@ -25,5 +28,15 @@
 				return outputTo.toJSON();
 			})
 		};
+	};
+
+	ExternalNode.fromJSON = function (config) {
+		var node = new ExternalNode(config.id);
+		node.type = 'external';
+		node.external = _.clone(config.external);
+		config.outputsTo.forEach(function (outputTo) {
+			node.addConnection(Connection.fromJSON(outputTo));
+		});
+		return node;
 	};
 })();

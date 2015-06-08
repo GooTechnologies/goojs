@@ -21,4 +21,13 @@
 			defines: _.clone(this.defines)
 		};
 	};
+
+	FunctionNode.fromJSON = function (config) {
+		var node = new FunctionNode(config.id, config.type);
+		config.outputsTo.forEach(function (outputTo) {
+			node.addConnection(Connection.fromJSON(outputTo));
+		});
+		node.defines = _.clone(config.defines);
+		return node;
+	};
 })();
