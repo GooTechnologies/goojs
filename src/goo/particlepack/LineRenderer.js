@@ -2,6 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator'
@@ -11,6 +12,7 @@ function (
 	MeshData,
 	Shader,
 	Material,
+	Texture,
 	MeshRendererComponent,
 	Vector3,
 	TextureCreator
@@ -52,16 +54,10 @@ function (
 		entity.addToWorld();
 
 		entity.skip = true;
-		var textureCreator = new TextureCreator();
-		textureCreator.loadTexture2D(settings.textureUrl.value, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
-		}).then(function (texture) {
+		if (settings.textureUrl.value instanceof Texture) {
 			entity.skip = false;
-			material.setTexture('PARTICLE_MAP', texture);
-		}, function () {
-			console.error('Error loading image.');
-		});
+			material.setTexture('PARTICLE_MAP', settings.textureUrl.value);
+		}
 
 		var offset = this.meshData.getAttributeBuffer('OFFSET');
 		var tile = this.meshData.getAttributeBuffer('TILE');

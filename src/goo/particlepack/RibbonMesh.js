@@ -2,6 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
@@ -15,6 +16,7 @@ function(
 	MeshData,
 	Shader,
 	Material,
+	Texture,
 	ShaderLib,
 	Vector3,
 	Vector4,
@@ -105,16 +107,21 @@ function(
 		// entity.meshRendererComponent.materials[1] = material2;
 
 		entity.skip = true;
-		var textureCreator = new TextureCreator();
-		textureCreator.loadTexture2D(settings.textureUrl.value, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
-		}).then(function (texture) {
+		if (settings.textureUrl instanceof Texture) {
 			entity.skip = false;
-			material.setTexture('PARTICLE_MAP', texture);
-		}, function () {
-			console.error('Error loading image.');
-		});
+			material.setTexture('PARTICLE_MAP', settings.textureUrl);
+		} else {
+			var textureCreator = new TextureCreator();
+			textureCreator.loadTexture2D(settings.textureUrl.value, {
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp'
+			}).then(function (texture) {
+				entity.skip = false;
+				material.setTexture('PARTICLE_MAP', texture);
+			}, function () {
+				console.error('Error loading image.');
+			});
+		}
 
 		var col = this.meshData.getAttributeBuffer(MeshData.COLOR);
 		var texcoord = this.meshData.getAttributeBuffer(MeshData.TEXCOORD0);

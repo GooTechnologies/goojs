@@ -83,7 +83,7 @@ function (
 				'enabled': true,
 				'settings': {
 					'textureUrl': {
-						'value': 'res/particle/optical_flare2.jpg',
+						'value': null,
 						'type': 'texture'
 					},
 					'tile': {
@@ -131,7 +131,7 @@ function (
 				'enabled': true,
 				'settings': {
 					'textureUrl': {
-						'value': 'res/particle/plankton.png',
+						'value': null,
 						'type': 'texture'
 					},
 					'tile': {
@@ -188,7 +188,7 @@ function (
 				'enabled': false,
 				'settings': {
 					'textureUrl': {
-						'value': 'res/particle/vignette2.jpg',
+						'value': null,
 						'type': 'texture'
 					},
 					'tile': {
@@ -246,58 +246,6 @@ function (
 						'type': 'number',
 						'step': 1,
 						'decimals': 0
-					}
-				}
-			},
-			'TriangleRenderer': {
-				'enabled': false,
-				'settings': {
-					'textureUrl': {
-						'value': 'res/particle/white.jpg',
-						'type': 'texture'
-					},
-					'tile': {
-						'enabled': {
-							'value': false,
-							'type': 'boolean'
-						},
-						'tileCountX': {
-							'value': 5,
-							'type': 'number',
-							'step': 1,
-							'decimals': 0
-						},
-						'tileCountY': {
-							'value': 5,
-							'type': 'number',
-							'step': 1,
-							'decimals': 0
-						},
-						'loopScale': {
-							'value': 1,
-							'type': 'number',
-							'step': 0.1,
-							'decimals': 1
-						},
-						'value': true,
-						'type': 'tile'
-					},
-					'blending': {
-						'value': 'AdditiveBlending',
-						'type': 'option',
-						'values': ['AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'NoBlending', 'CustomBlending'],
-						'texts': ['AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'NoBlending', 'CustomBlending']
-					},
-					'alphakill': {
-						'value': 0,
-						'type': 'number',
-						'min': 0.0,
-						'max': 1.0
-					},
-					'poolCount': 2000,
-					'distance': {
-						'value': 0.2,
-						'type': 'number',
 					}
 				}
 			}

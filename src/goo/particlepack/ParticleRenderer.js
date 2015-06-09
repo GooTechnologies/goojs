@@ -47,20 +47,9 @@ function (
 		entity.addToWorld();
 
 		entity.skip = true;
-		if (settings.textureUrl instanceof Texture) {
+		if (settings.textureUrl.value instanceof Texture) {
 			entity.skip = false;
-			material.setTexture('PARTICLE_MAP', settings.textureUrl);
-		} else {
-			var textureCreator = new TextureCreator();
-			textureCreator.loadTexture2D(settings.textureUrl.value, {
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp'
-			}).then(function (texture) {
-				entity.skip = false;
-				material.setTexture('PARTICLE_MAP', texture);
-			}, function () {
-				console.error('Error loading image.');
-			});
+			material.setTexture('PARTICLE_MAP', settings.textureUrl.value);
 		}
 
 		var offset = this.meshData.getAttributeBuffer('OFFSET');

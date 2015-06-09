@@ -8,7 +8,6 @@ define([
 	'goo/particlepack/ParticleBehaviors',
 	'goo/particlepack/ParticleRenderer',
 	'goo/particlepack/LineRenderer',
-	'goo/particlepack/TriangleRenderer',
 	'goo/particlepack/TrailRenderer'
 ],
 /** @lends */
@@ -22,7 +21,6 @@ function (
 	ParticleBehaviors,
 	ParticleRenderer,
 	LineRenderer,
-	TriangleRenderer,
 	TrailRenderer
 ) {
 	"use strict";
@@ -40,8 +38,6 @@ function (
 			return new ParticleRenderer();
 		} else if (name === 'LineRenderer') {
 			return new LineRenderer();
-		} else if (name === 'TriangleRenderer') {
-			return new TriangleRenderer();
 		} else if (name === 'TrailRenderer') {
 			return new TrailRenderer();
 		} 

@@ -9,8 +9,7 @@ define([
 	'goo/particlepack/ParticleSimulator',
 	'goo/particlepack/ParticleSystem',
 	'goo/particlepack/RibbonMesh',
-	'goo/particlepack/TrailRenderer',
-	'goo/particlepack/TriangleRenderer'
+	'goo/particlepack/TrailRenderer'
 ], function (Scripts) {
 	'use strict';
 
@@ -25,8 +24,7 @@ define([
 		'goo/particlepack/ParticleSimulator',
 		'goo/particlepack/ParticleSystem',
 		'goo/particlepack/RibbonMesh',
-		'goo/particlepack/TrailRenderer',
-		'goo/particlepack/TriangleRenderer'
+		'goo/particlepack/TrailRenderer'
 	];
 
 	for (var i = 1; i < defines.length; i++) {

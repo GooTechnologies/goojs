@@ -33,7 +33,7 @@ function(
 
 			var startind = Math.max(0, Math.floor(Math.random() * simulator.meshPositions.length * 3) - 3);
 			var pos = simulator.meshPositions;
-			vec.setd(pos[startind + 0], pos[startind + 1], pos[startind + 2]);
+			vec.setDirect(pos[startind + 0], pos[startind + 1], pos[startind + 2]);
 
 			if (simulator.jointTransforms) {
 				var jointind = Math.floor(Math.random() * simulator.jointTransforms.length);
