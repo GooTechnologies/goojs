@@ -25,6 +25,7 @@ module.exports = function (grunt) {
 		animationpack: 'goo/animationpack',
 		soundmanager2pack: 'goo/addons/soundmanager2pack',
 		gamepadpack: 'goo/addons/gamepadpack',
+		particlepack: 'goo/particlepack',
 		passpack: 'goo/passpack',
 		gizmopack: 'goo/util/gizmopack',
 		physicspack: 'goo/addons/physicspack'
