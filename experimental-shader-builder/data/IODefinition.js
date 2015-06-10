@@ -9,4 +9,7 @@
 	IODefinition.prototype.accepts = function (conenction) {
 		return this.type === conenction.type;
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.IODefinition = IODefinition;
 })();

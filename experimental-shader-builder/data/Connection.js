@@ -25,4 +25,7 @@
 	Connection.fromJSON = function (json) {
 		return new Connection(json.output, json.to, json.input);
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.Connection = Connection;
 })();

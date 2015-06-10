@@ -21,14 +21,12 @@
 	// the node alone cannot do that
 	Structure.prototype.addConnection = function (node, connection) {
 		// verify connection validity
-		var fromNode = this.nodes[from];
-		fromNode.addConnection(connection);
+		node.addConnection(connection);
 		return this;
 	};
 
 	Structure.prototype.removeConnection = function (node, connection) {
-		var fromNode = this.nodes[from];
-		fromNode.removeConnection(connection);
+		node.removeConnection(connection);
 		return this;
 	};
 
@@ -46,4 +44,7 @@
 		});
 		return structure;
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.Structure = Structure;
 })();

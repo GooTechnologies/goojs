@@ -7,4 +7,7 @@
 		this.defines = defines;
 		this.body = body;
 	}
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.TypeDefinition = TypeDefinition;
 })();

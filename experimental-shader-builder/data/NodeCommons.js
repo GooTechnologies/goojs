@@ -26,4 +26,7 @@
 		}
 		return this;
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.NodeCommons = NodeCommons;
 })();

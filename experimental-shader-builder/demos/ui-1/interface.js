@@ -53,7 +53,7 @@
 
 			this.reset = function () {
 				// --- fetch the samples ---
-				var p1 = $http.get('samples/s3/types.json')
+				var p1 = $http.get('../../samples/s3/types.json')
 					.success(function (data) {
 						this.nodeTypes = data;
 						this.updateNodeTypeNames();
@@ -62,7 +62,7 @@
 						this.activateTypeName(Object.keys(this.nodeTypes)[0]);
 					}.bind(this));
 
-				var p2 = $http.get('samples/s3/structure.json')
+				var p2 = $http.get('../../samples/s3/structure.json')
 					.success(function (data) {
 						this.structure = data;
 						this.updateNodeNames();

@@ -1,6 +1,9 @@
 (function () {
 	'use strict';
 
+	var NodeCommons = shaderBits.NodeCommons;
+	var Connection = shaderBits.Connection;
+
 	function ExternalNode(id) {
 		this.id = id;
 		this.type = 'external';
@@ -12,6 +15,7 @@
 		this.outputsTo = [];
 	}
 
+	ExternalNode.prototype.acceptsConnection = NodeCommons.acceptsConnection;
 	ExternalNode.prototype.addConnection = NodeCommons.addConnection;
 	ExternalNode.prototype.removeConnection = NodeCommons.removeConnection;
 
@@ -39,4 +43,7 @@
 		});
 		return node;
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.ExternalNode = ExternalNode;
 })();
