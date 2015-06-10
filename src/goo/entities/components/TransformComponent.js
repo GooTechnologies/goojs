@@ -534,8 +534,11 @@ define([
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
 		if (arguments.length === 3) {
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
-		} else if(position.transformComponent) {
-			this.transform.lookAt(position.transformComponent.transform.translation, up);
+		} else if (position.transformComponent) {
+			if (position.transformComponent._dirty) {
+				position.transformComponent.updateWorldTransform();
+			}
+			this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
 		} else {
 			if (Array.isArray(position)) {
 				position = new Vector3(position);
