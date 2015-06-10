@@ -505,10 +505,6 @@ define([
 		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, offset, attributeData);
 	};
 
-	Renderer.prototype.setShadowType = function (type) {
-		this.shadowHandler.shadowType = type;
-	};
-
 	/**
 	 * Update the shadowHandler for the provided entities and lights.
 	 *

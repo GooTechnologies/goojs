@@ -84,7 +84,7 @@ require([
 		spotLight.angle = 35;
 		spotLight.penumbra = 0;
 		spotLight.range = 20;
-		spotLight.shadowSettings.shadowType = 'PCF';
+		// spotLight.shadowSettings.shadowType = 'Basic';
 
 		var spotLightEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
 

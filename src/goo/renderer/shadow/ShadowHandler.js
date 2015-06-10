@@ -65,14 +65,14 @@ define([
 			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);
 		}
 
-		var shadowSetting = {
+		var textureSetting = {
 			magFilter : 'NearestNeighbor',
 			minFilter : 'NearestNeighborNoMipMaps'
 		};
 		if (shadowSettings.shadowType === 'VSM') {
-			shadowSettings.type = 'Float';
+			textureSetting.type = 'Float';
 		}
-		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, shadowSetting);
+		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, textureSetting);
 		shadowSettings.shadowData.shadowResult = null;
 
 		if (shadowSettings.shadowType === 'VSM') {
@@ -95,6 +95,7 @@ define([
 
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
+		shadowSettings.shadowRecord.resolution[1] = shadowY;
 		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
 	};
 
@@ -166,6 +167,7 @@ define([
 
 				if (record.shadowType !== shadowSettings.shadowType) {
 					this._createShadowData(shadowSettings, renderer);
+					// this.depthMaterial.shader.rebuild();
 
 					record.shadowType = shadowSettings.shadowType;
 				}
@@ -178,7 +180,7 @@ define([
 				}
 				
 				if (light.shadowCaster) {
-					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 2 : 0);
+					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 3 : shadowSettings.shadowType === 'PCF' ? 2 : 1);
 					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 					shadowSettings.shadowData.cameraScale = this.depthMaterial.uniforms.cameraScale;
 

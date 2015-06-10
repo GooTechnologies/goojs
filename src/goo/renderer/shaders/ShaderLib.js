@@ -1021,7 +1021,7 @@ define([
 			ShaderBuilder.animation.processor
 		],
 		defines: {
-			SHADOW_TYPE: 0,
+			SHADOW_TYPE: 1,
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
@@ -1069,11 +1069,11 @@ define([
 		'void main(void)',
 		'{',
 			'float linearDepth = length(worldPosition) * cameraScale;',
-			'#if SHADOW_TYPE == 0',
-				'gl_FragColor = packDepth(linearDepth);',
-			'#elif SHADOW_TYPE == 1',
+			'#if SHADOW_TYPE == 1',
 				'gl_FragColor = packDepth(linearDepth);',
 			'#elif SHADOW_TYPE == 2',
+				'gl_FragColor = packDepth(linearDepth);',
+			'#elif SHADOW_TYPE == 3',
 				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',
 		'}'

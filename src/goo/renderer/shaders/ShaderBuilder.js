@@ -290,8 +290,6 @@ define([
 					uniforms['shadowMaps'+i] = 'SHADOW_MAP'+i;
 					shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
 
-
-
 					var uniform = uniforms.shadowData = uniforms.shadowData || [];
 
 					var ind = shadowIndex * 8;
@@ -314,7 +312,7 @@ define([
 
 					shadowIndex++;
 
-					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
+					lightDefines.push('H', light.shadowSettings.shadowType === 'VSM' ? 3 : light.shadowSettings.shadowType === 'PCF' ? 2 : 1);
 				}
 
 				if (useLightCookie) {
