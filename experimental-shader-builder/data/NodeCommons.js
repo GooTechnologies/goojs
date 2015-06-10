@@ -3,13 +3,17 @@
 
 	var NodeCommons = {};
 
-	NodeCommons.addConnection = function (connection) {
-		var exists = this.outputsTo.some(function (candidate) {
+	NodeCommons.acceptsConnection = function (connection) {
+		return !this.outputsTo.some(function (candidate) {
 			return candidate.equals(connection);
 		});
-		if (!exists) {
-			this.outputsTo.push(connection);
-		}
+	};
+
+	NodeCommons.addConnection = function (connection) {
+		if (!this.acceptsConnection(connection)) { return; }
+
+		this.outputsTo.push(connection);
+
 		return this;
 	};
 
