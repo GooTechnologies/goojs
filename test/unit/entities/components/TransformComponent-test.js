@@ -112,6 +112,19 @@ define([
 			expect(translation).toBeCloseToVector(new Vector3(9,0,0));
 		});
 
+		it('can lookAt entity', function () {
+			var entity1 = world.createEntity();
+			entity1.move(3,7,-10);
+			var t1 = entity1.getTranslation();
+
+			var entity2 = world.createEntity();
+			entity2.lookAt(entity1);
+			entity2.move(0,0,-t1.length());
+			var t2 = entity2.getTranslation();
+			
+			expect(t1).toBeCloseToVector(t2);
+		});
+
 		it('handles attaching itself to an entity', function () {
 			var transformComponent = new TransformComponent();
 			var entity = new Entity(world);
