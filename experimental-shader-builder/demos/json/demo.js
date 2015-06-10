@@ -52,14 +52,14 @@
 
 	function getSample(name) {
 		$.ajax({
-			url: 'samples/' + name + '/types.json',
+			url: '../../samples/' + name + '/types.json',
 			dataType: 'text'
 		}).done(function(text) {
 			return typesEditor.setValue(text, -1);
 		});
 
 		$.ajax({
-			url: 'samples/' + name + '/structure.json',
+			url: '../../samples/' + name + '/structure.json',
 			dataType: 'text'
 		}).done(function(text) {
 			return structureEditor.setValue(text, -1);

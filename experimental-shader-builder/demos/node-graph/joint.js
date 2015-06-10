@@ -79,7 +79,7 @@
 
 	function getSample(name, callback) {
 		$.ajax({
-			url: 'samples/' + name + '/types.json'
+			url: '../../samples/' + name + '/types.json'
 		}).done(callback);
 	}
 

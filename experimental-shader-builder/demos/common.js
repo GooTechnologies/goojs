@@ -45,7 +45,7 @@
 				fshader: shaderSource
 			});
 
-			var texture = textureCreator.loadTexture2D('../visual-test/resources/check.png');
+			var texture = textureCreator.loadTexture2D('../../../visual-test/resources/check.png');
 
 			material.setTexture('DIFFUSE_MAP', texture);
 
