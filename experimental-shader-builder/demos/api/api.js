@@ -8,10 +8,10 @@
 	var Structure = shaderBits.Structure;
 
 	function getS1() {
-		var structure = new Structure();
+		var context = new Context();
 
-		var node1 = new FunctionNode('i1', 'const');
-		node1.setDefine('value', "1.0");
+		var node1 = context.createFunction('const');
+		node1.setDefine('value', '1.0');
 		structure.addNode(node1);
 
 		var nodeOut = new FunctionNode('i2', 'out');

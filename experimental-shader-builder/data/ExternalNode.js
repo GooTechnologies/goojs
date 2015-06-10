@@ -15,9 +15,9 @@
 		this.outputsTo = [];
 	}
 
-	ExternalNode.prototype.acceptsConnection = NodeCommons.acceptsConnection;
-	ExternalNode.prototype.addConnection = NodeCommons.addConnection;
-	ExternalNode.prototype.removeConnection = NodeCommons.removeConnection;
+	ExternalNode.prototype.canConnect = NodeCommons.canConnect;
+	ExternalNode.prototype.connect = NodeCommons.connect;
+	ExternalNode.prototype.disconnect = NodeCommons.removeConnection;
 
 	ExternalNode.prototype.toJSON = function () {
 		return {
