@@ -27,6 +27,9 @@ function (
 		this.lifeSpan = 0;
 		this.lifeSpanTotal = 0;
 
+		this.offsetX = -1;
+		this.offsetY = -1;
+
 		this.dead = true;
 		this.id = Particle.ID++;
 	}

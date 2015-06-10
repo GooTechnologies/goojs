@@ -13,7 +13,7 @@ function (
 			'type': 'color'
 		},
 		'size': {
-			'value': [0.3, 0.3],
+			'value': [1, 1],
 			'type': 'range',
 			'min': 0.0,
 			'max': 2.0
@@ -86,6 +86,7 @@ function (
 						'value': null,
 						'type': 'texture'
 					},
+					'sort': false,
 					'tile': {
 						'enabled': {
 							'value': false,
@@ -128,7 +129,7 @@ function (
 				}
 			},
 			'TrailRenderer': {
-				'enabled': true,
+				'enabled': false,
 				'settings': {
 					'textureUrl': {
 						'value': null,

@@ -97,6 +97,9 @@ function (
 
 		for (var rendererName in settings.renderers) {
 			var rendererObj = settings.renderers[rendererName];
+			if (!rendererObj.enabled) {
+				continue;
+			}
 			var instance = createRenderer(rendererName);
 			instance.topSettings = settings;
 			instance.globalSettings = rendererObj;

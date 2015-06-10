@@ -3,8 +3,9 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/Material',
 	'goo/renderer/Texture',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/TextureCreator'
+	'goo/math/Vector3',
+	'goo/entities/SystemBus',
+	'goo/entities/components/MeshRendererComponent'
 ],
 /** @lends */
 function (
@@ -12,8 +13,9 @@ function (
 	Shader,
 	Material,
 	Texture,
-	MeshRendererComponent,
-	TextureCreator
+	Vector3,
+	SystemBus,
+	MeshRendererComponent
 ) {
 	"use strict";
 
@@ -21,10 +23,17 @@ function (
 		this.settings = null;
 		this.entity = null;
 		this.meshData = null;
+	
+		this.calcVec = new Vector3();
 	}
 
 	ParticleRenderer.prototype.init = function (goo, settings) {
+		this.goo = goo;
 		this.settings = settings;
+
+		this.distanceSorter = function (a, b) {
+			return b.cameraDist - a.cameraDist;
+		};
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR]);
 		attributeMap.DATA = MeshData.createAttribute(2, 'Float');
@@ -52,6 +61,20 @@ function (
 			material.setTexture('PARTICLE_MAP', settings.textureUrl.value);
 		}
 
+		var tileInfo = this.settings.tile;
+		var isTiled = tileInfo !== undefined && tileInfo.enabled.value;
+		var tileCountX = 1;
+		var tileCountY = 1;
+		var loopScale = 1;
+		var isAnimated = tileInfo.animated;
+		if (isTiled) {
+			tileCountX = tileInfo.tileCountX.value;
+			tileCountY = tileInfo.tileCountY.value;
+			loopScale = tileInfo.loopScale.value;
+		}
+		var scaleX = 1 / tileCountX;
+		var scaleY = 1 / tileCountY;
+
 		var offset = this.meshData.getAttributeBuffer('OFFSET');
 		var tile = this.meshData.getAttributeBuffer('TILE');
 		var indices = this.meshData.getIndexBuffer();
@@ -68,11 +91,19 @@ function (
 			offset[8 * i + 6] = 1;
 			offset[8 * i + 7] = -1;
 
+			var offsetX = 0;
+			var offsetY = 0;
+
+			if (isTiled && !isAnimated) {
+				offsetX = Math.min(Math.floor(Math.random() * tileCountX), tileCountX - 1) / tileCountX;
+				offsetY = Math.min(Math.floor(Math.random() * tileCountY), tileCountY - 1) / tileCountY;
+			}
+
 			for (var j = 0; j < 4; j++) {
-				tile[16 * i + j * 4 + 0] = 0; //offset u
-				tile[16 * i + j * 4 + 1] = 0; //offset w
-				tile[16 * i + j * 4 + 2] = 1; //scale u
-				tile[16 * i + j * 4 + 3] = 1; //scale w
+				tile[(16 * i + 0) + 4 * j] = offsetX;
+				tile[(16 * i + 1) + 4 * j] = offsetY;
+				tile[(16 * i + 2) + 4 * j] = scaleX;
+				tile[(16 * i + 3) + 4 * j] = scaleY;
 			}
 
 			indices[6 * i + 0] = 4 * i + 0;
@@ -126,6 +157,7 @@ function (
 		var tileCountX = 1;
 		var tileCountY = 1;
 		var loopScale = 1;
+		var isAnimated = tileInfo.animated;
 		if (isTiled) {
 			tileCountX = tileInfo.tileCountX.value;
 			tileCountY = tileInfo.tileCountY.value;
@@ -141,6 +173,9 @@ function (
 
 		var lastAlive = 0;
 		var j, i, l;
+
+		var filteredParticles = [];
+		var camera = this.goo.renderSystem.camera;
 		for (i = 0, l = particles.length; i < l; i++) {
 			var particle = particles[i];
 
@@ -148,38 +183,70 @@ function (
 				continue;
 			}
 
-			if (isTiled) {
+			if (this.settings.sort && camera) {
+				particle.cameraDist = this.calcVec.setVector(camera.translation).subVector(particle.position).lengthSquared();
+			} else {
+				particle.cameraDist = 0;
+			}
+
+			filteredParticles.push(particle);
+		}
+
+		if (this.settings.sort) {
+			filteredParticles.sort(this.distanceSorter);
+		}
+
+		for (i = 0, l = filteredParticles.length; i < l; i++) {
+			var particle = filteredParticles[i];
+
+			// if (particle.dead) {
+				// continue;
+			// }
+
+			if (isTiled && isAnimated) {
 				var tileTime = (((particle.lifeSpan / particle.lifeSpanTotal) * loopScale) % 1) * totalTileCount;
 				tileTime = Math.floor(tileTime) % tileFrameCount;
 				var offsetX = (tileTime % tileCountX) / tileCountX;
 				var offsetY = 1 - scaleY - Math.floor(tileTime / tileCountX) / tileCountY;
 
 				for (j = 0; j < 4; j++) {
-					tile[(4 * 4 * i + 0) + 4 * j] = offsetX;
-					tile[(4 * 4 * i + 1) + 4 * j] = offsetY;
-					tile[(4 * 4 * i + 2) + 4 * j] = scaleX;
-					tile[(4 * 4 * i + 3) + 4 * j] = scaleY;
+					tile[(16 * i + 0) + 4 * j] = offsetX;
+					tile[(16 * i + 1) + 4 * j] = offsetY;
+					tile[(16 * i + 2) + 4 * j] = scaleX;
+					tile[(16 * i + 3) + 4 * j] = scaleY;
+				}
+			}
+
+			if (isTiled && !isAnimated) {
+				if (particle.offsetX === -1) {
+					particle.offsetX = Math.min(Math.floor(Math.random() * tileCountX), tileCountX - 1) / tileCountX;
+					particle.offsetY = Math.min(Math.floor(Math.random() * tileCountY), tileCountY - 1) / tileCountY;					
+				}
+				for (var j = 0; j < 4; j++) {
+					tile[(16 * i + 0) + 4 * j] = particle.offsetX;
+					tile[(16 * i + 1) + 4 * j] = particle.offsetY;
+					tile[(16 * i + 2) + 4 * j] = scaleX;
+					tile[(16 * i + 3) + 4 * j] = scaleY;
 				}
 			}
 
 			var posdata = particle.position.data;
 			var coldata = particle.color.data;
 			for (j = 0; j < 4; j++) {
-				pos[(4 * 3 * i + 0) + 3 * j] = posdata[0];
-				pos[(4 * 3 * i + 1) + 3 * j] = posdata[1];
-				pos[(4 * 3 * i + 2) + 3 * j] = posdata[2];
+				pos[(12 * i + 0) + 3 * j] = posdata[0];
+				pos[(12 * i + 1) + 3 * j] = posdata[1];
+				pos[(12 * i + 2) + 3 * j] = posdata[2];
 
-				col[(4 * 4 * i + 0) + 4 * j] = coldata[0];
-				col[(4 * 4 * i + 1) + 4 * j] = coldata[1];
-				col[(4 * 4 * i + 2) + 4 * j] = coldata[2];
-				col[(4 * 4 * i + 3) + 4 * j] = particle.alpha;
+				col[(16 * i + 0) + 4 * j] = coldata[0];
+				col[(16 * i + 1) + 4 * j] = coldata[1];
+				col[(16 * i + 2) + 4 * j] = coldata[2];
+				col[(16 * i + 3) + 4 * j] = particle.alpha;
 
-				data[(4 * 2 * i + 0) + 2 * j] = particle.size;
-				data[(4 * 2 * i + 1) + 2 * j] = particle.rotation;
+				data[(8 * i + 0) + 2 * j] = particle.size;
+				data[(8 * i + 1) + 2 * j] = particle.rotation;
 			}
-
-			lastAlive = i + 1;
 		}
+		lastAlive = filteredParticles.length;
 
 		this.meshData.indexLengths = [lastAlive * 6];
 		this.meshData.indexCount = lastAlive * 6;
