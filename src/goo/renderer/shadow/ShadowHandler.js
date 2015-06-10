@@ -65,11 +65,14 @@ define([
 			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);
 		}
 
-		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
-				type: 'Float',
-				magFilter : 'NearestNeighbor',
-				minFilter : 'NearestNeighborNoMipMaps'
-			});
+		var shadowSetting = {
+			magFilter : 'NearestNeighbor',
+			minFilter : 'NearestNeighborNoMipMaps'
+		};
+		if (shadowSettings.shadowType === 'VSM') {
+			shadowSettings.type = 'Float';
+		}
+		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, shadowSetting);
 		shadowSettings.shadowData.shadowResult = null;
 
 		if (shadowSettings.shadowType === 'VSM') {
@@ -161,7 +164,7 @@ define([
 					record.size = shadowSettings.size;
 				}
 
-				if (shadowSettings.shadowType === 'VSM' && record.shadowType !== shadowSettings.shadowType) {
+				if (record.shadowType !== shadowSettings.shadowType) {
 					this._createShadowData(shadowSettings, renderer);
 
 					record.shadowType = shadowSettings.shadowType;

@@ -1058,13 +1058,21 @@ define([
 
 		'varying vec4 worldPosition;',
 
+		'vec4 packDepth( const in float depth ) {',
+			'const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );',
+			'const vec4 bit_mask  = vec4( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );',
+			'vec4 res = fract( depth * bit_shift );',
+			'res -= res.xxyz * bit_mask;',
+			'return res;',
+		'}',
+
 		'void main(void)',
 		'{',
 			'float linearDepth = length(worldPosition) * cameraScale;',
 			'#if SHADOW_TYPE == 0',
-				'gl_FragColor = vec4(linearDepth);',
+				'gl_FragColor = packDepth(linearDepth);',
 			'#elif SHADOW_TYPE == 1',
-				'gl_FragColor = vec4(linearDepth);',
+				'gl_FragColor = packDepth(linearDepth);',
 			'#elif SHADOW_TYPE == 2',
 				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',

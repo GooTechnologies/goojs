@@ -431,6 +431,12 @@ define([
 					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
 				// '}',
 
+				'float unpackDepth( const in vec4 rgba_depth ) {',
+					'const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );',
+					'float depth = dot( rgba_depth, bit_shift );',
+					'return depth;',
+				'}',
+
 				'float ChebychevInequality(in vec2 moments, in float t) {',
 					'if ( t <= moments.x ) return 1.0;',
 					'float variance = moments.y - (moments.x * moments.x);',
@@ -587,23 +593,23 @@ define([
 
 										'float fDepth = 0.0;',
 
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy0)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy0)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy0)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy0)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy0)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy0)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, 0.0)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, 0.0)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth =  texture2D(shadowMaps'+i+', depth.xy).r;',
+										'fDepth =  unpackDepth(texture2D(shadowMaps'+i+', depth.xy));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, 0.0)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, 0.0)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy1)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy1)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy1)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy1)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
+										'fDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)));',
 										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 										'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness'+i+');'
 										//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
@@ -619,7 +625,7 @@ define([
 									} else {
 										fragment.push(
 										'depth.z *= 0.96;',
-										'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
+										'float shadowDepth = unpackDepth(texture2D(shadowMaps'+i+', depth.xy));',
 										'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness'+i+';'
 										);
 									}

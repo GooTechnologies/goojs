@@ -93,6 +93,7 @@ require([
 		var data = {
 			color: [spotLight.color.data[0] * 255, spotLight.color.data[1] * 255, spotLight.color.data[2] * 255]
 		};
+		var controller = spotLightGui.add(spotLight.shadowSettings, 'shadowType', ['Basic', 'PCF', 'VSM']);
 		var controller = spotLightGui.addColor(data, 'color');
 		controller.onChange(function() {
 			spotLight.color.seta(data.color).div(255);
