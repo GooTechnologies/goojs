@@ -102,17 +102,6 @@ define([
 		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
-		//! AT: is this still necessary?
-		if (this.context.getShaderPrecisionFormat === undefined) {
-			this.context.getShaderPrecisionFormat = function () {
-				return {
-					"rangeMin": 1,
-					"rangeMax": 1,
-					"precision": 1
-				};
-			};
-		}
-
 		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxTexureSize) : Capabilities.maxTexureSize;
 		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxCubemapSize) : Capabilities.maxCubemapSize;
 
@@ -281,6 +270,17 @@ define([
 
 		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
 		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
+
+		//! AT: is this still necessary?
+		if (this.context.getShaderPrecisionFormat === undefined) {
+			this.context.getShaderPrecisionFormat = function () {
+				return {
+					"rangeMin": 1,
+					"rangeMax": 1,
+					"precision": 1
+				};
+			};
+		}
 
 		Capabilities.init(this.context);
 	};
