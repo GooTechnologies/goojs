@@ -16,6 +16,8 @@ require([
 	V.describe('Extruding a path along another path');
 
 	var goo = V.initGoo();
+
+	goo._addDebugKeys();
 	var world = goo.world;
 
 	var path = PolyLine.fromCubicSpline([

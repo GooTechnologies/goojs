@@ -23,7 +23,9 @@ require([
 	'goo/animationpack/clip/AnimationClip',
 	'goo/animationpack/clip/JointChannel',
 	'goo/animationpack/clip/AbstractAnimationChannel',
-	'goo/animationpack/systems/AnimationSystem'
+	'goo/animationpack/systems/AnimationSystem',
+
+	'goo/geometrypack/PolyLine'
 
 ], function (
 	V,
@@ -49,11 +51,13 @@ require([
 	AnimationClip,
 	JointChannel,
 	AbstractAnimationChannel,
-	AnimationSystem
+	AnimationSystem,
+
+	PolyLine
 ) {
 	'use strict';
 
-	V.describe('Origami Animation Test');
+	V.describe('Skeleton Animation Test');
 
 
 	function addSkeltonAttributeData(meshData, joints) {
@@ -312,6 +316,40 @@ require([
 		return entity;
 	}
 
+	function createBottleMeshData() {
+
+		var subdiv = 20;
+		var radius = 2;
+		var height = 4;
+		var thickness = 0.1 * radius;
+
+		var verts = [
+
+			//Inner shell
+			0, height * 0.1, 0,
+			radius - thickness, height * 0.1, 0,
+			radius - thickness, height * 0.5, 0,
+			radius * 0.5 - thickness, height * 0.7, 0,
+
+			// Bottle lip
+			radius * 0.2, height, 0,
+			radius * 0.25, height, 0,
+
+			//Outer shell
+			radius * 0.5, height * 0.7, 0,
+			radius, height * 0.5, 0,
+			radius, 0, 0,
+			0, 0, 0,
+		];
+
+		var section = PolyLine.fromCubicSpline(verts, subdiv);
+
+		var latheDivs = 20;
+		var meshData = section.lathe(latheDivs);
+
+		return meshData;
+	}
+
 
 	function addVerticalFoldPaper(entity, vertCount, diffuse, loopCount, timeScale) {
 
@@ -319,23 +357,11 @@ require([
 			throw Error('The entity cannot have any prior animation- or meshdata/renderer- components');
 		}
 
-		var size = 1;
-
 		var joints = [];
 
 		// Create skeleton joint hierarchy
-		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, -0.05]);
+		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
 
-		var leftYJoint = createNewJoint('left.z', 1, rootJoint, joints, [0, 0, -0.5]);
-		
-		var leftTopJoint = createNewJoint('left.top', 2, leftYJoint, joints, [-0.25, 0, -0.5]);
-
-
-		var rightZJoint = createNewJoint('right.z', 3, rootJoint, joints, [0, 0, -0.5]);
-		
-		var rightTopJoint = createNewJoint('right.top', 4, rightZJoint, joints, [0.25, 0, -0.5]);
-
-		
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
@@ -344,7 +370,7 @@ require([
 		var rots = [];
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
-		q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, Vector3.UNIT_X);
+		//q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, Vector3.UNIT_X);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
 		Array.prototype.push.apply(rots, q1.data);
@@ -374,82 +400,6 @@ require([
 			animChannels
 		);
 
-		rots = [];
-		q2.fromAngleNormalAxis(MathUtils.HALF_PI * 0.88, Vector3.UNIT_Z);
-		q1.fromAngleNormalAxis(0.1, Vector3.UNIT_Z);
-		Array.prototype.push.apply(rots, q2.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		
-		var leftYChannel = createJointChannel(
-			leftYJoint,
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
-		rots = [];
-		q2.fromAngleNormalAxis(-MathUtils.HALF_PI * 0.88, Vector3.UNIT_Z);
-		q1.fromAngleNormalAxis(-0.1, Vector3.UNIT_Z);
-		Array.prototype.push.apply(rots, q2.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		var rightZChannel = createJointChannel(
-			rightZJoint,
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
-
-		// TOPS
-
-
-		// Hide mesh penetration by scaling 
-		var scales = [
-			.5, 1, 1,
-			1,1,1,
-			1,1,1,
-		];
-
-		rots = [];
-		q1.fromAngleNormalAxis(-Math.PI * 0.98, Vector3.UNIT_X);
-		q2.fromAngleNormalAxis(-0.05, Vector3.UNIT_X);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q2.data);
-
-
-		var leftTopChannel = createJointChannel(
-			leftTopJoint,
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
-		var rightTopChannel = createJointChannel(
-			rightTopJoint,
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = loopCount;
@@ -461,8 +411,7 @@ require([
 		animLayer.setCurrentState(animState, true);
 		
 		var bleedD = 0.0;
-		var meshData = Surface.createTessellatedFlat(size, size, vertCount, 10);
-
+		var meshData = createBottleMeshData();
 		addSkeltonAttributeData(meshData, joints);
 
 		var weightData = meshData.dataViews.WEIGHTS;
@@ -482,44 +431,19 @@ require([
 		for (var i = 0; i < posLen; i+=3) {
 			var x = positions[i];
 			// Translate up to set mesh origin at entity's transform
-			positions[i+2] -= 0.5;
+			//positions[i+2] -= 0.5;
 			var z = positions[i+2];
 
 			var vertIndex = i/3;
 			var quadIndex = vertIndex * 4;
-
-			if (x < 0) {
-				leftVerts.push(vertIndex);
-				//smoothWeights(-x, bleedD, weightData, quadIndex);
-
-				if (z < -0.5) {
-					leftTopVerts.push(vertIndex);
-					//smoothWeights(-z, bleedD, weightData, quadIndex);
-				}
-			} else {
-				rightVerts.push(vertIndex);
-				//smoothWeights(x, bleedD, weightData, quadIndex);
-				if (z < -0.5) {
-					rightTopVerts.push(vertIndex);
-					//smoothWeights(-z, bleedD, weightData, quadIndex);
-				}
-			}
-
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
-
-
-		loopSetJoints(leftYJoint, leftVerts, jointData);
-		loopSetJoints(leftTopJoint, leftTopVerts, jointData);
-
-		loopSetJoints(rightZJoint, rightVerts, jointData);
-		loopSetJoints(rightTopJoint, rightTopVerts, jointData);
 		
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
-		material.cullState.enabled = false;
+		material.cullState.enabled = true;
 		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
 			material.setTexture('DIFFUSE_MAP', texture);
 		});
@@ -550,7 +474,7 @@ require([
 		var vertCount = 51;
 		//var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
 		var paperEntity = addVerticalFoldPaper(paperEntity, vertCount, color, loopCount, timeScale);
-		var scale = 8;
+		var scale = 1;
 		paperEntity.transformComponent.setScale(scale, scale, scale);
 
 		var animT = 0;
@@ -595,8 +519,8 @@ require([
 		// Add Ground plane.
 		world.createEntity(Surface.createTessellatedFlat(100, 100, 20, 20), new Material(ShaderLib.simpleLit)).addToWorld();
 
-		//V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0.3));
-		world.createEntity(new Camera(), [0, 10, 30]).addToWorld().lookAt([0, 1, 0]);
+		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0.3));
+		//world.createEntity(new Camera(), [0, 10, 30]).addToWorld().lookAt([0, 1, 0]);
 
 		V.process();
 	}
