@@ -428,7 +428,7 @@ require([
 		window.addEventListener('mousedown', function(event) {
 			mouseDown = true;
 			lastX = event.clientX;
-			entity.animationComponent.pause();
+			entity.animationComponent.stop();
 		});
 
 		window.addEventListener('mouseup', function(event) {
@@ -446,7 +446,7 @@ require([
 
 		window.addEventListener('touchstart', function(event) {
 			lastX = event.touches[0].clientX;
-			entity.animationComponent.pause();
+			entity.animationComponent.stop();
 		});
 
 		window.addEventListener('touchmove', function(event) {
@@ -463,6 +463,7 @@ require([
 
 	function resumeAnimation() {
 		entity.animationComponent.resume();
+		entity.animationComponent.resetClips(0);
 	}
 
 	function updateEntityAnimation() {
