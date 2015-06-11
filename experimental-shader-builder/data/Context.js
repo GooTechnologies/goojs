@@ -27,7 +27,7 @@
 			Object.seal(this);
 		};
 
-		//constructor.name = name; // non-standard in ES5
+		//constructor.name = name; // readonly, doh!
 		constructor.prototype = Object.create(FunctionNode.prototype);
 		constructor.prototype.constructor = constructor;
 
@@ -87,7 +87,9 @@
 		attachNodeCreators(this, this.constructors);
 		this.structure = new Structure();
 
-		// should context come with a fixed `out` node?
+		// every typeDefinitions have to have an Out, right?
+		this.out = this.createOut();
+
 
 		this.idCounter = 0;
 	}

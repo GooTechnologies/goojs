@@ -9,13 +9,9 @@
 		var node1 = context.createConst();
 		node1.const = '1.0';
 
-		var nodeOut = context.createOut();
-		// out needs to be unique and instantiated with the context
-		// it should be called destination
-
-		node1.value.connect(nodeOut.r);
-		node1.value.connect(nodeOut.g);
-		node1.value.connect(nodeOut.b);
+		node1.value.connect(context.out.r);
+		node1.value.connect(context.out.g);
+		node1.value.connect(context.out.b);
 
 		return context.structureToJSON();
 	}
