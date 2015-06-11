@@ -57,7 +57,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Skeleton Animation Test');
+	V.describe('Skeleton Animation Test. Use shift + number keys to toggle different rendering modes. Use mouse click and drag or touch drag on the X-axis, to take manual control over the animation.');
 
 
 	function addSkeltonAttributeData(meshData, joints) {
@@ -167,7 +167,7 @@ require([
 		var b = MathUtils.clamp( d / bleedD, 0, 1);
 		var w = MathUtils.scurve5(b);
 		weightData[quadIndex] = w;
-		weightData[quadIndex + 1] = MathUtils.clamp(1.0 - w, 0.1, 1);
+		weightData[quadIndex + 1] = 1 - w;
 	}
 
 	function loopSetJoints(joint, vertIndexArray, jointData) {
@@ -179,179 +179,39 @@ require([
 		}
 	}
 
-	/*
-	* Adds AnimationComponent, MeshDataComponent, MeshRendererComponent to
-	* an "empty" entity, 
-	*/
-	function addFoldingPaper(entity, vertCount, diffuse, loopCount, timeScale) {
-
-		if (entity.getComponent('AnimationComponent') || entity.getComponent('MeshDataComponent') || entity.getComponent('MeshRendererComponent')) {
-			throw Error('The entity cannot have any prior animation- or meshdata/renderer- components');
-		}
-
-		var size = 1;
-
-		var joints = [];
-
-		// Create skeleton joint hierarchy
-		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
-
-		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0, -0.5]);
-		
-		var skeleton = new Skeleton('PaperSkeleton', joints);
-		var skeletonPose = new SkeletonPose(skeleton);
-		var animComp = new AnimationComponent(skeletonPose);
-		
-		var times = [0, 0.5, 1.2];
-		var rots = [];
-		var q1 = new Quaternion();
-		var q2 = new Quaternion();
-		q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, new Vector3(1,0,0).normalize());
-		q2.fromAngleNormalAxis(0.04, new Vector3(1,0,0).normalize());
-		Array.prototype.push.apply(rots, q2.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-
-		var trans = [
-			0,0,0,
-			0,0,0,
-			0,0,0,
-		];
-
-		var scales = [
-			1,1,1,
-			1,1,1,
-			1,1,1,
-		];
-
-		var animChannels = [];
-
-		var rootChannel = createJointChannel(
-			rootJoint, 
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
-		rots = [];
-		q1.fromAngleNormalAxis(-0.05, new Vector3(1,0,0).normalize());
-		q2.fromAngleNormalAxis(-Math.PI * 0.98, new Vector3(1,0,0).normalize());
-		Array.prototype.push.apply(rots, q2.data);
-		Array.prototype.push.apply(rots, q2.data);
-		Array.prototype.push.apply(rots, q1.data);
-		var midChannel = createJointChannel(
-			midJoint,
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
-			animChannels
-		);
-
-		var clip = new AnimationClip('My animation Clip', animChannels);
-		var clipSource = new ClipSource(clip);
-		clipSource._clipInstance._loopCount = loopCount;  // -1 for looping infinetly
-		clipSource.setTimeScale(timeScale);
-		var animState = new SteadyState('My animation state');
-		animState.setClipSource(clipSource);
-		animState._targetState = animState;
-		var animLayer = animComp.layers[0];  // Default animation layer
-		animLayer.setState('RootRotateState', animState);
-		animLayer.setCurrentState(animState, true);
-		
-		var bleedD = 0.0;
-		var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
-
-		addSkeltonAttributeData(meshData, joints);
-
-		var weightData = meshData.dataViews.WEIGHTS;
-		for (var i = 0; i < weightData.length; i+=4) {
-			weightData[i] = 1;
-			weightData[i+1] = 0;
-			weightData[i+2] = 0;
-			weightData[i+3] = 0;
-		}
-
-		var midVerts = [];
-		var positions = meshData.dataViews.POSITION;
-		var posLen = positions.length;
-		for (var i = 0; i < posLen; i+=3) {
-			var x = positions[i];
-			// Translate up to set mesh origin at entity's transform
-			positions[i+2] -= 0.5;
-			var z = positions[i+2];
-
-			var vertIndex = i/3;
-			var quadIndex = vertIndex * 4;
-
-			if (z < -0.5) {
-				midVerts.push(vertIndex);
-				smoothWeights(-z, bleedD, weightData, quadIndex);
-			}
-
-		}
-
-		var jointData = meshData.dataViews.JOINTIDS;
-
-		loopSetJoints(midJoint, midVerts, jointData);
-		
-		var material = new Material(ShaderLib.uber);
-		material.uniforms.materialDiffuse = diffuse;
-		material.cullState.enabled = false;
-		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
-			material.setTexture('DIFFUSE_MAP', texture);
-		});
-		
-		entity.setComponent(new MeshDataComponent(meshData));
-		entity.setComponent(new MeshRendererComponent(material));
-		
-		entity.setComponent(animComp);
-		entity.meshDataComponent.currentPose = entity.animationComponent._skeletonPose;
-		return entity;
-	}
-
 	function createBottleMeshData() {
 
 		var subdiv = 20;
-		var radius = 2;
-		var height = 4;
+		var radius = 0.5;
+		var height = 1;
 		var thickness = 0.1 * radius;
 
 		var verts = [
-
-			//Inner shell
-			0, height * 0.1, 0,
-			radius - thickness, height * 0.1, 0,
-			radius - thickness, height * 0.5, 0,
-			radius * 0.5 - thickness, height * 0.7, 0,
-
-			// Bottle lip
-			radius * 0.2, height, 0,
-			radius * 0.25, height, 0,
-
 			//Outer shell
-			radius * 0.5, height * 0.7, 0,
-			radius, height * 0.5, 0,
-			radius, 0, 0,
 			0, 0, 0,
+			radius, 0, 0,
+			radius, height * 0.5, 0,
+			radius * 0.5, height * 0.7, 0,
+			// Bottle lip
+			radius * 0.25, height, 0,
+			radius * 0.2 - thickness, height, 0,
+			//Inner shell
+			radius * 0.5 - thickness, height * 0.7, 0,
+			radius - thickness, height * 0.5, 0,
+			radius - thickness, height * 0.1, 0,
+			0, height * 0.1, 0,
 		];
 
-		var section = PolyLine.fromCubicSpline(verts, subdiv);
+		var section = PolyLine.fromQuadraticSpline(verts, subdiv);
 
-		var latheDivs = 20;
+		var latheDivs = 48;
 		var meshData = section.lathe(latheDivs);
 
 		return meshData;
 	}
 
 
-	function addVerticalFoldPaper(entity, vertCount, diffuse, loopCount, timeScale) {
+	function addSkeletonAnimation(entity, meshData, diffuse, loopCount, timeScale) {
 
 		if (entity.getComponent('AnimationComponent') || entity.getComponent('MeshDataComponent') || entity.getComponent('MeshRendererComponent')) {
 			throw Error('The entity cannot have any prior animation- or meshdata/renderer- components');
@@ -361,6 +221,10 @@ require([
 
 		// Create skeleton joint hierarchy
 		var rootJoint = createNewJoint('RootJoint', 0, null, joints, [0, 0, 0]);
+
+		var midJoint = createNewJoint('mid', 1, rootJoint, joints, [0, 0.5, 0]);
+
+		var topJoint = createNewJoint('top', 2, midJoint, joints, [0, 1.0, 0]);
 
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
@@ -400,6 +264,60 @@ require([
 			animChannels
 		);
 
+
+		var rots = [];
+		q2.fromAngleNormalAxis(MathUtils.HALF_PI * 0.5, new Vector3(1, 1, 0).normalize());
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		q2.fromAngleNormalAxis(-MathUtils.HALF_PI * 0.5, new Vector3(1, 1, 0).normalize());
+		Array.prototype.push.apply(rots, q2.data);
+		var trans = [
+			0,0,0,
+			0,0.25,0,
+			0,0.1,0.1,
+		];
+		var scales = [
+			0.5,0.5,0.5,
+			1,1,1,
+			1,1,1,
+		];
+		var midChannel = createJointChannel(
+			midJoint, 
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUADRATIC,
+			animChannels
+		);
+
+		var rots = [];
+		q2.fromAngleNormalAxis(MathUtils.HALF_PI, Vector3.UNIT_Y);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, q2.data);
+		var scales = [
+			2,2,2,
+			1,1,1,
+			0.5,0.5,0.5,
+		];
+		var trans = [
+			0,-0.25,0,
+			0,0,0,
+			0,0.25,0,
+		];
+		var topChannel = createJointChannel(
+			topJoint, 
+			joints, 
+			times, 
+			trans, 
+			rots, 
+			scales, 
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			animChannels
+		);
+
 		var clip = new AnimationClip('My animation Clip', animChannels);
 		var clipSource = new ClipSource(clip);
 		clipSource._clipInstance._loopCount = loopCount;
@@ -410,8 +328,7 @@ require([
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
 		
-		var bleedD = 0.0;
-		var meshData = createBottleMeshData();
+		var bleedD = 0.3;
 		addSkeltonAttributeData(meshData, joints);
 
 		var weightData = meshData.dataViews.WEIGHTS;
@@ -422,24 +339,33 @@ require([
 			weightData[i+3] = 0;
 		}
 
-		var leftVerts = [];
-		var rightVerts = [];
-		var leftTopVerts = [];
-		var rightTopVerts = [];
+		var midVerts = [];
+		var topVerts = [];
 		var positions = meshData.dataViews.POSITION;
 		var posLen = positions.length;
+
+		var topCut = 0.7;
+		var midCut = 0.1;
+
 		for (var i = 0; i < posLen; i+=3) {
-			var x = positions[i];
-			// Translate up to set mesh origin at entity's transform
-			//positions[i+2] -= 0.5;
-			var z = positions[i+2];
+			var y = positions[i+1];
 
 			var vertIndex = i/3;
 			var quadIndex = vertIndex * 4;
+
+			if (y > topCut) {
+				topVerts.push(vertIndex);
+				smoothWeights(y - topCut, bleedD, weightData, quadIndex);
+			} else if (y > midCut) {
+				midVerts.push(vertIndex);
+				smoothWeights(y - midCut, bleedD, weightData, quadIndex);
+			}
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
 		
+		loopSetJoints(midJoint, midVerts, jointData);
+		loopSetJoints(topJoint, topVerts, jointData);
 		
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
@@ -456,9 +382,12 @@ require([
 		return entity;
 	}
 	
+	var entity;
+	var goo;
+
 	function init() {
 
-		var goo = V.initGoo();
+		goo = V.initGoo();
 		goo._addDebugKeys();
 		var world = goo.world;
 
@@ -467,63 +396,102 @@ require([
 		var animSystem = new AnimationSystem();
 		world.setSystem(animSystem);
 
-		paperEntity = world.createEntity().addToWorld();
+		entity = world.createEntity().addToWorld();
 		var color = [1, 1, 1, 1];
-		var loopCount = 2;
-		var timeScale = 1;
-		var vertCount = 51;
-		//var paperEntity = addFoldingPaper(paperEntity, vertCount, color, loopCount, timeScale);
-		var paperEntity = addVerticalFoldPaper(paperEntity, vertCount, color, loopCount, timeScale);
+		var loopCount = -1;
+		var timeScale = 0.25;
+
+		var meshData = createBottleMeshData();
+		addSkeletonAnimation(entity, meshData, color, loopCount, timeScale);
 		var scale = 1;
-		paperEntity.transformComponent.setScale(scale, scale, scale);
+		entity.transformComponent.setScale(scale, scale, scale);
 
-		var animT = 0;
-		var tstep = 0.01;
-		window.addEventListener('keydown', function(event) {
-
-			var animationComponent = paperEntity.animationComponent;
-
-			switch (event.keyCode) {
-				case 37:					
-					animT -= tstep;
-					break;
-				case 39:
-					animT += tstep;
-					break;
-				case 40:
-					animT = 0;
-					animationComponent.stop();
-
-			}
-
-			// If the animstate is updated to equal maxtime, the 
-			// animation loops to first keyframe
-			animT = MathUtils.clamp(animT, 0, .999999);
-
-
-			var layer = animationComponent.layers[0];
-			var animState = layer.getStateById('RootRotateState');
-			var clipSource = animState._sourceTree;
-			layer.setCurrentState(animState); // Set currentstate 
-			clipSource._clipInstance._active = true;
-
-			var maxTime = clipSource._clip._maxTime;
-			var timeScale = clipSource._clipInstance._timeScale;
-			var t = (animT * maxTime) / timeScale;
-			clipSource.setTime(t);
-			animationComponent.apply(paperEntity.transformComponent);
-		});
+		addInputListeners();
 
 		V.addLights();
 
-		// Add Ground plane.
-		world.createEntity(Surface.createTessellatedFlat(100, 100, 20, 20), new Material(ShaderLib.simpleLit)).addToWorld();
-
-		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0.3));
-		//world.createEntity(new Camera(), [0, 10, 30]).addToWorld().lookAt([0, 1, 0]);
-
+		world.createEntity(new Camera(), [0, 1, 4]).addToWorld();
 		V.process();
 	}
+
+	var mouseDown = false;
+	var lastX = 0;
+	var animationTime = 0;
+	var sensitivity = 2.5;
+	var domElement;
+	var resumeAnimationTimeout;
+	
+	function addInputListeners() {
+		
+		domElement = goo.renderer.domElement;
+
+		window.addEventListener('mousedown', function(event) {
+			mouseDown = true;
+			lastX = event.clientX;
+			entity.animationComponent.pause();
+		});
+
+		window.addEventListener('mouseup', function(event) {
+			mouseDown = false;
+			
+		});
+
+		window.addEventListener('mousemove', function(event) {
+			if (mouseDown === true) {
+				updateAnimationTime(event.clientX);
+				updateEntityAnimation();
+				toggleResumeTimeout();
+			}
+		});
+
+		window.addEventListener('touchstart', function(event) {
+			lastX = event.touches[0].clientX;
+			entity.animationComponent.pause();
+		});
+
+		window.addEventListener('touchmove', function(event) {
+			updateAnimationTime(event.touches[0].clientX);
+			updateEntityAnimation();
+			toggleResumeTimeout();
+		});
+	}
+
+	function toggleResumeTimeout() {
+		window.clearTimeout(resumeAnimationTimeout);	
+		resumeAnimationTimeout = window.setTimeout(resumeAnimation, 5000);
+	}
+
+	function resumeAnimation() {
+		entity.animationComponent.resume();
+	}
+
+	function updateEntityAnimation() {
+		var animationComponent = entity.animationComponent;
+		var layer = animationComponent.layers[0];
+		// Pick the animationState wanted
+		var animState = layer.getStateById('RootRotateState');
+		var clipSource = animState._sourceTree;
+		layer.setCurrentState(animState); // Set currentstate 
+		clipSource._clipInstance._active = true;
+
+		var maxTime = clipSource._clip._maxTime;
+		var timeScale = clipSource._clipInstance._timeScale;
+		var t = (animationTime * maxTime) / timeScale;
+		clipSource.setTime(t);
+		animationComponent.apply(entity.transformComponent);
+	}
+
+	
+	function updateAnimationTime(x) {
+		var width = domElement.width;
+		var t = (lastX - x) / width;
+		lastX = x;
+		var ratio = window.devicePixelRatio || 1;
+		t *= sensitivity * ratio;
+		animationTime -= t;
+		// Animation loops to start at max time, clamping to 0.99
+		animationTime = MathUtils.clamp(animationTime, 0, 0.99);
+	};
 
 	init();
 });
