@@ -3,21 +3,21 @@
 
 	var NodeCommons = {};
 
-	NodeCommons.acceptsConnection = function (connection) {
+	NodeCommons.canConnect = function (connection) {
 		return !this.outputsTo.some(function (candidate) {
 			return candidate.equals(connection);
 		});
 	};
 
-	NodeCommons.addConnection = function (connection) {
-		if (!this.acceptsConnection(connection)) { return; }
+	NodeCommons.connect = function (connection) {
+		if (!this.canConnect(connection)) { return; }
 
 		this.outputsTo.push(connection);
 
 		return this;
 	};
 
-	NodeCommons.removeConnection = function (connection) {
+	NodeCommons.disconnect = function (connection) {
 		var index = _(this.outputsTo).index(function (candidate) {
 			return candidate.equals(connection);
 		});

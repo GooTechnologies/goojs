@@ -6,4 +6,7 @@
 		this.type = type;
 		this.nodeId = nodeId;
 	}
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.InPort = InPort;
 })();

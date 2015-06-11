@@ -1,27 +1,23 @@
 (function () {
 	'use strict';
 
-	var FunctionNode = shaderBits.FunctionNode;
-	var ExternalNode = shaderBits.ExternalNode;
-	var IODefinition = shaderBits.IODefinition;
-	var Connection = shaderBits.Connection;
-	var Structure = shaderBits.Structure;
+	var Context = shaderBits.Context;
 
-	function getS1() {
-		var context = new Context();
+	function getS1(typeDefinitions) {
+		var context = new Context(typeDefinitions);
 
-		var node1 = context.createFunction('const');
-		node1.setDefine('value', '1.0');
-		structure.addNode(node1);
+		var node1 = context.createConst();
+		node1.const = '1.0';
 
-		var nodeOut = new FunctionNode('i2', 'out');
-		structure.addNode(nodeOut);
+		var nodeOut = context.createOut();
+		// out needs to be unique and instantiated with the context
+		// it should be called destination
 
-		structure.addConnection(node1, new Connection('value', nodeOut.id, 'r'));
-		structure.addConnection(node1, new Connection('value', nodeOut.id, 'g'));
-		structure.addConnection(node1, new Connection('value', nodeOut.id, 'b'));
+		node1.value.connect(nodeOut.r);
+		node1.value.connect(nodeOut.g);
+		node1.value.connect(nodeOut.b);
 
-		return structure.toJSON();
+		return context.structureToJSON();
 	}
 
 	function getSample(name, callback) {
@@ -30,9 +26,9 @@
 		}).done(callback);
 	}
 
-	getSample('s3', function (_typeDefinitions) {
+	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS1();
+		var structure = getS1(typeDefinitions);
 
 		_replaceBox(typeDefinitions, structure);
 	});

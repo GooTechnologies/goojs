@@ -17,7 +17,7 @@
 
 	ExternalNode.prototype.canConnect = NodeCommons.canConnect;
 	ExternalNode.prototype.connect = NodeCommons.connect;
-	ExternalNode.prototype.disconnect = NodeCommons.removeConnection;
+	ExternalNode.prototype.disconnect = NodeCommons.disconnect;
 
 	ExternalNode.prototype.toJSON = function () {
 		return {

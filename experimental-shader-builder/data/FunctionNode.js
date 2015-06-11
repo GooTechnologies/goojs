@@ -9,11 +9,12 @@
 		this.type = type;
 		this.outputsTo = [];
 		this.defines = {};
+		this._context = null;
 	}
 
-	FunctionNode.prototype.acceptsConnection = NodeCommons.acceptsConnection;
-	FunctionNode.prototype.addConnection = NodeCommons.addConnection;
-	FunctionNode.prototype.removeConnection = NodeCommons.removeConnection;
+	FunctionNode.prototype.canConnect = NodeCommons.canConnect;
+	FunctionNode.prototype.connect = NodeCommons.connect;
+	FunctionNode.prototype.disconnect = NodeCommons.disconnect;
 
 	FunctionNode.prototype.setDefine = function (name, value) {
 		this.defines[name] = value;

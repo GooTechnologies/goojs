@@ -1,0 +1,243 @@
+{
+  "const": {
+    "id": "const",
+    "inputs": [],
+    "outputs": [{
+      "name": "value",
+      "type": "float"
+    }],
+    "body": "value = /*data.const*/;",
+    "defines": {
+      "value": {
+        "name": "const",
+        "default": "1.0"
+      }
+    }
+  },
+  "add": {
+    "id": "add",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "sum",
+      "type": "float"
+    }],
+    "body": "sum = x + y;"
+  },
+  "sin01": {
+    "id": "sin01",
+    "defines": [{
+      "name": "multiplier",
+      "type": "float"
+    }],
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "s",
+      "type": "float"
+    }],
+    "body": "s = sin(x * /*data.multiplier*/) * 0.5 + 0.5;",
+    "defines": {
+      "multiplier": {
+        "name": "multiplier",
+        "default": "1.0"
+      }
+    }
+  },
+  "mul": {
+    "id": "mul",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "float"
+    }],
+    "body": "product = x * y;"
+  },
+  "texture2D": {
+    "id": "texture2D",
+    "inputs": [{
+      "name": "sampler",
+      "type": "sampler2D"
+    }, {
+      "name": "coords",
+      "type": "vec2"
+    }],
+    "outputs": [{
+      "name": "value",
+      "type": "vec4"
+    }],
+    "body": "value = texture2D(sampler, coords);"
+  },
+  "out": {
+    "id": "out",
+    "inputs": [{
+      "name": "r",
+      "type": "float"
+    }, {
+      "name": "g",
+      "type": "float"
+    }, {
+      "name": "b",
+      "type": "float"
+    }],
+    "outputs": [],
+    "body": "gl_FragColor = vec4(r, g, b, 1.0);"
+  },
+  "vec2-comp": {
+    "id": "vec2-comp",
+    "inputs": [{
+      "name": "vec",
+      "type": "vec2"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y;"
+  },
+  "vec3": {
+    "id": "vec3",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "vec",
+      "type": "vec3"
+    }],
+    "body": "vec = vec3(x, y, z);"
+  },
+  "vec3-comp": {
+    "id": "vec3-comp",
+    "inputs": [{
+      "name": "vec",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z;"
+  },
+  "vec4": {
+    "id": "vec4",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }, {
+      "name": "w",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "vec",
+      "type": "vec4"
+    }],
+    "body": "vec = vec4(x, y, z, w);"
+  },
+  "vec4-comp": {
+    "id": "vec4-comp",
+    "inputs": [{
+      "name": "vec",
+      "type": "vec4"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }, {
+      "name": "w",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z; w = vec.w;"
+  },
+  "frag-coord": {
+    "id": "frag-coord",
+    "inputs": [],
+    "outputs": [{
+      "name": "coord",
+      "type": "vec4"
+    }],
+    "body": "coord = gl_FragCoord;"
+  },
+  "plasma": {
+    "id": "plasma",
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "offset",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "r",
+      "type": "float"
+    }, {
+      "name": "g",
+      "type": "float"
+    }, {
+      "name": "b",
+      "type": "float"
+    }],
+    "body": "float value = sin(x * /*data.s11*/ + y * /*data.s12*/ + time) +\n sin(x * /*data.s21*/ + y * /*data.s22*/ + time) +\n sin(sqrt(pow(x - 250.0, 2.0) + pow(y - 250.0, 2.0)) * 0.1 + time);\nvalue = sin(value * 5.0) * 0.5 + 0.5;\nr = value;\ng = value;\nb = value;",
+    "defines": {
+      "s11": {
+        "name": "s11",
+        "default": "0.01"
+      },
+      "s12": {
+        "name": "s12",
+        "default": "0.01"
+      },
+      "s21": {
+        "name": "s21",
+        "default": "0.03"
+      },
+      "s22": {
+        "name": "s22",
+        "default": "0.05"
+      }
+    }
+  }
+}

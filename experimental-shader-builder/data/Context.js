@@ -4,46 +4,87 @@
 	var Structure = shaderBits.Structure;
 	var ExternalNode = shaderBits.ExternalNode;
 	var FunctionNode = shaderBits.FunctionNode;
+	var InPort = shaderBits.InPort;
+	var OutPort = shaderBits.OutPort;
 
 	function generateConstructor(name, inputs, outputs, defines) {
 		var constructor = function () {
 			FunctionNode.apply(this, arguments);
 
-			// add outputs
+			// add inputs/outputs
 			// addNode.sum.connect(outNode.red)
-			outputs.forEach(function (output) {
-				this[output.name] = new OutPort(output.name, outputs.type, this.id);
+			inputs.forEach(function (input) {
+				this[input.name] = new InPort(input.name, input.type, this.id);
 			}, this);
+
+			outputs.forEach(function (output) {
+				var outPort = new OutPort(output.name, output.type);
+				outPort._node = this;
+				this[output.name] = outPort;
+			}, this);
+
+			// we want errors if we're setting invalid stuff on this node
+			Object.seal(this);
 		};
 
-		constructor.name = name; // non-standard in ES5
-		constructor.prototype = Object.create(FunctionNode);
+		//constructor.name = name; // non-standard in ES5
+		constructor.prototype = Object.create(FunctionNode.prototype);
 		constructor.prototype.constructor = constructor;
 
-		defines.forEach(function (define) {
+		// these can stay on the prototype
+		Object.keys(defines).forEach(function (name) {
+			var define = defines[name];
 			Object.defineProperty(constructor.prototype, define.name, {
 				get: function () {
+					// convert back to number if of numeric type
 					return this.defines[define.name];
-				}, // convert back to number if of numeric type
+				},
 				set: function (value) {
+					// stringify to whatever type is needed int, float (obligatory period notation)
 					this.defines[define.name] = value;
 					return value;
-				} // stringify to whatever type is needed int, float (obligatory period notation)
+				}
 			});
 		});
 
 		return constructor;
 	}
 
-	function generateConstructors(typeDefintions) {
-		return Object.keys(typeDefintions).reduce(function (constructors, typeDefinition) {
-			constructors[typeDefinition] = generateConstructor(typeDefinition.name);
+	function generateConstructors(typeDefinitions) {
+		return Object.keys(typeDefinitions).reduce(function (constructors, id) {
+			var typeDefinition = typeDefinitions[id];
+			constructors[id] = generateConstructor(
+				typeDefinition.id,
+				typeDefinition.inputs,
+				typeDefinition.outputs,
+				typeDefinition.defines
+			);
+			return constructors;
 		}, {});
+	}
+
+	function generateNodeCreator(type) {
+		return function () {
+			var node = new this.constructors[type](this.generateId(), type);
+			node._context = this;
+
+			this.structure.addNode(node);
+
+			return node;
+		};
+	}
+
+	function attachNodeCreators(target, constructors) {
+		Object.keys(constructors).forEach(function (id) {
+			var methodName = 'create' + goo.StringUtil.capitalize(id);
+			target[methodName] = generateNodeCreator(id);
+		});
 	}
 
 	function Context(typeDefinitions) {
 		this.typeDefinitions = typeDefinitions;
 		this.constructors = generateConstructors(this.typeDefinitions);
+		attachNodeCreators(this, this.constructors);
 		this.structure = new Structure();
 
 		// should context come with a fixed `out` node?
@@ -84,11 +125,14 @@
 	Context.prototype.createVarying = externalCreator('varying');
 
 	Context.prototype.createFunction = function (type) {
-		var node = new ExternalNode(this.generateId(), type);
+		var node = new this.constructors[type](this.generateId());
 		node._context = this;
 
 		this.structure.addNode(node);
 
 		return node;
 	};
+
+	window.shaderBits = window.shaderBits || {};
+	window.shaderBits.Context = Context;
 })();
