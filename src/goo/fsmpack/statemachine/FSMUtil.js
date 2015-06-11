@@ -1,11 +1,12 @@
 /*jshint bitwise: false */
-define(
-
-function() {
+define([
+	'goo/util/Tween'
+], function (
+	TWEEN
+) {
 	'use strict';
 
-	function FSMUtil() {
-	}
+	function FSMUtil() {}
 
 	FSMUtil.setParameters = function (settings, externalParameters) {
 		for (var i = 0; i < externalParameters.length; i++) {
@@ -197,7 +198,7 @@ function() {
 	};
 
 	FSMUtil.createComposableTween = function(object, propertyName, from, to, time, callback) {
-		var tween = new window.TWEEN.Tween();
+		var tween = new TWEEN.Tween();
 		var old = from;
 		return tween.from({ v: from }).to({ v: to }).onUpdate(function() {
 			object[propertyName] += this.v - old;
