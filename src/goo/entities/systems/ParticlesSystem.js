@@ -122,5 +122,17 @@ define(['goo/entities/systems/System'], function (System) {
 		}
 	};
 
+	ParticlesSystem.prototype.play = function () {
+		this.passive = false;
+	};
+
+	ParticlesSystem.prototype.pause = function () {
+		this.passive = true;
+	};
+
+	ParticlesSystem.prototype.resume = ParticlesSystem.prototype.play;
+
+	ParticlesSystem.prototype.stop = ParticlesSystem.prototype.pause;
+
 	return ParticlesSystem;
 });

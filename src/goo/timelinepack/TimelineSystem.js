@@ -40,14 +40,6 @@ define([
 	};
 
 	/**
-	 * Stops updating the entities
-	 */
-	TimelineSystem.prototype.pause = function () {
-		this.passive = true;
-		this.paused = true;
-	};
-
-	/**
 	 * Resumes updating the entities
 	 */
 	TimelineSystem.prototype.play = function () {
@@ -59,9 +51,22 @@ define([
 	};
 
 	/**
+	 * Stops updating the entities
+	 */
+	TimelineSystem.prototype.pause = function () {
+		this.passive = true;
+		this.paused = true;
+	};
+
+	/**
+	 * Resumes updating the entities; an alias for `.play`
+	 */
+	TimelineSystem.prototype.resume = TimelineSystem.prototype.play;
+
+	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	TimelineSystem.prototype.reset = function () {
+	TimelineSystem.prototype.stop = function () {
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;

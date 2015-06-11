@@ -410,13 +410,6 @@ function (
 	};
 
 	/**
-	 * Stops simulation and updating of the entitiy transforms.
-	 */
-	PhysicsSystem.prototype.pause = function () {
-		this.passive = true;
-	};
-
-	/**
 	 * Resumes simulation and starts updating the entities after stop() or pause().
 	 */
 	PhysicsSystem.prototype.play = function () {
@@ -425,6 +418,18 @@ function (
 		// Initialize all of the physics world
 		this.initialize();
 	};
+
+	/**
+	 * Stops simulation and updating of the entitiy transforms.
+	 */
+	PhysicsSystem.prototype.pause = function () {
+		this.passive = true;
+	};
+
+	/**
+	 * Resumes simulation and starts updating the entities after stop() or pause(); an alias for `.play`
+	 */
+	PhysicsSystem.prototype.resume = PhysicsSystem.prototype.play;
 
 	/**
 	 * Stops simulation.
