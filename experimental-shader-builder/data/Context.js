@@ -7,6 +7,28 @@
 	var InPort = shaderBits.InPort;
 	var OutPort = shaderBits.OutPort;
 
+	function formatDefine(value, format) {
+		if (format === 'float') {
+			if (value.toString().indexOf('.') === -1) {
+				return value.toFixed(1);
+			} else {
+				return value.toString();
+			}
+		} else if (format === 'int') {
+			return value.toFixed(0);
+		} else {
+			return value;
+		}
+	}
+
+	function unformatDefine(value, format) {
+		if (format === 'float' || format === 'int') {
+			return parseFloat(value);
+		} else {
+			return value;
+		}
+	}
+
 	function generateConstructor(name, inputs, outputs, defines) {
 		var constructor = function () {
 			FunctionNode.apply(this, arguments);
@@ -37,11 +59,13 @@
 			Object.defineProperty(constructor.prototype, define.name, {
 				get: function () {
 					// convert back to number if of numeric type
-					return this.defines[define.name];
+					return unformatDefine(this.defines[define.name], define.type);
 				},
 				set: function (value) {
-					// stringify to whatever type is needed int, float (obligatory period notation)
-					this.defines[define.name] = value;
+					// stringify to whatever type is needed
+					// int (floor it)
+					// float (obligatory period notation)
+					this.defines[define.name] = formatDefine(value, define.type);
 					return value;
 				}
 			});

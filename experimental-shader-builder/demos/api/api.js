@@ -7,7 +7,8 @@
 		var context = new Context(typeDefinitions);
 
 		var node1 = context.createConst();
-		node1.const = '1.0';
+		node1.const = 1;
+		// should be magically converted to the glsl float format ('1.0')
 
 		node1.value.connect(context.out.r);
 		node1.value.connect(context.out.g);
