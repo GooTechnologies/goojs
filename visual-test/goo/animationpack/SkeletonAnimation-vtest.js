@@ -260,7 +260,7 @@ require([
 			trans, 
 			rots, 
 			scales, 
-			AbstractAnimationChannel.BLENDTYPES.QUINTIC ||'SCurve5',
+			AbstractAnimationChannel.BLENDTYPES.QUINTIC,
 			animChannels
 		);
 
