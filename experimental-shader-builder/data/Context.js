@@ -111,11 +111,9 @@
 		attachNodeCreators(this, this.constructors);
 		this.structure = new Structure();
 
+		this.idCounter = 0;
 		// every typeDefinitions have to have an Out, right?
 		this.out = this.createOut();
-
-
-		this.idCounter = 0;
 	}
 
 	Context.prototype.generateId = function () {
