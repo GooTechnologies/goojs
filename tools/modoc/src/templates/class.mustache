@@ -28,9 +28,13 @@
 	{{! title and description }}
 	<section class="header">
 		<h1>
-		<span id="{{constructor.name}}" class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}">
+		<a
+			id="{{constructor.name}}"
+			class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}"
+			href="#{{constructor.name}}"
+		>
 			{{constructor.name}}
-		</span>
+		</a>
 
 			{{#constructor.comment.extends}}
 				<span class="extends">extends
