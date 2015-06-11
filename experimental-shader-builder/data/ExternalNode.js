@@ -1,23 +1,27 @@
 (function () {
 	'use strict';
 
-	var NodeCommons = shaderBits.NodeCommons;
+	var Node = shaderBits.Node;
 	var Connection = shaderBits.Connection;
+	var OutPort = shaderBits.OutPort;
 
-	function ExternalNode(id) {
+	function ExternalNode(id, config) {
 		this.id = id;
 		this.type = 'external';
 		this.external = {
-			name: '',
-			inputType: '',
-			dataType: ''
+			name: config.name,
+			inputType: config.inputType,
+			dataType: config.dataType
 		};
 		this.outputsTo = [];
+		this.singleOutPort = new OutPort('value', config.dataType); // stick to float for now
+		this._context = null;
 	}
 
-	ExternalNode.prototype.canConnect = NodeCommons.canConnect;
-	ExternalNode.prototype.connect = NodeCommons.connect;
-	ExternalNode.prototype.disconnect = NodeCommons.disconnect;
+	ExternalNode.prototype = Object.create(Node.prototype);
+	ExternalNode.prototype.constructor = ExternalNode;
+
+	// no connectedBy methods since this node cannot be connected by anything; it has no inputs!
 
 	ExternalNode.prototype.toJSON = function () {
 		return {

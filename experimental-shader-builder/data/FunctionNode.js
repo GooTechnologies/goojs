@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	var NodeCommons = shaderBits.NodeCommons;
+	var Node = shaderBits.Node;
 	var Connection = shaderBits.Connection;
 
 	function FunctionNode(id, type) {
@@ -12,9 +12,16 @@
 		this._context = null;
 	}
 
-	FunctionNode.prototype.canConnect = NodeCommons.canConnect;
-	FunctionNode.prototype.connect = NodeCommons.connect;
-	FunctionNode.prototype.disconnect = NodeCommons.disconnect;
+	FunctionNode.prototype = Object.create(Node.prototype);
+	FunctionNode.prototype.constructor = FunctionNode;
+
+	FunctionNode.prototype.connectedByNode = function (node) {
+		node.addConnection(new Connection(node.singleOutPort.name, this.id, this.singleInPort.name));
+	};
+
+	FunctionNode.prototype.connectedByOutPort = function (outPort) {
+		node.addConnection(new Connection(outPort.name, this.id, this.singleInPort.name));
+	};
 
 	FunctionNode.prototype.setDefine = function (name, value) {
 		this.defines[name] = value;

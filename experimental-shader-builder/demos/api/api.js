@@ -6,13 +6,19 @@
 	function getS1(typeDefinitions) {
 		var context = new Context(typeDefinitions);
 
-		var node1 = context.createConst();
-		node1.const = 1;
-		// should be magically converted to the glsl float format ('1.0')
+		var time = context.createUniform('time', 'float');
 
-		node1.value.connect(context.out.r);
-		node1.value.connect(context.out.g);
-		node1.value.connect(context.out.b);
+		var sine = context.createSin01();
+		sine.multiplier = 10;
+
+		var one = context.createConst();
+		one.const = 1;
+
+		time.connect(sine);
+
+		sine.connect(context.out.r);
+		one.connect(context.out.g);
+		// 0 -> b
 
 		return context.structureToJSON();
 	}
@@ -37,14 +43,5 @@
 		var result = shaderBits.buildShader(nodeTypes, structure);
 		window._result = result;
 		__replaceBox(result);
-	}
-
-	function replaceBox(typeDefinitions, graph) {
-		var structure = graphToStructure.toStructure(graph);
-
-		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
-		var _structure = dataNormalizer.normalizeStructure(structure);
-
-		_replaceBox(typeDefinitions, _structure);
 	}
 })();

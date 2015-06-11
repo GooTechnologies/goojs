@@ -1,16 +1,14 @@
 (function () {
 	'use strict';
 
-	var Connection = shaderBits.Connection;
-
 	function OutPort(name, type) {
 		this.name = name;
 		this.type = type;
 		this._node = null;
 	}
 
-	OutPort.prototype.connect = function (inPort) {
-		this._node.connect(new Connection(this.name, inPort.nodeId, inPort.name));
+	OutPort.prototype.connect = function (that) {
+		that.connectedByOutPort(this);
 	};
 
 	window.shaderBits = window.shaderBits || {};

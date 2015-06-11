@@ -32,10 +32,6 @@
   },
   "sin01": {
     "id": "sin01",
-    "defines": [{
-      "name": "multiplier",
-      "type": "float"
-    }],
     "inputs": [{
       "name": "x",
       "type": "float"
@@ -48,6 +44,7 @@
     "defines": {
       "multiplier": {
         "name": "multiplier",
+        "type": "float",
         "default": "1.0"
       }
     }

@@ -36,14 +36,26 @@
 			// add inputs/outputs
 			// addNode.sum.connect(outNode.red)
 			inputs.forEach(function (input) {
-				this[input.name] = new InPort(input.name, input.type, this.id);
+				var inPort = new InPort(input.name, input.type);
+				inPort._node = this;
+				this[input.name] = inPort;
 			}, this);
+
+			if (inputs.length === 1) {
+				this.singleInPort = new InPort(inputs[0].name, inputs[0].type);
+				this.singleInPort._node = this;
+			}
 
 			outputs.forEach(function (output) {
 				var outPort = new OutPort(output.name, output.type);
 				outPort._node = this;
 				this[output.name] = outPort;
 			}, this);
+
+			if (outputs.length === 1) {
+				this.singleOutPort = new OutPort(outputs[0].name, outputs[0].type);
+				this.singleOutPort._node = this;
+			}
 
 			// we want errors if we're setting invalid stuff on this node
 			Object.seal(this);
@@ -131,12 +143,12 @@
 
 	function externalCreator(inputType) {
 		return function (name, dataType) {
-			var node = new ExternalNode(this.generateId());
+			var node = new ExternalNode(this.generateId(), {
+				name: name,
+				inputType: inputType,
+				dataType: dataType
+			});
 			node._context = this;
-
-			node.external.inputType = inputType;
-			node.external.name = name;
-			node.external.dataType = dataType;
 
 			this.structure.addNode(node);
 
