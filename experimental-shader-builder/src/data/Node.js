@@ -8,7 +8,7 @@
 	};
 
 	Node.prototype.disconnect = function (that) {
-		that.disconnectedByNode(this);
+		that.disconnectedByNode(this); // not implemented
 	};
 
 	Node.prototype.acceptsConnection = function (connection) {
@@ -18,7 +18,12 @@
 	};
 
 	Node.prototype.addConnection = function (connection) {
-		if (!this.acceptsConnection(connection)) { return; }
+		if (!this.acceptsConnection(connection)) {
+			throw new Error(
+				'could not connect ' + this.id + '[' + connection.output + '] to ' +
+				connection.to + '[' + connection.input + ']'
+			);
+		}
 
 		this.outputsTo.push(connection);
 

@@ -7,6 +7,10 @@
 	var InPort = shaderBits.InPort;
 	var OutPort = shaderBits.OutPort;
 
+	function capitalize(str) {
+		return str.charAt(0).toUpperCase() + str.substring(1);
+	}
+
 	function formatDefine(value, format) {
 		if (format === 'float') {
 			if (value.toString().indexOf('.') === -1) {
@@ -112,7 +116,7 @@
 
 	function attachNodeCreators(target, constructors) {
 		Object.keys(constructors).forEach(function (id) {
-			var methodName = 'create' + goo.StringUtil.capitalize(id);
+			var methodName = 'create' + capitalize(id);
 			target[methodName] = generateNodeCreator(id);
 		});
 	}
