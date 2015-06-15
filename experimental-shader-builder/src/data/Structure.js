@@ -3,6 +3,7 @@
 
 	function Structure() {
 		this.nodes = {};
+		this._context = null;
 	}
 
 	Structure.prototype.addNode = function (node) {
@@ -18,10 +19,32 @@
 
 	Structure.prototype.acceptsConnection = function (node, connection) {
 		var targetNode = this.nodes[connection.to];
+
 		if (targetNode.incomingConnections[connection.input]) {
 			return {
 				result: false,
-				reason: 'input ' + connection.input + ' is already occupied'
+				reason: 'input "' + connection.input + '" is already occupied'
+			};
+		}
+
+		var sourceType = this.nodes[node.id].type;
+		var outputDefinitions = this._context.typeDefinitions[sourceType].outputs;
+		var outputType = _(outputDefinitions).find(function (outputDefinition) {
+			return outputDefinition.name === connection.output;
+		}).type;
+
+		var targetType = this.nodes[connection.to].type;
+		var inputDefinitions = this._context.typeDefinitions[targetType].inputs;
+		var inputType = _(inputDefinitions).find(function (inputDefinition) {
+			return inputDefinition.name === connection.input;
+		}).type;
+
+		if (inputType !== outputType) {
+			return {
+				result: false,
+				reason: 'could not match output "' + connection.output +
+					'" of type ' + outputType + ' with input "' + connection.input +
+					'" of type ' + inputType
 			};
 		}
 

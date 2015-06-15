@@ -61,6 +61,21 @@
 					}],
 					defines: {}
 				},
+				vec2: {
+					id: 'vec2',
+					inputs: [{
+						name: 'x',
+						type: 'float'
+					}, {
+						name: 'y',
+						type: 'float'
+					}],
+					outputs: [{
+						name: 'vector',
+						type: 'vec2'
+					}],
+					defines: {}
+				},
 				out: {
 					id: 'out',
 					inputs: [{
@@ -117,7 +132,7 @@
 
 				expect(function () {
 					konst2.connect(sin);
-				}).toThrow(new Error('could not connect i3[value] to i4[x]; input x is already occupied'));
+				}).toThrow(new Error('could not connect i3[value] to i4[x]; input "x" is already occupied'));
 			});
 
 			it('cannot call .connect on a node with multiple outputs', function () {
@@ -129,7 +144,7 @@
 				}).toThrow();
 			});
 
-			it('cannot call connect to a node with multiple inputs', function () {
+			it('cannot connect to a node with multiple inputs', function () {
 				var sin = context.createSin();
 				var add = context.createAdd();
 
@@ -138,8 +153,16 @@
 				}).toThrow();
 			});
 
+			it('cannot connect inputs of different types', function () {
+				var vec2 = context.createVec2();
+				var sin = context.createSin();
+
+				expect(function () {
+					vec2.connect(sin);
+				}).toThrow(new Error('could not connect i2[vector] to i3[x]; could not match output "vector" of type vec2 with input "x" of type float'));
+			});
+
 			// cannot connect a node to itself
-			// cannot connect to a node of a different type
 			// cannot create a cycle
 		});
 	});

@@ -125,7 +125,9 @@
 		this.typeDefinitions = typeDefinitions;
 		this.constructors = generateConstructors(this.typeDefinitions);
 		attachNodeCreators(this, this.constructors);
+
 		this.structure = new Structure();
+		this.structure._context = this;
 
 		this.idCounter = 0;
 		// every typeDefinitions have to have an Out, right?
