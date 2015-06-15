@@ -4,9 +4,9 @@ define([], function (
 
 	/**
 	 * Library of particles<br>
-	 * @@example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
 	 */
-	var ParticleLib = {};
+	function ParticleLib() {};
 
 	/**
 	 * Returns a set of parameters for a smoke particle emitter
