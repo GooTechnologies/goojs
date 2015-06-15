@@ -23,6 +23,34 @@
 		return context.structureToJSON();
 	}
 
+	function getS2(typeDefinitions) {
+		var context = new Context(typeDefinitions);
+
+		var one = context.createConst();
+		one.const = 1;
+
+		var vertexNormal = context.createVarying('normal', 'vec3');
+
+		var vec3 = context.createVec3();
+
+		var dot = context.createDot();
+		dot.multiplier = 0.5;
+
+		one.connect(vec3.x);
+		one.connect(vec3.y);
+		one.connect(vec3.z);
+
+		vec3.connect(dot.x);
+
+		vertexNormal.connect(dot.y);
+
+		dot.connect(context.out.r);
+		dot.connect(context.out.g);
+		dot.connect(context.out.b);
+
+		return context.structureToJSON();
+	}
+
 	function getSample(name, callback) {
 		$.ajax({
 			url: '../../samples/' + name + '/types.json'
@@ -31,7 +59,7 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS1(typeDefinitions);
+		var structure = getS2(typeDefinitions);
 
 		_replaceBox(typeDefinitions, structure);
 	});

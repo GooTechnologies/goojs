@@ -57,10 +57,15 @@
 
 
 		var sourceType = this.nodes[node.id].type;
-		var outputDefinitions = this._context.typeDefinitions[sourceType].outputs;
-		var outputType = _(outputDefinitions).find(function (outputDefinition) {
-			return outputDefinition.name === connection.output;
-		}).type;
+		var outputType;
+		if (sourceType !== 'external') {
+			var outputDefinitions = this._context.typeDefinitions[sourceType].outputs;
+			outputType = _(outputDefinitions).find(function (outputDefinition) {
+				return outputDefinition.name === connection.output;
+			}).type;
+		} else {
+			outputType = this.nodes[node.id].external.dataType;
+		}
 
 		var targetType = this.nodes[connection.to].type;
 		var inputDefinitions = this._context.typeDefinitions[targetType].inputs;

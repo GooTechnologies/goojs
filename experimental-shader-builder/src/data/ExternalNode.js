@@ -16,6 +16,7 @@
 		};
 		this.outputsTo = [];
 		this.singleOutPort = new OutPort('value', config.dataType); // stick to float for now
+		this.singleOutPort._node = this;
 		this._context = null;
 	}
 

@@ -17,8 +17,8 @@
 			var material = new goo.Material({
 				attributes: {
 					vertexPosition: goo.MeshData.POSITION,
-					vertexNormal : goo.MeshData.NORMAL,
-					vertexUV0 : goo.MeshData.TEXCOORD0
+					vertexNormal: goo.MeshData.NORMAL,
+					vertexUV0: goo.MeshData.TEXCOORD0
 				},
 				uniforms: {
 					viewProjectionMatrix: goo.Shader.VIEW_PROJECTION_MATRIX,
@@ -30,14 +30,17 @@
 				},
 				vshader: [
 					'attribute vec3 vertexPosition;',
+					'attribute vec3 vertexNormal;',
 					'attribute vec2 vertexUV0;',
 
 					'uniform mat4 viewProjectionMatrix;',
 					'uniform mat4 worldMatrix;',
 
+					'varying vec3 normal;',
 					'varying vec2 texCoord0;',
 
 					'void main(void) {',
+					'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 					'	texCoord0 = vertexUV0;',
 					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 					'}'
@@ -49,7 +52,7 @@
 
 			material.setTexture('DIFFUSE_MAP', texture);
 
-			box = world.createEntity(new goo.Box(), material).addToWorld();
+			box = world.createEntity(new goo.Torus(32, 32, 0.3, 1.0), material).addToWorld();
 		}
 
 		return replaceBox;

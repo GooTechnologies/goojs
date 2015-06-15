@@ -29,6 +29,21 @@
     }],
     "body": "sum = x + y;"
   },
+  "dot": {
+    "id": "dot",
+    "inputs": [{
+      "name": "x",
+      "type": "vec3"
+    }, {
+      "name": "y",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "float"
+    }],
+    "body": "product = dot(x, y);"
+  },
   "sin01": {
     "id": "sin01",
     "defines": [{
