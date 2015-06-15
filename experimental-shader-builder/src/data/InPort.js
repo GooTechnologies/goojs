@@ -14,7 +14,10 @@
 	};
 
 	InPort.prototype.connectedByOutPort = function (outPort) {
-		outPort._node.addConnection(new Connection(outPort.name, this._node.id, this.name));
+		outPort._node._context.structure.addConnection(
+			outPort._node,
+			new Connection(outPort.name, this._node.id, this.name)
+		);
 	};
 
 	window.shaderBits = window.shaderBits || {};

@@ -6,7 +6,8 @@
 	var OutPort = shaderBits.OutPort;
 
 	function ExternalNode(id, config) {
-		this.id = id;
+		Node.call(this, id);
+
 		this.type = 'external';
 		this.external = {
 			name: config.name,

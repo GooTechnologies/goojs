@@ -1,7 +1,10 @@
 (function () {
 	'use strict';
 
-	function Node() {}
+	function Node(id) {
+		this.id = id;
+		this.incomingConnections = {};
+	}
 
 	Node.prototype.connect = function (that) {
 		that.connectedByNode(this);

@@ -16,12 +16,38 @@
 		return this;
 	};
 
-	// why proxy these opertations?
+	Structure.prototype.acceptsConnection = function (node, connection) {
+		var targetNode = this.nodes[connection.to];
+		if (targetNode.incomingConnections[connection.input]) {
+			return {
+				result: false,
+				reason: 'input ' + connection.input + ' is already occupied'
+			};
+		}
+
+		return {
+			result: true
+		};
+	};
+
+	// why proxy these operations?
 	// because they'll verify the validity of the graph
 	// the node alone cannot do that
 	Structure.prototype.addConnection = function (node, connection) {
-		// verify connection validity
+		var accepts = this.acceptsConnection(node, connection);
+		if (!accepts.result) {
+			throw new Error(
+				'could not connect ' + node.id + '[' + connection.output + '] to ' +
+				connection.to + '[' + connection.input + ']; ' + accepts.reason
+			);
+		}
+
 		node.addConnection(connection);
+
+		// occupy input
+		var targetNode = this.nodes[connection.to];
+		targetNode.incomingConnections[connection.input] = true;
+
 		return this;
 	};
 

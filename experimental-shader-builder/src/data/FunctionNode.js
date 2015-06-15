@@ -5,7 +5,8 @@
 	var Connection = shaderBits.Connection;
 
 	function FunctionNode(id, type) {
-		this.id = id;
+		Node.call(this, id);
+
 		this.type = type;
 		this.outputsTo = [];
 		this.defines = {};
@@ -16,11 +17,17 @@
 	FunctionNode.prototype.constructor = FunctionNode;
 
 	FunctionNode.prototype.connectedByNode = function (node) {
-		node.addConnection(new Connection(node.singleOutPort.name, this.id, this.singleInPort.name));
+		node._context.structure.addConnection(
+			node,
+			new Connection(node.singleOutPort.name, this.id, this.singleInPort.name)
+		);
 	};
 
 	FunctionNode.prototype.connectedByOutPort = function (outPort) {
-		node.addConnection(new Connection(outPort.name, this.id, this.singleInPort.name));
+		outPort._node._context.addConnection(
+			outPort._node,
+			new Connection(outPort.name, this.id, this.singleInPort.name)
+		);
 	};
 
 	FunctionNode.prototype.setDefine = function (name, value) {
