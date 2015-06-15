@@ -86,6 +86,21 @@
     }],
     "body": "product = x * y;"
   },
+  "mul3": {
+    "id": "mul3",
+    "inputs": [{
+      "name": "x",
+      "type": "vec3"
+    }, {
+      "name": "y",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "vec3"
+    }],
+    "body": "product = x * y;"
+  },
   "texture2D": {
     "id": "texture2D",
     "inputs": [{
@@ -96,10 +111,19 @@
       "type": "vec2"
     }],
     "outputs": [{
-      "name": "value",
-      "type": "vec4"
+      "name": "r",
+      "type": "float"
+    }, {
+      "name": "g",
+      "type": "float"
+    }, {
+      "name": "b",
+      "type": "float"
+    }, {
+      "name": "a",
+      "type": "float"
     }],
-    "body": "value = texture2D(sampler, coords);"
+    "body": "vec4 value = texture2D(sampler, coords);\nr = value.r;\ng = value.g;\nb = value.b;\na = value.a;"
   },
   "out": {
     "id": "out",
