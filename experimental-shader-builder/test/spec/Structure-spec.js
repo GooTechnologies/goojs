@@ -28,6 +28,39 @@
 					}],
 					defines: {}
 				},
+				add: {
+					id: 'add',
+					inputs: [{
+						name: 'x',
+						type: 'float'
+					}, {
+						name: 'y',
+						type: 'float'
+					}],
+					outputs: [{
+						name: 'sum',
+						type: 'float'
+					}],
+					defines: {}
+				},
+				div: {
+					id: 'div',
+					inputs: [{
+						name: 'x',
+						type: 'float'
+					}, {
+						name: 'y',
+						type: 'float'
+					}],
+					outputs: [{
+						name: 'quot',
+						type: 'float'
+					}, {
+						name: 'rem',
+						type: 'float'
+					}],
+					defines: {}
+				},
 				out: {
 					id: 'out',
 					inputs: [{
@@ -75,7 +108,7 @@
 				}).toThrow();
 			});
 
-			it('cannot have a connection to a busy InPort', function () {
+			it('cannot have a connection to a busy input', function () {
 				var konst1 = context.createConst();
 				var konst2 = context.createConst();
 				var sin = context.createSin();
@@ -87,9 +120,25 @@
 				}).toThrow(new Error('could not connect i3[value] to i4[x]; input x is already occupied'));
 			});
 
+			it('cannot call .connect on a node with multiple outputs', function () {
+				var div = context.createDiv();
+				var sin = context.createSin();
+
+				expect(function () {
+					div.connect(sin);
+				}).toThrow();
+			});
+
+			it('cannot call connect to a node with multiple inputs', function () {
+				var sin = context.createSin();
+				var add = context.createAdd();
+
+				expect(function () {
+					sin.connect(add);
+				}).toThrow();
+			});
+
 			// cannot connect a node to itself
-			// cannot connect an input node
-			// cannot have a connection to a busy inPort
 			// cannot connect to a node of a different type
 			// cannot create a cycle
 		});
