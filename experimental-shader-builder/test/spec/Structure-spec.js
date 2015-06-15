@@ -162,6 +162,25 @@
 				}).toThrow(new Error('could not connect i2[vector] to i3[x]; could not match output "vector" of type vec2 with input "x" of type float'));
 			});
 
+			it('cannot connect a node to itself', function () {
+				var sin = context.createSin();
+
+				expect(function () {
+					sin.connect(sin);
+				}).toThrow(new Error('could not connect i2[s] to i2[x]; cannot have cycles'));
+			});
+
+			it('cannot create cycles', function () {
+				var sin1 = context.createSin();
+				var sin2 = context.createSin();
+
+				sin1.connect(sin2);
+
+				expect(function () {
+					sin2.connect(sin1);
+				}).toThrow(new Error('could not connect i3[s] to i2[x]; cannot have cycles'));
+			});
+
 			// cannot connect a node to itself
 			// cannot create a cycle
 		});

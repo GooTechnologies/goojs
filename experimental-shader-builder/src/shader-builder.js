@@ -28,6 +28,8 @@
 			order.push(graph.get(nodeId));
 		}
 
+		// shouldn't the traversal start from nodes with no incoming connections?
+
 		while (unvisited.size) {
 			df(unvisited.values().next().value);
 		}

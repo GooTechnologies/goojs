@@ -17,6 +17,34 @@
 		return this;
 	};
 
+	/**
+	 * Checks if connections from this node eventually arrive at itself
+	 * @param startNode
+	 * @returns {boolean}
+	 * @private
+	 */
+	Structure.prototype._returnsTo = function (startNode, connection) {
+		var visited = new Set();
+
+		function df(node) {
+			if (node === startNode) {
+				return true;
+			}
+
+			if (visited.has(node)) {
+				return false;
+			} else {
+				visited.add(node);
+			}
+
+			return node.outputsTo.map(function (outputTo) {
+				return this.nodes[outputTo.to];
+			}, this).some(df, this);
+		}
+
+		return df.call(this, this.nodes[connection.to]);
+	};
+
 	Structure.prototype.acceptsConnection = function (node, connection) {
 		var targetNode = this.nodes[connection.to];
 
@@ -26,6 +54,7 @@
 				reason: 'input "' + connection.input + '" is already occupied'
 			};
 		}
+
 
 		var sourceType = this.nodes[node.id].type;
 		var outputDefinitions = this._context.typeDefinitions[sourceType].outputs;
@@ -46,6 +75,14 @@
 					'" of type ' + outputType + ' with input "' + connection.input +
 					'" of type ' + inputType
 			};
+		}
+
+
+		if (this._returnsTo(node, connection)) {
+			return {
+				result: false,
+				reason: 'cannot have cycles'
+			}
 		}
 
 		return {
