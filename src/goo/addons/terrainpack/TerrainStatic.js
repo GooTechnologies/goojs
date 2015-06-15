@@ -82,6 +82,24 @@ define([
 		this.gridSize = (this.n + 1) * 4 - 1;
 		console.log('grid size: ', this.gridSize);
 	}
+	
+	TerrainStatic.prototype.cleanup = function () {
+		// clean all textures!
+		// for (var name in this.terrainTextures) {
+		// 	var texture = this.terrainTextures[name];
+		// 	if (texture instanceof Texture) {
+		// 		this.renderer._deallocateTexture(texture);
+		// 	}
+		// }
+		// this.terrainTextures = null;
+
+		// this.renderer._deallocateRenderTarget(this.normalMap);
+		// this.renderer._deallocateRenderTarget(this.outputTarget);
+		// this.renderer._deallocateRenderTarget(this.splat);
+		// this.renderer._deallocateRenderTarget(this.splatCopy);
+
+		this.terrainRoot.removeFromWorld();
+	};
 
 	TerrainStatic.prototype.init = function(terrainTextures) {
 		var world = this.world;
