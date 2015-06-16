@@ -22,10 +22,23 @@ define(['goo/entities/systems/System'], function (System) {
 			var entity = entities[i];
 			var particleComponent = entity.particleComponent;
 
-			if (particleComponent.enabled) {
+			if (this.isUpdatable(particleComponent)) {
 				this.updateParticles(entity, particleComponent, tpf);
 			}
 		}
+	};
+
+	ParticlesSystem.prototype.isUpdatable = function (particleComponent) {
+		var enabledEmitter = false;
+		for (var i = 0; length = particleComponent.emitters.length; i < length; i++) {
+			var emitter = particleComponent.emitters[i];
+			if (emitter.enabled === true) {
+				enabledEmitter = true;
+				break;
+			}
+		}
+
+		return enabledEmitter || particleComponent.enabled;
 	};
 
 	ParticlesSystem.prototype.updateParticles = function (particleEntity, particleComponent, tpf) {
@@ -117,9 +130,8 @@ define(['goo/entities/systems/System'], function (System) {
 			particleComponent.meshData.vertexData._dataNeedsRefresh = true;
 			particleEntity.meshDataComponent.autoCompute = true;
 		}
-		if (!stillAlive) {
-			particleComponent.enabled = false;
-		}
+		
+		particleComponent.enabled = stillAlive;
 	};
 
 	ParticlesSystem.prototype.play = function () {
