@@ -1,7 +1,9 @@
 define([
-	'goo/entities/systems/System'
+	'goo/entities/systems/System',
+	'goo/util/Tween'
 ], function (
-	System
+	System,
+	TWEEN
 ) {
 	'use strict';
 
@@ -27,7 +29,7 @@ define([
 			}
 			this.time = 0;
 			//! AT: but no TWEENS have been harmed in any way
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
+			TWEEN.removeAll(); // this should not stay here
 			this.passive = true;
 			return;
 		}
@@ -37,14 +39,6 @@ define([
 
 			entity.timelineComponent.update(tpf);
 		}
-	};
-
-	/**
-	 * Stops updating the entities
-	 */
-	TimelineSystem.prototype.pause = function () {
-		this.passive = true;
-		this.paused = true;
 	};
 
 	/**
@@ -59,9 +53,22 @@ define([
 	};
 
 	/**
+	 * Stops updating the entities
+	 */
+	TimelineSystem.prototype.pause = function () {
+		this.passive = true;
+		this.paused = true;
+	};
+
+	/**
+	 * Resumes updating the entities; an alias for `.play`
+	 */
+	TimelineSystem.prototype.resume = TimelineSystem.prototype.play;
+
+	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	TimelineSystem.prototype.reset = function () {
+	TimelineSystem.prototype.stop = function () {
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;

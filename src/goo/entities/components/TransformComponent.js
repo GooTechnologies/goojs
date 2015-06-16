@@ -526,7 +526,7 @@ define([
 	 * Sets the transform to look in a specific direction.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector3} position Target position.
+	 * @param {Vector3|Entity} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
@@ -534,6 +534,11 @@ define([
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
 		if (arguments.length === 3) {
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
+		} else if (position.transformComponent) {
+			if (position.transformComponent._dirty) {
+				position.transformComponent.updateWorldTransform();
+			}
+			this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
 		} else {
 			if (Array.isArray(position)) {
 				position = new Vector3(position);
@@ -543,7 +548,6 @@ define([
 			}
 			this.transform.lookAt(position, up);
 		}
-
 		this._dirty = true;
 		return this;
 	};

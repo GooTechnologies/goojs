@@ -12,6 +12,7 @@ function (
 	 * @param {Vector3} [settings.normal]
 	 * @param {Vector3} [settings.point]
 	 * @param {Entity} [settings.entity]
+	 * @param {number} [settings.distance]
 	 */
 	function RaycastResult(settings) {
 		settings = settings || {};
@@ -30,10 +31,17 @@ function (
 		 * @type {Entity}
 		 */
 		this.entity = settings.entity || null;
+
+		/**
+		 * @type {number}
+		 * @default -1
+		 */
+		this.distance = settings.distance || -1;
 	}
 
 	RaycastResult.prototype.reset = function () {
 		this.entity = null;
+		this.distance = -1;
 	};
 
 	return RaycastResult;
