@@ -9,6 +9,7 @@ function () {
 	 * @param {Function} [settings.prepare] <code>prepare({@link Entity} particleEntity, {@link ParticleEmitter} emitter)</code>.
 	 * @param {Function} [settings.apply] <code>apply(number tpf, {@link Particle} particle, number particleIndex)</code>.
 	 * @param {boolean} [settings.enabled=true]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/particles/ParticleInfluence-vtest.html Working example
 	 */
 	function ParticleInfluence (settings) {
 		settings = settings || {};
