@@ -30,7 +30,7 @@ define(['goo/entities/systems/System'], function (System) {
 
 	ParticlesSystem.prototype.isUpdatable = function (particleComponent) {
 		var enabledEmitter = false;
-		for (var i = 0; length = particleComponent.emitters.length; i < length; i++) {
+		for (var i = 0, length = particleComponent.emitters.length; i < length; i++) {
 			var emitter = particleComponent.emitters[i];
 			if (emitter.enabled === true) {
 				enabledEmitter = true;
