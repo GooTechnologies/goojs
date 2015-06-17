@@ -3,7 +3,8 @@
 
 	function Node(id) {
 		this.id = id;
-		this.incomingConnections = {};
+		this.incomingConnections = new Set();
+		this.resolvedTypes = new Map();
 	}
 
 	Node.prototype.connect = function (that) {

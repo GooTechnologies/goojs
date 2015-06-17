@@ -18,8 +18,87 @@
 	};
 
 	/**
+	 * Only reflows * types
+	 * @param startNode
+	 * @param connection
+	 * @private
+	 */
+	Structure.prototype._reflowTypes = function (startNode, connection) {
+		var typeDefinitions = this._context.typeDefinitions;
+
+		function resolveType(node, inputName, inputType, resolvedType) {
+			if (node.resolvedTypes.has(inputName)) {
+				// throw exceptions on mismatch
+				// same node may have the generic type already resolved by some other input
+				var alreadyResolvedType = node.resolvedTypes.get(inputName);
+				if (alreadyResolvedType !== resolvedType) {
+					throw new Error({
+						result: false,
+						reason: 'node already resolved generic type blaha to blahaha'
+					});
+				}
+			} else {
+				node.resolvedTypes.set(inputName, resolvedType);
+			}
+
+			// propagate if there are outputs with the same generic type
+			var outputs = typeDefinitions[node.type].outputs.filter(function (output) {
+				return output.generic && output.type === inputType;
+			}).map(function (output) {
+				return output.name;
+			});
+
+			// and any connections starting from those inputs
+			node.outputsTo.forEach(function (outputTo) {
+				if (outputs.indexOf(outputTo.output) !== -1) {
+					propagate(node, outputTo);
+				}
+			});
+		}
+
+
+		function propagate(startNode, connection) {
+			var outputDefinitions = typeDefinitions[startNode.type].outputs;
+			var outputDefinition = _(outputDefinitions).find(function (output) {
+				return output.name === connection.output;
+			});
+
+
+			var targetNode = this.nodes[connection.to];
+			var inputsDefinition = typeDefinitions[targetNode.type].inputs;
+			var inputDefinition = _(inputsDefinition).find(function (input) {
+				return input.name === connection.input;
+			});
+
+
+			var outputType;
+			if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.name)) {
+				outputType = startNode.resolvedTypes.get(outputDefinition.name);
+			} else if (!outputDefinition.generic) {
+				outputType = outputDefinition.type;
+			}
+			if (!outputType) { return; }
+
+
+			if (inputDefinition.generic) {
+				resolveType(targetNode, inputDefinition.name, inputDefinition.name, outputType);
+			} else {
+				if (outputType !== inputDefinition.type) {
+					throw new Error({
+						result: false,
+						reason: 'could not match type blaha with type blahaha'
+					});
+				}
+			}
+		}
+
+		propagate(startNode, connection);
+	};
+
+	/**
 	 * Checks if connections from this node eventually arrive at itself
 	 * @param startNode
+	 * @param connection
 	 * @returns {boolean}
 	 * @private
 	 */
@@ -48,7 +127,7 @@
 	Structure.prototype.acceptsConnection = function (node, connection) {
 		var targetNode = this.nodes[connection.to];
 
-		if (targetNode.incomingConnections[connection.input]) {
+		if (targetNode.incomingConnections.has(connection.input)) {
 			return {
 				result: false,
 				reason: 'input "' + connection.input + '" is already occupied'
@@ -111,7 +190,7 @@
 
 		// occupy input
 		var targetNode = this.nodes[connection.to];
-		targetNode.incomingConnections[connection.input] = true;
+		targetNode.incomingConnections.add(connection.input);
 
 		return this;
 	};
