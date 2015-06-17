@@ -296,9 +296,11 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								return null;
-							}
+							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								// return null;
+							// }
+							xx = MathUtils.moduloPositive(xx, terrainSize);
+							zz = MathUtils.moduloPositive(zz, terrainSize);
 
 							xx *= this.terrain.splatMult;
 							zz *= this.terrain.splatMult;
@@ -330,9 +332,11 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								return null;
-							}
+							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								// return null;
+							// }
+							xx = MathUtils.moduloPositive(xx, terrainSize);
+							zz = MathUtils.moduloPositive(zz, terrainSize);
 
 							xx *= this.terrain.splatMult;
 							zz *= this.terrain.splatMult;
@@ -399,9 +403,11 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								return terrainData.stone;
-							}
+							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								// return terrainData.stone;
+							// }
+							xx = MathUtils.moduloPositive(xx, terrainSize);
+							zz = MathUtils.moduloPositive(zz, terrainSize);
 
 							xx *= this.terrain.splatMult;
 							zz *= this.terrain.splatMult;
