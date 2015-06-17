@@ -9,6 +9,7 @@ define([
 	/**
 	 * Processes all entities with a FSM component
 	 * @private
+	 * @param engine {GooRunner}
 	 */
 	function StateMachineSystem(engine) {
 		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
