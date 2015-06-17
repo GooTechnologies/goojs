@@ -286,15 +286,17 @@ define([
 	 * @private
 	 */
 	Renderer.prototype._setupContextLost = function () {
-		this.domElement.addEventListener('webglcontextlost', function (event) {
+		this.lostCallback = function (event) {
 			event.preventDefault();
 			SystemBus.emit('goo.contextLost');
-		}, false);
+		};
+		this.domElement.addEventListener('webglcontextlost', this.lostCallback, false);
 
-		this.domElement.addEventListener('webglcontextrestored', function () {
+		this.restoredCallback = function () {
 			this._restoreContext();
 			SystemBus.emit('goo.contextRestored');
-		}.bind(this), false);
+		}.bind(this);
+		this.domElement.addEventListener('webglcontextrestored', this.restoredCallback, false);
 	};
 
 	/**
