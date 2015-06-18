@@ -222,7 +222,7 @@
 					sin.connect(add);
 				}).toThrow();
 			});
-			
+
 			it('cannot connect a node to itself', function () {
 				var sin = context.createSin();
 
@@ -253,7 +253,25 @@
 						}).not.toThrow();
 					});
 
-					it('rejects a connection from a fixed type to a (wrong) fixed type', function () {
+					it('accepts a connection from an external node to a fixed type', function () {
+						var f = context.createUniform('a', 'float');
+						var f_f = context.createF_f();
+
+						expect(function () {
+							context.structure._reflowTypes(f, new Connection(null, f_f.id, 'a'));
+						}).not.toThrow();
+					});
+
+					it('rejects a connection from an external node to a non-matching fixed type', function () {
+						var i = context.createUniform('a', 'int');
+						var f_f = context.createF_f();
+
+						expect(function () {
+							context.structure._reflowTypes(i, new Connection(null, f_f.id, 'a'));
+						}).toThrow(new Error('could not match type int with type float'));
+					});
+
+					it('rejects a connection from a fixed type to a non-matching fixed type', function () {
 						var f_f = context.createF_f();
 						var i_i = context.createI_i();
 
@@ -326,13 +344,29 @@
 						var f_f = context.createF_f();
 						var s_f = context.createS_f();
 
+						// wire it up
 						var connection = new Connection('b', s_f.id, 'a');
 						context.structure._reflowTypes(f_f, connection);
 
 						// manually adding the connection
-						s_f.outputsTo.push(connection);
+						f_f.outputsTo.push(connection);
 
-						context.structure._unflowTypes(f_f, new Connection('b', s_f.id, 'a'));
+						context.structure._unflowTypes(f_f, connection);
+
+						expect(s_f.resolvedTypes.size).toEqual(0);
+					});
+
+					it('unresolves a resolved type (coming from an external node)', function () {
+						var i = context.createUniform('a', 'int');
+						var s_f = context.createS_f();
+
+						var connection = new Connection('b', s_f.id, 'a');
+						context.structure._reflowTypes(i, connection);
+
+						// manually adding the connection
+						i.outputsTo.push(connection);
+
+						context.structure._unflowTypes(i, new Connection('b', s_f.id, 'a'));
 
 						expect(s_f.resolvedTypes.size).toEqual(0);
 					});

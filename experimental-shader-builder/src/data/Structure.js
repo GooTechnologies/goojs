@@ -64,10 +64,27 @@
 
 
 		function propagate(startNode, connection) {
-			var outputDefinitions = typeDefinitions[startNode.type].outputs;
-			var outputDefinition = _(outputDefinitions).find(function (output) {
-				return output.name === connection.output;
-			});
+			var outputType;
+
+			// relevant only the first time the function is called
+			// no node can lead to an external node
+			if (startNode.type === 'external') {
+				outputType = startNode.external.dataType;
+			} else {
+				var outputDefinitions = typeDefinitions[startNode.type].outputs;
+				var outputDefinition = _(outputDefinitions).find(function (output) {
+					return output.name === connection.output;
+				});
+
+				if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.type)) {
+					outputType = startNode.resolvedTypes.get(outputDefinition.type).type;
+				} else if (!outputDefinition.generic) {
+					outputType = outputDefinition.type;
+				} else {
+					// if the type if not fixed or resolved then there is nothing to propagate
+					return;
+				}
+			}
 
 
 			var targetNode = nodes[connection.to];
@@ -75,16 +92,6 @@
 			var inputDefinition = _(inputsDefinition).find(function (input) {
 				return input.name === connection.input;
 			});
-
-
-			var outputType;
-			if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.type)) {
-				outputType = startNode.resolvedTypes.get(outputDefinition.type).type;
-			} else if (!outputDefinition.generic) {
-				outputType = outputDefinition.type;
-			} else {
-				return;
-			}
 
 
 			if (inputDefinition.generic) {
@@ -129,10 +136,12 @@
 		}
 
 		function propagate(node, connection) {
-			var outputDefinitions = typeDefinitions[startNode.type].outputs;
-			var outputDefinition = _(outputDefinitions).find(function (output) {
-				return output.name === connection.output;
-			});
+			if (node.type !== 'external') {
+				var outputDefinitions = typeDefinitions[startNode.type].outputs;
+				var outputDefinition = _(outputDefinitions).find(function (output) {
+					return output.name === connection.output;
+				});
+			}
 
 
 			var targetNode = nodes[connection.to];
@@ -144,7 +153,8 @@
 
 			// check ot see if there is any "unresolveness" that can be propagated
 			if (
-				(!outputDefinition.generic || node.resolvedTypes.has(outputDefinition.type)) &&
+				(node.type === 'external' ||
+					(!outputDefinition.generic || node.resolvedTypes.has(outputDefinition.type))) &&
 				inputDefinition.generic &&
 				targetNode.resolvedTypes.has(inputDefinition.type)
 			) {
