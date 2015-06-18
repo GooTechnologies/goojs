@@ -252,68 +252,147 @@
 			});
 
 			describe('type checking', function () {
-				it('accepts a connection from a fixed type to a fixed type', function () {
-					var f_f1 = context.createF_f();
-					var f_f2 = context.createF_f();
+				describe('resolving types', function () {
+					it('accepts a connection from a fixed type to a fixed type', function () {
+						var f_f1 = context.createF_f();
+						var f_f2 = context.createF_f();
 
-					expect(function () {
-						context.structure._reflowTypes(f_f1, new Connection('b', f_f2.id, 'a'));
-					}).not.toThrow();
+						expect(function () {
+							context.structure._reflowTypes(f_f1, new Connection('b', f_f2.id, 'a'));
+						}).not.toThrow();
+					});
+
+					it('rejects a connection from a fixed type to a (wrong) fixed type', function () {
+						var f_f = context.createF_f();
+						var i_i = context.createI_i();
+
+						expect(function () {
+							context.structure._reflowTypes(f_f, new Connection('b', i_i.id, 'a'));
+						}).toThrow(new Error('could not match type float with type int'));
+					});
+
+					it('accepts a connection from an unresolved generic type to a fixed type', function () {
+						var s_s = context.createS_s();
+						var f_f = context.createF_f();
+
+						expect(function () {
+							context.structure._reflowTypes(s_s, new Connection('b', f_f.id, 'a'));
+						}).not.toThrow();
+					});
+
+					it('accepts a connection from an unresolved generic type to a generic type', function () {
+						var s_s1 = context.createS_s();
+						var s_s2 = context.createS_s();
+
+						expect(function () {
+							context.structure._reflowTypes(s_s1, new Connection('b', s_s2.id, 'a'));
+						}).not.toThrow();
+					});
+
+					it('rejects a connection from a fixed type to a resolved non-matching generic type', function () {
+						var f_f = context.createF_f();
+						var i_i = context.createI_i();
+						var ss_s = context.createSs_s();
+
+						context.structure._reflowTypes(f_f, new Connection('b', ss_s.id, 'a'));
+
+						expect(function () {
+							context.structure._reflowTypes(i_i, new Connection('b', ss_s.id, 'b'));
+						}).toThrow(new Error('could not match int with already resolved generic type T of float'));
+					});
+
+					it('propagates a type and rejects a connection when a mismatch is found', function () {
+						var f_f = context.createF_f();
+						var s_s = context.createS_s();
+						var i_i = context.createI_i();
+
+						var connection = new Connection('b', i_i.id, 'a');
+						context.structure._reflowTypes(s_s, connection);
+
+						// manually adding the connection
+						s_s.outputsTo.push(connection);
+
+						expect(function () {
+							context.structure._reflowTypes(f_f, new Connection('b', s_s.id, 'a'));
+						}).toThrow(new Error('could not match type float with type int'));
+					});
 				});
 
-				it('rejects a connection from a fixed type to a (wrong) fixed type', function () {
-					var f_f = context.createF_f();
-					var i_i = context.createI_i();
+				describe('unresolving types', function () {
+					it('unresolves a resolved type', function () {
+						var f_f = context.createF_f();
+						var s_f = context.createS_f();
 
-					expect(function () {
-						context.structure._reflowTypes(f_f, new Connection('b', i_i.id, 'a'));
-					}).toThrow(new Error('could not match type float with type int'));
-				});
+						var connection = new Connection('b', s_f.id, 'a');
+						context.structure._reflowTypes(f_f, connection);
 
-				it('accepts a connection from an unresolved generic type to a fixed type', function () {
-					var s_s = context.createS_s();
-					var f_f = context.createF_f();
+						// manually adding the connection
+						s_f.outputsTo.push(connection);
 
-					expect(function () {
-						context.structure._reflowTypes(s_s, new Connection('b', f_f.id, 'a'));
-					}).not.toThrow();
-				});
+						context.structure._unflowTypes(f_f, new Connection('b', s_f.id, 'a'));
 
-				it('accepts a connection from an unresolved generic type to a generic type', function () {
-					var s_s1 = context.createS_s();
-					var s_s2 = context.createS_s();
+						expect(s_f.resolvedTypes.size).toEqual(0);
+					});
 
-					expect(function () {
-						context.structure._reflowTypes(s_s1, new Connection('b', s_s2.id, 'a'));
-					}).not.toThrow();
-				});
+					it('unresolves a resolved type and propagates', function () {
+						var f_f = context.createF_f();
+						var s_s = context.createS_s();
+						var s_f = context.createS_f();
 
-				it('rejects a connection from a fixed type to a resolved non-matching generic type', function () {
-					var f_f = context.createF_f();
-					var i_i = context.createI_i();
-					var ss_s = context.createSs_s();
+						// wire up everything
+						var connection1 = new Connection('b', s_s.id, 'a');
+						context.structure._reflowTypes(f_f, connection1);
 
-					context.structure._reflowTypes(f_f, new Connection('b', ss_s.id, 'a'));
+						// manually adding the connection
+						f_f.outputsTo.push(connection1);
 
-					expect(function () {
-						context.structure._reflowTypes(i_i, new Connection('b', ss_s.id, 'b'));
-					}).toThrow(new Error('could not match int with already resolved generic type T of float'));
-				});
 
-				it('propagates a type and rejects a connection when a mismatch is found', function () {
-					var f_f = context.createF_f();
-					var s_s = context.createS_s();
-					var i_i = context.createI_i();
+						var connection2 = new Connection('b', s_f.id, 'a');
+						context.structure._unflowTypes(s_s, connection2);
 
-					var connection = new Connection('b', i_i.id, 'a');
-					context.structure._reflowTypes(s_s, connection);
+						// manually adding the connection
+						s_s.outputsTo.push(connection2);
 
-					// manually adding the connection
-					s_s.outputsTo.push(connection);
 
-					expect(function () {
-						context.structure._reflowTypes(f_f, new Connection('b', s_s.id, 'a'));
-					}).toThrow(new Error('could not match type float with type int'));
+						// remove a "vital" connection
+						context.structure._unflowTypes(f_f, connection1);
+
+						expect(s_f.resolvedTypes.size).toEqual(0);
+					});
+
+					it('partially unresolves a resolved type and does not propagate', function () {
+						var f_f1 = context.createF_f();
+						var f_f2 = context.createF_f();
+						var ss_s = context.createSs_s();
+						var s_f = context.createS_f();
+
+						// wire up everything
+						var connection1 = new Connection('b', ss_s.id, 'a');
+						context.structure._reflowTypes(f_f1, connection1);
+
+						// manually adding the connection
+						f_f1.outputsTo.push(connection1);
+
+
+						var connection2 = new Connection('b', ss_s.id, 'b');
+						context.structure._reflowTypes(f_f2, connection2);
+
+						// manually adding the connection
+						f_f2.outputsTo.push(connection1);
+
+
+						var connection3 = new Connection('c', s_f.id, 'a');
+						context.structure._reflowTypes(ss_s, connection3);
+
+						// manually adding the connection
+						ss_s.outputsTo.push(connection3);
+
+
+						// remove a "vital" connection
+						context.structure._unflowTypes(s_f, connection1);
+
+						expect(s_f.resolvedTypes.size).toEqual(1);
+					});
 				});
 			});
 		});

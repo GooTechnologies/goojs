@@ -142,9 +142,9 @@
 			});
 
 
-			// if type is resolve in the start node and can propagate
+			// check ot see if there is any "unresolveness" that can be propagated
 			if (
-
+				(!outputDefinition.generic || node.resolvedTypes.has(outputDefinition.type)) &&
 				inputDefinition.generic &&
 				targetNode.resolvedTypes.has(inputDefinition.type)
 			) {
