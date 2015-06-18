@@ -25,20 +25,21 @@
 	 */
 	Structure.prototype._reflowTypes = function (startNode, connection) {
 		var typeDefinitions = this._context.typeDefinitions;
+		var nodes = this.nodes;
 
-		function resolveType(node, inputName, inputType, resolvedType) {
-			if (node.resolvedTypes.has(inputName)) {
+		function resolveType(node, inputType, resolvedType) {
+			if (node.resolvedTypes.has(inputType)) {
 				// throw exceptions on mismatch
 				// same node may have the generic type already resolved by some other input
-				var alreadyResolvedType = node.resolvedTypes.get(inputName);
+				var alreadyResolvedType = node.resolvedTypes.get(inputType);
 				if (alreadyResolvedType !== resolvedType) {
-					throw new Error({
-						result: false,
-						reason: 'node already resolved generic type blaha to blahaha'
-					});
+					throw new Error(
+						'could not match ' + resolvedType +
+						' with already resolved generic type ' + inputType + ' of ' + alreadyResolvedType
+					);
 				}
 			} else {
-				node.resolvedTypes.set(inputName, resolvedType);
+				node.resolvedTypes.set(inputType, resolvedType);
 			}
 
 			// propagate if there are outputs with the same generic type
@@ -64,7 +65,7 @@
 			});
 
 
-			var targetNode = this.nodes[connection.to];
+			var targetNode = nodes[connection.to];
 			var inputsDefinition = typeDefinitions[targetNode.type].inputs;
 			var inputDefinition = _(inputsDefinition).find(function (input) {
 				return input.name === connection.input;
@@ -72,22 +73,23 @@
 
 
 			var outputType;
-			if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.name)) {
-				outputType = startNode.resolvedTypes.get(outputDefinition.name);
+			if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.type)) {
+				outputType = startNode.resolvedTypes.get(outputDefinition.type);
 			} else if (!outputDefinition.generic) {
 				outputType = outputDefinition.type;
+			} else {
+				return;
 			}
-			if (!outputType) { return; }
 
 
 			if (inputDefinition.generic) {
-				resolveType(targetNode, inputDefinition.name, inputDefinition.name, outputType);
+				resolveType(targetNode, inputDefinition.type, outputType);
 			} else {
 				if (outputType !== inputDefinition.type) {
-					throw new Error({
-						result: false,
-						reason: 'could not match type blaha with type blahaha'
-					});
+					throw new Error(
+						'could not match type ' + outputType +
+						' with type ' + inputDefinition.type
+					);
 				}
 			}
 		}

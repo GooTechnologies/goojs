@@ -2,6 +2,7 @@
 	'use strict';
 
 	var Context = shaderBits.Context;
+	var Connection = shaderBits.Connection;
 
 	describe('Structure', function () {
 		describe('Connections', function () {
@@ -73,6 +74,75 @@
 					outputs: [{
 						name: 'vector',
 						type: 'vec2'
+					}],
+					defines: {}
+				},
+				i_i: {
+					id: 'i_i',
+					inputs: [{
+						name: 'a',
+						type: 'int'
+					}],
+					outputs: [{
+						name: 'b',
+						type: 'int'
+					}],
+					defines: {}
+				},
+				f_f: { // float -> float
+					id: 'f_f',
+					inputs: [{
+						name: 'a',
+						type: 'float'
+					}],
+					outputs: [{
+						name: 'b',
+						type: 'float'
+					}],
+					defines: {}
+				},
+				s_s: { // T -> T; s stands for * (star); this is a function like `sin`
+					id: 's_s',
+					inputs: [{
+						name: 'a',
+						type: 'T',
+						generic: true
+					}],
+					outputs: [{
+						name: 'b',
+						type: 'T',
+						generic: true
+					}],
+					defines: {}
+				},
+				s_f: { // T -> float; example function `length`
+					id: 's_f',
+					inputs: [{
+						name: 'a',
+						type: 'T',
+						generic: true
+					}],
+					outputs: [{
+						name: 'b',
+						type: 'float'
+					}],
+					defines: {}
+				},
+				ss_s: { // T x T -> T; example function `+`
+					id: 'ss_s',
+					inputs: [{
+						name: 'a',
+						type: 'T',
+						generic: true
+					}, {
+						name: 'b',
+						type: 'T',
+						generic: true
+					}],
+					outputs: [{
+						name: 'c',
+						type: 'T',
+						generic: true
 					}],
 					defines: {}
 				},
@@ -181,8 +251,71 @@
 				}).toThrow(new Error('could not connect i3[s] to i2[x]; cannot have cycles'));
 			});
 
-			// cannot connect a node to itself
-			// cannot create a cycle
+			describe('type checking', function () {
+				it('accepts a connection from a fixed type to a fixed type', function () {
+					var f_f1 = context.createF_f();
+					var f_f2 = context.createF_f();
+
+					expect(function () {
+						context.structure._reflowTypes(f_f1, new Connection('b', f_f2.id, 'a'));
+					}).not.toThrow();
+				});
+
+				it('rejects a connection from a fixed type to a (wrong) fixed type', function () {
+					var f_f = context.createF_f();
+					var i_i = context.createI_i();
+
+					expect(function () {
+						context.structure._reflowTypes(f_f, new Connection('b', i_i.id, 'a'));
+					}).toThrow(new Error('could not match type float with type int'));
+				});
+
+				it('accepts a connection from an unresolved generic type to a fixed type', function () {
+					var s_s = context.createS_s();
+					var f_f = context.createF_f();
+
+					expect(function () {
+						context.structure._reflowTypes(s_s, new Connection('b', f_f.id, 'a'));
+					}).not.toThrow();
+				});
+
+				it('accepts a connection from an unresolved generic type to a generic type', function () {
+					var s_s1 = context.createS_s();
+					var s_s2 = context.createS_s();
+
+					expect(function () {
+						context.structure._reflowTypes(s_s1, new Connection('b', s_s2.id, 'a'));
+					}).not.toThrow();
+				});
+
+				it('rejects a connection from a fixed type to a resolved non-matching generic type', function () {
+					var f_f = context.createF_f();
+					var i_i = context.createI_i();
+					var ss_s = context.createSs_s();
+
+					context.structure._reflowTypes(f_f, new Connection('b', ss_s.id, 'a'));
+
+					expect(function () {
+						context.structure._reflowTypes(i_i, new Connection('b', ss_s.id, 'b'));
+					}).toThrow(new Error('could not match int with already resolved generic type T of float'));
+				});
+
+				it('propagates a type and rejects a connection when a mismatch is found', function () {
+					var f_f = context.createF_f();
+					var s_s = context.createS_s();
+					var i_i = context.createI_i();
+
+					var connection = new Connection('b', i_i.id, 'a');
+					context.structure._reflowTypes(s_s, connection);
+
+					// manually adding the connection
+					s_s.outputsTo.push(connection);
+
+					expect(function () {
+						context.structure._reflowTypes(f_f, new Connection('b', s_s.id, 'a'));
+					}).toThrow(new Error('could not match type float with type int'));
+				});
+			});
 		});
 	});
 })();
