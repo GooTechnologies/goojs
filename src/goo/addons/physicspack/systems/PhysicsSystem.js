@@ -124,7 +124,11 @@ function (
 
 			var found = this._currentContacts.has(hash);
 			if (!found) {
-				this.emitEndContact(entityA, entityB);
+				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+					this.emitTriggerExit(entityA, entityB);
+				} else {
+					this.emitEndContact(entityA, entityB);
+				}
 			}
 		}.bind(this);
 
@@ -315,10 +319,18 @@ function (
 
 				var wasInContact = this._lastContacts.has(hash);
 
-				if (wasInContact) {
-					this.emitDuringContact(entityA, entityB, contactList);
+				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+					if (wasInContact) {
+						this.emitTriggerStay(entityA, entityB);
+					} else {
+						this.emitTriggerEnter(entityA, entityB);
+					}
 				} else {
-					this.emitBeginContact(entityA, entityB, contactList);
+					if (wasInContact) {
+						this.emitDuringContact(entityA, entityB, contactList);
+					} else {
+						this.emitBeginContact(entityA, entityB, contactList);
+					}
 				}
 
 				contactList.length = 0;

@@ -40,7 +40,7 @@ define([
 	TriggerEnterAction.prototype._setup = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
 		this.entered = false;
-		SystemBus.addListener('goo.physics.beginContact', this.listener);
+		SystemBus.addListener('goo.physics.triggerEnter', this.listener);
 	};
 
 	TriggerEnterAction.prototype._cleanup = function () {
@@ -48,7 +48,7 @@ define([
 	};
 
 	TriggerEnterAction.prototype.exit = function (/*fsm*/) {
-		SystemBus.removeListener('goo.physics.beginContact', this.listener);
+		SystemBus.removeListener('goo.physics.triggerEnter', this.listener);
 		this.entered = false;
 	};
 
