@@ -222,16 +222,7 @@
 					sin.connect(add);
 				}).toThrow();
 			});
-
-			it('cannot connect inputs of different types', function () {
-				var vec2 = context.createVec2();
-				var sin = context.createSin();
-
-				expect(function () {
-					vec2.connect(sin);
-				}).toThrow(new Error('could not connect i2[vector] to i3[x]; could not match output "vector" of type vec2 with input "x" of type float'));
-			});
-
+			
 			it('cannot connect a node to itself', function () {
 				var sin = context.createSin();
 
@@ -314,6 +305,18 @@
 
 						expect(function () {
 							context.structure._reflowTypes(f_f, new Connection('b', s_s.id, 'a'));
+						}).toThrow(new Error('could not match type float with type int'));
+					});
+
+					it('propagates a type and rejects a connection when a mismatch is found (using the "normal" way of connecting nodes)', function () {
+						var f_f = context.createF_f();
+						var s_s = context.createS_s();
+						var i_i = context.createI_i();
+
+						s_s.connect(i_i);
+
+						expect(function () {
+							f_f.connect(s_s);
 						}).toThrow(new Error('could not match type float with type int'));
 					});
 				});

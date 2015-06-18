@@ -194,34 +194,6 @@
 			};
 		}
 
-
-		var sourceType = this.nodes[node.id].type;
-		var outputType;
-		if (sourceType !== 'external') {
-			var outputDefinitions = this._context.typeDefinitions[sourceType].outputs;
-			outputType = _(outputDefinitions).find(function (outputDefinition) {
-				return outputDefinition.name === connection.output;
-			}).type;
-		} else {
-			outputType = this.nodes[node.id].external.dataType;
-		}
-
-		var targetType = this.nodes[connection.to].type;
-		var inputDefinitions = this._context.typeDefinitions[targetType].inputs;
-		var inputType = _(inputDefinitions).find(function (inputDefinition) {
-			return inputDefinition.name === connection.input;
-		}).type;
-
-		if (inputType !== outputType) {
-			return {
-				result: false,
-				reason: 'could not match output "' + connection.output +
-					'" of type ' + outputType + ' with input "' + connection.input +
-					'" of type ' + inputType
-			};
-		}
-
-
 		if (this._returnsTo(node, connection)) {
 			return {
 				result: false,
@@ -235,8 +207,8 @@
 	};
 
 	// why proxy these operations?
-	// because they'll verify the validity of the graph
-	// the node alone cannot do that
+	// because they can verify the validity of the graph
+	// while the node alone cannot do that
 	Structure.prototype.addConnection = function (node, connection) {
 		var accepts = this.acceptsConnection(node, connection);
 		if (!accepts.result) {
@@ -245,6 +217,8 @@
 				connection.to + '[' + connection.input + ']; ' + accepts.reason
 			);
 		}
+
+		this._reflowTypes(node, connection);
 
 		node.addConnection(connection);
 
@@ -256,6 +230,7 @@
 	};
 
 	Structure.prototype.removeConnection = function (node, connection) {
+		this._unflowTypes(node, connection);
 		node.removeConnection(connection);
 		return this;
 	};
