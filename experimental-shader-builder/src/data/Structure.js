@@ -32,14 +32,19 @@
 				// throw exceptions on mismatch
 				// same node may have the generic type already resolved by some other input
 				var alreadyResolvedType = node.resolvedTypes.get(inputType);
-				if (alreadyResolvedType !== resolvedType) {
+				if (alreadyResolvedType.type !== resolvedType) {
 					throw new Error(
 						'could not match ' + resolvedType +
-						' with already resolved generic type ' + inputType + ' of ' + alreadyResolvedType
+						' with already resolved generic type ' + inputType + ' of ' + alreadyResolvedType.type
 					);
+				} else {
+					alreadyResolvedType.count++;
 				}
 			} else {
-				node.resolvedTypes.set(inputType, resolvedType);
+				node.resolvedTypes.set(inputType, {
+					type: resolvedType,
+					count: 1
+				});
 			}
 
 			// propagate if there are outputs with the same generic type
@@ -74,7 +79,7 @@
 
 			var outputType;
 			if (outputDefinition.generic && startNode.resolvedTypes.has(outputDefinition.type)) {
-				outputType = startNode.resolvedTypes.get(outputDefinition.type);
+				outputType = startNode.resolvedTypes.get(outputDefinition.type).type;
 			} else if (!outputDefinition.generic) {
 				outputType = outputDefinition.type;
 			} else {
@@ -91,6 +96,59 @@
 						' with type ' + inputDefinition.type
 					);
 				}
+			}
+		}
+
+		propagate(startNode, connection);
+	};
+
+	Structure.prototype._unflowTypes = function (startNode, connection) {
+		var typeDefinitions = this._context.typeDefinitions;
+		var nodes = this.nodes;
+
+		function unresolveType(node, inputType) {
+			var entry = node.resolvedTypes.get(inputType);
+			entry.count--;
+			if (entry.count === 0) {
+				node.resolvedTypes.delete(inputType);
+
+				// propagate if there are outputs with the same generic type
+				var outputs = typeDefinitions[node.type].outputs.filter(function (output) {
+					return output.generic && output.type === inputType;
+				}).map(function (output) {
+					return output.name;
+				});
+
+				// and any connections starting from those inputs
+				node.outputsTo.forEach(function (outputTo) {
+					if (outputs.indexOf(outputTo.output) !== -1) {
+						propagate(node, outputTo);
+					}
+				});
+			}
+		}
+
+		function propagate(node, connection) {
+			var outputDefinitions = typeDefinitions[startNode.type].outputs;
+			var outputDefinition = _(outputDefinitions).find(function (output) {
+				return output.name === connection.output;
+			});
+
+
+			var targetNode = nodes[connection.to];
+			var inputsDefinition = typeDefinitions[targetNode.type].inputs;
+			var inputDefinition = _(inputsDefinition).find(function (input) {
+				return input.name === connection.input;
+			});
+
+
+			// if type is resolve in the start node and can propagate
+			if (
+
+				inputDefinition.generic &&
+				targetNode.resolvedTypes.has(inputDefinition.type)
+			) {
+				unresolveType(targetNode, inputDefinition.type);
 			}
 		}
 

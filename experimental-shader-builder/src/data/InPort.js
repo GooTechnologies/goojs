@@ -20,6 +20,17 @@
 		);
 	};
 
+	InPort.prototype.disconnectedByNode = function (node) {
+		this.disconnectedByOutPort(node.singleOutPort);
+	};
+
+	InPort.prototype.disconnectedByOutPort = function (outPort) {
+		outPort._node._context.structure.removeConnection(
+			outPort._node,
+			new Connection(outPort.name, this._node.id, this.name)
+		);
+	};
+
 	window.shaderBits = window.shaderBits || {};
 	window.shaderBits.InPort = InPort;
 })();

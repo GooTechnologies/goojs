@@ -30,6 +30,20 @@
 		);
 	};
 
+	FunctionNode.prototype.disconnectedByNode = function (node) {
+		node._context.structure.removeConnection(
+			node,
+			new Connection(node.singleOutPort.name, this.id, this.singleInPort.name)
+		);
+	};
+
+	FunctionNode.prototype.disconnectedByOutPort = function (outPort) {
+		outPort._node._context.removeConnection(
+			outPort._node,
+			new Connection(outPort.name, this.id, this.singleInPort.name)
+		);
+	};
+
 	FunctionNode.prototype.setDefine = function (name, value) {
 		this.defines[name] = value;
 	};

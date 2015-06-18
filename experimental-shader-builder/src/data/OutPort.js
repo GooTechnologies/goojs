@@ -11,6 +11,10 @@
 		that.connectedByOutPort(this);
 	};
 
+	OutPort.prototype.disconnect = function (that) {
+		that.disconnectedByOutPort(this);
+	};
+
 	window.shaderBits = window.shaderBits || {};
 	window.shaderBits.OutPort = OutPort;
 })();
