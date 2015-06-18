@@ -157,5 +157,73 @@ define([
 				done();
 			});
 		});
+
+		describe('_getRefsFromConfig', function () {
+			it('gets individual references', function () {
+				var config = {
+					aref: 'asd',
+					bref: 'dsa'
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual(['asd', 'dsa']);
+			});
+
+			it('gets individual references several levels deep', function () {
+				var config = {
+					a: {
+						b: {
+							c: {
+								aref: 'asd',
+								bref: 'dsa'
+							}
+						}
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual(['asd', 'dsa']);
+			});
+
+			it('gets packed references', function () {
+				var config = {
+					arefs: {
+						a: 'asd',
+						b: 'dsa'
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual(['asd', 'dsa']);
+			});
+
+			it('ignores thumbnailRef', function () {
+				var config = {
+					aref: 'asd',
+					bref: 'dsa',
+					thumbnailRef: 'qwe'
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual(['asd', 'dsa']);
+			});
+
+			it('ignores anything under assets', function () {
+				var config = {
+					a: {
+						assets: {
+							aref: 'asd',
+							b: {
+								bref: 'dsa'
+							}
+						},
+						cref: 'qwe'
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual(['qwe']);
+			});
+		});
 	});
 });
