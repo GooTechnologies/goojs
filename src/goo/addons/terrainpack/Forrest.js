@@ -101,20 +101,20 @@ define([
 	};
 
 	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap, terrainTextures) {
-		var p = new RSVP.Promise();
+		// var p = new RSVP.Promise();
 
-		var bundlesToLoad = ["fish"];
-		for (var i = 0; i < bundlesToLoad.length; i++) {
-			p = chainBundleLoading(world, p, bundlesToLoad[i]);
-		}
+		// var bundlesToLoad = ["fish"];
+		// for (var i = 0; i < bundlesToLoad.length; i++) {
+		// 	p = chainBundleLoading(world, p, bundlesToLoad[i]);
+		// }
 
-		p.then(function () {
-			console.log("loaded forrest", forrestTypes);
-		}, function (e) {
-			console.log("Error! ", e);
-		}).then(null, function (e) {
-			console.log("Error! ", e);
-		});
+		// p.then(function () {
+		// 	console.log("loaded forrest", forrestTypes);
+		// }, function (e) {
+		// 	console.log("Error! ", e);
+		// }).then(null, function (e) {
+		// 	console.log("Error! ", e);
+		// });
 
 		this.terrainTextures = terrainTextures;
 
