@@ -1,7 +1,9 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/util/PromiseUtil'
 ], function (
-	Action
+	Action,
+	PromiseUtil
 ) {
 	'use strict';
 
@@ -15,7 +17,7 @@ define([
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
 		type: 'sound',
-		description: 'Fades in a sound.',
+		description: 'Fades in a sound. NOTE: will not work on iOS devices.',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
@@ -50,10 +52,16 @@ define([
 		var sound = entity.soundComponent.getSoundById(this.sound);
 		if (!sound) { return; }
 
-		var endPromise = sound.fadeIn(this.time / 1000);
+		var endPromise;
+		try {
+			sound.fadeIn(this.time / 1000);
 
-		if (this.onSoundEnd) {
-			endPromise = sound.play();
+			if (this.onSoundEnd) {
+				endPromise = sound.play();
+			}
+		} catch (e) {
+			console.warn('Could not play sound: ' + e);
+			endPromise = PromiseUtil.resolve();
 		}
 
 		endPromise.then(function() {

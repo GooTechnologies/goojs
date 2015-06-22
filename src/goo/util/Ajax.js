@@ -214,16 +214,44 @@ define([
 	};
 
 	Ajax.prototype._loadVideo = function (url, mimeType) {
+		var VIDEO_LOAD_TIMEOUT = 1000; // Timeout to 'canplay' event.
 		var video = document.createElement('video');
+		var iOS = /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
 
 		var promise = PromiseUtil.createPromise(function (resolve, reject) {
-			video.addEventListener('canplay', function () {
-				video.dataReady = true;
+			var timeout;
+
+			var _resolve = function() {
+				if (!video.dataReady) {
+					console.warn('Video is not ready');
+				}
+				video.removeEventListener('canplay', canplay);
+				video.removeEventListener('loadstart', loadstart);
+				clearTimeout(timeout);
 				resolve(video);
-			}, false);
+			};
+
+			var canplay = function () {
+				video.dataReady = true;
+				_resolve(video);
+			};
+
+			var loadstart = function () {
+				if (iOS) {
+					_resolve();
+				}
+				else {
+					timeout = setTimeout(_resolve, VIDEO_LOAD_TIMEOUT);
+				}
+			};
+
+			// iOS doesn't auto-load video
+			video.addEventListener('canplay', canplay , false);
+			video.addEventListener('loadstart', loadstart, false);
+
 			video.addEventListener('error', function (e) {
 				reject('Could not load video from ' + url + ', ' + e);
 			}, false);
