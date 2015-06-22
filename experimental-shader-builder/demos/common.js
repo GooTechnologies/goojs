@@ -19,7 +19,8 @@
 				attributes: {
 					vertexPosition: goo.MeshData.POSITION,
 					vertexNormal: goo.MeshData.NORMAL,
-					vertexUV0: goo.MeshData.TEXCOORD0
+					vertexUV0: goo.MeshData.TEXCOORD0,
+					vertexTangent: goo.MeshData.TANGENT
 				},
 				uniforms: {
 					viewProjectionMatrix: goo.Shader.VIEW_PROJECTION_MATRIX,
@@ -28,9 +29,10 @@
 						return world.time;
 					},
 					diffuseMap: goo.Shader.DIFFUSE_MAP,
+					normalMap: goo.Shader.NORMAL_MAP,
 
 					light0Pos: [1, 1, 1],
-					light0Color: [1, 0, 0.3],
+					light0Color: [1, 1, 1],
 
 					light1Pos: [1, -1, -1],
 					light1Color: [0, 1, 0.3]
@@ -39,27 +41,39 @@
 					'attribute vec3 vertexPosition;',
 					'attribute vec3 vertexNormal;',
 					'attribute vec2 vertexUV0;',
+					'attribute vec4 vertexTangent;',
 
 					'uniform mat4 viewProjectionMatrix;',
 					'uniform mat4 worldMatrix;',
 
 					'varying vec3 normal;',
 					'varying vec2 texCoord0;',
+					'varying vec3 binormal;',
+					'varying vec3 tangent;',
 
 					'void main(void) {',
 					'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 					'	texCoord0 = vertexUV0;',
+					//'	tangent = normalize(nMatrix * vertexTangent.xyz);', // it's identity
+					'	tangent = vertexTangent.xyz;',
+					'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 					'}'
 				].join('\n'),
 				fshader: shaderSource
 			});
 
-			var texture = textureCreator.loadTexture2D('../../../visual-test/resources/check-alt.png');
+			var diffuseMap = textureCreator.loadTexture2D('../../../visual-test/resources/check-alt.png', { anisotropy: 16 });
+			var normalMap = textureCreator.loadTexture2D('../../../visual-test/resources/normal-map2.jpg', { anisotropy: 16 });
 
-			material.setTexture('DIFFUSE_MAP', texture);
+			material.setTexture('DIFFUSE_MAP', diffuseMap);
+			material.setTexture('NORMAL_MAP', normalMap);
 
-			box = world.createEntity(new goo.Torus(32, 32, 0.3, 1.0), material).addToWorld();
+			//var meshData = new goo.Torus(32, 32, 0.3, 1.0);
+			var meshData = new goo.Box();
+			goo.TangentGenerator.addTangentBuffer(meshData);
+
+			box = world.createEntity(meshData, material).addToWorld();
 
 			var uniforms = box.meshRendererComponent.materials[0].uniforms;
 			uniforms.light0Pos = [5, 5, 5];

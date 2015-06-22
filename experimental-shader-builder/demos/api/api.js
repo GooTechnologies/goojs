@@ -144,15 +144,55 @@
 		return context.structureToJSON();
 	}
 
+	function getS4(typeDefinitions) {
+		var context = new Context(typeDefinitions);
+
+		var normal = context.createVarying('normal', 'vec3');
+		var binormal = context.createVarying('binormal', 'vec3');
+		var tangent = context.createVarying('tangent', 'vec3');
+
+		var texCoord0 = context.createVarying('texCoord0', 'vec2');
+		var normalMap = context.createUniform('normalMap', 'sampler2D');
+
+		var light0Pos = context.createUniform('light0Pos', 'vec3');
+		var light0Color = context.createUniform('light0Color', 'vec3');
+
+		var diffuse = context.createDiffuse2();
+		light0Pos.connect(diffuse.position);
+		light0Color.connect(diffuse.color);
+		normal.connect(diffuse.normal);
+		binormal.connect(diffuse.binormal);
+		tangent.connect(diffuse.tangent);
+		normalMap.connect(diffuse.normalMap);
+		texCoord0.connect(diffuse.texCoord0);
+
+		var vec3Comp = context.createVec3Comp();
+		diffuse.connect(vec3Comp);
+
+		vec3Comp.x.connect(context.out.r);
+		vec3Comp.y.connect(context.out.g);
+		vec3Comp.z.connect(context.out.b);
+
+		return context.structureToJSON();
+	}
+
 	function getSample(name, callback) {
 		$.ajax({
 			url: '../../samples/' + name + '/types.json'
-		}).done(callback);
+		}).done(function (typeDefinitions) {
+			// for convenience, writing strings on a single line is not healthy for the mind
+			_(typeDefinitions).forEach(function (shaderDefinition) {
+				if (shaderDefinition.body instanceof Array) {
+					shaderDefinition.body = shaderDefinition.body.join('\n');
+				}
+			});
+			callback(typeDefinitions);
+		});
 	}
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS3(typeDefinitions);
+		var structure = getS4(typeDefinitions);
 
 		_replaceBox(typeDefinitions, structure);
 	});
