@@ -19,25 +19,66 @@
     "id": "add",
     "inputs": [{
       "name": "x",
-      "type": "float"
+      "type": "T",
+      "generic": true
     }, {
       "name": "y",
-      "type": "float"
+      "type": "T",
+      "generic": true
     }],
     "outputs": [{
       "name": "sum",
-      "type": "float"
+      "type": "T",
+      "generic": true
     }],
     "body": "sum = x + y;"
+  },
+  "sub": {
+    "id": "sub",
+    "inputs": [{
+      "name": "x",
+      "type": "T",
+      "generic": true
+    }, {
+      "name": "y",
+      "type": "T",
+      "generic": true
+    }],
+    "outputs": [{
+      "name": "sum",
+      "type": "T",
+      "generic": true
+    }],
+    "body": "sum = x - y;"
+  },
+  "mul": {
+    "id": "mul",
+    "inputs": [{
+      "name": "x",
+      "type": "T",
+      "generic": true
+    }, {
+      "name": "y",
+      "type": "T",
+      "generic": true
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "T",
+      "generic": true
+    }],
+    "body": "product = x * y;"
   },
   "dot": {
     "id": "dot",
     "inputs": [{
       "name": "x",
-      "type": "vec3"
+      "type": "T",
+      "generic": true
     }, {
       "name": "y",
-      "type": "vec3"
+      "type": "T",
+      "generic": true
     }],
     "outputs": [{
       "name": "product",
@@ -56,11 +97,13 @@
     "id": "sin01",
     "inputs": [{
       "name": "x",
-      "type": "float"
+      "type": "T",
+      "generic": true
     }],
     "outputs": [{
       "name": "s",
-      "type": "float"
+      "type": "T",
+      "generic": true
     }],
     "body": "s = sin(x * /*data.multiplier*/) * 0.5 + 0.5;",
     "defines": {
@@ -70,36 +113,6 @@
         "default": "1.0"
       }
     }
-  },
-  "mul": {
-    "id": "mul",
-    "inputs": [{
-      "name": "x",
-      "type": "float"
-    }, {
-      "name": "y",
-      "type": "float"
-    }],
-    "outputs": [{
-      "name": "product",
-      "type": "float"
-    }],
-    "body": "product = x * y;"
-  },
-  "mul3": {
-    "id": "mul3",
-    "inputs": [{
-      "name": "x",
-      "type": "vec3"
-    }, {
-      "name": "y",
-      "type": "vec3"
-    }],
-    "outputs": [{
-      "name": "product",
-      "type": "vec3"
-    }],
-    "body": "product = x * y;"
   },
   "texture2D": {
     "id": "texture2D",

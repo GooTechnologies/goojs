@@ -86,7 +86,9 @@
 		var outputDeclarations = '';
 		if (typeDefinition.outputs) {
 			outputDeclarations = typeDefinition.outputs.map(function (output) {
-				return '\t' + output.type + ' ' + output.name + ';';
+				var type = output.generic ? node.resolvedTypes[output.type] : output.type;
+
+				return '\t' + type + ' ' + output.name + ';';
 			}).join('\n');
 		}
 
@@ -155,7 +157,9 @@
 					var inputVar = getInputVar(node.id, input.name);
 					return !externalConnected.has(inputVar);
 				}).map(function (input) {
-					return input.type + ' ' + getInputVar(node.id, input.name) + ';';
+					var type = input.generic ? node.resolvedTypes[input.type] : input.type;
+
+					return type + ' ' + getInputVar(node.id, input.name) + ';';
 				}).join('\n');
 		}).join('\n');
 

@@ -4,6 +4,14 @@
 	var Node = shaderBits.Node;
 	var Connection = shaderBits.Connection;
 
+	function extractResolvedTypes(map) {
+		var obj = {};
+		map.forEach(function (enty, key) {
+			obj[key] = enty.type;
+		});
+		return obj;
+	}
+
 	function FunctionNode(id, type) {
 		Node.call(this, id);
 
@@ -55,7 +63,8 @@
 			outputsTo: this.outputsTo.map(function (outputTo) {
 				return outputTo.toJSON();
 			}),
-			defines: _.clone(this.defines)
+			defines: _.clone(this.defines),
+			resolvedTypes: extractResolvedTypes(this.resolvedTypes)
 		};
 	};
 
