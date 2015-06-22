@@ -163,6 +163,7 @@ define([
 			this.gridState[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = world.createEntity('ForrestPatch'+x+'_'+z, this.material);
+				entity.static = true;
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
 				meshDataComponent.modelBound.xExtent = this.patchSize * 0.5;
 				meshDataComponent.modelBound.yExtent = 500;
@@ -336,6 +337,10 @@ define([
 	};
 
 	Forrest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
+		if (!this.forrestTypes[vegetationType]) {
+			console.error('No vegetation of type ' + vegetationType);
+			return;
+		}
 		var transform = new Transform();
 		var size = (MathUtils.fastRandom() * 0.5 + 0.75) * 0.5;
 		transform.translation.set(pos);
@@ -354,7 +359,9 @@ define([
 			}
 		} else {
 			var meshData = this.fetchTreeBillboard(vegetationType, size);
-			meshBuilder.addMeshData(meshData, transform);
+			if (meshData) {
+				meshBuilder.addMeshData(meshData, transform);
+			}
 		}
 	};
 
