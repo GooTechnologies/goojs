@@ -261,13 +261,15 @@ define([
 				patchX *= this.patchSize;
 				patchZ *= this.patchSize;
 				var meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
-				if (meshData && meshData.vertexCount > 0) {
-					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.hidden = false;
-				} else {
-					entity.meshRendererComponent.hidden = true;
+				if (entity.meshRendererComponent) {					
+					if (meshData && meshData.vertexCount > 0) {
+						entity.meshDataComponent.meshData = meshData;
+						entity.meshRendererComponent.hidden = false;
+					} else {
+						entity.meshRendererComponent.hidden = true;
+					}
+					entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 				}
-				entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
 
