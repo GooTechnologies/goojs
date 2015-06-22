@@ -93,6 +93,50 @@
       }
     }
   },
+  "max": {
+    "id": "max",
+    "inputs": [{
+      "name": "x",
+      "type": "T",
+      "generic": true
+    }, {
+      "name": "y",
+      "type": "T",
+      "generic": true
+    }],
+    "outputs": [{
+      "name": "m",
+      "type": "T",
+      "generic": true
+    }],
+    "body": "m = max(x, y);"
+  },
+  "clamp": {
+    "id": "clamp",
+    "inputs": [{
+      "name": "x",
+      "type": "T",
+      "generic": true
+    }],
+    "outputs": [{
+      "name": "clamped",
+      "type": "T",
+      "generic": true
+    }],
+    "body": "clamped = clamp(x, /*data.min*/, /*data.max*/);",
+    "defines": {
+      "min": {
+        "name": "min",
+        "type": "T",
+        "default": "0.0"
+      },
+      "max": {
+        "name": "max",
+        "type": "T",
+        "default": "1.0"
+      }
+    }
+  },
   "sin01": {
     "id": "sin01",
     "inputs": [{
@@ -186,8 +230,8 @@
     }],
     "body": "vec = vec3(x, y, z);"
   },
-  "vec3-comp": {
-    "id": "vec3-comp",
+  "vec3Comp": {
+    "id": "vec3Comp",
     "inputs": [{
       "name": "vec",
       "type": "vec3"
@@ -203,6 +247,18 @@
       "type": "float"
     }],
     "body": "x = vec.x; y = vec.y; z = vec.z;"
+  },
+  "xyz": {
+    "id": "xyz",
+    "inputs": [{
+      "name": "v4",
+      "type": "vec4"
+    }],
+    "outputs": [{
+      "name": "v3",
+      "type": "vec3"
+    }],
+    "body": "v3 = v4.xyz;"
   },
   "vec4": {
     "id": "vec4",
@@ -254,6 +310,24 @@
       "type": "vec4"
     }],
     "body": "coord = gl_FragCoord;"
+  },
+  "diffuse": {
+    "id": "diffuse",
+    "inputs": [{
+      "name": "position",
+      "type": "vec3"
+    }, {
+      "name": "normal",
+      "type": "vec3"
+    }, {
+      "name": "color",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "result",
+      "type": "vec3"
+    }],
+    "body": "result = dot(normalize(position), normal) * color;"
   },
   "plasma": {
     "id": "plasma",

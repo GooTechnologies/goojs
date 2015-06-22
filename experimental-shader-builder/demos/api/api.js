@@ -109,6 +109,41 @@
 		return context.structureToJSON();
 	}
 
+	function getS3(typeDefinitions) {
+		var context = new Context(typeDefinitions);
+
+		var normal = context.createVarying('normal', 'vec3');
+
+		var light0Pos = context.createUniform('light0Pos', 'vec3');
+		var light0Color = context.createUniform('light0Color', 'vec3');
+
+		var diffuse0 = context.createDiffuse();
+		light0Pos.connect(diffuse0.position);
+		light0Color.connect(diffuse0.color);
+		normal.connect(diffuse0.normal);
+
+		var light1Pos = context.createUniform('light1Pos', 'vec3');
+		var light1Color = context.createUniform('light1Color', 'vec3');
+
+		var diffuse1 = context.createDiffuse();
+		light1Pos.connect(diffuse1.position);
+		light1Color.connect(diffuse1.color);
+		normal.connect(diffuse1.normal);
+
+		var add = context.createAdd();
+		diffuse0.connect(add.x);
+		diffuse1.connect(add.y);
+
+		var vec3Comp = context.createVec3Comp();
+		add.connect(vec3Comp);
+
+		vec3Comp.x.connect(context.out.r);
+		vec3Comp.y.connect(context.out.g);
+		vec3Comp.z.connect(context.out.b);
+
+		return context.structureToJSON();
+	}
+
 	function getSample(name, callback) {
 		$.ajax({
 			url: '../../samples/' + name + '/types.json'
@@ -117,7 +152,7 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS2(typeDefinitions);
+		var structure = getS3(typeDefinitions);
 
 		_replaceBox(typeDefinitions, structure);
 	});
