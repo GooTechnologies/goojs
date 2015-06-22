@@ -148,19 +148,10 @@ define([
 		material.renderQueue = 2001;
 		this.material = material;
 
-		// this.patchSize = 64;
-		// this.patchDensity = 10;
-		// this.gridSize = 7;
-		// this.minDist = 0;
-
 		this.patchSize = terrainData.forrestDensity.patchSize || 128;
 		this.patchDensity = terrainData.forrestDensity.patchDensity || 35;
 		this.gridSize = terrainData.forrestDensity.gridSize || 7;
-		this.minDist = 0;
-		// this.patchSize = 64;
-		// this.patchDensity = 8;
-		// this.gridSize = 7;
-		// this.minDist = 0;
+		this.minDist = terrainData.forrestDensity.minDist || 0;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -296,12 +287,29 @@ define([
 	};
 
 	Forrest.prototype.fetchTreeMesh = function (vegetationType) {
-        return EntityUtils.clone(this.world, this.entityMap[vegetationType]);
+		var clone = EntityUtils.clone(this.world, this.entityMap[vegetationType], {
+			shareMeshData: true,
+			shareMaterials: true,
+			shareTextures: true
+		});
+
+		clone.traverse(function(entity) {
+			if (entity.meshDataComponent && entity.meshRendererComponent) {
+				entity.meshRendererComponent.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+			}
+			entity.static = true;
+		});
+
+		return clone;
 	};
 
 	Forrest.prototype.fetchTreeBillboard = function (vegetationType, size) {
 		var meshData = this.vegetationList[vegetationType];
 		var type = this.forrestTypes[vegetationType];
+		if (meshData === undefined || type === undefined) {
+			console.error('No vegetation of type ' + vegetationType + ' in config');
+			return null;
+		}
 		var w = type.w * size;
 		var h = type.h * size;
 		meshData.getAttributeBuffer('OFFSET').set([
@@ -354,14 +362,16 @@ define([
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
 
-		// if (gridEntity) {
-		// 	// remove any previous old trees.
-		// 	gridEntity.traverse(function (entity, level) {
-		// 		if (level > 0) {
-		// 			entity.removeFromWorld();
-		// 		}
-		// 	});
-		// }
+		if (gridEntity) {
+			// remove any previous old trees.
+			gridEntity.traverse(function(entity, level) {
+				if (level === 1) {
+					entity.removeFromWorld();
+				} else if (level > 1) {
+					return false;
+				}
+			});
+		}
 
 		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
@@ -378,11 +388,42 @@ define([
 		}
 
 		var meshDatas = meshBuilder.build();
-		// if (gridEntity && levelOfDetail === 2) {
-		// 	new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
-		// }
+		if (gridEntity && levelOfDetail === 2) {
+			// this.world.processEntityChanges();
+			// this.world.getSystem('TransformSystem')._process();
+			gridEntity.traverse(function (entity) {
+				entity.static = true;
+				entity.transformComponent.updateTransform();
+				entity.transformComponent.updateWorldTransform();
+			});
+			new EntityCombiner(this.world)._combineList(gridEntity);
+		
+			this._cleanEmpty(gridEntity);
+
+			gridEntity.traverse(function (entity) {
+				if (entity.meshDataComponent) {
+					entity.meshDataComponent.autoCompute = true;
+				}
+			});
+		}
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
+	Forrest.prototype._cleanEmpty = function(entity) {
+		var hasMeshAny = false;
+		for (var i = 0; i < entity.transformComponent.children.length; i++) {
+			var childEntity = entity.transformComponent.children[i].entity;
+			var hasMesh = this._cleanEmpty(childEntity);
+			if (hasMesh) {
+				hasMeshAny = true;
+			}
+		}
+		if (!entity.meshDataComponent && !hasMeshAny) {
+			entity.removeFromWorld(false);
+			return false;
+		}
+		return true;
 	};
 
 	Forrest.prototype.createBase = function (type) {
