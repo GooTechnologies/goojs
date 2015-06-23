@@ -350,7 +350,7 @@ define([
 					}
 				}
 				if (foundRefs > 0) {
-					return refs;
+					return;
 				}
 			}
 
@@ -361,7 +361,7 @@ define([
 				isValidId(value)
 			) {
 				refs.push(value);
-				return refs;
+				return;
 			}
 
 			// Regular object (step into)
