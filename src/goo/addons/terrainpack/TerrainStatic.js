@@ -49,7 +49,7 @@ define([
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.count = count;
-		this.splatMult = 1;
+		this.splatMult = 2;
 
 		this._gridCache = {};
 
@@ -300,7 +300,7 @@ define([
 		// this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
 		// this.renderer.readPixels(0, 0, this.size, this.size, normalBuffer);
 
-		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
+		var splatBuffer = new Uint8Array(this.size * this.size * 4 * this.splatMult * this.splatMult);
 		// this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 		// this.renderer.readPixels(0, 0, this.size * this.splatMult, this.size * this.splatMult, splatBuffer);
 

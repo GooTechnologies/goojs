@@ -164,7 +164,7 @@ define([
 				if (splatBuffer) {
 					splatArray = new Uint8Array(splatBuffer);
 				} else {
-					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
+					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * this.terrain.splatMult * this.terrain.splatMult);
 				}
 
 				return this._load(terrainData, terrainArray, splatArray, forrestLODEntityMap);
