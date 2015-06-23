@@ -823,7 +823,7 @@ define([
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -1000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -869,7 +869,7 @@ define([
 				'#endif',
 
 				'void main(void) {',
-					'if (alphaval.w < -100.0) discard;',
+					'if (alphaval.w < 0.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',

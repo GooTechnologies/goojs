@@ -53,6 +53,7 @@ define([
 
 	function Forrest() {
 		this.calcVec = new Vector3();
+		this.calcTransform = new Transform();
 		this.initDone = false;
 	}
 
@@ -298,17 +299,31 @@ define([
 			console.error('No vegetation of type ' + vegetationType);
 			return;
 		}
-		var transform = new Transform();
-		var size = (MathUtils.fastRandom() * 0.5 + 0.75) * 0.5;
-		transform.translation.set(pos);
-		transform.update();
-		// var meshData;
+		var size = (MathUtils.fastRandom() * 0.5 + 0.5);//??? * 0.5;
 		var useMesh = gridEntity && ((levelOfDetail === 2) || (this.forrestTypes[vegetationType].forbidden === true));
 
 		if (useMesh && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
-			treeEntity.transformComponent.transform.scale.scale(size);
-			treeEntity.transformComponent.transform.translation.set(pos);
+
+			var transform = treeEntity.transformComponent.transform;
+			transform.scale.scale(size);
+			transform.translation.setDirect(0, 0, 0);
+			var angle = MathUtils.fastRandom() * Math.PI * 2.0;
+			var anglex = Math.sin(angle);
+			var anglez = Math.cos(angle);
+			this.calcVec.setDirect(anglex, 0.0, anglez);
+			var norm = this.terrainQuery.getNormalAt(pos);
+			if (norm === null) {
+				norm = Vector3.UNIT_Y;
+			}
+			// this.lookAt(transform.rotation, this.calcVec, norm);
+			transform.rotation.lookAt(this.calcVec, norm);
+			transform.translation.setArray(pos);
+			// transform.update();
+
+			// treeEntity.transformComponent.transform.scale.scale(size);
+			// treeEntity.transformComponent.transform.translation.set(pos);
+
 			treeEntity.addToWorld();
 			gridEntity.attachChild(treeEntity);
 			if (this.onAddedVegMesh) {
@@ -317,9 +332,37 @@ define([
 		} else {
 			var meshData = this.fetchTreeBillboard(vegetationType, size);
 			if (meshData) {
+				var transform = this.calcTransform;
+				transform.translation.setArray(pos);
+				transform.update();
 				meshBuilder.addMeshData(meshData, transform);
 			}
 		}
+	};
+
+	var _tempX = new Vector3();
+	var _tempY = new Vector3();
+	var _tempZ = new Vector3();
+
+	Forrest.prototype.lookAt = function (matrix, direction, up) {
+		var x = _tempX, y = _tempY, z = _tempZ;
+
+		y.setVector(up).normalize();
+		x.setVector(up).cross(direction).normalize();
+		z.setVector(y).cross(x);
+
+		var d = matrix.data;
+		d[0] = x.data[0];
+		d[1] = x.data[1];
+		d[2] = x.data[2];
+		d[3] = y.data[0];
+		d[4] = y.data[1];
+		d[5] = y.data[2];
+		d[6] = z.data[0];
+		d[7] = z.data[1];
+		d[8] = z.data[2];
+
+		return this;
 	};
 
 

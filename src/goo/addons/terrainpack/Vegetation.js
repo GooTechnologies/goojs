@@ -232,11 +232,12 @@ define([
 
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.5) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.5) * patchSpacing;
+				var xx = patchX + (x + MathUtils.fastRandom()*0.5) * patchSpacing;
+				var zz = patchZ + (z + MathUtils.fastRandom()*0.5) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -254,10 +255,10 @@ define([
 					continue;
 				}
 
-				var size = Math.random() * 0.4 + 0.8;
+				var size = MathUtils.fastRandom() * 0.4 + 0.8;
 				transform.scale.setDirect(size, size, size);
 				transform.translation.setDirect(0, 0, 0);
-				var angle = Math.random() * Math.PI * 2.0;
+				var angle = MathUtils.fastRandom() * Math.PI * 2.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setDirect(anglex, 0.0, anglez);
