@@ -192,7 +192,7 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS4(typeDefinitions);
+		var structure = getS1(typeDefinitions);
 
 		_replaceBox(typeDefinitions, structure);
 	});
