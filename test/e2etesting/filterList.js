@@ -36,7 +36,8 @@ var filterList = [
 	'TextMeshGenerator',
 	'linerenderpack',
 	'Pipe',
-	'PolyLine'
+	'PolyLine',
+	'ParticleInfluence'
 ];
 
 exports.filterList = filterList;
