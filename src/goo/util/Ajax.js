@@ -216,7 +216,7 @@ define([
 	Ajax.prototype._loadVideo = function (url, mimeType) {
 		var VIDEO_LOAD_TIMEOUT = 1000; // Timeout to 'canplay' event.
 		var video = document.createElement('video');
-		var iOS = /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
+		var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
@@ -228,18 +228,18 @@ define([
 				if (!video.dataReady) {
 					console.warn('Video is not ready');
 				}
-				video.removeEventListener('canplay', canplay);
-				video.removeEventListener('loadstart', loadstart);
+				video.removeEventListener('canplay', canPlay);
+				video.removeEventListener('loadstart', loadStart);
 				clearTimeout(timeout);
 				resolve(video);
 			};
 
-			var canplay = function () {
+			var canPlay = function () {
 				video.dataReady = true;
-				_resolve(video);
+				_resolve();
 			};
 
-			var loadstart = function () {
+			var loadStart = function () {
 				if (iOS) {
 					_resolve();
 				}
@@ -249,8 +249,8 @@ define([
 			};
 
 			// iOS doesn't auto-load video
-			video.addEventListener('canplay', canplay , false);
-			video.addEventListener('loadstart', loadstart, false);
+			video.addEventListener('canplay', canPlay , false);
+			video.addEventListener('loadstart', loadStart, false);
 
 			video.addEventListener('error', function (e) {
 				reject('Could not load video from ' + url + ', ' + e);
