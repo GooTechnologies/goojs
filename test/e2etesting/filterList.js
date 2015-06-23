@@ -37,7 +37,8 @@ var filterList = [
 	'linerenderpack',
 	'Pipe',
 	'PolyLine',
-	'ParticleInfluence'
+	'ParticleInfluence',
+	'HeightMap'
 ];
 
 exports.filterList = filterList;
