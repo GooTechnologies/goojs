@@ -2,18 +2,18 @@
 	'use strict';
 
 	function vecEncoder(length) {
-		return function (data) {
-			var body = data.map(formats.float.encode).join(', ');
+		return function (value) {
+			var body = value.map(formats.float.encode).join(', ');
 			return 'vec' + length + '(' + body + ')';
 		};
 	}
 
 	function vecDecoder(length) {
-		return function (data) {
-			var openParen = data.indexOf('(');
-			var closedParen = data.indexOf(')');
+		return function (string) {
+			var openParen = string.indexOf('(');
+			var closedParen = string.indexOf(')');
 
-			var body = data.substring(openParen + 1, closedParen);
+			var body = string.substring(openParen + 1, closedParen);
 
 			return body.split(', ').map(formats.float.decode);
 		};
@@ -21,43 +21,43 @@
 
 	var formats = {
 		float: {
-			encode: function (data) {
-				if (data.toString().indexOf('.') === -1) {
-					return data.toFixed(1);
+			encode: function (value) {
+				if (value.toString().indexOf('.') === -1) {
+					return value.toFixed(1);
 				} else {
-					return data.toString();
+					return value.toString();
 				}
 			},
 			decode: parseFloat
 		},
 		int: {
-			encode: function (data) {
-				return data.toFixed(0);
+			encode: function (value) {
+				return value.toFixed(0);
 			},
-			decode: function (data) {
-				return parseInt(data, 10);
+			decode: function (string) {
+				return parseInt(string, 10);
 			}
 		},
-		'vec2': {
+		vec2: {
 			encode: vecEncoder(2),
 			decode: vecDecoder(2)
 		},
-		'vec3': {
+		vec3: {
 			encode: vecEncoder(3),
 			decode: vecDecoder(3)
 		},
-		'vec4': {
+		vec4: {
 			encode: vecEncoder(4),
 			decode: vecDecoder(4)
 		}
 	};
 
-	function encode(data, format) {
-		return formats[format].encode(data);
+	function encode(value, format) {
+		return formats[format].encode(value);
 	}
 
-	function decode(data, format) {
-		return formats[format].decode(data);
+	function decode(string, format) {
+		return formats[format].decode(string);
 	}
 
 	var DataFormatter = {
