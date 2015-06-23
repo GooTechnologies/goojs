@@ -787,7 +787,9 @@ define([
 			col: [0, 0, 0]
 		},
 		builder: function (shader, shaderInfo) {
-			ShaderBuilder.light.builder(shader, shaderInfo);
+			if (!shader.hasDefine('LIGHTMAP')) {
+				ShaderBuilder.light.builder(shader, shaderInfo);
+			}
 		},
 		vshader: function () {
 			return [
@@ -803,7 +805,9 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prevertex,
+				'#endif',
 
 				'const vec2 alphaOffset = vec2(45.0);',
 				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
@@ -819,7 +823,7 @@ define([
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				// 'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -828,7 +832,9 @@ define([
 				'vWorldPos = worldPos.xyz;',
 				'viewPosition = cameraPosition - vWorldPos;',
 
-				ShaderBuilder.light.vertex,
+				'#ifndef LIGHTMAP',
+					ShaderBuilder.light.vertex,
+				'#endif',
 				'}'
 			].join('\n');
 		},
@@ -858,10 +864,12 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prefragment,
+				'#endif',
 
 				'void main(void) {',
-					'if (alphaval.w < -1000.0) discard;',
+					'if (alphaval.w < -100.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',

@@ -236,9 +236,9 @@ define([
 
 				var terrainQuery = this.terrainQuery = {
 					getHeightAt: function(pos) {
-						// if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
-						// 	return -1000;
-						// }
+						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
+							return -1000;
+						}
 
 						var x = pos[0];
 						var z = terrainSize - pos[2];
@@ -266,6 +266,10 @@ define([
 							MathUtils.lerp(intOnX, bottomLeft, bottomRight));
 					}.bind(this),
 					getNormalAt: function(pos) {
+						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
+							return calcVec.setDirect(0, 1, 0);
+						}
+
 						var x = pos[0];
 						var z = terrainSize - pos[2];
 
@@ -296,9 +300,9 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								// return null;
-							// }
+							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								return null;
+							}
 							xx = MathUtils.moduloPositive(xx, terrainSize);
 							zz = MathUtils.moduloPositive(zz, terrainSize);
 
@@ -332,9 +336,9 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								// return null;
-							// }
+							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								return null;
+							}
 							xx = MathUtils.moduloPositive(xx, terrainSize);
 							zz = MathUtils.moduloPositive(zz, terrainSize);
 
@@ -403,9 +407,9 @@ define([
 							xx = Math.floor(xx);
 							zz = Math.floor(zz);
 
-							// if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								// return terrainData.stone;
-							// }
+							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+								return terrainData.stone;
+							}
 							xx = MathUtils.moduloPositive(xx, terrainSize);
 							zz = MathUtils.moduloPositive(zz, terrainSize);
 

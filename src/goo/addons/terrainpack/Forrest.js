@@ -68,7 +68,7 @@ define([
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = this.grid[x][z];
-				if (entity.meshDataComponent) {
+				if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 					renderer._deallocateMeshData(entity.meshDataComponent.meshData);
 				}
 				entity.removeFromWorld();
@@ -77,51 +77,8 @@ define([
 		this.grid = [];
 	};
 
-	var chainBundleLoading = function (world, promise, bundle) {
-		var loader = new DynamicLoader({
-			world: world,
-			preloadBinaries: true,
-			rootPath: "res/trees2"
-		});
-		return promise.then(function () {
-			console.log("loading bundle ", bundle);
-			return loader.load("root.bundle");
-		}).then(function (configs) {
-			// find scene and update it.
-			for (var ref in configs) {
-				console.log(ref);
-				// if (ref.indexOf(".scene") != -1) {
-				// 	return loader.update(ref, configs[ref]).then(function () {
-				// 		return configs;
-				// 	});
-				// }
-			}
-			console.error("Config in bundle ", bundle, " contained no scene?!");
-		});
-	};
-
-	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap, terrainTextures) {
-		// var p = new RSVP.Promise();
-
-		// var bundlesToLoad = ["fish"];
-		// for (var i = 0; i < bundlesToLoad.length; i++) {
-		// 	p = chainBundleLoading(world, p, bundlesToLoad[i]);
-		// }
-
-		// p.then(function () {
-		// 	console.log("loaded forrest", forrestTypes);
-		// }, function (e) {
-		// 	console.log("Error! ", e);
-		// }).then(null, function (e) {
-		// 	console.log("Error! ", e);
-		// });
-
+	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, terrainData, entityMap, terrainTextures) {
 		this.terrainTextures = terrainTextures;
-
-		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
-	};
-
-	Forrest.prototype.loadLODTrees = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, terrainData, entityMap) {
 		this.terrainQuery = terrainQuery;
 		var forrestTypes = terrainData.forrestTypes;
 		this.forrestTypes = forrestTypes;
@@ -400,12 +357,18 @@ define([
 		if (gridEntity && levelOfDetail === 2) {
 			// this.world.processEntityChanges();
 			// this.world.getSystem('TransformSystem')._process();
+			var hasData = true;
 			gridEntity.traverse(function (entity) {
 				entity.static = true;
 				entity.transformComponent.updateTransform();
 				entity.transformComponent.updateWorldTransform();
+				if (entity.meshDataComponent && !entity.meshDataComponent.meshData) {
+					hasData = false;
+				}
 			});
-			new EntityCombiner(this.world)._combineList(gridEntity);
+			if (hasData) {
+				new EntityCombiner(this.world)._combineList(gridEntity);
+			}
 		
 			this._cleanEmpty(gridEntity);
 
