@@ -76,8 +76,8 @@
 			box = world.createEntity(meshData, material).addToWorld();
 
 			var uniforms = box.meshRendererComponent.materials[0].uniforms;
-			uniforms.light0Pos = [5, 5, 5];
-			uniforms.light1Pos = [5, 5, 5];
+			uniforms.light0Pos = [2, 3, 5];
+			uniforms.light1Pos = [-3, -5, 7];
 
 			gooRunner.callbacks.push(function () {
 				uniforms.light0Pos[2] = Math.sin(world.time) * 5;

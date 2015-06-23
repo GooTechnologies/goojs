@@ -3,23 +3,19 @@
 
 	function vecEncoder(length) {
 		return function (data) {
-			// can't just use `map`; the size of the array matters too
-			var ret = [];
-			for (var i = 0; i < length; i++) {
-				ret.push(formats.float.encode(data[i]));
-			}
-			return ret;
+			var body = data.map(formats.float.encode).join(', ');
+			return 'vec' + length + '(' + body + ')';
 		};
 	}
 
 	function vecDecoder(length) {
 		return function (data) {
-			// can't just use `map`; the size of the array matters too
-			var ret = [];
-			for (var i = 0; i < length; i++) {
-				ret.push(formats.float.decode(data[i]));
-			}
-			return ret;
+			var openParen = data.indexOf('(');
+			var closedParen = data.indexOf(')');
+
+			var body = data.substring(openParen + 1, closedParen);
+
+			return body.split(', ').map(formats.float.decode);
 		};
 	}
 
