@@ -224,6 +224,12 @@ define([
 	 * @private
 	 */
 	DynamicLoader.prototype._loadBinariesFromRefs = function (references, options) {
+		if (typeof references === 'string') {
+			var reference = references;
+			references = {};
+			references[reference] = reference;
+		}
+
 		var that = this;
 		function loadBinaryRefs(refs) {
 			var handled = 0;
@@ -237,7 +243,6 @@ define([
 					}
 				});
 			}
-
 			// When all binary refs are loaded, we're done
 			return RSVP.all(refs.map(load));
 		}
@@ -304,15 +309,26 @@ define([
 		return null;
 	};
 
+
+	var BINARY_HASH_LENGTH = 40;
+	var JSON_HASH_LENGTH = 32;
+
 	/**
-	 * Find all the references in a config, and return in a flat list.
+	 * Determine if a string is a valid goo data model id
 	 *
-	 * @param {object} config Config.
-	 * @returns {string[]} refs References.
+	 * @param {string} id
+	 * @returns {boolean}
 	 * @private
 	 */
-
-	var refRegex = new RegExp('\\S+refs?$', 'i');
+	var isValidId = function(id) {
+		if (typeof id !== 'string') {
+			return false;
+		}
+		var tokens = id.split('.');
+		return tokens[0] &&
+			(tokens[0].length === BINARY_HASH_LENGTH || tokens[0].length === JSON_HASH_LENGTH) &&
+			tokens[1];
+	};
 
 	/**
 	 * Traverses a json-like structure and collects refs in an array
@@ -324,19 +340,32 @@ define([
 		var refs = [];
 
 		function traverse(key, value) {
-			if (refRegex.test(key) && key !== 'thumbnailRef') {
-				// Refs
-				if (value instanceof Object) {
-					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
-						if (value[keys[i]]) {
-							refs.push(value[keys[i]]);
-						}
+			// Multiple refs
+			if (StringUtil.endsWith(key.toLowerCase(), 'refs') && value instanceof Object) {
+				var foundRefs = 0;
+				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					if (isValidId(value[keys[i]])) {
+						refs.push(value[keys[i]]);
+						foundRefs++;
 					}
-				} else if (value) {
-					// Ref
-					refs.push(value);
 				}
-			} else if (
+				if (foundRefs > 0) {
+					return refs;
+				}
+			}
+
+			// Single ref
+			if (
+				StringUtil.endsWith(key.toLowerCase(), 'ref') &&
+				key !== 'thumbnailRef' &&
+				isValidId(value)
+			) {
+				refs.push(value);
+				return refs;
+			}
+
+			// Regular object (step into)
+			if (
 				value instanceof Object &&
 				key !== 'assets' &&
 				!(value instanceof Array)
