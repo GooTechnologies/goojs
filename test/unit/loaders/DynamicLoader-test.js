@@ -42,6 +42,10 @@ define([
 	describe('DynamicLoader', function () {
 		var loader;
 
+		var entityRef = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb.entity';
+		var materialRef = 'ccccddddccccddddccccddddccccdddd.material';
+		var imageRef = 'ccccddddccccddddccccddddccccddddccccdddd.jpg';
+
 		beforeEach(function () {
 			var world = new World();
 			world.setSystem(new TransformSystem());
@@ -69,7 +73,7 @@ define([
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (bundle) {
+			loader.load(bundleRef).then(function(/* bundle */) {
 				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
@@ -161,12 +165,12 @@ define([
 		describe('_getRefsFromConfig', function () {
 			it('gets individual references', function () {
 				var config = {
-					aref: 'asd',
-					bref: 'dsa'
+					aref: entityRef,
+					bref: materialRef
 				};
 
 				expect(DynamicLoader._getRefsFromConfig(config))
-					.toEqual(['asd', 'dsa']);
+					.toEqual([entityRef, materialRef]);
 			});
 
 			it('gets individual references several levels deep', function () {
@@ -174,55 +178,38 @@ define([
 					a: {
 						b: {
 							c: {
-								aref: 'asd',
-								bref: 'dsa'
+								aref: entityRef,
+								bref: materialRef
 							}
 						}
 					}
 				};
 
 				expect(DynamicLoader._getRefsFromConfig(config))
-					.toEqual(['asd', 'dsa']);
+					.toEqual([entityRef, materialRef]);
 			});
 
 			it('gets packed references', function () {
 				var config = {
 					arefs: {
-						a: 'asd',
-						b: 'dsa'
+						aref: entityRef,
+						bref: materialRef
 					}
 				};
 
 				expect(DynamicLoader._getRefsFromConfig(config))
-					.toEqual(['asd', 'dsa']);
+					.toEqual([entityRef, materialRef]);
 			});
 
 			it('ignores thumbnailRef', function () {
 				var config = {
-					aref: 'asd',
-					bref: 'dsa',
-					thumbnailRef: 'qwe'
+					aref: entityRef,
+					bref: materialRef,
+					thumbnailRef: imageRef
 				};
 
 				expect(DynamicLoader._getRefsFromConfig(config))
-					.toEqual(['asd', 'dsa']);
-			});
-
-			it('ignores anything under assets', function () {
-				var config = {
-					a: {
-						assets: {
-							aref: 'asd',
-							b: {
-								bref: 'dsa'
-							}
-						},
-						cref: 'qwe'
-					}
-				};
-
-				expect(DynamicLoader._getRefsFromConfig(config))
-					.toEqual(['qwe']);
+					.toEqual([entityRef, materialRef]);
 			});
 		});
 	});
