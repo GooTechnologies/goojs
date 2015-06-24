@@ -59,7 +59,9 @@ require([
 
 	V.describe('Skeleton Animation Test. Use shift + number keys to toggle different rendering modes. Use mouse click and drag or touch drag on the X-axis, to take manual control over the animation.');
 
-
+	/**
+	* Adds needed attributes to the meshdata , in order to have skeleton animation
+	*/
 	function addSkeltonAttributeData(meshData, joints) {
 
 		var skeletonMaps = MeshData.defaultMap([MeshData.JOINTIDS, MeshData.WEIGHTS]);
@@ -80,6 +82,9 @@ require([
 
 	}
 
+	/**
+	* Recurse through the joints' parents to get the complete inverse translation
+	*/
 	function getInvT(joint, joints, tArray) {
 		
 		if (joint._parentIndex != Joint.NO_PARENT) {
@@ -94,6 +99,9 @@ require([
 		return tArray;
 	}
 
+	/**
+	* Creates a new JointChannel, computing the needed inverse transformations.
+	*/
 	function createJointChannel(joint, joints, times, t, r, s, blendType, channels) {
 
 		// The channel's transform keyframes needs to be cobined with the joint's 
@@ -126,6 +134,10 @@ require([
 		return channel
 	}
 
+
+	/**
+	* Sets the joints bindpose with the T (translation) and R (rotation)
+	*/
 	function setJointBindPose(joint, T, R) {
 		
 		var trans = joint._inverseBindPose;
@@ -163,13 +175,21 @@ require([
 		return joint;
 	}
 
-	function smoothWeights(d, bleedD, weightData, quadIndex) {
-		var b = MathUtils.clamp( d / bleedD, 0, 1);
-		var w = MathUtils.scurve5(b);
-		weightData[quadIndex] = w;
-		weightData[quadIndex + 1] = 1 - w;
+	/**
+	* Smooth out the weight affection on the first and second joint indices, 
+	* based on the distance and the bleed distance.
+	*/
+	function smoothWeights(d, bleedDistance, weightData, quadIndex) {
+		var weight = MathUtils.clamp(d / bleedDistance, 0, 1);
+		weight = MathUtils.scurve5(weight);
+		weightData[quadIndex] = weight;
+		weightData[quadIndex + 1] = 1 - weight;
 	}
 
+
+	/**
+	* Sets the Joint Data to have the first index point to the given joint, second to the joint's parent.
+	*/
 	function loopSetJoints(joint, vertIndexArray, jointData) {
 		var quadIndex; 
 		for (var i = 0; i < vertIndexArray.length; i++) {
@@ -328,7 +348,6 @@ require([
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
 		
-		var bleedD = 0.3;
 		addSkeltonAttributeData(meshData, joints);
 
 		var weightData = meshData.dataViews.WEIGHTS;
@@ -344,6 +363,7 @@ require([
 		var positions = meshData.dataViews.POSITION;
 		var posLen = positions.length;
 
+		var bleedDistance = 0.3;
 		var topCut = 0.7;
 		var midCut = 0.1;
 
@@ -355,10 +375,10 @@ require([
 
 			if (y > topCut) {
 				topVerts.push(vertIndex);
-				smoothWeights(y - topCut, bleedD, weightData, quadIndex);
+				smoothWeights(y - topCut, bleedDistance, weightData, quadIndex);
 			} else if (y > midCut) {
 				midVerts.push(vertIndex);
-				smoothWeights(y - midCut, bleedD, weightData, quadIndex);
+				smoothWeights(y - midCut, bleedDistance, weightData, quadIndex);
 			}
 		}
 
