@@ -1,7 +1,7 @@
 define([
-/*	'goo/math/MathUtils' */
+	'goo/math/MathUtils'
 ], function (
-/*	MathUtils */
+	MathUtils
 ) {
 	'use strict';
 
@@ -10,10 +10,11 @@ define([
 	 *        joint, or the play back of a specific sound, etc.) These channels are grouped together in an {@link AnimationClip} to describe a full animation.
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param {number[]} times our time indices. Copied into the channel.
+	 * @param {string} blendType the blendtype between transform keyframes of the channel. Defaults to AbstractAnimationChannel.BLENDTYPES.LINEAR
 	 * @private
 	 */
 	function AbstractAnimationChannel (channelName, times, blendType) {
-		this._blendType = blendType || 'Linear';
+		this._blendType = blendType || AbstractAnimationChannel.BLENDTYPES.LINEAR;
 		this._channelName = channelName;
 
 		if ((times instanceof Array || times instanceof Float32Array) && times.length) {
@@ -24,6 +25,11 @@ define([
 
 		this._lastStartFrame = 0;
 	}
+
+	AbstractAnimationChannel.BLENDTYPES = {};
+	AbstractAnimationChannel.BLENDTYPES.LINEAR = 'Linear';
+	AbstractAnimationChannel.BLENDTYPES.CUBIC = 'SCurve3';
+	AbstractAnimationChannel.BLENDTYPES.QUINTIC = 'SCurve5';
 
 	/*
 	 * @returns {number} number of samples
@@ -75,6 +81,17 @@ define([
 				}
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
+			
+			switch (this._blendType) {
+				case AbstractAnimationChannel.BLENDTYPES.CUBIC:
+					progressPercent = MathUtils.scurve3(progressPercent);
+					break;
+				case AbstractAnimationChannel.BLENDTYPES.QUINTIC:
+					progressPercent = MathUtils.scurve5(progressPercent);
+					break;
+				default:
+			}
+
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
 
 			this._lastStartFrame = startFrame;
