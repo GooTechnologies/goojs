@@ -165,7 +165,8 @@ define([
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = this.grid[x][z];
-				entity.skip = hidden;
+				entity.hide();
+				// entity.skip = hidden;
 			}
 		}
 		if (!hidden) {
