@@ -24,6 +24,7 @@ define([
 	 * @param world
 	 * @param particleParameters
 	 * @param material
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
 	 * @returns {Entity}
 	 */
 	ParticleSystemUtils.createParticleSystemEntity = function (world, particleParameters, material) {

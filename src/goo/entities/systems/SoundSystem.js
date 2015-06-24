@@ -172,6 +172,29 @@ define([
 	};
 
 	/**
+	 * Resumes playing of all sounds that were paused
+	 */
+	SoundSystem.prototype.resume = function () {
+		if (!this._pausedSounds) { return; }
+
+		for (var i = 0; i < this.entities.length; i++) {
+			var sounds = this.entities[i].soundComponent.sounds;
+			for (var j = 0; j < sounds.length; j++) {
+				var sound = sounds[j];
+				if (this._pausedSounds[sound.id]) {
+					sound.play();
+				}
+			}
+		}
+		this._pausedSounds = null;
+	};
+
+	/**
+	 * Resumes playing of all sounds that were paused; an alias for `.resume`
+	 */
+	SoundSystem.prototype.play = SoundSystem.prototype.resume;
+
+	/**
 	 * Stopping the sound system and all sounds in scene
 	 */
 	SoundSystem.prototype.stop = function () {
@@ -180,23 +203,6 @@ define([
 			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				sound.stop();
-			}
-		}
-		this._pausedSounds = null;
-	};
-
-	/**
-	 * Resumes playing of all sounds that were paused
-	 */
-	SoundSystem.prototype.resume = function () {
-		if (!this._pausedSounds) { return; }
-		for (var i = 0; i < this.entities.length; i++) {
-			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
-				var sound = sounds[j];
-				if (this._pausedSounds[sound.id]) {
-					sound.play();
-				}
 			}
 		}
 		this._pausedSounds = null;

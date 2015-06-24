@@ -1,9 +1,13 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/geometrypack/Surface'
+	'goo/geometrypack/Surface',
+	'goo/math/Matrix3',
+	'goo/math/Vector3'
 ], function (
 	MeshData,
-	Surface
+	Surface,
+	Matrix3,
+	Vector3
 ) {
 	'use strict';
 
@@ -53,7 +57,7 @@ define([
 	 * Builds a surface as a result of multiplying 2 polyLines
 	 * @param {PolyLine} rhs The second operand
 	 * @returns {Surface} The resulting surface
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/PolyLine-vtest.html Working example
 	 */
 	PolyLine.prototype.mul = function (rhs) {
 		if (!(rhs instanceof PolyLine)) {
@@ -75,70 +79,82 @@ define([
 		return new Surface(verts, rhsNVerts);
 	};
 
-	function getBisectorAngleOfVectors(vx1, vy1, vx2, vy2) {
-		var d1 = Math.sqrt(vx1 * vx1 + vy1 * vy1);
-		var nx1 = vx1 / d1;
-		var ny1 = vy1 / d1;
+	(function () {
+		function getRotationMatrix(verts, index, up, store) {
+			var oldIndex, futureIndex;
 
-		var d2 = Math.sqrt(vx2 * vx2 + vy2 * vy2);
-		var nx2 = vx2 / d2;
-		var ny2 = vy2 / d2;
-
-		return Math.atan2(ny1 + ny2, nx1 + nx2) - Math.PI / 2;
-	}
-
-	function getBisectorAngle(verts, index) {
-		var nVerts = verts.length / 3;
-		var p0x, p0z, p1x, p1z, p2x, p2z;
-		if (index === 0) {
-			p1x = verts[0 * 3 + 0];
-			p1z = verts[0 * 3 + 2];
-			p2x = verts[1 * 3 + 0];
-			p2z = verts[1 * 3 + 2];
-			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI / 2;
-		} else if (index === nVerts - 1) {
-			p0x = verts[(nVerts - 2) * 3 + 0];
-			p0z = verts[(nVerts - 2) * 3 + 2];
-			p1x = verts[(nVerts - 1) * 3 + 0];
-			p1z = verts[(nVerts - 1) * 3 + 2];
-			return Math.atan2(p1z - p0z, p1x - p0x) - Math.PI / 2;
-		} else {
-			p0x = verts[(index - 1) * 3 + 0];
-			p0z = verts[(index - 1) * 3 + 2];
-			p1x = verts[(index) * 3 + 0];
-			p1z = verts[(index) * 3 + 2];
-			p2x = verts[(index + 1) * 3 + 0];
-			p2z = verts[(index + 1) * 3 + 2];
-			return getBisectorAngleOfVectors(p1x - p0x, p1z - p0z, p2x - p1x, p2z - p1z);
-		}
-	}
-
-	/**
-	 * Extrudes and rotates a PolyLine along another PolyLine
-	 * @param {PolyLine} rhs The second operand
-	 * @returns {Surface} The resulting surface
-	 */
-	PolyLine.prototype.pipe = function (rhs) {
-		if (!(rhs instanceof PolyLine)) {
-			console.error('pipe operation can only be applied to PolyLines');
-			return;
-		}
-
-		var rhsNVerts = rhs.verts.length / 3;
-		var verts = [];
-
-		for (var i = 0; i < this.verts.length; i += 3) {
-			var k = getBisectorAngle(this.verts, i / 3);
-			for (var j = 0; j < rhs.verts.length; j += 3) {
-				verts.push(
-					this.verts[i + 0] + rhs.verts[j + 2] * Math.cos(k),
-					this.verts[i + 1] + rhs.verts[j + 1],
-					this.verts[i + 2] + rhs.verts[j + 2] * Math.sin(k));
+			if (index >= verts.length / 3 - 1) {
+				oldIndex = index - 1;
+				futureIndex = index;
+			} else {
+				oldIndex = index;
+				futureIndex = index + 1;
 			}
+
+			var lookAtVector = new Vector3(
+				verts[futureIndex * 3 + 0] - verts[oldIndex * 3 + 0],
+				verts[futureIndex * 3 + 1] - verts[oldIndex * 3 + 1],
+				verts[futureIndex * 3 + 2] - verts[oldIndex * 3 + 2]
+			);
+
+			lookAtVector.normalize();
+
+			store.lookAt(lookAtVector, up);
 		}
 
-		return new Surface(verts, rhsNVerts);
-	};
+		var FORWARD = Vector3.UNIT_Z;
+
+		/**
+		 * Extrudes and rotates a PolyLine along another PolyLine.
+		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
+		 * @param {Object} [options]
+		 * @param {(number) -> number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
+		 * @param {(number) -> number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
+		 * @returns {Surface} The resulting surface
+		 */
+		PolyLine.prototype.pipe = function (that, options) {
+			options = options || {};
+			var thatNVerts = that.verts.length / 3;
+			var verts = [];
+
+			var forward = new Vector3();
+			var up = Vector3.UNIT_Y.clone();
+			var right = new Vector3();
+
+			var rotation = new Matrix3();
+			var twist = new Matrix3();
+			var scale;
+
+			for (var i = 0; i < this.verts.length; i += 3) {
+				getRotationMatrix(this.verts, i / 3, up, rotation);
+
+				var progress = i / (this.verts.length - 1);
+				if (options.twist) {
+					twist.fromAngles(0, 0, options.twist(progress));
+					rotation.combine(twist);
+				}
+
+				scale = options.scale ? options.scale(progress) : 1;
+
+				forward.copy(FORWARD);
+				rotation.applyPost(forward);
+
+				right.copy(forward).cross(up).normalize();
+				up.copy(right).cross(forward);
+
+				for (var j = 0; j < that.verts.length; j += 3) {
+					var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
+					rotation.applyPost(vertex);
+					vertex.scale(scale);
+					vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
+
+					verts.push(vertex.x, vertex.y, vertex.z);
+				}
+			}
+
+			return new Surface(verts, thatNVerts);
+		};
+	})();
 
 	/**
 	 * Builds a surface as a result of rotating this polyLine around the Y axis
@@ -166,17 +182,22 @@ define([
 
 	/**
 	 * Returns a new polyLine as a result of concatenating the 2 polyLines
-	 * @param {PolyLine} rhs The other operand
+	 * @param {PolyLine} that The other operand
 	 * @param {boolean} [closed] True if the resulting polyLine should be closed
 	 * @returns {PolyLine} The new polyLine
 	 */
-	PolyLine.prototype.concat = function (rhs, closed) {
-		if (!(rhs instanceof PolyLine)) {
-			console.error('concat operation can only be applied to PolyLines');
-			return;
-		}
+	PolyLine.prototype.concat = function (that, closed) {
+		var length = this.verts.length - 1;
 
-		return new PolyLine(this.verts.concat(rhs.verts), closed);
+		if (
+			this.verts[length - 2] === that.verts[0] &&
+			this.verts[length - 1] === that.verts[1] &&
+			this.verts[length - 0] === that.verts[2]
+		) {
+			return new PolyLine(this.verts.slice(0, -3).concat(that.verts), closed);
+		} else {
+			return new PolyLine(this.verts.concat(that.verts), closed);
+		}
 	};
 
 	/**
@@ -250,13 +271,13 @@ define([
 				p1[1],
 				p1[2],
 
-					p1[0] + 2 / 3 * (p2[0] - p1[0]),
-					p1[1] + 2 / 3 * (p2[1] - p1[1]),
-					p1[2] + 2 / 3 * (p2[2] - p1[2]),
+				p1[0] + 2 / 3 * (p2[0] - p1[0]),
+				p1[1] + 2 / 3 * (p2[1] - p1[1]),
+				p1[2] + 2 / 3 * (p2[2] - p1[2]),
 
-					p3[0] + 2 / 3 * (p2[0] - p3[0]),
-					p3[1] + 2 / 3 * (p2[1] - p3[1]),
-					p3[2] + 2 / 3 * (p2[2] - p3[2])
+				p3[0] + 2 / 3 * (p2[0] - p3[0]),
+				p3[1] + 2 / 3 * (p2[1] - p3[1]),
+				p3[2] + 2 / 3 * (p2[2] - p3[2])
 			]);
 		}
 

@@ -141,7 +141,7 @@ define([
 	 * @returns {goo.renderer.Material} The generated material.
 	 */
 	V.getColoredMaterial = function (red, green, blue, alpha) {
-		var material = new Material(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.uber);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
 			material.uniforms.materialDiffuse = V.getRandomColor();
@@ -460,26 +460,26 @@ define([
 		console.log(text);
 	};
 
-    /**
-     * Adds a button to the description panel.
-     * @param {string} text Text of the button.
-     * @param {function} onClick Function to be called when the button is clicked.
-     */
-    V.button = function (text, onClick) {
-        if (V.deterministic || V.minimal) { return; }
+	/**
+	 * Adds a button to the description panel.
+	 * @param {string} text Text of the button.
+	 * @param {function} onClick Function to be called when the button is clicked.
+	 */
+	V.button = function (text, onClick) {
+		if (V.deterministic || V.minimal) { return; }
 
-        var panel = document.getElementById('vt-panel');
-        if (!panel) {
-            console.error('First create a panel with V.describe()');
-            return;
-        }
+		var panel = document.getElementById('vt-panel');
+		if (!panel) {
+			console.error('First create a panel with V.describe()');
+			return;
+		}
 
-        var button = document.createElement('button');
-        button.textContent = text;
-        button.addEventListener('click', onClick);
+		var button = document.createElement('button');
+		button.textContent = text;
+		button.addEventListener('click', onClick);
 
-        panel.appendChild(button);
-    };
+		panel.appendChild(button);
+	};
 
 	return V;
 });

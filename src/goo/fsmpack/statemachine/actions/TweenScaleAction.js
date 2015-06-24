@@ -1,12 +1,12 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
-],
-
-	function (
+	'goo/math/Vector3',
+	'goo/util/Tween'
+], function (
 	Action,
-	Vector3
-	) {
+	Vector3,
+	TWEEN
+) {
 	'use strict';
 
 	function TweenScaleAction(/*id, settings*/) {
@@ -68,15 +68,15 @@ define([
 		this.relative = settings.relative;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenScaleAction.prototype._setup = function () {
-		this.tween = new window.TWEEN.Tween();
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {

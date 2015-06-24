@@ -358,6 +358,8 @@ define([
 						if (useLightCookie) {
 							shaderInfo.material.setTexture('LIGHT_COOKIE' + i, light.lightCookie);
 						}
+					} else {
+						shaderInfo.material.removeTexture('SHADOW_MAP' + i);
 					}
 				}
 

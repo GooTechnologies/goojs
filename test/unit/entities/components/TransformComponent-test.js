@@ -74,21 +74,18 @@ define([
 			expect(parentEntity.transformComponent.children).not.toContain(childEntity.transformComponent);
 		});
 
-		//! AT: if any method fails the whole spec fails
-		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation', function () {
-			var tc = new TransformComponent();
-			tc.setRotation(1, 2, 2);
-			tc.addRotation(0, 0, 1);
-			tc.getRotation();
+			var transformComponent = new TransformComponent();
+			transformComponent.setRotation(0.2, 0.4, 0.6); // keep these values under PI / 2
+			transformComponent.addRotation(0.0, 0.0, 0.5);
+			expect(transformComponent.getRotation()).toBeCloseToVector(new Vector3(0.2, 0.4, 0.6 + 0.5));
 		});
 
-		//! AT: if any method fails the whole spec fails
-		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation with array', function () {
-			var tc = new TransformComponent();
-			tc.setRotation([1, 2, 2]);
-			tc.addRotation([0, 0, 1]);
+			var transformComponent = new TransformComponent();
+			transformComponent.setRotation([0.2, 0.4, 0.6]); // keep these values under PI / 2
+			transformComponent.addRotation([0.0, 0.0, 0.5]);
+			expect(transformComponent.getRotation()).toBeCloseToVector(new Vector3(0.2, 0.4, 0.6 + 0.5));
 		});
 
 		//! AT: if any method fails the whole spec fails
@@ -104,12 +101,25 @@ define([
 		it('can move', function () {
 			var tc = new TransformComponent();
 			tc.lookAt(new Vector3(1, 0, 0)); // look along the positive x axis
-			tc.move(0, 0,-10); // this moves forward in a right handed coordinate system.
+			tc.move(0, 0, -10); // this moves forward in a right handed coordinate system.
 			// in our case this will move us 10 unity in the direction of the positive x axis.
 			var translation = tc.getTranslation();
 			expect(translation).toBeCloseToVector(new Vector3(10, 0, 0));
 			tc.move(new Vector3(0, 0, 1));
 			expect(translation).toBeCloseToVector(new Vector3(9, 0, 0));
+		});
+
+		it('can lookAt entity', function () {
+			var entity1 = world.createEntity();
+			entity1.move(3, 7, -10);
+			var t1 = entity1.getTranslation();
+
+			var entity2 = world.createEntity();
+			entity2.lookAt(entity1);
+			entity2.move(0, 0, -t1.length());
+			var t2 = entity2.getTranslation();
+
+			expect(t1).toBeCloseToVector(t2);
 		});
 
 		it('handles attaching itself to an entity', function () {
@@ -297,7 +307,6 @@ define([
 				entity.detachChild(childEntity);
 				expect(entity.children().size()).toEqual(0);
 				expect(childEntity.parent().size()).toEqual(0);
-
 			});
 		});
 
@@ -390,7 +399,7 @@ define([
 				var child1 = world.createEntity('child1');
 				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
 
-				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+				world.createEntity().attachChild(child1).attachChild(child2);
 
 				var traversed = [];
 				child22.traverseUp(function (entity) {
@@ -497,7 +506,7 @@ define([
 			});
 
 			describe('isHidden', function () {
-			    it('returns the correct hidden status for one entity', function () {
+				it('returns the correct hidden status for one entity', function () {
 					var entity1 = getEntity();
 					expect(entity1.isHidden()).toBeFalsy();
 

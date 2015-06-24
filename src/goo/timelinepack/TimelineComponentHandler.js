@@ -6,7 +6,8 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/Tween'
 ], function (
 	ComponentHandler,
 	TimelineComponent,
@@ -15,11 +16,10 @@ define([
 	PromiseUtil,
 	ArrayUtil,
 	SystemBus,
-	_
+	ObjectUtil,
+	TWEEN
 ) {
 	'use strict';
-
-	var TWEEN = window.TWEEN;
 
 	/**
 	 * @hidden
@@ -206,7 +206,7 @@ define([
 			};
 			var rotationMap = {};
 
-			_.forEach(config.channels, function (channelConfig) {
+			ObjectUtil.forEach(config.channels, function (channelConfig) {
 				updateChannel(channelConfig, channelConfig.id, component, entityResolver, rotationMap);
 			}, null, 'sortValue');
 

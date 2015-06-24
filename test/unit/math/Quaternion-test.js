@@ -47,13 +47,17 @@ define([
 
 		it('can slerp', function () {
 			var angle1 = Math.PI / 2;
-			var angle2 = 3 * Math.PI / 2;
-			var startQuat = new Quaternion(Math.sin(angle1), 0, 0, Math.cos(angle1));
-			var endQuat = new Quaternion(Math.sin(angle2), 0, 0, Math.cos(angle2));
-			var result = new Quaternion();
+			var angle2 = Math.PI;
+			var half = (angle1 + angle2) / 2;
 
-			//! schteppe: TODO: How to check ok?
-			Quaternion.slerp(startQuat, endQuat, 0.5, result);
+			var quat1 = new Quaternion(Math.sin(angle1), 0, 0, Math.cos(angle1));
+			var quat2 = new Quaternion(Math.sin(angle2), 0, 0, Math.cos(angle2));
+
+			var result = new Quaternion();
+			var expectedResult = new Quaternion(Math.sin(half), 0, 0, Math.cos(half));
+
+			Quaternion.slerp(quat1, quat2, 0.5, result);
+			expect(result).toBeCloseToVector(expectedResult);
 		});
 
 		it('can slerp via prototype method', function () {
@@ -94,17 +98,29 @@ define([
 		});
 
 		it('can be set from rotation matrix', function () {
-			var q = new Quaternion();
-			var m = new Matrix3();
-			q.fromRotationMatrix(m);
-			expect(q).toBeCloseToVector(new Quaternion());
+			var matrix = new Matrix3(
+				-1, 0, 0,
+				0, -1, 0,
+				0, 0, 1
+			);
+
+			var quaternion = new Quaternion();
+			quaternion.fromRotationMatrix(matrix);
+
+			expect(quaternion).toBeCloseToVector(new Quaternion(0, 0, 1, 0));
 		});
 
 		it('can convert to rotation matrix', function () {
-			var q = new Quaternion();
-			var m = new Matrix3();
-			q.toRotationMatrix(m);
-			expect(m).toBeCloseToMatrix(Matrix3.IDENTITY);
+			var matrix = new Matrix3();
+
+			var quaternion = new Quaternion(0, 0, 1, 0);
+			quaternion.toRotationMatrix(matrix);
+
+			expect(matrix).toBeCloseToMatrix(new Matrix3(
+				-1, 0, 0,
+				0, -1, 0,
+				0, 0, 1
+			));
 		});
 
 		it('can be set from vector to vector', function () {

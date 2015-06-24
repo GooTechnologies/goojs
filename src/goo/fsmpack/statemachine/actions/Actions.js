@@ -72,9 +72,14 @@ define([
 	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
 	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
 
-	'goo/fsmpack/statemachine/actions/ApplyImpulseAction'
-], function (
+	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
 
+	'goo/fsmpack/statemachine/actions/CompareCounterAction',
+	'goo/fsmpack/statemachine/actions/CompareCountersAction',
+	'goo/fsmpack/statemachine/actions/SetCounterAction',
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+], function (
+	_ // placeholder // what for?
 ) {
 	'use strict';
 
@@ -103,7 +108,7 @@ define([
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (IGNORED_ACTIONS.indexOf(key) == -1) {
+			if (IGNORED_ACTIONS.indexOf(key) === -1) {
 				actions[key] = _actions[key];
 			}
 		}

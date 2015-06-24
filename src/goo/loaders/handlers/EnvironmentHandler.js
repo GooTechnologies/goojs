@@ -176,17 +176,15 @@ define([
 						weatherState.snow.enabled = true;
 						weatherState.snow.snow = new Snow(this.world.gooRunner);
 					}
-				} else {
-					if (weatherState.snow && weatherState.snow.enabled) {
-						// remove snow
-						weatherState.snow.snow.remove();
-						weatherState.snow.enabled = false;
-						delete weatherState.snow.snow;
-					}
+				} else if (weatherState.snow && weatherState.snow.enabled) {
+					// remove snow
+					weatherState.snow.snow.remove();
+					weatherState.snow.enabled = false;
+					delete weatherState.snow.snow;
 				}
 			},
 			remove: function (weatherState) {
-				if (weatherState.snow.snow) {
+				if (weatherState.snow && weatherState.snow.snow) {
 					weatherState.snow.snow.remove();
 					weatherState.snow.enabled = false;
 					delete weatherState.snow.snow;

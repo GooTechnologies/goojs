@@ -1,10 +1,11 @@
+// jshint node:true
 'use strict';
 
-var dogma = require('../../src/dogma');
+var jsdocParser = require('../../src/jsdoc-parser');
 
-describe('dogma', function () {
+describe('jsdocParser', function () {
 	describe('partition', function () {
-		var partition = dogma._partition;
+		var partition = jsdocParser._partition;
 
 		it('partitions tags with one entry each', function () {
 			expect(partition('@a aaa\n@b bbb'))
@@ -44,7 +45,7 @@ describe('dogma', function () {
 	});
 
 	describe('extractType', function () {
-		var extract =  dogma._extractType;
+		var extract = jsdocParser._extractType;
 
 		it('extracts a simple type', function () {
 			expect(extract('{number} name description'))
@@ -59,7 +60,7 @@ describe('dogma', function () {
 
 	describe('extractName', function () {
 		var extract = function (string) {
-			return dogma._extractName(string, '{number}'.length);
+			return jsdocParser._extractName(string, '{number}'.length);
 		};
 
 		it('extracts a simple name', function () {
@@ -84,7 +85,7 @@ describe('dogma', function () {
 	});
 
 	describe('extractTagReturn', function () {
-		var extract = dogma._extractTagReturn;
+		var extract = jsdocParser._extractTagReturn;
 
 		it('extracts the type and description from an @returns', function () {
 			expect(extract('{type} Description goes here'))
@@ -102,8 +103,17 @@ describe('dogma', function () {
 		});
 	});
 
+	describe('extractTagReturn', function () {
+		var extract = jsdocParser._extractTagExtends;
+
+		it('extracts the base class from an @extends', function () {
+			expect(extract('Alabala'))
+			.toEqual({ base: 'Alabala' });
+		});
+	});
+
 	describe('extractTagTargetClass', function () {
-		var extract = dogma._extractTagTargetClass;
+		var extract = jsdocParser._extractTagTargetClass;
 
 		it('extracts the type, target and name of an @target-class', function () {
 			expect(extract('class name method'))
@@ -116,7 +126,7 @@ describe('dogma', function () {
 	});
 
 	describe('extract', function () {
-		var extract = dogma.extract;
+		var extract = jsdocParser.extract;
 
 		it('extracts the description', function () {
 			expect(extract('*\n* description'))

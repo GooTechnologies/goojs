@@ -24,6 +24,11 @@ function sort(graph) {
 	var order = [];
 
 	function df(nodeName) {
+		if (!graph[nodeName]) {
+			console.warn('topo-sort: node ' + nodeName + ' does not exist');
+			return;
+		}
+
 		if (visited[nodeName]) { return; }
 
 		graph[nodeName].forEach(df);

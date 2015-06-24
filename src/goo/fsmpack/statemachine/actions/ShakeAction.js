@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/Tween'
 ], function (
 	Action,
-	Vector3
+	Vector3,
+	TWEEN
 ) {
 	'use strict';
 
@@ -58,12 +60,12 @@ define([
 		this.endLevel = settings.endLevel;
 		this.time = settings.time;
 		this.speed = { 'Fast': 1, 'Medium': 2, 'Slow': 4 }[settings.speed];
-		this.easing = window.TWEEN.Easing.Quadratic.InOut;
+		this.easing = TWEEN.Easing.Quadratic.InOut;
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	ShakeAction.prototype._setup = function () {
-		this.tween = new window.TWEEN.Tween();
+		this.tween = new TWEEN.Tween();
 	};
 
 	ShakeAction.prototype.cleanup = function (/*fsm*/) {

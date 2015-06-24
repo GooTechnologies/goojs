@@ -55,6 +55,9 @@ define([
 
 	ColliderComponent.type = 'ColliderComponent';
 
+	/**
+	 * Initialize the collider as a static rigid body in the physics world.
+	 */
 	ColliderComponent.prototype.initialize = function () {
 		var material = null;
 		if (this.material) {
@@ -65,6 +68,8 @@ define([
 		this.updateWorldCollider();
 		var cannonShape = this.cannonShape = ColliderComponent.getCannonShape(this.worldCollider);
 		cannonShape.material = material;
+
+		cannonShape.collisionResponse = !this.isTrigger;
 
 		// Get transform from entity
 		var entity = this.entity;
@@ -77,7 +82,6 @@ define([
 
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: !this.isTrigger,
 			position: position,
 			quaternion: quaternion
 		});
@@ -104,6 +108,9 @@ define([
 		body.aabbNeedsUpdate = true;
 	};
 
+	/**
+	 * Remove the collider from the physics world. Does the opposite of .initialize()
+	 */
 	ColliderComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
 		body.shapes.forEach(function (shape) {

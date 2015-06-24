@@ -102,17 +102,19 @@ define([
 
 		it('can get attribute buffer', function () {
 			var box = new Box();
-			//!TODO
-			box.getAttributeBuffer(MeshData.POSITION);
-			box.getAttributeBuffer(MeshData.NORMAL);
-			box.getAttributeBuffer(MeshData.COLOR);
-			box.getAttributeBuffer(MeshData.TANGENT);
-			box.getAttributeBuffer(MeshData.TEXCOORD0);
-			box.getAttributeBuffer(MeshData.TEXCOORD1);
-			box.getAttributeBuffer(MeshData.TEXCOORD2);
-			box.getAttributeBuffer(MeshData.TEXCOORD3);
-			box.getAttributeBuffer(MeshData.WEIGHTS);
-			box.getAttributeBuffer(MeshData.JOINTIDS);
+
+			var getAttributeBuffer = box.getAttributeBuffer.bind(box);
+
+			expect(getAttributeBuffer(MeshData.POSITION)).toBeDefined();
+			expect(getAttributeBuffer(MeshData.NORMAL)).toBeDefined();
+			expect(getAttributeBuffer(MeshData.COLOR)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.TANGENT)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.TEXCOORD0)).toBeDefined();
+			expect(getAttributeBuffer(MeshData.TEXCOORD1)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.TEXCOORD2)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.TEXCOORD3)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.WEIGHTS)).toBeUndefined();
+			expect(getAttributeBuffer(MeshData.JOINTIDS)).toBeUndefined();
 		});
 	});
 });
