@@ -152,15 +152,6 @@ define([
 			parentClipmap = clipmap;
 		}
 
-		// edit marker
-		var light = new DirectionalLight();
-		light.shadowSettings.size = 10;
-		var lightEntity = this.lightEntity = world.createEntity(light);
-		lightEntity.setTranslation(200, 200, 200);
-		lightEntity.setRotation(-Math.PI * 0.5, 0, 0);
-		lightEntity.addToWorld();
-		this.lightEntity.lightComponent.hidden = true;
-
 		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
@@ -185,9 +176,10 @@ define([
 
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', terrainTextures.normalMap);
-			material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
-			material.shader.setDefine('LIGHTMAP', true);
-			// material.setTexture('DETAIL_MAP', this.detailMap);
+			if (terrainTextures.lightMap) {
+				material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
+				material.shader.setDefine('LIGHTMAP', true);
+			}
 
 			material.setTexture('SPLAT_MAP', terrainTextures.attributesMap);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -201,25 +193,7 @@ define([
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
 
-		// var normalAdd = new TextureCreator().loadTexture2D('res/TerrainStatic/grass2n.jpg', {
-		// anisotropy: 4
-		// }, function (texture) {});
-		// this.normalmapPass.material.setTexture('NORMAL_MAP', normalAdd);
-
-		// var material = this.detailmapPass.material;
-		// material.setTexture('NORMAL_MAP', this.normalMap);
-		// material.setTexture('SPLAT_MAP', this.splat);
-		// material.setTexture('GROUND_MAP1', terrainTextures.ground1);
-		// material.setTexture('GROUND_MAP2', terrainTextures.ground2);
-		// material.setTexture('GROUND_MAP3', terrainTextures.ground3);
-		// material.setTexture('GROUND_MAP4', terrainTextures.ground4);
-		// material.setTexture('GROUND_MAP5', terrainTextures.ground5);
-		// material.setTexture('STONE_MAP', terrainTextures.stone);
-
-		// this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 		this.copySingle(this.textures[0], this.floatTexture);
-		// this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
-		// this.copyPass.render(this.renderer, this.splat, this.splatTexture);
 
 		this.updateTextures();
 	};
@@ -661,7 +635,9 @@ define([
 			col: [0, 0, 0]
 		},
 		builder: function(shader, shaderInfo) {
-			ShaderBuilder.light.builder(shader, shaderInfo);
+			if (!shader.hasDefine('LIGHTMAP')) {
+				ShaderBuilder.light.builder(shader, shaderInfo);
+			}
 		},
 		vshader: function() {
 			return [
@@ -677,7 +653,9 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prevertex,
+				'#endif',
 
 				'const vec2 alphaOffset = vec2(45.0);',
 				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
@@ -693,7 +671,7 @@ define([
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				// 'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -1000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -702,7 +680,9 @@ define([
 				'vWorldPos = worldPos.xyz;',
 				'viewPosition = cameraPosition - vWorldPos;',
 
-				ShaderBuilder.light.vertex,
+				'#ifndef LIGHTMAP',
+					ShaderBuilder.light.vertex,
+				'#endif',
 				'}'
 			].join('\n');
 		},
@@ -732,10 +712,12 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prefragment,
+				'#endif',
 
 				'void main(void) {',
-				'if (alphaval.w < -1000.0) discard;',
+				'if (alphaval.w <= 0.0) discard;',
 				'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 				'vec2 coord = mapcoord * 96.0;',
 				'vec4 final_color = vec4(1.0);',
@@ -767,9 +749,9 @@ define([
 				// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
 				'#ifdef LIGHTMAP',
-				'final_color = final_color * texture2D(lightMap, mapcoord) * 1.5;',
+					'final_color = final_color * texture2D(lightMap, mapcoord) * 1.5;',
 				'#else',
-				ShaderBuilder.light.fragment,
+					ShaderBuilder.light.fragment,
 				'#endif',
 
 				'#ifdef FOG',
@@ -778,319 +760,9 @@ define([
 				'#endif',
 
 				'gl_FragColor = final_color;',
-				// 'gl_FragColor = vec4(N, 1.0);',
 				'}'
 			].join('\n');
 		}
-	};
-
-	var upsampleShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			diffuseMap: 'MAIN_MAP',
-			childMap: Shader.DIFFUSE_MAP,
-			res: [1, 1, 1, 1]
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	gl_Position = vec4(vertexPosition, 1.0);',
-			'}'
-		].join('\n'),
-		fshader: [
-			'uniform sampler2D diffuseMap;',
-			'uniform sampler2D childMap;',
-
-			'uniform vec4 res;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void)',
-			'{',
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
-
-			'	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);',
-			'	bvec2 test = equal(coordMod, vec2(0.0));',
-
-			'	if (all(test)) {',
-			'		gl_FragColor.g = texture2D(childMap, texCoord0).r;',
-			'	} else if (test.x) {',
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;',
-			'	} else if (test.y) {',
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;',
-			'	} else {',
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;',
-			'	}',
-			'	gl_FragColor.ba = vec2(0.0);',
-			'}'
-		].join('\n')
-	};
-
-	var brushShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			opacity: 1.0,
-			diffuseMap: Shader.DIFFUSE_MAP
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			'}' //
-		].join('\n'),
-		fshader: [ //
-			'uniform sampler2D diffuseMap;',
-			'uniform float opacity;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void)',
-			'{',
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
-			'	gl_FragColor.a *= opacity;',
-			'}' //
-		].join('\n')
-	};
-
-	var brushShader2 = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			opacity: 1.0,
-			rgba: [1, 1, 1, 1],
-			diffuseMap: Shader.DIFFUSE_MAP,
-			splatMap: 'SPLAT_MAP'
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void) {',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = viewProjectionMatrix * worldPos;',
-			'	texCoord0 = vertexUV0;',
-			'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
-			'}' //
-		].join('\n'),
-		fshader: [ //
-			'uniform sampler2D diffuseMap;',
-			'uniform sampler2D splatMap;',
-			'uniform vec4 rgba;',
-			'uniform float opacity;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void)',
-			'{',
-			'	vec4 splat = texture2D(splatMap, texCoord1);',
-			'	vec4 brush = texture2D(diffuseMap, texCoord0);',
-			'	vec4 final = mix(splat, rgba, opacity * length(brush.rgb) * brush.a);',
-			'	gl_FragColor = final;',
-			'}' //
-		].join('\n')
-	};
-
-	var brushShader3 = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			opacity: 1.0,
-			size: 1 / 512,
-			diffuseMap: Shader.DIFFUSE_MAP,
-			heightMap: 'HEIGHT_MAP'
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void) {',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = viewProjectionMatrix * worldPos;',
-			'	texCoord0 = vertexUV0;',
-			'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
-			'}' //
-		].join('\n'),
-		fshader: [ //
-			'uniform sampler2D diffuseMap;',
-			'uniform sampler2D heightMap;',
-			'uniform float opacity;',
-
-			'uniform float size;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void)',
-			'{',
-			'	float col1 = texture2D(heightMap, texCoord1 + vec2(-size, -size)).r;',
-			'	float col2 = texture2D(heightMap, texCoord1 + vec2(-size, size)).r;',
-			'	float col3 = texture2D(heightMap, texCoord1 + vec2(size, size)).r;',
-			'	float col4 = texture2D(heightMap, texCoord1 + vec2(size, -size)).r;',
-			'	float avg = (col1 + col2 + col3 + col4) * 0.25;',
-			'	gl_FragColor = texture2D(heightMap, texCoord1);',
-			'	vec4 brush = texture2D(diffuseMap, texCoord0);',
-			'	gl_FragColor.r = mix(gl_FragColor.r, avg, brush.r * brush.a * opacity);',
-			'}' //
-		].join('\n')
-	};
-
-	var brushShader4 = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			opacity: 1.0,
-			height: 0,
-			diffuseMap: Shader.DIFFUSE_MAP,
-			heightMap: 'HEIGHT_MAP'
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void) {',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = viewProjectionMatrix * worldPos;',
-			'	texCoord0 = vertexUV0;',
-			'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
-			'}' //
-		].join('\n'),
-		fshader: [ //
-			'uniform sampler2D diffuseMap;',
-			'uniform sampler2D heightMap;',
-			'uniform float opacity;',
-
-			'uniform float height;',
-
-			'varying vec2 texCoord0;',
-			'varying vec2 texCoord1;',
-
-			'void main(void)',
-			'{',
-			'	gl_FragColor = texture2D(heightMap, texCoord1);',
-			'	vec4 brush = texture2D(diffuseMap, texCoord0);',
-			'	gl_FragColor.r = mix(gl_FragColor.r, height, brush.r * brush.a * opacity);',
-			'}' //
-		].join('\n')
-	};
-
-	var extractShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			diffuseMap: Shader.DIFFUSE_MAP
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			'}' //
-		].join('\n'),
-		fshader: [ //
-			'uniform sampler2D diffuseMap;',
-
-			'varying vec2 texCoord0;',
-
-			'float shift_right (float v, float amt) {',
-			'v = floor(v) + 0.5;',
-			'return floor(v / exp2(amt));',
-			'}',
-			'float shift_left (float v, float amt) {',
-			'return floor(v * exp2(amt) + 0.5);',
-			'}',
-			'float mask_last (float v, float bits) {',
-			'return mod(v, shift_left(1.0, bits));',
-			'}',
-			'float extract_bits (float num, float from, float to) {',
-			'from = floor(from + 0.5); to = floor(to + 0.5);',
-			'return mask_last(shift_right(num, from), to - from);',
-			'}',
-			'vec4 encode_float (float val) {',
-			'if (val == 0.0) return vec4(0, 0, 0, 0);',
-			'float sign = val > 0.0 ? 0.0 : 1.0;',
-			'val = abs(val);',
-			'float exponent = floor(log2(val));',
-			'float biased_exponent = exponent + 127.0;',
-			'float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
-			'float t = biased_exponent / 2.0;',
-			'float last_bit_of_biased_exponent = fract(t) * 2.0;',
-			'float remaining_bits_of_biased_exponent = floor(t);',
-			'float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;',
-			'float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
-			'float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
-			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
-			'return vec4(byte4, byte3, byte2, byte1);',
-			'}',
-
-			'void main(void)',
-			'{',
-			// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-			'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
-			'}' //
-		].join('\n')
 	};
 
 	var terrainPickingShader = {
@@ -1158,125 +830,6 @@ define([
 			'gl_FragColor = vec4(packedId, packedDepth);',
 			// 'gl_FragColor = vec4(depth * 0.2, 0.0, 0.0, 1.0);',
 			'}'
-		].join("\n")
-	};
-
-	// var detailShader = {
-	// 	attributes: {
-	// 		vertexPosition: MeshData.POSITION,
-	// 		vertexUV0: MeshData.TEXCOORD0
-	// 	},
-	// 	uniforms: {
-	// 		viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-	// 		worldMatrix: Shader.WORLD_MATRIX,
-	// 		normalMap: 'NORMAL_MAP',
-	// 		splatMap: 'SPLAT_MAP',
-	// 		groundMap1: 'GROUND_MAP1',
-	// 		groundMap2: 'GROUND_MAP2',
-	// 		groundMap3: 'GROUND_MAP3',
-	// 		groundMap4: 'GROUND_MAP4',
-	// 		groundMap5: 'GROUND_MAP5',
-	// 		stoneMap: 'STONE_MAP'
-	// 	},
-	// 	vshader: [
-	// 		'attribute vec3 vertexPosition;',
-	// 		'attribute vec2 vertexUV0;',
-
-	// 		'varying vec2 texCoord0;',
-
-	// 		'void main(void) {',
-	// 		'	texCoord0 = vertexUV0;',
-	// 		'	gl_Position = vec4(vertexPosition, 1.0);',
-	// 		'}'
-	// 	].join('\n'),
-	// 	fshader: [
-	// 		'uniform sampler2D normalMap;',
-	// 		'uniform sampler2D splatMap;',
-	// 		'uniform sampler2D groundMap1;',
-	// 		'uniform sampler2D groundMap2;',
-	// 		'uniform sampler2D groundMap3;',
-	// 		'uniform sampler2D groundMap4;',
-	// 		'uniform sampler2D groundMap5;',
-	// 		'uniform sampler2D stoneMap;',
-
-	// 		'varying vec2 texCoord0;',
-
-	// 		'void main(void) {',
-	// 			'vec4 final_color = vec4(1.0);',
-
-	// 			'vec2 coord = texCoord0 * 96.0;',
-
-	// 			'vec3 N = (texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0)).xzy;',
-	// 			'N.y = 0.1;',
-	// 			'N = normalize(N);',
-
-	// 			'vec4 splat = texture2D(splatMap, texCoord0);',
-	// 			'vec4 g1 = texture2D(groundMap1, coord);',
-	// 			'vec4 g2 = texture2D(groundMap2, coord);',
-	// 			'vec4 g3 = texture2D(groundMap3, coord);',
-	// 			'vec4 g4 = texture2D(groundMap4, coord);',
-	// 			'vec4 g5 = texture2D(groundMap5, coord);',
-	// 			'vec4 stone = texture2D(stoneMap, coord);',
-
-	// 			'final_color = mix(g1, g2, splat.r);',
-	// 			'final_color = mix(final_color, g3, splat.g);',
-	// 			'final_color = mix(final_color, g4, splat.b);',
-	// 			'final_color = mix(final_color, g5, splat.a);',
-
-	// 			'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-	// 			'slope = smoothstep(0.15, 0.25, slope);',
-	// 			'final_color = mix(final_color, stone, slope);',
-
-	// 			'gl_FragColor = final_color;',
-	// 		'}'
-	// 	].join('\n')
-	// };
-
-	var normalmapShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			heightMap: Shader.DIFFUSE_MAP,
-			// normalMap : Shader.NORMAL_MAP,
-			resolution: [512, 512],
-			height: 0.05
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
-			'uniform mat4 worldMatrix;',
-
-			"varying vec2 vUv;",
-			"void main() {",
-			"vUv = vertexUV0;",
-			"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
-			"}"
-		].join("\n"),
-		fshader: [
-			"uniform float height;",
-			"uniform vec2 resolution;",
-			"uniform sampler2D heightMap;",
-			// "uniform sampler2D normalMap;",
-
-			"varying vec2 vUv;",
-
-			"void main() {",
-			"float val = texture2D(heightMap, vUv).x;",
-			"float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;",
-			"float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;",
-
-			'vec3 normal = vec3(val - valU, val - valV, height);',
-			// 'normal.rgb += vec3(texture2D(normalMap, vUv).rg * 2.0 - 1.0, 0.0);',
-			"gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);",
-			"}"
 		].join("\n")
 	};
 

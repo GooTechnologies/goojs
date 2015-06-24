@@ -246,8 +246,10 @@ define([
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', this.normalMap);
 			material.setTexture('DETAIL_MAP', terrainTextures.detailMap);
-			material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
-			material.shader.setDefine('LIGHTMAP', true);
+			if (terrainTextures.lightMap) {
+				material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
+				material.shader.setDefine('LIGHTMAP', true);
+			}
 
 			material.setTexture('SPLAT_MAP', this.splat);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -869,7 +871,7 @@ define([
 				'#endif',
 
 				'void main(void) {',
-					'if (alphaval.w < 0.0) discard;',
+					'if (alphaval.w <= 0.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',
