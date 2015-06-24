@@ -1,3 +1,17 @@
+v0.14.3 --- 2015-06-24
+----------------------
+
+###Additions
+ + [ParticleInfluence visual test](http://code.gooengine.com/0.14.3/visual-test/goo/particles/ParticleInfluence-vtest
+ .html)
+ + [SkeletonAnimation visual test](http://code.gooengine.com/0.14
+ .3/visual-test/goo/animationpack/SkeletonAnimation-vtest.html)
+
+###Fixes
+ * shader precision settings not being preserved after context re-initialization
+ * Ludei-related fix
+
+
 v0.14.2 --- 2015-05-28
 ----------------------
 

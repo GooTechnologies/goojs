@@ -38,7 +38,8 @@ var filterList = [
 	'Pipe',
 	'PolyLine',
 	'ParticleInfluence',
-	'HeightMap'
+	'HeightMap',
+	'SkeletonAnimation'
 ];
 
 exports.filterList = filterList;
