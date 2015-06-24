@@ -4,6 +4,7 @@
 	var Context = shaderBits.Context;
 	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
 	var ExternalNode = shaderBits.ExternalNode;
+	var InPort = shaderBits.InPort;
 
 	function VertexContext(_typeDefinitions) {
 		// shallow clone the original type defintions
@@ -13,7 +14,7 @@
 		typeDefinitions.position = BaseTypeDefinitions.vertex.position;
 		typeDefinitions.pointSize = BaseTypeDefinitions.vertex.pointSize;
 
-		Context.apply(this, typeDefinitions);
+		Context.call(this, typeDefinitions);
 
 		// create instances of special nodes
 		this.position = this.createPosition();
@@ -33,6 +34,9 @@
 			dataType: dataType
 		});
 		node._context = this;
+
+		node.singleInPort = new InPort('value', dataType);
+		node.singleInPort._node = this;
 
 		this.structure.addNode(node);
 

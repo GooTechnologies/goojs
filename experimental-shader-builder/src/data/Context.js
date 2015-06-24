@@ -49,22 +49,24 @@
 		constructor.prototype.constructor = constructor;
 
 		// these can stay on the prototype
-		Object.keys(defines).forEach(function (name) {
-			var define = defines[name];
-			Object.defineProperty(constructor.prototype, define.name, {
-				get: function () {
-					// convert back to number if of numeric type
-					return DataFormatter.decode(this.defines[define.name], define.type);
-				},
-				set: function (value) {
-					// stringify to whatever type is needed
-					// int (floor it)
-					// float (obligatory period notation)
-					this.defines[define.name] = DataFormatter.encode(value, define.type);
-					return value;
-				}
+		if (defines) {
+			Object.keys(defines).forEach(function (name) {
+				var define = defines[name];
+				Object.defineProperty(constructor.prototype, define.name, {
+					get: function () {
+						// convert back to number if of numeric type
+						return DataFormatter.decode(this.defines[define.name], define.type);
+					},
+					set: function (value) {
+						// stringify to whatever type is needed
+						// int (floor it)
+						// float (obligatory period notation)
+						this.defines[define.name] = DataFormatter.encode(value, define.type);
+						return value;
+					}
+				});
 			});
-		});
+		}
 
 		return constructor;
 	}
@@ -100,9 +102,8 @@
 		});
 	}
 
-	function Context(typeDefinitions, contextPair) {
+	function Context(typeDefinitions) {
 		this.typeDefinitions = typeDefinitions;
-		this.contextPair = contextPair;
 		this.constructors = generateConstructors(this.typeDefinitions);
 		attachNodeCreators(this, this.constructors);
 

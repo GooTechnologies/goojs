@@ -3,8 +3,8 @@
 
 	var Context = shaderBits.Context;
 
-	function FragmentContext(typeDefinitions, contextPair) {
-		Context.apply(this, arguments);
+	function FragmentContext(typeDefinitions) {
+		Context.call(this, typeDefinitions);
 
 
 	}

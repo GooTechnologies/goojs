@@ -88,19 +88,26 @@
 
 
 			var targetNode = nodes[connection.to];
-			var inputsDefinition = typeDefinitions[targetNode.type].inputs;
-			var inputDefinition = _(inputsDefinition).find(function (input) {
-				return input.name === connection.input;
-			});
+			var inputType;
 
-
-			if (inputDefinition.generic) {
-				resolveType(targetNode, inputDefinition.type, outputType);
+			if (targetNode.type === 'external') {
+				inputType = targetNode.external.dataType;
 			} else {
-				if (outputType !== inputDefinition.type) {
+				var inputsDefinition = typeDefinitions[targetNode.type].inputs;
+				var inputDefinition = _(inputsDefinition).find(function (input) {
+					return input.name === connection.input;
+				});
+				inputType = inputDefinition.type;
+			}
+
+
+			if (inputDefinition && inputDefinition.generic) {
+				resolveType(targetNode, inputType, outputType);
+			} else {
+				if (outputType !== inputType) {
 					throw new Error(
 						'could not match type ' + outputType +
-						' with type ' + inputDefinition.type
+						' with type ' + inputType
 					);
 				}
 			}
@@ -200,7 +207,7 @@
 		if (targetNode.incomingConnections.has(connection.input)) {
 			return {
 				result: false,
-				reason: 'input "' + connection.input + '" is already occupied'
+				reason: 'input [' + connection.input + '] is already occupied'
 			};
 		}
 
@@ -223,8 +230,8 @@
 		var accepts = this.acceptsConnection(node, connection);
 		if (!accepts.result) {
 			throw new Error(
-				'could not connect ' + node.id + '[' + connection.output + '] to ' +
-				connection.to + '[' + connection.input + ']; ' + accepts.reason
+				'could not connect [' + connection.output + '] to [' + connection.input + ']; ' +
+				accepts.reason
 			);
 		}
 

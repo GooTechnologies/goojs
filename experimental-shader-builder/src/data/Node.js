@@ -54,8 +54,7 @@
 	Node.prototype.addConnection = function (connection) {
 		if (!this.acceptsConnection(connection)) {
 			throw new Error(
-				'could not connect ' + this.id + '[' + connection.output + '] to ' +
-				connection.to + '[' + connection.input + ']'
+				'could not connect [' + connection.output + '] to [' + connection.input + ']'
 			);
 		}
 
