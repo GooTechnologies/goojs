@@ -11,6 +11,24 @@
 			return function (data) { return fun(data, format); };
 		};
 
+		describe('*', function () {
+			describe('encode', function () {
+				var encodeStar = bindFormat('*', encode);
+
+				it('"encodes" anything as a string', function () {
+					expect(encodeStar('asd')).toEqual('asd');
+				});
+			});
+
+			describe('decode', function () {
+				var decodeStar = bindFormat('*', decode);
+
+				it('"decodes" as a string', function () {
+					expect(decodeStar('asd')).toEqual('asd');
+				});
+			});
+		});
+
 		describe('float', function () {
 			describe('encode', function () {
 				var encodeFloat = bindFormat('float', encode);
@@ -77,6 +95,28 @@
 
 				it('decodes a vec2', function () {
 					expect(decodeVec2('vec2(0.123, 0.456)')).toEqual([0.123, 0.456]);
+				});
+			});
+		});
+
+		describe('mat2', function () {
+			describe('encode', function () {
+				var encodeMat2 = bindFormat('mat2', encode);
+
+				it('encodes a mat2', function () {
+					expect(encodeMat2([0.11, 0.22, 0.33, 0.44])).toEqual('mat2(0.11, 0.22, 0.33, 0.44)');
+				});
+
+				it('encodes a int-ish mat2', function () {
+					expect(encodeMat2([0.11, 0.22, 0.33, 0.44])).toEqual('mat2(0.11, 0.22, 0.33, 0.44)');
+				});
+			});
+
+			describe('decode', function () {
+				var decodeMat2 = bindFormat('mat2', decode);
+
+				it('decodes a mat2', function () {
+					expect(decodeMat2('mat2(0.11, 0.22, 0.33, 0.44)')).toEqual([0.11, 0.22, 0.33, 0.44]);
 				});
 			});
 		});

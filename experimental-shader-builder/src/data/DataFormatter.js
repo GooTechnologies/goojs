@@ -1,14 +1,14 @@
 (function () {
 	'use strict';
 
-	function vecEncoder(length) {
+	function vecMatEncoder(type) {
 		return function (value) {
 			var body = value.map(formats.float.encode).join(', ');
-			return 'vec' + length + '(' + body + ')';
+			return type + '(' + body + ')';
 		};
 	}
 
-	function vecDecoder(length) {
+	function vecMatDecoder(type) {
 		return function (string) {
 			var openParen = string.indexOf('(');
 			var closedParen = string.indexOf(')');
@@ -39,25 +39,37 @@
 			}
 		},
 		vec2: {
-			encode: vecEncoder(2),
-			decode: vecDecoder(2)
+			encode: vecMatEncoder('vec2'),
+			decode: vecMatDecoder('vec2')
 		},
 		vec3: {
-			encode: vecEncoder(3),
-			decode: vecDecoder(3)
+			encode: vecMatEncoder('vec3'),
+			decode: vecMatDecoder('vec3')
 		},
 		vec4: {
-			encode: vecEncoder(4),
-			decode: vecDecoder(4)
+			encode: vecMatEncoder('vec4'),
+			decode: vecMatDecoder('vec4')
+		},
+		mat2: {
+			encode: vecMatEncoder('mat2'),
+			decode: vecMatDecoder('mat2')
+		},
+		mat3: {
+			encode: vecMatEncoder('mat3'),
+			decode: vecMatDecoder('mat3')
+		},
+		mat4: {
+			encode: vecMatEncoder('mat4'),
+			decode: vecMatDecoder('mat4')
 		}
 	};
 
 	function encode(value, format) {
-		return formats[format].encode(value);
+		return formats[format] ? formats[format].encode(value) : value;
 	}
 
 	function decode(string, format) {
-		return formats[format].decode(string);
+		return formats[format] ? formats[format].decode(string) : string;
 	}
 
 	var DataFormatter = {
