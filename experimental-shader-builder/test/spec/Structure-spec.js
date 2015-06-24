@@ -242,6 +242,12 @@
 				}).toThrow(new Error('could not connect i3[s] to i2[x]; cannot have cycles'));
 			});
 
+			describe('varying', function () {
+				it('can connect to a varying', function () {
+
+				});
+			});
+
 			describe('type checking', function () {
 				describe('resolving types', function () {
 					it('accepts a connection from a fixed type to a fixed type', function () {

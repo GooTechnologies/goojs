@@ -100,8 +100,9 @@
 		});
 	}
 
-	function Context(typeDefinitions) {
+	function Context(typeDefinitions, contextPair) {
 		this.typeDefinitions = typeDefinitions;
+		this.contextPair = contextPair;
 		this.constructors = generateConstructors(this.typeDefinitions);
 		attachNodeCreators(this, this.constructors);
 
@@ -109,8 +110,6 @@
 		this.structure._context = this;
 
 		this.idCounter = 0;
-		// every typeDefinitions have to have an Out, right?
-		this.out = this.createOut();
 	}
 
 	Context.prototype.generateId = function () {
@@ -143,7 +142,7 @@
 
 	Context.prototype.createUniform = externalCreator('uniform');
 	Context.prototype.createAttribute = externalCreator('attribute');
-	Context.prototype.createVarying = externalCreator('varying');
+	Context.prototype.createVarying = externalCreator('varying'); // varying in - used in the fragment shader
 
 	Context.prototype.createFunction = function (type) {
 		var node = new this.constructors[type](this.generateId());

@@ -1,6 +1,8 @@
 (function () {
 	'use strict';
 
+	var Connection = shaderBits.Connection;
+
 	function Node(id) {
 		this.id = id;
 		this.incomingConnections = new Set();
@@ -13,6 +15,34 @@
 
 	Node.prototype.disconnect = function (that) {
 		that.disconnectedByNode(this); // not implemented
+	};
+
+	Node.prototype.connectedByNode = function (node) {
+		node._context.structure.addConnection(
+			node,
+			new Connection(node.singleOutPort.name, this.id, this.singleInPort.name)
+		);
+	};
+
+	Node.prototype.connectedByOutPort = function (outPort) {
+		outPort._node._context.addConnection(
+			outPort._node,
+			new Connection(outPort.name, this.id, this.singleInPort.name)
+		);
+	};
+
+	Node.prototype.disconnectedByNode = function (node) {
+		node._context.structure.removeConnection(
+			node,
+			new Connection(node.singleOutPort.name, this.id, this.singleInPort.name)
+		);
+	};
+
+	Node.prototype.disconnectedByOutPort = function (outPort) {
+		outPort._node._context.removeConnection(
+			outPort._node,
+			new Connection(outPort.name, this.id, this.singleInPort.name)
+		);
 	};
 
 	Node.prototype.acceptsConnection = function (connection) {
