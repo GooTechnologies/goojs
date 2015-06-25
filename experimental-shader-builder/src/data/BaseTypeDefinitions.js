@@ -27,6 +27,14 @@
 				}],
 				outputs: [],
 				body: 'gl_PointSize = size;'
+			},
+			'external-output': {
+				id: 'external-output',
+				inputs: [{
+					name: 'value',
+					type: 'T'
+				}],
+				outputs: []
 			}
 		},
 		fragment: {

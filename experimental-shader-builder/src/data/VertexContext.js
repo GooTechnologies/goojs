@@ -3,8 +3,7 @@
 
 	var Context = shaderBits.Context;
 	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
-	var ExternalNode = shaderBits.ExternalNode;
-	var InPort = shaderBits.InPort;
+	var ExternalOutputNode = shaderBits.ExternalOutputNode;
 
 	function VertexContext(_typeDefinitions) {
 		// shallow clone the original type defintions
@@ -28,15 +27,12 @@
 	// varyings created in the fragment context can receive connections from the vertex context
 	// too ambitious?
 	VertexContext.prototype.createVarying = function (name, dataType) {
-		var node = new ExternalNode(this.generateId(), {
+		var node = new ExternalOutputNode(this.generateId(), {
 			name: name,
 			inputType: 'varying',
 			dataType: dataType
 		});
 		node._context = this;
-
-		node.singleInPort = new InPort('value', dataType);
-		node.singleInPort._node = this;
 
 		this.structure.addNode(node);
 

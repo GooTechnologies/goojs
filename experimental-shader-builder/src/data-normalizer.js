@@ -33,7 +33,7 @@
 				node.outputsTo = [];
 			}
 
-			if (node.type === 'external') {
+			if (node.type === 'external-input' || node.type === 'external-output') {
 				node.external = node.external || {};
 			} else {
 				node.defines = node.defines || {};

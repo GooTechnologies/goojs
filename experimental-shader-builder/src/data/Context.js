@@ -2,7 +2,8 @@
 	'use strict';
 
 	var Structure = shaderBits.Structure;
-	var ExternalNode = shaderBits.ExternalNode;
+	var ExternalInputNode = shaderBits.ExternalInputNode;
+	var ExternalOutputNode = shaderBits.ExternalOutputNode;
 	var FunctionNode = shaderBits.FunctionNode;
 	var InPort = shaderBits.InPort;
 	var OutPort = shaderBits.OutPort;
@@ -128,7 +129,7 @@
 
 	function externalCreator(inputType) {
 		return function (name, dataType) {
-			var node = new ExternalNode(this.generateId(), {
+			var node = new ExternalInputNode(this.generateId(), {
 				name: name,
 				inputType: inputType,
 				dataType: dataType
@@ -143,7 +144,10 @@
 
 	Context.prototype.createUniform = externalCreator('uniform');
 	Context.prototype.createAttribute = externalCreator('attribute');
-	Context.prototype.createVarying = externalCreator('varying'); // varying in - used in the fragment shader
+
+	// varying in - used in the fragment shader only
+	// move this to the fragment context
+	Context.prototype.createVarying = externalCreator('varying');
 
 	Context.prototype.createFunction = function (type) {
 		var node = new this.constructors[type](this.generateId());

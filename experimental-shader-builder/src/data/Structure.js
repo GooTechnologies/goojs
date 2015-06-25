@@ -68,7 +68,7 @@
 
 			// relevant only the first time the function is called
 			// no node can lead to an external node
-			if (startNode.type === 'external') {
+			if (startNode.type === 'external-input') {
 				outputType = startNode.external.dataType;
 			} else {
 				var outputDefinitions = typeDefinitions[startNode.type].outputs;
@@ -90,7 +90,7 @@
 			var targetNode = nodes[connection.to];
 			var inputType;
 
-			if (targetNode.type === 'external') {
+			if (targetNode.type === 'external-output') {
 				inputType = targetNode.external.dataType;
 			} else {
 				var inputsDefinition = typeDefinitions[targetNode.type].inputs;
@@ -101,7 +101,7 @@
 			}
 
 
-			if (targetNode.type !== 'external' && inputDefinition.generic) {
+			if (targetNode.type !== 'external-output' && inputDefinition.generic) {
 				resolveType(targetNode, inputType, outputType);
 			} else {
 				if (outputType !== inputType) {
@@ -143,7 +143,7 @@
 		}
 
 		function propagate(node, connection) {
-			if (node.type !== 'external') {
+			if (node.type !== 'external-input') {
 				var outputDefinitions = typeDefinitions[startNode.type].outputs;
 				var outputDefinition = _(outputDefinitions).find(function (output) {
 					return output.name === connection.output;
@@ -160,7 +160,7 @@
 
 			// check ot see if there is any "unresolveness" that can be propagated
 			if (
-				(node.type === 'external' ||
+				(node.type === 'external-input' ||
 					(!outputDefinition.generic || node.resolvedTypes.has(outputDefinition.type))) &&
 				inputDefinition.generic &&
 				targetNode.resolvedTypes.has(inputDefinition.type)
@@ -192,6 +192,8 @@
 			} else {
 				visited.add(node);
 			}
+
+			if (!node.outputsTo) { return false; }
 
 			return node.outputsTo.map(function (outputTo) {
 				return this.nodes[outputTo.to];
@@ -261,7 +263,7 @@
 	Structure.fromJSON = function (json) {
 		var structure = new Structure();
 		_(json).forEach(function (nodeConfig) {
-			var node = (nodeConfig.type === 'external' ? ExternalNode : FunctionNode).fromJSON(nodeConfig);
+			var node = (nodeConfig.type === 'external-input' ? ExternalInputNode : FunctionNode).fromJSON(nodeConfig);
 			structure.addNode(node);
 		});
 		return structure;

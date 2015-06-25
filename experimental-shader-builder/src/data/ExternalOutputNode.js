@@ -3,29 +3,28 @@
 
 	var Node = shaderBits.Node;
 	var Connection = shaderBits.Connection;
-	var OutPort = shaderBits.OutPort;
+	var InPort = shaderBits.InPort;
 
-	function ExternalNode(id, config) {
+	function ExternalOutputNode(id, config) {
 		Node.call(this, id);
 
-		this.type = 'external';
+		this.type = 'external-output';
 		this.external = {
 			name: config.name,
 			inputType: config.inputType,
 			dataType: config.dataType
 		};
-		this.outputsTo = [];
-		this.singleOutPort = new OutPort('value', config.dataType);
-		this.singleOutPort._node = this;
+		this.singleInPort = new InPort('value', config.dataType);
+		this.singleInPort._node = this;
 		this._context = null;
 	}
 
-	ExternalNode.prototype = Object.create(Node.prototype);
-	ExternalNode.prototype.constructor = ExternalNode;
+	ExternalOutputNode.prototype = Object.create(Node.prototype);
+	ExternalOutputNode.prototype.constructor = ExternalOutputNode;
 
 	// no connectedBy methods since this node cannot be connected by anything; it has no inputs!
 
-	ExternalNode.prototype.toJSON = function () {
+	ExternalOutputNode.prototype.toJSON = function () {
 		return {
 			id: this.id,
 			type: this.type,
@@ -33,16 +32,13 @@
 				name: this.external.name,
 				inputType: this.external.inputType,
 				dataType: this.external.dataType
-			},
-			outputsTo: this.outputsTo.map(function (outputTo) {
-				return outputTo.toJSON();
-			})
+			}
 		};
 	};
 
-	ExternalNode.fromJSON = function (config) {
-		var node = new ExternalNode(config.id);
-		node.type = 'external';
+	ExternalOutputNode.fromJSON = function (config) {
+		var node = new ExternalOutputNode(config.id);
+		node.type = 'external-output';
 		node.external = _.clone(config.external);
 		config.outputsTo.forEach(function (outputTo) {
 			node.addConnection(Connection.fromJSON(outputTo));
@@ -51,5 +47,5 @@
 	};
 
 	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.ExternalNode = ExternalNode;
+	window.shaderBits.ExternalOutputNode = ExternalOutputNode;
 })();

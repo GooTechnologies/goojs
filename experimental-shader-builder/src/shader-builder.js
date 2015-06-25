@@ -20,7 +20,7 @@
 			unvisited.delete(nodeId);
 
 			graph.get(nodeId).outputsTo.filter(function (output) {
-				return output.to !== '_';
+				return output.to !== '_'; // what is this?!
 			}).forEach(function (output) {
 				df(output.to);
 			});
@@ -64,16 +64,24 @@
 	}
 
 	/**
-	 * Generates code for "external" nodes (that just bridge a uniform/attribute/varying)
+	 * Generates code for "external-input" nodes (that just bridge a uniform/attribute/varying)
 	 * @param node
-	 * @param typeDefinition
 	 * @returns {string}
 	 */
-	function generateExternalCode(node, typeDefinition) {
+	function generateExternalInputCode(node) {
 		return node.outputsTo.map(function (outputTo) {
 			return '\t#define ' + getInputVar(outputTo.to, outputTo.input) +
 				' ' + node.external.name;
 		}).join('\n');
+	}
+
+	/**
+	 * Generates code for "external-output" nodes (varyings from a vertex context)
+	 * @param node
+	 * @returns {string}
+	 */
+	function generateExternalOutputCode(node) {
+		return node.external.name + ' = value;';
 	}
 
 	/**
@@ -121,6 +129,11 @@
 			copyOut;
 	}
 
+	var codeGenerators = new Map([
+		['external-input', generateExternalInputCode],
+		['external-output', generateExternalOutputCode]
+	]);
+
 	/**
 	 * Generate code given node types and an array of sorted nodes
 	 * @param nodeTypes
@@ -129,14 +142,14 @@
 	 */
 	function generateCode(nodeTypes, nodes) {
 		var stringifiedExternals = nodes.filter(function (node) {
-			return node.type === 'external';
+			return !!node.external; // external-input and external-output have external information
 		}).map(function (node) {
 			return node.external.inputType + ' ' + node.external.dataType + ' ' + node.external.name + ';';
 		}).join('\n');
 
 		// mark node inputs that get their data from externals
 		var externalConnected = nodes.filter(function (node) {
-			return node.type === 'external';
+			return node.type === 'external-input';
 		}).reduce(function (externalConnected, node) {
 			return node.outputsTo.reduce(function (externalConnected, outputTo) {
 				var inputVar = getInputVar(outputTo.to, outputTo.input);
@@ -147,7 +160,7 @@
 
 		// declare the inputs of all nodes
 		var copyIn = nodes.filter(function (node) {
-			if (node.type === 'external') { return false; }
+			if (node.type === 'external-input') { return false; }
 			return nodeTypes[node.type].inputs.length > 0;
 		}).map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
@@ -166,8 +179,8 @@
 
 		var stringifiedNodes = nodes.map(function (node) {
 			var nodeCode = (
-				node.type === 'external' ?
-				generateExternalCode :
+				codeGenerators.has(node.type) ?
+				codeGenerators.get(node.type) :
 				generateNodeCode
 			)(node, nodeTypes[node.type]);
 
