@@ -244,12 +244,16 @@
 		describe('varying', function () {
 			it('can connect to a varying', function () {
 				var konst = context.createConst();
-				var varying = context.createVarying();
+				var varying = context.createVarying('a', 'float');
 
 				konst.connect(varying);
 
 				var structure = context.structureToJSON();
-				expect(structure[1].id).toEqual(varying.id);
+				expect(structure[2].outputsTo).toEqual([{
+					output: 'value',
+					to: 'i4',
+					input: 'value'
+				}]);
 			});
 		});
 

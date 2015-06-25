@@ -101,7 +101,7 @@
 			}
 
 
-			if (inputDefinition && inputDefinition.generic) {
+			if (targetNode.type !== 'external' && inputDefinition.generic) {
 				resolveType(targetNode, inputType, outputType);
 			} else {
 				if (outputType !== inputType) {
