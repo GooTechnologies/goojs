@@ -116,10 +116,25 @@ define([
 		return promise;
 	};
 
+	/**
+	 * Creates a promise that is resolved within a given amount of time
+	 * @param value
+	 * @param {number} time
+	 * @returns {Promise}
+	 */
+	PromiseUtil.delay = function (value, time) {
+		var promise = new RSVP.Promise();
+		setTimeout(function () {
+			promise.resolve(value);
+		}, time);
+		return promise;
+	};
 
+	// the doc doesn't align with half of what this function actually does
 	/**
 	 * Create a promise that resolves or rejects after the specified delay with the given argument.
-	 *
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; consider using
+	 * PromiseUtil.delay instead
 	 * @param {Number} delay in ms
 	 * @returns {RSVP.Promise}
 	 */
