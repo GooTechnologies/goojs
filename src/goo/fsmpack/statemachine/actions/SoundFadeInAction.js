@@ -58,13 +58,15 @@ define([
 
 			if (this.onSoundEnd) {
 				endPromise = sound.play();
+			} else {
+				endPromise = PromiseUtil.delay(null, this.time);
 			}
 		} catch (e) {
 			console.warn('Could not play sound: ' + e);
 			endPromise = PromiseUtil.resolve();
 		}
 
-		endPromise.then(function() {
+		endPromise.then(function () {
 			fsm.send(this.transitions.complete);
 		}.bind(this));
 	};
