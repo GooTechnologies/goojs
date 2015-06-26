@@ -4,6 +4,7 @@
 	var ContextPair = shaderBits.ContextPair;
 	var VertexContext = shaderBits.VertexContext;
 	var FragmentContext = shaderBits.FragmentContext;
+	var ContextPair = shaderBits.ContextPair;
 
 	function getS1(typeDefinitions) {
 		var context = new Context(typeDefinitions);
@@ -181,6 +182,25 @@
 		};
 	}
 
+	function getS5(typeDefintions) {
+		var contextPair = new ContextPair(typeDefintions);
+		var fragmentContext = contextPair.fragmentContext;
+
+		var texture = getDiffuseTexture(fragmentContext);
+
+		texture.r.connect(fragmentContext.fragColor.r);
+		texture.g.connect(fragmentContext.fragColor.g);
+		texture.b.connect(fragmentContext.fragColor.b);
+
+		return {
+			vertex: {},
+			fragment: {
+				structure: fragmentContext.structureToJSON(),
+				typeDefinitions: fragmentContext.typeDefinitions
+			}
+		};
+	}
+
 	function getSample(name, callback) {
 		$.ajax({
 			url: '../../samples/' + name + '/types.json'
@@ -197,9 +217,9 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var pair = getS4(typeDefinitions);
-		
-		_replaceBox(pair.typeDefinitions, pair.structure);
+		var pair = getS5(typeDefinitions);
+
+		_replaceBox(pair.fragment.typeDefinitions, pair.fragment.structure);
 	});
 
 	// crap functions that do the same thing but take in different sort of data
