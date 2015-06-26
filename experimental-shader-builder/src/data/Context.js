@@ -111,12 +111,12 @@
 		this.structure = new Structure();
 		this.structure._context = this;
 
-		this.idCounter = 0;
+		this._idCounter = 0;
 	}
 
 	Context.prototype.generateId = function () {
-		this.idCounter++;
-		return 'i' + this.idCounter;
+		this._idCounter++;
+		return 'i' + this._idCounter;
 	};
 
 	Context.prototype.typesToJSON = function () {

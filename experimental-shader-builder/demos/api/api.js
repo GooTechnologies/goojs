@@ -1,7 +1,9 @@
 (function () {
 	'use strict';
 
-	var Context = shaderBits.Context;
+	var ContextPair = shaderBits.ContextPair;
+	var VertexContext = shaderBits.VertexContext;
+	var FragmentContext = shaderBits.FragmentContext;
 
 	function getS1(typeDefinitions) {
 		var context = new Context(typeDefinitions);
@@ -145,7 +147,7 @@
 	}
 
 	function getS4(typeDefinitions) {
-		var context = new Context(typeDefinitions);
+		var context = new FragmentContext(typeDefinitions);
 
 		var normal = context.createVarying('normal', 'vec3');
 		var binormal = context.createVarying('binormal', 'vec3');
@@ -169,11 +171,14 @@
 		var vec3Comp = context.createVec3Comp();
 		diffuse.connect(vec3Comp);
 
-		vec3Comp.x.connect(context.out.r);
-		vec3Comp.y.connect(context.out.g);
-		vec3Comp.z.connect(context.out.b);
+		vec3Comp.x.connect(context.fragColor.r);
+		vec3Comp.y.connect(context.fragColor.g);
+		vec3Comp.z.connect(context.fragColor.b);
 
-		return context.structureToJSON();
+		return {
+			structure: context.structureToJSON(),
+			typeDefinitions: context.typeDefinitions
+		};
 	}
 
 	function getSample(name, callback) {
@@ -192,9 +197,9 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var structure = getS4(typeDefinitions);
-
-		_replaceBox(typeDefinitions, structure);
+		var pair = getS4(typeDefinitions);
+		
+		_replaceBox(pair.typeDefinitions, pair.structure);
 	});
 
 	// crap functions that do the same thing but take in different sort of data
