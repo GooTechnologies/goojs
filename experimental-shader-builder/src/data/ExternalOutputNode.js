@@ -32,7 +32,8 @@
 				name: this.external.name,
 				inputType: this.external.inputType,
 				dataType: this.external.dataType
-			}
+			},
+			outputsTo: []
 		};
 	};
 

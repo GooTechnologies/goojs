@@ -12,6 +12,7 @@
 		// and add our own (glsl specific gl_Position, gl_FragColor et al)
 		typeDefinitions.position = BaseTypeDefinitions.vertex.position;
 		typeDefinitions.pointSize = BaseTypeDefinitions.vertex.pointSize;
+		typeDefinitions['external-output'] = BaseTypeDefinitions.vertex['external-output'];
 
 		Context.call(this, typeDefinitions);
 

@@ -201,6 +201,65 @@
 		};
 	}
 
+	function createBasicVertex(context) {
+		var viewProjectionMatrix = context.createUniform('viewProjectionMatrix', 'mat4');
+		var worldMatrix = context.createUniform('worldMatrix', 'mat4');
+		var vertexPosition = context.createAttribute('vertexPosition', 'vec3');
+
+		var mul1 = context.createMul();
+		viewProjectionMatrix.connect(mul1.x);
+		worldMatrix.connect(mul1.y);
+
+		var vec43 = context.createVec43();
+		vec43.w = 1;
+		vertexPosition.connect(vec43);
+
+		var mul2 = context.createMulMV();
+		mul1.connect(mul2.x);
+		vec43.connect(mul2.y);
+
+		var vec4Comp = context.createVec4Comp();
+		mul2.connect(vec4Comp);
+
+		vec4Comp.x.connect(context.position.x);
+		vec4Comp.y.connect(context.position.y);
+		vec4Comp.z.connect(context.position.z);
+
+
+		var vertexUV0 = context.createAttribute('vertexUV0', 'vec2');
+
+		var texCoord0 = context.createVarying('texCoord0', 'vec2');
+
+		vertexUV0.connect(texCoord0);
+
+		//gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);
+	}
+
+	function getS6(typeDefintions) {
+		var contextPair = new ContextPair(typeDefintions);
+		var fragmentContext = contextPair.fragmentContext;
+
+		var texture = getDiffuseTexture(fragmentContext);
+
+		texture.r.connect(fragmentContext.fragColor.r);
+		texture.g.connect(fragmentContext.fragColor.g);
+		texture.b.connect(fragmentContext.fragColor.b);
+
+		var vertexContext = contextPair.vertexContext;
+		createBasicVertex(vertexContext);
+
+		return {
+			vertex: {
+				structure: vertexContext.structureToJSON(),
+				typeDefinitions: vertexContext.typeDefinitions
+			},
+			fragment: {
+				structure: fragmentContext.structureToJSON(),
+				typeDefinitions: fragmentContext.typeDefinitions
+			}
+		};
+	}
+
 	function getSample(name, callback) {
 		$.ajax({
 			url: '../../samples/' + name + '/types.json'
@@ -217,17 +276,21 @@
 
 	getSample('s4', function (_typeDefinitions) {
 		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
-		var pair = getS5(typeDefinitions);
+		var pair = getS6(typeDefinitions);
 
-		_replaceBox(pair.fragment.typeDefinitions, pair.fragment.structure);
+		_replaceBox(pair);
 	});
 
 	// crap functions that do the same thing but take in different sort of data
 	var __replaceBox = shaderBitsCommon.makeDemo();
 
-	function _replaceBox(nodeTypes, structure) {
-		var result = shaderBits.buildShader(nodeTypes, structure);
-		window._result = result;
-		__replaceBox(result);
+	function _replaceBox(pair) {
+		var vertexShader = shaderBits.buildShader(pair.vertex.typeDefinitions, pair.vertex.structure);
+		var fragmentShader = shaderBits.buildShader(pair.fragment.typeDefinitions, pair.fragment.structure);
+
+		window._vertexShader = vertexShader;
+		window._fragmentShader = fragmentShader;
+
+		__replaceBox(fragmentShader, vertexShader);
 	}
 })();

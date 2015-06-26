@@ -69,6 +69,24 @@
     }],
     "body": "product = x * y;"
   },
+  "mulMV": {
+    "id": "mulMV",
+    "inputs": [{
+      "name": "x",
+      "type": "T",
+      "generic": true
+    }, {
+      "name": "y",
+      "type": "U",
+      "generic": true
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "U",
+      "generic": true
+    }],
+    "body": "product = x * y;"
+  },
   "dot": {
     "id": "dot",
     "inputs": [{
@@ -197,7 +215,7 @@
     "outputs": [],
     "body": "gl_FragColor = vec4(r, g, b, 1.0);"
   },
-  "vec2-comp": {
+  "vec2Comp": {
     "id": "vec2-comp",
     "inputs": [{
       "name": "vec",
@@ -248,6 +266,25 @@
     }],
     "body": "x = vec.x; y = vec.y; z = vec.z;"
   },
+  "vec43": {
+    "id": "vec43",
+    "inputs": [{
+      "name": "v3",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "v4",
+      "type": "vec4"
+    }],
+    "body": "v4 = vec4(v3, /*data.w*/);",
+    "defines": {
+      "multiplier": {
+        "name": "w",
+        "type": "float",
+        "default": "1.0"
+      }
+    }
+  },
   "xyz": {
     "id": "xyz",
     "inputs": [{
@@ -281,7 +318,7 @@
     }],
     "body": "vec = vec4(x, y, z, w);"
   },
-  "vec4-comp": {
+  "vec4Comp": {
     "id": "vec4-comp",
     "inputs": [{
       "name": "vec",

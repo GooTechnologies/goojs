@@ -10,7 +10,31 @@
 
 		var box;
 
-		function replaceBox(shaderSource) {
+		function replaceBox(shaderSource, vertexShader) {
+			vertexShader = vertexShader || [
+					'attribute vec3 vertexPosition;',
+					'attribute vec3 vertexNormal;',
+					'attribute vec2 vertexUV0;',
+					'attribute vec4 vertexTangent;',
+
+					'uniform mat4 viewProjectionMatrix;',
+					'uniform mat4 worldMatrix;',
+
+					'varying vec3 normal;',
+					'varying vec2 texCoord0;',
+					'varying vec3 binormal;',
+					'varying vec3 tangent;',
+
+					'void main(void) {',
+					'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+					'	texCoord0 = vertexUV0;',
+					//'	tangent = normalize(nMatrix * vertexTangent.xyz);', // it's identity
+					'	tangent = vertexTangent.xyz;',
+					'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
+					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+					'}'
+				].join('\n');
+
 			if (box) {
 				box.removeFromWorld();
 			}
@@ -37,29 +61,7 @@
 					light1Pos: [1, -1, -1],
 					light1Color: [0, 1, 0.3]
 				},
-				vshader: [
-					'attribute vec3 vertexPosition;',
-					'attribute vec3 vertexNormal;',
-					'attribute vec2 vertexUV0;',
-					'attribute vec4 vertexTangent;',
-
-					'uniform mat4 viewProjectionMatrix;',
-					'uniform mat4 worldMatrix;',
-
-					'varying vec3 normal;',
-					'varying vec2 texCoord0;',
-					'varying vec3 binormal;',
-					'varying vec3 tangent;',
-
-					'void main(void) {',
-					'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-					'	texCoord0 = vertexUV0;',
-					//'	tangent = normalize(nMatrix * vertexTangent.xyz);', // it's identity
-					'	tangent = vertexTangent.xyz;',
-					'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
-					'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-					'}'
-				].join('\n'),
+				vshader: vertexShader,
 				fshader: shaderSource
 			});
 
