@@ -1,8 +1,10 @@
 /* jshint bitwise: false */
 define([
-	'goo/util/ObjectUtils'
+	'goo/util/ObjectUtils',
+	'goo/math/MathUtils'
 ], function (
-	ObjectUtils
+	ObjectUtils,
+	MathUtils
 ) {
 	'use strict';
 
@@ -79,25 +81,23 @@ define([
 		}
 	};
 
-	// these are more related to math than anything else
 	/**
 	 * Checks if a value is power of two
-	 *
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.isPowerOfTwo instead
 	 * @param {Number} value Number to check for power of two
 	 * @returns true if value is power of two
 	 */
-	RendererUtils.isPowerOfTwo = function (value) {
-		return (value & (value - 1)) === 0;
-	};
+	RendererUtils.isPowerOfTwo = MathUtils.isPowerOfTwo;
 
 	/**
 	 * Converts input number to closest power of two
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.nearestPowerOfTwo instead
 	 * @param {number} number Number to convert to power of two
 	 * @returns {number} Nearest power of two of input
 	 */
-	RendererUtils.nearestPowerOfTwo = function (number) {
-		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
-	};
+	RendererUtils.nearestPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Clones an object recursively

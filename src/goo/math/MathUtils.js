@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-define([], function () {
+define(function () {
 	'use strict';
 
 	/**
@@ -245,7 +245,7 @@ define([], function () {
 	/**
 	 * Gets the nearest higher power of two for a value
 	 * @param {number} value Number to get the nearest power of two from
-	 * @returns {number} Nearest power of two 
+	 * @returns {number} Nearest power of two
 	 */
 	MathUtils.nearestHigherPowerOfTwo = function (value) {
 		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
@@ -315,7 +315,7 @@ define([], function () {
 	};
 
 	/**
-	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1. 
+	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	 * This is useful in cases where a threshold function with a smooth transition is desired.
 	 * @param {number} edge0 Specifies the value of the lower edge of the Hermite function.
 	 * @param {number} edge1 Specifies the value of the upper edge of the Hermite function.
@@ -341,6 +341,25 @@ define([], function () {
 	MathUtils.fastRandom = function() {
 		MathUtils.randomSeed = (MathUtils.randomSeed * 9301 + 49297) % 233280;
 		return MathUtils.randomSeed / 233280;
+	};
+
+	/**
+	 * Checks if a value is power of two
+	 *
+	 * @param {Number} value Number to check for power of two
+	 * @returns true if value is power of two
+	 */
+	MathUtils.isPowerOfTwo = function (value) {
+		return (value & (value - 1)) === 0;
+	};
+
+	/**
+	 * Converts input number to closest power of two
+	 * @param {number} number Number to convert to power of two
+	 * @returns {number} Nearest power of two of input
+	 */
+	MathUtils.nearestPowerOfTwo = function (number) {
+		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
 	};
 
 	return MathUtils;
