@@ -1,7 +1,9 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/util/Tween'
 ], function (
-	Action
+	Action,
+	TWEEN
 ) {
 	'use strict';
 
@@ -71,15 +73,15 @@ define([
 		this.toY = +settings.toY;
 		this.time = +settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenTextureOffsetAction.prototype._setup = function () {
-		this.tween = new window.TWEEN.Tween();
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {

@@ -34,19 +34,21 @@ define([
 		}
 	};
 
-	AnimationSystem.prototype.stop = function () {
-		this.passive = true;
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			var entity = this._activeEntities[i];
-			entity.animationComponent.stop();
-		}
-	};
-
 	AnimationSystem.prototype.resume = function () {
 		this.passive = false;
 		for (var i = 0; i < this._activeEntities.length; i++) {
 			var entity = this._activeEntities[i];
 			entity.animationComponent.resume();
+		}
+	};
+
+	AnimationSystem.prototype.play = AnimationSystem.prototype.resume;
+
+	AnimationSystem.prototype.stop = function () {
+		this.passive = true;
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var entity = this._activeEntities[i];
+			entity.animationComponent.stop();
 		}
 	};
 

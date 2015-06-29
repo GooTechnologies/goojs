@@ -1,7 +1,5 @@
 /*jshint bitwise: false */
-define(
-
-function() {
+define(function () {
 	'use strict';
 
 	function FSMUtils() {
