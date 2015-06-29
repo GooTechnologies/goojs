@@ -3,9 +3,9 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/Ajax',
 	'goo/util/rsvp',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils',
+	'goo/util/ArrayUtils',
 	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
@@ -30,9 +30,9 @@ define([
 	ComponentHandler,
 	Ajax,
 	RSVP,
-	StringUtil,
-	PromiseUtil,
-	ArrayUtil,
+	StringUtils,
+	PromiseUtils,
+	ArrayUtils,
 	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
@@ -197,10 +197,10 @@ define([
 		if (handler) {
 			return handler.update(ref, config, options);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		} else {
 			console.warn('No handler for type ' + type);
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		}
 	};
 
@@ -260,7 +260,7 @@ define([
 			function traverseFn(config) {
 				var promises = [];
 				if (config.lazy === true) {
-					return PromiseUtil.resolve();
+					return PromiseUtils.resolve();
 				}
 
 				var refs = DynamicLoader._getRefsFromConfig(config);
@@ -281,7 +281,7 @@ define([
 
 			// Resolved when everything is loaded and traversed
 			return traverseFn({ collectionRefs: refs }).then(function () {
-				return ArrayUtil.fromValues(binaryRefs);
+				return ArrayUtils.fromValues(binaryRefs);
 			});
 		}
 
@@ -341,7 +341,7 @@ define([
 
 		function traverse(key, value) {
 			// Multiple refs
-			if (StringUtil.endsWith(key.toLowerCase(), 'refs') && value instanceof Object) {
+			if (StringUtils.endsWith(key.toLowerCase(), 'refs') && value instanceof Object) {
 				var foundRefs = 0;
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
 					if (isValidId(value[keys[i]])) {
@@ -356,7 +356,7 @@ define([
 
 			// Single ref
 			if (
-				StringUtil.endsWith(key.toLowerCase(), 'ref') &&
+				StringUtils.endsWith(key.toLowerCase(), 'ref') &&
 				key !== 'thumbnailRef' &&
 				isValidId(value)
 			) {

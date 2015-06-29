@@ -1,9 +1,9 @@
 define([
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -76,7 +76,7 @@ define([
 		if (this._loading.has(ref)) {
 			return this._loading.get(ref);
 		} else if (this._objects.has(ref) && !options.reload) {
-			return PromiseUtil.resolve(this._objects.get(ref));
+			return PromiseUtils.resolve(this._objects.get(ref));
 		} else {
 			var promise = this.getConfig(ref, options).then(function (config) {
 				return this.update(ref, config, options);
@@ -131,13 +131,13 @@ define([
 	ConfigHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref, options);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		if (!this._objects.has(ref)) {
 			this._objects.set(ref, this._create());
 		}
 		this._prepare(config);
-		return PromiseUtil.resolve(this._objects.get(ref));
+		return PromiseUtils.resolve(this._objects.get(ref));
 	};
 
 	ConfigHandler.handlerClasses = {};

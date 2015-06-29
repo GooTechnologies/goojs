@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	SystemBus,

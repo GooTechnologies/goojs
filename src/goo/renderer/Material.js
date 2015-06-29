@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/Shader',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Shader,
 	_
@@ -304,7 +304,7 @@ define([
 		return shader;
 	};
 
-	/** 
+	/**
 	 * Clears the shader cache.
 	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
 	 */

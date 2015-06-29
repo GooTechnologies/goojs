@@ -6,8 +6,7 @@ define([
 	'goo/animationpack/state/SyncFadeTransitionState',
 	'goo/animationpack/state/FrozenTransitionState',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AnimationLayer,
@@ -16,7 +15,6 @@ define([
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	RSVP,
-	PromiseUtil,
 	_
 ) {
 	'use strict';

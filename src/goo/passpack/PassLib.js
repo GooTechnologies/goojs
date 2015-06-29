@@ -5,7 +5,7 @@ define([
 	'goo/passpack/BlurPass',
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ShaderLibExtra,
 	FullscreenPass,
@@ -13,7 +13,7 @@ define([
 	BlurPass,
 	DoGPass,
 	MotionBlurPass,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -214,7 +214,7 @@ define([
 	];
 
 	function Vignette(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.vignette));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.vignette));
 		this.id = id;
 	}
 	Vignette.prototype = Object.create(FullscreenPass.prototype);
@@ -258,7 +258,7 @@ define([
 	];
 
 	function Sepia(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.sepia));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.sepia));
 		this.id = id;
 	}
 	Sepia.prototype = Object.create(FullscreenPass.prototype);
@@ -287,7 +287,7 @@ define([
 	];
 
 	function Grain(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.film));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.film));
 		this.id = id;
 	}
 	Grain.prototype = Object.create(FullscreenPass.prototype);
@@ -341,7 +341,7 @@ define([
 	];
 
 	function Noise(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.noise));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.noise));
 		this.id = id;
 	}
 	Noise.prototype = Object.create(FullscreenPass.prototype);
@@ -371,7 +371,7 @@ define([
 	];
 
 	function RgbShift(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.rgbshift));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.rgbshift));
 		this.id = id;
 	}
 	RgbShift.prototype = Object.create(FullscreenPass.prototype);
@@ -415,7 +415,7 @@ define([
 	];
 
 	function Bleach(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.bleachbypass));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.bleachbypass));
 		this.id = id;
 	}
 	Bleach.prototype = Object.create(FullscreenPass.prototype);
@@ -446,7 +446,7 @@ define([
 	];
 
 	function HSB(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.hsb));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.hsb));
 		this.id = id;
 	}
 	HSB.prototype = Object.create(FullscreenPass.prototype);
@@ -503,7 +503,7 @@ define([
 	];
 
 	function Colorify(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.colorify));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.colorify));
 		this.id = id;
 	}
 	Colorify.prototype = Object.create(FullscreenPass.prototype);
@@ -544,7 +544,7 @@ define([
 	];
 
 	function Hatch(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.hatch));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.hatch));
 		this.id = id;
 	}
 	Hatch.prototype = Object.create(FullscreenPass.prototype);
@@ -587,7 +587,7 @@ define([
 	];
 
 	function Dot(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.dotscreen));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.dotscreen));
 		this.id = id;
 	}
 	Dot.prototype = Object.create(FullscreenPass.prototype);
@@ -656,7 +656,7 @@ define([
 	];
 
 	function Contrast(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.brightnesscontrast));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.brightnesscontrast));
 		this.id = id;
 	}
 	Contrast.prototype = Object.create(FullscreenPass.prototype);
@@ -756,7 +756,7 @@ define([
 	];
 
 	function Antialias(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.antialias));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.antialias));
 		this.id = id;
 	}
 	Antialias.prototype = Object.create(FullscreenPass.prototype);
@@ -788,7 +788,7 @@ define([
 	];
 
 	function Radial(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.radial));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.radial));
 		this.id = id;
 	}
 	Radial.prototype = Object.create(FullscreenPass.prototype);
@@ -833,7 +833,7 @@ define([
 	];
 
 	function Overlay(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.overlay));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.overlay));
 		this.id = id;
 	}
 	Overlay.prototype = Object.create(FullscreenPass.prototype);
@@ -923,7 +923,7 @@ define([
 	];
 
 	function Levels(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.levels));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.levels));
 		this.id = id;
 	}
 	Levels.prototype = Object.create(FullscreenPass.prototype);

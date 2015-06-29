@@ -1,18 +1,18 @@
 define([
 	'goo/renderer/Texture',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils',
 	'goo/util/rsvp'
 ], function (
 	Texture,
-	Util,
+	RendererUtils,
 	TextureHandler,
 	Ajax,
-	StringUtil,
-	PromiseUtil,
+	StringUtils,
+	PromiseUtils,
 	RSVP
 ) {
 	'use strict';
@@ -62,7 +62,7 @@ define([
 	 * });
 	 */
 	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings) {
-		var id = StringUtil.createUniqueId('texture');
+		var id = StringUtils.createUniqueId('texture');
 		settings = settings || {};
 		settings.imageRef = imageUrl;
 
@@ -88,7 +88,7 @@ define([
 	 * });
 	 */
 	TextureCreator.prototype.loadTextureVideo = function (videoURL, options) {
-		var id = StringUtil.createUniqueId('texture');
+		var id = StringUtils.createUniqueId('texture');
 		options = options || {};
 		options.imageRef = videoURL;
 		options.loop = options.loop !== undefined ? options.loop : true;
@@ -115,7 +115,7 @@ define([
 	 */
 	TextureCreator.prototype.loadTextureWebCam = function () {
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var video = document.createElement('video');
 			video.autoplay = true;
 			video.loop = true;
@@ -131,7 +131,7 @@ define([
 					video.height = video.videoHeight;
 
 					// set minification filter based on pow2
-					if (!(Util.isPowerOfTwo(video.width) && Util.isPowerOfTwo(video.height))) {
+					if (!(RendererUtils.isPowerOfTwo(video.width) && RendererUtils.isPowerOfTwo(video.height))) {
 						texture.generateMipmaps = false;
 						texture.minFilter = 'BilinearNoMipMaps';
 					}
@@ -175,7 +175,7 @@ define([
 		texture.variant = 'CUBE';
 
 		var promises = imageDataArray.map(function (queryImage) {
-			return PromiseUtil.createPromise(function (resolve, reject) {
+			return PromiseUtils.createPromise(function (resolve, reject) {
 				if (typeof queryImage === 'string') {
 					this.ajax._loadImage(queryImage).then(resolve, reject);
 				} else {
@@ -185,7 +185,7 @@ define([
 		}.bind(this));
 
 		return RSVP.all(promises).then(function (images) {
-			return PromiseUtil.createPromise(function (resolve, reject) {
+			return PromiseUtils.createPromise(function (resolve, reject) {
 				var width = images[0].width;
 				var height = images[0].height;
 				for (var i = 0; i < 6; i++) {

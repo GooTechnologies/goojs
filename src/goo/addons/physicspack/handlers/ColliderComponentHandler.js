@@ -4,7 +4,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',

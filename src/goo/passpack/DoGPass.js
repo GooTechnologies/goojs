@@ -1,16 +1,16 @@
 define([
 	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
 ], function (
 	Material,
-	FullscreenUtil,
+	FullscreenUtils,
 	RenderTarget,
-	ObjectUtil,
+	ObjectUtils,
 	ShaderLib,
 	ShaderLibExtra,
 	Pass
@@ -44,14 +44,14 @@ define([
 		this.updateSize({width: width, height: height});
 
 		this.renderable = {
-			meshData : FullscreenUtil.quad,
+			meshData : FullscreenUtils.quad,
 			materials : []
 		};
 
-		this.convolutionShader1 = ObjectUtil.deepClone(ShaderLib.convolution);
-		this.convolutionShader2 = ObjectUtil.deepClone(ShaderLib.convolution);
+		this.convolutionShader1 = ObjectUtils.deepClone(ShaderLib.convolution);
+		this.convolutionShader2 = ObjectUtils.deepClone(ShaderLib.convolution);
 
-		this.differenceShader = ObjectUtil.deepClone(ShaderLibExtra.differenceOfGaussians);
+		this.differenceShader = ObjectUtils.deepClone(ShaderLibExtra.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = new Material(this.differenceShader);
 
@@ -151,12 +151,12 @@ define([
 		this.convolutionMaterial1.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionShader1.uniforms.uImageIncrement = this.blurX;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial1.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionShader1.uniforms.uImageIncrement = this.blurY;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.gaussian1, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.gaussian1, true);
 
 		// Gaussian sigma2
 		this.renderable.materials[0] = this.convolutionMaterial2;
@@ -164,12 +164,12 @@ define([
 		this.convolutionMaterial2.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionShader2.uniforms.uImageIncrement = this.blurX;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial2.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionShader2.uniforms.uImageIncrement = this.blurY;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.gaussian2, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.gaussian2, true);
 
 		// OUT
 		this.renderable.materials[0] = this.differenceMaterial;
@@ -179,9 +179,9 @@ define([
 		this.differenceMaterial.setTexture('ORIGINAL', readBuffer);
 
 		if (this.target !== null) {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], this.target, this.clear);
 		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], writeBuffer, this.clear);
 		}
 	};
 

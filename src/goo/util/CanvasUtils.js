@@ -1,9 +1,8 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
-	PromiseUtil
+	PromiseUtils
 ) {
-
 	'use strict';
 
 	// TODO: make promise based instead of sending callbacks
@@ -170,7 +169,7 @@ define([
 		var img = new Image();
 		img.src = DOMURL.createObjectURL(svg);
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			img.onload = function () {
 				resolve(img);
 			};

@@ -3,7 +3,6 @@ define([
 	'goo/renderer/Capabilities',
 	'goo/renderer/RendererRecord',
 	'goo/renderer/RendererUtils',
-	'goo/renderer/Util',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/pass/RenderTarget',
 	'goo/math/Vector4',
@@ -24,7 +23,6 @@ define([
 	Capabilities,
 	RendererRecord,
 	RendererUtils,
-	Util,
 	TextureCreator,
 	RenderTarget,
 	Vector4,
@@ -582,14 +580,14 @@ define([
 			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
-						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+						RendererUtils.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 					} else {
 						// REVIEW: Hard coded background color that should be determined by Create?
-						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+						RendererUtils.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
-				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -946,7 +944,7 @@ define([
 		}
 
 		// TODO: shouldnt we check for generateMipmaps setting on rendertarget?
-		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
+		if (renderTarget && renderTarget.generateMipmaps && RendererUtils.isPowerOfTwo(renderTarget.width) && RendererUtils.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
 	};
@@ -1573,7 +1571,7 @@ define([
 				}
 
 				var imageObject = texture.image !== undefined ? texture.image : texture;
-				var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
+				var isTexturePowerOfTwo = RendererUtils.isPowerOfTwo(imageObject.width) && RendererUtils.isPowerOfTwo(imageObject.height);
 				this.updateTextureParameters(texture, isTexturePowerOfTwo);
 			}
 		}
@@ -1777,13 +1775,13 @@ define([
 			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
-						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+						RendererUtils.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 					} else {
-						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+						RendererUtils.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
-				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -1824,7 +1822,7 @@ define([
 	 * @param {number} index
 	 */
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
-		Util.scaleImage(texture, image, width, height, maxSize, index);
+		RendererUtils.scaleImage(texture, image, width, height, maxSize, index);
 	};
 
 	/**
@@ -2083,7 +2081,7 @@ define([
 			renderTarget.glTexture = this.context.createTexture();
 
 			// Setup texture, create render and frame buffers
-			var isTargetPowerOfTwo = Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height);
+			var isTargetPowerOfTwo = RendererUtils.isPowerOfTwo(renderTarget.width) && RendererUtils.isPowerOfTwo(renderTarget.height);
 			var glFormat = RendererUtils.getGLInternalFormat(renderTarget.format);
 			var glType = RendererUtils.getGLDataType(renderTarget.type);
 

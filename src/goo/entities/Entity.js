@@ -1,9 +1,9 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/StringUtil'
+	'goo/util/StringUtils'
 ], function (
 	Component,
-	StringUtil
+	StringUtils
 ) {
 	'use strict';
 
@@ -20,7 +20,7 @@ define([
 	function Entity(world, name, id) {
 		this._world = world;
 		this._components = [];
-		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
+		this.id = id !== undefined ? id : StringUtils.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
 		this._tags = new Set();

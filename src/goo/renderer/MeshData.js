@@ -1,19 +1,19 @@
 define([
 	'goo/renderer/BufferData',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	BufferData,
-	Util,
+	RendererUtils,
 	BufferUtils,
 	Vector2,
 	Vector3,
 	Vector4,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -123,7 +123,7 @@ define([
 			var keys = Object.keys(this.attributeMap);
 			for (var i = 0; i < keys.length; i++) {
 				var attribute = this.attributeMap[keys[i]];
-				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
+				vertexByteSize += RendererUtils.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
 
@@ -326,7 +326,7 @@ define([
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
-			offset += length * Util.getByteSize(attribute.type);
+			offset += length * RendererUtils.getByteSize(attribute.type);
 
 			var ArrayType = ArrayTypes[attribute.type];
 			if (ArrayType) {
@@ -337,7 +337,7 @@ define([
 
 			this.dataViews[key] = view;
 
-			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' +
 				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
 		}
 	};
@@ -349,7 +349,7 @@ define([
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
-			stride += attribute.count * Util.getByteSize(attribute.type);
+			stride += attribute.count * RendererUtils.getByteSize(attribute.type);
 		}
 
 		var newVertexData = new BufferData(new ArrayBuffer(stride * this.vertexCount), this.vertexData.target);
@@ -363,7 +363,7 @@ define([
 			attribute.stride = stride;
 			var offset = attribute.offset;
 			var count = attribute.count;
-			var size = Util.getByteSize(attribute.type);
+			var size = RendererUtils.getByteSize(attribute.type);
 
 			var method = this.getDataMethod(attribute.type);
 			var fun = targetView[method];
@@ -577,7 +577,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -676,7 +676,7 @@ define([
 			return this;
 		}
 
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -789,7 +789,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.clone = function () {
-		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMapClone = ObjectUtils.deepClone(this.attributeMap);
 
 		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
 
@@ -899,7 +899,7 @@ define([
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = ObjectUtil.deepClone(defaults[type]);
+				map[type] = ObjectUtils.deepClone(defaults[type]);
 			} else {
 				throw new Error('No default attribute named: ' + type);
 			}

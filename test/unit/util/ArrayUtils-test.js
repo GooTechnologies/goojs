@@ -1,18 +1,18 @@
 define([
-	'goo/util/ArrayUtil'
+	'goo/util/ArrayUtils'
 ], function (
-	ArrayUtil
+	ArrayUtils
 ) {
 	'use strict';
 
-	describe('ArrayUtil', function () {
+	describe('ArrayUtils', function () {
 		describe('fromKeys', function () {
 			it('returns an empty array for an empty collection', function () {
 				var set_ = new Set();
 				var map = new Map();
 
-				var setKeys = ArrayUtil.fromKeys(set_);
-				var mapKeys = ArrayUtil.fromKeys(map);
+				var setKeys = ArrayUtils.fromKeys(set_);
+				var mapKeys = ArrayUtils.fromKeys(map);
 
 				expect(setKeys).toEqual([]);
 				expect(mapKeys).toEqual([]);
@@ -29,8 +29,8 @@ define([
 				map.set('g', 'gg');
 				map.set('h', 'hh');
 
-				var setKeys = ArrayUtil.fromKeys(set_);
-				var mapKeys = ArrayUtil.fromKeys(map);
+				var setKeys = ArrayUtils.fromKeys(set_);
+				var mapKeys = ArrayUtils.fromKeys(map);
 
 				expect(setKeys).toEqual(['a', 's', 'd']);
 				expect(mapKeys).toEqual(['f', 'g', 'h']);
@@ -42,8 +42,8 @@ define([
 				var set_ = new Set();
 				var map = new Map();
 
-				var setKeys = ArrayUtil.fromValues(set_);
-				var mapKeys = ArrayUtil.fromValues(map);
+				var setKeys = ArrayUtils.fromValues(set_);
+				var mapKeys = ArrayUtils.fromValues(map);
 
 				expect(setKeys).toEqual([]);
 				expect(mapKeys).toEqual([]);
@@ -60,8 +60,8 @@ define([
 				map.set('g', 'gg');
 				map.set('h', 'hh');
 
-				var setKeys = ArrayUtil.fromValues(set_);
-				var mapKeys = ArrayUtil.fromValues(map);
+				var setKeys = ArrayUtils.fromValues(set_);
+				var mapKeys = ArrayUtils.fromValues(map);
 
 				expect(setKeys).toEqual(['a', 's', 'd']);
 				expect(mapKeys).toEqual(['ff', 'gg', 'hh']);

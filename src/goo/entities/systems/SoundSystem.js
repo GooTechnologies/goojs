@@ -4,7 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/math/Matrix4x4'
 ], function (
 	System,

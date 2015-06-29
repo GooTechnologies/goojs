@@ -1,7 +1,7 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ],  function (
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -73,11 +73,11 @@ define([
 	 */
 	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
 		if(!entity) {
-			return PromiseUtil.reject('Entity is missing');
+			return PromiseUtils.reject('Entity is missing');
 		}
 		if (!config) {
 			this._remove(entity);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		var component = entity.getComponent(this._type);
 		if(!component) {
@@ -86,7 +86,7 @@ define([
 		}
 		this._prepare(config);
 
-		return PromiseUtil.resolve(component);
+		return PromiseUtils.resolve(component);
 	};
 
 

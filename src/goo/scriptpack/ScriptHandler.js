@@ -6,9 +6,9 @@ define([
 	'goo/scriptpack/FlyControlScript',
 	'goo/scriptpack/WASDControlScript',
 	'goo/scriptpack/BasicControlScript',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils',
+	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus',
 
 	'goo/scripts/ScriptUtils',
@@ -21,9 +21,9 @@ define([
 	FlyControlScript,
 	WASDControlScript,
 	BasicControlScript,
-	PromiseUtil,
+	PromiseUtils,
 	_,
-	ArrayUtil,
+	ArrayUtils,
 	SystemBus,
 
 	ScriptUtils,
@@ -236,11 +236,11 @@ define([
 					// If the dependency being added is already loaded in a script
 					// element we remove it from the array of script elements to remove
 					// because we still need it.
-					var neededScriptElement = ArrayUtil.find(scriptsElementsToRemove, function (scriptElement) {
+					var neededScriptElement = ArrayUtils.find(scriptsElementsToRemove, function (scriptElement) {
 						return scriptElement.src === url;
 					});
 					if (neededScriptElement) {
-						ArrayUtil.remove(scriptsElementsToRemove, neededScriptElement);
+						ArrayUtils.remove(scriptsElementsToRemove, neededScriptElement);
 					}
 
 					addDependencyPromises.push(that._addDependency(script, url, config.id));
@@ -311,7 +311,7 @@ define([
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			addReference(scriptElem, scriptId);
-			return this._dependencyPromises[url] || PromiseUtil.resolve();
+			return this._dependencyPromises[url] || PromiseUtils.resolve();
 		}
 
 		scriptElem = document.createElement('script');
@@ -384,7 +384,7 @@ define([
 			return;
 		}
 
-		ArrayUtil.remove(scriptElement.scriptRefs, scriptId);
+		ArrayUtils.remove(scriptElement.scriptRefs, scriptId);
 	}
 
 	/*
@@ -530,7 +530,7 @@ define([
 	 * @private
 	 */
 	function loadExternalScript(script, scriptElem, url) {
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var timeoutHandler;
 			var handled = false;
 

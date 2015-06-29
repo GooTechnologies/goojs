@@ -4,7 +4,6 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util',
 	'goo/debugpack/DebugDrawHelper'
 ], function (
 	System,
@@ -12,7 +11,6 @@ define([
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	Util,
 	DebugDrawHelper
 ) {
 	'use strict';
