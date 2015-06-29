@@ -17,6 +17,7 @@
 		this.singleInPort = new InPort('value', config.dataType);
 		this.singleInPort._node = this;
 		this._context = null;
+		Object.seal(this);
 	}
 
 	ExternalOutputNode.prototype = Object.create(Node.prototype);
@@ -38,12 +39,12 @@
 	};
 
 	ExternalOutputNode.fromJSON = function (config) {
-		var node = new ExternalOutputNode(config.id);
-		node.type = 'external-output';
-		node.external = _.clone(config.external);
+		var node = new ExternalOutputNode(config.id, config.external);
+
 		config.outputsTo.forEach(function (outputTo) {
 			node.addConnection(Connection.fromJSON(outputTo));
 		});
+
 		return node;
 	};
 

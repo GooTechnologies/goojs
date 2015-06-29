@@ -217,7 +217,7 @@
 	 */
 	function getExternals(structure) {
 		var externals = structure.filter(function (node) {
-			return node.type === 'external';
+			return node.external === 'external-input';
 		});
 
 		var inputTypeFilter = function (inputType) {

@@ -18,6 +18,7 @@
 		this.singleOutPort = new OutPort('value', config.dataType);
 		this.singleOutPort._node = this;
 		this._context = null;
+		Object.seal(this);
 	}
 
 	ExternalInputNode.prototype = Object.create(Node.prototype);

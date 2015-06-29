@@ -14,7 +14,7 @@
 	};
 
 	Node.prototype.disconnect = function (that) {
-		that.disconnectedByNode(this); // not implemented
+		that.disconnectedByNode(this);
 	};
 
 	Node.prototype.connectedByNode = function (node) {
