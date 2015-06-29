@@ -79,6 +79,7 @@ define([
 		}
 	};
 
+	// these are more related to math than anything else
 	/**
 	 * Checks if a value is power of two
 	 *

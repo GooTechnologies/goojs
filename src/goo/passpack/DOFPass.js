@@ -7,7 +7,7 @@ define([
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BlurPass',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/util/Skybox',
 	'goo/renderer/pass/Pass'
 ], function (
@@ -19,7 +19,7 @@ define([
 	RenderPass,
 	FullscreenPass,
 	BlurPass,
-	Util,
+	RendererUtils,
 	Skybox,
 	Pass
 ) {
@@ -45,7 +45,7 @@ define([
 
 		var width = window.innerWidth || 1;
 		var height = window.innerHeight || 1;
-		var size = Util.nearestPowerOfTwo(Math.max(width, height));
+		var size = RendererUtils.nearestPowerOfTwo(Math.max(width, height));
 		this.depthTarget = new RenderTarget(width, height);
 		this.regularTarget = new RenderTarget(size / 2, size / 2);
 		this.regularTarget2 = new RenderTarget(width, height);

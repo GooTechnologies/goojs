@@ -1,20 +1,16 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/Material',
-	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	Material,
-	Util,
 	ShaderLib,
 	RenderQueue,
 	RSVP,
-	PromiseUtils,
 	_
 ) {
 	'use strict';
