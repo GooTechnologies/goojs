@@ -4,7 +4,7 @@ require([
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtils',
 	'goo/passpack/PassLib',
 	'goo/shapes/Cone',
 	'goo/math/Vector3',
@@ -18,7 +18,7 @@ require([
 	Composer,
 	RenderPass,
 	FullscreenPass,
-	Util,
+	ObjectUtils,
 	PassLib,
 	Cone,
 	Vector3,
@@ -54,7 +54,7 @@ require([
 	V.showNormals(coneEntity);
 
 	var renderPass = new RenderPass(renderSystem.renderList);
-	var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+	var outPass = new FullscreenPass(ObjectUtils.clone(ShaderLib.copy));
 	outPass.renderToScreen = true;
 
 //	var blur = new PassLib.Blur();
