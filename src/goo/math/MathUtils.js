@@ -247,9 +247,25 @@ define(function () {
 	 * @param {number} value Number to get the nearest power of two from
 	 * @returns {number} Nearest power of two
 	 */
-	MathUtils.nearestHigherPowerOfTwo = function (value) {
-		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
+	MathUtils.nearestPowerOfTwo = function (value) {
+		value--;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		value |= value >> 16;
+		value++;
+		return value;
 	};
+
+	/**
+	 * Gets the nearest higher power of two for a value
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0;
+	 * Consider using MathUtils.nearestPowerOfTwo instead
+	 * @param {number} value Number to get the nearest power of two from
+	 * @returns {number} Nearest power of two
+	 */
+	MathUtils.nearestHigherPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Returns true if the 2 values supplied are approximately the same
@@ -341,25 +357,6 @@ define(function () {
 	MathUtils.fastRandom = function() {
 		MathUtils.randomSeed = (MathUtils.randomSeed * 9301 + 49297) % 233280;
 		return MathUtils.randomSeed / 233280;
-	};
-
-	/**
-	 * Checks if a value is power of two
-	 *
-	 * @param {Number} value Number to check for power of two
-	 * @returns true if value is power of two
-	 */
-	MathUtils.isPowerOfTwo = function (value) {
-		return (value & (value - 1)) === 0;
-	};
-
-	/**
-	 * Converts input number to closest power of two
-	 * @param {number} number Number to convert to power of two
-	 * @returns {number} Nearest power of two of input
-	 */
-	MathUtils.nearestPowerOfTwo = function (number) {
-		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
 	};
 
 	return MathUtils;
