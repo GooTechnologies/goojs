@@ -80,8 +80,9 @@
 	 * @param node
 	 * @returns {string}
 	 */
-	function generateExternalOutputCode(node) {
-		return node.external.name + ' = value;';
+	function generateExternalOutputCode(node, typeDefinition) {
+		var input = typeDefinition.inputs[0];
+		return '\t' + node.external.name + ' = ' + getInputVar(node.id, input.name) + ';';
 	}
 
 	/**

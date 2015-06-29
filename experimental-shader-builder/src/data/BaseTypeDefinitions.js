@@ -5,7 +5,6 @@
 		vertex: {
 			position: {
 				id: 'position',
-				// should be one vec4
 				inputs: [{
 					name: 'x',
 					type: 'float'
@@ -15,9 +14,12 @@
 				}, {
 					name: 'z',
 					type: 'float'
+				}, {
+					name: 'w',
+					type: 'float'
 				}],
 				outputs: [],
-				body: 'gl_Position = vec4(x, y, z, 1.0);'
+				body: 'gl_Position = vec4(x, y, z, w);'
 			},
 			pointSize: {
 				id: 'pointSize',

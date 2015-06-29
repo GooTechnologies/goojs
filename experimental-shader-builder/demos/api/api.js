@@ -224,6 +224,7 @@
 		vec4Comp.x.connect(context.position.x);
 		vec4Comp.y.connect(context.position.y);
 		vec4Comp.z.connect(context.position.z);
+		vec4Comp.w.connect(context.position.w);
 
 
 		var vertexUV0 = context.createAttribute('vertexUV0', 'vec2');
