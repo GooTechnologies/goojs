@@ -109,8 +109,8 @@ define([
 
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function (texture, color, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 
@@ -151,8 +151,8 @@ define([
 	}
 
 	RendererUtils.scaleImage = function (texture, image, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 

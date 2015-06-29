@@ -10,7 +10,8 @@ define([
 	'goo/util/ObjectUtils',
 	'goo/util/CanvasUtils',
 	'goo/util/StringUtils',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/math/MathUtils'
 ],
 function (
 	ConfigHandler,
@@ -24,7 +25,8 @@ function (
 	_,
 	CanvasUtils,
 	StringUtils,
-	SystemBus
+	SystemBus,
+	MathUtils
 ) {
 	'use strict';
 
@@ -161,7 +163,7 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (!(RendererUtils.isPowerOfTwo(video.width) && RendererUtils.isPowerOfTwo(video.height))) {
+			if (!(MathUtils.isPowerOfTwo(video.width) && MathUtils.isPowerOfTwo(video.height))) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}

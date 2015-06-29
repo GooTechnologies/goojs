@@ -45,7 +45,7 @@ define([
 
 		var width = window.innerWidth || 1;
 		var height = window.innerHeight || 1;
-		var size = RendererUtils.nearestPowerOfTwo(Math.max(width, height));
+		var size = MathUtils.nearestPowerOfTwo(Math.max(width, height));
 		this.depthTarget = new RenderTarget(width, height);
 		this.regularTarget = new RenderTarget(size / 2, size / 2);
 		this.regularTarget2 = new RenderTarget(width, height);
