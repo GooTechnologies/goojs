@@ -6,12 +6,14 @@
 	var ExternalOutputNode = shaderBits.ExternalOutputNode;
 
 	function VertexContext(_typeDefinitions) {
-		// shallow clone the original type definitions
-		var typeDefinitions = _.clone(_typeDefinitions);
+		var typeDefinitions = {};
 
-		// and extend with predefined shader bits
-		_.extend(typeDefinitions, BaseTypeDefinitions.all);
-		_.extend(typeDefinitions, BaseTypeDefinitions.vertex);
+		_.extend(
+			typeDefinitions,
+			BaseTypeDefinitions.all,
+			BaseTypeDefinitions.vertex,
+			_typeDefinitions
+		);
 
 		Context.call(this, typeDefinitions);
 

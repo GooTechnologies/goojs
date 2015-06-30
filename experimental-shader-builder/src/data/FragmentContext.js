@@ -5,12 +5,14 @@
 	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
 
 	function FragmentContext(_typeDefinitions) {
-		// shallow clone the original type definitions
-		var typeDefinitions = _.clone(_typeDefinitions);
+		var typeDefinitions = {};
 
-		// and extend with predefined shader bits
-		_.extend(typeDefinitions, BaseTypeDefinitions.all);
-		_.extend(typeDefinitions, BaseTypeDefinitions.fragment);
+		_.extend(
+			typeDefinitions,
+			BaseTypeDefinitions.all,
+			BaseTypeDefinitions.fragment,
+			_typeDefinitions
+		);
 
 		Context.call(this, typeDefinitions);
 

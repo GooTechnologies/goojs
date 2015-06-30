@@ -23,8 +23,6 @@
 	ExternalOutputNode.prototype = Object.create(Node.prototype);
 	ExternalOutputNode.prototype.constructor = ExternalOutputNode;
 
-	// no connectedBy methods since this node cannot be connected by anything; it has no inputs!
-
 	ExternalOutputNode.prototype.toJSON = function () {
 		return {
 			id: this.id,
