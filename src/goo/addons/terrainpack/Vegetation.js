@@ -56,7 +56,7 @@ define([
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = this.grid[x][z];
-				if (entity.meshDataComponent) {
+				if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 					renderer._deallocateMeshData(entity.meshDataComponent.meshData);
 				}
 				entity.removeFromWorld();

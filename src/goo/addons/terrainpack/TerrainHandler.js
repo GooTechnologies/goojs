@@ -127,6 +127,15 @@ define([
 			this.vegetation.toggle();
 		};
 
+		TerrainHandler.prototype.traverseClipmaps = function (callback) {
+			for (var i = 0; i < this.terrain.count; i++) {
+				var material = this.terrain.clipmaps[i].origMaterial;
+				if (callback) {
+					callback(material);
+				}
+			}
+		};
+
 		TerrainHandler.prototype.initLevel = function(terrainData, settings, forrestLODEntityMap) {
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
