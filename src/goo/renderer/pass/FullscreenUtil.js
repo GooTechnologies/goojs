@@ -2,7 +2,7 @@ define([
 	'goo/renderer/pass/FullscreenUtils'
 ], function (FullscreenUtils) {
 	'use strict';
-	
+
 	/**
 	 * Fullscreen-related utilities
 	 * @target-class FullscreenUtil FullscreenUtil constructor
