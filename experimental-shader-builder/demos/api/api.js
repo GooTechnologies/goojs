@@ -218,22 +218,13 @@
 		mul1.connect(mul2.x);
 		vec43.connect(mul2.y);
 
-		var vec4Comp = context.createVec4Comp();
-		mul2.connect(vec4Comp);
-
-		vec4Comp.x.connect(context.position.x);
-		vec4Comp.y.connect(context.position.y);
-		vec4Comp.z.connect(context.position.z);
-		vec4Comp.w.connect(context.position.w);
-
+		mul2.connect(context.position);
 
 		var vertexUV0 = context.createAttribute('vertexUV0', 'vec2');
 
 		var texCoord0 = context.createVarying('texCoord0', 'vec2');
 
 		vertexUV0.connect(texCoord0);
-
-		//gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);
 	}
 
 	function getS6(typeDefintions) {
@@ -242,9 +233,7 @@
 
 		var texture = getDiffuseTexture(fragmentContext);
 
-		texture.r.connect(fragmentContext.fragColor.r);
-		texture.g.connect(fragmentContext.fragColor.g);
-		texture.b.connect(fragmentContext.fragColor.b);
+		texture.connect(fragmentContext.fragColor);
 
 		var vertexContext = contextPair.vertexContext;
 		createBasicVertex(vertexContext);

@@ -5,13 +5,14 @@
 	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
 
 	function FragmentContext(_typeDefinitions) {
-		// shallow clone the original type defintions
-		this.typeDefinitions = _.clone(_typeDefinitions);
+		// shallow clone the original type definitions
+		var typeDefinitions = _.clone(_typeDefinitions);
 
-		// and add our own (glsl specific gl_Position, gl_FragColor et al)
-		this.typeDefinitions.fragColor = BaseTypeDefinitions.fragment.fragColor;
+		// and extend with predefined shader bits
+		_.extend(typeDefinitions, BaseTypeDefinitions.all);
+		_.extend(typeDefinitions, BaseTypeDefinitions.fragment);
 
-		Context.call(this, this.typeDefinitions);
+		Context.call(this, typeDefinitions);
 
 		// create instances of special nodes
 		this.fragColor = this.createFragColor();

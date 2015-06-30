@@ -6,13 +6,12 @@
 	var ExternalOutputNode = shaderBits.ExternalOutputNode;
 
 	function VertexContext(_typeDefinitions) {
-		// shallow clone the original type defintions
+		// shallow clone the original type definitions
 		var typeDefinitions = _.clone(_typeDefinitions);
 
-		// and add our own (glsl specific gl_Position, gl_FragColor et al)
-		typeDefinitions.position = BaseTypeDefinitions.vertex.position;
-		typeDefinitions.pointSize = BaseTypeDefinitions.vertex.pointSize;
-		typeDefinitions['external-output'] = BaseTypeDefinitions.vertex['external-output'];
+		// and extend with predefined shader bits
+		_.extend(typeDefinitions, BaseTypeDefinitions.all);
+		_.extend(typeDefinitions, BaseTypeDefinitions.vertex);
 
 		Context.call(this, typeDefinitions);
 
