@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function Connection(output, to, input) {
@@ -26,6 +26,5 @@
 		return new Connection(json.output, json.to, json.input);
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.Connection = Connection;
-})();
+	return Connection;
+});

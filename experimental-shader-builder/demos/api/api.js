@@ -1,10 +1,19 @@
-(function () {
-	'use strict';
+require.config({
+	paths: {
+		'shader-bits': '../../src'
+	}
+});
 
-	var ContextPair = shaderBits.ContextPair;
-	var VertexContext = shaderBits.VertexContext;
-	var FragmentContext = shaderBits.FragmentContext;
-	var ContextPair = shaderBits.ContextPair;
+require([
+	'shader-bits/shader-builder',
+	'shader-bits/data-normalizer',
+	'shader-bits/data/ContextPair'
+], function (
+	ShaderBuilder,
+	DataNormalizer,
+	ContextPair
+) {
+	'use strict';
 
 	function getS1(typeDefinitions) {
 		var context = new Context(typeDefinitions);
@@ -265,7 +274,7 @@
 	}
 
 	getSample('s4', function (_typeDefinitions) {
-		var typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
+		var typeDefinitions = DataNormalizer.normalizeNodeTypes(_typeDefinitions);
 		var pair = getS6(typeDefinitions);
 
 		_replaceBox(pair);
@@ -275,8 +284,8 @@
 	var __replaceBox = shaderBitsCommon.makeDemo();
 
 	function _replaceBox(pair) {
-		var vertexShader = shaderBits.buildShader(pair.vertex.typeDefinitions, pair.vertex.structure);
-		var fragmentShader = shaderBits.buildShader(pair.fragment.typeDefinitions, pair.fragment.structure);
+		var vertexShader = ShaderBuilder.buildShader(pair.vertex.typeDefinitions, pair.vertex.structure);
+		var fragmentShader = ShaderBuilder.buildShader(pair.fragment.typeDefinitions, pair.fragment.structure);
 
 		window._vertexShader = vertexShader;
 		window._fragmentShader = fragmentShader;

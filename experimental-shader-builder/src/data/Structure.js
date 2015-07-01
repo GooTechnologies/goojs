@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function Structure() {
@@ -269,6 +269,5 @@
 		return structure;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.Structure = Structure;
-})();
+	return Structure;
+});

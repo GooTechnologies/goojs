@@ -155,11 +155,10 @@
 		}
 	}
 
-	window.shaderProcessor = window.shaderProcessor || {};
-
-	window.shaderProcessor.stringifyNodeDefinition = stringifyNodeDefinition;
-	window.shaderProcessor.stringifyNodeInstance = stringifyNodeInstance;
-
-	window.shaderProcessor.parseNodeDefinition = parseNodeDefinition;
-	window.shaderProcessor.parseNodeInstance = parseNodeInstance;
-})();
+	return {
+		stringifyNodeDefinition: stringifyNodeDefinition,
+		stringifyNodeInstance: stringifyNodeInstance,
+		parseNodeDefinition: parseNodeDefinition,
+		parseNodeInstance: parseNodeInstance
+	};
+});

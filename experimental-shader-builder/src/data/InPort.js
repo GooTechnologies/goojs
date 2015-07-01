@@ -1,7 +1,9 @@
-(function () {
+define([
+	'shader-bits/data/Connection'
+], function (
+	Connection
+) {
 	'use strict';
-
-	var Connection = shaderBits.Connection;
 
 	function InPort(name, type) {
 		this.name = name;
@@ -31,6 +33,5 @@
 		);
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.InPort = InPort;
-})();
+	return InPort;
+});

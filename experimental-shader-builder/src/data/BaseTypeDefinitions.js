@@ -1,7 +1,7 @@
-(function () {
+define(function () {
 	'use strict';
 
-	var BaseTypeDefinitions = {
+	return {
 		vertex: {
 			position: {
 				id: 'position',
@@ -345,7 +345,4 @@
 			}
 		}
 	};
-
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.BaseTypeDefinitions = BaseTypeDefinitions;
-})();
+});

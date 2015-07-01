@@ -1,8 +1,11 @@
-(function () {
+define([
+	'shader-bits/data/Node',
+	'shader-bits/data/Connection'
+], function (
+	Node,
+	Connection
+) {
 	'use strict';
-
-	var Node = shaderBits.Node;
-	var Connection = shaderBits.Connection;
 
 	function extractResolvedTypes(map) {
 		var obj = {};
@@ -49,6 +52,5 @@
 		return node;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.FunctionNode = FunctionNode;
-})();
+	return FunctionNode;
+});

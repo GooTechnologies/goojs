@@ -1,9 +1,13 @@
-(function () {
+define([
+	'shader-bits/data/Node',
+	'shader-bits/data/Connection',
+	'shader-bits/data/InPort'
+], function (
+	Node,
+	Connection,
+	InPort
+) {
 	'use strict';
-
-	var Node = shaderBits.Node;
-	var Connection = shaderBits.Connection;
-	var InPort = shaderBits.InPort;
 
 	function ExternalOutputNode(id, config) {
 		Node.call(this, id);
@@ -46,6 +50,5 @@
 		return node;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.ExternalOutputNode = ExternalOutputNode;
-})();
+	return ExternalOutputNode;
+});

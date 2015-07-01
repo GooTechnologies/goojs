@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function normalizeNodeTypes(nodeTypes) {
@@ -43,7 +43,8 @@
 		return structure;
 	}
 
-	window.dataNormalizer = {};
-	window.dataNormalizer.normalizeNodeTypes = normalizeNodeTypes;
-	window.dataNormalizer.normalizeStructure = normalizeStructure;
-})();
+	return {
+		normalizeNodeTypes: normalizeNodeTypes,
+		normalizeStructure: normalizeStructure
+	};
+});

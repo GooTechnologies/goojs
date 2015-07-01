@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function OutPort(name, type) {
@@ -15,6 +15,5 @@
 		that.disconnectedByOutPort(this);
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.OutPort = OutPort;
-})();
+	return OutPort;
+});

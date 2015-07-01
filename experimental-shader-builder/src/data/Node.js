@@ -1,7 +1,9 @@
-(function () {
+define([
+	'shader-bits/data/Connection'
+], function (
+	Connection
+) {
 	'use strict';
-
-	var Connection = shaderBits.Connection;
 
 	function Node(id) {
 		this.id = id;
@@ -73,6 +75,5 @@
 		return this;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.Node = Node;
-})();
+	return Node;
+});

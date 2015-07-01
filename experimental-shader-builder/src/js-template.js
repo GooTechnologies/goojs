@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function compile(source) {
@@ -34,7 +34,7 @@
 
 		return function (key, body) {
 			if (!generators.has(key)) {
-				var codeGenerator = jsTemplate.compile(body);
+				var codeGenerator = compile(body);
 				generators.set(key, codeGenerator);
 				return codeGenerator;
 			}
@@ -42,7 +42,8 @@
 		};
 	})();
 
-	window.jsTemplate = window.jsTemplate || {};
-	window.jsTemplate.compile = compile;
-	window.jsTemplate.getCodeGenerator = getCodeGenerator;
-})();
+	return {
+		compile: compile,
+		getCodeGenerator: getCodeGenerator
+	};
+});

@@ -1,13 +1,21 @@
-(function () {
+define([
+	'shader-bits/data/Structure',
+	'shader-bits/data/ExternalInputNode',
+	'shader-bits/data/ExternalOutputNode',
+	'shader-bits/data/FunctionNode',
+	'shader-bits/data/InPort',
+	'shader-bits/data/OutPort',
+	'shader-bits/data/DataFormatter'
+], function (
+	Structure,
+	ExternalInputNode,
+	ExternalOutputNode,
+	FunctionNode,
+	InPort,
+	OutPort,
+	DataFormatter
+) {
 	'use strict';
-
-	var Structure = shaderBits.Structure;
-	var ExternalInputNode = shaderBits.ExternalInputNode;
-	var ExternalOutputNode = shaderBits.ExternalOutputNode;
-	var FunctionNode = shaderBits.FunctionNode;
-	var InPort = shaderBits.InPort;
-	var OutPort = shaderBits.OutPort;
-	var DataFormatter = shaderBits.DataFormatter;
 
 	function capitalize(str) {
 		return str.charAt(0).toUpperCase() + str.substring(1);
@@ -154,6 +162,5 @@
 		return node;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.Context = Context;
-})();
+	return Context;
+});

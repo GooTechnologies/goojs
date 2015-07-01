@@ -1,16 +1,19 @@
-(function () {
+define([
+	'shader-bits/data/VertexContext',
+	'shader-bits/data/FragmentContext'
+], function (
+	VertexContext,
+	FragmentContext
+) {
 	'use strict';
 
-	var VertexContext = shaderBits.VertexContext;
-	var FragmentContext = shaderBits.FragmentContext;
+	function ContextPair(typeDefinitions) {
+		this.typeDefinitions = typeDefinitions;
 
-	function ContextPair(typeDefintions) {
-		this.typeDefintions = typeDefintions;
-
-		this.vertexContext = new VertexContext(this.typeDefintions);
+		this.vertexContext = new VertexContext(this.typeDefinitions);
 		this.vertexContext.contextPair = this;
 
-		this.fragmentContext = new FragmentContext(this.typeDefintions);
+		this.fragmentContext = new FragmentContext(this.typeDefinitions);
 		this.fragmentContext.contextPair = this;
 	}
 
@@ -21,6 +24,5 @@
 		};
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.ContextPair = ContextPair;
-})();
+	return ContextPair;
+});

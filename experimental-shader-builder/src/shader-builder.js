@@ -1,4 +1,8 @@
-(function () {
+define([
+	'shader-bits/js-template'
+], function (
+	jsTemplate
+) {
 	'use strict';
 
 	/**
@@ -244,7 +248,8 @@
 		};
 	}
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.buildShader = buildShader;
-	window.shaderBits.getExternals = getExternals;
-})();
+	return {
+		buildShader: buildShader,
+		getExternals: getExternals
+	};
+});

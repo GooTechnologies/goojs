@@ -1,9 +1,13 @@
-(function () {
+define([
+	'shader-bits/data/Context',
+	'shader-bits/data/BaseTypeDefinitions',
+	'shader-bits/data/ExternalInputNode'
+], function (
+	Context,
+	BaseTypeDefinitions,
+	ExternalInputNode
+) {
 	'use strict';
-
-	var Context = shaderBits.Context;
-	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
-	var ExternalInputNode = shaderBits.ExternalInputNode;
 
 	function FragmentContext(_typeDefinitions) {
 		var typeDefinitions = {};
@@ -37,6 +41,5 @@
 		return node;
 	};
 
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.FragmentContext = FragmentContext;
-})();
+	return FragmentContext;
+});

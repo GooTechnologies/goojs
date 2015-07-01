@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	'use strict';
 
 	function vecMatEncoder(type) {
@@ -72,11 +72,8 @@
 		return formats[format] ? formats[format].decode(string) : string;
 	}
 
-	var DataFormatter = {
+	return {
 		encode: encode,
 		decode: decode
 	};
-
-	window.shaderBits = window.shaderBits || {};
-	window.shaderBits.DataFormatter = DataFormatter;
-})();
+});
