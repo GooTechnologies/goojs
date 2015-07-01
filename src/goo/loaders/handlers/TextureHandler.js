@@ -141,7 +141,6 @@ function (
 		// Special (dds, tga, crn)
 		var Loader = TextureHandler.loaders[type];
 		var imageRef = config.imageRef;
-		texture.a = imageRef;
 		return this.loadObject(imageRef)
 		.then(function (data) {
 			if (data && data.preloaded) {
@@ -162,7 +161,7 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (!RendererUtils.isPowerOfTwo(video.width) || !RendererUtils.isPowerOfTwo(video.height)) {
+			if (!(RendererUtils.isPowerOfTwo(video.width) && RendererUtils.isPowerOfTwo(video.height))) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}

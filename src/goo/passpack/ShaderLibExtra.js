@@ -5,16 +5,14 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/World' //! AT: this should not exist - why would shaders care about importing the world?!
-],
-
-	function (
+], function (
 	MeshData,
 	Shader,
 	ShaderFragment,
 	ShaderBuilder,
 	ShaderLib,
 	World
-	) {
+) {
 	'use strict';
 
 	/**

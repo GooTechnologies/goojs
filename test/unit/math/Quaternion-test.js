@@ -15,7 +15,7 @@ define([
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
 		});
-		
+
 		describe('constructor', function () {
 			it('creates a zero quaternion when given no parameters', function () {
 				var quaternion = new Quaternion();
@@ -128,14 +128,18 @@ define([
 		});
 
 		it('can slerp',function () {
-			var angle1 = Math.PI/2;
-			var angle2 = 3*Math.PI/2;
-			var startQuat = new Quaternion(Math.sin(angle1),0,0,Math.cos(angle1));
-			var endQuat = new Quaternion(Math.sin(angle2),0,0,Math.cos(angle2));
-			var result = new Quaternion();
+			var angle1 = Math.PI / 2;
+			var angle2 = Math.PI;
+			var half = (angle1 + angle2) / 2;
 
-			//! schteppe: TODO: How to check ok?
-			Quaternion.slerp(startQuat,endQuat,0.5,result);
+			var quat1 = new Quaternion(Math.sin(angle1), 0, 0, Math.cos(angle1));
+			var quat2 = new Quaternion(Math.sin(angle2), 0, 0, Math.cos(angle2));
+
+			var result = new Quaternion();
+			var expectedResult = new Quaternion(Math.sin(half), 0, 0, Math.cos(half));
+
+			Quaternion.slerp(quat1, quat2, 0.5, result);
+			expect(result).toBeCloseToVector(expectedResult);
 		});
 
 		it('can slerp via prototype method',function () {
@@ -174,19 +178,29 @@ define([
 		});
 
 		it('can be set from rotation matrix', function () {
-			var q = new Quaternion();
-			var m = new Matrix3x3();
-			q.fromRotationMatrix(m);
-			//! schteppe: TODO: How to check ok?
+			var matrix = new Matrix3x3(
+				-1, 0, 0,
+				0, -1, 0,
+				0, 0, 1
+			);
+
+			var quaternion = new Quaternion();
+			quaternion.fromRotationMatrix(matrix);
+
+			expect(quaternion).toBeCloseToVector(new Quaternion(0, 0, 1, 0));
 		});
 
 		it('can convert to rotation matrix', function () {
-			var q = new Quaternion();
-			var m = new Matrix3x3();
-			q.toRotationMatrix(m);
-			expect(q.toRotationMatrix() instanceof Matrix3x3).toBeTruthy();
+			var matrix = new Matrix3x3();
 
-			//! schteppe: TODO: How to check ok?
+			var quaternion = new Quaternion(0, 0, 1, 0);
+			quaternion.toRotationMatrix(matrix);
+
+			expect(matrix).toBeCloseToMatrix(new Matrix3x3(
+				-1, 0, 0,
+				0, -1, 0,
+				0, 0, 1
+			));
 		});
 
 		it('can be set from vector to vector', function () {

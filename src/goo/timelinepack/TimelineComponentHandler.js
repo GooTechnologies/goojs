@@ -3,23 +3,21 @@ define([
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/ValueChannel',
 	'goo/timelinepack/EventChannel',
-	'goo/util/PromiseUtils',
 	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtils'
+	'goo/util/ObjectUtils',
+	'goo/util/Tween'
 ], function (
 	ComponentHandler,
 	TimelineComponent,
 	ValueChannel,
 	EventChannel,
-	PromiseUtils,
 	ArrayUtils,
 	SystemBus,
-	_
+	ObjectUtils,
+	TWEEN
 ) {
 	'use strict';
-
-	var TWEEN = window.TWEEN;
 
 	/**
 	 * @hidden
@@ -206,7 +204,7 @@ define([
 			};
 			var rotationMap = {};
 
-			_.forEach(config.channels, function (channelConfig) {
+			ObjectUtils.forEach(config.channels, function (channelConfig) {
 				updateChannel(channelConfig, channelConfig.id, component, entityResolver, rotationMap);
 			}, null, 'sortValue');
 

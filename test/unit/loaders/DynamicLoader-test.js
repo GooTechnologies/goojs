@@ -42,6 +42,10 @@ define([
 	describe('DynamicLoader', function () {
 		var loader;
 
+		var entityRef = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb.entity';
+		var materialRef = 'ccccddddccccddddccccddddccccdddd.material';
+		var imageRef = 'ccccddddccccddddccccddddccccddddccccdddd.jpg';
+
 		beforeEach(function () {
 			var world = new World();
 			world.setSystem(new TransformSystem());
@@ -69,7 +73,7 @@ define([
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (bundle) {
+			loader.load(bundleRef).then(function(/* bundle */) {
 				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
@@ -155,6 +159,57 @@ define([
 			}, function () {
 				expect('').toEqual('Should never get here');
 				done();
+			});
+		});
+
+		describe('_getRefsFromConfig', function () {
+			it('gets individual references', function () {
+				var config = {
+					aref: entityRef,
+					bref: materialRef
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('gets individual references several levels deep', function () {
+				var config = {
+					a: {
+						b: {
+							c: {
+								aref: entityRef,
+								bref: materialRef
+							}
+						}
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('gets packed references', function () {
+				var config = {
+					arefs: {
+						aref: entityRef,
+						bref: materialRef
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('ignores thumbnailRef', function () {
+				var config = {
+					aref: entityRef,
+					bref: materialRef,
+					thumbnailRef: imageRef
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
 			});
 		});
 	});

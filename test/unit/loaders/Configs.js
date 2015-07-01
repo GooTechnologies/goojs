@@ -10,7 +10,8 @@ define([
 	var bundle = {};
 	var Configs = {
 		randomRef: function (type) {
-			return Math.random().toString(16) + '.' + (type || '');
+			var hash = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb'.replace(/[ab]/g, function(a) { return ((Math.random() * 16) % 16 | 0).toString(16)});
+			return hash + '.' + (type || '');
 		},
 		gooObject: function (type, name) {
 			var config = {

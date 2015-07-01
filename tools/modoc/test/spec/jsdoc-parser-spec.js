@@ -1,6 +1,7 @@
+// jshint node:true
 'use strict';
 
-var dogma = require('../../src/dogma');
+var dogma = require('../../src/jsdoc-parser');
 
 describe('dogma', function () {
 	describe('partition', function () {
@@ -99,6 +100,15 @@ describe('dogma', function () {
 		it('extracts the description from an @returns', function () {
 			expect(extract('Description goes here'))
 			.toEqual({ type: '', description: 'Description goes here' });
+		});
+	});
+
+	describe('extractTagReturn', function () {
+		var extract = dogma._extractTagExtends;
+
+		it('extracts the base class from an @extends', function () {
+			expect(extract('Alabala'))
+			.toEqual({ base: 'Alabala' });
 		});
 	});
 

@@ -317,5 +317,6 @@ exports._extractDescription = extractDescription;
 exports._extractTagParam = extractTagParam;
 exports._extractTagReturn = extractTagReturn;
 exports._extractTagType = extractTagType;
+exports._extractTagExtends = extractTagExtends;
 exports._extractTagTargetClass = extractTagTargetClass;
 exports.extract = extract;

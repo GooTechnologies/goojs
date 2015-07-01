@@ -141,8 +141,8 @@ define([
 	function getBounds(verts) {
 		var minX = verts[0];
 		var maxX = verts[0];
-		var minY = verts[1];
-		var maxY = verts[1];
+		var minY = verts[2];
+		var maxY = verts[2];
 
 		for (var i = 3; i < verts.length; i += 3) {
 			minX = minX < verts[i + 0] ? minX : verts[i + 0];
@@ -164,6 +164,7 @@ define([
 	 * @param {number[]} [heightMap] The height map
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
+	 * @param {number} [zScale=1]
 	 * @returns {Surface} The created surface
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example
 	 */
@@ -173,29 +174,36 @@ define([
         zScale = zScale || 1;
 
 		var verts = [];
-		for (var i = 0; i < heightMap.length; i++) {
-			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
+		for (var z = 0; z < heightMap.length; z++) {
+			for (var x = 0; x < heightMap[z].length; x++) {
+				verts.push(
+					x * xScale,
+					heightMap[z][x] * yScale, 
+					z * zScale
+				);
 			}
 		}
-		verts.reverse();
-
 		return new Surface(verts, heightMap[0].length);
 	};
 
 	/**
 	 * Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
 	 * @param {number} xSize x axis size in units
-	 * @param {number} ySize y axis size in numbers
+	 * @param {number} zSize z axis size in numbers
 	 * @param {number} xCount x axis vertex count
-	 * @param {number} yCount y axis vertex count
+	 * @param {number} zCount z axis vertex count
 	 * @returns {Surface} The surface mesh
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example
 	 */
-	Surface.createTessellatedFlat = function (xSize, ySize, xCount, yCount) {
+	Surface.createTessellatedFlat = function (xSize, zSize, xCount, zCount) {
 		var verts = [];
-		for (var i = 0; i < xCount; i++) {
-			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+		for (var z = 0; z < zCount; z++) {
+			for (var x = 0; x < xCount; x++) {
+				verts.push(
+					(x * xSize / xCount) - xSize * 0.5,
+					0, 
+					(z * zSize / zCount) - zSize * 0.5
+				);
 			}
 		}
 		var surface = new Surface(verts, xCount);

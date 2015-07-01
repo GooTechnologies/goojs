@@ -72,9 +72,14 @@ define([
 	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
 	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
 
-	'goo/fsmpack/statemachine/actions/ApplyImpulseAction'
-], function (
+	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
 
+	'goo/fsmpack/statemachine/actions/CompareCounterAction',
+	'goo/fsmpack/statemachine/actions/CompareCountersAction',
+	'goo/fsmpack/statemachine/actions/SetCounterAction',
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+], function (
+	_ // placeholder
 ) {
 	'use strict';
 

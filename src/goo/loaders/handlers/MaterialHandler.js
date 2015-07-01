@@ -4,7 +4,6 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
@@ -12,7 +11,6 @@ define([
 	ShaderLib,
 	RenderQueue,
 	RSVP,
-	PromiseUtils,
 	_
 ) {
 	'use strict';

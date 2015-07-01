@@ -23,11 +23,16 @@ define([
 		this._percent = 0.0;
 		this._sourceData = null;
 		this._fadeTime = 0;
-		this._blendType = 'Linear';
+		this._blendType = AbstractTransitionState.BLENDTYPES.LINEAR;
 	}
 
 	AbstractTransitionState.prototype = Object.create(AbstractState.prototype);
 	AbstractTransitionState.prototype.constructor = AbstractTransitionState;
+
+	AbstractTransitionState.BLENDTYPES = {};
+	AbstractTransitionState.BLENDTYPES.LINEAR = 'Linear';
+	AbstractTransitionState.BLENDTYPES.CUBIC = 'SCurve3';
+	AbstractTransitionState.BLENDTYPES.QUINTIC = 'SCurve5';
 
 	/**
 	 * Update this state using the current global time.
@@ -42,10 +47,10 @@ define([
 		}
 		var percent = currentTime / this._fadeTime;
 		switch (this._blendType) {
-			case 'SCurve3':
+			case AbstractTransitionState.BLENDTYPES.CUBIC:
 				this._percent = MathUtils.scurve3(percent);
 				break;
-			case 'SCurve5':
+			case AbstractTransitionState.BLENDTYPES.QUINTIC:
 				this._percent = MathUtils.scurve5(percent);
 				break;
 			default:
