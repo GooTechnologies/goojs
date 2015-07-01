@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtils'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtils
+	FsmUtils
 ) {
 	'use strict';
 
@@ -58,9 +58,9 @@ define([
 	SetPositionAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.translation.setDirect(
-				FSMUtils.getValue(this.amountX, fsm),
-				FSMUtils.getValue(this.amountY, fsm),
-				FSMUtils.getValue(this.amountZ, fsm)
+				FsmUtils.getValue(this.amountX, fsm),
+				FsmUtils.getValue(this.amountY, fsm),
+				FsmUtils.getValue(this.amountZ, fsm)
 			);
 			this.entity.transformComponent.setUpdated();
 

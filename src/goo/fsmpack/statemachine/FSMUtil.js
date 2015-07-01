@@ -1,5 +1,5 @@
 define([
-	'goo/util/FSMUtils'
-], function (FSMUtils) {
-	return FSMUtils;
+	'goo/util/FsmUtils'
+], function (FsmUtils) {
+	return FsmUtils;
 });

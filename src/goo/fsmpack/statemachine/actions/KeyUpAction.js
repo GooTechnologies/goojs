@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtils'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtils
+	FsmUtils
 ) {
 	'use strict';
 
@@ -43,7 +43,7 @@ define([
 	};
 
 	KeyUpAction.prototype.configure = function (settings) {
-		this.key = settings.key ? FSMUtils.getKey(settings.key) : null;
+		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keyup: settings.transitions.keyup };
 	};
 
