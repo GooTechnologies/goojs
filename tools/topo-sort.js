@@ -25,7 +25,7 @@ function sort(graph) {
 
 	function df(nodeName) {
 		if (!graph[nodeName]) {
-			console.warn('topo-sort: node ' + nodeName + ' does not exist');
+			console.error('topo-sort: node ' + nodeName + ' does not exist');
 			return;
 		}
 
