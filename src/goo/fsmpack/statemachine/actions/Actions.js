@@ -8,7 +8,7 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
-	'goo/fsmpack/statemachine/actions/WASDAction',
+	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
 	'goo/fsmpack/statemachine/actions/RotateAction',
@@ -65,7 +65,7 @@ define([
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
-	'goo/fsmpack/statemachine/actions/HTMLAction',
+	'goo/fsmpack/statemachine/actions/HtmlAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
 

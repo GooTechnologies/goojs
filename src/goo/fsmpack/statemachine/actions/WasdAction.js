@@ -5,14 +5,14 @@ define([
 ) {
 	'use strict';
 
-	function WASDAction(/*id, settings*/) {
+	function WasdAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.keysPressed = {};
 
 		this.eventListener = function(event) {
-			var keyname = WASDAction._keys[event.which];
+			var keyname = WasdAction._keys[event.which];
 			if (keyname !== undefined) {
 				this.updated = true;
 				this.keysPressed[keyname] = true;
@@ -20,24 +20,24 @@ define([
 		}.bind(this);
 	}
 
-	WASDAction.prototype = Object.create(Action.prototype);
+	WasdAction.prototype = Object.create(Action.prototype);
 
-	WASDAction.prototype.configure = function(settings) {
+	WasdAction.prototype.configure = function(settings) {
 		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
-	WASDAction._keys = {
+	WasdAction._keys = {
 		87: 'w',
 		65: 'a',
 		83: 's',
 		68: 'd'
 	};
 
-	WASDAction.external = (function() {
+	WasdAction.external = (function() {
 		var transitions = [];
-		for (var keycode in WASDAction._keys) {
-			var keyname = WASDAction._keys[keycode];
+		for (var keycode in WasdAction._keys) {
+			var keyname = WasdAction._keys[keycode];
 			transitions.push({
 				key: keyname,
 				name: 'Key ' + keyname.toUpperCase(),
@@ -56,14 +56,14 @@ define([
 		};
 	})();
 
-	WASDAction.prototype._setup = function() {
+	WasdAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	WASDAction.prototype._run = function(fsm) {
+	WasdAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			//var keyKeys = _.keys(WASDAction._keys); // unused
+			//var keyKeys = _.keys(WasdAction._keys); // unused
 
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];
@@ -75,9 +75,9 @@ define([
 		}
 	};
 
-	WASDAction.prototype.exit = function() {
+	WasdAction.prototype.exit = function() {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	return WASDAction;
+	return WasdAction;
 });

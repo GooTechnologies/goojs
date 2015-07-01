@@ -6,7 +6,7 @@ define([
 	'goo/scriptpack/AxisAlignedCamControlScript',
 	'goo/scriptpack/PanCamScript',
 	'goo/scriptpack/MouseLookControlScript',
-	'goo/scriptpack/WASDControlScript',
+	'goo/scriptpack/WasdControlScript',
 	'goo/scriptpack/ButtonScript',
 	'goo/scriptpack/PickAndRotateScript',
 	'goo/scriptpack/LensFlareScript'

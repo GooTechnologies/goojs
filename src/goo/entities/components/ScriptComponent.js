@@ -38,7 +38,7 @@ define([
 			* @example
 			* // Add a script to script component
 			* var scriptComponent = new ScriptComponent();
-			* var controlScript = new WASDControlScript();
+			* var controlScript = new WasdControlScript();
 			* scriptComponent.scripts.push(controlScript);
 			*/
 			this.scripts = [];

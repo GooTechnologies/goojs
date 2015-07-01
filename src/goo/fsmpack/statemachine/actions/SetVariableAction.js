@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtils'
+	'goo/fsmpack/statemachine/FsmUtils'
 	], function (
 	Action,
-	FSMUtils
+	FsmUtils
 	) {
 	'use strict';
 
@@ -41,7 +41,7 @@ define([
 	SetVariableAction.prototype._run = function(fsm) {
 		if (this.variable) {
 			fsm.applyOnVariable(this.variable, function() {
-				return FSMUtils.getValue(this.amount, fsm);
+				return FsmUtils.getValue(this.amount, fsm);
 			}.bind(this));
 		}
 	};

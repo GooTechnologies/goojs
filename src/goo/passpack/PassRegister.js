@@ -7,7 +7,7 @@ define([
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/passpack/PassLib',
-	'goo/passpack/SSAOPass',
+	'goo/passpack/SsaoPass',
 	'goo/passpack/ShaderLibExtra'
 ], function (Scripts) {
 	'use strict';
@@ -21,7 +21,7 @@ define([
 		'goo/passpack/DoGPass',
 		'goo/passpack/MotionBlurPass',
 		'goo/passpack/PassLib',
-		'goo/passpack/SSAOPass',
+		'goo/passpack/SsaoPass',
 		'goo/passpack/ShaderLibExtra'
 	];
 

@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/animationpack/layer/AnimationLayer',
-	'goo/animationpack/layer/LayerLERPBlender',
 	'goo/animationpack/state/FadeTransitionState',
 	'goo/animationpack/state/SyncFadeTransitionState',
 	'goo/animationpack/state/FrozenTransitionState',
@@ -10,7 +9,6 @@ define([
 ], function (
 	ConfigHandler,
 	AnimationLayer,
-	LayerLERPBlender,
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,
