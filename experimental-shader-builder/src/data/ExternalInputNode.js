@@ -26,7 +26,7 @@
 
 	// no connectedBy methods since this node cannot be connected by anything; it has no inputs!
 
-	ExternalInputNode.prototype.toJSON = function () {
+	ExternalInputNode.prototype.toJson = function () {
 		return {
 			id: this.id,
 			type: this.type,
@@ -36,16 +36,16 @@
 				dataType: this.external.dataType
 			},
 			outputsTo: this.outputsTo.map(function (outputTo) {
-				return outputTo.toJSON();
+				return outputTo.toJson();
 			})
 		};
 	};
 
-	ExternalInputNode.fromJSON = function (config) {
+	ExternalInputNode.fromJson = function (config) {
 		var node = new ExternalInputNode(config.id, config.external);
 
 		config.outputsTo.forEach(function (outputTo) {
-			node.addConnection(Connection.fromJSON(outputTo));
+			node.addConnection(Connection.fromJson(outputTo));
 		});
 
 		return node;

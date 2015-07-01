@@ -14,10 +14,10 @@
 		this.fragmentContext.contextPair = this;
 	}
 
-	ContextPair.prototype.structuresToJSON = function () {
+	ContextPair.prototype.toJson = function () {
 		return {
-			vertex: this.vertexContext.structureToJSON(),
-			fragment: this.fragmentContext.structureToJSON()
+			vertex: this.vertexContext.structureToJson(),
+			fragment: this.fragmentContext.structureToJson()
 		};
 	};
 

@@ -23,7 +23,7 @@
 		one.connect(context.out.g);
 		// 0 -> b
 
-		return context.structureToJSON();
+		return context.structureToJson();
 	}
 
 	function getS2(typeDefinitions) {
@@ -51,7 +51,7 @@
 		dot.connect(context.out.g);
 		dot.connect(context.out.b);
 
-		return context.structureToJSON();
+		return context.structureToJson();
 	}
 
 	function getDiffuseLight(context) {
@@ -109,7 +109,7 @@
 		texture.b.connect(mul3.y);
 		mul3.connect(context.out.b);
 
-		return context.structureToJSON();
+		return context.structureToJson();
 	}
 
 	function getS3(typeDefinitions) {
@@ -144,7 +144,7 @@
 		vec3Comp.y.connect(context.out.g);
 		vec3Comp.z.connect(context.out.b);
 
-		return context.structureToJSON();
+		return context.structureToJson();
 	}
 
 	function getS4(typeDefinitions) {
@@ -177,7 +177,7 @@
 		vec3Comp.z.connect(context.fragColor.b);
 
 		return {
-			structure: context.structureToJSON(),
+			structure: context.structureToJson(),
 			typeDefinitions: context.typeDefinitions
 		};
 	}
@@ -195,7 +195,7 @@
 		return {
 			vertex: {},
 			fragment: {
-				structure: fragmentContext.structureToJSON(),
+				structure: fragmentContext.structureToJson(),
 				typeDefinitions: fragmentContext.typeDefinitions
 			}
 		};
@@ -240,11 +240,11 @@
 
 		return {
 			vertex: {
-				structure: vertexContext.structureToJSON(),
+				structure: vertexContext.structureToJson(),
 				typeDefinitions: vertexContext.typeDefinitions
 			},
 			fragment: {
-				structure: fragmentContext.structureToJSON(),
+				structure: fragmentContext.structureToJson(),
 				typeDefinitions: fragmentContext.typeDefinitions
 			}
 		};

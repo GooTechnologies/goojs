@@ -119,12 +119,12 @@
 		return 'i' + this._idCounter;
 	};
 
-	Context.prototype.typesToJSON = function () {
-		return this.typeDefinitions.toJSON();
+	Context.prototype.typesToJson = function () {
+		return this.typeDefinitions.toJson();
 	};
 
-	Context.prototype.structureToJSON = function () {
-		return this.structure.toJSON();
+	Context.prototype.structureToJson = function () {
+		return this.structure.toJson();
 	};
 
 	function externalCreator(inputType) {
@@ -144,10 +144,6 @@
 
 	Context.prototype.createUniform = externalCreator('uniform');
 	Context.prototype.createAttribute = externalCreator('attribute');
-
-	// varying in - used in the fragment shader only
-	// move this to the fragment context
-	Context.prototype.createVarying = externalCreator('varying');
 
 	Context.prototype.createFunction = function (type) {
 		var node = new this.constructors[type](this.generateId());

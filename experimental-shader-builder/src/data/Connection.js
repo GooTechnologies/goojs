@@ -14,7 +14,7 @@
 			this.input === that.input);
 	};
 
-	Connection.prototype.toJSON = function () {
+	Connection.prototype.toJson = function () {
 		return {
 			output: this.output,
 			to: this.to,
@@ -22,7 +22,7 @@
 		};
 	};
 
-	Connection.fromJSON = function (json) {
+	Connection.fromJson = function (json) {
 		return new Connection(json.output, json.to, json.input);
 	};
 

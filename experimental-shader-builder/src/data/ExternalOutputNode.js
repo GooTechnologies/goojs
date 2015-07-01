@@ -23,7 +23,7 @@
 	ExternalOutputNode.prototype = Object.create(Node.prototype);
 	ExternalOutputNode.prototype.constructor = ExternalOutputNode;
 
-	ExternalOutputNode.prototype.toJSON = function () {
+	ExternalOutputNode.prototype.toJson = function () {
 		return {
 			id: this.id,
 			type: this.type,
@@ -36,11 +36,11 @@
 		};
 	};
 
-	ExternalOutputNode.fromJSON = function (config) {
+	ExternalOutputNode.fromJson = function (config) {
 		var node = new ExternalOutputNode(config.id, config.external);
 
 		config.outputsTo.forEach(function (outputTo) {
-			node.addConnection(Connection.fromJSON(outputTo));
+			node.addConnection(Connection.fromJson(outputTo));
 		});
 
 		return node;

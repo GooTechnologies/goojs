@@ -254,16 +254,16 @@
 		return this;
 	};
 
-	Structure.prototype.toJSON = function () {
+	Structure.prototype.toJson = function () {
 		return _(this.nodes).map(function (node) {
-			return node.toJSON();
+			return node.toJson();
 		});
 	};
 
-	Structure.fromJSON = function (json) {
+	Structure.fromJson = function (json) {
 		var structure = new Structure();
 		_(json).forEach(function (nodeConfig) {
-			var node = (nodeConfig.type === 'external-input' ? ExternalInputNode : FunctionNode).fromJSON(nodeConfig);
+			var node = (nodeConfig.type === 'external-input' ? ExternalInputNode : FunctionNode).fromJson(nodeConfig);
 			structure.addNode(node);
 		});
 		return structure;

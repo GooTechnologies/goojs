@@ -166,7 +166,7 @@
 
 			konst.connect(sin);
 
-			var structure = context.structureToJSON();
+			var structure = context.structureToJson();
 			expect(structure[2].outputsTo).toEqual([{
 				output: 'value',
 				to: sin.id,
@@ -248,7 +248,7 @@
 
 				konst.connect(varying);
 
-				var structure = context.structureToJSON();
+				var structure = context.structureToJson();
 				expect(structure[2].outputsTo).toEqual([{
 					output: 'value',
 					to: 'i4',

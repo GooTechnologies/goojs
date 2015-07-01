@@ -3,6 +3,7 @@
 
 	var Context = shaderBits.Context;
 	var BaseTypeDefinitions = shaderBits.BaseTypeDefinitions;
+	var ExternalInputNode = shaderBits.ExternalInputNode;
 
 	function FragmentContext(_typeDefinitions) {
 		var typeDefinitions = {};
@@ -23,12 +24,18 @@
 	FragmentContext.prototype = Object.create(Context.prototype);
 	FragmentContext.prototype.constructor = Context;
 
-	// varyings created in the vertex context can connect to nodes in the fragment context
-	// varyings created in the fragment context can receive connections from the vertex context
-	// too ambitious?
-	//FragmentContext.prototype.createVarying = function (name, type) {
-	//
-	//};
+	FragmentContext.prototype.createVarying = function (name, dataType) {
+		var node = new ExternalInputNode(this.generateId(), {
+			name: name,
+			inputType: 'varying',
+			dataType: dataType
+		});
+		node._context = this;
+
+		this.structure.addNode(node);
+
+		return node;
+	};
 
 	window.shaderBits = window.shaderBits || {};
 	window.shaderBits.FragmentContext = FragmentContext;
