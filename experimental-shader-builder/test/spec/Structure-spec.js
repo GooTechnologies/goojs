@@ -1,8 +1,11 @@
-(function () {
+define([
+	'shader-bits/data/VertexContext',
+	'shader-bits/data/Connection'
+], function (
+	VertexContext,
+	Connection
+) {
 	'use strict';
-
-	var VertexContext = shaderBits.VertexContext;
-	var Connection = shaderBits.Connection;
 
 	describe('Structure', function () {
 		var context;
@@ -448,4 +451,4 @@
 			});
 		});
 	});
-})();
+});

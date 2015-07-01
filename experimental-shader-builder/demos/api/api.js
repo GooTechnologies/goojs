@@ -1,12 +1,6 @@
-require.config({
-	paths: {
-		'shader-bits': '../../src'
-	}
-});
-
 require([
-	'shader-bits/shader-builder',
-	'shader-bits/data-normalizer',
+	'shader-bits/core/ShaderBuilder',
+	'shader-bits/core/DataNormalizer',
 	'shader-bits/data/ContextPair'
 ], function (
 	ShaderBuilder,

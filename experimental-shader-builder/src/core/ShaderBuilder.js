@@ -1,5 +1,5 @@
 define([
-	'shader-bits/js-template'
+	'shader-bits/core/JsTemplate'
 ], function (
 	jsTemplate
 ) {

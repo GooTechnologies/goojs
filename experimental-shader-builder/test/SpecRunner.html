@@ -13,31 +13,25 @@
 
 	<script src="../../lib/underscore.js"></script>
 
-	<!-- include source files here... -->
-	<script src="../src/data/BaseTypeDefinitions.js"></script>
-	<script src="../src/data/DataFormatter.js"></script>
-	<script src="../src/data/Connection.js"></script>
-	<script src="../src/data/Node.js"></script>
-	<script src="../src/data/InPort.js"></script>
-	<script src="../src/data/OutPort.js"></script>
-	<script src="../src/data/ExternalInputNode.js"></script>
-	<script src="../src/data/ExternalOutputNode.js"></script>
-	<script src="../src/data/FunctionNode.js"></script>
-	<script src="../src/data/IODefinition.js"></script>
-	<script src="../src/data/Structure.js"></script>
-	<script src="../src/data/TypeDefinition.js"></script>
-	<script src="../src/data/Context.js"></script>
-	<script src="../src/data/VertexContext.js"></script>
-	<script src="../src/data/FragmentContext.js"></script>
+	<script src="../../lib/require.js"></script>
 
-	<script src="../src/js-template.js"></script>
-	<script src="../src/data-normalizer.js"></script>
-	<script src="../src/shader-processor.js"></script>
-	<script src="../src/shader-builder.js"></script>
+	<script>
+		require.config({
+			paths: {
+				'shader-bits': '../src'
+			}
+		});
 
-	<!-- include spec files here... -->
-	<script src="spec/Structure-spec.js"></script>
-	<script src="spec/DataFormatter-spec.js"></script>
+		require(['lib/jasmine-2.3.4/boot'], function () {
+			require([
+				'spec/DataFormatter-spec',
+				'spec/Structure-spec'
+			], function () {
+				//trigger Jasmine
+				window.onload();
+			})
+		});
+	</script>
 </head>
 
 <body>

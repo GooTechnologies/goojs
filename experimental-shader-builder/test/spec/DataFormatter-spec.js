@@ -1,7 +1,9 @@
-(function () {
+define([
+	'shader-bits/data/DataFormatter'
+], function (
+	DataFormatter
+) {
 	'use strict';
-
-	var DataFormatter = shaderBits.DataFormatter;
 
 	describe('DataFormatter', function () {
 		var encode = DataFormatter.encode;
@@ -121,4 +123,4 @@
 			});
 		});
 	});
-})();
+});
