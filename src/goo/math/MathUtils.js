@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-define([], function () {
+define(function () {
 	'use strict';
 
 	/**
@@ -245,11 +245,27 @@ define([], function () {
 	/**
 	 * Gets the nearest higher power of two for a value
 	 * @param {number} value Number to get the nearest power of two from
-	 * @returns {number} Nearest power of two 
+	 * @returns {number} Nearest power of two
 	 */
-	MathUtils.nearestHigherPowerOfTwo = function (value) {
-		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
+	MathUtils.nearestPowerOfTwo = function (value) {
+		value--;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		value |= value >> 16;
+		value++;
+		return value;
 	};
+
+	/**
+	 * Gets the nearest higher power of two for a value
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0;
+	 * Consider using MathUtils.nearestPowerOfTwo instead
+	 * @param {number} value Number to get the nearest power of two from
+	 * @returns {number} Nearest power of two
+	 */
+	MathUtils.nearestHigherPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Returns true if the 2 values supplied are approximately the same
@@ -315,7 +331,7 @@ define([], function () {
 	};
 
 	/**
-	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1. 
+	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	 * This is useful in cases where a threshold function with a smooth transition is desired.
 	 * @param {number} edge0 Specifies the value of the lower edge of the Hermite function.
 	 * @param {number} edge1 Specifies the value of the upper edge of the Hermite function.

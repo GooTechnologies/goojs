@@ -1,6 +1,7 @@
 define([
 	'goo/renderer/Texture',
 	'goo/renderer/RendererUtils',
+	'goo/math/MathUtils',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
 	'goo/util/StringUtils',
@@ -9,6 +10,7 @@ define([
 ], function (
 	Texture,
 	RendererUtils,
+	MathUtils,
 	TextureHandler,
 	Ajax,
 	StringUtils,
@@ -131,7 +133,7 @@ define([
 					video.height = video.videoHeight;
 
 					// set minification filter based on pow2
-					if (!(RendererUtils.isPowerOfTwo(video.width) && RendererUtils.isPowerOfTwo(video.height))) {
+					if (!(MathUtils.isPowerOfTwo(video.width) && MathUtils.isPowerOfTwo(video.height))) {
 						texture.generateMipmaps = false;
 						texture.minFilter = 'BilinearNoMipMaps';
 					}
