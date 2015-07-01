@@ -37,7 +37,7 @@ require([
 
 	//! schteppe: Already covered in other tests. Delete?
 
-	function WASDControlScriptDemo() {
+	function WasdControlScriptDemo() {
 		var goo = V.initGoo();
 
 		V.addLights();
@@ -66,5 +66,5 @@ require([
 		cameraEntity.setComponent(scripts);
 	}
 
-	WASDControlScriptDemo();
+	WasdControlScriptDemo();
 });

@@ -1,5 +1,5 @@
 define([
-	'test/animationpack/blendtree/BinaryLERPSource-test',
+	'test/animationpack/blendtree/BinaryLerpSource-test',
 	'test/animationpack/blendtree/ClipSource-test',
 	'test/animationpack/blendtree/FrozenClipSource-test',
 	'test/animationpack/blendtree/ManagedTransformSource-test',
@@ -15,7 +15,7 @@ define([
 	'test/animationpack/clip/TriggerData-test',
 	'test/animationpack/Joint-test',
 	'test/animationpack/layer/AnimationLayer-test',
-	'test/animationpack/layer/LayerLERPBlender-test',
+	'test/animationpack/layer/LayerLerpBlender-test',
 	'test/animationpack/Skeleton-test',
 	'test/animationpack/SkeletonPose-test',
 	'test/animationpack/state/AbstractState-test',
