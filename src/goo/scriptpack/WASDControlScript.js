@@ -6,10 +6,10 @@ define([
 	Vector3,
 	Scripts,
 	ScriptUtils
-	) {
+) {
 	'use strict';
 
-	function WASDControlScript() {
+	function WasdControlScript() {
 		var entity, transformComponent, transform;
 		var _parameters;
 
@@ -150,7 +150,7 @@ define([
 		};
 	}
 
-	WASDControlScript.externals = {
+	WasdControlScript.externals = {
 		key: 'WASD',
 		name: 'WASD Control',
 		description: 'Enables moving via the WASD keys',
@@ -204,5 +204,5 @@ define([
 		}]
 	};
 
-	return WASDControlScript;
+	return WasdControlScript;
 });

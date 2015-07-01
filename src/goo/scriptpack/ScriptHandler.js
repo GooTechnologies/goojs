@@ -4,7 +4,7 @@ define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/scriptpack/OrbitNPanControlScript',
 	'goo/scriptpack/FlyControlScript',
-	'goo/scriptpack/WASDControlScript',
+	'goo/scriptpack/WasdControlScript',
 	'goo/scriptpack/BasicControlScript',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils',
@@ -19,7 +19,7 @@ define([
 	OrbitCamControlScript,
 	OrbitNPanControlScript,
 	FlyControlScript,
-	WASDControlScript,
+	WasdControlScript,
 	BasicControlScript,
 	PromiseUtils,
 	_,
@@ -111,6 +111,7 @@ define([
 
 		// get a script factory in string form
 		var scriptFactoryStr = [
+			'// <![CDATA[',
 			"window._gooScriptFactories['" + config.id + "'] = function () {",
 			config.body,
 			' var obj = {',
@@ -129,7 +130,8 @@ define([
 			'  obj.update = update;',
 			' }',
 			' return obj;',
-			'};'
+			'};',
+			'// ]]>'
 		].join('\n');
 
 		// create the element and add it to the page so the user can debug it

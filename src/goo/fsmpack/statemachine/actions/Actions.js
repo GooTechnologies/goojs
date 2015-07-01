@@ -8,7 +8,7 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
-	'goo/fsmpack/statemachine/actions/WASDAction',
+	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
 	'goo/fsmpack/statemachine/actions/RotateAction',
