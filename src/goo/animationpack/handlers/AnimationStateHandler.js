@@ -3,7 +3,7 @@ define([
 	'goo/animationpack/state/SteadyState',
 	'goo/animationpack/blendtree/ClipSource',
 	'goo/animationpack/blendtree/ManagedTransformSource',
-	'goo/animationpack/blendtree/BinaryLERPSource',
+	'goo/animationpack/blendtree/BinaryLerpSource',
 	'goo/animationpack/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
@@ -13,7 +13,7 @@ define([
 	SteadyState,
 	ClipSource,
 	ManagedTransformSource,
-	BinaryLERPSource,
+	BinaryLerpSource,
 	FrozenClipSource,
 	RSVP,
 	PromiseUtils,
@@ -80,18 +80,21 @@ define([
 		switch (cfg.type) {
 			case 'Clip':
 				return this.loadObject(cfg.clipRef, options).then(function (clip) {
-					if (!clipSource || (!clipSource instanceof ClipSource)) {
-						clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
-					} else {
+					if (clipSource && (clipSource instanceof ClipSource)) {
 						clipSource._clip = clip;
 						clipSource.setFilter(cfg.filter, cfg.channels);
+					} else {
+						clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
 					}
+
 					if (cfg.loopCount !== undefined) {
 						clipSource._clipInstance._loopCount = +cfg.loopCount;
 					}
+
 					if (cfg.timeScale !== undefined) {
 						clipSource._clipInstance._timeScale = cfg.timeScale;
 					}
+
 					clipSource._startTime = cfg.startTime || 0;
 					var minTime = Infinity;
 					for (var i = 0; i < clip._channels.length; i++) {
@@ -106,7 +109,7 @@ define([
 					return clipSource;
 				});
 			case 'Managed':
-				if (!clipSource || (!clipSource instanceof ManagedTransformSource)) {
+				if (!clipSource || !(clipSource instanceof ManagedTransformSource)) {
 					clipSource = new ManagedTransformSource();
 				}
 				if (cfg.clipRef) {
@@ -125,7 +128,7 @@ define([
 					this._parseClipSource(cfg.clipSourceB, null, options)
 				];
 				return RSVP.all(promises).then(function (clipSources) {
-					clipSource = new BinaryLERPSource(clipSources[0], clipSources[1]);
+					clipSource = new BinaryLerpSource(clipSources[0], clipSources[1]);
 					if (cfg.blendWeight) {
 						clipSource.blendWeight = cfg.blendWeight;
 					}

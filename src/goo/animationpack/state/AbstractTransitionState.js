@@ -1,10 +1,10 @@
 define([
 	'goo/animationpack/state/AbstractState',
-	'goo/animationpack/blendtree/BinaryLERPSource',
+	'goo/animationpack/blendtree/BinaryLerpSource',
 	'goo/math/MathUtils'
 ], function (
 	AbstractState,
-	BinaryLERPSource,
+	BinaryLerpSource,
 	MathUtils
 ) {
 	'use strict';
@@ -79,7 +79,7 @@ define([
 		if (!this._sourceData) {
 			this._sourceData = {};
 		}
-		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
+		return BinaryLerpSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
 	};
 
 	/**
