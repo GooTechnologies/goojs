@@ -1,4 +1,12 @@
-(function () {
+require([
+	'shader-bits/core/DataNormalizer',
+	'shader-bits/core/ShaderProcessor',
+	'shader-bits/core/ShaderBuilder'
+], function (
+	DataNormalizer,
+	ShaderProcessor,
+	ShaderBuilder
+) {
 	'use strict';
 
 	var graph = new joint.dia.Graph;
@@ -103,7 +111,7 @@
 
 	function onInput() {
 		var str = editor.getValue();
-		var partial = shaderProcessor.parseNodeInstance(str);
+		var partial = ShaderProcessor.parseNodeInstance(str);
 		var cell = graph.getCell(clickedNewId);
 		if (partial.external) {
 			cell.attributes.external = partial.external;
@@ -261,7 +269,7 @@
 	var firebase;
 
 	getSample('s3', function (_typeDefinitions) {
-		typeDefinitions = dataNormalizer.normalizeNodeTypes(_typeDefinitions);
+		typeDefinitions = DataNormalizer.normalizeNodeTypes(_typeDefinitions);
 
 		populateTypes(Object.keys(typeDefinitions));
 
@@ -282,7 +290,7 @@
 	var __replaceBox = shaderBitsCommon.makeDemo();
 
 	function _replaceBox(nodeTypes, structure) {
-		var result = shaderBits.buildShader(nodeTypes, structure);
+		var result = ShaderBuilder.buildShader(nodeTypes, structure);
 		window._result = result;
 		__replaceBox(result);
 	}
@@ -291,8 +299,8 @@
 		var structure = graphToStructure.toStructure(graph);
 
 		//var normalizedTypeDefinitions = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
-		var _structure = dataNormalizer.normalizeStructure(structure);
+		var _structure = DataNormalizer.normalizeStructure(structure);
 
 		_replaceBox(typeDefinitions, _structure);
 	}
-})();
+});

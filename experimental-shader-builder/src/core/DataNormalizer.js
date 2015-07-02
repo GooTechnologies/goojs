@@ -33,6 +33,11 @@ define(function () {
 				node.outputsTo = [];
 			}
 
+			// temporary adaptor to preserve backwards compatibility
+			if (node.type === 'external') {
+				node.type = 'external-input';
+			}
+
 			if (node.type === 'external-input' || node.type === 'external-output') {
 				node.external = node.external || {};
 			} else {
