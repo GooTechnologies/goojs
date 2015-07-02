@@ -227,7 +227,7 @@ require([
 				external: cell.attributes.external
 			};
 
-			var str = shaderProcessor.stringifyNodeInstance(node, typeDefinitions[node.type]);
+			var str = ShaderProcessor.stringifyNodeInstance(node, typeDefinitions[node.type]);
 
 			editor.setValue(str, 1);
 		}
