@@ -19,8 +19,14 @@ define([
 
 	ContextPair.prototype.toJson = function () {
 		return {
-			vertex: this.vertexContext.structureToJson(),
-			fragment: this.fragmentContext.structureToJson()
+			vertex: {
+				structure: this.vertexContext.structureToJson(),
+				typeDefinitions: this.vertexContext.typeDefinitions
+			},
+			fragment: {
+				structure: this.fragmentContext.structureToJson(),
+				typeDefinitions: this.fragmentContext.typeDefinitions
+			}
 		};
 	};
 

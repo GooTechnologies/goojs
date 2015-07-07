@@ -65,11 +65,16 @@
 				fshader: shaderSource
 			});
 
-			var diffuseMap = textureCreator.loadTexture2D('../../../visual-test/resources/check-alt.png', { anisotropy: 16 });
-			var normalMap = textureCreator.loadTexture2D('../../../visual-test/resources/normal-map2.jpg', { anisotropy: 16 });
+			textureCreator.loadTexture2D('../../../visual-test/resources/check-alt.png', { anisotropy: 16 })
+				.then(function (diffuseMap) {
+					material.setTexture('DIFFUSE_MAP', diffuseMap);
+				});
 
-			material.setTexture('DIFFUSE_MAP', diffuseMap);
-			material.setTexture('NORMAL_MAP', normalMap);
+			textureCreator.loadTexture2D('../../../visual-test/resources/normal-map2.jpg', { anisotropy: 16 })
+				.then(function (normalMap) {
+					material.setTexture('NORMAL_MAP', normalMap);
+				});
+
 
 			//var meshData = new goo.Torus(32, 32, 0.3, 1.0);
 			var meshData = new goo.Box();
