@@ -1,3 +1,25 @@
+v0.15.0 --- 2015-07-07
+----------------------
+
+###Additions
+ + readded the *requestAnimationFrame* shim
+
+###Deprecated
+ - *...Util* classes in favour of *...Utils* classes; *ObjectUtil*, *PromiseUtil*, *StringUtil*, *ArrayUtil*, *FullScreenUtil*
+ - `RendererUtils.isPowerOfTwo` in favour of `MathUtils.isPowerOfTwo`
+ - `RendererUtils.nearestPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+ - `MathUtils.nearestHigherPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+
+###Removed
+ - *CSSTransformComponent* has been renamed to *CssTransformComponent*; `entity.cSSTransformComponent` is now `entity.cssTransformComponent`
+ - *DoGPass* is now *DogPass*
+ - *DOFPass* is now *DofPass*
+ - *SSAOPass* is now *SsaoUtils*
+ - *FSMUtil* is now *FsmUtils*
+ - *BinaryLERPSource* is now *BinaryLerpSource*
+ - *LayerLERPBlender* is now *LayerLerpBlender*
+ - *renderer/Util* in favour of *renderer/RendererUtil*
+
 v0.14.4 --- 2015-06-25
 ----------------------
 
