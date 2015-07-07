@@ -1,14 +1,12 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/fsmpack/statemachine/State',
 	'goo/fsmpack/statemachine/Machine',
 	'goo/fsmpack/statemachine/actions/Actions',
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
-	PromiseUtil,
 	_,
 	State,
 	Machine,

@@ -112,9 +112,10 @@ require([
 		'../../../../resources/check.png',
 		'../../../../resources/check-alt.png'
 	];
-	var texture = new TextureCreator().loadTextureCube(images, settings);
-	var sphereEntity = createSphereEntity(texture);
-	sphereEntity.setTranslation(-1.5, 0, 0).addToWorld();
+	new TextureCreator().loadTextureCube(images, settings).then(function (texture) {
+		var sphereEntity = createSphereEntity(texture);
+		sphereEntity.setTranslation(-1.5, 0, 0).addToWorld();
+	});
 
 	// Typed array checkerboard of same size as above images
 	var size = 256;
@@ -129,10 +130,10 @@ require([
 			for (var xx = 0; xx < tileSize; xx++) {
 				for (var yy = 0; yy < tileSize; yy++) {
 					var index = (y * tileSize + yy) * size + (x * tileSize + xx);
-						imageData[index * 4 + 0] = r;
-						imageData[index * 4 + 1] = g;
-						imageData[index * 4 + 2] = b;
-						imageData[index * 4 + 3] = 255;
+					imageData[index * 4 + 0] = r;
+					imageData[index * 4 + 1] = g;
+					imageData[index * 4 + 2] = b;
+					imageData[index * 4 + 3] = 255;
 				}
 			}
 		}
@@ -141,9 +142,9 @@ require([
 	for (var i = 0; i < 6; i++) {
 		images[i] = image;
 	}
-	texture = new Texture(images, settings, size, size);
+	var texture = new Texture(images, settings, size, size);
 	texture.variant = 'CUBE';
-	sphereEntity = createSphereEntity(texture);
+	var sphereEntity = createSphereEntity(texture);
 	sphereEntity.setTranslation(1.5, 0, 0).addToWorld();
 
 	V.addLights();

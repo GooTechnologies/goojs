@@ -5,7 +5,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Skybox',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
+	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus'
 ], function(
 	ConfigHandler,
@@ -14,7 +14,7 @@ define([
 	ShaderBuilder,
 	Skybox,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	SystemBus
 ) {
 	'use strict';
@@ -83,7 +83,7 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
 			if (!skybox) {
-				return PromiseUtil.resolve([]);
+				return PromiseUtils.resolve([]);
 			}
 
 			var promises = [];
@@ -132,7 +132,7 @@ define([
 			that._skysphereTexture.setImage(null);
 			that._hide(that._skysphere);
 		}
-		return PromiseUtil.resolve(that._skysphere);
+		return PromiseUtils.resolve(that._skysphere);
 	};
 
 	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
@@ -156,7 +156,7 @@ define([
 		var that = this;
 
 		var promises = sides.map(function(side) {
-			return config[side] ? that._load(config[side], options) : PromiseUtil.resolve();
+			return config[side] ? that._load(config[side], options) : PromiseUtils.resolve();
 		});
 
 		// Load all textures

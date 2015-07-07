@@ -21,8 +21,9 @@ require([
 	var world = goo.world;
 
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cone.png').then(function	(texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	// add normal cone
 	var normalConeMeshData = new Cone(8, 4, 8);

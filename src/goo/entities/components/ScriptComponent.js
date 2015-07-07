@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	SystemBus,
@@ -38,7 +38,7 @@ define([
 			* @example
 			* // Add a script to script component
 			* var scriptComponent = new ScriptComponent();
-			* var controlScript = new WASDControlScript();
+			* var controlScript = new WasdControlScript();
 			* scriptComponent.scripts.push(controlScript);
 			*/
 			this.scripts = [];
@@ -129,7 +129,7 @@ define([
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.context) {
-				if (script.cleanup) {
+				if (script.cleanup && (script.parameters? script.parameters.enabled : script.enabled)) {
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {

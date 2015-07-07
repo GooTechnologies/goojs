@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
@@ -18,7 +18,7 @@ define([
 	Material,
 	Shader,
 	ShaderLib,
-	ObjectUtil,
+	ObjectUtils,
 	Transform,
 	Grid,
 	Quad
@@ -56,7 +56,7 @@ define([
 			transform: this.transform
 		};
 		// It ain't pretty, but it works
-		var surfaceShader = ObjectUtil.deepClone(ShaderLib.simpleColored);
+		var surfaceShader = ObjectUtils.deepClone(ShaderLib.simpleColored);
 		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
 		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
 		surfaceMaterial.uniforms.opacity = 0.9;

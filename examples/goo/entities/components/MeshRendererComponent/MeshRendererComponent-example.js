@@ -40,8 +40,9 @@ require([
 	var simpleLit = new Material(ShaderLib.simpleLit);
 
 	var texturedLit = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
-	texturedLit.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D(resourcePath + '/check.png').then(function (texture) {
+		texturedLit.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	// components can be created manually to encapsulate "primitive engine data types" (meshes, materials, cameras, lights, ...)
 	var torus = world.createEntity([1.5, 0, 0]);

@@ -105,9 +105,9 @@ define([
 	}
 
 	function updateButtonState(buttonIndex, down, args, ctx) {
-		if (ctx.domElement !== document) {
+		/*if (ctx.domElement !== document) {
 			ctx.domElement.focus();
-		}
+		}*/
 		var dragButton = ctx.dragButton;
 		var mouseState = ctx.mouseState;
 		if (dragButton === -1 || dragButton === buttonIndex || down === false) {

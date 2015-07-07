@@ -13,10 +13,12 @@
 			var element = document.getElementById(id);
 			if (element) {
 				element.scrollIntoView();
+				window.parent.history.replaceState('Object', 'Title', 'index.html?c=' + id);
 			}
 		}, false);
 	} else {
-		var className = window.location.pathname.match(/\/(\w+)-doc\.html$/)[1];
-		window.location.href = 'index.html?c=' + className;
+		if (window.location.hash) {
+			window.location.href = 'index.html?h=' + window.location.hash.slice(1);
+		}
 	}
 })();

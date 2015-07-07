@@ -56,7 +56,7 @@ define([
 				expect(vector).toBeCloseToVector(expected);
 			});
 		});
-		
+
 		it('can be accessed through indices', function () {
 			var a = new Vector3(1, 2, 3);
 
@@ -516,7 +516,7 @@ define([
 				expect(function () { vector3.scale(); })
 					.toThrow(new Error('Vector contains NaN at index 0'));
 			});
-			
+
 			it('throws an exception when a corrupt vector would return NaN', function () {
 				var vector = new Vector3();
 				// manually corrupting this vector

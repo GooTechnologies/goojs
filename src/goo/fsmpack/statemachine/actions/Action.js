@@ -1,7 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -25,8 +25,8 @@ define([
 
 	/* this should be called by the constructor and by the handlers when new options are loaded */
 	Action.prototype.configure = function (settings) {
-		FSMUtil.setParameters.call(this, settings, this.constructor.external.parameters);
-		FSMUtil.setTransitions.call(this, settings, this.constructor.external.transitions);
+		FsmUtils.setParameters.call(this, settings, this.constructor.external.parameters);
+		FsmUtils.setTransitions.call(this, settings, this.constructor.external.transitions);
 	};
 
 	/* this is called by external functions - called once, when the host state becomes active */

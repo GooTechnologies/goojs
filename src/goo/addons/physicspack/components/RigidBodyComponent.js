@@ -9,7 +9,8 @@ define([
 	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/joints/BallJoint',
-	'goo/addons/physicspack/joints/HingeJoint'
+	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/components/ColliderComponent'
 ],
 function (
 	AbstractRigidBodyComponent,
@@ -22,7 +23,8 @@ function (
 	PlaneCollider,
 	MeshCollider,
 	BallJoint,
-	HingeJoint
+	HingeJoint,
+	ColliderComponent
 ) {
 	'use strict';
 
@@ -129,10 +131,94 @@ function (
 		 * @type {Array}
 		 */
 		this._colliderEntities = [];
+
+		/**
+		 * How smoothing of the rigid body movement should be done. Set it to {@link RigidBodyComponent.NONE} or {@link RigidBodyComponent.INTERPOLATE}.
+		 * @type {number}
+		 */
+		this.interpolation = RigidBodyComponent.INTERPOLATE;
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 *
+		 * @type {number}
+		 */
+		this._constraints = RigidBodyComponent.FREEZE_NONE;
 	}
 	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
 	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
 	RigidBodyComponent.type = 'RigidBodyComponent';
+
+	/**
+	 * No constraints.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_NONE = 0;
+
+	/**
+	 * Freeze motion along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_X = 1;
+
+	/**
+	 * Freeze motion along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Y = 2;
+
+	/**
+	 * Freeze motion along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION_Z = 4;
+
+	/**
+	 * Freeze rotation along the X-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_X = 8;
+
+	/**
+	 * Freeze rotation along the Y-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Y = 16;
+
+	/**
+	 * Freeze rotation along the Z-axis.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION_Z = 32;
+
+	/**
+	 * Freeze motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_POSITION = RigidBodyComponent.FREEZE_POSITION_X | RigidBodyComponent.FREEZE_POSITION_Y | RigidBodyComponent.FREEZE_POSITION_Z;
+
+	/**
+	 * Freeze rotation along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ROTATION = RigidBodyComponent.FREEZE_ROTATION_X | RigidBodyComponent.FREEZE_ROTATION_Y | RigidBodyComponent.FREEZE_ROTATION_Z;
+
+	/**
+	 * Freeze rotation and motion along all axes.
+	 * @type {number}
+	 */
+	RigidBodyComponent.FREEZE_ALL = RigidBodyComponent.FREEZE_POSITION | RigidBodyComponent.FREEZE_ROTATION;
+
+	/**
+	 * No rigid body smoothing.
+	 */
+	RigidBodyComponent.NONE = 1;
+
+	/**
+	 * Transform is smoothed based on the Transform of the previous frame.
+	 */
+	RigidBodyComponent.INTERPOLATE = 2;
+	//! SH: Making room for future "EXTRAPOLATE"
 
 	/**
 	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
@@ -149,8 +235,12 @@ function (
 		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(transform.translation);
+		body.previousPosition.copy(transform.translation);
+		body.interpolatedPosition.copy(transform.translation);
 		tmpQuat.fromRotationMatrix(transform.rotation);
 		body.quaternion.copy(tmpQuat);
+		body.previousQuaternion.copy(tmpQuat);
+		body.interpolatedQuaternion.copy(tmpQuat);
 	};
 
 	/**
@@ -160,6 +250,28 @@ function (
 	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
 		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
+	};
+
+	/**
+	 * Apply an impulse to the body.
+	 * @param {Vector3} impulse The impulse vector, oriented in world space.
+	 * @param {Vector3} relativePoint Where the impulse should be applied
+	 */
+	RigidBodyComponent.prototype.applyImpulse = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyImpulse(tmpCannonVec, tmpCannonVec2);
+	};
+
+	/**
+	 * Apply an impulse to the center of mass of the body.
+	 * @param {Vector3} impulse The force vector, oriented in local space.
+	 * @param {Vector3} relativePoint
+	 */
+	RigidBodyComponent.prototype.applyImpulseLocal = function (impulse, relativePoint) {
+		tmpCannonVec.copy(impulse);
+		tmpCannonVec2.copy(relativePoint);
+		this.cannonBody.applyLocalImpulse(tmpCannonVec, tmpCannonVec2);
 	};
 
 	/**
@@ -213,8 +325,21 @@ function (
 	 * @param {Vector3} targetVector
 	 */
 	RigidBodyComponent.prototype.getPosition = function (targetVector) {
-		var position = this.cannonBody.position;
-		targetVector.setDirect(position.x, position.y, position.z);
+		if (this.cannonBody) {
+			var position = this.cannonBody.position;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
+	};
+
+	/**
+	 * Get the interpolated position from the rigid body. Use this for rendering. The resulting vector is a linear interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Vector3} targetVector
+	 */
+	RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector) {
+		if (this.cannonBody) {
+			var position = this.cannonBody.interpolatedPosition;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
 	};
 
 	/**
@@ -232,6 +357,22 @@ function (
 	RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
 			var cannonQuaternion = this.cannonBody.quaternion;
+			targetQuat.setDirect(
+				cannonQuaternion.x,
+				cannonQuaternion.y,
+				cannonQuaternion.z,
+				cannonQuaternion.w
+			);
+		}
+	};
+
+	/**
+	 * Get the interpolated quaternion from the rigid body. Use this for rendering. The resulting quaternion is a spherical interpolation between the current and previous physics position, that matches the current rendering frame.
+	 * @param {Quaternion} targetQuat
+	 */
+	RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat) {
+		if (this.cannonBody) {
+			var cannonQuaternion = this.cannonBody.interpolatedQuaternion;
 			targetQuat.setDirect(
 				cannonQuaternion.x,
 				cannonQuaternion.y,
@@ -285,7 +426,10 @@ function (
 			},
 			set: function (value) {
 				this._isKinematic = value;
-				this._dirty = true;
+				if (this.cannonBody) {
+					this.cannonBody.type = value ? CANNON.Body.KINEMATIC : CANNON.Body.DYNAMIC;
+					this.cannonBody.updateMassProperties();
+				}
 			}
 		},
 
@@ -336,54 +480,29 @@ function (
 					this.cannonBody.sleepTimeLimit = value;
 				}
 			}
+		},
+
+		/**
+		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
+		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @type {number}
+		 */
+		constraints: {
+			get: function () {
+				return this._constraints;
+			},
+			set: function (value) {
+				this._constraints = value;
+				var body = this.cannonBody;
+				if (body) {
+					RigidBodyComponent.constraintsToCannonFactors(value, body.linearFactor, body.angularFactor);
+				}
+			}
 		}
 	});
 
 	/**
-	 * Create a CANNON.Shape given a Collider. A BoxCollider yields a CANNON.Box and so on.
-	 * @param {Collider} collider
-	 * @return {CANNON.Shape}
-	 * @hidden
-	 */
-	RigidBodyComponent.getCannonShape = function (collider) {
-		var shape;
-		if (collider instanceof BoxCollider) {
-			var halfExtents = new CANNON.Vec3();
-			halfExtents.copy(collider.halfExtents);
-			shape = new CANNON.Box(halfExtents);
-		} else if (collider instanceof SphereCollider) {
-			shape = new CANNON.Sphere(collider.radius);
-		} else if (collider instanceof PlaneCollider) {
-			shape = new CANNON.Plane();
-		} else if (collider instanceof CylinderCollider) {
-			shape = new CANNON.Cylinder(
-				collider.radius,
-				collider.radius,
-				collider.height,
-				RigidBodyComponent.numCylinderSegments
-			);
-			var quat = new CANNON.Quaternion();
-			quat.setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
-			shape.transformAllPoints(new Vector3(), quat);
-			shape.computeEdges();
-			shape.updateBoundingSphereRadius();
-		} else if (collider instanceof MeshCollider) {
-			// Assume triangles
-			if (collider.meshData.indexModes[0] !== 'Triangles') {
-				throw new Error('MeshCollider data must be a triangle mesh!');
-			}
-			shape = new CANNON.Trimesh(
-				collider.meshData.getAttributeBuffer('POSITION'),
-				collider.meshData.getIndexBuffer()
-			);
-		} else {
-			console.warn('Unhandled collider: ', collider);
-		}
-		return shape;
-	};
-
-	/**
-	 * Removes the body from the physics engine, and set the component to dirty.
+	 * Removes the body from the physics engine
 	 */
 	RigidBodyComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
@@ -394,7 +513,6 @@ function (
 				this._system._shapeIdToColliderEntityMap.delete(shape.id);
 			}.bind(this));
 			this.cannonBody = null;
-			this._dirty = true;
 		}
 
 		// Remove references to colliders
@@ -404,14 +522,23 @@ function (
 		this._colliderEntities.length = 0;
 	};
 
+	RigidBodyComponent.constraintsToCannonFactors = function (constraints, linear, angular) {
+		linear.set(
+			constraints & RigidBodyComponent.FREEZE_POSITION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_POSITION_Z ? 0 : 1
+		);
+		angular.set(
+			constraints & RigidBodyComponent.FREEZE_ROTATION_X ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Y ? 0 : 1,
+			constraints & RigidBodyComponent.FREEZE_ROTATION_Z ? 0 : 1
+		);
+	};
+
 	/**
 	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if the intention is to work with the CANNON.Body instance directly after the component is created.
 	 */
 	RigidBodyComponent.prototype.initialize = function () {
-		if (!this._dirty) {
-			return;
-		}
-
 		this.destroy();
 
 		var body = this.cannonBody = new CANNON.Body({
@@ -421,6 +548,7 @@ function (
 			sleepSpeedLimit: this._sleepingThreshold,
 			sleepTimeLimit: this._sleepingTimeLimit
 		});
+		RigidBodyComponent.constraintsToCannonFactors(this.constraints, body.linearFactor, body.angularFactor);
 		this._system.cannonWorld.addBody(body);
 		this._system._entities[body.id] = this._entity;
 
@@ -437,10 +565,7 @@ function (
 			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(this._entity);
-
-		this._initialized = true;
-		this._dirty = false;
-
+		body.aabbNeedsUpdate = true;
 		this.emitInitialized(this._entity);
 	};
 
@@ -449,7 +574,7 @@ function (
 	 */
 	RigidBodyComponent.prototype.initializeJoint = function (joint) {
 		var bodyA = this.cannonBody;
-		var bodyB = joint.connectedEntity.rigidBodyComponent.cannonBody;
+		var bodyB = (joint.connectedEntity.rigidBodyComponent || joint.connectedEntity.colliderComponent).cannonBody;
 		var constraint;
 		if (joint instanceof BallJoint) {
 
@@ -544,37 +669,6 @@ function (
 	/**
 	 * @hidden
 	 */
-	RigidBodyComponent.prototype.updateDirtyColliders = function () {
-		var colliderEntities = this._colliderEntities;
-		for (var i = colliderEntities.length - 1; i >= 0; i--) {
-			var entity = colliderEntities[i];
-
-			// Check so it is still attached to this entity
-			var parent = entity.colliderComponent.getBodyEntity();
-			if (parent !== this._entity) {
-				colliderEntities.splice(i, 1);
-				entity.colliderComponent.setToDirty();
-				return;
-			}
-
-			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent.isDirty()) {
-				colliderComponent.updateWorldCollider();
-				RigidBodyComponent.copyScaleFromColliderToCannonShape(
-					colliderComponent.cannonShape,
-					colliderComponent.worldCollider
-				);
-
-				colliderComponent.cannonShape.collisionResponse = !colliderComponent.isTrigger;
-
-				colliderComponent.setToClean();
-			}
-		}
-	};
-
-	/**
-	 * @hidden
-	 */
 	RigidBodyComponent.prototype.destroyJoint = function (joint) {
 		var body = this.cannonBody;
 		if (body && joint.cannonJoint) {
@@ -592,7 +686,7 @@ function (
 		colliderComponent.updateWorldCollider(true);
 		var collider = colliderComponent.worldCollider;
 
-		var cannonShape = colliderComponent.cannonShape = RigidBodyComponent.getCannonShape(collider);
+		var cannonShape = colliderComponent.cannonShape = ColliderComponent.getCannonShape(collider);
 
 		this._system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
 
@@ -642,29 +736,6 @@ function (
 	RigidBodyComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
-	};
-
-	/**
-	 * Marks the component as dirty. If it is dirty, the .cannonBody instance is re-initialized in the next process loop.
-	 */
-	RigidBodyComponent.prototype.setToDirty = function () {
-		this._dirty = true;
-	};
-
-	/**
-	 * Marks the component as non-dirty.
-	 */
-	RigidBodyComponent.prototype.setToClean = function () {
-		this._dirty = false;
-	};
-
-	/**
-	 * Gets whether the component needs to be updated.
-	 *
-	 * @return {boolean}
-	 */
-	RigidBodyComponent.prototype.isDirty = function () {
-		return this._dirty;
 	};
 
 	RigidBodyComponent.prototype.api = {};

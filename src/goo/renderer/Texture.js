@@ -1,9 +1,9 @@
 define([
 	'goo/math/Vector2',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	Vector2,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -113,7 +113,7 @@ define([
 			this.setImage(image, width, height, settings);
 		}
 
-		this.loadImage = PromiseUtil.resolve.bind(null, this);
+		this.loadImage = PromiseUtils.resolve.bind(null, this);
 
 		this.textureRecord = {};
 

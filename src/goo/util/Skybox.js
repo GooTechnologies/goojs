@@ -26,26 +26,30 @@ define([
 	 * @param yRotation
 	 */
 	function Skybox(type, images, textureMode, yRotation) {
-		var texture;
+		var promise;
 		if (type === Skybox.SPHERE) {
 			this.meshData = new Sphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
-			if(images) {
-				texture = new TextureCreator().loadTexture2D(images);
+			if (images) {
+				promise = new TextureCreator().loadTexture2D(images);
 			}
 		} else if (type === Skybox.BOX) {
 			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
-				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
+				promise = new TextureCreator().loadTextureCube(images, {flipY: false});
 			}
 		} else {
 			throw new Error('Unknown geometry type');
 		}
 		var material = new Material(shaders[type], 'Skybox material');
 
-		material.setTexture(Shader.DIFFUSE_MAP, texture);
+		if (promise) {
+			promise.then(function (texture) {
+				material.setTexture(Shader.DIFFUSE_MAP, texture);
+			});
+		}
 
 		material.cullState.cullFace = 'Front';
 		material.depthState.enabled = false;

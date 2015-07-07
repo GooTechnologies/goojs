@@ -1,11 +1,11 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/geometrypack/text/TextComponent',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	TextComponent,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -61,7 +61,7 @@ define([
 
 			// load font
 
-			return PromiseUtil.createPromise(function (resolve, reject) {
+			return PromiseUtils.createPromise(function (resolve, reject) {
 				opentype.load(config.font.fontRef, function (err, font) {
 					if (err) {
 						console.error(err);

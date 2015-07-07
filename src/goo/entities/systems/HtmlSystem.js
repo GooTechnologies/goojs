@@ -108,8 +108,10 @@ define([
 		}
 
 		var component = entity.htmlComponent;
-		component.domElement.parentNode.removeChild(component.domElement);
-		component.domElement = null
+		if (component.domElement.parentNode) {
+			component.domElement.parentNode.removeChild(component.domElement);
+		}
+		component.domElement = null;
 	};
 
 	return HtmlSystem;

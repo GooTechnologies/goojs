@@ -450,7 +450,7 @@ define([
 	};
 
 	/**
-	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians).
+	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians, Euler order YZX).
 	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * <br /><i>Injected into entity when adding component.</i>.
 	 * @example
@@ -467,7 +467,7 @@ define([
 	};
 
 	/**
-	 * Adds to this transform's rotation using Euler angles (in radians).
+	 * Adds to this transform's rotation using Euler angles (in radians, Euler order YZX).
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
@@ -496,7 +496,7 @@ define([
 	};
 
 	/**
-	 * Sets this transform's rotation around X, Y and Z axis (Euler angles, in radians).
+	 * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX).
 	 * The rotation is applied in X, Y, Z order.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
@@ -526,7 +526,7 @@ define([
 	 * Sets the transform to look in a specific direction.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector3} position Target position.
+	 * @param {Vector3|Entity} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
@@ -534,6 +534,11 @@ define([
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
 		if (arguments.length === 3) {
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
+		} else if (position.transformComponent) {
+			if (position.transformComponent._dirty) {
+				position.transformComponent.updateWorldTransform();
+			}
+			this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
 		} else {
 			if (Array.isArray(position)) {
 				position = new Vector3(position);
@@ -543,7 +548,6 @@ define([
 			}
 			this.transform.lookAt(position, up);
 		}
-
 		this._dirty = true;
 		return this;
 	};

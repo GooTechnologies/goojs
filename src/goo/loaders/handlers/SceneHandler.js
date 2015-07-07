@@ -1,13 +1,13 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/entities/SystemBus',
-	'goo/util/ArrayUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/ArrayUtils',
+	'goo/util/ObjectUtils',
 	'goo/util/rsvp'
 ], function (
 	ConfigHandler,
 	SystemBus,
-	ArrayUtil,
+	ArrayUtils,
 	_,
 	RSVP
 ) {

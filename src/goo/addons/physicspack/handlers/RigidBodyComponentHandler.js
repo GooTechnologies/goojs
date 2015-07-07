@@ -4,7 +4,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/math/Vector3'
 ], function (
 	ComponentHandler,
@@ -82,9 +82,6 @@ define([
 			component.setAngularVelocity(new Vector3(config.angularVelocity));
 			component.linearDamping = config.linearDrag;
 			component.angularDamping = config.angularDrag;
-
-			component._dirty = true;
-			component._initialized = false;
 
 			return component;
 		});

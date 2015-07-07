@@ -4,7 +4,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
@@ -110,14 +110,6 @@ define([
 			component.material.friction = config.friction;
 			component.material.restitution = config.restitution;
 			component.isTrigger = config.isTrigger;
-			component.setToDirty();
-
-			entity.traverseUp(function (entity) {
-				if (entity.rigidBodyComponent) {
-					entity.rigidBodyComponent.initialize();
-					entity.rigidBodyComponent.setToDirty();
-				}
-			});
 
 			return component;
 		});

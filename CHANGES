@@ -1,3 +1,58 @@
+v0.14.4 --- 2015-06-25
+----------------------
+
+###Fixes
+ * the *SoundSystem* creates an *AudioContext* only if needed (re-fix)
+
+###Deprecated
+ - `PromiseUtil.defer`; please use `PromiseUtil.delay` instead
+
+
+v0.14.3 --- 2015-06-24
+----------------------
+
+###Additions
+ + [ParticleInfluence visual test](http://code.gooengine.com/0.14.3/visual-test/goo/particles/ParticleInfluence-vtest
+ .html)
+ + [SkeletonAnimation visual test](http://code.gooengine.com/0.14
+ .3/visual-test/goo/animationpack/SkeletonAnimation-vtest.html)
+
+###Fixes
+ * shader precision settings not being preserved after context re-initialization
+ * Ludei-related fix
+
+
+v0.14.2 --- 2015-05-28
+----------------------
+
+###Additions
+ + the PolyLine.prototype.pipe is not confined to the XY plane anymore; also added optional scale and twist modifier - [Pipe3D visual test](http://code.gooengine.com/0.14.2/visual-test/goo/geometrypack/Surface/Pipe-vtest.html)
+ + exposed linear and angular rigid body constraints
+ + raycast results now hold the distance
+
+###Fixes
+ * physics related fixes regarding triggers
+ * ShaderLibExtra is exposed on the goo namespace passed to scripts
+
+
+v0.14.1 --- 2015-05-12
+----------------------
+
+###Fixes
+ + yet more physics-related fixes
+
+
+v0.14.0 --- 2015-04-27
+----------------------
+
+###Fixes
+ + numerous physics-related fixes regarding contacts and especially
+ + all *Transform* methods which did not return anything now return the transform
+
+###Breaking changes
+ + TextureCreator and SoundCreator return promises instead of using callbacks
+
+
 v0.13.6 --- 2015-03-31
 ----------------------
 

@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!
@@ -97,7 +97,15 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
 			if (!object) { return; }
-			object.backgroundColor = config.backgroundColor.slice(0);
+			var bgc = config.backgroundColor;
+			var a = bgc[3];
+			// Premultiply alpha
+			object.backgroundColor = [
+				bgc[0] * a,
+				bgc[1] * a,
+				bgc[2] * a,
+				bgc[3]
+			];
 			object.globalAmbient = config.globalAmbient.slice(0,3);
 
 			object.fog = _.deepClone(config.fog);
@@ -177,7 +185,7 @@ define([
 				}
 			},
 			remove: function(weatherState) {
-				if (weatherState.snow.snow) {
+				if (weatherState.snow && weatherState.snow.snow) {
 					weatherState.snow.snow.remove();
 					weatherState.snow.enabled = false;
 					delete weatherState.snow.snow;

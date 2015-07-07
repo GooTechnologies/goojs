@@ -614,9 +614,10 @@ define([
 	};
 
 	/**
-	 * Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
+	 * Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z (Euler order ZYX).
 	 * @param {Vector3} angles Rotational angles in radians.
 	 * @returns {Matrix4x4} Self for chaining.
+	 * @deprecated Deprecated since 0.13.x and scheduled for removal in 0.15.0
 	 */
 	Matrix4x4.prototype.setRotationFromVector = function (angles) {
 		var sx = Math.sin(angles.x);

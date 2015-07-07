@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -48,7 +48,7 @@ define([
 	};
 
 	KeyPressedAction.prototype.configure = function (settings) {
-		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 

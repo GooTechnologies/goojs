@@ -1,6 +1,6 @@
 define([
 	'goo/scripts/ScriptUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ScriptUtils,
 	_

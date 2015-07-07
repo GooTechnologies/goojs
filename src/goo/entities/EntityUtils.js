@@ -1,7 +1,7 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Scripts,
 	BoundingBox,
@@ -82,7 +82,7 @@ define([
 
 						if (script.setup) { newScript.setup = script.setup; }
 						if (script.update) { newScript.update = script.update; }
-						if (script.setup) { newScript.cleanup = script.cleanup; }
+						if (script.cleanup) { newScript.cleanup = script.cleanup; }
 						scriptComponent.scripts.push(newScript);
 					}
 				}

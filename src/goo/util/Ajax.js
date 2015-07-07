@@ -1,14 +1,14 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/StringUtil',
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils',
+	'goo/util/StringUtils',
 	'goo/util/rsvp'
 ], function (
 	TextureHandler,
-	PromiseUtil,
+	PromiseUtils,
 	_,
-	StringUtil,
+	StringUtils,
 	RSVP
 ) {
 	'use strict';
@@ -70,7 +70,7 @@ define([
 			request.responseType = options.responseType;
 		}
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var handleStateChange = function () {
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
@@ -103,7 +103,7 @@ define([
 	 */
 	Ajax.prototype.load = function (path, reload) {
 		var that = this;
-		var path2 = StringUtil.parseURL(path).path;//! AT: dunno what to call this
+		var path2 = StringUtils.parseURL(path).path;//! AT: dunno what to call this
 		var type = path2.substr(path2.lastIndexOf('.') + 1).toLowerCase();
 
 		function typeInGroup(type, group) {
@@ -111,11 +111,11 @@ define([
 		}
 
 		if (!path) {
-			PromiseUtil.reject('Path was undefined');
+			PromiseUtils.reject('Path was undefined');
 		}
 
 		if (path.indexOf(Ajax.ENGINE_SHADER_PREFIX) === 0) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 
 		if (this._cache[path] && !reload) {
@@ -125,7 +125,7 @@ define([
 			if (this._cache[path] instanceof RSVP.Promise) {
 				return this._cache[path];
 			} else {
-				return PromiseUtil.resolve(this._cache[path]);
+				return PromiseUtils.resolve(this._cache[path]);
 			}
 		}
 
@@ -169,7 +169,7 @@ define([
 
 	Ajax.prototype.update = function (path, config) {
 		this._cache[path] = config;
-		return PromiseUtil.resolve(config);
+		return PromiseUtils.resolve(config);
 	};
 
 	/**
@@ -189,7 +189,7 @@ define([
 			image.crossOrigin = 'anonymous';
 		}
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var onLoad = function loadHandler() {
 				image.dataReady = true;
 				if (window.URL && window.URL.revokeObjectURL !== undefined) {
@@ -214,16 +214,44 @@ define([
 	};
 
 	Ajax.prototype._loadVideo = function (url, mimeType) {
+		var VIDEO_LOAD_TIMEOUT = 1000; // Timeout to 'canplay' event.
 		var video = document.createElement('video');
+		var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
 
-		var promise = PromiseUtil.createPromise(function (resolve, reject) {
-			video.addEventListener('canplay', function () {
-				video.dataReady = true;
+		var promise = PromiseUtils.createPromise(function (resolve, reject) {
+			var timeout;
+
+			var _resolve = function() {
+				if (!video.dataReady) {
+					console.warn('Video is not ready');
+				}
+				video.removeEventListener('canplay', canPlay);
+				video.removeEventListener('loadstart', loadStart);
+				clearTimeout(timeout);
 				resolve(video);
-			}, false);
+			};
+
+			var canPlay = function () {
+				video.dataReady = true;
+				_resolve();
+			};
+
+			var loadStart = function () {
+				if (iOS) {
+					_resolve();
+				}
+				else {
+					timeout = setTimeout(_resolve, VIDEO_LOAD_TIMEOUT);
+				}
+			};
+
+			// iOS doesn't auto-load video
+			video.addEventListener('canplay', canPlay , false);
+			video.addEventListener('loadstart', loadStart, false);
+
 			video.addEventListener('error', function (e) {
 				reject('Could not load video from ' + url + ', ' + e);
 			}, false);

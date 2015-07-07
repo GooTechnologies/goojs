@@ -1,11 +1,11 @@
 define([
 	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
 ], function (
 	Material,
-	FullscreenUtil,
+	FullscreenUtils,
 	ShaderLib,
 	Pass
 ) {
@@ -22,7 +22,7 @@ define([
 		this.renderToScreen = false;
 
 		this.renderable = {
-			meshData: FullscreenUtil.quad,
+			meshData: FullscreenUtils.quad,
 			materials: [this.material]
 		};
 
@@ -41,9 +41,9 @@ define([
 		}
 
 		if (this.renderToScreen) {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], null, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], null, this.clear);
 		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], writeBuffer, this.clear);
 		}
 	};
 

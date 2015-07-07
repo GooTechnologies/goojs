@@ -5,12 +5,13 @@ define([
 	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/renderer/Util',
-	'goo/util/ObjectUtil',
+	'goo/util/PromiseUtils',
+	'goo/renderer/RendererUtils',
+	'goo/util/ObjectUtils',
 	'goo/util/CanvasUtils',
-	'goo/util/StringUtil',
-	'goo/entities/SystemBus'
+	'goo/util/StringUtils',
+	'goo/entities/SystemBus',
+	'goo/math/MathUtils'
 ],
 function (
 	ConfigHandler,
@@ -19,12 +20,13 @@ function (
 	CrunchLoader,
 	TgaLoader,
 	RSVP,
-	PromiseUtil,
-	Util,
+	PromiseUtils,
+	RendererUtils,
 	_,
 	CanvasUtils,
-	StringUtil,
-	SystemBus
+	StringUtils,
+	SystemBus,
+	MathUtils
 ) {
 	'use strict';
 
@@ -141,7 +143,6 @@ function (
 		// Special (dds, tga, crn)
 		var Loader = TextureHandler.loaders[type];
 		var imageRef = config.imageRef;
-		texture.a = imageRef;
 		return this.loadObject(imageRef)
 		.then(function (data) {
 			if (data && data.preloaded) {
@@ -162,7 +163,7 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (!Util.isPowerOfTwo(video.width) || !Util.isPowerOfTwo(video.height)) {
+			if (!(MathUtils.isPowerOfTwo(video.width) && MathUtils.isPowerOfTwo(video.height))) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}
@@ -183,7 +184,7 @@ function (
 
 	TextureHandler.prototype._loadImage = function (texture, config, options) {
 		var imageRef = config.imageRef;
-		var path = StringUtil.parseURL(imageRef).path;
+		var path = StringUtils.parseURL(imageRef).path;
 		var type = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
 		if (TextureHandler.loaders[type]) {
 			return this._loadSpecialImage(texture, config, type, options);
@@ -194,7 +195,7 @@ function (
 		if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 			return this._loadVideo(texture, config, options);
 		}
-		return PromiseUtil.reject(new Error('Unknown image type: '+ type));
+		return PromiseUtils.reject(new Error('Unknown image type: '+ type));
 	};
 
 	/**
@@ -250,7 +251,7 @@ function (
 				}
 			} else if (config.svgData) {
 				// Load SVG data
-				ret = PromiseUtil.createPromise(function (resolve, reject) {
+				ret = PromiseUtils.createPromise(function (resolve, reject) {
 					CanvasUtils.renderSvgToCanvas(config.svgData, {}, function (canvas) {
 						if (canvas) {
 							texture.setImage(canvas);

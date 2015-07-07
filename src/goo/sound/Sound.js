@@ -48,10 +48,12 @@ define([
 
 	/**
 	 * Plays the sound if it's not playing
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should start to play.
 	 * @returns {RSVP.Promise} Resolves when sound has played through or when it's stopped.
 	 * Looping sounds will never resolve
 	 */
-	Sound.prototype.play = function () {
+	Sound.prototype.play = function (when) {
+		when = when || 0;
 		if (this._currentSource) {
 			return this._endPromise;
 		}
@@ -81,7 +83,11 @@ define([
 		this._playStart = AudioContext.getContext().currentTime - this._pausePos;
 		var duration = this._duration - this._pausePos;
 
-		this._currentSource.start(0, this._pausePos + this._offset, duration);
+		if (this._loop) {
+			this._currentSource.start(when, this._pausePos + this._offset);
+		} else {
+			this._currentSource.start(when, this._pausePos + this._offset, duration);
+		}
 
 		return this._endPromise;
 	};
