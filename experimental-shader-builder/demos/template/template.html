@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<style>
+		body {
+			background-color: #131411;
+			color: white;
+			font-family: sans-serif;
+		}
+
+		#template-editor, #data-editor, #output-editor {
+			display: inline-block;
+			height: 512px;
+		}
+
+		#template-editor, #output-editor {
+			width: 700px;
+		}
+
+		#data-editor {
+			width: 400px;
+		}
+	</style>
+</head>
+<body>
+	<div id="template-editor"></div>
+	<div id="data-editor"></div>
+	<div id="output-editor"></div>
+
+	<script src="lib/ace/ace.js"></script>
+	<script src="lib/ace/theme-monokai.js"></script>
+	<script src="lib/ace/mode-javascript.js"></script>
+	<script src="lib/ace/worker-javascript.js"></script>
+	<script src="lib/ace/mode-glsl.js"></script>
+
+	<script src="lib/jquery-2.1.3.min.js"></script>
+
+	<script src="template.js"></script>
+</body>
+</html>

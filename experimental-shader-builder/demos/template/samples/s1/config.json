@@ -1,0 +1,16 @@
+{
+  "lights": [{
+    "type": "point",
+    "color": [1, 2, 3, 4],
+    "range": 123
+  }, {
+    "type": "spot",
+    "color": [5, 6, 7, 8],
+    "range": 456,
+    "angle": 50
+  }, {
+    "type": "point",
+    "color": [1, 2, 3, 4],
+    "range": 789
+  }]
+}
