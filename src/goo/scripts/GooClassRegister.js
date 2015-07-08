@@ -127,7 +127,8 @@ define([
 	'goo/util/combine/AtlasNode',
 	'goo/util/combine/EntityCombiner',
 	'goo/util/combine/Rectangle',
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/TWEEN'
 ], function (Scripts) {
 	'use strict';
 
@@ -262,7 +263,8 @@ define([
 		'AtlasNode',
 		'EntityCombiner',
 		'Rectangle',
-		'rsvp'
+		'rsvp',
+		'TWEEN'
 	];
 
 	for (var i = 1; i < defines.length; i++) {

@@ -1,6 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/Tween'
+	'goo/util/TWEEN'
 ], function (
 	Action,
 	TWEEN

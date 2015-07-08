@@ -6,7 +6,7 @@ define([
 	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtils',
-	'goo/util/Tween'
+	'goo/util/TWEEN'
 ], function (
 	ComponentHandler,
 	TimelineComponent,

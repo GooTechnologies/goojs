@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'goo/util/Tween',
+	'goo/util/TWEEN',
 	'goo/fsmpack/statemachine/actions/Actions'
 ], function (
 	System,
