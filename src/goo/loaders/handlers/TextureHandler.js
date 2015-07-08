@@ -229,11 +229,9 @@ function (
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
-				if (config.generateMipmaps) {
-					texture.minFilter = config.minFilter;
-				} else {
-					texture.minFilter = TextureHandler.noMipMapAlternatives[config.minFilter];
-				}
+				texture.minFilter = config.generateMipmaps ?
+					config.minFilter :
+					TextureHandler.noMipMapAlternatives[config.minFilter];
 			}
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
