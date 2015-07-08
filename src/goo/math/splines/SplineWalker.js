@@ -82,7 +82,7 @@ define([
 		this._lastStepSize  = this._lastStepSize < 0 ? distance : this._lastStepSize;
 
 		if (this.loop && this._segment >= this._spline.segments) {
-			this.restart();
+			this._segment = 0;
 		}
 
 		while (this._fixedDistance < this._distance && this._segment < this._spline.segments) {
@@ -113,14 +113,12 @@ define([
 	 */
 	SplineWalker.prototype.restart = function () {
 		this._segment = 0;
-		if (this.loop) {
-			this._distance = 0;
-			this._fixedDistance = 0;
-			this._lastStepSize = -1;
-			var spline = this._spline;
-			this._pointer.copy(spline.controlPoints[0]);
-			this._lastPointer.copy(spline.controlPoints[0]);
-		}
+		this._distance = 0;
+		this._fixedDistance = 0;
+		this._lastStepSize = -1;
+		var spline = this._spline;
+		this._pointer.copy(spline.controlPoints[0]);
+		this._lastPointer.copy(spline.controlPoints[0]);
 	};
 
 	return SplineWalker;
