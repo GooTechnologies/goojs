@@ -710,5 +710,7 @@ define(function () {
 
 	};
 
+	window.TWEEN = TWEEN; // ask Martin, Ray
+
 	return TWEEN;
 });
