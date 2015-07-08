@@ -258,7 +258,6 @@ define([
 		'MeshBuilder',
 		'ObjectUtil',
 		'ObjectUtils',
-		'ObjectUtils',
 		'ParticleSystemUtils',
 		'PromiseUtil',
 		'PromiseUtils',
