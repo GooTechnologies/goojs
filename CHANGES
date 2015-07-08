@@ -1,3 +1,12 @@
+v0.15.1 --- 2015-07-08
+----------------------
+
+###Fixes
+ * renamed *goo.Tween* to *goo.TWEEN*
+ * TWEEN is installed on window as well as on the goo namespace
+ * mentioned old *...Util* classes on the goo script namespace
+
+
 v0.15.0 --- 2015-07-07
 ----------------------
 
@@ -19,6 +28,7 @@ v0.15.0 --- 2015-07-07
  - *BinaryLERPSource* is now *BinaryLerpSource*
  - *LayerLERPBlender* is now *LayerLerpBlender*
  - *renderer/Util* in favour of *renderer/RendererUtil*
+
 
 v0.14.4 --- 2015-06-25
 ----------------------
