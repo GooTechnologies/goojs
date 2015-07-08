@@ -39,6 +39,9 @@ v0.14.3 --- 2015-06-24
  + [SkeletonAnimation visual test](http://code.gooengine.com/0.14
  .3/visual-test/goo/animationpack/SkeletonAnimation-vtest.html)
 
+###Changes
+ * sole's tween.js has been integrated into the engine and is accessible under the goo namespace (*goo.Tween*)
+
 ###Fixes
  * shader precision settings not being preserved after context re-initialization
  * Ludei-related fix
