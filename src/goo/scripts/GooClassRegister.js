@@ -139,6 +139,7 @@ define([
 
 	//! AT: have to duplicate this for now until nicer way is found
 	// minifier cannot handle any expressions or statements other than a simple array of strings
+	
 	var defines = [
 		'Scripts',
 		'Entity',
