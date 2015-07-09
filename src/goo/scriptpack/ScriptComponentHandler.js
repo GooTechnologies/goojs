@@ -111,19 +111,11 @@ define([
 			return PromiseUtils.resolve();
 		}
 
-		//var promises = [];
-		//for (var i = 0; i < externals.parameters.length; i++) {
-		//	var external = externals.parameters[i];
-		//	this._setParameter(parameters, config[external.key], external, options);
-		//}
-
 		var promises = externals.parameters.map(function (external) {
 			return this._setParameter(parameters, config[external.key], external, options);
 		}, this);
 
-		// parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
-
-		parameters.enabled = config.enabled || true;
+		parameters.enabled = config.enabled !== false;
 
 		return RSVP.all(promises);
 	};
