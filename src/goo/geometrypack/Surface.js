@@ -12,16 +12,16 @@ define([
 	 * @param {number[]} verts The vertices data array
 	 * @param {number} [verticesPerLine=2] The number of vertices
 	 */
-	function Surface(verts, vertsPerLine, verticallyClosed) {
+	function Surface(verts, verticesPerLine, verticallyClosed) {
 		this.verts = verts;
-		this.vertsPerLine = vertsPerLine || 2;
+		this.verticesPerLine = verticesPerLine || 2;
 		this.verticallyClosed = !!verticallyClosed;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
 		var nVerts = this.verts.length / 3;
-		var nLines = nVerts / this.vertsPerLine;
-		MeshData.call(this, attributeMap, nVerts, (nLines - 1) * (this.vertsPerLine - 1) * 6);
+		var nLines = nVerts / this.verticesPerLine;
+		MeshData.call(this, attributeMap, nVerts, (nLines - 1) * (this.verticesPerLine - 1) * 6);
 
 		this.rebuild();
 	}
@@ -42,14 +42,14 @@ define([
 		var normals = [];
 
 		var nVerts = this.verts.length / 3;
-		var nLines = nVerts / this.vertsPerLine;
+		var nLines = nVerts / this.verticesPerLine;
 
 		for (var i = 0; i < nLines - 1; i++) {
-			for (var j = 0; j < this.vertsPerLine - 1; j++) {
-				var upLeft = (i + 0) * this.vertsPerLine + (j + 0);
-				var downLeft = (i + 1) * this.vertsPerLine + (j + 0);
-				var downRight = (i + 1) * this.vertsPerLine + (j + 1);
-				var upRight = (i + 0) * this.vertsPerLine + (j + 1);
+			for (var j = 0; j < this.verticesPerLine - 1; j++) {
+				var upLeft = (i + 0) * this.verticesPerLine + (j + 0);
+				var downLeft = (i + 1) * this.verticesPerLine + (j + 0);
+				var downRight = (i + 1) * this.verticesPerLine + (j + 1);
+				var upRight = (i + 0) * this.verticesPerLine + (j + 1);
 
 				indices.push(upLeft, downLeft, upRight, upRight, downLeft, downRight);
 
@@ -70,9 +70,9 @@ define([
 			}
 
 			if(this.verticallyClosed) {
-				var upLeft = (i + 0) * this.vertsPerLine + (0 + 0);
-				var downLeft = (i + 1) * this.vertsPerLine + (0 + 0);
-				var upRight = (i + 0) * this.vertsPerLine + (0 + 1);
+				var upLeft = (i + 0) * this.verticesPerLine + (0 + 0);
+				var downLeft = (i + 1) * this.verticesPerLine + (0 + 0);
+				var upRight = (i + 0) * this.verticesPerLine + (0 + 1);
 
 				normals = MathUtils.getTriangleNormal(
 					this.verts[upLeft * 3 + 0],
@@ -95,10 +95,10 @@ define([
 		}
 
 		i--;
-		for (var j = 0; j < this.vertsPerLine - 1; j++) {
-			var upLeft = (i + 0) * this.vertsPerLine + (j + 0);
-			var downLeft = (i + 1) * this.vertsPerLine + (j + 0);
-			var upRight = (i + 0) * this.vertsPerLine + (j + 1);
+		for (var j = 0; j < this.verticesPerLine - 1; j++) {
+			var upLeft = (i + 0) * this.verticesPerLine + (j + 0);
+			var downLeft = (i + 1) * this.verticesPerLine + (j + 0);
+			var upRight = (i + 0) * this.verticesPerLine + (j + 1);
 
 			normals = MathUtils.getTriangleNormal(
 				this.verts[upLeft * 3 + 0],
@@ -178,7 +178,7 @@ define([
 			for (var x = 0; x < heightMap[z].length; x++) {
 				verts.push(
 					x * xScale,
-					heightMap[z][x] * yScale, 
+					heightMap[z][x] * yScale,
 					z * zScale
 				);
 			}
@@ -200,9 +200,9 @@ define([
 		for (var z = 0; z < zCount; z++) {
 			for (var x = 0; x < xCount; x++) {
 				verts.push(
-					(x * xSize / xCount) - xSize * 0.5,
-					0, 
-					(z * zSize / zCount) - zSize * 0.5
+					(x * xSize / (xCount - 1)) - xSize * 0.5,
+					0,
+					(z * zSize / (zCount - 1)) - zSize * 0.5
 				);
 			}
 		}

@@ -48,10 +48,10 @@ require([
 		material.setTexture('DIFFUSE_MAP', texture);
 	});
 
-	world.createEntity(meshData, material, [0, 0, -heightMapSize / 2]).addToWorld();
+	world.createEntity(meshData, material, [0, 0, (-heightMapSize + 1) / 2]).addToWorld();
 
 
-	var size = 64;
+	var size = 63;
 	var vertCount = 100;
 	var meshData = Surface.createTessellatedFlat(size, size, vertCount, vertCount);
 	world.createEntity(meshData, material, [-size * 0.5 , 0, 0]).addToWorld();
