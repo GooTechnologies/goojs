@@ -82,37 +82,28 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (posteffects) {
 			if (!posteffects) { return; }
-//			var i = 0;
-//			_.forEach(config.posteffects, function (effectConfig) {
-//				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
-//			}, null, 'sortValue');
-//			posteffects.length = i;
-//			return RSVP.all(posteffects);
+
 			var oldEffects = posteffects.slice();
 			var promises = [];
 			ObjectUtils.forEach(config.posteffects, function (effectConfig) {
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
+
 			return RSVP.all(promises).then(function (effects) {
 				for (var i = 0; i < effects.length; i++) {
 					posteffects[i] = effects[i];
 				}
+
 				posteffects.length = i;
-				/*
-				for (var i = 0; i < oldEffects.length; i++) {
-					var effect = oldEffects[i];
-					if (posteffects.indexOf(effect) === -1) {
-						// Destroy posteffect rendertargets
-					}
-				}
-				*/
 				return posteffects;
 			});
 		}).then(function (posteffects) {
 			if (!posteffects) { return; }
+
 			var enabled = posteffects.some(function (effect) { return effect.enabled; });
 			var renderSystem = that.world.getSystem('RenderSystem');
 			var composer = that._composer;
+
 			// If there are any enabled, add them
 			if (enabled) {
 				composer.passes = [];
@@ -131,6 +122,7 @@ define([
 				// No posteffects, remove composer
 				ArrayUtils.remove(renderSystem.composers, that._composer);
 			}
+
 			return posteffects;
 		});
 	};
@@ -139,16 +131,22 @@ define([
 	 * Finds the already created effect from the configs id or creates a new one and updates it
 	 * according to config
 	 * @param {object} config
-	 * @param {RenderPass[]} array of engine posteffects/Renderpasses
+	 * @param {RenderPass[]} posteffects array of engine posteffects/Renderpasses
+	 * @param {Object} options
 	 * @returns {RenderPass} effect
 	 */
-	PosteffectsHandler.prototype._updateEffect = function (config, posteffects, options) {
+	PosteffectsHandler.prototype._updateEffect = function (originalConfig, posteffects, options) {
+		// this gets mutated
+		var config = ObjectUtils.deepClone(originalConfig);
+
 		var that = this;
 		function loadConfig(key, id) {
 			return that._load(id, options).then(function (object) {
 				config.options[key] = object;
 			});
 		}
+
+		// ArrayUtils.find
 		var effect;
 		for (var i = 0; i < posteffects.length; i++) {
 			if (posteffects[i].id === config.id) {
@@ -156,17 +154,20 @@ define([
 				break;
 			}
 		}
+
 		if (!effect) {
 			if (!PassLib[config.type]) {
 				return null;
 			}
 			effect = new PassLib[config.type](config.id);
 		}
+
 		var promises = [];
 		for (var i = 0; i < PassLib[config.type].options.length; i++) {
 			var option = PassLib[config.type].options[i];
 			var key = option.key;
 			var type = option.type;
+
 			if (type === 'texture') {
 				if (config.options[key] && config.options[key].textureRef && config.options[key].enabled) {
 					promises.push(loadConfig(key, config.options[key].textureRef));
@@ -181,6 +182,7 @@ define([
 				}
 			}
 		}
+
 		return RSVP.all(promises).then(function () {
 			effect.update(config);
 			return effect;
