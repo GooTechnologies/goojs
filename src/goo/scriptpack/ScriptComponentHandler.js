@@ -96,22 +96,43 @@ define([
 		});
 	};
 
+	/**
+	 * Sets the parameters of a script instance
+	 * @private
+	 * @param parameters The parameters of the new script instance to fill out
+	 * @param config Script values from the json config
+	 * @param externals Parameter definitions as defined in a script's external.parameters object
+	 * @param options Dynamic loader options
+	 * @returns {*}
+	 */
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
+		// is externals ever falsy?
 		if (!externals || !externals.parameters) {
 			return PromiseUtils.resolve();
 		}
 
-		var promises = [];
-		for (var i = 0; i < externals.parameters.length; i++) {
-			var external = externals.parameters[i];
-			this._setParameter(parameters, config[external.key], external, options);
-		}
-		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
+		var promises = externals.parameters.map(function (external) {
+			return this._setParameter(parameters, config[external.key], external, options);
+		}, this);
+
+		parameters.enabled = config.enabled !== false;
+
 		return RSVP.all(promises);
 	};
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
+
+		if (!ScriptUtils.typeValidators[external.type](config)) {
+			if (typeof external.default === 'undefined') {
+				parameters[key] = _.deepClone(ScriptUtils.defaultsByType[external.type]);
+			} else {
+				parameters[key] = _.deepClone(external.default);
+			}
+
+			return PromiseUtils.resolve();
+		}
+
 		if (external.type === 'texture') {
 			if (!config || !config.textureRef || config.enabled === false) {
 				parameters[key] = null;
@@ -132,6 +153,7 @@ define([
 			}
 		} else {
 			parameters[key] = _.extend(config);
+			// revert to default if value of bad type
 			return PromiseUtils.resolve();
 		}
 	};

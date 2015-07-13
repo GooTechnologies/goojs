@@ -5,7 +5,7 @@ define([
 ) {
 	'use strict';
 
-	var ScriptUtils = {};
+	function ScriptUtils() {}
 
 
 	ScriptUtils.defaultsByType = {
@@ -21,9 +21,44 @@ define([
 	};
 
 
+	ScriptUtils.typeValidators = (function () {
+		var typeOf = function (type) {
+			return function (data) {
+				return typeof data === type;
+			};
+		};
+
+		var isVec = function (length) {
+			return function (data) {
+				return data instanceof Array && data.length === length;
+			};
+		};
+
+		var isRef = function (refType) {
+			return function (data) {
+				return data &&
+					(typeof data.enabled === 'boolean') &&
+					(typeof data[refType + 'Ref'] === 'string');
+			};
+		};
+
+		return {
+			'float': typeOf('number'),
+			'string': typeOf('string'),
+			'boolean': typeOf('boolean'),
+			'int': function (data) { return typeOf('number')(data) && data % 1 === 0; },
+			'vec2': isVec(2),
+			'vec3': isVec(3),
+			'vec4': isVec(4),
+			'texture': isRef('texture'),
+			'entity': isRef('entity')
+		};
+	})();
+
+
 	/**
 	 * Fill a passed parameters object with defaults from spec
-	 * @private
+	 * @hidden
 	 * @param parameters {object} The type of object passed as parameters to a script
 	 * @param specs {Array.<{key, name, default, description}>}
 	 */
@@ -56,7 +91,7 @@ define([
 
 	/**
 	 * Fills specs' names with their prettyprinted keys (x -> x, maxX -> Max X, myBluePanda -> My Blue Panda)
-	 * @private
+	 * @hidden
 	 * @param specs {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
