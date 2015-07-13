@@ -72,10 +72,20 @@ function (
 		'BilinearNearestMipMap',
 		'Trilinear'
 	];
+
 	TextureHandler.magFilters = [
 		'NearestNeighbor',
 		'Bilinear'
 	];
+
+	TextureHandler.noMipMapAlternatives = {
+		'NearestNeighborNoMipMaps': 'NearestNeighborNoMipMaps',
+		'NearestNeighborNearestMipMap': 'NearestNeighborNoMipMaps',
+		'NearestNeighborLinearMipMap': 'NearestNeighborNoMipMaps',
+		'BilinearNoMipMaps': 'BilinearNoMipMaps',
+		'BilinearNearestMipMap': 'BilinearNoMipMaps',
+		'Trilinear': 'BilinearNoMipMaps'
+	};
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
@@ -219,7 +229,9 @@ function (
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
-				texture.minFilter = config.minFilter;
+				texture.minFilter = config.generateMipmaps ?
+					config.minFilter :
+					TextureHandler.noMipMapAlternatives[config.minFilter];
 			}
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
