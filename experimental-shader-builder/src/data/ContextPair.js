@@ -7,6 +7,10 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Holds a vertex and a fragment context
+	 * @param typeDefinitions
+	 */
 	function ContextPair(typeDefinitions) {
 		this.typeDefinitions = typeDefinitions;
 

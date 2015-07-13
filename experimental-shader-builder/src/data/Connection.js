@@ -1,6 +1,13 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * An outgoing connection from a node; should be created only internally
+	 * @hidden
+	 * @param {string} output
+	 * @param {string} to
+	 * @param {string} input
+	 */
 	function Connection(output, to, input) {
 		this.output = output;
 		this.to = to;

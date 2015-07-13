@@ -9,6 +9,12 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Wrapper for external inputs (uniforms, attributes, varyings).
+	 * These nodes allow no inputs and can only have outputs.
+	 * @param id
+	 * @param config
+	 */
 	function ExternalInputNode(id, config) {
 		Node.call(this, id);
 

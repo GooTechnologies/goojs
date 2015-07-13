@@ -9,6 +9,11 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * A fragment-specific context
+	 * @param _typeDefinitions
+	 * @constructor
+	 */
 	function FragmentContext(_typeDefinitions) {
 		var typeDefinitions = {};
 
@@ -28,6 +33,12 @@ define([
 	FragmentContext.prototype = Object.create(Context.prototype);
 	FragmentContext.prototype.constructor = Context;
 
+	/**
+	 * Creates a varying node (usable only in the fragment context)
+	 * @param name
+	 * @param dataType
+	 * @returns {ExternalInputNode}
+	 */
 	FragmentContext.prototype.createVarying = function (name, dataType) {
 		var node = new ExternalInputNode(this.generateId(), {
 			name: name,

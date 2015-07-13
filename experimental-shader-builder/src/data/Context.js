@@ -21,6 +21,14 @@ define([
 		return str.charAt(0).toUpperCase() + str.substring(1);
 	}
 
+	/**
+	 * Generates a constructor and prototype for a node type
+	 * @param name
+	 * @param inputs
+	 * @param outputs
+	 * @param defines
+	 * @returns {Function}
+	 */
 	function generateConstructor(name, inputs, outputs, defines) {
 		var constructor = function () {
 			FunctionNode.apply(this, arguments);
@@ -80,6 +88,11 @@ define([
 		return constructor;
 	}
 
+	/**
+	 * Generates constructors for all node types
+	 * @param typeDefinitions
+	 * @returns {Function[]}
+	 */
 	function generateConstructors(typeDefinitions) {
 		return Object.keys(typeDefinitions).reduce(function (constructors, id) {
 			var typeDefinition = typeDefinitions[id];
@@ -93,6 +106,11 @@ define([
 		}, {});
 	}
 
+	/**
+	 * Generates a function that when called instantiates a node of the given type
+	 * @param type
+	 * @returns {Function}
+	 */
 	function generateNodeCreator(type) {
 		return function () {
 			var node = new this.constructors[type](this.generateId(), type);
@@ -104,6 +122,11 @@ define([
 		};
 	}
 
+	/**
+	 * Attaches node creators to the context as methods named `createAdd`, `createSin`, etc...
+	 * @param {object} target Target object to attach methods to
+	 * @param {Function[]} constructors
+	 */
 	function attachNodeCreators(target, constructors) {
 		Object.keys(constructors).forEach(function (id) {
 			var methodName = 'create' + capitalize(id);
@@ -111,6 +134,11 @@ define([
 		});
 	}
 
+	/**
+	 * Base context class; holds a node structure and methods for creating nodes
+	 * @param typeDefinitions
+	 * @constructor
+	 */
 	function Context(typeDefinitions) {
 		this.typeDefinitions = typeDefinitions;
 		this.constructors = generateConstructors(this.typeDefinitions);
@@ -153,6 +181,12 @@ define([
 	Context.prototype.createUniform = externalCreator('uniform');
 	Context.prototype.createAttribute = externalCreator('attribute');
 
+	/**
+	 * Creates a function node of the given type; should not be called only internally, by node creators
+	 * @hidden
+	 * @param type
+	 * @returns {FunctionNode}
+	 */
 	Context.prototype.createFunction = function (type) {
 		var node = new this.constructors[type](this.generateId());
 		node._context = this;

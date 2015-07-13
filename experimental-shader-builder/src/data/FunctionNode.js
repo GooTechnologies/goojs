@@ -15,6 +15,11 @@ define([
 		return obj;
 	}
 
+	/**
+	 * Wrapper for nodes that are functions (+, -, *, sin, etc... - neither inputs not outputs)
+	 * @param id
+	 * @param type
+	 */
 	function FunctionNode(id, type) {
 		Node.call(this, id);
 

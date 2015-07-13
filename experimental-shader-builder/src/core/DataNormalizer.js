@@ -1,6 +1,11 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * Adds missing empty arrays or maps such that all entries have the same properties
+	 * @param {NodeType[]} nodeTypes
+	 * @returns {NodeType[]}
+	 */
 	function normalizeNodeTypes(nodeTypes) {
 		if (!nodeTypes) { return {}; }
 
@@ -19,6 +24,11 @@ define(function () {
 		return string.replace(/-/g, '_');
 	}
 
+	/**
+	 * Adds missing empty arrays or maps such that all entries have the same properties
+	 * @param {NodeInstance[]} structure
+	 * @returns {NodeInstance[]}
+	 */
 	function normalizeStructure(structure) {
 		if (!structure) { return []; }
 

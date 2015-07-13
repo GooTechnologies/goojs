@@ -9,6 +9,13 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Wrapper for external outputs (varying in the vertex context).
+	 * These nodes have no outputs and can only take inputs.
+	 * @param id
+	 * @param config
+	 * @constructor
+	 */
 	function ExternalOutputNode(id, config) {
 		Node.call(this, id);
 

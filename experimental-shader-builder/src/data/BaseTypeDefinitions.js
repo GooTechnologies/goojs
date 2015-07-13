@@ -1,6 +1,10 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * Node types covering GLSL functions and operators
+	 */
+
 	return {
 		vertex: {
 			position: {

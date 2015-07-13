@@ -1,16 +1,32 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * Wrapper for a node structure
+	 * @constructor
+	 */
 	function Structure() {
 		this.nodes = {};
 		this._context = null;
 	}
 
+	/**
+	 * Should be called only internally
+	 * @hidden
+	 * @param node
+	 * @returns {Structure}
+	 */
 	Structure.prototype.addNode = function (node) {
 		this.nodes[node.id] = node;
 		return this;
 	};
 
+	/**
+	 * Should be called only internally
+	 * @hidden
+	 * @param node
+	 * @returns {Structure}
+	 */
 	Structure.prototype.removeNode = function (node) {
 		// remove connections to the node
 		delete this.nodes[node.id];
@@ -18,7 +34,7 @@ define(function () {
 	};
 
 	/**
-	 * Only reflows * types
+	 * Propagates any * types that are resolved by the new connection
 	 * @param startNode
 	 * @param connection
 	 * @private
@@ -116,6 +132,13 @@ define(function () {
 		propagate(startNode, connection);
 	};
 
+	/**
+	 * "Unresolves" any types that were resolved by this connection.
+	 * This is applied recursively, to the whole structure.
+	 * @private
+	 * @param startNode
+	 * @param connection
+	 */
 	Structure.prototype._unflowTypes = function (startNode, connection) {
 		var typeDefinitions = this._context.typeDefinitions;
 		var nodes = this.nodes;
@@ -203,6 +226,12 @@ define(function () {
 		return df.call(this, this.nodes[connection.to]);
 	};
 
+	/**
+	 * Returns whether a node accepts a connection. Should be called only internally.
+	 * @param node
+	 * @param connection
+	 * @returns {{result: boolean, reason: string}}
+	 */
 	Structure.prototype.acceptsConnection = function (node, connection) {
 		var targetNode = this.nodes[connection.to];
 
@@ -225,10 +254,17 @@ define(function () {
 		};
 	};
 
-	// why proxy these operations?
-	// because they can verify the validity of the graph
-	// while the node alone cannot do that
+	/**
+	 * Adds a connection to a node and performs validity checks. Should be called only internally
+	 * @param node
+	 * @param connection
+	 * @returns {Structure}
+	 */
 	Structure.prototype.addConnection = function (node, connection) {
+		// why proxy these operations?
+		// because they can verify the validity of the graph
+		// while the node alone cannot do that
+
 		var accepts = this.acceptsConnection(node, connection);
 		if (!accepts.result) {
 			throw new Error(
@@ -248,6 +284,12 @@ define(function () {
 		return this;
 	};
 
+	/**
+	 * Removes an existing connection. Should be called only internally
+	 * @param node
+	 * @param connection
+	 * @returns {Structure}
+	 */
 	Structure.prototype.removeConnection = function (node, connection) {
 		this._unflowTypes(node, connection);
 		node.removeConnection(connection);

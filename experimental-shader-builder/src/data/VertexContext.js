@@ -9,6 +9,11 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * A vertex-specific context
+	 * @param _typeDefinitions
+	 * @constructor
+	 */
 	function VertexContext(_typeDefinitions) {
 		var typeDefinitions = {};
 
@@ -29,6 +34,12 @@ define([
 	VertexContext.prototype = Object.create(Context.prototype);
 	VertexContext.prototype.constructor = Context;
 
+	/**
+	 * Creates a varying node (usable only in the vertex context)
+	 * @param name
+	 * @param dataType
+	 * @returns {ExternalOutputNode}
+	 */
 	VertexContext.prototype.createVarying = function (name, dataType) {
 		var node = new ExternalOutputNode(this.generateId(), {
 			name: name,
