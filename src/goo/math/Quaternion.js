@@ -105,71 +105,6 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		target.data[0] = (clean &= rhs.data[0] < 0.0 || rhs.data[0] > 0.0) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
-		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
-		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarAdd = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] + rhs;
-		target.data[1] = lhs.data[1] + rhs;
-		target.data[2] = lhs.data[2] + rhs;
-		target.data[3] = lhs.data[3] + rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Quaternion vector for storage.
-	 * @returns {Quaternion} A new quaternion if the target vector cannot be used for storage, else the target vector.
-	 */
-	Quaternion.scalarSub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] - rhs;
-		target.data[1] = lhs.data[1] - rhs;
-		target.data[2] = lhs.data[2] - rhs;
-		target.data[3] = lhs.data[3] - rhs;
-
-		return target;
-	};
-
-	/**
 	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -180,31 +115,6 @@ define([
 		if (!target) {
 			target = new Quaternion();
 		}
-
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-		target.data[2] = lhs.data[2] * rhs;
-		target.data[3] = lhs.data[3] * rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarDiv = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
 
 		target.data[0] = lhs.data[0] * rhs;
 		target.data[1] = lhs.data[1] * rhs;
@@ -353,52 +263,12 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.div = function (rhs) {
-		return Quaternion.div(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarAdd = function (rhs) {
-		return Quaternion.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarSub = function (rhs) {
-		return Quaternion.scalarSub(this, rhs, this);
-	};
-
-	/**
 	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.scalarMul = function (rhs) {
 		return Quaternion.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarDiv = function (rhs) {
-		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
 	var slerp_work_quat;
