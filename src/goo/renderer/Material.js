@@ -305,13 +305,6 @@ define([
 	};
 
 	/**
-	 * Clears the shader cache.
-	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
-	 */
-	Material.clearShaderCache = function () {
-	};
-
-	/**
 	 * Creates an 'empty' material
 	 * @private
 	 * @param shaderDefinition see {@link Shader}

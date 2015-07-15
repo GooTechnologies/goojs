@@ -91,40 +91,11 @@ define([
 			expect(result).toEqual(new Quaternion());
 		});
 
-		it('can divide component-wise',function () {
-			var p = new Quaternion(2,2,2,2);
-			var q = new Quaternion(2,2,2,2);
-			var result = new Quaternion();
-			Quaternion.div(p,q,result);
-			expect(result).toEqual(new Quaternion(1,1,1,1));
-		});
-
-		it('can add a scalar to a quaternion',function () {
-			var p = new Quaternion(1,1,1,1);
-			var result = new Quaternion();
-			Quaternion.scalarAdd(p,1,result);
-			expect(result).toEqual(new Quaternion(2,2,2,2));
-		});
-
-		it('can subtract a scalar from a quaternion',function () {
-			var p = new Quaternion(1,1,1,1);
-			var result = new Quaternion();
-			Quaternion.scalarSub(p,1,result);
-			expect(result).toEqual(new Quaternion(0,0,0,0));
-		});
-
 		it('can multiply a scalar with a quaternion',function () {
 			var p = new Quaternion(1,1,1,1);
 			var result = new Quaternion();
 			Quaternion.scalarMul(p,2,result);
 			expect(result).toEqual(new Quaternion(2,2,2,2));
-		});
-
-		it('can divide a quaternion with a scalar',function () {
-			var p = new Quaternion(2,2,2,2);
-			var result = new Quaternion();
-			Quaternion.scalarDiv(p,2,result);
-			expect(result).toEqual(new Quaternion(1,1,1,1));
 		});
 
 		it('can slerp',function () {

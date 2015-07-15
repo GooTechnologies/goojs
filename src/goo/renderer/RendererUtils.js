@@ -99,14 +99,6 @@ define([
 	 */
 	RendererUtils.nearestPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
-	/**
-	 * Clones an object recursively
-	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtils.deepClone` instead
-	 * @param {*} object Object to clone
-	 * @returns {*} Cloned object
-	 */
-	RendererUtils.clone = ObjectUtils.deepClone;
-
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function (texture, color, width, height, maxSize, index) {
 		var newWidth = MathUtils.nearestPowerOfTwo(width);
