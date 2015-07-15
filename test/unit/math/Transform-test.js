@@ -97,15 +97,17 @@ define([
 			checkInversion(t);
 		});
 
+		//! AT: don't use random numbers in tests like this
+		// if it fails once for some values it will be impossible to reproduce
 		it('combines correctly', function () {
-			t.translation.setd(rnd(5), rnd(5), rnd(5));
-			t.scale.setd(3, 3, 3);
+			t.translation.setDirect(rnd(5), rnd(5), rnd(5));
+			t.scale.setDirect(3, 3, 3);
 			t.setRotationXYZ(rnd(5), rnd(5), rnd(5));
 			t.update();
 			var t2 = new Transform();
-			t2.translation.setd(rnd(5), rnd(5), rnd(5));
+			t2.translation.setDirect(rnd(5), rnd(5), rnd(5));
 			t2.setRotationXYZ(rnd(5), rnd(5), rnd(5));
-			t2.scale.setd(rnd(5), rnd(5), rnd(5));
+			t2.scale.setDirect(rnd(5), rnd(5), rnd(5));
 			t2.update();
 			var t3 = Transform.combine(t, t2);
 			t3.update();

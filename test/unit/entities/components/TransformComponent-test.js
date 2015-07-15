@@ -118,7 +118,7 @@ define([
 			entity2.lookAt(entity1);
 			entity2.move(0,0,-t1.length());
 			var t2 = entity2.getTranslation();
-			
+
 			expect(t1).toBeCloseToVector(t2);
 		});
 
@@ -265,7 +265,7 @@ define([
 			it('sets a TransformComponent when trying to add a Transform', function () {
 				var entity = new Entity(world);
 				var transform = new Transform();
-				transform.translation.setd(1, 2, 3);
+				transform.translation.setDirect(1, 2, 3);
 				entity.set(transform);
 
 				expect(entity.transformComponent).toBeTruthy();

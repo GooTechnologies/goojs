@@ -123,7 +123,7 @@ define([
 			it('performs partial addition when adding vectors of different size', function () {
 				expect(Vector2.add([1, 2], [7])).toBeCloseToVector(new Vector2(1 + 7, NaN));
 			});
-		});		
+		});
 
 		describe('sub', function () {
 			it('can perform subtraction', function () {
@@ -267,30 +267,6 @@ define([
 
 				expect(original).toBeCloseToVector(clone);
 				expect(original).not.toBe(clone);
-			});
-		});
-
-		describe('setd (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.setd(55, 66);
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-		describe('seta (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.seta([55, 66]);
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-		describe('setv (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.setv(new Vector2(55, 66));
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
 			});
 		});
 

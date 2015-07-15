@@ -30,7 +30,7 @@ define(
 			var box = new Quad();
 
 			var transform = new Transform();
-			transform.translation.setd(1, 2, 3);
+			transform.translation.setDirect(1, 2, 3);
 			transform.update();
 			box.applyTransform(MeshData.POSITION, transform);
 

@@ -249,30 +249,6 @@ define([
 			});
 		});
 
-		describe('setd (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.setd(55, 66, 77, 88);
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
-		describe('seta (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.seta([55, 66, 77, 88]);
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
-		describe('setv (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.setv(new Vector4(55, 66, 77, 88));
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
 
 		describe('setDirect', function () {
 			it('can set a vector', function () {

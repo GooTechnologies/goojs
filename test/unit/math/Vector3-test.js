@@ -311,30 +311,6 @@ define([
 			});
 		});
 
-		describe('setd (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.setd(55, 66, 77);
-				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
-			});
-		});
-
-		describe('seta (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.seta([55, 66, 77]);
-				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
-			});
-		});
-
-		describe('setv (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.setv(new Vector3(55, 66, 77));
-				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
-			});
-		});
-
 
 		describe('setDirect', function () {
 			it('can set a vector', function () {
@@ -361,23 +337,6 @@ define([
 		});
 
 
-		describe('add_d (deprecated)', function () {
-			it('can add to a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.add_d(55, 66, 77);
-				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
-			});
-		});
-
-		describe('addv (deprecated)', function () {
-			it('can add to a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.addv(new Vector3(55, 66, 77));
-				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
-			});
-		});
-
-
 		describe('addDirect', function () {
 			it('can add to a vector', function () {
 				var vector = new Vector3(11, 22, 33);
@@ -395,23 +354,6 @@ define([
 		});
 
 
-		describe('muld (deprecated)', function () {
-			it('can multiply with 3 numbers', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.muld(55, 66, 77);
-				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
-			});
-		});
-
-		describe('mulv (deprecated)', function () {
-			it('can multiply with a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.mulv(new Vector3(55, 66, 77));
-				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
-			});
-		});
-
-
 		describe('mulDirect', function () {
 			it('can multiply with 3 numbers', function () {
 				var vector = new Vector3(11, 22, 33);
@@ -425,23 +367,6 @@ define([
 				var vector = new Vector3(11, 22, 33);
 				vector.mulVector(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
-			});
-		});
-
-
-		describe('sub_d (deprecated)', function () {
-			it('can subtract from a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.sub_d(55, 66, 77);
-				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
-			});
-		});
-
-		describe('subv (deprecated)', function () {
-			it('can subtract from a vector', function () {
-				var vector = new Vector3(11, 22, 33);
-				vector.subv(new Vector3(55, 66, 77));
-				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
 			});
 		});
 

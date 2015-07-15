@@ -56,7 +56,7 @@ define([
 			p.rayIntersect(ray,store);
 			expect(store).toEqual(new Vector3(0,1,0));
 
-			ray.direction.setd(0,0,1);
+			ray.direction.setDirect(0,0,1);
 			var result = p.rayIntersect(ray,store);
 			expect(result).toBe(null);
 		});

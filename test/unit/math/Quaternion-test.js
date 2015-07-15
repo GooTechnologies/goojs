@@ -252,20 +252,20 @@ define([
 
 		it('can set all components', function () {
 			var q = new Quaternion();
-			q.setd(1,2,3,4);
-			expect(q).toEqual(new Quaternion(1,2,3,4));
+			q.setDirect(1, 2, 3, 4);
+			expect(q).toEqual(new Quaternion(1, 2, 3, 4));
 		});
 
 		it('can set all components via array', function () {
 			var q = new Quaternion();
-			q.seta([1,2,3,4]);
-			expect(q).toEqual(new Quaternion(1,2,3,4));
+			q.setArray([1, 2, 3, 4]);
+			expect(q).toEqual(new Quaternion(1, 2, 3, 4));
 		});
 
 		it('can set all components via other quaternion', function () {
 			var q = new Quaternion();
-			var p = new Quaternion(1,2,3,4);
-			q.setv(p);
+			var p = new Quaternion(1, 2, 3, 4);
+			q.setVector(p);
 			expect(q).toEqual(p);
 		});
 

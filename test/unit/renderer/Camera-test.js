@@ -23,7 +23,7 @@ define([
 		it('can pack frustum around bounds', function () {
 			var bound = new BoundingSphere();
 			bound.radius = 10.0;
-			bound.center.setd(0,0,-20);
+			bound.center.setDirect(0, 0, -20);
 
 			camera.pack(bound);
 
@@ -75,7 +75,7 @@ define([
 			var testBounds = function (bounding, testdata) {
 				for (var i = 0; i < testdata.length; i++) {
 					var data = testdata[i];
-					bounding.center.setd(data[0], data[1], data[2]);
+					bounding.center.setDirect(data[0], data[1], data[2]);
 					expect(camera.contains(bounding)).toBe(data[3]);
 				}
 			};
