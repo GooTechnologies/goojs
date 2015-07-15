@@ -3,14 +3,14 @@ define([
 	'goo/entities/components/SoundComponent',
 	'goo/sound/AudioContext',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -76,7 +76,7 @@ define([
 	 */
 	SoundComponentHandler.prototype.update = function (entity, config, options) {
 		if (!AudioContext.isSupported()) {
-			return PromiseUtil.resolve(); //! AT: we're not really using reject
+			return PromiseUtils.resolve(); //! AT: we're not really using reject
 		}
 
 		var that = this;

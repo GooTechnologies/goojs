@@ -11,10 +11,10 @@ define([
 	 * @param {boolean} faceCamera
 	 * @extends Component
 	 */
-	function CSSTransformComponent(domElement, faceCamera) {
+	function CssTransformComponent(domElement, faceCamera) {
 		Component.apply(this, arguments);
 
-		this.type = 'CSSTransformComponent';
+		this.type = 'CssTransformComponent';
 
 		/**
 		 * DOM element.
@@ -37,10 +37,10 @@ define([
 		// #endif
 	}
 
-	CSSTransformComponent.type = 'CSSTransformComponent';
+	CssTransformComponent.type = 'CssTransformComponent';
 
-	CSSTransformComponent.prototype = Object.create(Component.prototype);
-	CSSTransformComponent.prototype.constructor = CSSTransformComponent;
+	CssTransformComponent.prototype = Object.create(Component.prototype);
+	CssTransformComponent.prototype.constructor = CssTransformComponent;
 
-	return CSSTransformComponent;
+	return CssTransformComponent;
 });

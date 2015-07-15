@@ -4,8 +4,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	MeshRendererComponent,

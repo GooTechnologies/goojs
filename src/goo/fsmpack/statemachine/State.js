@@ -1,7 +1,7 @@
 define([
-	'goo/util/ArrayUtil'
+	'goo/util/ArrayUtils'
 ], function (
-	ArrayUtil
+	ArrayUtils
 ) {
 	'use strict';
 
@@ -215,7 +215,7 @@ define([
 			action.onDestroy(this.proxy);
 		}
 
-		ArrayUtil.remove(this._actions, action);
+		ArrayUtils.remove(this._actions, action);
 	};
 
 	State.prototype.addMachine = function (machine) {
@@ -229,7 +229,7 @@ define([
 
 	State.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
-		ArrayUtil.remove(this._machines, machine);
+		ArrayUtils.remove(this._machines, machine);
 	};
 
 	return State;

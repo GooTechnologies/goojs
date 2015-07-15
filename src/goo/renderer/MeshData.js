@@ -5,7 +5,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	BufferData,
 	RendererUtils,
@@ -13,7 +13,7 @@ define([
 	Vector2,
 	Vector3,
 	Vector4,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -578,7 +578,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -677,7 +677,7 @@ define([
 			return this;
 		}
 
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -790,7 +790,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.clone = function () {
-		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMapClone = ObjectUtils.deepClone(this.attributeMap);
 
 		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
 
@@ -900,7 +900,7 @@ define([
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = ObjectUtil.deepClone(defaults[type]);
+				map[type] = ObjectUtils.deepClone(defaults[type]);
 			} else {
 				throw new Error('No default attribute named: ' + type);
 			}

@@ -2,7 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/util/rsvp'
 ], function (
 	ComponentHandler,

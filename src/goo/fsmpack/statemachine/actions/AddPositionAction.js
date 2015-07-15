@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -66,9 +66,9 @@ define([
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
-			var dx = FSMUtil.getValue(this.amountX, fsm);
-			var dy = FSMUtil.getValue(this.amountY, fsm);
-			var dz = FSMUtil.getValue(this.amountZ, fsm);
+			var dx = FsmUtils.getValue(this.amountX, fsm);
+			var dy = FsmUtils.getValue(this.amountY, fsm);
+			var dz = FsmUtils.getValue(this.amountZ, fsm);
 
 			this.entity.transformComponent.transform.translation.addDirect(
 				dx * this.speed * tpf,

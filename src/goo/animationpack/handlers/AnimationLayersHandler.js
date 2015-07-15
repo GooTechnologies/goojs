@@ -1,22 +1,18 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/animationpack/layer/AnimationLayer',
-	'goo/animationpack/layer/LayerLERPBlender',
 	'goo/animationpack/state/FadeTransitionState',
 	'goo/animationpack/state/SyncFadeTransitionState',
 	'goo/animationpack/state/FrozenTransitionState',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AnimationLayer,
-	LayerLERPBlender,
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	RSVP,
-	PromiseUtil,
 	_
 ) {
 	'use strict';

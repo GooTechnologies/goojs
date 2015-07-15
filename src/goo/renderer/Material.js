@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/Shader',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Shader,
 	_

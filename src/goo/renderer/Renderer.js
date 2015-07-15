@@ -18,7 +18,8 @@ define([
 	'goo/renderer/RenderStats',
 	'goo/entities/SystemBus',
 	'goo/renderer/TaskScheduler',
-	'goo/renderer/RenderInfo'
+	'goo/renderer/RenderInfo',
+	'goo/math/MathUtils'
 ], function (
 	Capabilities,
 	RendererRecord,
@@ -38,7 +39,8 @@ define([
 	RenderStats,
 	SystemBus,
 	TaskScheduler,
-	RenderInfo
+	RenderInfo,
+	MathUtils
 ) {
 	'use strict';
 
@@ -588,8 +590,8 @@ define([
 						RendererUtils.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
-				texture.image.width = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, MathUtils.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, MathUtils.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -945,7 +947,12 @@ define([
 		}
 
 		// TODO: shouldnt we check for generateMipmaps setting on rendertarget?
-		if (renderTarget && renderTarget.generateMipmaps && RendererUtils.isPowerOfTwo(renderTarget.width) && RendererUtils.isPowerOfTwo(renderTarget.height)) {
+		if (
+			renderTarget &&
+			renderTarget.generateMipmaps &&
+			MathUtils.isPowerOfTwo(renderTarget.width) &&
+			MathUtils.isPowerOfTwo(renderTarget.height)
+		) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
 	};
@@ -1569,7 +1576,7 @@ define([
 				}
 
 				var imageObject = texture.image !== undefined ? texture.image : texture;
-				var isTexturePowerOfTwo = RendererUtils.isPowerOfTwo(imageObject.width) && RendererUtils.isPowerOfTwo(imageObject.height);
+				var isTexturePowerOfTwo = MathUtils.isPowerOfTwo(imageObject.width) && MathUtils.isPowerOfTwo(imageObject.height);
 				this.updateTextureParameters(texture, isTexturePowerOfTwo);
 			}
 		}
@@ -1778,8 +1785,8 @@ define([
 						RendererUtils.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
-				texture.image.width = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.maxCubemapSize, RendererUtils.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, MathUtils.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, MathUtils.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -2079,7 +2086,7 @@ define([
 			renderTarget.glTexture = this.context.createTexture();
 
 			// Setup texture, create render and frame buffers
-			var isTargetPowerOfTwo = RendererUtils.isPowerOfTwo(renderTarget.width) && RendererUtils.isPowerOfTwo(renderTarget.height);
+			var isTargetPowerOfTwo = MathUtils.isPowerOfTwo(renderTarget.width) && MathUtils.isPowerOfTwo(renderTarget.height);
 			var glFormat = RendererUtils.getGLInternalFormat(renderTarget.format);
 			var glType = RendererUtils.getGLDataType(renderTarget.type);
 

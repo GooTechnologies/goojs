@@ -6,7 +6,7 @@ define([
 	'goo/entities/Selection',
 	'goo/entities/SystemBus',
 	'goo/entities/World',
-	'goo/entities/components/CSSTransformComponent',
+	'goo/entities/components/CssTransformComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/Component',
 	'goo/entities/components/HtmlComponent',
@@ -23,7 +23,7 @@ define([
 	'goo/entities/managers/EntityManager',
 	'goo/entities/managers/Manager',
 	'goo/entities/systems/BoundingUpdateSystem',
-	'goo/entities/systems/CSSTransformSystem',
+	'goo/entities/systems/CssTransformSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/GridRenderSystem',
 	'goo/entities/systems/HtmlSystem',
@@ -87,6 +87,7 @@ define([
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/RenderTarget',
 
@@ -110,12 +111,15 @@ define([
 	'goo/sound/Sound',
 	'goo/util/Ajax',
 	'goo/util/ArrayUtil',
+	'goo/util/ArrayUtils',
 	'goo/util/CanvasUtils',
 	'goo/util/GameUtils',
 	'goo/util/MeshBuilder',
 	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/util/ParticleSystemUtils',
 	'goo/util/PromiseUtil',
+	'goo/util/PromiseUtils',
 	'goo/util/Rc4Random',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/Skybox',
@@ -123,16 +127,19 @@ define([
 	'goo/util/SoundCreator',
 	'goo/util/Stats',
 	'goo/util/StringUtil',
+	'goo/util/StringUtils',
 	'goo/util/TangentGenerator',
 	'goo/util/combine/AtlasNode',
 	'goo/util/combine/EntityCombiner',
 	'goo/util/combine/Rectangle',
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/TWEEN'
 ], function (Scripts) {
 	'use strict';
 
 	//! AT: have to duplicate this for now until nicer way is found
 	// minifier cannot handle any expressions or statements other than a simple array of strings
+	
 	var defines = [
 		'Scripts',
 		'Entity',
@@ -141,7 +148,7 @@ define([
 		'Selection',
 		'SystemBus',
 		'World',
-		'CSSTransformComponent',
+		'CssTransformComponent',
 		'CameraComponent',
 		'Component',
 		'HtmlComponent',
@@ -158,7 +165,7 @@ define([
 		'EntityManager',
 		'Manager',
 		'BoundingUpdateSystem',
-		'CSSTransformSystem',
+		'CssTransformSystem',
 		'CameraSystem',
 		'GridRenderSystem',
 		'HtmlSystem',
@@ -222,6 +229,7 @@ define([
 		'Composer',
 		'FullscreenPass',
 		'FullscreenUtil',
+		'FullscreenUtils',
 		'RenderPass',
 		'RenderTarget',
 
@@ -245,12 +253,15 @@ define([
 		'Sound',
 		'Ajax',
 		'ArrayUtil',
+		'ArrayUtils',
 		'CanvasUtils',
 		'GameUtils',
 		'MeshBuilder',
 		'ObjectUtil',
+		'ObjectUtils',
 		'ParticleSystemUtils',
 		'PromiseUtil',
+		'PromiseUtils',
 		'Rc4Random',
 		'ShapeCreatorMemoized',
 		'Skybox',
@@ -258,11 +269,13 @@ define([
 		'SoundCreator',
 		'Stats',
 		'StringUtil',
+		'StringUtils',
 		'TangentGenerator',
 		'AtlasNode',
 		'EntityCombiner',
 		'Rectangle',
-		'rsvp'
+		'rsvp',
+		'TWEEN'
 	];
 
 	for (var i = 1; i < defines.length; i++) {

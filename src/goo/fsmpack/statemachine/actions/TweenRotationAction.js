@@ -3,7 +3,7 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Matrix3',
 	'goo/math/MathUtils',
-	'goo/util/Tween'
+	'goo/util/TWEEN'
 ], function (
 	Action,
 	Quaternion,

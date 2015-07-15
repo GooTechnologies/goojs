@@ -1,6 +1,6 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	_

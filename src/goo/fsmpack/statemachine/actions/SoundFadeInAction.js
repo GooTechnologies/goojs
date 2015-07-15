@@ -59,6 +59,8 @@ define([
 
 			if (this.onSoundEnd) {
 				endPromise = sound.play();
+			} else {
+				endPromise = PromiseUtil.delay(null, this.time);
 			}
 		} catch (e) {
 			console.warn('Could not play sound: ' + e);

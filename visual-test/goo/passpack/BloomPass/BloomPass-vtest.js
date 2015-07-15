@@ -9,7 +9,11 @@ require([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BloomPass',
 	'goo/renderer/pass/RenderTarget',
+<<<<<<< HEAD
 	'goo/util/ObjectUtil'
+=======
+	'goo/util/ObjectUtils'
+>>>>>>> master
 ], function (
 	Vector3,
 	Vector4,
@@ -21,7 +25,11 @@ require([
 	FullscreenPass,
 	BloomPass,
 	RenderTarget,
+<<<<<<< HEAD
 	ObjectUtil
+=======
+	ObjectUtils
+>>>>>>> master
 ) {
 	'use strict';
 
@@ -44,7 +52,11 @@ require([
 	var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 	renderPass.clearColor = new Vector4(0, 0, 0, 0);
 
+<<<<<<< HEAD
 	var outPass = new FullscreenPass(ObjectUtil.clone(ShaderLib.copy));
+=======
+	var outPass = new FullscreenPass(ObjectUtils.clone(ShaderLib.copy));
+>>>>>>> master
 	outPass.renderToScreen = true;
 
 	composer.addPass(renderPass);

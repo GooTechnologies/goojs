@@ -4,7 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/math/Matrix4'
 ], function (
 	System,
@@ -44,6 +44,8 @@ define([
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
 			that._camera = camConfig.camera;
 		});
+
+		this._scheduledUpdates = [];
 	}
 
 	SoundSystem.prototype = Object.create(System.prototype);
@@ -105,7 +107,7 @@ define([
 	};
 
 	/**
-	 * Update the environmental sound system properties
+	 * Update the environmental sound system properties. The settings are not applied immediately.
 	 * @param {object} [config]
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
@@ -118,23 +120,26 @@ define([
 			console.warn('WebAudio not supported');
 			return;
 		}
-		_.extend(this._settings, config);
 
-		if (!this.initialized) { this._initializeAudioNodes(); }
+		this._scheduledUpdates.push(function () {
+			_.extend(this._settings, config);
 
-		if (config.dopplerFactor !== undefined) {
-			this._listener.dopplerFactor = config.dopplerFactor * 0.05;
-		}
-		if (config.volume !== undefined) {
-			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
-		}
-		if (config.reverb !== undefined) {
-			this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
-		}
+			if (!this.initialized) { this._initializeAudioNodes(); }
+
+			if (config.dopplerFactor !== undefined) {
+				this._listener.dopplerFactor = config.dopplerFactor * 0.05;
+			}
+			if (config.volume !== undefined) {
+				this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
+			}
+			if (config.reverb !== undefined) {
+				this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
+			}
+		});
 	};
 
 	/**
-	 * Set the reverb impulse response
+	 * Set the reverb impulse response. The settings are not applied immediately.
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function (audioBuffer) {
@@ -142,15 +147,20 @@ define([
 			console.warn('WebAudio not supported');
 			return;
 		}
-		if (!this.initialized) { this._initializeAudioNodes(); }
 
-		this._wetNode.disconnect();
-		if (!audioBuffer && this._wetNode) {
-			this._convolver.buffer = null;
-		} else {
-			this._convolver.buffer = audioBuffer;
-			this._wetNode.connect(this._outNode);
-		}
+		this._scheduledUpdates.push(function () {
+			if (!this.initialized) {
+				this._initializeAudioNodes();
+			}
+
+			this._wetNode.disconnect();
+			if (!audioBuffer && this._wetNode) {
+				this._convolver.buffer = null;
+			} else {
+				this._convolver.buffer = audioBuffer;
+				this._wetNode.connect(this._outNode);
+			}
+		});
 	};
 
 	/**
@@ -216,6 +226,12 @@ define([
 		if (entities.length === 0) {
 			return;
 		}
+
+		while (this._scheduledUpdates.length) {
+			var thunk = this._scheduledUpdates.pop();
+			thunk.call(this);
+		}
+
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		this.entities = entities;

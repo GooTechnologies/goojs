@@ -5,7 +5,7 @@ define([
 ) {
 	'use strict';
 
-	function HTMLAction(/*id, settings*/) {
+	function HtmlAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.everyFrame = true;
@@ -15,10 +15,10 @@ define([
 		}.bind(this);
 	}
 
-	HTMLAction.prototype = Object.create(Action.prototype);
-	HTMLAction.prototype.constructor = HTMLAction;
+	HtmlAction.prototype = Object.create(Action.prototype);
+	HtmlAction.prototype.constructor = HtmlAction;
 
-	HTMLAction.external = {
+	HtmlAction.external = {
 		name: 'HTMLPick',
 		type: 'controls',
 		description: 'Listens for a picking event and performs a transition. Can only be used on HTML entities.',
@@ -31,7 +31,7 @@ define([
 		}]
 	};
 
-	HTMLAction.prototype._setup = function (fsm) {
+	HtmlAction.prototype._setup = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
 		if (ownerEntity.htmlComponent) {
 			this.domElement = ownerEntity.htmlComponent.domElement;
@@ -39,18 +39,18 @@ define([
 		}
 	};
 
-	HTMLAction.prototype._run = function (fsm) {
+	HtmlAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.pick);
 		}
 	};
 
-	HTMLAction.prototype.exit = function () {
+	HtmlAction.prototype.exit = function () {
 		if (this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
 		}
 	};
 
-	return HTMLAction;
+	return HtmlAction;
 });

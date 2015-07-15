@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
 	Vector3,

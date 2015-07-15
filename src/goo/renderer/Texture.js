@@ -1,11 +1,11 @@
 define([
 	'goo/math/Vector2',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	Vector2,
-	PromiseUtil,
-	ObjectUtil
+	PromiseUtils,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -74,7 +74,7 @@ define([
 
 		settings = settings || {};
 
-		ObjectUtil.copyOptions(this, settings, {
+		ObjectUtils.copyOptions(this, settings, {
 			wrapS: 'Repeat',
 			wrapT: 'Repeat',
 			magFilter: 'Bilinear',
@@ -116,7 +116,7 @@ define([
 			this.setImage(image, width, height, settings);
 		}
 
-		this.loadImage = PromiseUtil.resolve.bind(null, this);
+		this.loadImage = PromiseUtils.resolve.bind(null, this);
 
 		this.textureRecord = {};
 

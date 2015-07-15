@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -57,8 +57,8 @@ define([
 	};
 
 	NumberCompareAction.prototype._run = function (fsm) {
-		var leftHand = FSMUtil.getValue(this.leftHand, fsm);
-		var rightHand = FSMUtil.getValue(this.rightHand, fsm);
+		var leftHand = FsmUtils.getValue(this.leftHand, fsm);
+		var rightHand = FsmUtils.getValue(this.rightHand, fsm);
 		var diff = rightHand - leftHand;
 
 		if (Math.abs(diff) <= this.tolerance) {

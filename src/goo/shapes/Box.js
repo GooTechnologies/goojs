@@ -1,9 +1,9 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -182,7 +182,7 @@ define([
 	 * @returns {Box}
 	 */
 	Box.prototype.clone = function () {
-		var options = ObjectUtil.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
 
 		// converting xExtent to width so the constructor will convert it the other way around again
 		options.width = this.xExtent * 2;

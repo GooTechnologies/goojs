@@ -1,7 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3',
-	'goo/util/Tween'
+	'goo/util/TWEEN'
 ], function (
 	Action,
 	Vector3,

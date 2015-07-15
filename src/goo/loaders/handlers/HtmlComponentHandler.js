@@ -2,12 +2,12 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	HtmlComponent,
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -132,7 +132,7 @@ define([
 			component.useTransformComponent = config.useTransformComponent !== false;
 
 			if (!innerHtmlChanged && !styleChanged) {
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			}
 
 			var wrappedStyle = '';

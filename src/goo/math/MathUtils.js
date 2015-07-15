@@ -247,9 +247,25 @@ define(function () {
 	 * @param {number} value Number to get the nearest power of two from
 	 * @returns {number} Nearest power of two
 	 */
-	MathUtils.nearestHigherPowerOfTwo = function (value) {
-		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
+	MathUtils.nearestPowerOfTwo = function (value) {
+		value--;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		value |= value >> 16;
+		value++;
+		return value;
 	};
+
+	/**
+	 * Gets the nearest higher power of two for a value
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0;
+	 * Consider using MathUtils.nearestPowerOfTwo instead
+	 * @param {number} value Number to get the nearest power of two from
+	 * @returns {number} Nearest power of two
+	 */
+	MathUtils.nearestHigherPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Returns true if the 2 values supplied are approximately the same

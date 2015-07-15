@@ -1,3 +1,62 @@
+v0.15.1 --- 2015-07-08
+----------------------
+
+###Fixes
+ * renamed *goo.Tween* to *goo.TWEEN*
+ * TWEEN is installed on window as well as on the goo namespace
+ * mentioned old *...Util* classes on the goo script namespace
+
+
+v0.15.0 --- 2015-07-07
+----------------------
+
+###Additions
+ + readded the *requestAnimationFrame* shim
+
+###Deprecated
+ - *...Util* classes in favour of *...Utils* classes; *ObjectUtil*, *PromiseUtil*, *StringUtil*, *ArrayUtil*, *FullScreenUtil*
+ - `RendererUtils.isPowerOfTwo` in favour of `MathUtils.isPowerOfTwo`
+ - `RendererUtils.nearestPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+ - `MathUtils.nearestHigherPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+
+###Removed
+ - *CSSTransformComponent* has been renamed to *CssTransformComponent*; `entity.cSSTransformComponent` is now `entity.cssTransformComponent`
+ - *DoGPass* is now *DogPass*
+ - *DOFPass* is now *DofPass*
+ - *SSAOPass* is now *SsaoUtils*
+ - *FSMUtil* is now *FsmUtils*
+ - *BinaryLERPSource* is now *BinaryLerpSource*
+ - *LayerLERPBlender* is now *LayerLerpBlender*
+ - *renderer/Util* in favour of *renderer/RendererUtil*
+
+
+v0.14.4 --- 2015-06-25
+----------------------
+
+###Fixes
+ * the *SoundSystem* creates an *AudioContext* only if needed (re-fix)
+
+###Deprecated
+ - `PromiseUtil.defer`; please use `PromiseUtil.delay` instead
+
+
+v0.14.3 --- 2015-06-24
+----------------------
+
+###Additions
+ + [ParticleInfluence visual test](http://code.gooengine.com/0.14.3/visual-test/goo/particles/ParticleInfluence-vtest
+ .html)
+ + [SkeletonAnimation visual test](http://code.gooengine.com/0.14
+ .3/visual-test/goo/animationpack/SkeletonAnimation-vtest.html)
+
+###Changes
+ * sole's tween.js has been integrated into the engine and is accessible under the goo namespace (*goo.Tween*)
+
+###Fixes
+ * shader precision settings not being preserved after context re-initialization
+ * Ludei-related fix
+
+
 v0.14.2 --- 2015-05-28
 ----------------------
 

@@ -5,8 +5,7 @@ define([
 	'goo/renderer/light/SpotLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/math/Vector3',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	LightComponent,
@@ -14,8 +13,7 @@ define([
 	SpotLight,
 	DirectionalLight,
 	Vector3,
-	RSVP,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -54,7 +52,7 @@ define([
 	 * @private
 	 */
 	LightComponentHandler.prototype._prepare = function (config) {
-		ObjectUtil.defaults(config, {
+		ObjectUtils.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
 			shadowCaster: false,
@@ -67,7 +65,7 @@ define([
 
 		if (config.shadowCaster && supportsShadows()) {
 			config.shadowSettings = config.shadowSettings || {};
-			ObjectUtil.defaults(config.shadowSettings, {
+			ObjectUtils.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
 				near: 1,
 				far: 1000,
@@ -126,13 +124,13 @@ define([
 							if (light.shadowSettings[key] instanceof Vector3) {
 								light.shadowSettings[key].setDirect(shadowVal[0], shadowVal[1], shadowVal[2]);
 							} else {
-								light.shadowSettings[key] = ObjectUtil.clone(shadowVal);
+								light.shadowSettings[key] = ObjectUtils.clone(shadowVal);
 							}
 						}
 					} else if (light[key] instanceof Vector3) {
 						light[key].setDirect(value[0], value[1], value[2]);
 					} else {
-						light[key] = ObjectUtil.clone(value);
+						light[key] = ObjectUtils.clone(value);
 					}
 				}
 			}

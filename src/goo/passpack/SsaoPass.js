@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
@@ -13,7 +13,7 @@ define([
 ], function (
 	Material,
 	RenderTarget,
-	ObjectUtil,
+	ObjectUtils,
 	MeshData,
 	Shader,
 	ShaderFragment,
@@ -30,7 +30,7 @@ define([
 	 * @param renderList
 	 * @hidden
 	 */
-	function SSAOPass(renderList) {
+	function SsaoPass(renderList) {
 		this.depthPass = new RenderPass(renderList);
 		this.depthPass.clearColor.setDirect(1, 1, 1, 1);
 		var packDepthMaterial = new Material(packDepth);
@@ -48,13 +48,13 @@ define([
 		this.needsSwap = true;
 	}
 
-	SSAOPass.prototype = Object.create(Pass.prototype);
-	SSAOPass.prototype.constructor = SSAOPass;
+	SsaoPass.prototype = Object.create(Pass.prototype);
+	SsaoPass.prototype.constructor = SsaoPass;
 
-	SSAOPass.prototype.updateSize = function (size) {
+	SsaoPass.prototype.updateSize = function (size) {
 		var width = Math.floor(size.width / this.downsampleAmount);
 		var height = Math.floor(size.height / this.downsampleAmount);
-		var shader = ObjectUtil.deepClone(ShaderLibExtra.ssao);
+		var shader = ObjectUtils.deepClone(ShaderLibExtra.ssao);
 		shader.uniforms.size = [width, height];
 		this.outPass = new FullscreenPass(shader);
 		this.outPass.useReadBuffer = false;
@@ -74,7 +74,7 @@ define([
 		console.log('UPDATE SSAOPASS: ', width, height);
 	};
 
-	SSAOPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+	SsaoPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		this.depthPass.render(renderer, null, this.depthTarget, delta);
 
 		// this.blurPass.render(renderer, this.depthTarget, this.depthTarget, delta);
@@ -120,5 +120,5 @@ define([
 		].join('\n')
 	};
 
-	return SSAOPass;
+	return SsaoPass;
 });

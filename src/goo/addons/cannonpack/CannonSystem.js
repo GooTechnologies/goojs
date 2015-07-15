@@ -5,7 +5,7 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	System,
 	BoundingBox,

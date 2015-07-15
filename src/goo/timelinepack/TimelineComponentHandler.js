@@ -3,20 +3,18 @@ define([
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/ValueChannel',
 	'goo/timelinepack/EventChannel',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
-	'goo/util/Tween'
+	'goo/util/ObjectUtils',
+	'goo/util/TWEEN'
 ], function (
 	ComponentHandler,
 	TimelineComponent,
 	ValueChannel,
 	EventChannel,
-	PromiseUtil,
-	ArrayUtil,
+	ArrayUtils,
 	SystemBus,
-	ObjectUtil,
+	ObjectUtils,
 	TWEEN
 ) {
 	'use strict';
@@ -65,7 +63,7 @@ define([
 	function updateValueChannelKeyframe(keyframeConfig, keyframeId, channel) {
 		var needsResorting = false;
 
-		var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
+		var keyframe = ArrayUtils.find(channel.keyframes, function (keyframe) {
 			return keyframe.id === keyframeId;
 		});
 
@@ -97,7 +95,7 @@ define([
 	function updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig) {
 		var needsResorting = false;
 
-		var callbackEntry = ArrayUtil.find(channel.keyframes, function (callbackEntry) {
+		var callbackEntry = ArrayUtils.find(channel.keyframes, function (callbackEntry) {
 			return callbackEntry.id === keyframeId;
 		});
 
@@ -125,7 +123,7 @@ define([
 
 	function updateChannel(channelConfig, channelId, component, entityResolver, rotationMap) {
 		// search for existing one
-		var channel = ArrayUtil.find(component.channels, function (channel) {
+		var channel = ArrayUtils.find(component.channels, function (channel) {
 			return channel.id === channelId;
 		});
 
@@ -206,7 +204,7 @@ define([
 			};
 			var rotationMap = {};
 
-			ObjectUtil.forEach(config.channels, function (channelConfig) {
+			ObjectUtils.forEach(config.channels, function (channelConfig) {
 				updateChannel(channelConfig, channelConfig.id, component, entityResolver, rotationMap);
 			}, null, 'sortValue');
 

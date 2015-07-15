@@ -1,7 +1,7 @@
 define(['goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LogicComponent',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
+	'goo/util/PromiseUtils',
 	'goo/logic/LogicNodeEntityProxy',
 	'goo/logic/LogicNodeTransformComponent',
 	'goo/logic/LogicNodeMeshRendererComponent',
@@ -32,7 +32,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	ComponentHandler,
 	LogicComponent,
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -57,7 +57,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	LogicComponentHandler.prototype.update = function (entity, config) {
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 		component.configure(config);
-		return PromiseUtil.resolve(component);
+		return PromiseUtils.resolve(component);
 	};
 
 	return LogicComponentHandler;

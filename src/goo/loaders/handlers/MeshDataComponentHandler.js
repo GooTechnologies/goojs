@@ -4,8 +4,8 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
-	'goo/util/StringUtil'
+	'goo/util/ObjectUtils',
+	'goo/util/StringUtils'
 ], function (
 	ComponentHandler,
 	MeshDataComponent,
@@ -13,7 +13,7 @@ define([
 	ShapeCreatorMemoized,
 	RSVP,
 	_,
-	StringUtil
+	StringUtils
 ) {
 	'use strict';
 
@@ -78,7 +78,7 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			if (config.shape) {
-				var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
+				var shapeCreator = ShapeCreatorMemoized['create' + StringUtils.capitalize(config.shape)];
 				if (shapeCreator) {
 					component.meshData = shapeCreator(config.shapeOptions, component.meshData);
 					component.autoCompute = true;

@@ -2,7 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	StateMachineComponent,

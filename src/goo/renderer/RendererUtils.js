@@ -1,8 +1,10 @@
 /* jshint bitwise: false */
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils',
+	'goo/math/MathUtils'
 ], function (
-	ObjectUtil
+	ObjectUtils,
+	MathUtils
 ) {
 	'use strict';
 
@@ -81,35 +83,34 @@ define([
 
 	/**
 	 * Checks if a value is power of two
-	 *
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.isPowerOfTwo instead
 	 * @param {Number} value Number to check for power of two
 	 * @returns true if value is power of two
 	 */
-	RendererUtils.isPowerOfTwo = function (value) {
-		return (value & (value - 1)) === 0;
-	};
+	RendererUtils.isPowerOfTwo = MathUtils.isPowerOfTwo;
 
 	/**
 	 * Converts input number to closest power of two
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.nearestPowerOfTwo instead
 	 * @param {number} number Number to convert to power of two
 	 * @returns {number} Nearest power of two of input
 	 */
-	RendererUtils.nearestPowerOfTwo = function (number) {
-		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
-	};
+	RendererUtils.nearestPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Clones an object recursively
-	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtil.deepClone` instead
+	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtils.deepClone` instead
 	 * @param {*} object Object to clone
 	 * @returns {*} Cloned object
 	 */
-	RendererUtils.clone = ObjectUtil.deepClone;
+	RendererUtils.clone = ObjectUtils.deepClone;
 
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function (texture, color, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 
@@ -150,8 +151,8 @@ define([
 	}
 
 	RendererUtils.scaleImage = function (texture, image, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 

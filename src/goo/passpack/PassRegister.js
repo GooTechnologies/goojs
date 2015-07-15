@@ -2,12 +2,12 @@ define([
 	'goo/scripts/Scripts',
 	'goo/passpack/BloomPass',
 	'goo/passpack/BlurPass',
-	'goo/passpack/DOFPass',
+	'goo/passpack/DofPass',
 	'goo/passpack/DepthPass',
-	'goo/passpack/DoGPass',
+	'goo/passpack/DogPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/passpack/PassLib',
-	'goo/passpack/SSAOPass',
+	'goo/passpack/SsaoPass',
 	'goo/passpack/ShaderLibExtra'
 ], function (Scripts) {
 	'use strict';
@@ -16,12 +16,12 @@ define([
 		'goo/scripts/Scripts',
 		'goo/passpack/BloomPass',
 		'goo/passpack/BlurPass',
-		'goo/passpack/DOFPass',
+		'goo/passpack/DofPass',
 		'goo/passpack/DepthPass',
-		'goo/passpack/DoGPass',
+		'goo/passpack/DogPass',
 		'goo/passpack/MotionBlurPass',
 		'goo/passpack/PassLib',
-		'goo/passpack/SSAOPass',
+		'goo/passpack/SsaoPass',
 		'goo/passpack/ShaderLibExtra'
 	];
 

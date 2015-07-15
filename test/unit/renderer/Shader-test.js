@@ -8,7 +8,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/DirectionalLight',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/shapes/Box'
 ], function (
 	Shader,
@@ -20,7 +20,7 @@ define([
 	Texture,
 	ShaderLib,
 	DirectionalLight,
-	ObjectUtil,
+	ObjectUtils,
 	Box
 ) {
 	'use strict';
@@ -28,9 +28,8 @@ define([
 	describe('Shader', function () {
 		describe('DefineKey', function () {
 			var shader;
-
 			beforeEach(function () {
-				shader = new Shader('TestName', ObjectUtil.clone(ShaderLib.simple));
+				shader = new Shader('TestName', ObjectUtils.clone(ShaderLib.simple));
 			});
 
 			it('can generate define key when no defines', function () {

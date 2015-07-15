@@ -1,9 +1,9 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ArrayUtil',
+	'goo/util/ArrayUtils',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils',
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
@@ -11,10 +11,10 @@ define([
 	'goo/passpack/PassLib'
 ], function (
 	ConfigHandler,
-	ArrayUtil,
+	ArrayUtils,
 	RSVP,
-	PromiseUtil,
-	ObjectUtil,
+	PromiseUtils,
+	ObjectUtils,
 	Composer,
 	RenderPass,
 	FullscreenPass,
@@ -36,7 +36,7 @@ define([
 		this._composer = new Composer();
 		var renderSystem = this.world.getSystem('RenderSystem');
 		this._renderPass = new RenderPass(renderSystem.renderList);
-		this._outPass = new FullscreenPass(ObjectUtil.deepClone(ShaderLib.copy));
+		this._outPass = new FullscreenPass(ObjectUtils.deepClone(ShaderLib.copy));
 		this._outPass.renderToScreen = true;
 	}
 
@@ -51,7 +51,7 @@ define([
 	 */
 	PosteffectsHandler.prototype._remove = function (ref) {
 		var renderSystem = this.world.getSystem('RenderSystem');
-		ArrayUtil.remove(renderSystem.composers, this._composer);
+		ArrayUtils.remove(renderSystem.composers, this._composer);
 
 		this._objects.delete(ref);
 
@@ -90,7 +90,7 @@ define([
 //			return RSVP.all(posteffects);
 			var oldEffects = posteffects.slice();
 			var promises = [];
-			ObjectUtil.forEach(config.posteffects, function (effectConfig) {
+			ObjectUtils.forEach(config.posteffects, function (effectConfig) {
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
 			return RSVP.all(promises).then(function (effects) {
@@ -129,7 +129,7 @@ define([
 				}
 			} else {
 				// No posteffects, remove composer
-				ArrayUtil.remove(renderSystem.composers, that._composer);
+				ArrayUtils.remove(renderSystem.composers, that._composer);
 			}
 			return posteffects;
 		});

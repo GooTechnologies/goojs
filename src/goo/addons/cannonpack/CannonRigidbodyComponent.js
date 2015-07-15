@@ -6,7 +6,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	Quaternion,

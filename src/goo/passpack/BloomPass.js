@@ -1,16 +1,16 @@
 define([
 	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
 ], function (
 	Material,
-	FullscreenUtil,
+	FullscreenUtils,
 	RenderTarget,
-	ObjectUtil,
+	ObjectUtils,
 	ShaderLib,
 	ShaderLibExtra,
 	Pass
@@ -47,7 +47,7 @@ define([
 		});
 
 		this.renderable = {
-			meshData: FullscreenUtil.quad,
+			meshData: FullscreenUtils.quad,
 			materials: []
 		};
 
@@ -55,7 +55,7 @@ define([
 		this.copyMaterial.uniforms.opacity = strength;
 		this.copyMaterial.blendState.blending = 'AdditiveBlending';
 
-		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
+		this.convolutionShader = ObjectUtils.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
 			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
 			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
@@ -116,7 +116,7 @@ define([
 		this.renderable.materials[0] = this.bcMaterial;
 
 		this.bcMaterial.setTexture('DIFFUSE_MAP', readBuffer);
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
 
 		// Blur Y
 		this.renderable.materials[0] = this.convolutionMaterial;
@@ -124,22 +124,22 @@ define([
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurY;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
 
 		// Blur X
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
 
 		// Additive blend
 		this.renderable.materials[0] = this.copyMaterial;
 		this.copyMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
 
 		if (this.target !== null) {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], this.target, this.clear);
 		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], readBuffer, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], readBuffer, this.clear);
 		}
 	};
 

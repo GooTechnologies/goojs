@@ -1,9 +1,9 @@
 define([
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
-	PromiseUtil,
-	ObjectUtil
+	PromiseUtils,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -63,7 +63,7 @@ define([
 				return callback();
 			}
 
-			ObjectUtil.defaults(options, {
+			ObjectUtils.defaults(options, {
 				// Canvas size
 				width: img.width,
 				height: img.height,
@@ -79,7 +79,7 @@ define([
 				destY: 0
 			});
 
-			ObjectUtil.defaults(options, {
+			ObjectUtils.defaults(options, {
 				destWidth: options.width,
 				destHeight: options.height
 			});
@@ -177,7 +177,7 @@ define([
 		var img = new Image();
 		img.src = DOMURL.createObjectURL(svg);
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			img.onload = function () {
 				resolve(img);
 			};

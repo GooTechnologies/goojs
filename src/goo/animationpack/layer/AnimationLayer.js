@@ -3,7 +3,7 @@ define([
 	'goo/animationpack/state/SyncFadeTransitionState',
 	'goo/animationpack/state/FrozenTransitionState',
 	'goo/animationpack/state/SteadyState',
-	'goo/animationpack/layer/LayerLERPBlender',
+	'goo/animationpack/layer/LayerLerpBlender',
 	'goo/entities/World', //! AT: this should not exist
 	'goo/math/MathUtils'
 ], function (
@@ -11,7 +11,7 @@ define([
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	SteadyState,
-	LayerLERPBlender,
+	LayerLerpBlender,
 	World,
 	MathUtils
 ) {
@@ -30,7 +30,7 @@ define([
 
 		this._steadyStates = {};
 		this._currentState = null;
-		this._layerBlender = new LayerLERPBlender();
+		this._layerBlender = new LayerLerpBlender();
 		this._transitions = {};
 		this._transitionStates = {};
 	}

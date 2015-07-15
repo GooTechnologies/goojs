@@ -5,8 +5,7 @@ define([
 	'goo/animationpack/clip/TransformChannel',
 	'goo/animationpack/clip/InterpolatedFloatChannel',
 	'goo/animationpack/clip/TriggerChannel',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil'
+	'goo/util/ArrayUtils'
 ], function (
 	ConfigHandler,
 	AnimationClip,
@@ -14,8 +13,7 @@ define([
 	TransformChannel,
 	InterpolatedFloatChannel,
 	TriggerChannel,
-	PromiseUtil,
-	ArrayUtil
+	ArrayUtils
 ) {
 	'use strict';
 
@@ -81,7 +79,7 @@ define([
 			for (var i = 0; i < keys.length; i++) {
 				var channelConfig = clipConfig.channels[keys[i]];
 				// Time samples
-				var times = ArrayUtil.getTypedArray(bindata, channelConfig.times);
+				var times = ArrayUtils.getTypedArray(bindata, channelConfig.times);
 
 				var blendType = channelConfig.blendType;
 				var type = channelConfig.type;
@@ -92,9 +90,9 @@ define([
 					case 'Transform':
 						// Transform samples
 						var rots, trans, scales;
-						rots = ArrayUtil.getTypedArray(bindata, channelConfig.rotationSamples);
-						trans = ArrayUtil.getTypedArray(bindata, channelConfig.translationSamples);
-						scales = ArrayUtil.getTypedArray(bindata, channelConfig.scaleSamples);
+						rots = ArrayUtils.getTypedArray(bindata, channelConfig.rotationSamples);
+						trans = ArrayUtils.getTypedArray(bindata, channelConfig.translationSamples);
+						scales = ArrayUtils.getTypedArray(bindata, channelConfig.scaleSamples);
 
 						if (type === 'Joint') {
 							channel = new JointChannel(

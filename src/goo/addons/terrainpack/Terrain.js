@@ -16,7 +16,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Quad'
 ], function (
@@ -37,7 +37,7 @@ define([
 	Texture,
 	Renderer,
 	FullscreenPass,
-	FullscreenUtil,
+	FullscreenUtils,
 	DirectionalLight,
 	Quad
 ) {
@@ -339,7 +339,7 @@ define([
 			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 
 			this.renderable.materials[0].uniforms.rgba = rgba || [1, 1, 1, 1];
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.splat, false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.splat, false);
 		} else if (mode === 'smooth') {
 			this.renderable.materials[0] = this.drawMaterial3;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -356,7 +356,7 @@ define([
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		} else if (mode === 'flatten') {
 			this.renderable.materials[0] = this.drawMaterial4;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -374,7 +374,7 @@ define([
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		} else {
 			this.renderable.materials[0] = this.drawMaterial1;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -397,7 +397,7 @@ define([
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		}
 	};
 

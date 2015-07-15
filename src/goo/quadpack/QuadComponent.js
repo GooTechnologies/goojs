@@ -5,7 +5,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Material',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/Texture'
 ], function (
 	Component,

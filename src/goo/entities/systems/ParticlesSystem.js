@@ -37,7 +37,6 @@ define([
 		var emitterIndex = -1;
 		var emitter;
 		var needsUpdate = false;
-		var stillAlive = false;
 
 		// step through our particles
 		while (particleIndex < particleComponent.particleCount) {
@@ -64,7 +63,6 @@ define([
 						// find out how many particles to create.
 						emitter.particlesWaitingToRelease += emitter.releaseRatePerSecond * tpf;
 						emitter.particlesWaitingToRelease = Math.max(emitter.particlesWaitingToRelease, 0);
-						stillAlive = true;
 					}
 
 					// no particles to make this turn, so move on.
@@ -93,7 +91,6 @@ define([
 			if (particle.alive) {
 				particle.update(tpf, particleEntity);
 				needsUpdate = true;
-				stillAlive = true;
 			}
 
 			// if not alive, see if we want to respawn it at the current emitter (if we have one)
@@ -120,9 +117,6 @@ define([
 		if (needsUpdate) {
 			particleComponent.meshData.vertexData._dataNeedsRefresh = true;
 			particleEntity.meshDataComponent.autoCompute = true;
-		}
-		if (!stillAlive) {
-			particleComponent.enabled = false;
 		}
 	};
 

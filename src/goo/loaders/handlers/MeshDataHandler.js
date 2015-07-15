@@ -2,14 +2,14 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/MeshData',
 	'goo/renderer/BufferUtils',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ArrayUtils'
 ], function (
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
-	PromiseUtil,
-	ArrayUtil
+	PromiseUtils,
+	ArrayUtils
 ) {
 	'use strict';
 
@@ -54,12 +54,12 @@ define([
 		// Don't call ConfigHandler.prototype.update, since we don't want to do ._create in the normal way
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 
 		var meshData = this._objects.get(ref);
 		if (meshData) {
-			return PromiseUtil.resolve(meshData);
+			return PromiseUtils.resolve(meshData);
 		}
 
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
@@ -135,7 +135,7 @@ define([
 				continue;
 			}
 			var data = config.attributes[key].value;
-			meshData.getAttributeBuffer(key).set(ArrayUtil.getTypedArray(bindata, data));
+			meshData.getAttributeBuffer(key).set(ArrayUtils.getTypedArray(bindata, data));
 		}
 
 		/**Remapping the joints. This will enable us to have skeleton with hundreds of joints even
@@ -143,7 +143,7 @@ define([
 		 */
 		if (skinned && config.attributes.JOINTIDS) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
-			var jointData = ArrayUtil.getTypedArray(bindata, config.attributes.JOINTIDS.value);
+			var jointData = ArrayUtils.getTypedArray(bindata, config.attributes.JOINTIDS.value);
 
 			// Map skeleton joint index local joint index
 			var localJointMap = [];
@@ -171,7 +171,7 @@ define([
 			meshData.weightsPerVertex = WEIGHTS_PER_VERT;
 		}
 
-		meshData.getIndexBuffer().set(ArrayUtil.getTypedArray(bindata, config.indices));
+		meshData.getIndexBuffer().set(ArrayUtils.getTypedArray(bindata, config.indices));
 		meshData.indexModes = config.indexModes.slice();
 		meshData.indexLengths = config.indexLengths.slice();
 

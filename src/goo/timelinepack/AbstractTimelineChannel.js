@@ -15,7 +15,7 @@ define([], function () {
 	 * @param sortedArray
 	 * @param time
 	 */
-	//! AT: could convert into a more general ArrayUtil.pluck and binary search but that creates extra arrays
+	//! AT: could convert into a more general ArrayUtils.pluck and binary search but that creates extra arrays
 	AbstractTimelineChannel.prototype._find = function (sortedArray, time) {
 		var start = 0;
 		var end = sortedArray.length - 1;

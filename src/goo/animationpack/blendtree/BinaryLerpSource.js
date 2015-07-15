@@ -11,12 +11,12 @@ define([
 	 * Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
 	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not
 	 *        combined, rather A's value will always be used unless it is null.
-	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
-	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceB our second source.
+	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
+	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} sourceB our second source.
 	 * @param {number} blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 * @private
 	 */
-	function BinaryLERPSource (sourceA, sourceB, blendWeight) {
+	function BinaryLerpSource(sourceA, sourceB, blendWeight) {
 		this._sourceA = sourceA ? sourceA : null;
 		this._sourceB = sourceB ? sourceB : null;
 		this.blendWeight = blendWeight ? blendWeight : null;
@@ -25,19 +25,19 @@ define([
 	/*
 	 * @returns a source data mapping for the channels in this clip source
 	 */
-	BinaryLERPSource.prototype.getSourceData = function () {
+	BinaryLerpSource.prototype.getSourceData = function () {
 		// grab our data maps from the two sources
 		var sourceAData = this._sourceA ? this._sourceA.getSourceData() : null;
 		var sourceBData = this._sourceB ? this._sourceB.getSourceData() : null;
 
-		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this.blendWeight);
+		return BinaryLerpSource.combineSourceData(sourceAData, sourceBData, this.blendWeight);
 	};
 
 	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
 	 * @param {number} globalTime
 	 */
-	BinaryLERPSource.prototype.setTime = function (globalTime) {
+	BinaryLerpSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
 		var activeA = false;
 		var activeB = false;
@@ -54,7 +54,7 @@ define([
 	 * Sets start time of clipinstance. If set to current time, clip is reset
 	 * @param {number} globalStartTime
 	 */
-	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
+	BinaryLerpSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
 		if (this._sourceA) {
 			this._sourceA.resetClips(globalStartTime);
@@ -64,7 +64,7 @@ define([
 		}
 	};
 
-	BinaryLERPSource.prototype.shiftClipTime = function (shiftTime) {
+	BinaryLerpSource.prototype.shiftClipTime = function (shiftTime) {
 		// reset our two sub sources
 		if (this._sourceA) {
 			this._sourceA.shiftClipTime(shiftTime);
@@ -78,7 +78,7 @@ define([
 	* Sets the time scale for sources A and B
 	* @param {Number} timeScale
 	*/
-	BinaryLERPSource.prototype.setTimeScale = function (timeScale) {
+	BinaryLerpSource.prototype.setTimeScale = function (timeScale) {
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);
 	};
@@ -86,7 +86,7 @@ define([
 	/**
 	 * @returns {boolean} from calling the isActive method on sources A or B
 	 */
-	BinaryLERPSource.prototype.isActive = function () {
+	BinaryLerpSource.prototype.isActive = function () {
 		var foundActive = false;
 		if (this._sourceA) {
 			foundActive = foundActive || this._sourceA.isActive();
@@ -105,7 +105,7 @@ define([
 	 * @param {object} [store] If store is supplied, the result is stored there
 	 * @returns {object} The blended result,
 	 */
-	BinaryLERPSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
+	BinaryLerpSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
 		if (!sourceBData) {
 			return sourceAData;
 		} else if (!sourceAData) {
@@ -118,7 +118,7 @@ define([
 			var dataA = sourceAData[key];
 			var dataB = sourceBData[key];
 			if (!isNaN(dataA)) {
-				BinaryLERPSource.blendFloatValues(rVal, key, blendWeight, dataA, dataB);
+				BinaryLerpSource.blendFloatValues(rVal, key, blendWeight, dataA, dataB);
 				continue;
 			} else if (!(dataA instanceof TransformData)) {
 				// A will always override if not null.
@@ -155,7 +155,7 @@ define([
 	 * @param {number[]} dataA The float is wrapped in an array
 	 * @param {number[]} dataB The float is wrapped in an array
 	 */
-	BinaryLERPSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
+	BinaryLerpSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {
 			rVal[key] = dataA;
 		} else {
@@ -163,13 +163,13 @@ define([
 		}
 	};
 
-	BinaryLERPSource.prototype.clone = function () {
-		return new BinaryLERPSource (
+	BinaryLerpSource.prototype.clone = function () {
+		return new BinaryLerpSource (
 			this._sourceA,
 			this._sourceB,
 			this._blendWeight
 		);
 	};
 
-	return BinaryLERPSource;
+	return BinaryLerpSource;
 });

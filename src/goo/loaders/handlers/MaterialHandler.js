@@ -4,16 +4,14 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	Material,
 	ShaderLib,
 	RenderQueue,
 	RSVP,
-	PromiseUtil,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -41,7 +39,7 @@ define([
 	 * @private
 	 */
 	MaterialHandler.prototype._prepare = function (config) {
-		ObjectUtil.defaults(config, {
+		ObjectUtils.defaults(config, {
 			blendState: {},
 			cullState: {},
 			depthState: {},
@@ -51,20 +49,20 @@ define([
 			flat: false
 		});
 
-		ObjectUtil.defaults(config.blendState, {
+		ObjectUtils.defaults(config.blendState, {
 			blending: 'NoBlending',
 			blendEquation: 'AddEquation',
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		});
 
-		ObjectUtil.defaults(config.cullState, {
+		ObjectUtils.defaults(config.cullState, {
 			enabled: true,
 			cullFace: 'Back',
 			frontFace: 'CCW'
 		});
 
-		ObjectUtil.defaults(config.depthState, {
+		ObjectUtils.defaults(config.depthState, {
 			enabled: true,
 			write: true
 		});
@@ -104,9 +102,9 @@ define([
 			var promises = [];
 
 			// Material settings
-			ObjectUtil.extend(material.blendState, config.blendState);
-			ObjectUtil.extend(material.cullState, config.cullState);
-			ObjectUtil.extend(material.depthState, config.depthState);
+			ObjectUtils.extend(material.blendState, config.blendState);
+			ObjectUtils.extend(material.cullState, config.cullState);
+			ObjectUtils.extend(material.depthState, config.depthState);
 
 			material.id = config.id;
 			material.name = config.name;
@@ -127,9 +125,9 @@ define([
 			material.uniforms = {};
 			for (var name in config.uniforms) {
 				if (config.uniforms[name].enabled === undefined) {
-					material.uniforms[name] = ObjectUtil.clone(config.uniforms[name]);
+					material.uniforms[name] = ObjectUtils.clone(config.uniforms[name]);
 				} else if (config.uniforms[name].enabled) {
-					material.uniforms[name] = ObjectUtil.clone(config.uniforms[name].value);
+					material.uniforms[name] = ObjectUtils.clone(config.uniforms[name].value);
 				}
 			}
 

@@ -70,23 +70,40 @@ define([
 			expect(c.z).toBeCloseTo(Math.sqrt(8));
 		});
 
-		it('can check if power of two', function () {
-			expect(MathUtils.isPowerOfTwo(0)).toBeTruthy();
-			expect(MathUtils.isPowerOfTwo(8)).toBeTruthy();
-			expect(MathUtils.isPowerOfTwo(256)).toBeTruthy();
-			expect(MathUtils.isPowerOfTwo(13)).toBeFalsy();
-			expect(MathUtils.isPowerOfTwo(257)).toBeFalsy();
-			expect(MathUtils.isPowerOfTwo(255)).toBeFalsy();
+		describe('isPowerOfTwo', function () {
+			[
+				[0, true],
+				[1, true],
+				[2, true],
+				[3, false],
+				[8, true],
+				[13, false],
+				[255, false],
+				[256, true],
+				[257, false]
+			].forEach(function (pair) {
+				it(pair[0] + ' is ' + (pair[1] ? '' : 'not ') + 'a power of two', function () {
+					expect(MathUtils.isPowerOfTwo(pair[0])).toEqual(pair[1]);
+				});
+			});
 		});
 
-		it('can get nearest power of two', function () {
-			expect(MathUtils.nearestHigherPowerOfTwo(0)).toEqual(0);
-			expect(MathUtils.nearestHigherPowerOfTwo(8)).toEqual(8);
-			expect(MathUtils.nearestHigherPowerOfTwo(6)).toEqual(8);
-			expect(MathUtils.nearestHigherPowerOfTwo(10)).toEqual(16);
-			expect(MathUtils.nearestHigherPowerOfTwo(255)).toEqual(256);
-			expect(MathUtils.nearestHigherPowerOfTwo(256)).toEqual(256);
-			expect(MathUtils.nearestHigherPowerOfTwo(257)).toEqual(512);
+		describe('nearestPowerOfTwo', function () {
+			[
+				[0, 0],
+				[1, 1],
+				[2, 2],
+				[3, 4],
+				[8, 8],
+				[13, 16],
+				[255, 256],
+				[256, 256],
+				[257, 512]
+			].forEach(function (pair) {
+				it('the nearest power of two of ' + pair[0] + ' is ' + pair[1], function () {
+					expect(MathUtils.nearestPowerOfTwo(pair[0])).toEqual(pair[1]);
+				});
+			});
 		});
 
 		it('can compute the area of a triangle', function () {

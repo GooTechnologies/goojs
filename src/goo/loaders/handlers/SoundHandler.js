@@ -3,14 +3,14 @@ define([
 	'goo/sound/AudioContext',
 	'goo/sound/Sound',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AudioContext,
 	Sound,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -95,7 +95,7 @@ define([
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {
 		if (!AudioContext.isSupported()) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (sound) {
@@ -112,7 +112,7 @@ define([
 					} else {
 						/*jshint -W083 */
 						return that.loadObject(ref).then(function (buffer) {
-							return PromiseUtil.createPromise(function (resolve, reject) {
+							return PromiseUtils.createPromise(function (resolve, reject) {
 								AudioContext.getContext().decodeAudioData(buffer, function (audioBuffer) {
 									resolve(audioBuffer);
 								}, function (/*err*/) {

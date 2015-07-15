@@ -3,9 +3,9 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/Ajax',
 	'goo/util/rsvp',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils',
+	'goo/util/ArrayUtils',
 	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
@@ -30,9 +30,9 @@ define([
 	ComponentHandler,
 	Ajax,
 	RSVP,
-	StringUtil,
-	PromiseUtil,
-	ArrayUtil,
+	StringUtils,
+	PromiseUtils,
+	ArrayUtils,
 	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
@@ -197,10 +197,10 @@ define([
 		if (handler) {
 			return handler.update(ref, config, options);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		} else {
 			console.warn('No handler for type ' + type);
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		}
 	};
 
@@ -224,6 +224,12 @@ define([
 	 * @private
 	 */
 	DynamicLoader.prototype._loadBinariesFromRefs = function (references, options) {
+		if (typeof references === 'string') {
+			var reference = references;
+			references = {};
+			references[reference] = reference;
+		}
+
 		var that = this;
 		function loadBinaryRefs(refs) {
 			var handled = 0;
@@ -237,7 +243,6 @@ define([
 					}
 				});
 			}
-
 			// When all binary refs are loaded, we're done
 			return RSVP.all(refs.map(load));
 		}
@@ -255,7 +260,7 @@ define([
 			function traverseFn(config) {
 				var promises = [];
 				if (config.lazy === true) {
-					return PromiseUtil.resolve();
+					return PromiseUtils.resolve();
 				}
 
 				var refs = DynamicLoader._getRefsFromConfig(config);
@@ -276,7 +281,7 @@ define([
 
 			// Resolved when everything is loaded and traversed
 			return traverseFn({ collectionRefs: refs }).then(function () {
-				return ArrayUtil.fromValues(binaryRefs);
+				return ArrayUtils.fromValues(binaryRefs);
 			});
 		}
 
@@ -305,15 +310,26 @@ define([
 		return null;
 	};
 
+
+	var BINARY_HASH_LENGTH = 40;
+	var JSON_HASH_LENGTH = 32;
+
 	/**
-	 * Find all the references in a config, and return in a flat list.
+	 * Determine if a string is a valid goo data model id
 	 *
-	 * @param {object} config Config.
-	 * @returns {string[]} refs References.
+	 * @param {string} id
+	 * @returns {boolean}
 	 * @private
 	 */
-
-	var refRegex = new RegExp('\\S+refs?$', 'i');
+	var isValidId = function(id) {
+		if (typeof id !== 'string') {
+			return false;
+		}
+		var tokens = id.split('.');
+		return tokens[0] &&
+			(tokens[0].length === BINARY_HASH_LENGTH || tokens[0].length === JSON_HASH_LENGTH) &&
+			tokens[1];
+	};
 
 	/**
 	 * Traverses a json-like structure and collects refs in an array
@@ -325,19 +341,32 @@ define([
 		var refs = [];
 
 		function traverse(key, value) {
-			if (refRegex.test(key) && key !== 'thumbnailRef') {
-				// Refs
-				if (value instanceof Object) {
-					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
-						if (value[keys[i]]) {
-							refs.push(value[keys[i]]);
-						}
+			// Multiple refs
+			if (StringUtils.endsWith(key.toLowerCase(), 'refs') && value instanceof Object) {
+				var foundRefs = 0;
+				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					if (isValidId(value[keys[i]])) {
+						refs.push(value[keys[i]]);
+						foundRefs++;
 					}
-				} else if (value) {
-					// Ref
-					refs.push(value);
 				}
-			} else if (
+				if (foundRefs > 0) {
+					return;
+				}
+			}
+
+			// Single ref
+			if (
+				StringUtils.endsWith(key.toLowerCase(), 'ref') &&
+				key !== 'thumbnailRef' &&
+				isValidId(value)
+			) {
+				refs.push(value);
+				return;
+			}
+
+			// Regular object (step into)
+			if (
 				value instanceof Object &&
 				key !== 'assets' &&
 				!(value instanceof Array)

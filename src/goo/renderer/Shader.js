@@ -4,7 +4,7 @@ define([
 	'goo/math/Matrix4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus'
 ], function (
 	ShaderCall,
@@ -12,7 +12,7 @@ define([
 	Matrix4,
 	World,
 	RenderQueue,
-	ObjectUtil,
+	ObjectUtils,
 	SystemBus
 ) {
 	'use strict';
@@ -145,7 +145,7 @@ define([
 	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
-		return new Shader(this.name, ObjectUtil.deepClone({
+		return new Shader(this.name, ObjectUtils.deepClone({
 			precision: this.precision,
 			processors: this.processors,
 			builder: this.builder,
