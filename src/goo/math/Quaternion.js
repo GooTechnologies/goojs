@@ -532,17 +532,6 @@ define([
 	};
 
 
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
 	// Performance methods
 	Quaternion.prototype.setDirect = function (x, y, z, w) {
 		this.data[0] = x;
@@ -553,9 +542,6 @@ define([
 		return this;
 	};
 
-	Quaternion.prototype.setd = addWarning(
-		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
 	Quaternion.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
@@ -564,9 +550,6 @@ define([
 
 		return this;
 	};
-
-	Quaternion.prototype.seta = addWarning(
-		Quaternion.prototype.setArray, '.seta is deprecated; please use .setArray instead');
 
 	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
 	Quaternion.prototype.setVector = function (quat) {
@@ -577,9 +560,6 @@ define([
 
 		return this;
 	};
-
-	Quaternion.prototype.setv = addWarning(
-		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Clones the quaternion

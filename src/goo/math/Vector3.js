@@ -501,19 +501,6 @@ define([
 		return Vector3.dot(this, rhs);
 	};
 
-	//! AT: undocumented, used in only one place in the engine
-	Vector3.dotv = addWarning(
-		function (lhs, rhs) {
-			var ldata = lhs.data;
-			var rdata = rhs.data;
-
-			return ldata[0] * rdata[0] +
-				ldata[1] * rdata[1] +
-				ldata[2] * rdata[2];
-		},
-		'The static method .dotv is deprecated; please use the instance method .dotVector instead'
-	);
-
 	/**
 	 * Computes the dot product between the current vector and 'rhs'.
 	 * @param {Vector3} rhs
@@ -622,17 +609,6 @@ define([
 
 	/* ====================================================================== */
 
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
 	// Performance methods
 	/**
 	 * Sets the vector's values from 3 numeric arguments
@@ -652,9 +628,6 @@ define([
 		return this;
 	};
 
-	Vector3.prototype.setd = addWarning(
-		Vector3.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
 	/**
 	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
 	 * @param {number[]} array
@@ -670,9 +643,6 @@ define([
 
 		return this;
 	};
-
-	Vector3.prototype.seta = addWarning(
-		Vector3.prototype.setArray, '.seta is deprecated; please use .setArray instead');
 
 	/**
 	 * Sets Vector3 values with another {@link Vector3} as input.  The current Vector3 is modified.
@@ -690,9 +660,6 @@ define([
 
 		return this;
 	};
-
-	Vector3.prototype.setv = addWarning(
-		Vector3.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
@@ -712,9 +679,6 @@ define([
 		return this;
 	};
 
-	Vector3.prototype.add_d = addWarning(
-		Vector3.prototype.addDirect, '.add_d is deprecated; please use .addDirect instead');
-
 	/**
 	 * Adds another {@link Vector3} to the current Vector3
 	 * @param {Vector3} vector
@@ -731,9 +695,6 @@ define([
 
 		return this;
 	};
-
-	Vector3.prototype.addv = addWarning(
-		Vector3.prototype.addVector, '.addv is deprecated; please use .addVector instead');
 
 	/**
 	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
@@ -753,9 +714,6 @@ define([
 		return this;
 	};
 
-	Vector3.prototype.muld = addWarning(
-		Vector3.prototype.mulDirect, '.muld is deprecated; please use .mulDirect instead');
-
 	/**
 	 * Multiplies the current Vector3 by another {@link Vector3}
 	 * @param {Vector3} vec3
@@ -772,9 +730,6 @@ define([
 
 		return this;
 	};
-
-	Vector3.prototype.mulv = addWarning(
-		Vector3.prototype.mulVector, '.mulv is deprecated; please use .mulVector instead');
 
 	/**
 	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
@@ -794,9 +749,6 @@ define([
 		return this;
 	};
 
-	Vector3.prototype.sub_d = addWarning(
-		Vector3.prototype.subDirect, '.sub_d is deprecated; please use .subDirect instead');
-
 	/**
 	 * Subtracts another {@link Vector3} from the current Vector3
 	 * @param {Vector3} vector
@@ -813,10 +765,6 @@ define([
 
 		return this;
 	};
-
-	Vector3.prototype.subv = addWarning(
-		Vector3.prototype.subVector, '.subv is deprecated; please use .subVector instead');
-
 
 	/**
 	 * Scales the vector by a factor

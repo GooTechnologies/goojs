@@ -281,17 +281,6 @@ define([
 
 	/* ====================================================================== */
 
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
 	// Performance methods
 	/**
 	 * Sets the vector's values from 4 numeric arguments
@@ -313,9 +302,6 @@ define([
 		return this;
 	};
 
-	Vector4.prototype.setd = addWarning(
-		Vector4.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
 	/**
 	 * Sets the vector's values from an array
 	 * @param {number[]} array
@@ -333,9 +319,6 @@ define([
 		return this;
 	};
 
-	Vector4.prototype.seta = addWarning(
-		Vector4.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
 	/**
 	 * Sets the vector's values from another vector
 	 * @param {Vector4} vector
@@ -352,9 +335,6 @@ define([
 
 		return this;
 	};
-
-	Vector4.prototype.setv = addWarning(
-		Vector4.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Adds arguments 'x', 'y', 'z', 'w' to the current vector

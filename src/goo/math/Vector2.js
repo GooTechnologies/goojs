@@ -260,17 +260,6 @@ define([
 		return this;
 	};
 
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
 	/**
 	 * Sets the vector's values from 2 numeric arguments
 	 * @param {number} x
@@ -287,9 +276,6 @@ define([
 		return this;
 	};
 
-	Vector2.prototype.setd = addWarning(
-		Vector2.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
 	/**
 	 * Sets the vector's values from an array
 	 * @param {number[]} array
@@ -305,9 +291,6 @@ define([
 		return this;
 	};
 
-	Vector2.prototype.seta = addWarning(
-		Vector2.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
 	/**
 	 * Sets the vector's values from another vector
 	 * @param {Vector2} vector
@@ -322,9 +305,6 @@ define([
 
 		return this;
 	};
-
-	Vector2.prototype.setv = addWarning(
-		Vector2.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Adds arguments 'x', 'y' to the current vector
