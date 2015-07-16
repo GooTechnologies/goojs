@@ -297,7 +297,10 @@ function buildClasses(classes) {
 	}
 
 	function getRetStr(val) {
-		return "-> ?";
+		if (val.comment && val.comment.returns) {
+			return " -> " + cleanLink(val.comment.returns.type);
+		}
+		return "";
 	}
 
 	var top = {
@@ -334,7 +337,7 @@ function buildClasses(classes) {
 
 		var cons = root[constructor.name] = {};
 		var params = generateParams(constructor);
-		cons["!type"] = "fn("+params+") -> ?";
+		cons["!type"] = "fn("+params+")";
 		cons["!url"] = "http://code.gooengine.com/latest/docs/index.html?c="+constructor.name;
 		cons["!doc"] = constructor.comment && constructor.comment.description ? constructor.comment.description : "";
 
@@ -356,7 +359,7 @@ function buildClasses(classes) {
 
 				var met = proto[method.name] = {};
 				var params = generateParams(method);
-				met["!type"] = "fn("+params+")" + getRetStr(met);
+				met["!type"] = "fn("+params+")" + getRetStr(method);
 				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+method.name;
 				met["!doc"] = method.comment && method.comment.description ? method.comment.description : "";
 			}
@@ -368,7 +371,7 @@ function buildClasses(classes) {
 
 				var met = cons[method.name] = {};
 				var params = generateParams(method);
-				met["!type"] = "fn("+params+")" + getRetStr(met);
+				met["!type"] = "fn("+params+")" + getRetStr(method);
 				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+method.name;
 				met["!doc"] = method.comment && method.comment.description ? method.comment.description : "";
 			}
