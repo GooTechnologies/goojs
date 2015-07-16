@@ -300,25 +300,34 @@ function buildClasses(classes) {
 		return "-> ?";
 	}
 
-	var root = {
-	};
 	var top = {
 		"!name": "goo",
-		"!define": {
-			"Context": {
-			  "entity": "+goo.Entity",
-			  "world": "+goo.World",
-			  "entityData": "+object",
-			  "worldData": "+object",
-			  "domElement": "+Element",
-			  "viewportWidth ": "number",
-			  "viewportHeight": "number",
-			  "activeCameraEntity": "+goo.Entity"
+		"Context": {
+			"!type": "fn()",
+			"!url": "http://goocreate.com/learn/the-ctx-object/",
+			"!doc": "The Context object lets you access userful variables in the Goo World",
+			"prototype": {
+				"entity": "+goo.Entity",
+				"world": "+goo.World",
+				"entityData": "+object",
+				"worldData": "+object",
+				"domElement": "+Element",
+				"viewportWidth ": "number",
+				"viewportHeight": "number",
+				"activeCameraEntity": "+goo.Entity"
 			}
 		},
-		"ctx": "Context",
-		"goo": root
+		"Arguments": {
+			"!type": "fn()",
+			"!url": "http://goocreate.com/learn/parameters/",
+			"!doc": "To define custom parameters in a Create script, the parameter array and the args object are used."
+		},
+		"goo": {
+			"!url": "http://goocreate.com/learn/the-goo-object/",
+			"!doc": "The goo object provides access to most of the <a href='http://code.gooengine.com/latest/docs/' target='_blank'>Goo Engine API</a>."
+		}
 	};
+	var root = top.goo;
 	for (var c in classesArray) {
 		var obj = classesArray[c];
 		var constructor = obj.constructor;
