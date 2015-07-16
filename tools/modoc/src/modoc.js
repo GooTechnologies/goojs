@@ -192,16 +192,181 @@ function resolveRequirePaths(classes, index) {
 }
 
 function buildClasses(classes) {
-	var classTemplate = fs.readFileSync(
-		args.templatesPath + util.PATH_SEPARATOR + 'class.mustache', { encoding: 'utf8' });
+	// var classTemplate = fs.readFileSync(
+	// 	args.templatesPath + util.PATH_SEPARATOR + 'class.mustache', { encoding: 'utf8' });
+
+	// var classesArray = Object.keys(classes).map(function (className) {
+	// 	return classes[className];
+	// });
+
+	// var result = handlebars.compile(classTemplate)({ classes: classesArray });
+
+	// fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'everything.html', result);
+
+	// TernJS
+	// var classTemplate = fs.readFileSync(
+	// 	args.templatesPath + util.PATH_SEPARATOR + 'ternjs.mustache', { encoding: 'utf8' });
 
 	var classesArray = Object.keys(classes).map(function (className) {
 		return classes[className];
 	});
 
-	var result = handlebars.compile(classTemplate)({ classes: classesArray });
+	// var result = handlebars.compile(classTemplate)({ classes: classesArray });
 
-	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'everything.html', result);
+//	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern.json', result);
+	// fs.writeFileSync('D:\\Dropbox (Personligt)\\Public\\tern\\tern.json', result);	
+
+	function cleanLink(type) {
+		var reg = />(\w+)<\/a>/g;
+		var myArray = reg.exec(type);
+		if (myArray) {
+			type = '+goo.' + myArray[1];
+		}
+		var ind = type.indexOf("|");
+		if (ind > 0) {
+			type = type.substring(0, ind);
+		}
+		type = type.trim();
+		if (type.indexOf('[]', type.length - '[]'.length) !== -1) {
+			type = '[' + type.substring(0, type.length - 2) + ']';
+		}
+		if (type === "boolean") {
+			type = "bool";
+		}
+		if (type === "String") {
+			type = "string";
+		}
+		if (type === "Number") {
+			type = "number";
+		}
+		if (type === "Object") {
+			type = "object";
+		}
+		if (type === "*") {
+			type = "object";
+		}
+		if (type === "Enum") {
+			type = "string";
+		}
+		if (type === "Array") {
+			type = "[?]";
+		}
+		if (type === "") {
+			type = "object";
+		}
+		return type;
+	}
+
+	function generateParams(val) {
+		var params = "";
+		if (val.comment && val.comment.param) {
+			for (var i = 0; i < val.comment.param.length; i++) {
+				var param = val.comment.param[i];
+				if (param.name.length === 0 || param.name.indexOf(".") !== -1) {
+					continue;
+				}
+				if (params.length > 0) {
+					params += ', ';
+				}
+				var name = param.name;
+				var ind = name.indexOf("\n");
+				if (ind > 0) {
+					name = name.substring(0, ind);
+				}
+				ind = name.indexOf("\t");
+				if (ind > 0) {
+					name = name.substring(0, ind);
+				}
+				params += name;
+				var type = param.type;
+				type = cleanLink(type);
+				if (type.indexOf('function') !== -1) {
+					continue;
+				}
+				if (type.indexOf('{') !== -1) {
+					continue;
+				}
+
+				if (param.optional) {
+					params += "?";					
+				}
+				params += ": " + type;
+			}
+		}
+		return params;
+	}
+
+	function getRetStr(val) {
+		return "-> ?";
+	}
+
+	var root = {
+	};
+	var top = {
+		"!name": "goo",
+		"!define": {
+			"Context": {
+			  "entity": "+goo.Entity",
+			  "world": "+goo.World",
+			  "entityData": "+object",
+			  "worldData": "+object",
+			  "domElement": "+Element",
+			  "viewportWidth ": "number",
+			  "viewportHeight": "number",
+			  "activeCameraEntity": "+goo.Entity"
+			}
+		},
+		"ctx": "Context",
+		"goo": root
+	};
+	for (var c in classesArray) {
+		var obj = classesArray[c];
+		var constructor = obj.constructor;
+
+		var cons = root[constructor.name] = {};
+		var params = generateParams(constructor);
+		cons["!type"] = "fn("+params+") -> ?";
+		cons["!url"] = "http://code.gooengine.com/latest/docs/index.html?c="+constructor.name;
+		cons["!doc"] = constructor.comment && constructor.comment.description ? constructor.comment.description : "";
+
+		if (obj.members.length > 0) {
+			var proto = cons["prototype"] = cons["prototype"] || {};
+			for (var j = 0; j < obj.members.length; j++) {
+				var member = obj.members[j];
+
+				var met = proto[member.name] = {};
+				met["!type"] = member.comment && member.comment.type && member.comment.type.type ? cleanLink(member.comment.type.type) : "?";
+				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+member.name;
+				met["!doc"] = member.comment && member.comment.description ? member.comment.description : "";
+			}
+		}
+		if (obj.methods.length > 0) {
+			var proto = cons["prototype"] = cons["prototype"] || {};
+			for (var j = 0; j < obj.methods.length; j++) {
+				var method = obj.methods[j];
+
+				var met = proto[method.name] = {};
+				var params = generateParams(method);
+				met["!type"] = "fn("+params+")" + getRetStr(met);
+				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+method.name;
+				met["!doc"] = method.comment && method.comment.description ? method.comment.description : "";
+			}
+		}
+
+		if (obj.staticMethods.length > 0) {
+			for (var j = 0; j < obj.staticMethods.length; j++) {
+				var method = obj.staticMethods[j];
+
+				var met = cons[method.name] = {};
+				var params = generateParams(method);
+				met["!type"] = "fn("+params+")" + getRetStr(met);
+				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+method.name;
+				met["!doc"] = method.comment && method.comment.description ? method.comment.description : "";
+			}
+		}
+	}
+	fs.writeFileSync('D:\\Dropbox (Personligt)\\Public\\tern\\goo2.json', JSON.stringify(top, null, "\t"));	
+	// fs.writeFileSync('D:\\Dropbox (Personligt)\\Public\\tern\\fulldef.json', JSON.stringify(classes, null, "\t"));	
 }
 
 function buildIndex(index) {

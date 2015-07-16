@@ -1,0 +1,28 @@
+{
+	"!name": "goo",
+{{! CONTENT }}
+{{#each classes}}
+	{{! constructor }}
+	"{{constructor.name}}": {
+		"!type": "fn({{#each constructor.params}}{{.}}{{/each}},)",
+		{{! members }}
+		{{#if hasMembers}}
+		{{#each members}}
+		"{{name}}": {
+			"!type": "{{{type}}}",
+		},
+		{{/each}}
+		{{/if}}
+		{{! instance methods }}
+		{{#if hasMethods}}
+		{{#each methods}}
+		"{{name}}": {
+			"!type": "fn({{#each params}}{{.}}{{#type}} : {{{type}}}{{/type}},{{/each}}){{#comment.returns}} -> {{{type}}}{{/comment.returns}}",
+			"!url": "http://code.gooengine.com/latest/docs/index.html?c=_met_{{../constructor.name}}_{{name}}",
+			"!doc": "{{{comment.description}}}"
+		},
+		{{/each}}
+		{{/if}}
+	},
+{{/each}}
+}
