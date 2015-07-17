@@ -365,6 +365,16 @@ function buildClasses(classes) {
 			}
 		}
 
+		if (obj.staticMembers.length > 0) {
+			for (var j = 0; j < obj.staticMembers.length; j++) {
+				var member = obj.staticMembers[j];
+
+				var met = cons[member.name] = {};
+				met["!type"] = member.comment && member.comment.type && member.comment.type.type ? cleanLink(member.comment.type.type) : "?";
+				met["!url"] = "http://code.gooengine.com/latest/docs/index.html?c=_met_"+constructor.name+"_"+member.name;
+				met["!doc"] = member.comment && member.comment.description ? member.comment.description : "";
+			}
+		}
 		if (obj.staticMethods.length > 0) {
 			for (var j = 0; j < obj.staticMethods.length; j++) {
 				var method = obj.staticMethods[j];
