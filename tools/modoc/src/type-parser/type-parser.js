@@ -80,6 +80,7 @@ var makeTokenList = function (tokens) {
    | Class , ["<" , S , {"," , S} , ">"]
    | "{" , P , {"," , P} , "}"
    | "function (" , P , {"," , P} , ")" , [":" , S]
+   | "(" , S, {"|" , S} , ")"
 
  P -> name , [":", S]
 
@@ -163,32 +164,54 @@ var parseObject = function (tokenList) {
 	};
 };
 
+// there are better ways of doing this
+var parseNonEmptyList = function (tokenList, matchingParen, separator) {
+	var items = [];
+
+	while (tokenList.hasNext()) {
+		items.push(parse(tokenList));
+
+		if (tokenList.matches('symbol', matchingParen)) {
+			break;
+		}
+
+		tokenList.expect('symbol', separator);
+	}
+
+	return items;
+};
+
 var parseClass = function (tokenList) {
 	var className = tokenList.current();
 	tokenList.advance();
 
-	var parameters = [];
+	var parameters;
 
 	if (tokenList.matches('symbol', '<')) {
 		tokenList.advance();
 
-		while (tokenList.hasNext()) {
-			parameters.push(parse(tokenList));
-
-			if (tokenList.matches('symbol', '>')) {
-				break;
-			}
-
-			tokenList.expect('symbol', ',');
-		}
+		parameters = parseNonEmptyList(tokenList, '>', ',');
 
 		tokenList.expect('symbol', '>');
+	} else {
+		parameters = [];
 	}
 
 	return {
 		nodeType: 'class',
 		name: className,
 		parameters: parameters
+	};
+};
+
+var parseEither = function (tokenList) {
+	tokenList.advance();
+	var choices = parseNonEmptyList(tokenList, ')', '|');
+	tokenList.expect('symbol', ')');
+
+	return {
+		nodeType: 'either',
+		choices: choices
 	};
 };
 
@@ -222,6 +245,8 @@ var parse = function (tokenList) {
 			};
 		} else if (cur.data === '{') {
 			return parseObject(tokenList);
+		} else if (cur.data === '(') {
+			return parseEither(tokenList);
 		}
 	}
 };
