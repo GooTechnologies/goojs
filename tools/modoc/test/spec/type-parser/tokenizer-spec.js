@@ -21,6 +21,10 @@ describe('tokenizer', function () {
 			expect(tokenize('asd')).toEqual([makeIdentifier('asd')]);
 		});
 
+		it('chops a namespaced identifier', function () {
+			expect(tokenize('asd.dsa.qwe')).toEqual([makeIdentifier('asd.dsa.qwe')]);
+		});
+
 		it('chops an more tokens', function () {
 			expect(tokenize('asd 123 *   dsa :')).toEqual([
 				makeIdentifier('asd'),
