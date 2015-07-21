@@ -254,5 +254,32 @@ describe('type-parser', function () {
 				});
 			});
 		});
+
+		describe('either', function () {
+			it('parses multiple choices', function () {
+				expect(destringify('(number|string|boolean)')).toEqual({
+					nodeType: 'either',
+					choices: [{
+						nodeType: 'primitive',
+						name: {
+							type: 'identifier',
+							data: 'number'
+						}
+					}, {
+						nodeType: 'primitive',
+						name: {
+							type: 'identifier',
+							data: 'string'
+						}
+					}, {
+						nodeType: 'primitive',
+						name: {
+							type: 'identifier',
+							data: 'boolean'
+						}
+					}]
+				});
+			});
+		});
 	});
 });

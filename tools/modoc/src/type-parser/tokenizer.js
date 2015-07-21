@@ -16,7 +16,7 @@ var isIdentifier = function (char) {
 };
 
 var isSymbol = function (char) {
-	return '*:,(){}<>'.indexOf(char) !== -1;
+	return '*:,|(){}<>'.indexOf(char) !== -1;
 };
 
 var chopNumber = function (string, offset) {
