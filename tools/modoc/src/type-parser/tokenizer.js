@@ -12,7 +12,26 @@ var isNumber = function (char) {
 };
 
 var isIdentifierStart = function (char) {
-	return char === '_' || (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z');
+	return char === '_' ||
+		char === '?' ||
+		(char >= 'A' && char <= 'Z') ||
+		(char >= 'a' && char <= 'z');
+};
+
+var isIdentifierMiddle = function (char) {
+	return isNumber(char) ||
+		char === '_' ||
+		char === '.' ||
+		(char >= 'A' && char <= 'Z') ||
+		(char >= 'a' && char <= 'z');
+};
+
+var isIdentifierEnd = function (char) {
+	return isNumber(char) ||
+		char === '_' ||
+		char === '=' ||
+		(char >= 'A' && char <= 'Z') ||
+		(char >= 'a' && char <= 'z');
 };
 
 var isSymbol = function (char) {
@@ -38,9 +57,20 @@ var chopNumber = function (string, offset) {
 var chopIdentifier = function (string, offset) {
 	var pointer = offset;
 
+	// skip first char, we already know it's ok
+	pointer++;
+
 	while (
 		pointer < string.length &&
-		(isNumber(string[pointer]) || isIdentifierStart(string[pointer]) || string[pointer] === '.')
+		isIdentifierMiddle(string[pointer])
+	) {
+		pointer++;
+	}
+
+	// let's see if it has any special terminations
+	if (
+		pointer < string.length &&
+		isIdentifierEnd(string[pointer])
 	) {
 		pointer++;
 	}
@@ -70,7 +100,7 @@ var tokenize = function (string) {
 
 	var z = 0;
 	while (pointer < string.length) {
-		z++; if (z > 100) { throw ''; }
+		z++; if (z > 100) { throw ''; } /* this needs to go away */
 
 		var current = string[pointer];
 
