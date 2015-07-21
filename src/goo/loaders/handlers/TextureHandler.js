@@ -229,7 +229,7 @@ function (
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
-				texture.minFilter = config.generateMipmaps ?
+				texture.minFilter = config.generateMipmaps !== false ?
 					config.minFilter :
 					TextureHandler.noMipMapAlternatives[config.minFilter];
 			}
