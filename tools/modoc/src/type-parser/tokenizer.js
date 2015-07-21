@@ -11,7 +11,7 @@ var isNumber = function (char) {
 	return char >= '0' && char <= '9';
 };
 
-var isIdentifier = function (char) {
+var isIdentifierStart = function (char) {
 	return char === '_' || (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z');
 };
 
@@ -40,7 +40,7 @@ var chopIdentifier = function (string, offset) {
 
 	while (
 		pointer < string.length &&
-		(isNumber(string[pointer]) || isIdentifier(string[pointer]))
+		(isNumber(string[pointer]) || isIdentifierStart(string[pointer]) || string[pointer] === '.')
 	) {
 		pointer++;
 	}
@@ -60,7 +60,7 @@ var chopSymbol = function (string, offset) {
 
 var choppers = [
 	{ test: isNumber, chop: chopNumber },
-	{ test: isIdentifier, chop: chopIdentifier },
+	{ test: isIdentifierStart, chop: chopIdentifier },
 	{ test: isSymbol, chop: chopSymbol }
 ];
 
