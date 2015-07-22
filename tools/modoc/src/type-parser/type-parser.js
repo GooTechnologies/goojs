@@ -240,6 +240,7 @@ var parse = function (tokenList) {
 
 	if (cur.type === 'symbol') {
 		if (cur.data === '*') {
+			tokenList.advance();
 			return {
 				nodeType: 'any'
 			};
