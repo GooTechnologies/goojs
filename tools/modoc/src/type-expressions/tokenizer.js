@@ -12,10 +12,7 @@ var isNumber = function (char) {
 };
 
 var isIdentifierStart = function (char) {
-	return char === '_' ||
-		char === '?' ||
-		(char >= 'A' && char <= 'Z') ||
-		(char >= 'a' && char <= 'z');
+	return /[_?\w]/.test(char);
 };
 
 var isIdentifierMiddle = function (char) {
@@ -35,23 +32,7 @@ var isIdentifierEnd = function (char) {
 };
 
 var isSymbol = function (char) {
-	return '*:,|(){}<>'.indexOf(char) !== -1;
-};
-
-var chopNumber = function (string, offset) {
-	var pointer = offset;
-
-	while (
-		pointer < string.length &&
-		isNumber(string[pointer])
-	) {
-		pointer++;
-	}
-
-	return {
-		token: makeToken('number', string.substring(offset, pointer)),
-		pointer: pointer
-	};
+	return /[*:,|(){}<>]/.test(char);
 };
 
 var chopIdentifier = function (string, offset) {
@@ -96,7 +77,6 @@ var chopSymbol = function (string, offset) {
 };
 
 var choppers = [
-	{ test: isNumber, chop: chopNumber },
 	{ test: isIdentifierStart, chop: chopIdentifier },
 	{ test: isSymbol, chop: chopSymbol }
 ];
