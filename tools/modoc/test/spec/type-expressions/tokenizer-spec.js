@@ -1,7 +1,7 @@
 // jshint node:true
 'use strict';
 
-var tokenizer = require('../../../src/type-parser/tokenizer');
+var tokenizer = require('../../../src/type-expressions/tokenizer');
 
 describe('tokenizer', function () {
 	describe('tokenize', function () {
