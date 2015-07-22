@@ -1,7 +1,7 @@
 // jshint node:true
 'use strict';
 
-var typeParser = require('../../../src/type-parser/type-parser');
+var typeParser = require('../../../src/type-expressions/type-parser');
 
 describe('type-parser', function () {
 	describe('destringify', function () {
