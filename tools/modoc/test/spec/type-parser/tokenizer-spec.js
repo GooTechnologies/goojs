@@ -26,15 +26,22 @@ describe('tokenizer', function () {
 		});
 
 		it('chops a ?-prefixed identifier', function () {
-			expect(tokenize('?asd')).toEqual([makeIdentifier('?asd')]);
+			var identifier = makeIdentifier('?asd');
+			identifier.nullable = true;
+			expect(tokenize('?asd')).toEqual([identifier]);
 		});
 
 		it('chops a =-suffixed identifier', function () {
-			expect(tokenize('asd=')).toEqual([makeIdentifier('asd=')]);
+			var identifier = makeIdentifier('asd=');
+			identifier.optional = true;
+			expect(tokenize('asd=')).toEqual([identifier]);
 		});
 
 		it('chops a ?-prefixed and =-suffixed identifier', function () {
-			expect(tokenize('?asd=')).toEqual([makeIdentifier('?asd=')]);
+			var identifier = makeIdentifier('?asd=');
+			identifier.nullable = true;
+			identifier.optional = true;
+			expect(tokenize('?asd=')).toEqual([identifier]);
 		});
 
 		it('chops an more tokens', function () {
