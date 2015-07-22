@@ -30,9 +30,27 @@ describe('tern-serializer', function () {
 			expect(convert('Array<number>')).toEqual('[number]');
 		});
 
+		it('serializes classes', function () {
+			expect(convert('Promise')).toEqual('+Promise');
+		});
+
 		it('serializes objects', function () {
 			expect(convert('{ a }')).toEqual('{ a }');
 			expect(convert('{ a: number, b: boolean }')).toEqual('{ a: number, b: bool }');
+		});
+
+		it('serializes functions', function () {
+			expect(convert('function ()')).toEqual('fn ()');
+			expect(convert('function () : number')).toEqual('fn () -> number');
+			expect(convert('function (a)')).toEqual('fn (a)');
+			expect(convert('function (a: number, b: string)')).toEqual('fn (a: number, b: string)');
+		});
+
+		it('serializes composed types', function () {
+			expect(convert('Array<Array<number>>')).toEqual('[[number]]');
+			expect(convert('function (a: Array, b: function (c) : *) : *'))
+				.toEqual('fn (a: [?], b: fn (c) -> ?) -> ?');
+			expect(convert('Array<{ a: Array<number> }>')).toEqual('[{ a: [number] }]');
 		});
 	});
 });
