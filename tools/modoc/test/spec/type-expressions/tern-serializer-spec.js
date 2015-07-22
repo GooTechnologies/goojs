@@ -53,6 +53,10 @@ describe('tern-serializer', function () {
 			expect(convert('function (a: number, b: string)')).toEqual('fn (a: number, b: string)');
 		});
 
+		it('serializes either types', function () {
+			expect(convert('(number|string)')).toEqual('number|string');
+		});
+
 		it('serializes composed types', function () {
 			expect(convert('Array<Array<number>>')).toEqual('[[number]]');
 			expect(convert('function (a: Array, b: function (c) : *) : *'))

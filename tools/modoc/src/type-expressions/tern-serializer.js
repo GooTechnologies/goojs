@@ -47,6 +47,11 @@ var serializers = {
 		return node.return ?
 			fun + ' -> ' + serialize(node.return) :
 			fun;
+	},
+	'either': function (node) {
+		// might need parens
+		// tern doesn't mention parens but without them the expression can be ambiguous
+		return node.choices.map(serialize).join('|');
 	}
 };
 
