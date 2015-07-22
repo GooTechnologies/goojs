@@ -7,28 +7,8 @@ var makeToken = function (type, data) {
 	return token;
 };
 
-var isNumber = function (char) {
-	return char >= '0' && char <= '9';
-};
-
-var isIdentifierStart = function (char) {
+var isIdentifier = function (char) {
 	return /[_?\w]/.test(char);
-};
-
-var isIdentifierMiddle = function (char) {
-	return isNumber(char) ||
-		char === '_' ||
-		char === '.' ||
-		(char >= 'A' && char <= 'Z') ||
-		(char >= 'a' && char <= 'z');
-};
-
-var isIdentifierEnd = function (char) {
-	return isNumber(char) ||
-		char === '_' ||
-		char === '=' ||
-		(char >= 'A' && char <= 'Z') ||
-		(char >= 'a' && char <= 'z');
 };
 
 var isSymbol = function (char) {
@@ -36,36 +16,18 @@ var isSymbol = function (char) {
 };
 
 var chopIdentifier = function (string, offset) {
-	var pointer = offset;
+	var result = /^(\??)([_A-Za-z][.\w]*[\w]?)(=?)/.exec(string.substr(offset));
 
-	// skip first char, we already know it's ok
-	pointer++;
-
-	while (
-		pointer < string.length &&
-		isIdentifierMiddle(string[pointer])
-	) {
-		pointer++;
-	}
-
-	// let's see if it has any special terminations
-	if (
-		pointer < string.length &&
-		isIdentifierEnd(string[pointer])
-	) {
-		pointer++;
-	}
+	var token = makeToken('identifier', result[2]);
 
 	// nullable/optional notations should be handled by the parser, not the lexer
-	var identifier = string.substring(offset, pointer);
-	var token = makeToken('identifier', identifier);
-
-	if (identifier.substr(0, 1) === '?') { token.nullable = true; }
-	if (identifier.substr(-1, 1) === '=') { token.optional = true; }
+	// but this a tad simpler
+	if (result[1]) { token.nullable = true; }
+	if (result[3]) { token.optional = true; }
 
 	return {
 		token: token,
-		pointer: pointer
+		pointer: offset + result[0].length
 	};
 };
 
@@ -77,7 +39,7 @@ var chopSymbol = function (string, offset) {
 };
 
 var choppers = [
-	{ test: isIdentifierStart, chop: chopIdentifier },
+	{ test: isIdentifier, chop: chopIdentifier },
 	{ test: isSymbol, chop: chopSymbol }
 ];
 
@@ -85,10 +47,7 @@ var tokenize = function (string) {
 	var tokens = [];
 	var pointer = 0;
 
-	var z = 0;
 	while (pointer < string.length) {
-		z++; if (z > 100) { throw ''; } /* this needs to go away */
-
 		var current = string[pointer];
 
 		for (var i = 0; i < choppers.length; i++) {
