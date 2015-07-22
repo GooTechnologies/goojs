@@ -253,6 +253,25 @@ describe('type-parser', function () {
 					}]
 				});
 			});
+
+			it('parses a class with one * parameter', function () {
+				expect(destringify('Map<number, *>')).toEqual({
+					nodeType: 'class',
+					name: {
+						type: 'identifier',
+						data: 'Map'
+					},
+					parameters: [{
+						nodeType: 'primitive',
+						name: {
+							type: 'identifier',
+							data: 'number'
+						}
+					}, {
+						nodeType: 'any'
+					}]
+				});
+			});
 		});
 
 		describe('either', function () {
