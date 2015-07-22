@@ -252,10 +252,13 @@ var parse = function (tokenList) {
 	}
 };
 
-var destringify = function (string) {
-	var tokens = tokenizer.tokenize(string);
+var _parse = function (stringOrTokens) {
+	var tokens = typeof stringOrTokens === 'string' ?
+		tokenizer.tokenize(stringOrTokens) :
+		stringOrTokens;
+
 	var tokenList = makeTokenList(tokens);
 	return parse(tokenList);
 };
 
-exports.destringify = destringify;
+exports.parse = _parse;

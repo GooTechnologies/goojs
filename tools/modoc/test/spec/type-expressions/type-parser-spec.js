@@ -4,12 +4,12 @@
 var typeParser = require('../../../src/type-expressions/type-parser');
 
 describe('type-parser', function () {
-	describe('destringify', function () {
-		var destringify = typeParser.destringify;
+	describe('parse', function () {
+		var parse = typeParser.parse;
 
 		describe('simple types', function () {
 			it('parses a primitive type', function () {
-				expect(destringify('number')).toEqual({
+				expect(parse('number')).toEqual({
 					nodeType: 'primitive',
 					name: {
 						type: 'identifier',
@@ -19,7 +19,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses the any type', function () {
-				expect(destringify('*')).toEqual({
+				expect(parse('*')).toEqual({
 					nodeType: 'any'
 				});
 			});
@@ -27,14 +27,14 @@ describe('type-parser', function () {
 
 		describe('functions', function () {
 			it('parses a function with no parameters', function () {
-				expect(destringify('function ()')).toEqual({
+				expect(parse('function ()')).toEqual({
 					nodeType: 'function',
 					parameters: []
 				});
 			});
 
 			it('parses a function with one typed parameter', function () {
-				expect(destringify('function (a: boolean)')).toEqual({
+				expect(parse('function (a: boolean)')).toEqual({
 					nodeType: 'function',
 					parameters: [{
 						nodeType: 'list-item',
@@ -54,7 +54,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a function with one untyped parameter', function () {
-				expect(destringify('function (a)')).toEqual({
+				expect(parse('function (a)')).toEqual({
 					nodeType: 'function',
 					parameters: [{
 						nodeType: 'list-item',
@@ -67,7 +67,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a function with two typed parameters', function () {
-				expect(destringify('function (a: boolean, b: string)')).toEqual({
+				expect(parse('function (a: boolean, b: string)')).toEqual({
 					nodeType: 'function',
 					parameters: [{
 						nodeType: 'list-item',
@@ -100,7 +100,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a function with a return type', function () {
-				expect(destringify('function (a: boolean) : string')).toEqual({
+				expect(parse('function (a: boolean) : string')).toEqual({
 					nodeType: 'function',
 					parameters: [{
 						nodeType: 'list-item',
@@ -129,14 +129,14 @@ describe('type-parser', function () {
 
 		describe('objects', function () {
 			it('parses an object with no members', function () {
-				expect(destringify('{}')).toEqual({
+				expect(parse('{}')).toEqual({
 					nodeType: 'object',
 					members: []
 				});
 			});
 
 			it('parses an object with one typed member', function () {
-				expect(destringify('{ a: boolean }')).toEqual({
+				expect(parse('{ a: boolean }')).toEqual({
 					nodeType: 'object',
 					members: [{
 						nodeType: 'list-item',
@@ -156,7 +156,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses an object with one untyped member', function () {
-				expect(destringify('{ a }')).toEqual({
+				expect(parse('{ a }')).toEqual({
 					nodeType: 'object',
 					members: [{
 						nodeType: 'list-item',
@@ -169,7 +169,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses an object with two typed members', function () {
-				expect(destringify('{ a: boolean, b: string }')).toEqual({
+				expect(parse('{ a: boolean, b: string }')).toEqual({
 					nodeType: 'object',
 					members: [{
 						nodeType: 'list-item',
@@ -204,7 +204,7 @@ describe('type-parser', function () {
 
 		describe('classes', function () {
 			it('parses a class with no parameters', function () {
-				expect(destringify('Promise')).toEqual({
+				expect(parse('Promise')).toEqual({
 					nodeType: 'class',
 					name: {
 						type: 'identifier',
@@ -215,7 +215,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a class with one parameter', function () {
-				expect(destringify('Array<number>')).toEqual({
+				expect(parse('Array<number>')).toEqual({
 					nodeType: 'class',
 					name: {
 						type: 'identifier',
@@ -232,7 +232,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a class with two parameters', function () {
-				expect(destringify('Map<number, string>')).toEqual({
+				expect(parse('Map<number, string>')).toEqual({
 					nodeType: 'class',
 					name: {
 						type: 'identifier',
@@ -255,7 +255,7 @@ describe('type-parser', function () {
 			});
 
 			it('parses a class with one * parameter', function () {
-				expect(destringify('Map<number, *>')).toEqual({
+				expect(parse('Map<number, *>')).toEqual({
 					nodeType: 'class',
 					name: {
 						type: 'identifier',
@@ -276,7 +276,7 @@ describe('type-parser', function () {
 
 		describe('either', function () {
 			it('parses multiple choices', function () {
-				expect(destringify('(number|string|boolean)')).toEqual({
+				expect(parse('(number|string|boolean)')).toEqual({
 					nodeType: 'either',
 					choices: [{
 						nodeType: 'primitive',
