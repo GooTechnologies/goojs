@@ -1,6 +1,8 @@
 // jshint node:true
 'use strict';
 
+var _ = require('underscore');
+
 var jsdocParser = require('./jsdoc-parser');
 var util = require('./util');
 
@@ -38,6 +40,8 @@ var expandIcons = function (string) {
 	return string.replace(warningRegex, '<span class="icon-warning-yellow"></span>');
 };
 
+var processType = _.compose(linkTypes, escapeType);
+
 var link = function (comment) {
 	if (!comment) { return; }
 
@@ -45,21 +49,21 @@ var link = function (comment) {
 
 	if (comment.param) {
 		comment.param.forEach(function (param) {
-			param.type = escapeType(param.type);
-			param.type = linkTypes(param.type);
+			param.rawType = param.type;
+			param.type = processType(param.type);
 			param.description = linkUrls(param.description);
 		});
 	}
 
 	if (comment.returns) {
-		comment.returns.type = escapeType(comment.returns.type);
-		comment.returns.type = linkTypes(comment.returns.type);
+		comment.returns.rawType = comment.returns.type;
+		comment.returns.type = processType(comment.returns.type);
 		comment.returns.description = linkUrls(comment.returns.description);
 	}
 
 	if (comment.type) {
-		comment.type.type = escapeType(comment.type.type);
-		comment.type.type = linkTypes(comment.type.type);
+		comment.type.rawType = comment.type.type;
+		comment.type.type = processType(comment.type.type);
 	}
 };
 
