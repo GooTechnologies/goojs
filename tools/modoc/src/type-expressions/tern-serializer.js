@@ -11,7 +11,7 @@ var serializers = {
 		return '?';
 	},
 	'class': function (node) {
-		// general generic types are not supported by tern (yet)
+		// general generic types are not supported by tern (yet), only arrays for now
 		if (node.name.data === 'Array') {
 			return '[' +
 				(node.parameters.length === 1 ?
@@ -23,11 +23,16 @@ var serializers = {
 		return '+' + node.name.data;
 	},
 	'list-item': function (node) {
-		var name = node.name.data;
+		var name = node.name;
+
+		// serializing both as '?'
+		var decoratedName = name.nullable || name.optional ?
+			name.data + '?':
+			name.data;
 
 		return node.type ?
-			name + ': ' + serialize(node.type) :
-			name;
+			decoratedName + ': ' + serialize(node.type) :
+			decoratedName;
 	},
 	'object': function (node) {
 		return '{ ' +

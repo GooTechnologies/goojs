@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var typeParser = require('../../../src/type-expressions/type-parser');
@@ -19,6 +20,12 @@ describe('tern-serializer', function () {
 
 			// boolean is bool in tern because...
 			expect(convert('boolean')).toEqual('bool');
+		});
+
+		it('serializes nullable and optional types (bindings)', function () {
+			expect(convert('{ ?a }')).toEqual('{ a? }');
+			expect(convert('{ a= }')).toEqual('{ a? }');
+			expect(convert('{ ?a= }')).toEqual('{ a? }');
 		});
 
 		it('serializes the * types', function () {
