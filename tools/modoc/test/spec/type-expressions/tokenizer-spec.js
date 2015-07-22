@@ -8,17 +8,14 @@ describe('tokenizer', function () {
 		var makeToken = tokenizer._makeToken;
 		var tokenize = tokenizer.tokenize;
 
-		var makeNumber = makeToken.bind(null, 'number');
 		var makeIdentifier = makeToken.bind(null, 'identifier');
 		var makeSymbol = makeToken.bind(null, 'symbol');
 
 
-		it('chops a number', function () {
-			expect(tokenize('123')).toEqual([makeNumber('123')]);
-		});
-
 		it('chops an identifier', function () {
 			expect(tokenize('asd')).toEqual([makeIdentifier('asd')]);
+			expect(tokenize('asd123')).toEqual([makeIdentifier('asd123')]);
+			expect(tokenize('_asd_dsa_')).toEqual([makeIdentifier('_asd_dsa_')]);
 		});
 
 		it('chops a namespaced identifier', function () {
@@ -45,9 +42,8 @@ describe('tokenizer', function () {
 		});
 
 		it('chops an more tokens', function () {
-			expect(tokenize('asd 123 *   dsa :')).toEqual([
-				makeIdentifier('asd'),
-				makeNumber('123'),
+			expect(tokenize('asd123 *   dsa :')).toEqual([
+				makeIdentifier('asd123'),
 				makeSymbol('*'),
 				makeIdentifier('dsa'),
 				makeSymbol(':')
