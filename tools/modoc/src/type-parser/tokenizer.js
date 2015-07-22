@@ -75,8 +75,15 @@ var chopIdentifier = function (string, offset) {
 		pointer++;
 	}
 
+	// nullable/optional notations should be handled by the parser, not the lexer
+	var identifier = string.substring(offset, pointer);
+	var token = makeToken('identifier', identifier);
+
+	if (identifier.substr(0, 1) === '?') { token.nullable = true; }
+	if (identifier.substr(-1, 1) === '=') { token.optional = true; }
+
 	return {
-		token: makeToken('identifier', string.substring(offset, pointer)),
+		token: token,
 		pointer: pointer
 	};
 };
