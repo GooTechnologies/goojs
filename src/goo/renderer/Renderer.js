@@ -321,7 +321,7 @@ define([
 	 *
 	 * @param {Object} err
 	 * @param {string} functionName
-	 * @param {[]} args
+	 * @param {Array} args
 	 */
 	Renderer.prototype.onDebugError = function (err, functionName, args) {
 		// Based on the default error handler in WebGLDebugUtils

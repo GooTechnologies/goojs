@@ -162,36 +162,68 @@ function compileDoc(files) {
 	return classes;
 }
 
-function compileClassDefinition(class_) {
-	var convert = _.compose(ternSerializer.serialize, typeParser.parse);
+var convert = _.compose(ternSerializer.serialize, typeParser.parse);
 
-	var convertParameters = function (parameters) {
-		return parameters.map(function (parameter) {
-			return parameter.rawType ?
-				parameter.name + ': ' + convert(parameter.rawType) :
-				parameter.name;
-		}).join(', ');
+var convertParameters = function (parameters) {
+	return parameters.filter(function (parameter) {
+		// filter out sub-parameters of the form `settings.something`
+		return parameter.name.indexOf('.') === -1;
+	}).map(function (parameter) {
+		return parameter.rawType ?
+		parameter.name + ': ' + convert(parameter.rawType) :
+			parameter.name;
+	}).join(', ');
+};
+
+function compileFunction(fun, id) {
+	var ternDefinition = {
+		'!url': 'http://code.gooengine.com/latest/docs/index.html?c=' + id
 	};
 
-	var constructor = class_.constructor;
+	// just for debugging
+	try {
+		if (fun.comment) {
+			ternDefinition['!doc'] = fun.comment.description || '';
+			if (fun.comment.param) {
+				var ending = fun.comment.returns && fun.comment.returns.rawType ?
+					') -> ' + convert(fun.comment.returns.rawType) :
+					')';
 
-	var ternConstructor = {
-		'!url': 'http://code.gooengine.com/latest/docs/index.html?c=' + constructor.name
-	};
-
-	if (constructor.comment) {
-		ternConstructor['!doc'] = constructor.comment.description || '';
-		if (constructor.comment.param) {
-			// constructors do not return anything
-			ternConstructor['!type'] = 'fn(' + convertParameters(constructor.comment.param) + ')';
+				ternDefinition['!type'] = 'fn(' + convertParameters(fun.comment.param) + ending;
+			}
 		}
+	} catch (e) {
+		console.log(id);
+		throw e;
 	}
+
+	return ternDefinition;
+}
+
+function compileClass(class_) {
+	var className = class_.constructor.name;
+
+	// constructor
+	var ternConstructor = compileFunction(class_.constructor, className);
+
+	// static methods
+	class_.methods.forEach(function (method) {
+		var id = '_smet_' + className + '_' + method.name;
+		ternConstructor[method.name] = compileFunction(method, id);
+	});
+
+	// methods
+	ternConstructor.prototype = {};
+	class_.methods.forEach(function (method) {
+		var id = '_met_' + className + '_' + method.name;
+		ternConstructor.prototype[method.name] = compileFunction(method, id);
+	});
 
 	return ternConstructor;
 }
 
 function buildClasses(classes) {
-	var classDefinitions = _.mapObject(classes, compileClassDefinition);
+	var classDefinitions = _.mapObject(classes, compileClass);
 
 	var ternDefinition = {
 		'!name': 'goo',

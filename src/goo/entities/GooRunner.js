@@ -773,7 +773,7 @@ define([
 
 	/**
 	 * Takes an image snapshot from the 3d scene at next render call.
-	 * @param {function} callback
+	 * @param {Function} callback
 	 */
 	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);
