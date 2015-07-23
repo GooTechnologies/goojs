@@ -16,9 +16,8 @@ define([
 	 * the handler with the loader.
 	 *
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @returns {ComponentHandler}
+	 * @param {Function} getConfig The config loader function. See {DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @hidden
 	 */
 	function ConfigHandler(world, getConfig, updateObject, loadObject) {

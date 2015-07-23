@@ -25,6 +25,9 @@ var extractor = require('./extractor');
 var jsdocProcessor = require('./jsdoc-processor');
 var util = require('./util');
 
+var typeParser = require('./type-expressions/type-parser');
+var ternSerializer = require('./type-expressions/tern-serializer');
+
 
 function processArguments() {
 	if (process.argv.length < 4) {
@@ -75,7 +78,7 @@ function compileDoc(files) {
 
 	// extract information from classes
 	files.forEach(function (file) {
-		console.log('compiling doc for ' + util.getFileName(file));
+		console.log('compiling tern definitions for ' + util.getFileName(file));
 
 		var source = fs.readFileSync(file, { encoding: 'utf8' });
 
@@ -159,16 +162,59 @@ function compileDoc(files) {
 	return classes;
 }
 
+function compileClassDefinition(class_) {
+	var convert = _.compose(ternSerializer.serialize, typeParser.parse);
+
+	var convertParameters = function (parameters) {
+		return parameters.map(function (parameter) {
+			return parameter.rawType ?
+				parameter.name + ': ' + convert(parameter.rawType) :
+				parameter.name;
+		}).join(', ');
+	};
+
+	var constructor = class_.constructor;
+
+	var ternConstructor = {
+		'!url': 'http://code.gooengine.com/latest/docs/index.html?c=' + constructor.name
+	};
+
+	if (constructor.comment) {
+		ternConstructor['!doc'] = constructor.comment.description || '';
+		if (constructor.comment.param) {
+			// constructors do not return anything
+			ternConstructor['!type'] = 'fn(' + convertParameters(constructor.comment.param) + ')';
+		}
+	}
+
+	return ternConstructor;
+}
+
 function buildClasses(classes) {
-	var classesArray = Object.keys(classes).map(function (className) {
-		return classes[className];
-	});
+	var classDefinitions = _.mapObject(classes, compileClassDefinition);
 
-	console.log(classes['Entity'].constructor.comment);
+	var ternDefinition = {
+		'!name': 'goo',
+		'!define': {
+			'Context': {
+				'entity': '+goo.Entity',
+				'world': '+goo.World',
+				'entityData': '+object',
+				'worldData': '+object',
+				'domElement': '+Element',
+				'viewportWidth ': 'number',
+				'viewportHeight': 'number',
+				'activeCameraEntity': '+goo.Entity'
+			}
+		},
+		'args': '?',
+		'ctx': 'Context',
+		'goo': classDefinitions
+	};
 
-	//var result =
+	var result = JSON.stringify(ternDefinition, null, '\t');
 
-	//fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern-defs.json', result);
+	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern-defs.json', result);
 }
 
 (function () {

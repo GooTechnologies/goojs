@@ -22,7 +22,7 @@ define([
 	/**
 	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
-	 * @param [Object] [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.stepFrequency=60]
 	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0,-10,0)
 	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
