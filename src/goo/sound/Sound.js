@@ -227,7 +227,6 @@ define([
 	 * @param {AudioNode[]|AudioNode} nodes
 	 */
 	Sound.prototype.connectTo = function (nodes) {
-		this._outNode.disconnect();
 		if (!nodes) {
 			return;
 		}
@@ -236,6 +235,22 @@ define([
 		}
 		for (var i = 0; i < nodes.length; i++) {
 			this._outNode.connect(nodes[i]);
+		}
+	};
+
+	/**
+	 * Disconnect output of sound from audionodes
+	 * @param {AudioNode[]|AudioNode} nodes
+	 */
+	Sound.prototype.disconnectFrom = function (nodes) {
+		if (!nodes) {
+			return;
+		}
+		if (!(nodes instanceof Array)) {
+			nodes = [nodes];
+		}
+		for (var i = 0; i < nodes.length; i++) {
+			this._outNode.disconnect(nodes[i]);
 		}
 	};
 

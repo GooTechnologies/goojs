@@ -74,7 +74,7 @@ define([
 		if (idx > -1) {
 			sound.stop();
 			this.sounds.splice(idx, 1);
-			sound.connectTo();
+			sound.disconnectFrom([this._inNode, this._outWetNode]);
 		}
 	};
 
