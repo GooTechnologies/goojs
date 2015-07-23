@@ -12,8 +12,8 @@ define([
 	/**
 	 * For handling loading of text components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function.
-	 * @param {function} updateObject The handler function.
+	 * @param {Function} getConfig The config loader function.
+	 * @param {Function} updateObject The handler function.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */

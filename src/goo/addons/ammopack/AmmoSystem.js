@@ -8,13 +8,13 @@ define([
 
 	/**
 	 * Handles integration with Ammo.js.
-	 * Depends on the global Ammo object, 
+	 * Depends on the global Ammo object,
 	 * so load ammo.small.js using a script tag before using this system.
 	 * Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld
 	 * See also {@link AmmoComponent}
 	 * @deprecated Deprecated as of v0.11.x and scheduled for removal in v0.13.0; consider using the Cannon system/component instead.
 	 * @extends System
-	 * @param [Object] settings. The settings object can contain the following properties:
+	 * @param {Object} settings The settings object can contain the following properties:
 	 * @param {number} settings.gravity (defaults to -9.81)
 	 * @param {number} settings.maxSubSteps (defaults to 5)
 	 * @param {number} settings.stepFrequency (defaults to 60)
