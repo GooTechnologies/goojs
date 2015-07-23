@@ -222,8 +222,8 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverse method
-		 * @param {(Entity, number) -> boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
-		 * @param {number} [levelOffset=0]
+		 * @param {function (entity: Entity, level: number) : boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
+		 * @param {number} [level=0]
 		 * @returns {Entity} Self to allow chaining
 		 */
 		traverse: function (callback, level) {
@@ -244,7 +244,7 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverseUp method
-		 * @param {(Entity) -> boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
+		 * @param {function (entity: Entity) : boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
 		 * @returns {Entity} Self to allow chaining
 		 */
 		traverseUp: function (callback) {

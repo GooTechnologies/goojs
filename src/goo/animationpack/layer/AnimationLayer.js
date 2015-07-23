@@ -109,10 +109,10 @@ define([
 
 	/**
 	 * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
-	 * @param {String} state
-	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @param {function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
-	 * @returns {Boolean} true if a transition was found and started
+	 * @param {string} state
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {Function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
+	 * @returns {boolean} true if a transition was found and started
 	 */
 	AnimationLayer.prototype.transitionTo = function (state, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
@@ -167,9 +167,9 @@ define([
 	/**
 	 * Sets the current state to the given state. Generally for transitional state use.
 	 * @param {AbstractState} state our new state. If null, then no state is currently set on this layer.
-	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @param {function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
+	 * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {Function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
@@ -201,7 +201,7 @@ define([
 	 * @param {string} id
 	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @param {function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
+	 * @param {Function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
 	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime, callback) {
 		var state = this.getStateById(id);

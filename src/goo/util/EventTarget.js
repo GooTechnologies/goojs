@@ -43,7 +43,7 @@ define(function() {
 	/**
 	 * Registers a new listener for a certain event type
 	 * @param {string} type Type of event listener to add
-	 * @param {function} listener Listener to add
+	 * @param {Function} listener Listener to add
 	 * @returns {EventTarget} Self for chaining.
 	 */
 	EventTarget.prototype.on = function (type, listener) {
@@ -61,7 +61,7 @@ define(function() {
 	/**
 	 * Removes a listener for a certain event type
 	 * @param {string} type Type of event listener to remove
-	 * @param {function} listener Listener to remove
+	 * @param {Function} listener Listener to remove
 	 * @returns {EventTarget} Self for chaining.
 	 */
 	EventTarget.prototype.off = function (type, listener) {
