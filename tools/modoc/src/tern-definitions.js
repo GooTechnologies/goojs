@@ -163,8 +163,6 @@ function compileDoc(files) {
 }
 
 // --- tern related ---
-var convert = _.compose(ternSerializer.serialize, typeParser.parse);
-
 var convertParameters = function (parameters) {
 	return parameters.filter(function (parameter) {
 		// filter out sub-parameters of the form `settings.something`
@@ -287,7 +285,26 @@ function compileClass(class_) {
 	return ternConstructor;
 }
 
+function makeConverter(classNames) {
+	var typesRegexStr = '\\b(' + classNames.join('|') + ')\\b';
+	var typesRegex = new RegExp(typesRegexStr, 'g');
+
+	return function (closureType) {
+		var parsed = typeParser.parse(closureType);
+		var ternType = ternSerializer.serialize(parsed);
+
+		// perform the substitutions after the conversion as this inflates the string with `goo.` prefixes
+		// should this prefixing be done on the expression in parsed form instead? why?
+		return ternType.replace(typesRegex, 'goo.$1');
+	};
+}
+
+// this is a bit of a hack
+var convert;
+
 function buildClasses(classes) {
+	convert = makeConverter(Object.keys(classes));
+
 	var classDefinitions = _.mapObject(classes, compileClass);
 
 	var ternDefinition = {
