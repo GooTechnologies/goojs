@@ -12,7 +12,7 @@ var isIdentifier = function (char) {
 };
 
 var isSymbol = function (char) {
-	return /[*:,|(){}<>]/.test(char);
+	return /[*:,|(){}<>\[\]]/.test(char);
 };
 
 var chopIdentifier = function (string, offset) {

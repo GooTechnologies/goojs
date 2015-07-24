@@ -258,7 +258,11 @@ var _parse = function (stringOrTokens) {
 		stringOrTokens;
 
 	var tokenList = makeTokenList(tokens);
-	return parse(tokenList);
+	var parsed = parse(tokenList);
+	if (tokenList.hasNext()) {
+		throw new Error('Unexpected tokens remain unparsed');
+	}
+	return parsed;
 };
 
 exports.parse = _parse;

@@ -300,5 +300,23 @@ describe('type-parser', function () {
 				});
 			});
 		});
+
+		describe('throws', function () {
+			var delay = function (string) {
+				return parse.bind(null, string);
+			};
+
+			it('when encountering []', function () {
+				expect(delay('number[]')).toThrow();
+			});
+
+			it('when encountering | without ()', function () {
+				expect(delay('number | boolean')).toThrow();
+			});
+
+			it('when encountering "function"', function () {
+				expect(delay('function')).toThrow();
+			});
+		});
 	});
 });
