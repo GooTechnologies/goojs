@@ -162,6 +162,7 @@ function compileDoc(files) {
 	return classes;
 }
 
+// --- tern related ---
 var convert = _.compose(ternSerializer.serialize, typeParser.parse);
 
 var convertParameters = function (parameters) {
@@ -175,9 +176,9 @@ var convertParameters = function (parameters) {
 	}).join(', ');
 };
 
-function compileFunction(fun, id) {
+function compileFunction(fun, urlParameter) {
 	var ternDefinition = {
-		'!url': 'http://code.gooengine.com/latest/docs/index.html?c=' + id
+		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
 	};
 
 	// just for debugging
@@ -193,7 +194,28 @@ function compileFunction(fun, id) {
 			}
 		}
 	} catch (e) {
-		console.log(id);
+		console.log(urlParameter);
+		throw e;
+	}
+
+	return ternDefinition;
+}
+
+function compileMember(member, urlParameter) {
+	var ternDefinition = {
+		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
+	};
+
+	// just for debugging
+	try {
+		if (member.comment) {
+			ternDefinition['!doc'] = member.comment.description || '';
+			if (member.comment.type) {
+				ternDefinition['!type'] = convert(member.comment.type.rawType);
+			}
+		}
+	} catch (e) {
+		console.log(urlParameter);
 		throw e;
 	}
 
@@ -204,18 +226,24 @@ function compileClass(class_) {
 	var className = class_.constructor.name;
 
 	// constructor
-	var ternConstructor = compileFunction(class_.constructor, className);
+	var ternConstructor = compileFunction(class_.constructor, 'c=' + className);
 
 	// static methods
-	class_.methods.forEach(function (method) {
-		var id = '_smet_' + className + '_' + method.name;
-		ternConstructor[method.name] = compileFunction(method, id);
+	class_.staticMethods.forEach(function (staticMethod) {
+		var id = 'h=_smet_' + className + '_' + staticMethod.name;
+		ternConstructor[staticMethod.name] = compileFunction(staticMethod, id);
+	});
+
+	// static properties
+	class_.staticMembers.forEach(function (staticMember) {
+		var id = 'h=_smbr_' + className + '_' + staticMember.name;
+		ternConstructor[staticMember.name] = compileMember(staticMember, id);
 	});
 
 	// methods
 	ternConstructor.prototype = {};
 	class_.methods.forEach(function (method) {
-		var id = '_met_' + className + '_' + method.name;
+		var id = 'h=_met_' + className + '_' + method.name;
 		ternConstructor.prototype[method.name] = compileFunction(method, id);
 	});
 
