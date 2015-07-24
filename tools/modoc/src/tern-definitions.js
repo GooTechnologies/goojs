@@ -222,6 +222,26 @@ function compileMember(member, urlParameter) {
 	return ternDefinition;
 }
 
+// this creates more trouble than it's worth
+function compileProperty(property, urlParameter) {
+	var ternDefinition = {
+		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
+	};
+
+	// just for debugging
+	try {
+		ternDefinition['!doc'] = property.description || '';
+		if (property.type) {
+			ternDefinition['!type'] = convert(property.type);
+		}
+	} catch (e) {
+		console.log(urlParameter);
+		throw e;
+	}
+
+	return ternDefinition;
+}
+
 function compileClass(class_) {
 	var className = class_.constructor.name;
 
@@ -256,10 +276,11 @@ function compileClass(class_) {
 	});
 
 	// members provided as properties to the constructor
-	if (class_.constructor.property) {
-		class_.constructor.property.forEach(function (property) {
+	// these generate a lot of trouble
+	if (class_.constructor.comment && class_.constructor.comment.property) {
+		class_.constructor.comment.property.forEach(function (property) {
 			var id = 'h=_mbr_' + className + '_' + property.name;
-			ternConstructor.prototype[property.name] = compileMember(property, id);
+			ternConstructor.prototype[property.name] = compileProperty(property, id);
 		});
 	}
 
