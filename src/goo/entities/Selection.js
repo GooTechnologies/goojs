@@ -99,7 +99,7 @@ define([], function () {
 
 	/**
 	 * Applies a function on the elements of this selection producing a new collection
-	 * @param predicate The function to apply to each element
+	 * @param fun The function to apply to each element
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.map = function (fun) {
@@ -149,7 +149,7 @@ define([], function () {
 
 	/**
 	 * Adds elements to this selection. Any resulting duplicates are removed.
-	 * @param elements {Element | Element[] | Element... | Selection} The element(s) to add
+	 * @param {Element | Element[] | Element... | Selection} elements The element(s) to add
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.and = function () {
@@ -167,10 +167,10 @@ define([], function () {
 
 	/**
 	 * Returns the common elements between this selection and the given parameter(s)
-	 * @param elements {Element | Element[] | Element... | Selection}
+	 * @param {Element | Element[] | Element... | Selection} elements
 	 * @returns {Selection} Returns self to allow chaining
 	 */
-	Selection.prototype.intersects = function (that) {
+	Selection.prototype.intersects = function () {
 		if (this.top === null) { return this; }
 
 		var that = toArray.apply(null, arguments);
