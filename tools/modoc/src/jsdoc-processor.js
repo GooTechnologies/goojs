@@ -110,6 +110,7 @@ var compileComment = function (rawComment) {
 	var comment = {};
 	comment.description = parsed.description;
 
+	// this should stay in the presentation
 	if (parsed['@param']) {
 		comment.param = parsed['@param'];
 

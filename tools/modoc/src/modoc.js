@@ -69,20 +69,21 @@ function copyStaticFiles(callback) {
 				console.log('exec error: ' + error);
 			}
 			callback();
-		});
+		}
+	);
 }
 
 function filterPrivates(class_) {
-	var predicate = function (entry) {
+	var isPrivateOrHidden = function (entry) {
 		return entry.comment && !(entry.comment.private || entry.comment.hidden);
 	};
 
-	class_.members = class_.members.filter(predicate);
-	class_.staticMembers = class_.staticMembers.filter(predicate);
-	class_.methods = class_.methods.filter(predicate);
-	class_.staticMethods = class_.staticMethods.filter(predicate);
+	class_.members = class_.members.filter(isPrivateOrHidden);
+	class_.staticMembers = class_.staticMembers.filter(isPrivateOrHidden);
+	class_.methods = class_.methods.filter(isPrivateOrHidden);
+	class_.staticMethods = class_.staticMethods.filter(isPrivateOrHidden);
 
-	class_.hasMembers = class_.members.length > 0;
+	class_.hasMembers = class_.members.length > 0 || (class_.constructor.comment && class_.constructor.comment.property);
 	class_.hasStaticMethods = class_.staticMethods.length > 0;
 	class_.hasStaticMembers = class_.staticMembers.length > 0;
 	class_.hasMethods = class_.methods.length > 0;
