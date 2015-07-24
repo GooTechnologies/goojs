@@ -37,7 +37,7 @@ define([
 
 		/**
 		 * Dictates wether this light will 'cast' shadows or not
-		 * @type boolean
+		 * @type {boolean}
 		 * @default
 		 */
 		this.shadowCaster = false;

@@ -234,18 +234,34 @@ function compileClass(class_) {
 		ternConstructor[staticMethod.name] = compileFunction(staticMethod, id);
 	});
 
-	// static properties
+	// static members
 	class_.staticMembers.forEach(function (staticMember) {
 		var id = 'h=_smbr_' + className + '_' + staticMember.name;
 		ternConstructor[staticMember.name] = compileMember(staticMember, id);
 	});
 
-	// methods
 	ternConstructor.prototype = {};
+
+	// methods
 	class_.methods.forEach(function (method) {
 		var id = 'h=_met_' + className + '_' + method.name;
 		ternConstructor.prototype[method.name] = compileFunction(method, id);
 	});
+
+	// members
+	// they sit on the prototype in tern because...
+	class_.members.forEach(function (member) {
+		var id = 'h=_mbr_' + className + '_' + member.name;
+		ternConstructor.prototype[member.name] = compileMember(member, id);
+	});
+
+	// members provided as properties to the constructor
+	if (class_.constructor.property) {
+		class_.constructor.property.forEach(function (property) {
+			var id = 'h=_mbr_' + className + '_' + property.name;
+			ternConstructor.prototype[property.name] = compileMember(property, id);
+		});
+	}
 
 	return ternConstructor;
 }
