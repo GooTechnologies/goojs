@@ -10,7 +10,7 @@ define([
 	/**
 	 * Matrix with 4x4 components.
 	 * @extends Matrix
-	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
+	 * @param {(Matrix4x4|Array<number>)} arguments Initial values for the components.
 	 */
 	function Matrix4x4() {
 		Matrix.call(this, 4, 4);
@@ -39,7 +39,7 @@ define([
 	/**
 	 * Performs a component-wise addition.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
 	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -89,7 +89,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.add = function (rhs) {
@@ -99,7 +99,7 @@ define([
 	/**
 	 * Performs a component-wise subtraction.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
 	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -149,7 +149,7 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.sub = function (rhs) {
@@ -159,7 +159,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
 	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -209,7 +209,7 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.mul = function (rhs) {
@@ -219,7 +219,7 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
 	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -272,7 +272,7 @@ define([
 
 	/**
 	 * Performs a component-wise division.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix4x4|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.div = function (rhs) {

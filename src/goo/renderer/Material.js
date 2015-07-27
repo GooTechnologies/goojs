@@ -54,10 +54,10 @@ define([
 
 		/* Specification of colors for this Material
 		 * @type {Object}
-		 * @property {number[]} ambient The ambient color, [r, g, b, a]
-		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
-		 * @property {number[]} emissive The emissive color, [r, g, b, a]
-		 * @property {number[]} specular The specular color, [r, g, b, a]
+		 * @property {Array<number>} ambient The ambient color, [r, g, b, a]
+		 * @property {Array<number>} diffuse The diffuse color, [r, g, b, a]
+		 * @property {Array<number>} emissive The emissive color, [r, g, b, a]
+		 * @property {Array<number>} specular The specular color, [r, g, b, a]
 		 * @property {number} shininess The shininess exponent.
 		 */
 		/*
@@ -183,7 +183,7 @@ define([
 	/**
 	 * Get all textures as an array
 	 *
-	 * @returns {Texture[]} Array containing all set textures
+	 * @returns {Array<Texture>} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];

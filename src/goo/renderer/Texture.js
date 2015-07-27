@@ -79,7 +79,7 @@ define([
 		this.minFilter = settings.minFilter || 'Trilinear';
 
 		/**
-		 * The anisotropic filtering level.<br>
+		 * The anisotropic filtering level.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example
 		 * @type {number}
 		 */

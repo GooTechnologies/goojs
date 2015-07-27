@@ -8,19 +8,19 @@ define([
 		'use strict';
 
 		/**
-		*	Processes all entities with meshrenderer components.
-		*	A SimplePartitioner is used to first view frustum cull the entities.
-		*	Each of the view frustum culled entities are then added to an occluderList if it has an OccluderComponent.
-		*	The occluder-entities are rendered to a depth-buffer in {SoftwareRenderer} and all the
-		*	entities in the renderList are ultimately occlusion culled based on that depth-buffer.
-		*/
+		 * Processes all entities with meshrenderer components.
+		 * A SimplePartitioner is used to first view frustum cull the entities.
+		 * Each of the view frustum culled entities are then added to an occluderList if it has an OccluderComponent.
+		 * The occluder-entities are rendered to a depth-buffer in {SoftwareRenderer} and all the
+		 * entities in the renderList are ultimately occlusion culled based on that depth-buffer.
+		 */
 		function OcclusionPartitioner (parameters) {
 			this._viewFrustumCuller = new SimplePartitioner();
 
 			/**
-			*	Array of the Entities with an OccluderComponent in the view frustum.
-			*	@type {Array.<Entity>}
-			*/
+			 * Array of the Entities with an OccluderComponent in the view frustum.
+			 * @type {Array<Entity>}
+			 */
 			this.occluderList = [];
 			this.renderer = new SoftwareRenderer(parameters);
 

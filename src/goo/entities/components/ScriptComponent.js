@@ -13,7 +13,8 @@ define([
 
 	/**
 	 * Contains scripts to be executed each frame when set on an active entity.
-	 * @param {object[]|object} [scripts] A script-object or an array of script-objects to attach to the entity.
+	 * @param {(Object|Array<Object>)} [scripts] A script-object or an array of script-objects to attach to the
+	 * entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>,
 	 * which runs on every frame update.
 	 *
@@ -34,7 +35,7 @@ define([
 			/**
 			* Array of scripts tied to this script component. Scripts can be added to the component
 			* using the constructor or by manually adding to the array.
-			* @type {object[]}
+			* @type {Array}
 			* @example
 			* // Add a script to script component
 			* var scriptComponent = new ScriptComponent();

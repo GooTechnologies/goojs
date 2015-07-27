@@ -35,7 +35,7 @@ define([
 	 * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
 	 * are rarely updated.
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */

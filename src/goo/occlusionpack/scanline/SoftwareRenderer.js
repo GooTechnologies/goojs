@@ -85,17 +85,16 @@ define([
 	}
 
 	/**
-	*	Clears the depth data.
-	*/
+	 * Clears the depth data.
+	 */
 	SoftwareRenderer.prototype._clearDepthData = function () {
 		this._depthData.set(this._depthClear);
 	};
 
 	/**
-	*	Renders z-buffer (w-buffer) from the given renderList of entities with OccluderComponents.
-	*
-	*	@param {Array.<Entity>} renderList The array of entities with attached OccluderComponents.
-	*/
+	 * Renders z-buffer (w-buffer) from the given renderList of entities with OccluderComponents.
+	 * @param {Array<Entity>} renderList The array of entities with attached OccluderComponents.
+	 */
 	SoftwareRenderer.prototype.render = function (renderList) {
 
 		this._clearDepthData();

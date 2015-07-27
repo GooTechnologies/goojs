@@ -56,7 +56,7 @@ define([
 	/**
 	 * Adds/updates/removes a machine
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @private
 	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed

@@ -9,7 +9,7 @@ define([
 	 * Base class for animation channels. An animation channel describes a single element of an animation (such as the movement of a single
 	 *        joint, or the play back of a specific sound, etc.) These channels are grouped together in an {@link AnimationClip} to describe a full animation.
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
-	 * @param {number[]} times our time indices. Copied into the channel.
+	 * @param {Array<number>} times our time indices. Copied into the channel.
 	 * @param {string} blendType the blendtype between transform keyframes of the channel. Defaults to AbstractAnimationChannel.BLENDTYPES.LINEAR
 	 * @private
 	 */
@@ -81,7 +81,7 @@ define([
 				}
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
-			
+
 			switch (this._blendType) {
 				case AbstractAnimationChannel.BLENDTYPES.CUBIC:
 					progressPercent = MathUtils.scurve3(progressPercent);

@@ -18,7 +18,7 @@ define([
 
 	/**
 	 * Adds entities to this selection. Any resulting duplicates are removed.
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities The entities to add
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities The entities to add
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
@@ -63,7 +63,7 @@ define([
 
 	/**
 	 * Returns the common entities between this selection and the given parameter(s)
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
@@ -107,7 +107,7 @@ define([
 
 	/**
 	 * Removes entities from the current selection
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities Entities to remove from the selection
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities Entities to remove from the selection
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */

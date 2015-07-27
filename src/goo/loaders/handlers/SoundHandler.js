@@ -89,7 +89,7 @@ define([
 	/**
 	 * Adds/updates/removes a sound
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */

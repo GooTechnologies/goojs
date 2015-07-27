@@ -149,7 +149,7 @@ define([], function () {
 
 	/**
 	 * Adds elements to this selection. Any resulting duplicates are removed.
-	 * @param {Element | Element[] | Element... | Selection} elements The element(s) to add
+	 * @param {(Element | Array<Element> | Selection)} elements The element(s) to add
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.and = function () {
@@ -167,7 +167,7 @@ define([], function () {
 
 	/**
 	 * Returns the common elements between this selection and the given parameter(s)
-	 * @param {Element | Element[] | Element... | Selection} elements
+	 * @param {(Element | Array<Element> | Selection)} elements
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.intersects = function () {
@@ -207,7 +207,7 @@ define([], function () {
 
 	/**
 	 * Removes elements from the current selection
-	 * @param elements {Element | Element[] | Element... | Selection} Elements to remove from the selection
+	 * @param elements {(Element | Array<Element> | Selection)} Elements to remove from the selection
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.without = function () {

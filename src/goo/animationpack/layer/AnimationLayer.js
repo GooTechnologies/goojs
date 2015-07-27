@@ -21,8 +21,8 @@ define([
 	 * Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
 	 *        "steady states" - main states that the layer can be in. The layer can only be in one state at any given time. It may transition between
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
-	 * @param {String} name Name of layer
-	 * @param {String} id Id of layer
+	 * @param {string} name Name of layer
+	 * @param {string} id Id of layer
 	 */
 	function AnimationLayer(name, id) {
 		this.id = id;
@@ -39,7 +39,7 @@ define([
 
 	/**
 	 * Get available states for layer
-	 * @returns {string[]}
+	 * @returns {Array<string>}
 	 */
 	AnimationLayer.prototype.getStates = function () {
 		return Object.keys(this._steadyStates);
@@ -67,7 +67,7 @@ define([
 
 	/**
 	 * Get available transitions for current State
-	 * @returns {string[]}
+	 * @returns {Array<string>}
 	 */
 	AnimationLayer.prototype.getTransitions = function () {
 		var transitions;
@@ -190,7 +190,7 @@ define([
 
 	/**
 	 * Get the current state
-	 * @returns {AbstractState|null}
+	 * @returns {AbstractState}
 	 */
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
@@ -211,7 +211,7 @@ define([
 	/**
 	 * Get the current state by id.
 	 * @param {string} id
-	 * @returns {AbstractState|null}
+	 * @returns {AbstractState}
 	 */
 	AnimationLayer.prototype.getStateById = function (id) {
 		return this._steadyStates[id];
@@ -220,7 +220,7 @@ define([
 	/**
 	 * Get the current state by name.
 	 * @param {string} name
-	 * @returns {AbstractState|null}
+	 * @returns {AbstractState}
 	 */
 	AnimationLayer.prototype.getStateByName = function (name) {
 		for (var id in this._steadyStates) {

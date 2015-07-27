@@ -53,7 +53,7 @@ define([
 		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000
-		 * @property {number[]} resolution 512x512
+		 * @property {Array<number>} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
 		 * @property {number} darkness Shadow contribution
 		 * @property {string} shadowType Possible values 'VSM' = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering

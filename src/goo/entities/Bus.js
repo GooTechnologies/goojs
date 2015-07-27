@@ -18,7 +18,7 @@ define(function () {
 	/**
 	 * Sends messages to all listeners with provided callback function.
 	 *
-	 * @param {string | string[]} channels channel(s) addressed
+	 * @param {(string | Array<string>)} channels channel(s) addressed
 	 * @param {Object} data
 	 * @param {boolean} [storeEmit=false] Store the emit data for transmitting to future listeners
 	 */

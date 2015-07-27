@@ -513,8 +513,8 @@ define([
 	 * Update the shadowHandler for the provided entities and lights.
 	 *
 	 * @param {SimplePartitioner} partitioner The partitioner used to determine what gets to be shadowed.
-	 * @param {Entity[]} entities Array of all the entities to cast shadows.
-	 * @param {Light[]} lights Array of all the lights to cast shadows for.
+	 * @param {Array<Entity>} entities Array of all the entities to cast shadows.
+	 * @param {Array<Light>} lights Array of all the lights to cast shadows for.
 	 */
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
@@ -678,7 +678,7 @@ define([
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables".
 	 *
-	 * @param {Object[]} renderList An array of all the "renderables".
+	 * @param {Array} renderList An array of all the "renderables".
 	 * @returns {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
@@ -737,8 +737,8 @@ define([
 	/**
 	 * Precompiles shaders of the supplied "renderables".
 	 *
-	 * @param {Object[]} renderList An array of all the "renderables".
-	 * @param {Light[]} lights
+	 * @param {Array} renderList An array of all the "renderables".
+	 * @param {Array<Light>} lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
 		var renderInfo = new RenderInfo();
@@ -778,7 +778,7 @@ define([
 	 * Creates buffers of the supplied renderList.
 	 *
 	 * @hidden
-	 * @param {Object[]} renderList An array of "renderables".
+	 * @param {Array} renderList An array of "renderables".
 	 */
 	Renderer.prototype.preloadBuffers = function (renderList) {
 		var renderInfo = new RenderInfo();
@@ -808,7 +808,7 @@ define([
 	 * Creates buffers of the supplied "renderables".
 	 *
 	 * @hidden
-	 * @param {Object[]} renderables
+	 * @param {Array} renderables
 	 * @param {Material} material
 	 * @param {RenderInfo} renderInfo
 	 */
@@ -892,12 +892,12 @@ define([
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 *
-	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
+	 * @param {Array<Entity>} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
 	 * @param {Camera} camera Main camera for rendering.
-	 * @param {Light[]} lights Lights used in the rendering.
+	 * @param {Array<Light>} lights Lights used in the rendering.
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen.
-	 * @param {boolean|Object} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
-	 * @param {Material[]} [overrideMaterials] Optional list of materials to override the renderList materials.
+	 * @param {(boolean|Object)} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
+	 * @param {Array<Material>} [overrideMaterials] Optional list of materials to override the renderList materials.
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
@@ -1058,7 +1058,7 @@ define([
 	 * Render a material with the given parameters.
 	 *
 	 * @param {number} materialIndex
-	 * @param {Material[]} materials
+	 * @param {Array<Material>} materials
 	 * @param {boolean} flatOrWire
 	 * @param {MeshData} originalData
 	 * @param {RenderInfo} renderInfo
@@ -1281,8 +1281,8 @@ define([
 	 * Draws a vertex buffer object (VBO) using drawElements.
 	 *
 	 * @param {BufferData} indices The index-buffer.
-	 * @param {string[]} indexModes Array of index-modes.
-	 * @param {number[]} indexLengths Array of index-counts per index-mode.
+	 * @param {Array<string>} indexModes Array of index-modes.
+	 * @param {Array<number>} indexLengths Array of index-counts per index-mode.
 	 */
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
@@ -1307,8 +1307,8 @@ define([
 	/**
 	 * Draws a vertex buffer object (VBO) using drawArrays.
 	 *
-	 * @param {string[]} indexModes Array of index-modes.
-	 * @param {number[]} indexLengths Array of index-counts per index-mode.
+	 * @param {Array<string>} indexModes Array of index-modes.
+	 * @param {Array<number>} indexLengths Array of index-counts per index-mode.
 	 */
 	Renderer.prototype.drawArraysVBO = function (indexModes, indexLengths) {
 		var offset = 0;
@@ -1331,9 +1331,9 @@ define([
 	/**
 	 * Render entities to be used with the Renderer.pick.
 	 *
-	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
+	 * @param {Array<Entity>} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform.
 	 * @param {Camera} camera Main camera for rendering to pick.
-	 * @param {boolean|Object} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
+	 * @param {(boolean|Object)} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}</code>
 	 * @param {boolean} skipUpdateBuffer
 	 * @param {boolean} doScissor
 	 * @param {number} clientX scissor position X.
@@ -1659,7 +1659,7 @@ define([
 	 * @param {WebGLRenderingContext} context
 	 * @param {number} target For example WebGLRenderingContext.TEXTURE_2D.
 	 * @param {Texture} texture
-	 * @param {Uint8Array|ArrayBufferView} imageData The image data object.
+	 * @param {(Uint8Array|ArrayBufferView)} imageData The image data object.
 	 */
 	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
 		var mipSizes = texture.image.mipmapSizes;

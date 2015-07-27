@@ -72,9 +72,9 @@ define([
 	 * Get the intersection of a ray with a plane.
 	 * @param {Ray} ray
 	 * @param {Vector3} [store]
-	 * @param {bool} [suppressWarnings=false]
-	 * @param {bool} [precision=1e-8]
-	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
+	 * @param {boolean} [suppressWarnings=false]
+	 * @param {boolean} [precision=1e-8]
+	 * @returns {Vector3} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
 		precision = typeof(precision)==='undefined' ? 1e-7 : precision;

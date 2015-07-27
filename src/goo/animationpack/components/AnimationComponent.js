@@ -26,7 +26,7 @@ define([
 		this.type = 'AnimationComponent';
 
 		/**
-		 * @type {AnimationLayer[]}
+		 * @type {Array<AnimationLayer>}
 		 */
 		this.layers = [];
 		this.floats = {};
@@ -67,7 +67,7 @@ define([
 	};
 	/**
 	 * Get available states
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getStates = function () {
 		return this.layers[0].getStates();
@@ -77,7 +77,7 @@ define([
 	};
 	/**
 	 * Get available transitions
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getTransitions = function () {
 		return this.layers[0].getTransitions();

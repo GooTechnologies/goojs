@@ -9,7 +9,7 @@ define([
 	 * Describes a collection of Joints. This class represents the hierarchy of a Skeleton and its original aspect (via the {@link Joint} class). This
 	 *        does not support posing the joints in any way... Use with a SkeletonPose to describe a skeleton in a specific pose.
 	 * @param {String} name
-	 * @param {Joint[]} joints
+	 * @param {Array<Joint>} joints
 	 */
 	function Skeleton(name, joints) {
 		this._name = name;

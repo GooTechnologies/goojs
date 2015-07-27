@@ -5,8 +5,8 @@ define([], function () {
 	 * Checks for collisions against a set of `collidables` and repositions the host object accordingly.
 	 * This script uses the PolyK library which is not part of the engine; make sure you add it manually.<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/PolyBoundingScript/PolyBoundingScript-vtest.html Working example
-	 * @param {Object[]} collidables An array of `collidables` - objects with a bounding polygon on the XZ-plane, a top and a bottom Y coordinate
-	 * @param {number[]} collidables[].poly An array of XZ coordinates representing the bounding polygon of the `collidable`
+	 * @param {Array} collidables An array of `collidables` - objects with a bounding polygon on the XZ-plane, a top and a bottom Y coordinate
+	 * @param {Array<number>} collidables[].poly An array of XZ coordinates representing the bounding polygon of the `collidable`
 	 * @param {number} collidables[].bottom The bottom Y coordinate of the collidable
 	 * @param {number} collidables[].top The top Y coordinate of the collidable
 	 */
@@ -17,7 +17,7 @@ define([], function () {
 	/**
 	 * Adds a `collidable`
 	 * @param {Object} collidable `Collidable` to add
-	 * @param {number[]} collidables[].poly An array of XZ coordinates representing the bounding polygon of the `collidable`
+	 * @param {Array<number>} collidables[].poly An array of XZ coordinates representing the bounding polygon of the `collidable`
 	 * @param {number} collidables[].bottom The bottom Y coordinate of the collidable
 	 * @param {number} collidables[].top The top Y coordinate of the collidable
 	 */

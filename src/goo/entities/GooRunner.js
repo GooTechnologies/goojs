@@ -80,23 +80,25 @@ define([
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
-
 	function GooRunner(parameters) {
 		parameters = parameters || {};
 
 		GameUtils.initAllShims();
 
-		/** Automatically created Goo world.
+		/**
+		 * Automatically created Goo world.
 		 * @type {World}
 		 */
 		this.world = new World(this);
 
-		/** Automatically created renderer.
+		/**
+		 * Automatically created renderer.
 		 * @type {Renderer}
 		 */
 		this.renderer = new Renderer(parameters);
 
-		/** Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
+		/**
+		 * Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
 		 * @type {boolean}
 		 * @default true
 		 */
@@ -124,24 +126,28 @@ define([
 			}
 		}
 
-		/** A list of callbacks to call every frame, before the world is processed.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, before the world is processed.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksPreProcess = [];
 
-		/** A list of callbacks to call every frame, after the world is processed and before the rendering is done.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, after the world is processed and before the rendering is done.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksPreRender = [];
 
-		/** A list of callbacks to call every frame, after the rendering is done.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, after the rendering is done.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacks = [];
 
-		/** A list of callbacks to call once, in the following frame, before the world is processed.<br>
+		/**
+		 * A list of callbacks to call once, in the following frame, before the world is processed.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
-		 * @type {Array.<function(number)>}
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksNextFrame = [];
 
@@ -583,7 +589,7 @@ define([
 	};
 
 	/**
-	 * Adds an event listener to the GooRunner.<br>
+	 * Adds an event listener to the GooRunner.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
@@ -798,7 +804,7 @@ define([
 	};
 
 	/**
-	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.<br>
+	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example
 	 * @param {number} x screen coordinate
 	 * @param {number} y screen coordinate

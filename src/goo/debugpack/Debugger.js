@@ -192,7 +192,7 @@ define([
 	 * @memberOf Debugger#
 	 * @private
 	 * @param {Object} obj Root object to start the walk from
-	 * @param {RegExp[]} interests A list of Regexps to filter the properties the walker is visiting
+	 * @param {Array<RegExp>} interests A list of Regexps to filter the properties the walker is visiting
 	 * @returns {string}
 	 */
 	function filterProperties(obj, interests, ident, recursionDeph) {

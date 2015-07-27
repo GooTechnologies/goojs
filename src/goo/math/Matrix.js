@@ -23,7 +23,7 @@ define([
 	 * Binds aliases to the different matrix components.
 	 * @hidden
 	 * @param {Object} prototype The prototype to bind to.
-	 * @param {string[][]} aliases Array of component aliases for each component index.
+	 * @param {Array<Array<string>>} aliases Array of component aliases for each component index.
 	 */
 	Matrix.setupAliases = function (prototype, aliases) {
 		aliases.forEach(function (aliasesPerComponent, index) {
@@ -97,7 +97,7 @@ define([
 	 * Adds more validators at once
 	 * @hidden
 	 * @param object
-	 * @param {string[]} methodNames
+	 * @param {Array<string>} methodNames
 	 */
 	Matrix.addPostChecks = function (object, methodNames) {
 		methodNames.forEach(Matrix.addPostCheck.bind(null, object));
@@ -107,11 +107,10 @@ define([
 	/**
 	 * Performs a component-wise addition.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix.add = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
@@ -135,7 +134,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 */
 
@@ -148,7 +147,7 @@ define([
 	/**
 	 * Performs a component-wise subtraction.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -176,7 +175,7 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 */
 
@@ -189,7 +188,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -217,7 +216,7 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 */
 
@@ -230,7 +229,7 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -260,7 +259,7 @@ define([
 
 	/**
 	 * Performs a component-wise division.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 */
 
@@ -505,7 +504,7 @@ define([
 
 	/**
 	 * Sets the components of the matrix.
-	 * @param {Matrix|number[]|...number} arguments Component values.
+	 * @param {(Matrix|Array<number>)} arguments Component values.
 	 * @returns {Matrix} Self for chaining.
 	 */
 

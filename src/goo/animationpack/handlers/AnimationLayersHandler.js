@@ -36,7 +36,7 @@ define([
 	/**
 	 * Creates an empty array to store animation layers
 	 * @param {string} ref
-	 * @returns {AnimationLayer[]}
+	 * @returns {Array<AnimationLayer>}
 	 * @private
 	 */
 	AnimationLayersHandler.prototype._create = function (ref) {
@@ -64,7 +64,7 @@ define([
 	/**
 	 * Adds/updates/removes the animation layers
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */

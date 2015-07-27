@@ -74,8 +74,8 @@ define([
 	/**
 	 * Creates/updates/removes a posteffectconfig
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated posteffectsarray or null if removed
 	 */
 	PosteffectsHandler.prototype._update = function (ref, config, options) {
@@ -131,7 +131,7 @@ define([
 	 * Finds the already created effect from the configs id or creates a new one and updates it
 	 * according to config
 	 * @param {object} config
-	 * @param {RenderPass[]} posteffects array of engine posteffects/Renderpasses
+	 * @param {Array<RenderPass>} posteffects array of engine posteffects/Renderpasses
 	 * @param {Object} options
 	 * @returns {RenderPass} effect
 	 */

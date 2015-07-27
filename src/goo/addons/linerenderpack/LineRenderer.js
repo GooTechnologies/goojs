@@ -100,7 +100,7 @@ define([
 
 		/**
 		 * Used internally to push or remove itself from the renderList.
-		 * @param {Object[]} renderList An array of all the renderObjects to send to the Renderer.
+		 * @param {Array} renderList An array of all the renderObjects to send to the Renderer.
 		 */
 		LineRenderer.prototype._manageRenderList = function (renderList) {
 			if (!this._rendering && this._numRenderingLines !== 0) {
