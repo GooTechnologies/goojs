@@ -64,8 +64,8 @@ define([
 	/**
 	 * Adds/updates/removes the animation layers
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */
 	AnimationLayersHandler.prototype._update = function (ref, config, options) {
@@ -91,7 +91,7 @@ define([
 
 	/**
 	 * Parses a single layer, puts the correct properties and {@link SteadyState} onto it
-	 * @param {object} layerConfig
+	 * @param {Object} layerConfig
 	 * @param {layer}
 	 * @returns {RSVP.Promise} resolves with layer
 	 * @private

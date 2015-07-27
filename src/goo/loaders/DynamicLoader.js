@@ -40,7 +40,7 @@ define([
 
 	/**
 	 * Class to load objects into the engine, or to update objects based on the data model.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {World} options.world The target World object.
 	 * @param {string} options.rootPath The root path from where to get resources.
 	 * @param {Ajax} [options.ajax=new Ajax(options.rootPath)]
@@ -71,7 +71,7 @@ define([
 	 * Load configs into the loader cache without loading anything into the engine.
 	 * Subsequent calls to load and update will draw configs from the prefilled cache.
 	 *
-	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
+	 * @param {Object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
 	 * the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
@@ -114,7 +114,7 @@ define([
 	 * registered {@link ConfigHandler}.
 	 *
 	 * @param {string} ref Ref of object to load.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
 	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
 	 * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
@@ -137,9 +137,9 @@ define([
 	 * type, updating behavior is determined by the registered {ConfigHandler}.
 	 *
 	 * @param {string} ref Ref of object to update.
-	 * @param {object} [config] New configuration (formatted according to data model).
+	 * @param {Object} [config] New configuration (formatted according to data model).
 	 * If omitted, works the same as {DynamicLoader.load}.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 	 */
@@ -164,8 +164,8 @@ define([
 	 * Loads the object specified by the ref. If an object is already loaded,
 	 * it will return that object without updating it.
 	 * @param {string} ref
-	 * @param {object} options
-	 * @returns {object} Depending on what type of ref was loaded.
+	 * @param {Object} options
+	 * @returns {Object} Depending on what type of ref was loaded.
 	 * @private
 	 */
 	DynamicLoader.prototype._loadObject = function (ref, options) {
@@ -186,9 +186,9 @@ define([
 	/**
 	 * Updates object identified by ref according to config
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
-	 * @returns {object} Depending on what's being updated
+	 * @param {Object} config
+	 * @param {Object} options
+	 * @returns {Object} Depending on what's being updated
 	 * @private
 	 */
 	DynamicLoader.prototype._updateObject = function (ref, config, options) {
@@ -218,8 +218,8 @@ define([
 
 	/**
 	 * Recursively traverses all configs and preloads the binary files referenced.
-	 * @param {object} references one-level object of references, like in datamodel
-	 * @param {object} options See {DynamicLoader.load}
+	 * @param {Object} references one-level object of references, like in datamodel
+	 * @param {Object} options See {DynamicLoader.load}
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */

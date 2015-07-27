@@ -34,7 +34,7 @@ define([
 	/**
 	 * Renders transform gizmos<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example
-	 * @property {Boolean} doRender Only render if set to true
+	 * @property {boolean} doRender Only render if set to true
 	 * @extends System
 	 */
 	function GizmoRenderSystem(callbacks) {

@@ -180,7 +180,7 @@ define([
 	/**
 	 * Retrieves a {@link Manager} of a certain type.
 	 *
-	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'.
+	 * @param {string} type Type of manager to retrieve eg. 'EntityManager'.
 	 * @returns {Manager}
 	 */
 	World.prototype.getManager = function (type) {
@@ -220,7 +220,7 @@ define([
 	/**
 	 * Retrieve a {@link System} of type 'type'.
 	 *
-	 * @param {String} type Type of system to retrieve.
+	 * @param {string} type Type of system to retrieve.
 	 * @returns {System}
 	 */
 	World.prototype.getSystem = function (type) {
@@ -237,7 +237,7 @@ define([
 	 * Entities tracked by the removed system will not get handled properly when they are removed from the world
 	 * or when their components (that are tracked by this system) change.
 	 *
-	 * @param {String} type Type of system to remove.
+	 * @param {string} type Type of system to remove.
 	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.clearSystem = function (type) {
@@ -263,7 +263,7 @@ define([
 	 *
 	 * @param {MeshData} [meshData]
 	 * @param {Material} [material]
-	 * @param {String} [name]
+	 * @param {string} [name]
 	 * @param {Camera} [camera]
 	 * @param {Light} [light]
 	 * @returns {Entity}

@@ -98,8 +98,8 @@ define([
 		};
 
 		/**
-		*	Iterates over the entities in the renderlist and adds them to the occluderList if they have a OccluderComponent.
-		*/
+		 * Iterates over the entities in the renderlist and adds them to the occluderList if they have a OccluderComponent.
+		 */
 		OcclusionPartitioner.prototype._addVisibleOccluders = function (renderList) {
 			// 'Removes' the elements, but keeps reference used by other classes.
 			this.occluderList.length = 0;

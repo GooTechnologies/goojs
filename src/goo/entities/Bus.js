@@ -100,7 +100,7 @@ define(function () {
 
 	/**
 	 * Register callback for a channel
-	 * @param {String} channelName
+	 * @param {string} channelName
 	 * @param {Function} callback function (data)
 	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
 	 */

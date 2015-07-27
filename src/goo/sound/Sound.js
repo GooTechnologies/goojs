@@ -159,7 +159,7 @@ define([
 
 	/**
 	 * Updates the sound according to config
-	 * @param {object} [config]
+	 * @param {Object} [config]
 	 * @param {boolean} [config.loop]
 	 * @param {number} [config.volume]
 	 * @param {number} [config.name] The sound name

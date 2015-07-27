@@ -51,7 +51,7 @@ define([
 	 * The renderer handles displaying of graphics data to a render context.
 	 * It accepts an object containing the settings for the renderer.
 	 *
-	 * @param {object} parameters Renderer settings.
+	 * @param {Object} parameters Renderer settings.
 	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels.
 	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
 	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.

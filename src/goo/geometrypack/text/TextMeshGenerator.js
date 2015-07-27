@@ -15,7 +15,7 @@ define([
 
 	/**
 	 * Serializes an svg path command
-	 * @param {object} command
+	 * @param {Object} command
 	 * @returns {string}
 	 */
 	function serializeCommand(command) {

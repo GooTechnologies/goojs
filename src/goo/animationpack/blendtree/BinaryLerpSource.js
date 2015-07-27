@@ -75,9 +75,9 @@ define([
 	};
 
 	/**
-	* Sets the time scale for sources A and B
-	* @param {Number} timeScale
-	*/
+	 * Sets the time scale for sources A and B
+	 * @param {number} timeScale
+	 */
 	BinaryLerpSource.prototype.setTimeScale = function (timeScale) {
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);
@@ -99,11 +99,11 @@ define([
 
 	/**
 	 * Blends two sourceData maps together
-	 * @param {object} sourceAData
-	 * @param {object} sourceBData
+	 * @param {Object} sourceAData
+	 * @param {Object} sourceBData
 	 * @param {number} blendWeight
-	 * @param {object} [store] If store is supplied, the result is stored there
-	 * @returns {object} The blended result,
+	 * @param {Object} [store] If store is supplied, the result is stored there
+	 * @returns {Object} The blended result,
 	 */
 	BinaryLerpSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
 		if (!sourceBData) {
@@ -149,7 +149,7 @@ define([
 
 	/**
 	 * Blends two float values and stores them in rVal
-	 * @param {object} rVal The object in which to store result
+	 * @param {Object} rVal The object in which to store result
 	 * @param {string} key The key to object rVal, so rVal[key] is the store
 	 * @param {number} blendWeight
 	 * @param {Array<number>} dataA The float is wrapped in an array

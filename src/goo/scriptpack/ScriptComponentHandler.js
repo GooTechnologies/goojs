@@ -164,7 +164,7 @@ define([
 	/**
 	 * Creates a new script engine.
 	 *
-	 * @param {object} scriptName
+	 * @param {Object} scriptName
 	 *		The name of the script which is to be created.
 	 *
 	 * @returns {Promise}

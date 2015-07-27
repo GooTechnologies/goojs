@@ -46,8 +46,8 @@ define([
 	/**
 	 * Creates a MeshData once, then reuses that one without updating
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the Meshdata or null if removed
 	 */
 	MeshDataHandler.prototype._update = function (ref, config, options) {
@@ -76,7 +76,7 @@ define([
 
 	/**
 	 * Creates a MeshData object with attributeMap according to config
-	 * @param {object} config
+	 * @param {Object} config
 	 * @returns {MeshData}
 	 * @private
 	 */
@@ -121,7 +121,7 @@ define([
 	/**
 	 * Fills MeshData object from config
 	 * @param {MeshData} meshData
-	 * @param {object} config
+	 * @param {Object} config
 	 * @param {ArrayBuffer} bindata
 	 * @returns {MeshData}
 	 * @private

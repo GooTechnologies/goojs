@@ -84,7 +84,7 @@ define([
 		 * Occlusion culls the entity based on the entity's BoundingBox.
 		 * @param entity
 		 * @param cameraViewProjectionMatrix
-		 * @returns {Boolean} occluded or not occluded.
+		 * @returns {boolean} occluded or not occluded.
 		 */
 		BoundingBoxOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
 		   return this._doSSAABBOcclusionTest(entity, cameraViewProjectionMatrix);
@@ -95,7 +95,7 @@ define([
 		 * Performs a rendered interpolated depth test for the triangles of the bounding box.
 		 * @param entity
 		 * @param cameraViewProjectionMatrix
-		 * @returns {Boolean} occluded or not
+		 * @returns {boolean} occluded or not
 		 * @private
 		 */
 		BoundingBoxOcclusionChecker.prototype._doRenderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
@@ -129,7 +129,7 @@ define([
 		 *  entity.
 		 * @param entity
 		 * @param cameraViewProjectionMatrix
-		 * @returns {Boolean} occluded or not
+		 * @returns {boolean} occluded or not
 		 * @private
 		 */
 		BoundingBoxOcclusionChecker.prototype._doSSAABBOcclusionTest = function (entity, cameraViewProjectionMatrix) {
@@ -186,21 +186,21 @@ define([
 		};
 
 		/**
-		 *	Generates a array of homogeneous vertices for a entity's bounding box.
+		 * Generates a array of homogeneous vertices for a entity's bounding box.
 		 */
 		BoundingBoxOcclusionChecker.prototype._copyEntityVerticesToPositionArray = function (entity) {
 			positionArray.set(entity.occludeeComponent.positionArray);
 		};
 
 		/**
-		 *	Clips the bounding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
-		 *	This is a implementation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
-		 *	if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
-		 *	it will be non-conservative in some cases.
+		 * Clips the bounding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
+		 * This is a implementation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
+		 * if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
+		 * it will be non-conservative in some cases.
 		 *
-		 *  The new values are stored in the global minMaxArray.
+		 * The new values are stored in the global minMaxArray.
 		 *
-		 *	@param {Float32Array} positions Array of screen space transformed vertices.
+		 * @param {Float32Array} positions Array of screen space transformed vertices.
 		 */
 		BoundingBoxOcclusionChecker.prototype._clipBox = function (positions) {
 			/*
@@ -380,7 +380,7 @@ define([
 
 		/**
 		 * Calculates outcode for a coordinate in screen pixel space used by the Coher-Sutherland clipping algorithm.
-		 *	The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
+		 * The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
 		 * @param coordinate
 		 * @returns {number}
 		 * @private
@@ -406,10 +406,10 @@ define([
 		};
 
 		/**
-		 *	Creates a screen space axis aligned box from the min and max values.
-		 *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
-		 *	@returns {Boolean} occluded or not occluded.
-		 *   @param {Float32Array} minmaxArray  [minX, maxX, minY, maxY, minDepth]
+		 * Creates a screen space axis aligned box from the min and max values.
+		 * The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
+		 * @returns {boolean} occluded or not occluded.
+		 * @param {Float32Array} minmaxArray [minX, maxX, minY, maxY, minDepth]
 		 */
 		BoundingBoxOcclusionChecker.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
 
@@ -441,7 +441,7 @@ define([
 		 *  Returns false if the entity has clipped the near plane.
 		 * @param entity
 		 * @param cameraViewProjectionMatrix
-		 * @returns {Boolean}
+		 * @returns {boolean}
 		 * @private
 		 */
 		BoundingBoxOcclusionChecker.prototype._projectionTransformTriangleData = function (entity, cameraViewProjectionMatrix) {

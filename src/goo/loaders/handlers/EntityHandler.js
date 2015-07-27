@@ -88,8 +88,8 @@ define([
 	/**
 	 * Adds/updates/removes an entity
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	EntityHandler.prototype._update = function (ref, config, options) {
@@ -140,8 +140,8 @@ define([
 	 * Adds/updates/removes a component on an entity
 	 * @param {Entity} entity
 	 * @param {string} type
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with updated entity
 	 * @private
 	 */

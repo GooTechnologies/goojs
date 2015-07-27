@@ -99,7 +99,7 @@ function (
 
 	/**
 	 * Preparing texture config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
@@ -211,8 +211,8 @@ function (
 	/**
 	 * Adds/updates/removes a texture
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */
 	TextureHandler.prototype._update = function (ref, config, options) {

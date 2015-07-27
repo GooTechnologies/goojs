@@ -460,7 +460,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @returns {boolean} True if orthogonal.
 	 */
 	Matrix4x4.prototype.isOrthogonal = function () {
 		var dot;
@@ -507,7 +507,7 @@ define([
 
 	/**
 	 * Tests if the matrix is normal.
-	 * @returns {Boolean} True if normal.
+	 * @returns {boolean} True if normal.
 	 */
 	Matrix4x4.prototype.isNormal = function () {
 		var l;
@@ -542,7 +542,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthonormal.
-	 * @returns {Boolean} True if orthonormal.
+	 * @returns {boolean} True if orthonormal.
 	 */
 	Matrix4x4.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();

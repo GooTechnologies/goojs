@@ -130,7 +130,7 @@ define([
 	/**
 	 * Finds the already created effect from the configs id or creates a new one and updates it
 	 * according to config
-	 * @param {object} config
+	 * @param {Object} config
 	 * @param {Array<RenderPass>} posteffects array of engine posteffects/Renderpasses
 	 * @param {Object} options
 	 * @returns {RenderPass} effect

@@ -35,7 +35,7 @@ define([
 	/**
 	 * Removes project from engine, i e removes mainScene, i e removes scene entities from world
 	 * @param {string} ref}
-	 * @param {object} options
+	 * @param {Object} options
 	 */
 	ProjectHandler.prototype._remove = function(ref, options) {
 		var project = this._objects.get(ref);
@@ -46,7 +46,7 @@ define([
 
 	/**
 	 * Creates an empty project object
-	 * @returns {object}
+	 * @returns {Object}
 	 * @private
 	 */
 	ProjectHandler.prototype._create = function() {
@@ -58,8 +58,8 @@ define([
 	/**
 	 * Creates/updates/removes a project
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
 	 ProjectHandler.prototype._update = function(ref, config, options) {

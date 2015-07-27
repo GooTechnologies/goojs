@@ -66,7 +66,7 @@ define([
 	/**
 	 * Does the actual updating of animation clip and channels
 	 * It creates new channels on every update, but clips are practically never updated
-	 * @param {object} clipConfig
+	 * @param {Object} clipConfig
 	 * @param {ArrayBuffer} binData
 	 * @param {AnimationClip} clip
 	 * @private

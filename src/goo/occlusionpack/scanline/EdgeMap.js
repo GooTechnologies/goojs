@@ -7,7 +7,7 @@ define([
 
         /**
          * Stores the edges to render.
-         * @param {Number} edgeCount The number of edges needed during runtime
+         * @param {number} edgeCount The number of edges needed during runtime
          * @constructor
          */
         function EdgeMap (edgeCount) {

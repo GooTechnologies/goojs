@@ -646,7 +646,7 @@ define([
 	 * Triggers an event on the GooRunner (force).
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param {object} evt The GooRunner-style event
+	 * @param {Object} evt The GooRunner-style event
 	 * @param {Entity} evt.entity Event entity.
 	 * @param {number} evt.x Event canvas X coordinate.
 	 * @param {number} evt.y Event canvas Y coordinate.

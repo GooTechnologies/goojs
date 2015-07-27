@@ -81,7 +81,7 @@ define([
 	 * return the world floor height.
 	 * @private
 	 * @param {Vector3} translation
-	 * @returns {Number} Height of ground
+	 * @returns {number} Height of ground
 	 */
 	GroundBoundMovementScript.prototype.getTerrainHeight = function(translation) {
 		var height = this.getTerrainSystem().getTerrainHeightAt(translation.data);

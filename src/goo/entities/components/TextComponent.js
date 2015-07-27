@@ -32,7 +32,7 @@ define([
 
 	/**
 	 * Text to update to
-	 * @param {String} text
+	 * @param {string} text
 	 * @returns {TextComponent} Self for chaining
 	 */
 	TextComponent.prototype.setText = function (text) {

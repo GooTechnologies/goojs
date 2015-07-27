@@ -286,7 +286,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @returns {boolean} True if orthogonal.
 	 */
 	Matrix2x2.prototype.isOrthogonal = function () {
 		var dot;

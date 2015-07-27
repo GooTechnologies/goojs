@@ -78,7 +78,7 @@ define([
 	/**
 	 * Retrieves the values of all channels
 	 * @private
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	TimelineComponent.prototype.getValues = function () {
 		var retVal = {};
