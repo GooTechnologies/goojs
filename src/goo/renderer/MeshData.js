@@ -909,7 +909,7 @@ define([
 
 	/**
 	 * Creates an attribute given the types
-	 * @param {string[]} [types] An array of default types. If not provided you get an attributeMap with all default attributes
+	 * @param {Array<string>} [types] An array of default types. If not provided you get an attributeMap with all default attributes
 	 * @returns {object}
 	 * @example var map = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 	 */

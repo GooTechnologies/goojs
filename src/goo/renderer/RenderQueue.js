@@ -40,7 +40,7 @@ define(['goo/math/Vector3'], function (Vector3) {
 	var tmpVec = new Vector3();
 
 	/**
-	 * @param {Entity[]} renderList
+	 * @param {Array<Entity>} renderList
 	 * @param {Camera} camera
 	 */
 	RenderQueue.prototype.sort = function (renderList, camera) {

@@ -215,7 +215,7 @@ define(function () {
 	 * @param {number} R.x
 	 * @param {number} R.y
 	 * @param {number} R.z
-	 * @returns {number[]} The triangle's normal
+	 * @returns {Array<number>} The triangle's normal
 	 */
 	MathUtils.getTriangleNormal = function (p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;

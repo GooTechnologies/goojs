@@ -10,7 +10,7 @@ define([
 	/**
 	 * Matrix with 2x2 components.
 	 * @extends Matrix
-	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
+	 * @param {(Matrix2x2|Array<number>)} arguments Initial values for the components.
 	 */
 	function Matrix2x2() {
 		Matrix.call(this, 2, 2);
@@ -38,7 +38,7 @@ define([
 	/**
 	 * Performs a component-wise addition.
 	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -64,7 +64,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
 	Matrix2x2.prototype.add = function (rhs) {
@@ -74,7 +74,7 @@ define([
 	/**
 	 * Performs a component-wise subtraction.
 	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -100,7 +100,7 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
 	Matrix2x2.prototype.sub = function (rhs) {
@@ -110,7 +110,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -136,7 +136,7 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
 	Matrix2x2.prototype.mul = function (rhs) {
@@ -146,7 +146,7 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -174,7 +174,7 @@ define([
 
 	/**
 	 * Performs a component-wise division.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix2x2|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
 	Matrix2x2.prototype.div = function (rhs) {

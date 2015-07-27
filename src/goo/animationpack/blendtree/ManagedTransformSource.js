@@ -108,7 +108,7 @@ define([
 	/**
 	 * Setup transform data for specific joints on this source, using the first frame from a given clip.
 	 * @param {AnimationClip} clip the animation clip to pull data from
-	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
+	 * @param {Array<string>} jointIndices the indices of the joints to initialize data for.
 	 */
 	ManagedTransformSource.prototype.initFromClip = function (clip, filter, channelNames) {
 		if(filter === 'Include' && channelNames && channelNames.length) {

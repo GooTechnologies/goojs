@@ -11,15 +11,15 @@ define([
 	 * Transform animation channel, specifically geared towards describing the motion of skeleton joints.
 	 * @param {string} jointName our joint name.
 	 * @param {number} jointIndex our joint index
-	 * @param {number[]} times our time offset values.
-	 * @param {number[]} rotations the rotations to set on this channel at each time offset.
-	 * @param {number[]} translations the translations to set on this channel at each time offset.
-	 * @param {number[]} scales the scales to set on this channel at each time offset.
+	 * @param {Array<number>} times our time offset values.
+	 * @param {Array<number>} rotations the rotations to set on this channel at each time offset.
+	 * @param {Array<number>} translations the translations to set on this channel at each time offset.
+	 * @param {Array<number>} scales the scales to set on this channel at each time offset.
 	 */
 	function JointChannel(jointIndex, jointName, times, rotations, translations, scales, blendType) {
 		TransformChannel.call(this, jointName, times, rotations, translations, scales, blendType);
 
-		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes. 
+		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes.
 		this._jointIndex = jointIndex;
 	}
 

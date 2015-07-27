@@ -211,7 +211,7 @@ function (
 	/**
 	 * Adds/updates/removes a texture
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */

@@ -13,7 +13,7 @@ define([
 	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @extends Matrix
-	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
+	 * @param {(Matrix3x3|Array<number>)} arguments Initial values for the components.
 	 * @example
 	 * // Passing in no arguments
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -58,7 +58,7 @@ define([
 	/**
 	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
 	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix3x3 or number on the right-hand side.
 	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
 	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
 	 * @example
@@ -105,7 +105,7 @@ define([
 
 	/**
 	 * Adds 'rhs' to the current Matrix3x3.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix3x3 or number on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 * @example
 	 * // Adds a Matrix3x3 to the current Matrix3x3
@@ -123,7 +123,7 @@ define([
 	/**
 	 * Subtracts 'rhs' from 'lhs', and stores the reseult in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
 	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix3x3 or number on the right-hand side.
 	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
 	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
 	 * @example
@@ -170,7 +170,7 @@ define([
 
 	/**
 	 * Subtracts 'rhs' from the current Matrix3x3.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix3x3 or number on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 * @example
 	 * // Subtracts a Matrix3x3 from the current Matrix3x3
@@ -189,7 +189,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -227,7 +227,7 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.mul = function (rhs) {
@@ -237,7 +237,7 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -275,7 +275,7 @@ define([
 
 	/**
 	 * Performs a component-wise division.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix3x3|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.div = function (rhs) {

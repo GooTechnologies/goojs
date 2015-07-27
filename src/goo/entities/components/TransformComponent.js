@@ -17,7 +17,7 @@ define([
 
 	/**
 	 * Holds the transform of an entity. It also allows for a scene graph to be created,
-	 * in which transforms are inherited down the tree.<br>
+	 * in which transforms are inherited down the tree.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends Component
 	 */
@@ -34,7 +34,7 @@ define([
 		this.parent = null;
 		/**
 		 * Child TransformComponents in the "scene graph".
-		 * @type {TransformComponent[]}
+		 * @type {Array<TransformComponent>}
 		 */
 		this.children = [];
 
@@ -72,7 +72,7 @@ define([
 		/**
 		 * Sets the translation of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setTranslation method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setTranslation: function () {
@@ -83,7 +83,7 @@ define([
 		/**
 		 * Sets the rotation of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setRotation method
-		 * @param {Vector3|number[]} angle
+		 * @param {(Vector3|Array<number>)} angle
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setRotation: function () {
@@ -94,7 +94,7 @@ define([
 		/**
 		 * Sets the scale of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setScale method
-		 * @param {Vector3|number[]} scale
+		 * @param {(Vector3|Array<number>)} scale
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setScale: function () {
@@ -105,7 +105,7 @@ define([
 		/**
 		 * Orients the entity so it faces the supplied look at point. Injected on entities with a transformComponent
 		 * @target-class Entity lookAt method
-		 * @param {Vector3|number[]} lookAtPoint
+		 * @param {(Vector3|Array<number>)} lookAtPoint
 		 * @returns {Entity} Self to allow chaining
 		 */
 		lookAt: function () {
@@ -116,7 +116,7 @@ define([
 		/**
 		 * Translates the entity with the supplied amount multipled by the entity's orientation. Injected on entities with a transformComponent
 		 * @target-class Entity move method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		move: function () {
@@ -154,7 +154,7 @@ define([
 		/**
 		 * Translates the entity with the given amount. Injected on entities with a transformComponent
 		 * @target-class Entity addTranslation method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		addTranslation: function () {
@@ -165,7 +165,7 @@ define([
 		/**
 		 * Rotates the entity with the given amount. Injected on entities with a transformComponent
 		 * @target-class Entity addRotation method
-		 * @param {Vector3|number[]} rotation
+		 * @param {(Vector3|Array<number>)} rotation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		addRotation: function () {
@@ -389,7 +389,7 @@ define([
 	 * sphereEntity.setTranslation(1, 1, 0);
 	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} translation Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
@@ -419,7 +419,7 @@ define([
 	 * Sets this transform's scale.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
@@ -436,7 +436,7 @@ define([
 	 * boxEntity.addTranslation(new Vector(1, 2, 1));
 	 * boxEntity.transformComponent.addTranslation(1, 2, 1);
 	 *
-     * @param {Vector | number[] | number...} Component values.
+     * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
@@ -475,7 +475,7 @@ define([
 	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD*45.0, 0, 0));
 	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addRotation = function () {
@@ -503,7 +503,7 @@ define([
 	 * boxEntity.setRotation(Math.PI, 0, 0);
 	 * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
@@ -526,7 +526,7 @@ define([
 	 * Sets the transform to look in a specific direction.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector3|Entity} position Target position.
+	 * @param {(Vector3|Entity)} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
@@ -559,7 +559,7 @@ define([
 	 * <i>Injected into entity when adding component.</i>
 	 *
 	 * @function
-	 * @param {Vector | number[] | number...} component values.
+	 * @param {(Vector | Array<number>)} component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = (function(){

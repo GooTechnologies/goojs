@@ -8,7 +8,7 @@ define([
 	/**
 	 * Vector with 3 components. Used to store 3D translation and directions. It also contains common 3D Vector operations. Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
 	 * @extends Vector
-	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
+	 * @param {(Vector3|Array<number>)} arguments Initial values for the components.
 	 * @example
 	 * // Passing in three numbers
 	 * var v1 = new Vector3(1, 2, 3);
@@ -129,9 +129,9 @@ define([
 
 	/**
 	 * Adds 'lhs' and 'rhs' and stores the result in 'target'. If target is not supplied, a new Vector3 object is created and returned. Equivalent of 'return (target = lhs + rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
@@ -209,7 +209,7 @@ define([
 
 	/**
 	 * Adds 'rhs' to the current Vector3. Equivalent to 'return (this += rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, Array of numbers, or single number. For a single number, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, Array of numbers, or single number. For a single number, the value is repeated for
 	 *            every component.
 	 * @returns {Vector3} Self for chaining.
 	 * @example
@@ -234,9 +234,9 @@ define([
 
 	/**
 	 * Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs - rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} lhs Vector3, array of numbers or single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
@@ -314,7 +314,7 @@ define([
 
 	/**
 	 * Subtracts 'rhs' from the current Vector3. Equivalent of 'return (this -= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single number, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the right-hand side. For single number, the value is repeated for
 	 *            every component.
 	 * @returns {Vector3} Self for chaining.
 	 * @example
@@ -351,9 +351,9 @@ define([
 
 	/**
 	 * Multiplies 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of 'return (target = lhs * rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
@@ -404,7 +404,7 @@ define([
 
 	/**
 	 * Multiplies the current Vector3 by 'rhs'.  Equivalent of 'return (this *= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numberss, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the right-hand side. For single numberss, the value is repeated for
 	 *            every component.
 	 * @returns {Vector3} Self for chaining.
 	 * @example
@@ -429,9 +429,9 @@ define([
 
 	/**
 	 * Divides 'lhs' by 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs / rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
@@ -483,7 +483,7 @@ define([
 
 	/**
 	 * Divides the current Vector3 by 'rhs'.  Equivalent of 'return (this /= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For a single number, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or single number on the right-hand side. For a single number, the value is repeated for
 	 *            every component.
 	 * @returns {Vector3} Self for chaining.
 	 * @example
@@ -508,9 +508,9 @@ define([
 
 	/**
 	 * Computes the dot product between 'lhs' and 'rhs'.  Equivalent of 'return lhs•rhs;'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @returns {number} Dot product number.
 	 * @example
@@ -546,7 +546,7 @@ define([
 
 	/**
 	 * Computes the dot product between the current Vector3 and 'rhs'. Equivalent of 'return this•rhs;'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
+	 * @param {(Vector3|Array<number>)} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @returns {number} Dot product.
 	 * @example
@@ -598,8 +598,8 @@ define([
 
 	/**
 	 * Computes the cross product between 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs x rhs);'.
-	 * @param {Vector3|number[]} lhs Vector3 or array of numbers on the left-hand side.
-	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
+	 * @param {(Vector3|Array<number>)} lhs Vector3 or array of numbers on the left-hand side.
+	 * @param {(Vector3|Array<number>)} rhs Vector3 or array of numbers on the right-hand side.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
@@ -633,7 +633,7 @@ define([
 
 	/**
 	 * Computes the cross product between the current Vector3 and 'rhs'.  The current Vector3 becomes the result.  Equivalent of 'return (this = this x rhs);'.
-	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
+	 * @param {(Vector3|Array<number>)} rhs Vector3 or array of numbers on the right-hand side.
 	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in a Vector3
@@ -723,7 +723,7 @@ define([
 
 	/**
 	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
-	 * @param {number[]} array
+	 * @param {Array<number>} array
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)

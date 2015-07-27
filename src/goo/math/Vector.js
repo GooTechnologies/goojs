@@ -18,7 +18,7 @@ define([
 	 * Binds aliases to the different vector components.
 	 * @hidden
 	 * @param {Object} prototype The prototype to bind to.
-	 * @param {string[][]} aliases Array of component aliases for each component index.
+	 * @param {Array<Array<string>>} aliases Array of component aliases for each component index.
 	 */
 	Vector.setupAliases = function (prototype, aliases) {
 		aliases.forEach(function (aliasesPerComponent, index) {
@@ -91,7 +91,7 @@ define([
 	 * Adds more validators at once
 	 * @hidden
 	 * @param object
-	 * @param {string[]} methodNames
+	 * @param {Array<string>} methodNames
 	 */
 	Vector.addPostChecks = function (object, methodNames) {
 		methodNames.forEach(Vector.addPostCheck.bind(null, object));
@@ -100,8 +100,8 @@ define([
 
 	/**
 	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
@@ -123,7 +123,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
 	Vector.prototype.add = function (rhs) {
@@ -132,8 +132,8 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
@@ -155,7 +155,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this - rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
 	Vector.prototype.sub = function (rhs) {
@@ -164,8 +164,8 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
@@ -187,7 +187,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this * rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
 	Vector.prototype.mul = function (rhs) {
@@ -196,8 +196,8 @@ define([
 
 	/**
 	 * Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
@@ -219,7 +219,7 @@ define([
 
 	/**
 	 * Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
 
@@ -257,8 +257,8 @@ define([
 
 	/**
 	 * Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars on the left-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Dot product.
 	 */
 	Vector.dot = function (lhs, rhs) {
@@ -277,7 +277,7 @@ define([
 
 	/**
 	 * Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Dot product.
 	 */
 	Vector.prototype.dot = function (rhs) {
@@ -369,8 +369,8 @@ define([
 	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - lhs)•(rhs - lhs);'. When comparing the relative
 	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
 	 *              operation.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars on the left-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Squared distance.
 	 */
 	Vector.distanceSquared = function (lhs, rhs) {
@@ -381,7 +381,7 @@ define([
 	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - this)•(rhs - this);'. When comparing the
 	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
 	 *              root operation.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Squared distance.
 	 */
 	Vector.prototype.distanceSquared = function (rhs) {
@@ -390,8 +390,8 @@ define([
 
 	/**
 	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - lhs)•(rhs - lhs));'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} lhs Vector or array of scalars on the left-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Distance.
 	 */
 	Vector.distance = function (lhs, rhs) {
@@ -400,7 +400,7 @@ define([
 
 	/**
 	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - this)•(rhs - this));'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {(Vector|Array<number>)} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Distance.
 	 */
 	Vector.prototype.distance = function (rhs) {
@@ -479,7 +479,7 @@ define([
 
 	/**
 	 * Sets the components of the vector.
-	 * @param {Vector|number[]|...number} arguments Component values.
+	 * @param {(Vector|Array<number>)} arguments Component values.
 	 * @returns {Vector} Self for chaining.
 	 */
 	Vector.prototype.set = function () {

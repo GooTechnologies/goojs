@@ -28,7 +28,7 @@ define([
 
 			/**
 			 *A managed array of all the LineRenderers render objects.
-			 * @type {Object[]}
+			 * @type {Array}
 			 * */
 			this.renderList = [];
 

@@ -11,7 +11,7 @@ define([
 	 * A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param {AnimationClip} clip the clip to use.
 	 * @param {string} [filter] 'Exclude' or 'Include'
-	 * @param {string[]} [channelNames]
+	 * @param {Array<string>} [channelNames]
 	 */
 	function ClipSource(clip, filter, channelNames) {
 		this._clip = clip;
@@ -28,7 +28,7 @@ define([
 	/**
 	 * Sets the filter on the joints which the clipsource will affect
 	 * @param {string} [filter] 'Exclude' or 'Include'
-	 * @param {string[]} [channelNames]
+	 * @param {Array<string>} [channelNames]
 	 */
 	ClipSource.prototype.setFilter = function (filter, channelNames) {
 		if (filter && channelNames) {

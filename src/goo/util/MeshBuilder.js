@@ -20,18 +20,18 @@ define([
 	 * @example
 	 * var meshBuilder = new MeshBuilder();
 	 * var transform = new Transform();
-	 * 
+	 *
 	 * var box1 = new Box(0.3, 1, 1.6);
 	 * var box2 = new Box(0.2, 0.15, 0.7);
-	 * 
+	 *
 	 * transform.translation.setDirect(0, 0, 1.3);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box1, transform);
-     * 
+     *
 	 * transform.translation.setDirect(0, 0, 0);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box2, transform);
-     * 
+     *
 	 * var meshData = meshBuilder.build()[0];
 	 * goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit)).addToWorld();
 
@@ -213,7 +213,7 @@ define([
 
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
-	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * @returns {Array<MeshData>} array of meshData, but currently there will only be one entry so you can always use [0].
 	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
 	 */
 	MeshBuilder.prototype.build = function () {

@@ -50,7 +50,7 @@ define([
 	 * Adds/updates/removes a shader
 	 * Currently it is not possible to update a shader, so we create a new one every time
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */

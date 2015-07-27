@@ -58,7 +58,7 @@ define([
 	/**
 	 * Creates/updates/removes a project
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */

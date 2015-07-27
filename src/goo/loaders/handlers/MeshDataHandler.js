@@ -46,7 +46,7 @@ define([
 	/**
 	 * Creates a MeshData once, then reuses that one without updating
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the Meshdata or null if removed
 	 */

@@ -14,9 +14,9 @@ function () {
 	 *        </ul>
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {String} type System type name as a string
-	 * @param {String[]} interests Array of component types this system is interested in
+	 * @param {Array<String>} interests Array of component types this system is interested in
 	 * @property {String} type System type
-	 * @property {String[]} interests Array of component types this system is interested in
+	 * @property {Array<String>} interests Array of component types this system is interested in
 	 */
 	function System(type, interests) {
 		this.type = type;

@@ -145,7 +145,7 @@ define([
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components 
+	 * Registers a component type. This is necessary to allow automatic creation of components
 	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
 	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
 	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.
@@ -289,7 +289,7 @@ define([
 	/**
 	 * Get an array of all entities in world.
 	 *
-	 * @returns {Entity[]} All entities existing in world.
+	 * @returns {Array<Entity>} All entities existing in world.
 	 */
 	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();

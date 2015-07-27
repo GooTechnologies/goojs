@@ -79,7 +79,7 @@ define(function () {
 
 	/**
 	 * Returns an array of keys for the given Set or Map
-	 * @param {Set|Map} collection
+	 * @param {(Set|Map)} collection
 	 * @returns {Array}
 	 */
 	ArrayUtils.fromKeys = function (collection) {
@@ -99,7 +99,7 @@ define(function () {
 
 	/**
 	 * Returns an array of values for the given Set or Map
-	 * @param {Set|Map} collection
+	 * @param {(Set|Map)} collection
 	 * @returns {Array}
 	 */
 	ArrayUtils.fromValues = function (collection) {

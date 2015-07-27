@@ -46,8 +46,8 @@ define([
 	/**
 	 * Adds/updates/removes an animation clip
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation clip or null if removed
 	 */
 	AnimationClipHandler.prototype._update = function(ref, config, options) {

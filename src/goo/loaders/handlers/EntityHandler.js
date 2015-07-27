@@ -88,7 +88,7 @@ define([
 	/**
 	 * Adds/updates/removes an entity
 	 * @param {string} ref
-	 * @param {object|null} config
+	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */

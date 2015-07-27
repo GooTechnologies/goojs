@@ -15,7 +15,7 @@ define([
 	 * @extends System
 	 * @param {Object} [settings]
 	 * @param {number} [settings.stepFrequency=60]
-	 * @param {Array.<number>} [settings.gravity=[0,-9.82]]
+	 * @param {Array<number>} [settings.gravity=[0,-9.82]]
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
 	 * @example
 	 * var p2System = new P2System({
