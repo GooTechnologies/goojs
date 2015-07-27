@@ -30,9 +30,8 @@ var serializers = {
 			name.data + '?':
 			name.data;
 
-		return node.type ?
-			decoratedName + ': ' + serialize(node.type) :
-			decoratedName;
+		return decoratedName + ': ' +
+			(node.type ? serialize(node.type) : '?');
 	},
 	'object': function (node) {
 		return '{ ' +
