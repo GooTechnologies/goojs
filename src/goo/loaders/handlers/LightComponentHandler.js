@@ -51,7 +51,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	LightComponentHandler.prototype._prepare = function (config) {
@@ -98,8 +98,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	/**
 	 * Update engine cameracomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	LightComponentHandler.prototype.update = function (entity, config, options) {

@@ -190,7 +190,7 @@ define([
 		 *
 		 * @param entity
 		 * @param cameraViewMatrix
-		 * @returns {Number}
+		 * @returns {number}
 		 * @private
 		 */
 	SoftwareRenderer.prototype._viewSpaceTransformAndCopyVertices = function (entity, cameraViewMatrix) {
@@ -438,7 +438,7 @@ define([
 	*	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
 	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
 	*   @param cameraNear
-	 *   @returns {Number} outCount
+	 *   @returns {number} outCount
 	*/
 	SoftwareRenderer.prototype._categorizeVertices = function (cameraNear) {
 
@@ -470,7 +470,7 @@ define([
 	*
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
-	*	@param {Number} near The near plane.
+	*	@param {number} near The near plane.
 	*/
 	SoftwareRenderer.prototype._calculateIntersectionRatio = function (origin, target, near) {
 
@@ -530,7 +530,7 @@ define([
 	*	@param {Vector3} v1 Vertex #1
 	*	@param {Vector3} v2 Vertex #2
 	*	@param {Vector3} v3 Vertex #3
-	*	@returns {Boolean} true or false
+	*	@returns {boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
@@ -1313,7 +1313,7 @@ define([
 
 	/**
 	 * Creates the EdgeData , used for rendering. False is returned if there is not anything to draw.
-	*	@returns {Boolean} drawable
+	*	@returns {boolean} drawable
 	*/
 
 	// TODO: The long edge's increment values are not necessary to write for each of the two sub-triangles. Separate this function

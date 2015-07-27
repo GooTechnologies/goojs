@@ -49,7 +49,7 @@ define([
 		this.lightCookie = null;
 
 		/**
-		 * @type {object}
+		 * @type {Object}
 		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000

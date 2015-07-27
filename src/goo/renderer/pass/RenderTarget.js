@@ -7,8 +7,8 @@ define(['goo/math/Vector2'],
 	 * Creates a new RenderTarget object
 	 *
 	 * Post processing handler
-	 * @param {Number} width Width of rendertarget
-	 * @param {Number} height Height of rendertarget
+	 * @param {number} width Width of rendertarget
+	 * @param {number} height Height of rendertarget
 	 * @param {Parameters} parameters Settings
 	 */
 	function RenderTarget(width, height, options) {
@@ -82,7 +82,7 @@ define(['goo/math/Vector2'],
 	 */
 	RenderTarget.prototype.getSizeInMemory = function () {
 		var size = this.width * this.height * 4;
-		
+
 		if (this.generateMipmaps) {
 			size = Math.ceil(size * 4 / 3);
 		}

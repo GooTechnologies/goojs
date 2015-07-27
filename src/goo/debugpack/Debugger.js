@@ -162,7 +162,7 @@ define([
 	 * Transforms a string into an array of regexps
 	 * @memberOf Debugger#
 	 * @private
-	 * @param {String} str
+	 * @param {string} str
 	 * @returns {Array}
 	 */
 	function getFilterList(str) {

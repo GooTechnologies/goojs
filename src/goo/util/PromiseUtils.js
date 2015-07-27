@@ -135,7 +135,7 @@ define([
 	 * Create a promise that resolves or rejects after the specified delay with the given argument.
 	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; consider using
 	 * PromiseUtils.delay instead
-	 * @param {Number} delay in ms
+	 * @param {number} delay in ms
 	 * @returns {RSVP.Promise}
 	 */
 	PromiseUtils.defer = function (delay, arg) {

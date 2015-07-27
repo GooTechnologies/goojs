@@ -17,7 +17,7 @@ define([
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling
-	 * @property {Boolean} doRender Only render if set to true
+	 * @property {boolean} doRender Only render if set to true
 	 * @extends System
 	 */
 	function DebugRenderSystem() {

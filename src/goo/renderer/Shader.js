@@ -21,7 +21,7 @@ define([
 
 	/**
 	 * Defines vertex and fragment shader and uniforms to shader callbacks
-	 * @param {String} name Shader name (mostly for debug/tool use)
+	 * @param {string} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
 	 *
 	 * <code>
@@ -418,9 +418,9 @@ define([
 	/**
 	 * Extract shader variable definitions from shader source code.
 	 * @param {string} source The source code.
-	 * @param {object} target
-	 * @param {object} target.attributeMapping
-	 * @param {object} target.uniformMapping
+	 * @param {Object} target
+	 * @param {Object} target.attributeMapping
+	 * @param {Object} target.uniformMapping
 	 * @param {Array} target.textureSlots
 	 */
 	Shader.investigateShader = function (source, target) {

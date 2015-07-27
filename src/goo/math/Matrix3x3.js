@@ -428,7 +428,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @returns {boolean} True if orthogonal.
 	 */
 	Matrix3x3.prototype.isOrthogonal = function () {
 		var d = this.data;

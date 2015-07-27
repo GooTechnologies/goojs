@@ -96,11 +96,11 @@ define([
 
         /**
          * Adjusts coordinates to from heightMap to fit the dimensions of raw displacement data.
-         * @param {Number} axPos
-         * @param {Number} axMin
-         * @param {Number} axMax
-         * @param {Number} quadCount
-         * @returns {Number}
+         * @param {number} axPos
+         * @param {number} axMin
+         * @param {number} axMax
+         * @param {number} quadCount
+         * @returns {number}
          */
 
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
@@ -110,11 +110,11 @@ define([
 
 		/**
 		 * Returns coordinates from raw displacement space to fit the dimensions of a registered heightMap.
-		 * @param {Number} axPos
-		 * @param {Number} axMin
-		 * @param {Number} axMax
-		 * @param {Number} quadCount
-		 * @returns {Number}
+		 * @param {number} axPos
+		 * @param {number} axMin
+		 * @param {number} axMax
+		 * @param {number} quadCount
+		 * @returns {number}
 		 */
 
 		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
@@ -126,7 +126,7 @@ define([
 		/**
          * Looks through height data and returns the elevation of the ground at a given position
          * @param {Array} pos Position as [x, y, z]
-         * @returns {Number} height in units
+         * @returns {number} height in units
          */
 
         WorldFittedTerrainScript.prototype.getTerrainHeightAt = function(pos) {

@@ -59,7 +59,7 @@ define([
 	/**
 	 * Fill a passed parameters object with defaults from spec
 	 * @hidden
-	 * @param parameters {object} The type of object passed as parameters to a script
+	 * @param parameters {Object} The type of object passed as parameters to a script
 	 * @param specs {Array<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {

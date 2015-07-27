@@ -69,7 +69,7 @@ define([
 	/**
 	 * Replaces the supplied method of object and wraps it in a integrity check
 	 * @hidden
-	 * @param {object} object The object to attach the post-check to
+	 * @param {Object} object The object to attach the post-check to
 	 * @param {string} methodName The name of the original method the check is attached to
 	 */
 	Vector.addPostCheck = function (object, methodName) {
@@ -335,7 +335,7 @@ define([
 	 * Compares two vectors for approximate equality. Equivalent of 'return (lhs ~ rhs);'.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Boolean} True if equal.
+	 * @returns {boolean} True if equal.
 	 */
 	Vector.equals = function (lhs, rhs) {
 		var lhsLength = lhs.data.length;
@@ -359,7 +359,7 @@ define([
 	/**
 	 * Compares two vectors for approximate equality. Equivalent of 'return (this ~ rhs);'
 	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Boolean} True if equal.
+	 * @returns {boolean} True if equal.
 	 */
 	Vector.prototype.equals = function (rhs) {
 		return Vector.equals(this, rhs);
@@ -502,7 +502,7 @@ define([
 
 	/**
 	 * Converts the vector to a string.
-	 * @returns {String} String of component values.
+	 * @returns {string} String of component values.
 	 */
 	Vector.prototype.toString = function () {
 		var string = '';

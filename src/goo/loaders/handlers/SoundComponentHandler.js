@@ -49,7 +49,7 @@ define([
 
 	/**
 	 * Prepares the config
-	 * @param {object} config
+	 * @param {Object} config
 	 */
 	SoundComponentHandler.prototype._prepare = function(config) {
 		_.defaults(config, {
@@ -70,8 +70,8 @@ define([
 	/**
 	 * Update engine sound component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {

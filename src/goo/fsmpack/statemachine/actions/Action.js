@@ -7,7 +7,7 @@ define([
 
 	/**
 	 * @param {string} id
-	 * @param {object} settings
+	 * @param {Object} settings
 	 * @private
 	 */
 	function Action(id, settings) {

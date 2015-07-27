@@ -75,7 +75,7 @@ define([
 	/**
 	 * Replaces the supplied method of object and wraps it in a integrity check
 	 * @hidden
-	 * @param {object} object The object to attach the post-check to
+	 * @param {Object} object The object to attach the post-check to
 	 * @param {string} methodName The name of the original method the check is attached to
 	 */
 	Matrix.addPostCheck = function (object, methodName) {

@@ -46,7 +46,7 @@ define([
 		 * @param cameraViewMatrix
 		 * @param cameraProjectionMatrix
 		 * @param cameraNearZInWorld
-		 * @returns {Boolean} occluded or not occluded
+		 * @returns {boolean} occluded or not occluded
 		 */
 		BoundingSphereOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
 
@@ -199,10 +199,10 @@ define([
 		};
 
 		/**
-		 *	Creates a screen space axis aligned bounding box from the bounding sphere's
-		 *	coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
+		 * Creates a screen space axis aligned bounding box from the bounding sphere's
+		 * coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
 		 *
-		 *	@returns {Boolean} occluded or not occluded.
+		 * @returns {boolean} occluded or not occluded.
 		 */
 		BoundingSphereOcclusionChecker.prototype._isSSAABBScanlineOccluded = function () {
 
@@ -463,7 +463,7 @@ define([
 		 *	otherwise the coordinate is assumed to be occluded.
 		 *
 		 *	@param {Vector} coordinate The coordinate to look-up
-		 *	@returns {Boolean} true or false, occluded or not occluded.
+		 *	@returns {boolean} true or false, occluded or not occluded.
 		 * @param nearestDepth
 		 * @param color
 		 */
@@ -488,7 +488,7 @@ define([
 		 *	Returns true if the coordinate is inside the screen pixel space. Otherwise it returns false.
 		 *
 		 *	@param {Vector} coordinate
-		 *	@returns {Boolean} true/false
+		 *	@returns {boolean} true/false
 		 */
 		BoundingSphereOcclusionChecker.prototype._isCoordinateInsideScreen = function (coordinate) {
 			return coordinate.data[0] >= 0 && coordinate.data[0] <= this._clipX && coordinate.data[1] <= this._clipY && coordinate.data[1] >= 0;

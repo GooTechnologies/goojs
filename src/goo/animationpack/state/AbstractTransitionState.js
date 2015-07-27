@@ -36,7 +36,7 @@ define([
 
 	/**
 	 * Update this state using the current global time.
-	 * @param {Number} globalTime the current global time.
+	 * @param {number} globalTime the current global time.
 	 */
 	// Was: function (globalTime, layer)
 	AbstractTransitionState.prototype.update = function (globalTime) {
@@ -91,8 +91,8 @@ define([
 	 * Check if a transition is valid within a given time window.
 	 *
 	 * @param {Array} timeWindow start and end time
-	 * @param {Number} current world time
-	 * @returns {Boolean} true if transition is valid
+	 * @param {number} current world time
+	 * @returns {boolean} true if transition is valid
 	 */
 
 	AbstractTransitionState.prototype.isValid = function(timeWindow, globalTime) {

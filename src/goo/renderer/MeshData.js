@@ -429,7 +429,7 @@ define([
 
 	/**
 	 * Applies a transformation on a specified attribute buffer
-	 * @param {String} attributeName
+	 * @param {string} attributeName
 	 * @param {Transform} transform
 	 * @returns {MeshData} Self to allow chaining
 	 */
@@ -469,7 +469,7 @@ define([
 
 	/**
 	 * Applies a function on the vertices of a specified attribute buffer
-	 * @param {String} attributeName
+	 * @param {string} attributeName
 	 * @param {Function} fun
 	 * @returns {MeshData} Self to allow chaining
 	 */
@@ -910,7 +910,7 @@ define([
 	/**
 	 * Creates an attribute given the types
 	 * @param {Array<string>} [types] An array of default types. If not provided you get an attributeMap with all default attributes
-	 * @returns {object}
+	 * @returns {Object}
 	 * @example var map = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 	 */
 	MeshData.defaultMap = function (types) {

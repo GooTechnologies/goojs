@@ -65,8 +65,8 @@ define([
 	/**
 	 * Creates/updates/removes a scene
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
 	SceneHandler.prototype._update = function(ref, config, options) {
@@ -103,9 +103,9 @@ define([
 
 	/**
 	 * Adding and removing entities to the engine and thereby the scene
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
 	SceneHandler.prototype._handleEntities = function(config, scene, options) {
 		var that = this;
@@ -156,9 +156,9 @@ define([
 
 	/**
 	 * Handling posteffects
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
 	SceneHandler.prototype._handlePosteffects = function(config, scene, options) {
 		return this._load(config.posteffectsRef, options);
@@ -166,9 +166,9 @@ define([
 
 	/**
 	 * Handling environment, to be implemented
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
 	SceneHandler.prototype._handleEnvironment = function(config, scene, options) {
 		return this._load(config.environmentRef, options);

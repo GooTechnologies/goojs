@@ -58,7 +58,7 @@ define([
 	/**
 	 * Adds the array of vertex data to the position array and returns the new vertex's index to the position.
 	  * @param {Float32Array} array [x,y,z,w]
-	 * @returns {Number} the added position's vertex index
+	 * @returns {number} the added position's vertex index
 	 */
 	OccluderTriangleData.prototype.addVertex = function (array) {
 		var writeIndex = this.posCount;
@@ -80,7 +80,7 @@ define([
 
 	/**
 	* Sets the counters to the correct values to correspond to the positions written into the array.
-	 * @param {Number} positionCount The number of position values which have been written to the position array.
+	 * @param {number} positionCount The number of position values which have been written to the position array.
 	*/
 	OccluderTriangleData.prototype.setCountersToNewEntity = function (positionCount) {
 		this.indexCount = 0;

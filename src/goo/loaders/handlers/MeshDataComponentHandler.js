@@ -36,8 +36,8 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
+	 * @param {Object} config
+	 * @returns {Object}
 	 * @private
 	 */
 	MeshDataComponentHandler.prototype._prepare = function (config) {
@@ -69,8 +69,8 @@ define([
 	/**
 	 * Update engine meshdatacomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	 MeshDataComponentHandler.prototype.update = function (entity, config, options) {

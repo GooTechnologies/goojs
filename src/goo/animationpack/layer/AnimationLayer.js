@@ -199,8 +199,8 @@ define([
 	/**
 	 * Set the current state by state id.
 	 * @param {string} id
-	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
 	 * @param {Function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
 	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime, callback) {
@@ -234,9 +234,9 @@ define([
 	/**
 	 * Force the current state of the machine to the state with the given name.
 	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
-	 * @param {Boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @returns {Boolean} true if succeeds
+	 * @param {boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @returns {boolean} true if succeeds
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {

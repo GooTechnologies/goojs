@@ -89,8 +89,8 @@ define([
 	/**
 	 * Adds/updates/removes an environment
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated environment or null if removed
 	 */
 	EnvironmentHandler.prototype._update = function(ref, config, options) {

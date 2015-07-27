@@ -13,9 +13,9 @@ function () {
 	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
 	 *        </ul>
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
-	 * @param {String} type System type name as a string
+	 * @param {string} type System type name as a string
 	 * @param {Array<String>} interests Array of component types this system is interested in
-	 * @property {String} type System type
+	 * @property {string} type System type
 	 * @property {Array<String>} interests Array of component types this system is interested in
 	 */
 	function System(type, interests) {

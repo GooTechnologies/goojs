@@ -42,7 +42,7 @@ define([
 	/**
 	 * Load a sound.
 	 * @param  {string}   url
-	 * @param  {object}   settings
+	 * @param  {Object}   settings
 	 * @return {RSVP.Promise}
 	 */
 	SoundCreator.prototype.loadSound = function (url, settings) {
