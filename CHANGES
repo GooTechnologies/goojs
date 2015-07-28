@@ -1,3 +1,11 @@
+v0.15.2 --- 2015-07-28
+----------------------
+
+###Additions
+ + sounds can be shared between entities
+ + [Sharing sounds visual test](http://code.gooengine.com/0.15.2/visual-test/goo/addons/Sound/Sound-shared-vtest.html)
+
+
 v0.15.1 --- 2015-07-08
 ----------------------
 
