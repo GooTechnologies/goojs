@@ -6,24 +6,11 @@
  will have to refactor the common parts out
  */
 
-/**
- Main file
- + parses comment line args
- + gets the source files to be processed
- + gets data for the index (nav bar)
- + gets the processed documentation
- + generates every -doc file
- + generates an index file (in this case Entity.js)
- + generates the changelog in a pretty format
- */
-
 var fs = require('fs');
-var glob = require('glob');
 var _ = require('underscore');
 
-var extractor = require('./extractor');
-var jsdocProcessor = require('./jsdoc-processor');
 var util = require('./util');
+var trunk = require('./trunk');
 
 var typeParser = require('./type-expressions/type-parser');
 var ternSerializer = require('./type-expressions/tern-serializer');
@@ -40,128 +27,6 @@ function processArguments() {
 	};
 }
 
-var getFiles = function (sourcePath, ignore) {
-	if (/\.js$/.test(sourcePath)) {
-		return [sourcePath];
-	}
-
-	return glob.sync(sourcePath + '/**/*.js').filter(function (file) {
-		return ignore.every(function (term) {
-			return file.indexOf(term) === -1;
-		});
-	});
-};
-
-var args = processArguments();
-
-var files = getFiles(args.sourcePath, ['goo.js', 'pack.js', 'logicpack', 'soundmanager', '+']);
-
-function filterPrivates(class_) {
-	var predicate = function (entry) {
-		return entry.comment && !(entry.comment.private || entry.comment.hidden);
-	};
-
-	class_.members = class_.members.filter(predicate);
-	class_.staticMembers = class_.staticMembers.filter(predicate);
-	class_.methods = class_.methods.filter(predicate);
-	class_.staticMethods = class_.staticMethods.filter(predicate);
-
-	class_.hasMembers = class_.members.length > 0;
-	class_.hasStaticMethods = class_.staticMethods.length > 0;
-	class_.hasStaticMembers = class_.staticMembers.length > 0;
-	class_.hasMethods = class_.methods.length > 0;
-}
-
-function compileDoc(files) {
-	var classes = {};
-	var extraComments = [];
-
-	// extract information from classes
-	files.forEach(function (file) {
-		console.log('compiling tern definitions for ' + util.getFileName(file));
-
-		var source = fs.readFileSync(file, { encoding: 'utf8' });
-
-		var class_ = extractor.extract(source, file);
-
-		Array.prototype.push.apply(extraComments, class_.extraComments);
-
-		if (class_.constructor) {
-			jsdocProcessor.all(class_, files);
-
-			filterPrivates(class_);
-
-			class_.file = file;
-
-			classes[class_.constructor.name] = class_;
-		}
-	});
-
-	// --- should stay elsewhere
-	var constructorFromComment = function (comment) {
-		jsdocProcessor.link(comment);
-		return {
-			name: comment.targetClass.itemName,
-			params: _.pluck(comment.param, 'name'),
-			comment: comment
-		};
-	};
-
-	var memberFromComment = function (comment) {
-		jsdocProcessor.link(comment);
-		return {
-			name: comment.targetClass.itemName,
-			comment: comment
-		};
-	};
-
-	var methodFromComment = constructorFromComment;
-	var staticMethodFromComment = constructorFromComment;
-	var staticMemberFromComment = memberFromComment;
-	// ---
-
-	// copy over the extra info from other classes
-	// adding extras mentioned in @target-class
-	extraComments.map(jsdocProcessor.compileComment)
-	.forEach(function (extraComment) {
-		var targetClassName = extraComment.targetClass.className;
-		var targetClass = classes[targetClassName];
-
-		if (!targetClass) {
-			targetClass = {
-				constructor: null,
-				staticMethods: [],
-				staticMembers: [],
-				methods: [],
-				members: []
-			};
-			classes[targetClassName] = targetClass;
-		}
-
-		switch (extraComment.targetClass.itemType) {
-			case 'constructor':
-				targetClass.constructor = constructorFromComment(extraComment);
-				targetClass.requirePath = extraComment.requirePath.requirePath;
-				targetClass.group = extraComment.group.group;
-				break;
-			case 'member':
-				targetClass.members.push(memberFromComment(extraComment));
-				break;
-			case 'method':
-				targetClass.methods.push(methodFromComment(extraComment));
-				break;
-			case 'static-member':
-				targetClass.staticMembers.push(staticMemberFromComment(extraComment));
-				break;
-			case 'static-method':
-				targetClass.staticMethods.push(staticMethodFromComment(extraComment));
-				break;
-		}
-	});
-
-	return classes;
-}
-
 // --- tern related ---
 var convertParameters = function (parameters) {
 	return parameters.filter(function (parameter) {
@@ -169,14 +34,16 @@ var convertParameters = function (parameters) {
 		return parameter.name.indexOf('.') === -1;
 	}).map(function (parameter) {
 		return parameter.rawType ?
-		parameter.name + ': ' + convert(parameter.rawType) :
+			parameter.name + ': ' + convert(parameter.rawType) :
 			parameter.name;
 	}).join(', ');
 };
 
+var DOC_BASE_URL = 'http://code.gooengine.com/latest/docs/index.html?';
+
 function compileFunction(fun, urlParameter) {
 	var ternDefinition = {
-		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
+		'!url': DOC_BASE_URL + urlParameter
 	};
 
 	// just for debugging
@@ -201,7 +68,7 @@ function compileFunction(fun, urlParameter) {
 
 function compileMember(member, urlParameter) {
 	var ternDefinition = {
-		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
+		'!url': DOC_BASE_URL + urlParameter
 	};
 
 	// just for debugging
@@ -223,7 +90,7 @@ function compileMember(member, urlParameter) {
 // this creates more trouble than it's worth
 function compileProperty(property, urlParameter) {
 	var ternDefinition = {
-		'!url': 'http://code.gooengine.com/latest/docs/index.html?' + urlParameter
+		'!url': DOC_BASE_URL + urlParameter
 	};
 
 	// just for debugging
@@ -285,7 +152,7 @@ function compileClass(class_) {
 	return ternConstructor;
 }
 
-function makeConverter(classNames) {
+function makeConverter(classNames, definitions) {
 	var typesRegexStr = '\\b(' + classNames.join('|') + ')\\b';
 	var typesRegex = new RegExp(typesRegexStr, 'g');
 
@@ -295,7 +162,14 @@ function makeConverter(classNames) {
 
 		// perform the substitutions after the conversion as this inflates the string with `goo.` prefixes
 		// should this prefixing be done on the expression in parsed form instead? why?
-		return ternType.replace(typesRegex, 'goo.$1');
+
+		_.forEach(ternType.definitions, function (definition, key) {
+			definitions[key] = _.mapObject(definition, function (member) {
+				return member.replace(typesRegex, 'goo.$1');
+			});
+		});
+
+		return ternType.serialized.replace(typesRegex, 'goo.$1');
 	};
 }
 
@@ -303,24 +177,26 @@ function makeConverter(classNames) {
 var convert;
 
 function buildClasses(classes) {
-	convert = makeConverter(Object.keys(classes));
+	var definitions = {
+		'Context': {
+			'entity': '+goo.Entity',
+			'world': '+goo.World',
+			'entityData': '+object',
+			'worldData': '+object',
+			'domElement': '+Element',
+			'viewportWidth ': 'number',
+			'viewportHeight': 'number',
+			'activeCameraEntity': '+goo.Entity'
+		}
+	};
+
+	convert = makeConverter(Object.keys(classes), definitions);
 
 	var classDefinitions = _.mapObject(classes, compileClass);
 
 	var ternDefinition = {
 		'!name': 'goo',
-		'!define': {
-			'Context': {
-				'entity': '+goo.Entity',
-				'world': '+goo.World',
-				'entityData': '+object',
-				'worldData': '+object',
-				'domElement': '+Element',
-				'viewportWidth ': 'number',
-				'viewportHeight': 'number',
-				'activeCameraEntity': '+goo.Entity'
-			}
-		},
+		'!define': definitions,
 		'args': '?',
 		'ctx': 'Context',
 		'goo': classDefinitions
@@ -331,8 +207,15 @@ function buildClasses(classes) {
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern-defs.json', result);
 }
 
+
+var args = processArguments();
+
+var IGNORE_FILES = ['goo.js', 'pack.js', 'logicpack', 'soundmanager', '+'];
+
 (function () {
-	var classes = compileDoc(files);
+	var files = trunk.getFiles(args.sourcePath, IGNORE_FILES);
+
+	var classes = trunk.compileDoc(files);
 
 	buildClasses(classes);
 
