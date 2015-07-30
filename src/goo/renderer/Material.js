@@ -242,7 +242,7 @@ define([
 		if (options.shareUniforms) {
 			clone.uniforms = this.uniforms;
 		} else {
-			clone.uniforms = _.clone(this.uniforms);
+			clone.uniforms = _.deepClone(this.uniforms);
 		}
 
 		if (options.shareTextures) {
