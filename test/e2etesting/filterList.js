@@ -39,7 +39,8 @@ var filterList = [
 	'PolyLine',
 	'ParticleInfluence',
 	'HeightMap',
-	'SkeletonAnimation'
+	'SkeletonAnimation',
+	'Sound-shared'
 ];
 
 exports.filterList = filterList;
