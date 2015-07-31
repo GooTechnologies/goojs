@@ -3,7 +3,7 @@
 
 var dogma = require('../../src/jsdoc-parser');
 
-describe('dogma', function () {
+describe('jsdoc-parser', function () {
 	describe('partition', function () {
 		var partition = dogma._partition;
 
@@ -81,6 +81,16 @@ describe('dogma', function () {
 		it('extracts an optional name with a default value that contains []', function () {
 			expect(extract('{number} [name=[1, 2, 3]] description'))
 			.toEqual({ name: 'name', end: '{number} [name=[1, 2, 3]] '.length, optional: true, default_: '[1, 2, 3]' });
+		});
+
+		it('extracts a simple name not followed by a description', function () {
+			expect(extract('{number} name'))
+				.toEqual({ name: 'name', end: '{number} name '.length, optional: false, default_: undefined });
+		});
+
+		it('extracts an optional name with a default value and random spacing', function () {
+			expect(extract('{number}  \t\t\t[name=123]\t \tdescription'))
+				.toEqual({ name: 'name', end: '{number}  \t\t\t[name=123]\t'.length, optional: true, default_: '123' });
 		});
 	});
 

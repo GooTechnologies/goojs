@@ -193,6 +193,7 @@ define(function () {
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {Vector3} store
+	 * @example
 	 * var sphericalCoord = new Vector3();
 	 * var pos = entity.transformComponent.transform.translation.
 	 * MathUtils.cartesianToSpherical(pos.x, pos.y, pos.z, sphericalCoord);

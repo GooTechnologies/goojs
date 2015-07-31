@@ -69,7 +69,7 @@ function () {
 	 * This method is called automatically when the system is added to a world.
 	 * By default it will go through all entities
 	 * accounted by the entity manager and try to add them to this system.
-	 * @param world {World}
+	 * @param {World} world
 	 */
 	System.prototype.setup = function (world) {
 		world.entityManager.getEntities().forEach(this._check.bind(this));
