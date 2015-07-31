@@ -49,7 +49,7 @@ var serializers = {
 		return name;
 	},
 	'function': function (node, definitions) {
-		var fun = 'fn (' +
+		var fun = 'fn(' +
 			node.parameters.map(function (parameter) {
 				return serialize(parameter, definitions);
 			}).join(', ') +

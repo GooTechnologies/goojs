@@ -82,7 +82,7 @@ var makeTokenList = function (tokens) {
    | "function (" , P , {"," , P} , ")" , [":" , S]
    | "(" , S, {"|" , S} , ")"
 
- P -> name , [":", S]
+ P -> name , [":" , S]
 
  */
 

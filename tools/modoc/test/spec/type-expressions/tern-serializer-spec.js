@@ -69,10 +69,10 @@ describe('tern-serializer', function () {
 		});
 
 		it('serializes functions', function () {
-			expect(convert('function ()')).toEqual(pair('fn ()'));
-			expect(convert('function () : number')).toEqual(pair('fn () -> number'));
-			expect(convert('function (a)')).toEqual(pair('fn (a: ?)'));
-			expect(convert('function (a: number, b: string)')).toEqual(pair('fn (a: number, b: string)'));
+			expect(convert('function ()')).toEqual(pair('fn()'));
+			expect(convert('function () : number')).toEqual(pair('fn() -> number'));
+			expect(convert('function (a)')).toEqual(pair('fn(a: ?)'));
+			expect(convert('function (a: number, b: string)')).toEqual(pair('fn(a: number, b: string)'));
 		});
 
 		it('serializes either types', function () {
@@ -83,7 +83,7 @@ describe('tern-serializer', function () {
 			expect(convert('Array<Array<number>>')).toEqual(pair('[[number]]'));
 
 			expect(convert('function (a: Array, b: function (c) : *) : *'))
-				.toEqual(pair('fn (a: [?], b: fn (c: ?) -> ?) -> ?'));
+				.toEqual(pair('fn(a: [?], b: fn(c: ?) -> ?) -> ?'));
 
 			expect(convert('Array<{ a: Array<number> }>')).toEqual(pair(
 				'[_t_0]',
