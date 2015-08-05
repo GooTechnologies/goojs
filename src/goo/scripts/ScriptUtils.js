@@ -1,7 +1,7 @@
 define([
 	'goo/util/ObjectUtils'
 ], function (
-	_
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -16,8 +16,8 @@ define([
 		'vec3': [0, 0, 0],
 		'vec4': [0, 0, 0, 0],
 		'boolean': false,
-		'texture': {},
-		'entity': {}
+		'texture': null,
+		'entity': null
 	};
 
 
@@ -72,12 +72,12 @@ define([
 			}
 
 			if (spec['default'] === null || spec['default'] === undefined) {
-				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+				spec['default'] = ObjectUtils.deepClone(ScriptUtils.defaultsByType[spec.type]);
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = _.clone(spec['default']);
+				parameters[spec.key] = ObjectUtils.clone(spec['default']);
 			}
 		});
 
