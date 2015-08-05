@@ -15,6 +15,8 @@ var trunk = require('./trunk');
 var typeParser = require('./type-expressions/type-parser');
 var ternSerializer = require('./type-expressions/tern-serializer');
 
+var defaultTernDefinitions = require('./default-tern-definitions');
+
 
 function processArguments() {
 	if (process.argv.length < 4) {
@@ -182,26 +184,8 @@ function buildClasses(classes) {
 	var ternDefinitions = {
 		'!name': 'goo',
 		'!define': additionalDefinitions,
-		'Context': {
-			'!type': 'fn()',
-			'!url': 'http://goocreate.com/learn/the-ctx-object/',
-			'!doc': 'The Context object lets you access useful variables in the Goo World',
-			'prototype': {
-				'entity': '+goo.Entity',
-				'world': '+goo.World',
-				'entityData': '+object',
-				'worldData': '+object',
-				'domElement': '+Element',
-				'viewportWidth ': 'number',
-				'viewportHeight': 'number',
-				'activeCameraEntity': '+goo.Entity'
-			}
-		},
-		'Arguments': {
-			'!type': 'fn()',
-			'!url': 'http://goocreate.com/learn/parameters/',
-			'!doc': 'To define custom parameters in a Create script, the parameter array and the args object are used.'
-		}
+		'Context': defaultTernDefinitions['Context'],
+		'Arguments': defaultTernDefinitions['Arguments']
 	};
 
 	convert = makeConverter(Object.keys(classes), additionalDefinitions);
