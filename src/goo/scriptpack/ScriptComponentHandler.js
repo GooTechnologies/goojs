@@ -147,9 +147,12 @@ define([
 				parameters[key] = null;
 				return PromiseUtils.resolve();
 			} else {
-				return this._load(config.entityRef, options).then(function (entity) {
+				// return
+				this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
 				});
+
+				return PromiseUtils.resolve();
 			}
 		} else {
 			parameters[key] = _.extend(config);
