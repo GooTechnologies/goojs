@@ -4,5 +4,5 @@
 #
 #rm -rf node_modules
 
-npm install
+npm install --verbose
 ./tools/release.py $RELEASE_DIR $VERSION
