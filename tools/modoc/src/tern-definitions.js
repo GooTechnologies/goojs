@@ -177,32 +177,38 @@ function makeConverter(classNames, definitions) {
 var convert;
 
 function buildClasses(classes) {
-	var definitions = {
+	var additionalDefinitions = {};
+
+	var ternDefinitions = {
+		'!name': 'goo',
+		'!define': additionalDefinitions,
 		'Context': {
-			'entity': '+goo.Entity',
-			'world': '+goo.World',
-			'entityData': '+object',
-			'worldData': '+object',
-			'domElement': '+Element',
-			'viewportWidth ': 'number',
-			'viewportHeight': 'number',
-			'activeCameraEntity': '+goo.Entity'
+			'!type': 'fn()',
+			'!url': 'http://goocreate.com/learn/the-ctx-object/',
+			'!doc': 'The Context object lets you access useful variables in the Goo World',
+			'prototype': {
+				'entity': '+goo.Entity',
+				'world': '+goo.World',
+				'entityData': '+object',
+				'worldData': '+object',
+				'domElement': '+Element',
+				'viewportWidth ': 'number',
+				'viewportHeight': 'number',
+				'activeCameraEntity': '+goo.Entity'
+			}
+		},
+		'Arguments': {
+			'!type': 'fn()',
+			'!url': 'http://goocreate.com/learn/parameters/',
+			'!doc': 'To define custom parameters in a Create script, the parameter array and the args object are used.'
 		}
 	};
 
-	convert = makeConverter(Object.keys(classes), definitions);
+	convert = makeConverter(Object.keys(classes), additionalDefinitions);
 
-	var classDefinitions = _.mapObject(classes, compileClass);
+	ternDefinitions.goo = _.mapObject(classes, compileClass);
 
-	var ternDefinition = {
-		'!name': 'goo',
-		'!define': definitions,
-		'args': '?',
-		'ctx': 'Context',
-		'goo': classDefinitions
-	};
-
-	var result = JSON.stringify(ternDefinition, null, '\t');
+	var result = JSON.stringify(ternDefinitions, null, '\t');
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern-defs.json', result);
 }
