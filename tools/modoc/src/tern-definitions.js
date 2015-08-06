@@ -51,7 +51,9 @@ function compileFunction(fun, urlParameter) {
 	// just for debugging
 	try {
 		if (fun.comment) {
-			ternDefinition['!doc'] = fun.comment.description || '';
+			ternDefinition['!doc'] = (fun.comment.deprecated ? '[Deprecated] ' : '') +
+				(fun.comment.description || '');
+
 			if (fun.comment.param) {
 				var ending = fun.comment.returns && fun.comment.returns.rawType ?
 					') -> ' + convert(fun.comment.returns.rawType) :
@@ -76,7 +78,9 @@ function compileMember(member, urlParameter) {
 	// just for debugging
 	try {
 		if (member.comment) {
-			ternDefinition['!doc'] = member.comment.description || '';
+			ternDefinition['!doc'] = (member.comment.deprecated ? '[Deprecated] ' : '') +
+				(member.comment.description || '');
+
 			if (member.comment.type) {
 				ternDefinition['!type'] = convert(member.comment.type.rawType);
 			}
@@ -97,6 +101,7 @@ function compileProperty(property, urlParameter) {
 
 	// just for debugging
 	try {
+		// these can't hold deprecation info
 		ternDefinition['!doc'] = property.description || '';
 		if (property.type) {
 			ternDefinition['!type'] = convert(property.type);
