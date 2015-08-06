@@ -1,3 +1,11 @@
+v0.15.3 --- 2015-08-06
+----------------------
+
+###Fixes
+ * materials deeply clone uniforms when `shareUniforms` is `false`
+ * unresolved *entity* or *texture* script parameters are set to `null` instead of an empty object
+
+
 v0.15.2 --- 2015-07-28
 ----------------------
 
