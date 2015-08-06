@@ -35,9 +35,13 @@ var convertParameters = function (parameters) {
 		// filter out sub-parameters of the form `settings.something`
 		return parameter.name.indexOf('.') === -1;
 	}).map(function (parameter) {
-		return parameter.rawType ?
-			parameter.name + ': ' + convert(parameter.rawType) :
+		var decoratedName = parameter.optional || parameter.default_ ?
+			parameter.name + '?' :
 			parameter.name;
+
+		var type = parameter.rawType ? convert(parameter.rawType) : '?';
+
+		return decoratedName + ': ' + type;
 	}).join(', ');
 };
 
