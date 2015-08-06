@@ -64,6 +64,18 @@ define([
 			expect(gotData3).toBeUndefined();
 		});
 
+		it('can send to superchannels', function () {
+			var gotData1, gotData2, gotData3;
+			bus.addListener('main.first', function (data) { gotData1 = data; });
+			bus.addListener('main', function (data) { gotData2 = data; });
+			bus.addListener('second', function (data) { gotData3 = data; });
+			bus.emit('main', 123);
+
+			expect(gotData1).toBe(123);
+			expect(gotData2).toBe(123);
+			expect(gotData3).toBeUndefined();
+		});
+
 		it('can send to subchannels', function () {
 			var gotData1, gotData2, gotData3;
 			bus.addListener('main.first.second', function (data) { gotData1 = data; });
