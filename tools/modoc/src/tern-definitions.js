@@ -64,6 +64,8 @@ function compileFunction(fun, urlParameter) {
 					')';
 
 				ternDefinition['!type'] = 'fn(' + convertParameters(fun.comment.param) + ending;
+			} else {
+				ternDefinition['!type'] = 'fn()';
 			}
 		}
 	} catch (e) {
