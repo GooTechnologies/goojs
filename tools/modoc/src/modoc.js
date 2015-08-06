@@ -70,7 +70,7 @@ function resolveRequirePaths(classes, index) {
 
 function buildClasses(classes) {
 	var classTemplate = fs.readFileSync(
-		args.templatesPath + util.PATH_SEPARATOR + 'class.mustache', { encoding: 'utf8' });
+		args.templatesPath + util.PATH_SEPARATOR + 'class.handlebars', { encoding: 'utf8' });
 
 	var classesArray = Object.keys(classes).map(function (className) {
 		return classes[className];
@@ -83,7 +83,7 @@ function buildClasses(classes) {
 
 function buildIndex(index) {
 	var navTemplate = fs.readFileSync(
-		args.templatesPath + util.PATH_SEPARATOR + 'nav.mustache', { encoding: 'utf8' });
+		args.templatesPath + util.PATH_SEPARATOR + 'nav.handlebars', { encoding: 'utf8' });
 
 	var result = handlebars.compile(navTemplate)({ index: index });
 
@@ -94,7 +94,7 @@ function buildChangelog(file) {
 	var changelog = fs.readFileSync(file, { encoding: 'utf8' });
 	var formatted = marked(changelog);
 
-	var changelogTemplate = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.mustache', { encoding: 'utf8' });
+	var changelogTemplate = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.handlebars', { encoding: 'utf8' });
 
 	var result = handlebars.compile(changelogTemplate)({ content: formatted });
 
@@ -163,7 +163,7 @@ function compileDeprecated(classes) {
 
 function buildDeprecated(classes) {
 	var deprecatedTemplate = fs.readFileSync(
-		args.templatesPath + util.PATH_SEPARATOR + 'deprecated.mustache', { encoding: 'utf8' });
+		args.templatesPath + util.PATH_SEPARATOR + 'deprecated.handlebars', { encoding: 'utf8' });
 
 	var data = compileDeprecated(classes);
 
