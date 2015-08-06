@@ -93,6 +93,7 @@ define(function () {
 			emitToAll(node, data, channelName, this);
 			if (storeEmit) {
 				node.latestData = data;
+				node.latestChannel = channelName;
 			}
 		}
 	};
@@ -124,7 +125,7 @@ define(function () {
 		if (node.listeners.indexOf(callback) === -1) {
 			node.listeners.push(callback);
 			if (retrieveLatestEmit && node.latestData) {
-				callback(node.latestData);
+				callback(node.latestData, node.latestChannel, this);
 			}
 		}
 
