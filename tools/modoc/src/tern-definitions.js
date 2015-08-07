@@ -67,6 +67,10 @@ function compileFunction(fun, urlParameter) {
 			} else {
 				ternDefinition['!type'] = 'fn()';
 			}
+		} else {
+			ternDefinition['!type'] = 'fn(' +
+				fun.params.map(function (param) { return param + ': ?'; }).join(', ') +
+				')';
 		}
 	} catch (e) {
 		console.log(urlParameter);

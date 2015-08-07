@@ -17,7 +17,6 @@ var childProcess = require('child_process');
 var handlebars = require('handlebars');
 var marked = require('marked');
 
-//var extractor = require('./extractor');
 var indexBuilder = require('./index-builder');
 var util = require('./util');
 var trunk = require('./trunk');
