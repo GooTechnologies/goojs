@@ -24,7 +24,7 @@ function getFiles(sourcePath, ignore) {
 
 function filterPrivates(class_) {
 	var isPrivateOrHidden = function (entry) {
-		return entry.comment && !(entry.comment.private || entry.comment.hidden);
+		return !entry.comment || !(entry.comment.private || entry.comment.hidden);
 	};
 
 	class_.members = class_.members.filter(isPrivateOrHidden);
