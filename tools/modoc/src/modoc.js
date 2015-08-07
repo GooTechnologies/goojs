@@ -122,25 +122,25 @@ function compileDeprecated(classes) {
 		}
 
 		class_.methods.forEach(function (method) {
-			if (method.comment.deprecated) {
+			if (method.comment && method.comment.deprecated) {
 				methods.push(getEntry(method));
 			}
 		});
 
 		class_.staticMethods.forEach(function (staticMethod) {
-			if (staticMethod.comment.deprecated) {
+			if (staticMethod.comment && staticMethod.comment.deprecated) {
 				staticMethods.push(getEntry(staticMethod));
 			}
 		});
 
 		class_.members.forEach(function (member) {
-			if (member.comment.deprecated) {
+			if (member.comment && member.comment.deprecated) {
 				members.push(getEntry(member));
 			}
 		});
 
 		class_.staticMembers.forEach(function (staticMember) {
-			if (staticMember.comment.deprecated) {
+			if (staticMember.comment && staticMember.comment.deprecated) {
 				staticMembers.push(getEntry(staticMember));
 			}
 		});
