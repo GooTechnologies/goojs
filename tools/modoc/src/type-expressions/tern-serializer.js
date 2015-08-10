@@ -22,7 +22,9 @@ var serializers = {
 				']';
 		}
 
-		return '+' + node.name.data;
+		return node.name.data[0] === '_' ?
+			node.name.data :
+			'+' + node.name.data;
 	},
 	'list-item': function (node, definitions) {
 		var name = node.name;
