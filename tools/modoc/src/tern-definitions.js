@@ -62,7 +62,7 @@ function compileTypelessFunction(parameters) {
  * @returns {{definitions: *, parameters: *}}
  */
 var compileOptions = (function () {
-	var generateId = util.createIdGenerator('_o_');
+	var generateId = util.createIdGenerator('_options_');
 
 	function insert(node, key, data) {
 		key.split('.').forEach(function (part) {
