@@ -30,6 +30,10 @@ function (
 			return null;
 		}
 
+		if (typeof name === "function") {
+			return name;
+		}
+
 		return ParticleBehaviors[name];
 	}
 
