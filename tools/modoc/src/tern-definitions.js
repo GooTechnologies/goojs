@@ -31,10 +31,11 @@ function processArguments() {
 
 // --- tern related ---
 var convertParameters = function (parameters) {
-	return parameters.filter(function (parameter) {
-		// filter out sub-parameters of the form `settings.something`
-		return parameter.name.indexOf('.') === -1;
-	}).map(function (parameter) {
+	var pair = compileOptions(parameters);
+
+	_.extend(additionalDefinitions, pair.definitions);
+
+	return pair.parameters.map(function (parameter) {
 		var decoratedName = parameter.optional || parameter.default_ ?
 			parameter.name + '?' :
 			parameter.name;
@@ -47,11 +48,99 @@ var convertParameters = function (parameters) {
 
 var DOC_BASE_URL = 'http://code.gooengine.com/latest/docs/index.html?';
 
-function compileTypelessFunction(params) {
+function compileTypelessFunction(parameters) {
 	return 'fn(' +
-		params.map(function (param) { return param + ': ?'; }).join(', ') +
+		parameters.map(function (parameter) { return parameter + ': ?'; }).join(', ') +
 		')';
 }
+
+/**
+ * Takes a list of @param definitions and extracts extra definitions from it.
+ * The extra definitions arise from option objects,
+ * i.e. "@param options; @param options.option1; @param options.option2"
+ * @param {name, type, rawType} parameters
+ * @returns {{definitions: *, parameters: *}}
+ */
+var compileOptions = (function () {
+	var generateId = util.createIdGenerator('_o_');
+
+	function insert(node, key, data) {
+		key.split('.').forEach(function (part) {
+			if (!node.children[part]) {
+				node.children[part] = {
+					name: part,
+					children: {}
+				};
+			}
+
+			node = node.children[part];
+		});
+
+		node.data = data;
+	}
+
+	function translate(node, definitions) {
+		function translate(node) {
+			if (Object.keys(node.children).length === 0) {
+				return convert(node.data.rawType);
+			} else {
+				var id = generateId();
+
+				var definition = {};
+
+				definitions[id] = definition;
+
+				_(node.children).forEach(function (node, name) {
+					definition[name] = translate(node, definitions);
+				});
+
+				return id;
+			}
+		}
+
+		return _(node.children).mapObject(function (node, name) {
+			return translate(node, definitions);
+		});
+	}
+
+	return function (parameters) {
+		var trie = { children: {} };
+
+		var definitions = {};
+
+		// create the structure
+		var dots = parameters.filter(function (parameter) {
+			return parameter.name.indexOf('.') !== -1;
+		});
+
+		if (dots.length === 0) {
+			return { parameters: parameters };
+		}
+
+		dots.forEach(function (parameter) {
+			insert(trie, parameter.name, parameter);
+		});
+
+		// translate it
+		var topMap = translate(trie, definitions);
+
+		var topLevel = parameters.filter(function (parameter) {
+			return parameter.name.indexOf('.') === -1;
+		});
+
+		// this is clunky
+		topLevel.forEach(function (entry) {
+			if (topMap[entry.name]) {
+				entry.rawType = topMap[entry.name];
+			}
+		});
+
+		return {
+			definitions: definitions,
+			parameters: topLevel
+		};
+	};
+})();
 
 function compileFunction(fun, urlParameter) {
 	var ternDefinition = {
@@ -173,7 +262,7 @@ function compileClass(class_) {
 	return ternConstructor;
 }
 
-function makeConverter(classNames, definitions) {
+function makeConverter(classNames) {
 	var typesRegexStr = '\\b(' + classNames.join('|') + ')\\b';
 	var typesRegex = new RegExp(typesRegexStr, 'g');
 
@@ -184,8 +273,8 @@ function makeConverter(classNames, definitions) {
 		// perform the substitutions after the conversion as this inflates the string with `goo.` prefixes
 		// should this prefixing be done on the expression in parsed form instead? why?
 
-		_.forEach(ternType.definitions, function (definition, key) {
-			definitions[key] = _.mapObject(definition, function (member) {
+		_.forEach(ternType.additionalDefinitions, function (definition, key) {
+			additionalDefinitions[key] = _.mapObject(definition, function (member) {
 				return member.replace(typesRegex, 'goo.$1');
 			});
 		});
@@ -196,9 +285,10 @@ function makeConverter(classNames, definitions) {
 
 // this is a bit of a hack
 var convert;
+var additionalDefinitions;
 
 function buildClasses(classes) {
-	var additionalDefinitions = {};
+	additionalDefinitions = {};
 
 	var ternDefinitions = {
 		'!name': 'goo',
@@ -207,7 +297,7 @@ function buildClasses(classes) {
 		'Arguments': defaultTernDefinitions['Arguments']
 	};
 
-	convert = makeConverter(Object.keys(classes), additionalDefinitions);
+	convert = makeConverter(Object.keys(classes));
 
 	ternDefinitions.goo = _.mapObject(classes, compileClass);
 

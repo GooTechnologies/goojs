@@ -67,11 +67,11 @@ define([
 	 * @param {boolean} [parameters.antialias=true] Specifies if antialiasing should be turned on or no
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
-	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
+	 * @param {HTMLCanvasElement}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
 	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
-	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
+	 * @param {(boolean | string | { position, color })} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
 	 * If the parameter is not specified then the logo is placed in the top right corner.
 	 * If no logo is desired then this parameter should have the 'false' value.
 	 * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
