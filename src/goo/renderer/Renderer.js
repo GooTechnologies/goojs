@@ -664,13 +664,13 @@ define([
 						texture.glTexture = context.createTexture();
 						this.preloadTexture(context, texture);
 						texture.needsUpdate = false;
-					} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+					} else if (texture instanceof Texture && texture.checkNeedsUpdate()) {
 						this.preloadTexture(context, texture);
 						texture.needsUpdate = false;
 					}
-				}.bind(this));
-			}.bind(this));
-		}.bind(this));
+				}, this);
+			}, this);
+		}, this);
 	};
 
 	var preloadMaterialsRenderInfo = new RenderInfo();
