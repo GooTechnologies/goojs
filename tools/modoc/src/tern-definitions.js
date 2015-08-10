@@ -273,7 +273,7 @@ function makeConverter(classNames) {
 		// perform the substitutions after the conversion as this inflates the string with `goo.` prefixes
 		// should this prefixing be done on the expression in parsed form instead? why?
 
-		_.forEach(ternType.additionalDefinitions, function (definition, key) {
+		_.forEach(ternType.definitions, function (definition, key) {
 			additionalDefinitions[key] = _.mapObject(definition, function (member) {
 				return member.replace(typesRegex, 'goo.$1');
 			});
