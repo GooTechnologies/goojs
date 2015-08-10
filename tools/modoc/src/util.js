@@ -53,6 +53,18 @@ var tagToIdentifier = function (tagName) {
 	return lowerFirst(tagName.slice(1).split('-').map(upperFirst).join(''));
 };
 
+var createIdGenerator = function (prefix) {
+	var counter = 0;
+	return function (override) {
+		if (arguments.length) {
+			return prefix + override;
+		} else {
+			counter++;
+			return prefix + (counter - 1);
+		}
+	};
+};
+
 exports.getFileName = getFileName;
 exports.stringUntil = stringUntil;
 exports.stringFrom = stringFrom;
@@ -62,5 +74,7 @@ exports.deepClone = deepClone;
 exports.tagToIdentifier = tagToIdentifier;
 exports.upperFirst = upperFirst;
 exports.lowerFirst = lowerFirst;
+
+exports.createIdGenerator = createIdGenerator;
 
 exports.PATH_SEPARATOR = PATH_SEPARATOR;
