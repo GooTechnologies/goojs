@@ -211,6 +211,10 @@ function buildClasses(classes) {
 
 	ternDefinitions.goo = _.mapObject(classes, compileClass);
 
+	// store this here for a bit
+	ternDefinitions.goo['!url'] = 'http://goocreate.com/learn/the-goo-object/';
+	ternDefinitions.goo['!doc'] = 'The goo object provides access to most of the Goo Engine API. For example, one can create entities and access math functions.';
+
 	var result = JSON.stringify(ternDefinitions, null, '\t');
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'tern-defs.json', result);
