@@ -47,6 +47,12 @@ var convertParameters = function (parameters) {
 
 var DOC_BASE_URL = 'http://code.gooengine.com/latest/docs/index.html?';
 
+function compileTypelessFunction(params) {
+	return 'fn(' +
+		params.map(function (param) { return param + ': ?'; }).join(', ') +
+		')';
+}
+
 function compileFunction(fun, urlParameter) {
 	var ternDefinition = {
 		'!url': DOC_BASE_URL + urlParameter
@@ -65,12 +71,10 @@ function compileFunction(fun, urlParameter) {
 
 				ternDefinition['!type'] = 'fn(' + convertParameters(fun.comment.param) + ending;
 			} else {
-				ternDefinition['!type'] = 'fn()';
+				ternDefinition['!type'] = compileTypelessFunction(fun.params);
 			}
 		} else {
-			ternDefinition['!type'] = 'fn(' +
-				fun.params.map(function (param) { return param + ': ?'; }).join(', ') +
-				')';
+			ternDefinition['!type'] = compileTypelessFunction(fun.params);
 		}
 	} catch (e) {
 		console.log(urlParameter);
