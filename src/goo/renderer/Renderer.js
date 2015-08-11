@@ -668,7 +668,7 @@ define([
 						this.preloadTexture(context, texture);
 						texture.needsUpdate = false;
 					}
-				}, this);
+				}.bind(this));
 			}, this);
 		}, this);
 	};
