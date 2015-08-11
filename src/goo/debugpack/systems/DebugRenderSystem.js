@@ -83,6 +83,9 @@ define([
 				var componentName = this._interestComponents[j];
 				if (!entity._hidden && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
+					if (component.preventDebug) {
+						continue;
+					}
 
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
