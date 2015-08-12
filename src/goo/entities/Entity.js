@@ -14,7 +14,7 @@ define([
 	 * For example, an entity with a {@link TransformComponent} and a {@link LightComponent} will be a light source in 3D space.
 	 * Note that when attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
 	 * @param {World} world The {@link World} this entity will be part of after calling .addToWorld().
-	 * @param {String} [name] Entity name.
+	 * @param {string} [name] Entity name.
 	 * @param {number} [id] Entity id.
 	 */
 	function Entity(world, name, id) {

@@ -69,10 +69,20 @@ define([
 		'BilinearNearestMipMap',
 		'Trilinear'
 	];
+
 	TextureHandler.magFilters = [
 		'NearestNeighbor',
 		'Bilinear'
 	];
+
+	TextureHandler.noMipMapAlternatives = {
+		'NearestNeighborNoMipMaps': 'NearestNeighborNoMipMaps',
+		'NearestNeighborNearestMipMap': 'NearestNeighborNoMipMaps',
+		'NearestNeighborLinearMipMap': 'NearestNeighborNoMipMaps',
+		'BilinearNoMipMaps': 'BilinearNoMipMaps',
+		'BilinearNearestMipMap': 'BilinearNoMipMaps',
+		'Trilinear': 'BilinearNoMipMaps'
+	};
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
@@ -86,7 +96,7 @@ define([
 
 	/**
 	 * Preparing texture config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
@@ -200,8 +210,8 @@ define([
 	/**
 	 * Adds/updates/removes a texture
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */
 	TextureHandler.prototype._update = function (ref, config, options) {
@@ -218,7 +228,9 @@ define([
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
-				texture.minFilter = config.minFilter;
+				texture.minFilter = config.generateMipmaps !== false ?
+					config.minFilter :
+					TextureHandler.noMipMapAlternatives[config.minFilter];
 			}
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);

@@ -16,7 +16,7 @@ define([
 	/**
 	 * Ajax helper class
 	 * @param {string} rootPath
-	 * @param {object} options
+	 * @param {Object} options
 	 */
 	function Ajax(rootPath, options) {
 		if (rootPath) {
@@ -31,7 +31,7 @@ define([
 
 	/**
 	 * Prefill ajax cache with data
-	 * @param {object} bundle Pairs of key-configs
+	 * @param {Object} bundle Pairs of key-configs
 	 * @param {boolean} [clear=false] If set to true will overwrite cache, otherwise extend it
 	 */
 	Ajax.prototype.prefill = function (bundle, clear) {
@@ -53,7 +53,7 @@ define([
 	/**
 	 * Uses GET to retrieve data at a remote location.
 	 * @hidden
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {string} options.url
 	 * @returns {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
 	 */

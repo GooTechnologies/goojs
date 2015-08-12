@@ -23,7 +23,7 @@ define([
 
 		/**
 		 * Current time, in seconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.time = 0;
 

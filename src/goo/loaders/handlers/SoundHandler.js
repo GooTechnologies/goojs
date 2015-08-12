@@ -65,7 +65,7 @@ define([
 
 	/**
 	 * Preparing sound config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	SoundHandler.prototype._prepare = function (config) {
@@ -89,8 +89,8 @@ define([
 	/**
 	 * Adds/updates/removes a sound
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {

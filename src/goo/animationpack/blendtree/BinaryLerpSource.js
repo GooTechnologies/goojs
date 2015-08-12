@@ -11,8 +11,8 @@ define([
 	 * Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
 	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not
 	 *        combined, rather A's value will always be used unless it is null.
-	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
-	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} sourceB our second source.
+	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} sourceA our first source.
+	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} sourceB our second source.
 	 * @param {number} blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 * @private
 	 */
@@ -75,9 +75,9 @@ define([
 	};
 
 	/**
-	* Sets the time scale for sources A and B
-	* @param {Number} timeScale
-	*/
+	 * Sets the time scale for sources A and B
+	 * @param {number} timeScale
+	 */
 	BinaryLerpSource.prototype.setTimeScale = function (timeScale) {
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);
@@ -99,11 +99,11 @@ define([
 
 	/**
 	 * Blends two sourceData maps together
-	 * @param {object} sourceAData
-	 * @param {object} sourceBData
+	 * @param {Object} sourceAData
+	 * @param {Object} sourceBData
 	 * @param {number} blendWeight
-	 * @param {object} [store] If store is supplied, the result is stored there
-	 * @returns {object} The blended result,
+	 * @param {Object} [store] If store is supplied, the result is stored there
+	 * @returns {Object} The blended result,
 	 */
 	BinaryLerpSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
 		if (!sourceBData) {
@@ -149,11 +149,11 @@ define([
 
 	/**
 	 * Blends two float values and stores them in rVal
-	 * @param {object} rVal The object in which to store result
+	 * @param {Object} rVal The object in which to store result
 	 * @param {string} key The key to object rVal, so rVal[key] is the store
 	 * @param {number} blendWeight
-	 * @param {number[]} dataA The float is wrapped in an array
-	 * @param {number[]} dataB The float is wrapped in an array
+	 * @param {Array<number>} dataA The float is wrapped in an array
+	 * @param {Array<number>} dataB The float is wrapped in an array
 	 */
 	BinaryLerpSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {

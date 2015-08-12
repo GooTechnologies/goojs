@@ -87,8 +87,8 @@ define([
 	 * If the new body (in the data model config) differs from the cached body,
 	 * the script will be reloaded (by means of a script tag).
 	 *
-	 * @param {object} script the cached engine script object
-	 * @param {object} config the data model config
+	 * @param {Object} script the cached engine script object
+	 * @param {Object} config the data model config
 	 */
 	ScriptHandler.prototype._updateFromCustom = function (script, config) {
 		// No change, do nothing
@@ -185,8 +185,8 @@ define([
 	/**
 	 * Update a script that is from the engine. Checks if the class name has changed
 	 * and if so, creates a new script object from the new class.
-	 * @param {object} script needs to have a className property
-	 * @param {object} config data model config
+	 * @param {Object} script needs to have a className property
+	 * @param {Object} config data model config
 	 * @deprecated
 	 */
 	ScriptHandler.prototype._updateFromClass = function (script, config) {
@@ -300,7 +300,7 @@ define([
 	 * Loads an external javascript lib as a dependency to this script (if it's
 	 * not already loaded). If the dependency fails to load, an error is set
 	 * on the script.
-	 * @param {object} script config
+	 * @param {Object} script config
 	 * @param {string} url location of the javascript lib
 	 * @param {string} scriptId the guid of the script
 	 * @returns {RSVP.Promise} a promise that resolves when the dependency is loaded
@@ -695,10 +695,10 @@ define([
 
 	/**
 	 * Flag a script with an error. The script will be disabled.
-	 * @param {object} script
-	 * @param {object} error
+	 * @param {Object} script
+	 * @param {Object} error
 	 * @param {string} error.message
-	 * @param {Number} [error.line]
+	 * @param {number} [error.line]
 	 * @param {string} [error.file]
 	 * @private
 	 */

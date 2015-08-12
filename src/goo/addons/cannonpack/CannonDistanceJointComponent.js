@@ -13,7 +13,7 @@ define([
 	 * Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @extends Component
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.distance=1]
 	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */

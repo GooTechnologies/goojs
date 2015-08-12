@@ -83,7 +83,7 @@ define([
 			var particles = particleComponent.particles;
 
 			for (var i = 0; i < particles.length; i++) {
-				particles[i].velocity[1] = -(Math.random() + 1) * this.velocity; //this.velocity;
+				particles[i].velocity.y = -(Math.random() + 1) * this.velocity; //this.velocity;
 			}
 		}
 	};

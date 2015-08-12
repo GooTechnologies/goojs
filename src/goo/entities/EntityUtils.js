@@ -118,7 +118,7 @@ define([
 	 * @param {boolean} [settings.shareMaterials=false] Cloning entities clones their materials by default
 	 * @param {boolean} [settings.shareUniforms=false] Cloning entities clones their materials' uniforms by default
 	 * @param {boolean} [settings.shareTextures=false] Cloning entities clones their materials' textures by default
-	 * @param {function (Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+	 * @param {function (entity: Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 	 * @returns {Entity} The cloned entity.
 	 */
 	EntityUtils.clone = function (world, entity, settings) {

@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.<br>
+	 * Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/components/MeshRendererComponent/MeshRendererComponent-example.html Working example
 	 * @extends Component
 	 */
@@ -19,7 +19,7 @@ define([
 
 		//! schteppe: Don't chain or nest ternary operators as it hard to read and confusing
 		/** Materials to use when rendering
-		 * @type {Material[]}
+		 * @type {Array<Material>}
 		 */
 		this.materials = Array.isArray(materials) ? materials : materials ? [materials] : [];
 		/** Worldspace bounding considering entity transformations

@@ -17,7 +17,7 @@ define([
 	var EPSILON = 1e-6;
 
 	/**
-	 * @param {object} args
+	 * @param {Object} args
 	 * @param {boolean} args.whenUsed When current entity is the camera in use
 	 * @param {string} args.dragButton Can be 'Any', 'Left', 'Middle', 'Right', 'None'. None disables dragging
 	 * @param {number} args.orbitSpeed

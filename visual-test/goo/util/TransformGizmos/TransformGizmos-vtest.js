@@ -21,24 +21,32 @@ require([
 
 	V.describe([
 		'Select and entity and transform it using the transform gizmos.',
-		'Change the active gizmo by hitting 1, 2 or 3.'
+		'Change the active gizmo by hitting 1, 2, 3 or 4.'
 	].join('\n'));
 
 	V.button('1', key1);
 	V.button('2', key2);
 	V.button('3', key3);
+	V.button('4', key4);
 
 	function key1() {
-		console.log('translation');
+		console.log('translation, global');
+		gizmoRenderSystem.global = true;
 		gizmoRenderSystem.setActiveGizmo(0);
 	}
 
 	function key2() {
+		console.log('translation, local');
+		gizmoRenderSystem.global = false;
+		gizmoRenderSystem.setActiveGizmo(0);
+	}
+
+	function key3() {
 		console.log('rotation');
 		gizmoRenderSystem.setActiveGizmo(1);
 	}
 
-	function key3() {
+	function key4() {
 		console.log('scale');
 		gizmoRenderSystem.setActiveGizmo(2);
 	}
@@ -55,8 +63,16 @@ require([
 				case 51: // 3
 					key3();
 					break;
+				case 52: // 4
+					key4();
+					break;
 				default:
-					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
+					console.log([
+						'1: translate gizmo, global',
+						'2: translate gizmo, local',
+						'3: rotate gizmo',
+						'4: scale gizmo'
+					].join('\n'));
 			}
 		});
 	}

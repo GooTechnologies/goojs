@@ -18,8 +18,8 @@ define([
 	/**
 	 * For handling loading of camera components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -34,8 +34,8 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
+	 * @param {Object} config
+	 * @returns {Object}
 	 * @private
 	 */
 	CameraComponentHandler.prototype._prepare = function (config) {
@@ -74,8 +74,8 @@ define([
 	/**
 	 * Update engine cameracomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	CameraComponentHandler.prototype.update = function (entity, config, options) {

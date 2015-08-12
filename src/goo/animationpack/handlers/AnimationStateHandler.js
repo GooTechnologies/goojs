@@ -51,8 +51,8 @@ define([
 	/**
 	 * Adds/updates/removes an animation state
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */
 	AnimationStateHandler.prototype._update = function (ref, config, options) {
@@ -72,7 +72,7 @@ define([
 
 	/**
 	 * Updates or creates clipSource to put on animation state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @param {ClipSource} [clipSource]
 	 * @returns {RSVP.Promise} resolved with updated clip source
 	 */

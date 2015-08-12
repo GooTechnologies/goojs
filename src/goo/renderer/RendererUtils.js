@@ -18,7 +18,7 @@ define([
 	/**
 	 * Get size in bytes of a specific type.
 	 *
-	 * @param {String} type Type to retrieve bytesize for
+	 * @param {string} type Type to retrieve bytesize for
 	 */
 	RendererUtils.getByteSize = function (type) {
 		var byteSize;
@@ -85,7 +85,7 @@ define([
 	 * Checks if a value is power of two
 	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
 	 * MathUtils.isPowerOfTwo instead
-	 * @param {Number} value Number to check for power of two
+	 * @param {number} value Number to check for power of two
 	 * @returns true if value is power of two
 	 */
 	RendererUtils.isPowerOfTwo = MathUtils.isPowerOfTwo;

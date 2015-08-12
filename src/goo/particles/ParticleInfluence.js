@@ -3,7 +3,7 @@ define(function () {
 
 	/**
 	 * A Particle influence modifies particles in some way over time.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Function} [settings.prepare] <code>prepare({@link Entity} particleEntity, {@link ParticleEmitter} emitter)</code>.
 	 * @param {Function} [settings.apply] <code>apply(number tpf, {@link Particle} particle, number particleIndex)</code>.
 	 * @param {boolean} [settings.enabled=true]

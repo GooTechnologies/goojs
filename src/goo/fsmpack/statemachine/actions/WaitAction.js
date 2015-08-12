@@ -16,13 +16,13 @@ define([
 
 		/**
 		 * Current time, in milliseconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.currentTime = 0;
 
 		/**
 		 * Wait time, in milliseconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.totalWait = 0;
 	}

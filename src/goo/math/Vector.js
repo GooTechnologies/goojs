@@ -15,7 +15,7 @@ define(function () {
 	 * Binds aliases to the different vector components.
 	 * @hidden
 	 * @param {Object} prototype The prototype to bind to.
-	 * @param {string[][]} aliases Array of component aliases for each component index.
+	 * @param {Array<Array<string>>} aliases Array of component aliases for each component index.
 	 */
 	Vector.setupAliases = function (prototype, aliases) {
 		aliases.forEach(function (aliasesPerComponent, index) {
@@ -76,7 +76,7 @@ define(function () {
 	 * Adds more validators at once
 	 * @hidden
 	 * @param {Object} object
-	 * @param {string[]} methodNames
+	 * @param {Array<string>} methodNames
 	 */
 	Vector.addReturnChecks = function (object, methodNames) {
 		methodNames.forEach(Vector.addReturnCheck.bind(null, object));

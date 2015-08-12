@@ -35,8 +35,8 @@ define([
 	 * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
 	 * are rarely updated.
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	SkeletonHandler.prototype._update = function (ref, config/*, options*/) {

@@ -13,7 +13,7 @@ define([
 
 	/**
 	 * A polygonal line
-	 * @param {number[]} [verts] The vertices data array
+	 * @param {Array<number>} [verts] The vertices data array
 	 * @param {boolean} [closed=false] True if its ends should be connected
 	 */
 	function PolyLine(verts, closed) {
@@ -108,8 +108,8 @@ define([
 		 * Extrudes and rotates a PolyLine along another PolyLine.
 		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
 		 * @param {Object} [options]
-		 * @param {(number) -> number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
-		 * @param {(number) -> number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
+		 * @param {function (number) : number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
+		 * @param {function (number) : number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
 		 * @returns {Surface} The resulting surface
 		 */
 		PolyLine.prototype.pipe = function (that, options) {
@@ -202,7 +202,7 @@ define([
 
 	/**
 	 * Creates a polyLine that approximates a given cubic Bezier curve
-	 * @param {number[]} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
+	 * @param {Array<number>} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
 	 * @param {number} [nSegments=16] The number of segments (higher values result in smoother curves)
 	 * @returns {PolyLine} The resulting polyLine
 	 */
@@ -287,7 +287,7 @@ define([
 
 	/**
 	 * Creates a polyLine that approximates a given cubic spline
-	 * @param {number[]} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
+	 * @param {Array<number>} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
 	 * @param {number} [nSegments=16] The number of segments for each Bezier curve that forms the spline (higher values result in smoother curves)
 	 * @param {boolean} [closed=false] True if the spline should be closed or not
 	 * @returns {PolyLine} The resulting polyLine

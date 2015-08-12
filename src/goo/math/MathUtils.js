@@ -193,6 +193,7 @@ define(function () {
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {Vector3} store
+	 * @example
 	 * var sphericalCoord = new Vector3();
 	 * var pos = entity.transformComponent.transform.translation.
 	 * MathUtils.cartesianToSpherical(pos.x, pos.y, pos.z, sphericalCoord);
@@ -215,7 +216,7 @@ define(function () {
 	 * @param {number} R.x
 	 * @param {number} R.y
 	 * @param {number} R.z
-	 * @returns {number[]} The triangle's normal
+	 * @returns {Array<number>} The triangle's normal
 	 */
 	MathUtils.getTriangleNormal = function (p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;

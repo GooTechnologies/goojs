@@ -27,8 +27,11 @@ define([
 			viewportHeight: renderer.viewportHeight,
 			world: world,
 			activeCameraEntity: null,
-			worldData: {}
+			worldData: {},
+			playTime: 0
 		};
+
+		this._playing = true;
 
 		SystemBus.addListener('goo.setCurrentCamera', function (data) {
 			this.context.activeCameraEntity = data.entity;
@@ -54,11 +57,31 @@ define([
 		}
 	};*/
 
+	ScriptSystem.prototype.play = function () {
+		this.context.playTime = 0;
+		this._playing = true;
+	};
+
+	ScriptSystem.prototype.resume = function () {
+		this._playing = true;
+	};
+
+	ScriptSystem.prototype.pause = function () {
+		this._playing = false;
+	};
+
+	ScriptSystem.prototype.stop = ScriptSystem.prototype.pause;
+
 	ScriptSystem.prototype.process = function (entities, tpf) {
 		// Update scripts
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
 			scriptComponent.run(entities[i], tpf);
+		}
+
+		// update play time
+		if (this._playing) {
+			this.context.playTime += tpf;
 		}
 	};
 

@@ -23,7 +23,7 @@ define([
 	 * Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.
 	 * @see QuadSystem
 	 * @param {HTMLImageElement} [image]
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.width=1]	Width of the Quad mesh. See [Quad]{@link Quad}
 	 * @param {number} [settings.height=1]
 	 * @param {number} [settings.tileX=1]	Number of tiles in the Quad. See [Quad]{@link Quad}

@@ -15,11 +15,11 @@ define([
 	 * @param {number} [options.totalParticlesToSpawn=-1] Specifies how many particles this emitter should spawn (-1 for an unlimited amount)
 	 * @param {number} [options.maxLifetime=3.0] The maximum lifetime of a particle emitted by this emitter (in seconds)
 	 * @param {number} [options.minLifetime=2.0] The minimum lifetime of a particle emitted by this emitter (in seconds)
-	 * @param {{ color, mass, uvIndex, color, size, spin }[]} [options.timeline] A timeline object describing the transformations that a particle should go through while it 'ages'. This overrides the timeline set on the particle component
-	 * @param {ParticleInfluence[]} [options.influences] An array of objects providing functions that alter the particle
-	 * @param {Function: (particle, particleEntity) -> Vector3} [options.emissionPoint] A function returning an emission point for a particle
-	 * @param {Function: (particle, particleEntity) -> Vector3} [options.getEmissionVelocity] A function returning an emission velocity for a particle
-	 * @param {Function: (particle)} [options.getParticleBillboardVectors=ParticleEmitter.CAMERA_BILLBOARD_FUNC] A function that sets the orientation of the particle's billboard
+	 * @param {Array<{ color, mass, uvIndex, color, size, spin }>} [options.timeline] A timeline object describing the transformations that a particle should go through while it 'ages'. This overrides the timeline set on the particle component
+	 * @param {Array<ParticleInfluence>} [options.influences] An array of objects providing functions that alter the particle
+	 * @param {function (particle, particleEntity) : Vector3} [options.emissionPoint] A function returning an emission point for a particle
+	 * @param {function (particle, particleEntity) : Vector3} [options.getEmissionVelocity] A function returning an emission velocity for a particle
+	 * @param {function (particle)} [options.getParticleBillboardVectors=ParticleEmitter.CAMERA_BILLBOARD_FUNC] A function that sets the orientation of the particle's billboard
 	 * @param {number} [options.releaseRatePerSecond=10] Target number of particles per second to spawn
 	 */
 	function ParticleEmitter(options) {

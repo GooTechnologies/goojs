@@ -20,7 +20,7 @@ function () {
 
 	/**
 	 * Get svg as string to add to html DOM
-	 * @param {object} properties
+	 * @param {Object} properties
 	 * @param {string} [properties.color=Logo.blue]
 	 * @param {boolean} [properties.shadow=false]
 	 * @param {string} [properties.width]

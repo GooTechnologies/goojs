@@ -14,7 +14,7 @@ define([
 	 * See also {@link AmmoComponent}
 	 * @deprecated Deprecated as of v0.11.x and scheduled for removal in v0.13.0; consider using the Cannon system/component instead.
 	 * @extends System
-	 * @param [Object] settings. The settings object can contain the following properties:
+	 * @param {Object} settings The settings object can contain the following properties:
 	 * @param {number} settings.gravity (defaults to -9.81)
 	 * @param {number} settings.maxSubSteps (defaults to 5)
 	 * @param {number} settings.stepFrequency (defaults to 60)

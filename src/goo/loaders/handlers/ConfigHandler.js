@@ -16,9 +16,8 @@ define([
 	 * the handler with the loader.
 	 *
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @returns {ComponentHandler}
+	 * @param {Function} getConfig The config loader function. See {DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @hidden
 	 */
 	function ConfigHandler(world, getConfig, updateObject, loadObject) {
@@ -32,7 +31,7 @@ define([
 
 	/**
 	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
-	 * @returns {object} the newly created Entity, Material or other engine object
+	 * @returns {Object} the newly created Entity, Material or other engine object
 	 * @private
 	 */
 	ConfigHandler.prototype._create = function () {
@@ -52,7 +51,7 @@ define([
 
 	/**
 	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	ConfigHandler.prototype._prepare = function (config) {};
@@ -60,7 +59,7 @@ define([
 	/**
 	 * Loads object for given ref
 	 * @param {string} ref
-	 * @param {object} options
+	 * @param {Object} options
 	 * @private
 	 */
 	ConfigHandler.prototype._load = function (ref, options) {
@@ -113,7 +112,7 @@ define([
 	 * This method is called by #{DynamicLoader} to load new resources into the engine.
 	 *
 	 * @param {string} ref The ref of this config
-	 * @param {object} config
+	 * @param {Object} config
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function (ref, config, options) {

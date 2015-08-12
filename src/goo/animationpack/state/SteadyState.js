@@ -24,7 +24,7 @@ define([
 
 	/**
 	 * Sets the clipsource of the steadystate
-	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} clipSource
+	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} clipSource
 	 */
 	SteadyState.prototype.setClipSource = function (clipSource) {
 		this._sourceTree = clipSource;

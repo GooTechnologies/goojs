@@ -108,7 +108,7 @@ define([
 
 	/**
 	 * Update the environmental sound system properties. The settings are not applied immediately.
-	 * @param {object} [config]
+	 * @param {Object} [config]
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.

@@ -16,7 +16,7 @@ define([
 	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S, T and R, apply - Modulate,
 	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
-	 * @param {object} settings Texturing settings
+	 * @param {Object} settings Texturing settings
 	 * @param {string} [settings.wrapS='Repeat'] possible values:
 	 *		<ul>
 	 *			<li>'Repeat' = Repeat texture (ignore integer part of texture coords)
@@ -88,7 +88,7 @@ define([
 		});
 
 		/**
-		 * The anisotropic filtering level.<br>
+		 * The anisotropic filtering level.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example
 		 * @type {number}
 		 */
@@ -127,7 +127,7 @@ define([
 
 	/**
 	* Checks if the texture's data is ready.
-	* @returns {Boolean} True if ready.
+	* @returns {boolean} True if ready.
 	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
@@ -135,7 +135,7 @@ define([
 
 	/**
 	* Checks if the texture needs an update.
-	* @returns {Boolean} True if needed.
+	* @returns {boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
 		//! AT: what's the precedence here? || first and then && or the other way around?
@@ -154,8 +154,8 @@ define([
 	 * Sets an image on the texture object.
 	 *
 	 * @param {Image} image The image to set. Can be an Image, TypedArray or an array of Images (for cubemaps)
-	 * @param {Number} [width]
-	 * @param {Number} [height]
+	 * @param {number} [width]
+	 * @param {number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
 		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function

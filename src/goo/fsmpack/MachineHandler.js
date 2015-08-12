@@ -56,8 +56,8 @@ define([
 	/**
 	 * Adds/updates/removes a machine
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @private
 	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
 	 */
@@ -88,7 +88,7 @@ define([
 	/**
 	 * Update actions on a state
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	MachineHandler.prototype._updateActions = function (state, stateConfig) {
@@ -124,7 +124,7 @@ define([
 	/**
 	 * Update transitions on the machine
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	MachineHandler.prototype._updateTransitions = function (state, stateConfig) {
@@ -138,7 +138,7 @@ define([
 	/**
 	 * Update states on the machine. This includes loading childMachines
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	MachineHandler.prototype._updateState = function (machine, stateConfig, options) {

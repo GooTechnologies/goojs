@@ -28,7 +28,7 @@ define([
 	'use strict';
 
 	/**
-	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
+	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example
 	 * @param {Object} [settings] Water settings passed in a JSON object
 	 * @param {boolean} [settings.useRefraction=true] Render refraction in water

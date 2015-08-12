@@ -89,8 +89,8 @@ define([
 	/**
 	 * Adds/updates/removes an environment
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated environment or null if removed
 	 */
 	EnvironmentHandler.prototype._update = function (ref, config, options) {
@@ -165,22 +165,23 @@ define([
 		snow: {
 			update: function (config, weatherState) {
 				if (config.enabled) {
-					if (weatherState.snow && weatherState.snow.enabled) {
-						// adjust snow
-						weatherState.snow.snow.setEmissionVelocity(config.velocity);
-						weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
-						weatherState.snow.snow.setEmissionHeight(config.height);
-					} else {
+					if (!weatherState.snow || !weatherState.snow.enabled) {
 						// add snow
 						weatherState.snow = weatherState.snow || {};
 						weatherState.snow.enabled = true;
 						weatherState.snow.snow = new Snow(this.world.gooRunner);
 					}
-				} else if (weatherState.snow && weatherState.snow.enabled) {
-					// remove snow
-					weatherState.snow.snow.remove();
-					weatherState.snow.enabled = false;
-					delete weatherState.snow.snow;
+
+					weatherState.snow.snow.setEmissionVelocity(config.velocity);
+					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
+					weatherState.snow.snow.setEmissionHeight(config.height);
+				} else {
+					if (weatherState.snow && weatherState.snow.enabled) {
+						// remove snow
+						weatherState.snow.snow.remove();
+						weatherState.snow.enabled = false;
+						delete weatherState.snow.snow;
+					}
 				}
 			},
 			remove: function (weatherState) {

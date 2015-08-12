@@ -157,7 +157,7 @@ define([
 
 	/**
 	 * Updates the sound according to config
-	 * @param {object} [config]
+	 * @param {Object} [config]
 	 * @param {boolean} [config.loop]
 	 * @param {number} [config.volume]
 	 * @param {number} [config.name] The sound name
@@ -222,10 +222,9 @@ define([
 
 	/**
 	 * Connect output of sound to audionodes
-	 * @param {AudioNode[]|AudioNode} nodes
+	 * @param {(Array<AudioNode> | AudioNode)} nodes
 	 */
 	Sound.prototype.connectTo = function (nodes) {
-		this._outNode.disconnect();
 		if (!nodes) {
 			return;
 		}
@@ -234,6 +233,22 @@ define([
 		}
 		for (var i = 0; i < nodes.length; i++) {
 			this._outNode.connect(nodes[i]);
+		}
+	};
+
+	/**
+	 * Disconnect output of sound from audionodes
+	 * @param {AudioNode[]|AudioNode} nodes
+	 */
+	Sound.prototype.disconnectFrom = function (nodes) {
+		if (!nodes) {
+			return;
+		}
+		if (!(nodes instanceof Array)) {
+			nodes = [nodes];
+		}
+		for (var i = 0; i < nodes.length; i++) {
+			this._outNode.disconnect(nodes[i]);
 		}
 	};
 

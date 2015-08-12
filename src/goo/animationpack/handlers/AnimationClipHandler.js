@@ -46,8 +46,8 @@ define([
 	/**
 	 * Adds/updates/removes an animation clip
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation clip or null if removed
 	 */
 	AnimationClipHandler.prototype._update = function (ref, config, options) {
@@ -66,7 +66,7 @@ define([
 	/**
 	 * Does the actual updating of animation clip and channels
 	 * It creates new channels on every update, but clips are practically never updated
-	 * @param {object} clipConfig
+	 * @param {Object} clipConfig
 	 * @param {ArrayBuffer} binData
 	 * @param {AnimationClip} clip
 	 * @private

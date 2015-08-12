@@ -55,7 +55,7 @@ define([
 
 	/**
 	 * Connect output of sound to audionodes
-	 * @param {AudioNode[]|AudioNode} nodes
+	 * @param {(Array<AudioNode> | AudioNode)} nodes
 	 */
 	OscillatorSound.prototype.connectTo = function (nodes) {
 		if (!AudioContext.isSupported()) {

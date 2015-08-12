@@ -221,7 +221,7 @@ define([
 
 	/**
 	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
-	 * @type {Number}
+	 * @type {number}
 	 */
 	RigidBodyComponent.numCylinderSegments = 10;
 

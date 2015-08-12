@@ -26,7 +26,7 @@ define([
 		this.type = 'AnimationComponent';
 
 		/**
-		 * @type {AnimationLayer[]}
+		 * @type {Array<AnimationLayer>}
 		 */
 		this.layers = [];
 		this.floats = {};
@@ -52,8 +52,8 @@ define([
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
-	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
-	 * @param {function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
+	 * @param {boolean} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
+	 * @param {Function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 * @returns {boolean} true if a transition was found and started
 	 */
 	AnimationComponent.prototype.transitionTo = function (stateKey, allowDirectSwitch, callback) {
@@ -67,7 +67,7 @@ define([
 	};
 	/**
 	 * Get available states
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getStates = function () {
 		return this.layers[0].getStates();
@@ -77,7 +77,7 @@ define([
 	};
 	/**
 	 * Get available transitions
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getTransitions = function () {
 		return this.layers[0].getTransitions();

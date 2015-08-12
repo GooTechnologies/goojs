@@ -14,9 +14,9 @@ define([
 	/**
 	 * A 3D object with all points equi-distance from a center point.
 	 * @extends MeshData
-	 * @param {Number} [zSamples=8] Number of segments.
-	 * @param {Number} [radialSamples=8] Number of slices.
-	 * @param {Number} [radius=0.5] Radius.
+	 * @param {number} [zSamples=8] Number of segments.
+	 * @param {number} [radialSamples=8] Number of slices.
+	 * @param {number} [radius=0.5] Radius.
 	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
@@ -28,16 +28,16 @@ define([
 			textureMode = props.textureMode;
 		}
 		/** Number of segments.
-		 * @type {Number}
+		 * @type {number}
 		 * @default 8
 		 */
 		this.zSamples = (zSamples !== undefined ? zSamples : 8) + 1;
 		/** Number of slices.
-		 * @type {Number}
+		 * @type {number}
 		 * @default 8
 		 */
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
-		/** @type {Number}
+		/** @type {number}
 		 * @default 0.5
 		 */
 		this.radius = radius !== undefined ? radius : 0.5;

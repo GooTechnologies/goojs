@@ -13,8 +13,8 @@ define([
 	 * the handler with the loader.
 	 *
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
 	 * @hidden
 	 */
@@ -28,7 +28,7 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	ComponentHandler.prototype._prepare = function (/*config*/) {};
@@ -56,7 +56,7 @@ define([
 	/**
 	 * Loads object for given ref
 	 * @param {string} ref
-	 * @param {object} options
+	 * @param {Object} options
 	 * @private
 	 */
 	ComponentHandler.prototype._load = function (ref, options) {
@@ -67,8 +67,8 @@ define([
 	 * Update engine component object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{EntityHandler} to load new component configs into the engine.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
 	ComponentHandler.prototype.update = function (entity, config/*, options*/) {

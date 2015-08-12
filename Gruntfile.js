@@ -128,6 +128,9 @@ module.exports = function (grunt) {
 			jsdoc: {
 				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
 			},
+			tern: {
+				command: 'node tools/modoc/src/tern-definitions.js src/goo out-tern'
+			},
 			update_webdriver: {
 				options: {
 					stdout: true
@@ -173,6 +176,7 @@ module.exports = function (grunt) {
 	grunt.loadTasks('tools/grunt_tasks');
 
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('tern',		 ['shell:tern']);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);

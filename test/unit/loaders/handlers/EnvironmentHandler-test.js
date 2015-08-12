@@ -54,6 +54,7 @@ define([
 				expect(world._addedEntities).toContain(
 					environment.weatherState.snow.snow.particleCloudEntity
 				);
+
 				done();
 			});
 		});

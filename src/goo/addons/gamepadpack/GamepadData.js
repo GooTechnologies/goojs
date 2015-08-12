@@ -77,8 +77,8 @@ define([
 	/**
 	 *
 	 * @param {Vector2} dirVector
-	 * @param {Number} x
-	 * @param {Number} y
+	 * @param {number} x
+	 * @param {number} y
 	 */
 	GamepadData.prototype.calculateStickDirection = function (dirVector, x, y) {
 		dirVector.setDirect(x, y);

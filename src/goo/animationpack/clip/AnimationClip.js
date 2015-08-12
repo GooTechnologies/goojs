@@ -6,7 +6,7 @@ function () {
 	/**
 	 * AnimationClip manages a set of animation channels as a single clip entity.
 	 * @param {string} name Name of joint
-	 * @param {AbstractAnimationChannel[]} [channels=[]] an array of channels to shallow copy locally.
+	 * @param {Array<AbstractAnimationChannel>} [channels=[]] an array of channels to shallow copy locally.
 	 */
 	function AnimationClip (name, channels) {
 		this._name = name;

@@ -9,9 +9,9 @@ define([
 
 	/**
 	 * Terrain collider. Attach to an entity with a {@link CannonRigidbodyComponent}.
-	 * @param {object} [settings]
-	 * @param {object} [settings.data]
-	 * @param {object} [settings.shapeOptions]
+	 * @param {Object} [settings]
+	 * @param {Object} [settings.data]
+	 * @param {Object} [settings.shapeOptions]
 	 */
 	function CannonTerrainColliderComponent(settings) {
 		Component.apply(this, arguments);

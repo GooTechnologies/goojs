@@ -19,7 +19,7 @@ define(function () {
 	 * Binds aliases to the different matrix components.
 	 * @hidden
 	 * @param {Object} prototype The prototype to bind to.
-	 * @param {string[][]} aliases Array of component aliases for each component index.
+	 * @param {Array<Array<string>>} aliases Array of component aliases for each component index.
 	 */
 	Matrix.setupAliases = function (prototype, aliases) {
 		aliases.forEach(function (aliasesPerComponent, index) {
@@ -71,7 +71,7 @@ define(function () {
 	/**
 	 * Replaces the supplied method of object and wraps it in a integrity check
 	 * @hidden
-	 * @param {object} object The object to attach the post-check to
+	 * @param {Object} object The object to attach the post-check to
 	 * @param {string} methodName The name of the original method the check is attached to
 	 */
 	Matrix.addPostCheck = function (object, methodName) {
@@ -93,7 +93,7 @@ define(function () {
 	 * Adds more validators at once
 	 * @hidden
 	 * @param object
-	 * @param {string[]} methodNames
+	 * @param {Array<string>} methodNames
 	 */
 	Matrix.addPostChecks = function (object, methodNames) {
 		methodNames.forEach(Matrix.addPostCheck.bind(null, object));

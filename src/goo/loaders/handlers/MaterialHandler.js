@@ -35,7 +35,7 @@ define([
 
 	/**
 	 * Preparing material config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	MaterialHandler.prototype._prepare = function (config) {
@@ -90,8 +90,8 @@ define([
 	/**
 	 * Adds/updates/removes a a material
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
 	 */
 	MaterialHandler.prototype._update = function (ref, config, options) {

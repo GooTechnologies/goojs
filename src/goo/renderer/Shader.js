@@ -21,7 +21,7 @@ define([
 
 	/**
 	 * Defines vertex and fragment shader and uniforms to shader callbacks
-	 * @param {String} name Shader name (mostly for debug/tool use)
+	 * @param {string} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
 	 *
 	 * <code>
@@ -56,41 +56,42 @@ define([
 		this.vertexShader = null;
 		this.fragmentShader = null;
 
-		/** The renderer where the program and shaders were allocated.
-		 * @type {WebGLRenderingContext|null}
+		/**
+		 * The renderer where the program and shaders were allocated.
+		 * @type {WebGLRenderingContext}
 		 */
 		this.renderer = null;
 
 		/**
 		 * Attributes detected in the shader source code.
 		 * Maps attribute variable's name to <code>{format: string}</code>
-		 * @type {Object.<string, object>}}
+		 * @type {Object<string, object>}}
 		 */
 		this.attributeMapping = {};
 
 		/**
 		 * Maps attribute variable's name to attribute location (from getAttribLocation).
-		 * @type {Object.<string, number>}
+		 * @type {Object<string, number>}
 		 */
 		this.attributeIndexMapping = {};
 
 		/**
 		 * Uniforms detected in the shader source code.
 		 * Maps variable name to <code>{format: string}</code>.
-		 * @type {Object.<string, object>}
+		 * @type {Object<string, object>}
 		 */
 		this.uniformMapping = {};
 
 		/**
 		 * Maps uniform variable name to ShaderCall object.
-		 * @type {Object.<string, ShaderCall>}
+		 * @type {Object<string, ShaderCall>}
 		 */
 		this.uniformCallMapping = {};
 
 		/**
 		 * Texture slots detected in the shader source code.
 		 * Will be an array of <code>{format: string, name: string}</code>
-		 * @type {object[]}
+		 * @type {Array}
 		 */
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
@@ -417,10 +418,10 @@ define([
 	/**
 	 * Extract shader variable definitions from shader source code.
 	 * @param {string} source The source code.
-	 * @param {object} target
-	 * @param {object} target.attributeMapping
-	 * @param {object} target.uniformMapping
-	 * @param {object[]} target.textureSlots
+	 * @param {Object} target
+	 * @param {Object} target.attributeMapping
+	 * @param {Object} target.uniformMapping
+	 * @param {Array} target.textureSlots
 	 */
 	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;

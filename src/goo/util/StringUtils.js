@@ -167,12 +167,8 @@ define(function () {
 
 	/**
 	 * Escapes all HTML entities from a given string.
-	 *
-	 * @param  {string} text
-	 * The string whose HTML entities are to be encoded.
-	 *
-	 * @returns {string}
-	 * The specified string with all its HTML entities encoded.
+	 * @param {string} text The string whose HTML entities are to be encoded.
+	 * @returns {string} The specified string with all its HTML entities encoded.
 	 */
 	StringUtils.escapeHtmlEntities = function (text) {
 		var div = document.createElement('div');

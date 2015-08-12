@@ -25,7 +25,7 @@ define(function () {
 	 * @property {number} maxTexureSize Maximum 2D texture size
 	 * @property {number} maxCubemapSize Maximum cubemap size
 	 * @property {number} maxRenderbufferSize Maximum renderbuffer size
-	 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
+	 * @property {Array<number>} maxViewPortDims Maximum viewport size [x, y]
 	 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
 	 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
 	 * @property {number} maxCombinedTextureUnits Maximum total texture units

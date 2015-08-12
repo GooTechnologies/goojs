@@ -211,7 +211,7 @@ define([
 
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
-	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * @returns {Array<MeshData>} array of meshData, but currently there will only be one entry so you can always use [0].
 	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
 	 */
 	MeshBuilder.prototype.build = function () {

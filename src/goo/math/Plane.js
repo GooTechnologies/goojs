@@ -10,7 +10,7 @@ define([
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
 	 *        normal vector. In other words: d = N dot X
 	 * @param {Vector3} normal Normal of the plane.
-	 * @param {Number} constant The plane offset along the normal.
+	 * @param {number} constant The plane offset along the normal.
 	 */
 	function Plane(normal, constant) {
 		this.normal = normal ? normal.clone() : Vector3.UNIT_Y.clone();
@@ -28,7 +28,7 @@ define([
 
 	/**
 	 * @param {Vector3} point
-	 * @returns {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
+	 * @returns {number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
@@ -72,9 +72,9 @@ define([
 	 * Get the intersection of a ray with a plane.
 	 * @param {Ray} ray
 	 * @param {Vector3} [store]
-	 * @param {bool} [suppressWarnings=false]
-	 * @param {bool} [precision=1e-8]
-	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
+	 * @param {boolean} [suppressWarnings=false]
+	 * @param {boolean} [precision=1e-8]
+	 * @returns {Vector3} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
 		//! AT: the only function with a suppressWarnings

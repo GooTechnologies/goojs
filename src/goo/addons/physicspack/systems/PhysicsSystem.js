@@ -378,7 +378,7 @@ function (
 	 * @param  {number} [options.collisionMask=-1]
 	 * @param  {number} [options.collisionGroup=-1]
 	 * @param  {number} [options.skipBackFaces=true]
-	 * @param  {(RaycastResult) -> boolean} callback
+	 * @param  {function (result: RaycastResult) : boolean} callback
 	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, maxDistance, options, callback) {

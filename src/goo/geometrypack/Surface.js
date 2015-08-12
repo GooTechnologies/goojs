@@ -9,7 +9,7 @@ define([
 
 	/**
 	 * A grid-like surface shape
-	 * @param {number[]} verts The vertices data array
+	 * @param {Array<number>} verts The vertices data array
 	 * @param {number} [verticesPerLine=2] The number of vertices
 	 */
 	function Surface(verts, vertsPerLine, verticallyClosed) {
@@ -161,7 +161,7 @@ define([
 
 	/**
 	 * Create a Surface from a supplied height map in the form of a matrix
-	 * @param {number[]} [heightMap] The height map
+	 * @param {Array<number>} [heightMap] The height map
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
 	 * @param {number} [zScale=1]

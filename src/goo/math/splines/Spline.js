@@ -7,7 +7,7 @@ define([
 
 	/**
 	 * Describes a cubic spline
-	 * @param {Vector[]} controlPoints
+	 * @param {Array<Vector>} controlPoints
 	 */
 	function Spline(controlPoints) {
 		// array of any sort of Vector
