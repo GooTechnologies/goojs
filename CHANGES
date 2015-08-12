@@ -1,3 +1,12 @@
+v0.15.4 --- 2015-08-06
+----------------------
+
+###Additions
+ + system bus listeners receive the channel that the mssage was sent as well as a reference to the bus
+ + the documentation renderer mentions methods without associated documentation
+ + switched to using [Closure-style](https://developers.google.com/closure/compiler/docs/js-for-compiler#types) type expressions
+
+
 v0.15.3 --- 2015-08-06
 ----------------------
 
