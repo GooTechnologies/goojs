@@ -139,5 +139,17 @@ define(function () {
 		return clone;
 	};
 
+	ObjectUtils.warnOnce = function (message, fun) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				console.warn(message);
+				warned = true;
+			}
+
+			return fun.apply(this, arguments);
+		};
+	};
+
 	return ObjectUtils;
 });
