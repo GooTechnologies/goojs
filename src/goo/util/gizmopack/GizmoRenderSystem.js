@@ -12,6 +12,7 @@ define([
 	'goo/util/gizmopack/Gizmo',
 	'goo/util/gizmopack/TranslationGizmo',
 	'goo/util/gizmopack/RotationGizmo',
+	'goo/util/gizmopack/GlobalRotationGizmo',
 	'goo/util/gizmopack/ScaleGizmo'
 ], function (
 	System,
@@ -27,6 +28,7 @@ define([
 	Gizmo,
 	TranslationGizmo,
 	RotationGizmo,
+	GlobalRotationGizmo,
 	ScaleGizmo
 ) {
 	'use strict';
@@ -46,6 +48,7 @@ define([
 		this.gizmos = [
 			new TranslationGizmo(this),
 			new RotationGizmo(this),
+			new GlobalRotationGizmo(this),
 			new ScaleGizmo(this)
 		];
 		this.active = false;
@@ -182,10 +185,11 @@ define([
 	};
 
 	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
-		if (callbacks && callbacks.length === 3) {
+		if (callbacks && callbacks.length === 4) {
 			this.gizmos[0].onChange = callbacks[0];
 			this.gizmos[1].onChange = callbacks[1];
 			this.gizmos[2].onChange = callbacks[2];
+			this.gizmos[3].onChange = callbacks[3];
 			return;
 		}
 
@@ -223,8 +227,25 @@ define([
 			}
 		}.bind(this);
 
-		// Set bound entities scale
+		// Set bound entities rotation
 		this.gizmos[2].onChange = function (change) {
+			if (this.entity) {
+				this.entity.transformComponent.transform.rotation.copy(change);
+				if (this.entity.transformComponent.parent) {
+					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
+					inverseRotation.invert();
+				}
+				Matrix3x3.combine(
+					inverseRotation,
+					this.entity.transformComponent.transform.rotation,
+					this.entity.transformComponent.transform.rotation
+				);
+				this.entity.transformComponent.setUpdated();
+			}
+		}.bind(this);
+
+		// Set bound entities scale
+		this.gizmos[3].onChange = function (change) {
 			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
 				scale.setVector(change);

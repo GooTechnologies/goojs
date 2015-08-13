@@ -42,13 +42,18 @@ require([
 	}
 
 	function key3() {
-		console.log('rotation');
+		console.log('rotation, local');
 		gizmoRenderSystem.setActiveGizmo(1);
 	}
 
 	function key4() {
-		console.log('scale');
+		console.log('rotation, global');
 		gizmoRenderSystem.setActiveGizmo(2);
+	}
+
+	function key5() {
+		console.log('scale');
+		gizmoRenderSystem.setActiveGizmo(3);
 	}
 
 	function setupKeys() {
@@ -66,12 +71,16 @@ require([
 				case 52: // 4
 					key4();
 					break;
+				case 53: // 5
+					key5();
+					break;
 				default:
 					console.log([
 						'1: translate gizmo, global',
 						'2: translate gizmo, local',
-						'3: rotate gizmo',
-						'4: scale gizmo'
+						'3: rotate gizmo, global',
+						'4: rotate gizmo, local',
+						'5: scale gizmo'
 					].join('\n'));
 			}
 		});

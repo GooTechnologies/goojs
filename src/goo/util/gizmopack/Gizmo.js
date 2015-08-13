@@ -107,6 +107,7 @@ define([
 		}
 	};
 
+	// who calls this and why?
 	Gizmo.prototype.copyTransform = function(transform) {
 		this.transform.setIdentity();
 		if(transform) {
@@ -122,7 +123,10 @@ define([
 		this.dirty = true;
 	};
 
-
+	/**
+	 * Updates the transforms of the renderables of this gizmo.
+	 * Scale adjustment is also performed.
+	 */
 	Gizmo.prototype.updateTransforms = function() {
 		if (Renderer.mainCamera) {
 			var camera = Renderer.mainCamera;
@@ -140,7 +144,26 @@ define([
 		this.transform.update();
 		for (var i = this.renderables.length - 1; i >= 0; i--) {
 			this.renderables[i].transform.update();
-			Matrix4x4.combine(this.transform.matrix, this.renderables[i].transform.matrix, this.renderables[i].transform.matrix);
+
+			// highly custom
+			if (this.name === 'GlobalRotationGizmo') {
+				var transform = new Transform();
+				transform.copy(this.transform);
+				transform.rotation.setIdentity();
+				transform.update();
+
+				Matrix4x4.combine(
+					transform.matrix,
+					this.renderables[i].transform.matrix,
+					this.renderables[i].transform.matrix
+				);
+			} else {
+				Matrix4x4.combine(
+					this.transform.matrix,
+					this.renderables[i].transform.matrix,
+					this.renderables[i].transform.matrix
+				);
+			}
 		}
 	};
 
