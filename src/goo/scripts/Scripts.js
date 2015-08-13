@@ -32,7 +32,7 @@ define([
 	);
 
 	Scripts.getClasses = ObjectUtils.warnOnce(
-		'Scripts.addClass is deprecated; please consider using the global goo object instead',
+		'Scripts.getClasses is deprecated; please consider using the global goo object instead',
 		function () {
 			return window.goo;
 		}
