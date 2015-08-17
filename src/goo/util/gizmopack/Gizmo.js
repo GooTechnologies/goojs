@@ -69,11 +69,13 @@ define([
 	}
 
 	Gizmo.handleStore = [];
+
 	Gizmo.registerHandle = function(handle) {
 		var retVal = Gizmo.handleStore.length + 16000;
 		Gizmo.handleStore.push(handle);
 		return retVal;
 	};
+
 	Gizmo.getHandle = function(id) {
 		if(id < 16000) {
 			return null;

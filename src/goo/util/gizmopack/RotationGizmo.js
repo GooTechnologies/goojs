@@ -25,6 +25,7 @@ define([
 	 */
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
+
 		this._ballMesh = new Sphere(32, 32, 1.1);
 		this._torusMesh = new Torus(64, 8, 0.1, 2.5);
 
@@ -185,9 +186,16 @@ define([
 		};
 	}
 
-	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 16);
-	var tranFun = inclined8thpi;
+	var tranFun = inclinedType2(Math.PI / 4, Math.PI / 16);
 	// ---
+
+	RotationGizmo.prototype._applyRotation = function () {
+		Matrix3x3.combine(
+			this.transform.rotation,
+			this._rotation,
+			this.transform.rotation
+		);
+	};
 
 	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
 		this._rotation.setIdentity();
@@ -238,11 +246,8 @@ define([
 					break;
 			}
 		}
-		Matrix3x3.combine(
-			this.transform.rotation,
-			this._rotation,
-			this.transform.rotation
-		);
+
+		this._applyRotation();
 	};
 
 	RotationGizmo.prototype._buildBall = function() {
