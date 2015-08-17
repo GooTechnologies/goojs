@@ -4,6 +4,7 @@ define([
 	'goo/shapes/Torus',
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
+	'goo/math/Matrix4x4',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Ray'
@@ -13,6 +14,7 @@ define([
 	Torus,
 	Vector3,
 	Matrix3x3,
+	Matrix4x4,
 	Transform,
 	Renderer,
 	Ray
@@ -244,6 +246,26 @@ define([
 			this.transform.rotation
 		);
 	};
+
+	(function () {
+		var transform = new Transform();
+
+		/**
+		 * Update the transform of the provided renderable.
+		 * @param renderable
+		 */
+		GlobalRotationGizmo.prototype.updateRenderableTransform = function (renderable) {
+			transform.copy(this.transform);
+			transform.rotation.setIdentity();
+			transform.update();
+
+			Matrix4x4.combine(
+				transform.matrix,
+				renderable.transform.matrix,
+				renderable.transform.matrix
+			);
+		};
+	})();
 
 	GlobalRotationGizmo.prototype._buildBall = function() {
 		var transform = new Transform();

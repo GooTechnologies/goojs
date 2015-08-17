@@ -124,6 +124,18 @@ define([
 	};
 
 	/**
+	 * Update the transform of the provided renderable.
+	 * @param renderable
+	 */
+	Gizmo.prototype.updateRenderableTransform = function (renderable) {
+		Matrix4x4.combine(
+			this.transform.matrix,
+			renderable.transform.matrix,
+			renderable.transform.matrix
+		);
+	};
+
+	/**
 	 * Updates the transforms of the renderables of this gizmo.
 	 * Scale adjustment is also performed.
 	 */
@@ -142,28 +154,10 @@ define([
 		}
 
 		this.transform.update();
+
 		for (var i = this.renderables.length - 1; i >= 0; i--) {
 			this.renderables[i].transform.update();
-
-			// highly custom
-			if (this.name === 'GlobalRotationGizmo') {
-				var transform = new Transform();
-				transform.copy(this.transform);
-				transform.rotation.setIdentity();
-				transform.update();
-
-				Matrix4x4.combine(
-					transform.matrix,
-					this.renderables[i].transform.matrix,
-					this.renderables[i].transform.matrix
-				);
-			} else {
-				Matrix4x4.combine(
-					this.transform.matrix,
-					this.renderables[i].transform.matrix,
-					this.renderables[i].transform.matrix
-				);
-			}
+			this.updateRenderableTransform(this.renderables[i]);
 		}
 	};
 

@@ -153,7 +153,5 @@ require([
 
 	gizmoRenderSystem.show(sphereEntity);
 
-	console.log('Pick entities to select them and press 1, 2, 3 to switch between transform gizmos');
-
 	V.process();
 });
