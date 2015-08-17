@@ -21,13 +21,14 @@ require([
 
 	V.describe([
 		'Select and entity and transform it using the transform gizmos.',
-		'Change the active gizmo by hitting 1, 2, 3 or 4.'
+		'Change the active gizmo by hitting 1, 2, 3, 4 or 5.'
 	].join('\n'));
 
 	V.button('1', key1);
 	V.button('2', key2);
 	V.button('3', key3);
 	V.button('4', key4);
+	V.button('5', key5);
 
 	function key1() {
 		console.log('translation, global');
