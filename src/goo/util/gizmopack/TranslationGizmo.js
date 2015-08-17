@@ -36,23 +36,48 @@ define([
 		this._buildArrow(2);
 
 		this.realTranslation = new Vector3();
-		this.snap = false;
+		this._snap = false;
 	}
 
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
 	TranslationGizmo.prototype.constructor = TranslationGizmo;
 
 	// Triggered when you have mousedown on a gizmo handle
-	TranslationGizmo.prototype.activate = function(props) {
+	TranslationGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
 		this._setPlane();
-		if(this._activeHandle.type === 'Axis') {
+		if (this._activeHandle.type === 'Axis') {
 			this._setLine();
 		}
 	};
 
+	TranslationGizmo.prototype._changed = function () {
+		if (this.onChange instanceof Function) {
+			this.onChange(this.transform.translation);
+		}
+	};
+
+	/**
+	 * Turns snapping on or off
+	 * @param {boolean} snap
+	 */
+	TranslationGizmo.prototype.setSnap = function (snap) {
+		var oldSnap = this._snap;
+		this._snap = snap;
+
+		// unsnap when coming out of snapping mode
+		if (oldSnap && !this._snap) {
+			this.transform.translation.copy(this.realTranslation);
+			this._changed();
+		} else if (!oldSnap && this._snap) {
+			snapToGrid(this.transform.translation);
+			this.transform.update();
+			this._changed();
+		}
+	};
+
 	// Changing transform once per process
-	TranslationGizmo.prototype.process = function() {
+	TranslationGizmo.prototype.process = function () {
 		//! AT: why are these Arrays and not vec2?
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
@@ -60,7 +85,7 @@ define([
 		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
 		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
 
-		if(this._activeHandle.type === 'Plane') {
+		if (this._activeHandle.type === 'Plane') {
 			this._moveOnPlane();
 		} else if (this._activeHandle.type === 'Axis') {
 			this._moveOnLine();
@@ -72,12 +97,10 @@ define([
 		this.updateTransforms();
 		this.dirty = false;
 
-		if(this.onChange instanceof Function) {
-			this.onChange(this.transform.translation);
-		}
+		this._changed();
 	};
 
-	TranslationGizmo.prototype.copyTransform = function(transform, global) {
+	TranslationGizmo.prototype.copyTransform = function (transform, global) {
 		Gizmo.prototype.copyTransform.call(this, transform);
 
 		this.realTranslation.copy(this.transform.translation);
@@ -99,13 +122,13 @@ define([
 		this.realTranslation.add(that);
 		this.transform.translation.copy(this.realTranslation);
 
-		if (this.snap) {
+		if (this._snap) {
 			snapToGrid(this.transform.translation);
 		}
 	};
 
 	// Moving along a plane
-	TranslationGizmo.prototype._moveOnPlane = function() {
+	TranslationGizmo.prototype._moveOnPlane = function () {
 		var oldWorldPos = this._v0,
 			worldPos = this._v1,
 			moveVector = this._result;
@@ -118,7 +141,7 @@ define([
 		this._addTranslation(moveVector);
 	};
 
-	TranslationGizmo.prototype._moveOnLine = function() {
+	TranslationGizmo.prototype._moveOnLine = function () {
 		var oldWorldPos = this._v0,
 			worldPos = this._v1,
 			moveVector = this._result,
@@ -136,7 +159,7 @@ define([
 		this._addTranslation(moveVector);
 	};
 
-	TranslationGizmo.prototype._buildArrow = function(dim) {
+	TranslationGizmo.prototype._buildArrow = function (dim) {
 		var arrowTransform = new Transform();
 		var quadTransform = new Transform();
 
@@ -144,7 +167,7 @@ define([
 		quadTransform.scale.setDirect(size, size, size);
 		if (dim === 2) {
 			quadTransform.translation.setDirect(size, size, 0);
-		} else if(dim === 0) {
+		} else if (dim === 0) {
 			quadTransform.translation.setDirect(0, size, size);
 			quadTransform.setRotationXYZ(0, Math.PI / 2, 0);
 			arrowTransform.setRotationXYZ(0, Math.PI / 2, 0);
@@ -170,7 +193,7 @@ define([
 		});
 	};
 
-	TranslationGizmo.prototype._buildArrowMesh = function() {
+	TranslationGizmo.prototype._buildArrowMesh = function () {
 		var meshBuilder = new MeshBuilder();
 
 		// Arrow head

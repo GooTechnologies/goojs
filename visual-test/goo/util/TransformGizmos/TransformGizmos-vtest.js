@@ -62,7 +62,7 @@ require([
 			switch (e.which) {
 				case 17: // ctrl
 					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
-						gizmo.snap = true;
+						gizmo.setSnap(true);
 					});
 					console.log('snap on');
 					break;
@@ -96,7 +96,7 @@ require([
 			switch (e.which) {
 				case 17: // ctrl
 					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
-						gizmo.snap = false;
+						gizmo.setSnap(false);
 						console.log('snap off');
 					});
 					break;

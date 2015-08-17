@@ -70,20 +70,20 @@ define([
 
 	Gizmo.handleStore = [];
 
-	Gizmo.registerHandle = function(handle) {
+	Gizmo.registerHandle = function (handle) {
 		var retVal = Gizmo.handleStore.length + 16000;
 		Gizmo.handleStore.push(handle);
 		return retVal;
 	};
 
-	Gizmo.getHandle = function(id) {
+	Gizmo.getHandle = function (id) {
 		if(id < 16000) {
 			return null;
 		}
 		return Gizmo.handleStore[id - 16000];
 	};
 
-	Gizmo.prototype.getRenderable = function(id) {
+	Gizmo.prototype.getRenderable = function (id) {
 		for (var i = 0; i < this.renderables.length; i++) {
 			var renderable = this.renderables[i];
 			if (renderable.id === id) {
@@ -92,7 +92,15 @@ define([
 		}
 	};
 
-	Gizmo.prototype.activate = function(properties) {
+	/**
+	 * Turns snapping on or off
+	 * @param {boolean} snap
+	 */
+	Gizmo.prototype.setSnap = function (snap) {
+		this._snap = snap;
+	};
+
+	Gizmo.prototype.activate = function (properties) {
 		this._activeHandle = properties.data;
 		this._mouse.oldPosition[0] = properties.x;
 		this._mouse.oldPosition[1] = properties.y;
@@ -102,7 +110,7 @@ define([
 		this._activeRenderable.materials[0].uniforms.color = [1, 1, 0];
 	};
 
-	Gizmo.prototype.deactivate = function() {
+	Gizmo.prototype.deactivate = function () {
 		if (this._activeRenderable) {
 			var originalColor = this._activeRenderable.originalColor;
 			this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
@@ -110,7 +118,7 @@ define([
 	};
 
 	// who calls this and why?
-	Gizmo.prototype.copyTransform = function(transform) {
+	Gizmo.prototype.copyTransform = function (transform) {
 		this.transform.setIdentity();
 		if(transform) {
 			transform.matrix.getTranslation(this.transform.translation);
@@ -119,7 +127,7 @@ define([
 		}
 	};
 
-	Gizmo.prototype.update = function(mousePos) {
+	Gizmo.prototype.update = function (mousePos) {
 		this._mouse.position[0] = mousePos[0];
 		this._mouse.position[1] = mousePos[1];
 		this.dirty = true;
@@ -141,7 +149,7 @@ define([
 	 * Updates the transforms of the renderables of this gizmo.
 	 * Scale adjustment is also performed.
 	 */
-	Gizmo.prototype.updateTransforms = function() {
+	Gizmo.prototype.updateTransforms = function () {
 		if (Renderer.mainCamera) {
 			var camera = Renderer.mainCamera;
 			var scale;
@@ -163,7 +171,7 @@ define([
 		}
 	};
 
-	Gizmo.prototype._setPlane = function() {
+	Gizmo.prototype._setPlane = function () {
 		var normal = this._plane.normal,
 			worldCenter = this._v0,
 			worldX = this._v1,
@@ -228,19 +236,19 @@ define([
 		}
 	};
 
-	Gizmo.prototype._setLine = function() {
+	Gizmo.prototype._setLine = function () {
 		// If translating or scaling along a line, set current line
 		this._line.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 		this.transform.matrix.applyPostVector(this._line);
 		this._line.normalize();
 	};
 
-	Gizmo.prototype.addRenderable = function(renderable) {
+	Gizmo.prototype.addRenderable = function (renderable) {
 		renderable.originalColor = renderable.materials[0].uniforms.color;
 		this.renderables.push(renderable);
 	};
 
-	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {
+	Gizmo.prototype._buildMaterialForAxis = function (axis, opacity) {
 		var material = new Material(Gizmo._shaderDef, axis + 'Material');
 		material.uniforms.color = this._colors[axis];
 

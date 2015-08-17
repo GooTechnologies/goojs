@@ -203,7 +203,7 @@ define([
 		var sum = (dx * this._direction.x) + (dy * this._direction.y);
 		sum *= this._rotationScale;
 
-		if (this.snap) {
+		if (this._snap) {
 			switch(this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
