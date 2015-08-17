@@ -5,6 +5,8 @@ define([
 	'goo/shapes/Disk',
 	'goo/shapes/Quad',
 	'goo/math/Transform',
+	'goo/math/Vector3',
+	'goo/math/Matrix4x4',
 	'goo/renderer/Renderer'
 ], function (
 	Gizmo,
@@ -13,6 +15,8 @@ define([
 	Disk,
 	Quad,
 	Transform,
+	Vector3,
+	Matrix4x4,
 	Renderer
 ) {
 	'use strict';
@@ -30,6 +34,9 @@ define([
 		this._buildArrow(0);
 		this._buildArrow(1);
 		this._buildArrow(2);
+
+		this.realTranslation = new Vector3();
+		this.snap = false;
 	}
 
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
@@ -46,17 +53,9 @@ define([
 
 	// Changing transform once per process
 	TranslationGizmo.prototype.process = function() {
+		//! AT: why are these Arrays and not vec2?
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
-
-		/*
-		var w = 1, h = 1;
-		var camera = this.camera;
-		if(camera && camera.projectionMode === Camera.Parallel){
-			w = 1/(camera._frustumRight - camera._frustumLeft);
-			h = 1/(camera._frustumTop  - camera._frustumBottom);
-		}
-		*/
 
 		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
 		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
@@ -66,8 +65,10 @@ define([
 		} else if (this._activeHandle.type === 'Axis') {
 			this._moveOnLine();
 		}
+
 		op[0] = p[0];
 		op[1] = p[1];
+
 		this.updateTransforms();
 		this.dirty = false;
 
@@ -78,9 +79,28 @@ define([
 
 	TranslationGizmo.prototype.copyTransform = function(transform, global) {
 		Gizmo.prototype.copyTransform.call(this, transform);
+
+		this.realTranslation.copy(this.transform.translation);
+
+		//! AT: can transform ever not be supplied but global be supplied?!?
 		if (transform && global) {
 			this.transform.rotation.setIdentity();
 			this.updateTransforms();
+		}
+	};
+
+	function snapToGrid(vector3) {
+		vector3.data[0] = Math.round(vector3.data[0]);
+		vector3.data[1] = Math.round(vector3.data[1]);
+		vector3.data[2] = Math.round(vector3.data[2]);
+	}
+
+	TranslationGizmo.prototype._addTranslation = function (that) {
+		this.realTranslation.add(that);
+		this.transform.translation.copy(this.realTranslation);
+
+		if (this.snap) {
+			snapToGrid(this.transform.translation);
 		}
 	};
 
@@ -94,8 +114,8 @@ define([
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
 		moveVector.setVector(worldPos).subVector(oldWorldPos);
-		// And add to translation
-		this.transform.translation.add(moveVector);
+
+		this._addTranslation(moveVector);
 	};
 
 	TranslationGizmo.prototype._moveOnLine = function() {
@@ -108,11 +128,12 @@ define([
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
 		moveVector.setVector(worldPos).subVector(oldWorldPos);
+
 		// Then project plane diff to line
 		var d = moveVector.dot(line);
 		moveVector.setVector(line).scale(d);
 
-		this.transform.translation.addVector(moveVector);
+		this._addTranslation(moveVector);
 	};
 
 	TranslationGizmo.prototype._buildArrow = function(dim) {
