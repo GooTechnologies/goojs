@@ -109,15 +109,16 @@ define([
 
 	/**
 	 * Stops the sound if it's playing
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should stop.
 	 */
-	Sound.prototype.stop = function () {
+	Sound.prototype.stop = function (when) {
 		this._paused = false;
 		this._pausePos = 0;
 		if (this._endPromise) {
 			this._endPromise.resolve();
 		}
 		if (this._currentSource) {
-			this._stop();
+			this._stop(when);
 		}
 	};
 
@@ -150,10 +151,12 @@ define([
 
 	/**
 	 * Does the actual stopping of the sound
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should stop.
 	 * @private
 	 */
-	Sound.prototype._stop = function () {
-		this._currentSource.stop(0);
+	Sound.prototype._stop = function (when) {
+		when = when || 0;
+		this._currentSource.stop(when);
 		this._currentSource = null;
 	};
 
