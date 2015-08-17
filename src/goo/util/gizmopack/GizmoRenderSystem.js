@@ -210,8 +210,7 @@ define([
 			}
 		}.bind(this);
 
-		// Set bound entities rotation
-		this.gizmos[1].onChange = function (change) {
+		var onRotationChange = function (change) {
 			if (this.entity) {
 				this.entity.transformComponent.transform.rotation.copy(change);
 				if (this.entity.transformComponent.parent) {
@@ -228,21 +227,10 @@ define([
 		}.bind(this);
 
 		// Set bound entities rotation
-		this.gizmos[2].onChange = function (change) {
-			if (this.entity) {
-				this.entity.transformComponent.transform.rotation.copy(change);
-				if (this.entity.transformComponent.parent) {
-					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
-					inverseRotation.invert();
-				}
-				Matrix3x3.combine(
-					inverseRotation,
-					this.entity.transformComponent.transform.rotation,
-					this.entity.transformComponent.transform.rotation
-				);
-				this.entity.transformComponent.setUpdated();
-			}
-		}.bind(this);
+		this.gizmos[1].onChange = onRotationChange;
+
+		// Set bound entities rotation
+		this.gizmos[2].onChange = onRotationChange;
 
 		// Set bound entities scale
 		this.gizmos[3].onChange = function (change) {
