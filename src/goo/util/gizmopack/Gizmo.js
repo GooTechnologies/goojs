@@ -34,7 +34,7 @@ define([
 		this.gizmoRenderSystem = gizmoRenderSystem;
 		this._colors = [
 			[1, 0.1, 0.3],
-			[0.2, 1, 0.3],
+			[0.3, 1, 0.2],
 			[0.2, 0.3, 1],
 			[0.8, 0.8, 0.8]
 		];
@@ -268,10 +268,8 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
 			color : [1.0, 1.0, 1.0],
-			opacity: 1.0,
-			light: [-20,20,20]
+			opacity: 1.0
 		},
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -279,39 +277,34 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform vec3 cameraPosition;',
 
 			'varying vec3 normal;',
 			'varying vec3 viewPosition;',
 
 			'void main(void) {',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = viewProjectionMatrix * worldPos;',
-			'	normal = vertexNormal;',
-			'	viewPosition = cameraPosition - worldPos.xyz;',
-			'}'//
+			' vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+			' gl_Position = viewProjectionMatrix * worldPos;',
+			' normal = vertexNormal;',
+			'}'
 		].join('\n'),
-		fshader : [//
-			// ShaderBuilder.light.prefragment,
-
+		fshader : [
 			'varying vec3 normal;',
-			'varying vec3 viewPosition;',
 
 			'uniform vec3 color;',
 			'uniform float opacity;',
-			'uniform vec3 light;',
 
 			'void main(void)',
 			'{',
-			'	vec3 N = normalize(normal);',
-			'	vec4 final_color = vec4(color, 1.0);',
-			' vec3 lVector = normalize(light);',
-			' float dotProduct = dot(N, lVector);',
+			' vec3 N = normalize(normal);',
+			' vec4 final_color = vec4(color, 1.0);',
+			' vec3 light = vec3(1.0, 1.0, 10.0);',
+			' float dotProduct = dot(N, normalize(light));',
+
 			' float diffuse = max(dotProduct, 0.0);',
-			' final_color.rgb *= (0.5*diffuse+0.5);',
+			' final_color.rgb *= (0.5 * diffuse + 0.5);',
 
 			' final_color.a = opacity;',
-			'	gl_FragColor = final_color;',
+			' gl_FragColor = final_color;',
 			'}'//
 		].join('\n')
 	};
