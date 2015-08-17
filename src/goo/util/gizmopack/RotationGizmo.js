@@ -45,8 +45,6 @@ define([
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
-		this.accumulatedRotationX = 0;
-		this.accumulatedRotationY = 0;
 		this.accumulatedRotationThorX = 0;
 		this.accumulatedRotationThorY = 0;
 		this.accumulatedRotationThorZ = 0;
@@ -127,31 +125,8 @@ define([
 	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
 		this._rotation.setIdentity();
 
-		if (this.snap && false) { // snap in this mode is confusing
-			this.accumulatedRotationY += dx * this._rotationScale;
-			this.accumulatedRotationX += dy * this._rotationScale;
-
-			var angleLimit = Math.PI / 8;
-
-			if (this.accumulatedRotationX > angleLimit) {
-				this.accumulatedRotationX -= angleLimit;
-				this._rotation.rotateX(angleLimit);
-			} else if (this.accumulatedRotationX < 0) {
-				this.accumulatedRotationX += angleLimit;
-				this._rotation.rotateX(-angleLimit);
-			}
-
-			if (this.accumulatedRotationY > angleLimit) {
-				this.accumulatedRotationY -= angleLimit;
-				this._rotation.rotateY(angleLimit);
-			} else if (this.accumulatedRotationY < 0) {
-				this.accumulatedRotationY += angleLimit;
-				this._rotation.rotateY(-angleLimit);
-			}
-		} else {
-			this._rotation.rotateY(dx * this._rotationScale);
-			this._rotation.rotateX(dy * this._rotationScale);
-		}
+		this._rotation.rotateY(dx * this._rotationScale);
+		this._rotation.rotateX(dy * this._rotationScale);
 
 		var camMat = Renderer.mainCamera.getViewMatrix().data;
 		var camRotation = this._m1, screenRotation = this._m2;

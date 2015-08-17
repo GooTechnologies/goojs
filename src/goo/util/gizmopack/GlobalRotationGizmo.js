@@ -49,8 +49,6 @@ define([
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
-		this.accumulatedRotationX = 0;
-		this.accumulatedRotationY = 0;
 		this.accumulatedRotationThorX = 0;
 		this.accumulatedRotationThorY = 0;
 		this.accumulatedRotationThorZ = 0;
