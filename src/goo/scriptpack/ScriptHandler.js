@@ -72,7 +72,7 @@ define([
 		var script = this._objects.get(ref);
 		if (script && script.cleanup && script.context) {
 			try {
-				script.cleanup(script.parameters, script.context, Scripts.getClasses());
+				script.cleanup(script.parameters, script.context, window.goo);
 			} catch (e) {
 				// Some cleanup error
 			}
