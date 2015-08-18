@@ -11,6 +11,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/util/gizmopack/Gizmo',
 	'goo/util/gizmopack/TranslationGizmo',
+	'goo/util/gizmopack/GlobalTranslationGizmo',
 	'goo/util/gizmopack/RotationGizmo',
 	'goo/util/gizmopack/GlobalRotationGizmo',
 	'goo/util/gizmopack/ScaleGizmo'
@@ -27,6 +28,7 @@ define([
 	Shader,
 	Gizmo,
 	TranslationGizmo,
+	GlobalTranslationGizmo,
 	RotationGizmo,
 	GlobalRotationGizmo,
 	ScaleGizmo
@@ -47,6 +49,7 @@ define([
 
 		this.gizmos = [
 			new TranslationGizmo(this),
+			new GlobalTranslationGizmo(this),
 			new RotationGizmo(this),
 			new GlobalRotationGizmo(this),
 			new ScaleGizmo(this)
@@ -59,7 +62,6 @@ define([
 		this.viewportWidth = 0;
 		this.viewportHeight = 0;
 		this.domElement = null;
-		this.global = false;
 		this.pickingMaterial = Material.createEmptyMaterial(customPickingShader, 'pickingMaterial');
 		this.pickingMaterial.blendState = {
 			blending: 'NoBlending',
@@ -147,7 +149,7 @@ define([
 	};
 
 	GizmoRenderSystem.prototype.showGizmo = function (gizmo) {
-		gizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
+		gizmo.copyTransform(this.entity.transformComponent.worldTransform);
 		if (!gizmo.visible) {
 			this.renderables = gizmo.renderables;
 			gizmo.visible = true;
@@ -175,29 +177,21 @@ define([
 		}
 	};
 
-	GizmoRenderSystem.prototype.setGlobal = function (global) {
-		if (this.global !== global) {
-			this.global = !!global;
-			if (this.entity && this.activeGizmo) {
-				this.showGizmo(this.activeGizmo);
-			}
-		}
-	};
-
 	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
-		if (callbacks && callbacks.length === 4) {
+		if (callbacks && callbacks.length === 5) {
 			this.gizmos[0].onChange = callbacks[0];
 			this.gizmos[1].onChange = callbacks[1];
 			this.gizmos[2].onChange = callbacks[2];
 			this.gizmos[3].onChange = callbacks[3];
+			this.gizmos[4].onChange = callbacks[4];
 			return;
 		}
 
 		var inverseRotation = new Matrix3x3();
 		var inverseTransformation = new Matrix4x4();
 
-		// Set bound entities translation
-		this.gizmos[0].onChange = function (change) {
+
+		var onTranslationChange = function (change) {
 			if (this.entity) {
 				var translation = this.entity.transformComponent.transform.translation;
 				translation.setVector(change);
@@ -209,6 +203,11 @@ define([
 				this.entity.transformComponent.setUpdated();
 			}
 		}.bind(this);
+
+		this.gizmos[0].onChange = onTranslationChange;
+
+		this.gizmos[1].onChange = onTranslationChange;
+
 
 		var onRotationChange = function (change) {
 			if (this.entity) {
@@ -227,13 +226,13 @@ define([
 		}.bind(this);
 
 		// Set bound entities rotation
-		this.gizmos[1].onChange = onRotationChange;
-
-		// Set bound entities rotation
 		this.gizmos[2].onChange = onRotationChange;
 
+		this.gizmos[3].onChange = onRotationChange;
+
+
 		// Set bound entities scale
-		this.gizmos[3].onChange = function (change) {
+		this.gizmos[4].onChange = function (change) {
 			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
 				scale.setVector(change);
@@ -254,7 +253,7 @@ define([
 			if (this.activeGizmo.dirty) {
 				this.activeGizmo.process();
 			} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
-				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
+				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
 			}
 			this.activeGizmo.updateTransforms();
 		}

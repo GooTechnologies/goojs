@@ -60,7 +60,7 @@ define([
 	GlobalRotationGizmo.prototype = Object.create(Gizmo.prototype);
 	GlobalRotationGizmo.prototype.constructor = GlobalRotationGizmo;
 
-	GlobalRotationGizmo.prototype.activate = function(props) {
+	GlobalRotationGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
 
 		var worldCenter = this._v0,

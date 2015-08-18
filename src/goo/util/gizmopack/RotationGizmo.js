@@ -56,7 +56,7 @@ define([
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 	RotationGizmo.prototype.constructor = RotationGizmo;
 
-	RotationGizmo.prototype.activate = function(props) {
+	RotationGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
 
 		var worldCenter = this._v0,
@@ -65,7 +65,7 @@ define([
 			axis = this._axis,
 			ray = this._ray;
 
-		if(this._activeHandle.axis < 3) {
+		if (this._activeHandle.axis < 3) {
 			// Get rotation axis
 			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 			this.transform.rotation.applyPost(axis);
@@ -101,12 +101,12 @@ define([
 		}
 	};
 
-	RotationGizmo.prototype.process = function() {
+	RotationGizmo.prototype.process = function () {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
 		var dx = p[0] - op[0];
 		var dy = p[1] - op[1];
-		if(this._activeHandle.axis === 3) {
+		if (this._activeHandle.axis === 3) {
 			this._rotateOnScreen(dx, dy);
 		} else {
 			this._rotateOnAxis(dx, dy);
@@ -117,12 +117,12 @@ define([
 		this.updateTransforms();
 		this.dirty = false;
 
-		if(this.onChange instanceof Function) {
+		if (this.onChange instanceof Function) {
 			this.onChange(this.transform.rotation);
 		}
 	};
 
-	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
+	RotationGizmo.prototype._rotateOnScreen = function (dx, dy) {
 		this._rotation.setIdentity();
 
 		this._rotation.rotateY(dx * this._rotationScale);
@@ -172,7 +172,7 @@ define([
 		);
 	};
 
-	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
+	RotationGizmo.prototype._rotateOnAxis = function (dx, dy) {
 		this._rotation.setIdentity();
 
 		var sum = (dx * this._direction.x) + (dy * this._direction.y);
@@ -225,7 +225,7 @@ define([
 		this._applyRotation();
 	};
 
-	RotationGizmo.prototype._buildBall = function() {
+	RotationGizmo.prototype._buildBall = function () {
 		var transform = new Transform();
 		transform.scale.setDirect(1.2, 1.2, 1.2);
 		this.addRenderable({
@@ -236,10 +236,10 @@ define([
 		});
 	};
 
-	RotationGizmo.prototype._buildTorus = function(dim) {
+	RotationGizmo.prototype._buildTorus = function (dim) {
 		var transform = new Transform();
 		transform.scale.setDirect(1.7, 1.7, 1.7);
-		if(dim === 0) {
+		if (dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {
 			transform.setRotationXYZ(Math.PI/2, 0, 0);

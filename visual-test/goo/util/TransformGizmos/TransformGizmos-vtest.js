@@ -32,29 +32,27 @@ require([
 
 	function key1() {
 		console.log('translation, global');
-		gizmoRenderSystem.global = true;
 		gizmoRenderSystem.setActiveGizmo(0);
 	}
 
 	function key2() {
 		console.log('translation, local');
-		gizmoRenderSystem.global = false;
-		gizmoRenderSystem.setActiveGizmo(0);
+		gizmoRenderSystem.setActiveGizmo(1);
 	}
 
 	function key3() {
 		console.log('rotation, local');
-		gizmoRenderSystem.setActiveGizmo(1);
+		gizmoRenderSystem.setActiveGizmo(2);
 	}
 
 	function key4() {
 		console.log('rotation, global');
-		gizmoRenderSystem.setActiveGizmo(2);
+		gizmoRenderSystem.setActiveGizmo(3);
 	}
 
 	function key5() {
 		console.log('scale');
-		gizmoRenderSystem.setActiveGizmo(3);
+		gizmoRenderSystem.setActiveGizmo(4);
 	}
 
 	function setupKeys() {
