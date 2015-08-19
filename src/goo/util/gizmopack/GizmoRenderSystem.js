@@ -260,7 +260,6 @@ define([
 			this.activeGizmo.process(this._mouseState, this._oldMouseState);
 			this._oldMouseState.copy(this._mouseState);
 		} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
-			console.log('aaaaaa');
 			// we're not interested in two way bindings
 			this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
 		}
