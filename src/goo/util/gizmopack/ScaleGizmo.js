@@ -53,17 +53,14 @@ define([
 		this._transformScale.setVector(transform.scale);
 	};
 
-	ScaleGizmo.prototype.process = function () {
-		var op = this._mouse.oldPosition;
-		var p = this._mouse.position;
-
+	ScaleGizmo.prototype.process = function (mouseState, oldMouseState) {
 		if (this._activeHandle.axis === 3) {
-			this._scaleUniform();
+			this._scaleUniform(mouseState, oldMouseState);
 		} else {
-			this._scaleNonUniform();
+			this._scaleNonUniform(mouseState, oldMouseState);
 		}
-		op[0] = p[0];
-		op[1] = p[1];
+
+		// post process
 		this.updateTransforms();
 		this.dirty = false;
 
@@ -72,10 +69,11 @@ define([
 		}
 	};
 
-	ScaleGizmo.prototype._scaleUniform = function () {
-		var op = this._mouse.oldPosition;
-		var p = this._mouse.position;
-		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1], this._scale);
+	ScaleGizmo.prototype._scaleUniform = function (mouseState, oldMouseState) {
+		var scale = Math.pow(
+			1 + mouseState.x + oldMouseState.y - oldMouseState.x - mouseState.y,
+			this._scale
+		);
 
 		var boundEntityTranslation = this.gizmoRenderSystem.entity.transformComponent.worldTransform.translation;
 		var mainCameraTranslation = Renderer.mainCamera.translation;
@@ -85,12 +83,9 @@ define([
 		this._transformScale.scale(scale);
 	};
 
-	ScaleGizmo.prototype._scaleNonUniform = function () {
-		var p = this._mouse.position;
-		var op = this._mouse.oldPosition;
-
-		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
-		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
+	ScaleGizmo.prototype._scaleNonUniform = function (mouseState, oldMouseState) {
+		Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, this._oldRay);
+		Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, this._newRay);
 
 		var oldWorldPos = this._v0,
 			worldPos = this._v1,

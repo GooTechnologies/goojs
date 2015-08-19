@@ -101,19 +101,16 @@ define([
 		}
 	};
 
-	RotationGizmo.prototype.process = function () {
-		var op = this._mouse.oldPosition;
-		var p = this._mouse.position;
-		var dx = p[0] - op[0];
-		var dy = p[1] - op[1];
+	RotationGizmo.prototype.process = function (mouseState, oldMouseState) {
+		var delta = mouseState.clone().subVector(oldMouseState);
+
 		if (this._activeHandle.axis === 3) {
-			this._rotateOnScreen(dx, dy);
+			this._rotateOnScreen(delta);
 		} else {
-			this._rotateOnAxis(dx, dy);
+			this._rotateOnAxis(delta);
 		}
 
-		op[0] = p[0];
-		op[1] = p[1];
+		// post process
 		this.updateTransforms();
 		this.dirty = false;
 
@@ -122,15 +119,16 @@ define([
 		}
 	};
 
-	RotationGizmo.prototype._rotateOnScreen = function (dx, dy) {
+	RotationGizmo.prototype._rotateOnScreen = function (delta) {
 		this._rotation.setIdentity();
 
-		this._rotation.rotateY(dx * this._rotationScale);
-		this._rotation.rotateX(dy * this._rotationScale);
+		this._rotation.rotateY(delta.x * this._rotationScale);
+		this._rotation.rotateX(delta.y * this._rotationScale);
 
 		var camMat = Renderer.mainCamera.getViewMatrix().data;
 		var camRotation = this._m1, screenRotation = this._m2;
 
+		// there has to be a function for this
 		camRotation.set(
 			camMat[0], camMat[1], camMat[2],
 			camMat[4], camMat[5], camMat[6],
@@ -172,10 +170,10 @@ define([
 		);
 	};
 
-	RotationGizmo.prototype._rotateOnAxis = function (dx, dy) {
+	RotationGizmo.prototype._rotateOnAxis = function (delta) {
 		this._rotation.setIdentity();
 
-		var sum = (dx * this._direction.x) + (dy * this._direction.y);
+		var sum = (delta.x * this._direction.x) + (delta.y * this._direction.y);
 		sum *= this._rotationScale;
 
 		if (this.snap) {

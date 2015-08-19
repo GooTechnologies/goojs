@@ -7,6 +7,7 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/math/Matrix3x3',
 	'goo/math/Matrix4x4',
+	'goo/math/Vector2',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/util/gizmopack/Gizmo',
@@ -24,6 +25,7 @@ define([
 	ShaderFragment,
 	Matrix3x3,
 	Matrix4x4,
+	Vector2,
 	MeshData,
 	Shader,
 	Gizmo,
@@ -54,6 +56,7 @@ define([
 			new GlobalRotationGizmo(this),
 			new ScaleGizmo(this)
 		];
+
 		this.active = false;
 		this.nextGizmo = null;
 		this.setupCallbacks(callbacks);
@@ -71,38 +74,26 @@ define([
 		};
 		this._devicePixelRatio = 1;
 
-		this.mouseMove = function (evt) {
-			if (!this.activeGizmo) {
-				return;
-			}
+		this._mouseState = new Vector2();
+		this._oldMouseState = new Vector2();
+
+		this._mouseMove = function (evt) {
+			if (!this.activeGizmo) { return; }
+
 			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
 			var y = (evt.offsetY !== undefined) ? evt.offsetY : evt.layerY;
 
-			var mousePos = [
+			this._mouseState.setDirect(
 				x / (this.viewportWidth / this._devicePixelRatio),
 				y / (this.viewportHeight / this._devicePixelRatio)
-			];
+			);
 
-			/*
-			var camera = this.camera;
-			if (camera && camera.projectionMode === Camera.Parallel){
-				mousePos[0] = x / (this.viewportWidth  / this._devicePixelRatio) / (camera._frustumRight - camera._frustumLeft);
-				mousePos[1] = y / (this.viewportHeight / this._devicePixelRatio) / (camera._frustumTop  - camera._frustumBottom);
-			}
-
-			console.log(mousePos[0],mousePos[1])
-			*/
-
-			this.activeGizmo.update(mousePos);
-
+			this.activeGizmo.update();
 		}.bind(this);
 
-
-		// no more that!
-		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+			this.camera = newCam.camera;
+		}.bind(this));
 	}
 
 	GizmoRenderSystem.prototype = Object.create(System.prototype);
@@ -112,13 +103,19 @@ define([
 		this.active = true;
 		var handle = Gizmo.getHandle(id);
 		if (handle && this.activeGizmo) {
+			this._oldMouseState.setDirect(
+				x / (this.viewportWidth / this._devicePixelRatio),
+				y / (this.viewportHeight / this._devicePixelRatio)
+			);
+
 			this.activeGizmo.activate({
 				id: id,
 				data: handle,
 				x: x / (this.viewportWidth / this._devicePixelRatio),
 				y: y / (this.viewportHeight / this._devicePixelRatio)
 			});
-			this.domElement.addEventListener('mousemove', this.mouseMove);
+
+			this.domElement.addEventListener('mousemove', this._mouseMove);
 		}
 	};
 
@@ -126,7 +123,7 @@ define([
 		this.activeGizmo.deactivate();
 
 		this.active = false;
-		this.domElement.removeEventListener('mousemove', this.mouseMove);
+		this.domElement.removeEventListener('mousemove', this._mouseMove);
 		if (this.nextGizmo !== null) {
 			this.setActiveGizmo(this.nextGizmo);
 			this.nextGizmo = null;
@@ -192,16 +189,18 @@ define([
 
 
 		var onTranslationChange = function (change) {
-			if (this.entity) {
-				var translation = this.entity.transformComponent.transform.translation;
-				translation.setVector(change);
-				if (this.entity.transformComponent.parent) {
-					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
-					inverseTransformation.invert();
-					inverseTransformation.applyPostPoint(translation);
-				}
-				this.entity.transformComponent.setUpdated();
+			if (!this.entity) { return; }
+
+			var translation = this.entity.transformComponent.transform.translation;
+			translation.copy(change);
+
+			if (this.entity.transformComponent.parent) {
+				inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
+				inverseTransformation.invert();
+				inverseTransformation.applyPostPoint(translation);
 			}
+
+			this.entity.transformComponent.setUpdated();
 		}.bind(this);
 
 		this.gizmos[0].onChange = onTranslationChange;
@@ -210,19 +209,22 @@ define([
 
 
 		var onRotationChange = function (change) {
-			if (this.entity) {
-				this.entity.transformComponent.transform.rotation.copy(change);
-				if (this.entity.transformComponent.parent) {
-					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
-					inverseRotation.invert();
-				}
-				Matrix3x3.combine(
-					inverseRotation,
-					this.entity.transformComponent.transform.rotation,
-					this.entity.transformComponent.transform.rotation
-				);
-				this.entity.transformComponent.setUpdated();
+			if (!this.entity) { return; }
+
+			this.entity.transformComponent.transform.rotation.copy(change);
+
+			if (this.entity.transformComponent.parent) {
+				inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
+				inverseRotation.invert();
 			}
+
+			Matrix3x3.combine(
+				inverseRotation,
+				this.entity.transformComponent.transform.rotation,
+				this.entity.transformComponent.transform.rotation
+			);
+
+			this.entity.transformComponent.setUpdated();
 		}.bind(this);
 
 		// Set bound entities rotation
@@ -233,14 +235,17 @@ define([
 
 		// Set bound entities scale
 		this.gizmos[4].onChange = function (change) {
-			if (this.entity) {
-				var scale = this.entity.transformComponent.transform.scale;
-				scale.setVector(change);
-				if (this.entity.transformComponent.parent) {
-					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
-				}
-				this.entity.transformComponent.setUpdated();
+			if (!this.entity) { return; }
+
+			var scale = this.entity.transformComponent.transform.scale;
+
+			scale.copy(change);
+
+			if (this.entity.transformComponent.parent) {
+				scale.div(this.entity.transformComponent.parent.worldTransform.scale);
 			}
+
+			this.entity.transformComponent.setUpdated();
 		}.bind(this);
 	};
 
@@ -249,14 +254,18 @@ define([
 	GizmoRenderSystem.prototype.deleted = function (/*entity*/) {};
 
 	GizmoRenderSystem.prototype.process = function (/*entities, tpf*/) {
-		if (this.activeGizmo) {
-			if (this.activeGizmo.dirty) {
-				this.activeGizmo.process();
-			} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
-				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
-			}
-			this.activeGizmo.updateTransforms();
+		if (!this.activeGizmo) { return; }
+
+		if (this.activeGizmo.dirty) {
+			this.activeGizmo.process(this._mouseState, this._oldMouseState);
+			this._oldMouseState.copy(this._mouseState);
+		} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
+			console.log('aaaaaa');
+			// we're not interested in two way bindings
+			this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
 		}
+
+		this.activeGizmo.updateTransforms();
 	};
 
 	GizmoRenderSystem.prototype.render = function (renderer) {

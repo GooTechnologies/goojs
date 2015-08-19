@@ -45,20 +45,17 @@ define([
 	};
 
 	// Changing transform once per process
-	TranslationGizmo.prototype.process = function () {
-		var op = this._mouse.oldPosition;
-		var p = this._mouse.position;
-
-		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
-		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
+	TranslationGizmo.prototype.process = function (mouseState, oldMouseState) {
+		Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, this._oldRay);
+		Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, this._newRay);
 
 		if (this._activeHandle.type === 'Plane') {
 			this._moveOnPlane();
 		} else if (this._activeHandle.type === 'Axis') {
 			this._moveOnLine();
 		}
-		op[0] = p[0];
-		op[1] = p[1];
+
+		// post process
 		this.updateTransforms();
 		this.dirty = false;
 

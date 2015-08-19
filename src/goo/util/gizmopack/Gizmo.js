@@ -43,10 +43,7 @@ define([
 		this._plane = new Plane();
 		this._line = new Vector3();
 		this._activeHandle = null;
-		this._mouse = {
-			position: [0,0],
-			oldPosition: [0,0]
-		};
+
 		this.dirty = false;
 		this.visible = false;
 
@@ -94,8 +91,6 @@ define([
 
 	Gizmo.prototype.activate = function (properties) {
 		this._activeHandle = properties.data;
-		this._mouse.oldPosition[0] = properties.x;
-		this._mouse.oldPosition[1] = properties.y;
 
 		this._activeRenderable = this.getRenderable(properties.id);
 
@@ -105,11 +100,10 @@ define([
 	Gizmo.prototype.deactivate = function () {
 		if (this._activeRenderable) {
 			var originalColor = this._activeRenderable.originalColor;
-			this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
+			this._activeRenderable.materials[0].uniforms.color = originalColor.slice();
 		}
 	};
 
-	// who calls this and why?
 	Gizmo.prototype.copyTransform = function (transform) {
 		this.transform.setIdentity();
 		if (transform) {
@@ -119,9 +113,7 @@ define([
 		}
 	};
 
-	Gizmo.prototype.update = function (mousePos) {
-		this._mouse.position[0] = mousePos[0];
-		this._mouse.position[1] = mousePos[1];
+	Gizmo.prototype.update = function () {
 		this.dirty = true;
 	};
 
