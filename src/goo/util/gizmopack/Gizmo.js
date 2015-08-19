@@ -117,6 +117,15 @@ define([
 		this.dirty = true;
 	};
 
+	Gizmo.prototype._postProcess = function (data) {
+		this.updateTransforms();
+		this.dirty = false;
+
+		if (this.onChange instanceof Function) {
+			this.onChange(data);
+		}
+	};
+
 	/**
 	 * Update the transform of the provided renderable.
 	 * @param renderable

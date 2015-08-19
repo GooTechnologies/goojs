@@ -110,13 +110,7 @@ define([
 			this._rotateOnAxis(delta);
 		}
 
-		// post process
-		this.updateTransforms();
-		this.dirty = false;
-
-		if (this.onChange instanceof Function) {
-			this.onChange(this.transform.rotation);
-		}
+		this._postProcess(this.transform.rotation);
 	};
 
 	RotationGizmo.prototype._rotateOnScreen = function (delta) {

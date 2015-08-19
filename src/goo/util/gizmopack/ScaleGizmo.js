@@ -60,13 +60,7 @@ define([
 			this._scaleNonUniform(mouseState, oldMouseState);
 		}
 
-		// post process
-		this.updateTransforms();
-		this.dirty = false;
-
-		if (this.onChange instanceof Function) {
-			this.onChange(this._transformScale);
-		}
+		this._postProcess(this._transformScale);
 	};
 
 	ScaleGizmo.prototype._scaleUniform = function (mouseState, oldMouseState) {

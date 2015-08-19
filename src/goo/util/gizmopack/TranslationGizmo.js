@@ -55,13 +55,7 @@ define([
 			this._moveOnLine();
 		}
 
-		// post process
-		this.updateTransforms();
-		this.dirty = false;
-
-		if (this.onChange instanceof Function) {
-			this.onChange(this.transform.translation);
-		}
+		this._postProcess(this.transform.translation);
 	};
 
 	// Moving along a plane
