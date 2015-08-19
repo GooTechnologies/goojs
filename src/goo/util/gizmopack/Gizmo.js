@@ -44,7 +44,6 @@ define([
 		this._line = new Vector3();
 		this._activeHandle = null;
 
-		this.dirty = false;
 		this.visible = false;
 
 		this.transform = new Transform();
@@ -113,13 +112,8 @@ define([
 		}
 	};
 
-	Gizmo.prototype.update = function () {
-		this.dirty = true;
-	};
-
 	Gizmo.prototype._postProcess = function (data) {
 		this.updateTransforms();
-		this.dirty = false;
 
 		if (this.onChange instanceof Function) {
 			this.onChange(data);

@@ -77,6 +77,8 @@ define([
 		this._mouseState = new Vector2();
 		this._oldMouseState = new Vector2();
 
+		this._dirty = false;
+
 		this._mouseMove = function (evt) {
 			if (!this.activeGizmo) { return; }
 
@@ -88,7 +90,7 @@ define([
 				y / (this.viewportHeight / this._devicePixelRatio)
 			);
 
-			this.activeGizmo.update();
+			this._dirty = true;
 		}.bind(this);
 
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
@@ -256,9 +258,10 @@ define([
 	GizmoRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		if (!this.activeGizmo) { return; }
 
-		if (this.activeGizmo.dirty) {
+		if (this._dirty) {
 			this.activeGizmo.process(this._mouseState, this._oldMouseState);
 			this._oldMouseState.copy(this._mouseState);
+			this._dirty = false;
 		} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
 			// we're not interested in two way bindings
 			this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
