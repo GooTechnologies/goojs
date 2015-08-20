@@ -220,7 +220,7 @@ define([
 
 	Gizmo.prototype._setLine = function () {
 		// If translating or scaling along a line, set current line
-		this._line.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+		this._line.copy([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 		this.transform.matrix.applyPostVector(this._line);
 		this._line.normalize();
 	};

@@ -5,6 +5,8 @@ define([
 	'goo/shapes/Disk',
 	'goo/shapes/Quad',
 	'goo/math/Transform',
+	'goo/math/Vector3',
+	'goo/math/Ray',
 	'goo/renderer/Renderer'
 ], function (
 	Gizmo,
@@ -13,6 +15,8 @@ define([
 	Disk,
 	Quad,
 	Transform,
+	Vector3,
+	Ray,
 	Renderer
 ) {
 	'use strict';
@@ -39,50 +43,58 @@ define([
 		}
 	};
 
-	// Changing transform once per process
-	TranslationGizmo.prototype.process = function (mouseState, oldMouseState) {
-		Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, this._oldRay);
-		Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, this._newRay);
+	(function () {
+		var oldRay = new Ray();
+		var newRay = new Ray();
 
-		if (this._activeHandle.type === 'Plane') {
-			this._moveOnPlane();
-		} else if (this._activeHandle.type === 'Axis') {
-			this._moveOnLine();
-		}
+		TranslationGizmo.prototype.process = function (mouseState, oldMouseState) {
+			Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, oldRay);
+			Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, newRay);
 
-		this._postProcess(this.transform.translation);
-	};
+			if (this._activeHandle.type === 'Plane') {
+				this._moveOnPlane(oldRay, newRay, this._plane);
+			} else if (this._activeHandle.type === 'Axis') {
+				this._moveOnLine(oldRay, newRay, this._plane, this._line);
+			}
 
-	// Moving along a plane
-	TranslationGizmo.prototype._moveOnPlane = function () {
-		var oldWorldPos = this._v0,
-			worldPos = this._v1,
-			moveVector = this._result;
+			this._postProcess(this.transform.translation);
+		};
+	})();
 
-		// Project mouse move to plane
-		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
-		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setVector(worldPos).subVector(oldWorldPos);
-		// And add to translation
-		this.transform.translation.add(moveVector);
-	};
+	(function () {
+		var oldWorldPos = new Vector3();
+		var worldPos = new Vector3();
+		var moveVector = new Vector3();
 
-	TranslationGizmo.prototype._moveOnLine = function () {
-		var oldWorldPos = this._v0,
-			worldPos = this._v1,
-			moveVector = this._result,
-			line = this._line;
+		TranslationGizmo.prototype._moveOnPlane = function (oldRay, newRay, plane) {
+			// Project mouse move to plane
+			plane.rayIntersect(oldRay, oldWorldPos, true);
+			plane.rayIntersect(newRay, worldPos, true);
+			moveVector.copy(worldPos).subVector(oldWorldPos);
 
-		// Project mousemove to plane
-		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
-		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setVector(worldPos).subVector(oldWorldPos);
-		// Then project plane diff to line
-		var d = moveVector.dot(line);
-		moveVector.setVector(line).scale(d);
+			// And add to translation
+			this.transform.translation.addVector(moveVector);
+		};
+	})();
 
-		this.transform.translation.addVector(moveVector);
-	};
+	(function () {
+		var oldWorldPos = new Vector3();
+		var worldPos = new Vector3();
+		var moveVector = new Vector3();
+
+		TranslationGizmo.prototype._moveOnLine = function (oldRay, newRay, plane, line) {
+			// Project mousemove to plane
+			plane.rayIntersect(oldRay, oldWorldPos, true);
+			plane.rayIntersect(newRay, worldPos, true);
+			moveVector.copy(worldPos).subVector(oldWorldPos);
+
+			// Then project plane diff to line
+			var d = moveVector.dot(line);
+			moveVector.copy(line).scale(d);
+
+			this.transform.translation.addVector(moveVector);
+		};
+	})();
 
 	TranslationGizmo.prototype.compileRenderables = function () {
 		var arrowMesh = buildArrowMesh();
