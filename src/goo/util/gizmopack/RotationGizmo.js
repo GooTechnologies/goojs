@@ -139,7 +139,7 @@ define([
 		};
 	})();
 
-	// --- functions for snapping to certain angles go here
+	// --- functions for snapping to certain angles
 	function inclinedType2 (size, t) {
 		return function (x) {
 			var z = x % size;
@@ -153,7 +153,8 @@ define([
 		};
 	}
 
-	var tranFun = inclinedType2(Math.PI / 4, Math.PI / 16);
+	var snapFunction = inclinedType2(Math.PI / 4, Math.PI / 16);
+	var identityFunction = function (x) { return x; };
 	// ---
 
 	RotationGizmo.prototype._applyRotation = function () {
@@ -170,49 +171,27 @@ define([
 		var sum = (delta.x * this._direction.x) + (delta.y * this._direction.y);
 		sum *= ROTATION_SCALE;
 
-		// this if can be reduced to just changing tranFun to identity
-		if (this.snap) {
-			switch(this._activeHandle.axis) {
-				case 0:
-					this.accumulatedRotationThorX += sum;
-					var newAngleX = tranFun(this.accumulatedRotationThorX);
-					this._rotation.rotateX(newAngleX - this.oldAngleX);
-					this.oldAngleX = newAngleX;
-					break;
-				case 1:
-					this.accumulatedRotationThorY += sum;
-					var newAngleY = tranFun(this.accumulatedRotationThorY);
-					this._rotation.rotateY(newAngleY - this.oldAngleY);
-					this.oldAngleY = newAngleY;
-					break;
-				case 2:
-					this.accumulatedRotationThorZ += sum;
-					var newAngleZ = tranFun(this.accumulatedRotationThorZ);
-					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
-					this.oldAngleZ = newAngleZ;
-					break;
-			}
-		} else {
-			switch(this._activeHandle.axis) {
-				case 0:
-					this.accumulatedRotationThorX += sum;
-					var newAngleX = this.accumulatedRotationThorX;
-					this._rotation.rotateX(newAngleX - this.oldAngleX);
-					this.oldAngleX = newAngleX;
-					break;
-				case 1:
-					this.accumulatedRotationThorY += sum;
-					var newAngleY = this.accumulatedRotationThorY;
-					this._rotation.rotateY(newAngleY - this.oldAngleY);
-					this.oldAngleY = newAngleY;
-					break;
-				case 2:
-					this.accumulatedRotationThorZ += sum;
-					var newAngleZ = this.accumulatedRotationThorZ;
-					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
-					this.oldAngleZ = newAngleZ;
-					break;
-			}
+		var transformFunction = this.snap ? snapFunction : identityFunction;
+
+		switch (this._activeHandle.axis) {
+			case 0:
+				this.accumulatedRotationThorX += sum;
+				var newAngleX = transformFunction(this.accumulatedRotationThorX);
+				this._rotation.rotateX(newAngleX - this.oldAngleX);
+				this.oldAngleX = newAngleX;
+				break;
+			case 1:
+				this.accumulatedRotationThorY += sum;
+				var newAngleY = transformFunction(this.accumulatedRotationThorY);
+				this._rotation.rotateY(newAngleY - this.oldAngleY);
+				this.oldAngleY = newAngleY;
+				break;
+			case 2:
+				this.accumulatedRotationThorZ += sum;
+				var newAngleZ = transformFunction(this.accumulatedRotationThorZ);
+				this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
+				this.oldAngleZ = newAngleZ;
+				break;
 		}
 
 		this._applyRotation();
