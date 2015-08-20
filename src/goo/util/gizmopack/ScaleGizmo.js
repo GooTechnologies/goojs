@@ -25,16 +25,12 @@ define([
 	 */
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
-		this._boxMesh = new Box(1.4, 1.4, 1.4);
-		this._arrowMesh = this._buildArrowMesh();
+
 		this._scale = 1;
 		this._transformScale = new Vector3();
 		this._transformScale.setDirect(1, 1, 1);
 
-		this._buildBox();
-		this._buildArrow(0);
-		this._buildArrow(1);
-		this._buildArrow(2);
+		this.compileRenderables();
 	}
 
 	ScaleGizmo.prototype = Object.create(Gizmo.prototype);
@@ -94,45 +90,46 @@ define([
 		result.setVector(line).scale(d);
 		var scale = Math.pow(1 + d, this._scale);
 
-		switch(this._activeHandle.axis) {
-			case 0:
-				this._transformScale.data[0] *= scale;
-				break;
-			case 1:
-				this._transformScale.data[1] *= scale;
-				break;
-			case 2:
-				this._transformScale.data[2] *= scale;
-				break;
-		}
+		this._transformScale.data[this._activeHandle.axis] *= scale;
 	};
 
-	ScaleGizmo.prototype._buildBox = function () {
-		this.addRenderable({
-			meshData: this._boxMesh,
-			materials: [this._buildMaterialForAxis(3)],
+	ScaleGizmo.prototype.compileRenderables = function () {
+		var boxMesh = new Box(1.4, 1.4, 1.4);
+		var arrowMesh = buildArrowMesh();
+
+		this.addRenderable(buildBox(boxMesh));
+		this.addRenderable(buildArrow(arrowMesh, 0));
+		this.addRenderable(buildArrow(arrowMesh, 1));
+		this.addRenderable(buildArrow(arrowMesh, 2));
+	};
+
+	function buildBox(boxMesh) {
+		return {
+			meshData: boxMesh,
+			materials: [Gizmo.buildMaterialForAxis(3)],
 			transform: new Transform(),
 			id: Gizmo.registerHandle({ type: 'Scale', axis: 3 })
-		});
-	};
+		};
+	}
 
-	ScaleGizmo.prototype._buildArrow = function (dim) {
+	function buildArrow(arrowMesh, dim) {
 		var transform = new Transform();
+
 		if (dim === 0) {
 			transform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
 			transform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
 		}
 
-		this.addRenderable({
-			meshData: this._arrowMesh,
-			materials: [this._buildMaterialForAxis(dim)],
+		return {
+			meshData: arrowMesh,
+			materials: [Gizmo.buildMaterialForAxis(dim)],
 			transform: transform,
 			id: Gizmo.registerHandle({ type: 'Scale', axis: dim })
-		});
-	};
+		};
+	}
 
-	ScaleGizmo.prototype._buildArrowMesh = function () {
+	function buildArrowMesh() {
 		var meshBuilder = new MeshBuilder();
 
 		// Box
@@ -161,7 +158,7 @@ define([
 		var mergedMeshData = meshBuilder.build()[0];
 
 		return mergedMeshData;
-	};
+	}
 
 	return ScaleGizmo;
 });

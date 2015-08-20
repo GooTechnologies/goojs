@@ -30,14 +30,6 @@ define([
 	function GlobalRotationGizmo() {
 		Gizmo.call(this, 'GlobalRotationGizmo');
 
-		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.1, 2.5);
-
-		this._buildBall();
-		this._buildTorus(0);
-		this._buildTorus(1);
-		this._buildTorus(2);
-
 		this._rotation = new Matrix3x3();
 		this._rotationScale = 4;
 		this._axis = new Vector3();
@@ -55,6 +47,8 @@ define([
 		this.oldAngleX = 0;
 		this.oldAngleY = 0;
 		this.oldAngleZ = 0;
+
+		this.compileRenderables();
 	}
 
 	GlobalRotationGizmo.prototype = Object.create(Gizmo.prototype);
@@ -95,7 +89,8 @@ define([
 			rotationDirection.addVector(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
-				1,1,
+				1,
+				1,
 				this._direction
 			);
 			this._direction.subDirect(props.x, props.y, 0);
@@ -139,9 +134,7 @@ define([
 		};
 	})();
 
-	GlobalRotationGizmo.prototype._buildBall = RotationGizmo.prototype._buildBall;
-
-	GlobalRotationGizmo.prototype._buildTorus = RotationGizmo.prototype._buildTorus;
+	GlobalRotationGizmo.prototype.compileRenderables = RotationGizmo.prototype.compileRenderables;
 
 	return GlobalRotationGizmo;
 });

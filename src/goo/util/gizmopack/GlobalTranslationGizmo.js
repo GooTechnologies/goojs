@@ -20,12 +20,7 @@ define([
 	function GlobalTranslationGizmo() {
 		Gizmo.call(this, 'GlobalTranslationGizmo');
 
-		// Build geometry
-		this._quadMesh = new Quad(2, 2);
-		this._arrowMesh = this._buildArrowMesh();
-		this._buildArrow(0);
-		this._buildArrow(1);
-		this._buildArrow(2);
+		this.compileRenderables();
 	}
 
 	GlobalTranslationGizmo.prototype = Object.create(Gizmo.prototype);
@@ -43,8 +38,8 @@ define([
 
 	GlobalTranslationGizmo.prototype._moveOnPlane = TranslationGizmo.prototype._moveOnPlane;
 	GlobalTranslationGizmo.prototype._moveOnLine = TranslationGizmo.prototype._moveOnLine;
-	GlobalTranslationGizmo.prototype._buildArrow = TranslationGizmo.prototype._buildArrow;
-	GlobalTranslationGizmo.prototype._buildArrowMesh = TranslationGizmo.prototype._buildArrowMesh;
+
+	GlobalTranslationGizmo.prototype.compileRenderables = TranslationGizmo.prototype.compileRenderables;
 
 	return GlobalTranslationGizmo;
 });

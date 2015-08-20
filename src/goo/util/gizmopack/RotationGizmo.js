@@ -6,7 +6,8 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
-	'goo/math/Ray'
+	'goo/math/Ray',
+	'goo/math/MathUtils'
 ], function (
 	Gizmo,
 	Sphere,
@@ -15,7 +16,8 @@ define([
 	Matrix3x3,
 	Transform,
 	Renderer,
-	Ray
+	Ray,
+	MathUtils
 ) {
 	'use strict';
 
@@ -25,14 +27,6 @@ define([
 	 */
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
-
-		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.1, 2.5);
-
-		this._buildBall();
-		this._buildTorus(0);
-		this._buildTorus(1);
-		this._buildTorus(2);
 
 		this._rotation = new Matrix3x3();
 		this._rotationScale = 4;
@@ -51,6 +45,8 @@ define([
 		this.oldAngleX = 0;
 		this.oldAngleY = 0;
 		this.oldAngleZ = 0;
+
+		this.compileRenderables();
 	}
 
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
@@ -78,7 +74,8 @@ define([
 			Renderer.mainCamera.getPickRay(
 				props.x,
 				props.y,
-				1,1,
+				1,
+				1,
 				ray
 			);
 			pickedPoint.setVector(ray.origin).subVector(worldCenter);
@@ -91,7 +88,8 @@ define([
 			rotationDirection.addVector(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
-				1,1,
+				1,
+				1,
 				this._direction
 			);
 			this._direction.subDirect(props.x, props.y, 0);
@@ -170,6 +168,7 @@ define([
 		var sum = (delta.x * this._direction.x) + (delta.y * this._direction.y);
 		sum *= this._rotationScale;
 
+		// this if can be reduced to just changing tranFun to identity
 		if (this.snap) {
 			switch(this._activeHandle.axis) {
 				case 0:
@@ -217,34 +216,45 @@ define([
 		this._applyRotation();
 	};
 
-	RotationGizmo.prototype._buildBall = function () {
-		var transform = new Transform();
-		transform.scale.setDirect(1.2, 1.2, 1.2);
-		this.addRenderable({
-			meshData: this._ballMesh,
-			materials: [this._buildMaterialForAxis(3, 0.6)],
-			transform: new Transform(),
-			id: Gizmo.registerHandle({ type: 'Rotate', axis: 3 })
-		});
+	RotationGizmo.prototype.compileRenderables = function () {
+		var ballMesh = new Sphere(32, 32, 1.1);
+		var torusMesh = new Torus(64, 8, 0.1, 2.5);
+
+		this.addRenderable(buildBall(ballMesh));
+		this.addRenderable(buildTorus(torusMesh, 0));
+		this.addRenderable(buildTorus(torusMesh, 1));
+		this.addRenderable(buildTorus(torusMesh, 2));
 	};
 
-	RotationGizmo.prototype._buildTorus = function (dim) {
+	function buildBall(ballMesh) {
+		var transform = new Transform();
+		transform.scale.setDirect(1.2, 1.2, 1.2);
+
+		return {
+			meshData: ballMesh,
+			materials: [Gizmo.buildMaterialForAxis(3, 0.6)],
+			transform: new Transform(),
+			id: Gizmo.registerHandle({ type: 'Rotate', axis: 3 })
+		};
+	}
+
+	function buildTorus(torusMesh, dim) {
 		var transform = new Transform();
 		transform.scale.setDirect(1.7, 1.7, 1.7);
 		if (dim === 0) {
-			transform.setRotationXYZ(0, Math.PI/2, 0);
+			transform.setRotationXYZ(0, MathUtils.HALF_PI, 0);
 		} else if (dim === 1) {
-			transform.setRotationXYZ(Math.PI/2, 0, 0);
+			transform.setRotationXYZ(MathUtils.HALF_PI, 0, 0);
 		}
 
-		this.addRenderable({
-			meshData: this._torusMesh,
-			materials: [this._buildMaterialForAxis(dim)],
+		return {
+			meshData: torusMesh,
+			materials: [Gizmo.buildMaterialForAxis(dim)],
 			transform: transform,
 			id: Gizmo.registerHandle({ type: 'Rotate', axis: dim }),
 			thickness: 0.35
-		});
-	};
+		};
+	}
 
 	return RotationGizmo;
 });

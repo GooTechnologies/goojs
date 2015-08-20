@@ -24,12 +24,7 @@ define([
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 
-		// Build geometry
-		this._quadMesh = new Quad(2, 2);
-		this._arrowMesh = this._buildArrowMesh();
-		this._buildArrow(0);
-		this._buildArrow(1);
-		this._buildArrow(2);
+		this.compileRenderables();
 	}
 
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
@@ -89,7 +84,16 @@ define([
 		this.transform.translation.addVector(moveVector);
 	};
 
-	TranslationGizmo.prototype._buildArrow = function (dim) {
+	TranslationGizmo.prototype.compileRenderables = function () {
+		var arrowMesh = buildArrowMesh();
+		var quadMesh = new Quad(2, 2);
+
+		buildArrow(arrowMesh, quadMesh, 0).forEach(this.addRenderable, this);
+		buildArrow(arrowMesh, quadMesh, 1).forEach(this.addRenderable, this);
+		buildArrow(arrowMesh, quadMesh, 2).forEach(this.addRenderable, this);
+	};
+
+	function buildArrow(arrowMesh, quadMesh, dim) {
 		var arrowTransform = new Transform();
 		var quadTransform = new Transform();
 
@@ -107,23 +111,21 @@ define([
 			arrowTransform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
 		}
 
-		this.addRenderable({
-			meshData: this._arrowMesh,
-			materials: [this._buildMaterialForAxis(dim)],
+		return [{
+			meshData: arrowMesh,
+			materials: [Gizmo.buildMaterialForAxis(dim)],
 			transform: arrowTransform,
 			id: Gizmo.registerHandle({ type: 'Axis', axis: dim }),
 			thickness: 0.6
-		});
-
-		this.addRenderable({
-			meshData: this._quadMesh,
-			materials: [this._buildMaterialForAxis(dim, 0.6)],
+		}, {
+			meshData: quadMesh,
+			materials: [Gizmo.buildMaterialForAxis(dim, 0.6)],
 			transform: quadTransform,
 			id: Gizmo.registerHandle({ type: 'Plane', axis: dim })
-		});
-	};
+		}];
+	}
 
-	TranslationGizmo.prototype._buildArrowMesh = function () {
+	function buildArrowMesh() {
 		var meshBuilder = new MeshBuilder();
 
 		// Arrow head
@@ -156,7 +158,7 @@ define([
 		// Combine
 		var mergedMeshData = meshBuilder.build()[0];
 		return mergedMeshData;
-	};
+	}
 
 	return TranslationGizmo;
 });

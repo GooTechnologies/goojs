@@ -28,16 +28,11 @@ define([
 	'use strict';
 
 	/**
-	* 	*/
+	 * @hidden
+	 */
 	function Gizmo(name) {
 		this.name = name;
 
-		this._colors = [
-			[1, 0.1, 0.3],
-			[0.3, 1, 0.2],
-			[0.2, 0.3, 1],
-			[0.8, 0.8, 0.8]
-		];
 		this._gizmoSize = 1 / 60;
 
 		this._plane = new Plane();
@@ -235,13 +230,11 @@ define([
 		this.renderables.push(renderable);
 	};
 
-	Gizmo.prototype._buildMaterialForAxis = function (axis, opacity) {
-		var material = new Material(Gizmo._shaderDef, axis + 'Material');
-		material.uniforms.color = this._colors[axis];
+	Gizmo.buildMaterialForAxis = function (axis, opacity) {
+		var material = new Material(SHADER_DEF, axis + 'Material');
+		material.uniforms.color = COLORS[axis].slice();
 
 		if (opacity !== undefined && opacity < 1.0) {
-			// material.depthState.write = true;
-			// material.depthState.enabled = false;
 			material.blendState.blending = 'CustomBlending';
 			material.uniforms.opacity = opacity;
 			material.renderQueue = 3000;
@@ -251,18 +244,25 @@ define([
 		return material;
 	};
 
-	Gizmo._shaderDef = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+	var COLORS = [
+		[1, 0.1, 0.3],
+		[0.3, 1, 0.2],
+		[0.2, 0.3, 1],
+		[0.8, 0.8, 0.8]
+	];
+
+	var SHADER_DEF = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			color : [1.0, 1.0, 1.0],
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			color: [1.0, 1.0, 1.0],
 			opacity: 1.0
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec3 vertexNormal;',
 
@@ -278,7 +278,7 @@ define([
 			' normal = vertexNormal;',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'varying vec3 normal;',
 
 			'uniform vec3 color;',
