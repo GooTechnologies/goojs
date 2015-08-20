@@ -46,8 +46,6 @@ define([
 		this.onChange = null;
 
 		// Calculation helpers
-		this._oldRay = new Ray();
-		this._newRay = new Ray();
 		this._result = new Vector3();
 		this._v0 = new Vector3();
 		this._v1 = new Vector3();

@@ -6,6 +6,7 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Vector3',
+	'goo/math/Ray',
 	'goo/math/MathUtils'
 ], function (
 	Gizmo,
@@ -15,6 +16,7 @@ define([
 	Transform,
 	Renderer,
 	Vector3,
+	Ray,
 	MathUtils
 ) {
 	'use strict';
@@ -26,15 +28,15 @@ define([
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 
-		this._scale = 1;
-		this._transformScale = new Vector3();
-		this._transformScale.setDirect(1, 1, 1);
+		this._transformScale = new Vector3(1, 1, 1);
 
 		this.compileRenderables();
 	}
 
 	ScaleGizmo.prototype = Object.create(Gizmo.prototype);
 	ScaleGizmo.prototype.constructor = ScaleGizmo;
+
+	var SCALE = 1;
 
 	ScaleGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
@@ -46,7 +48,7 @@ define([
 
 	ScaleGizmo.prototype.copyTransform = function (transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
-		this._transformScale.setVector(transform.scale);
+		this._transformScale.copy(transform.scale);
 	};
 
 	ScaleGizmo.prototype.process = function (mouseState, oldMouseState) {
@@ -62,7 +64,7 @@ define([
 	ScaleGizmo.prototype._scaleUniform = function (mouseState, oldMouseState) {
 		var scale = Math.pow(
 			1 + mouseState.x + oldMouseState.y - oldMouseState.x - mouseState.y,
-			this._scale
+			SCALE
 		);
 
 		var cameraEntityDistance = Renderer.mainCamera.translation.distance(this.transform.translation);
@@ -71,27 +73,32 @@ define([
 		this._transformScale.scale(scale);
 	};
 
-	ScaleGizmo.prototype._scaleNonUniform = function (mouseState, oldMouseState) {
-		Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, this._oldRay);
-		Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, this._newRay);
+	(function () {
+		var oldRay = new Ray();
+		var newRay = new Ray();
 
-		var oldWorldPos = this._v0,
-			worldPos = this._v1,
-			line = this._line,
-			result = this._result;
+		var oldWorldPos = new Vector3();
+		var worldPos = new Vector3();
+		var result = new Vector3();
 
-		// Project mousemove to plane
-		this._plane.rayIntersect(this._oldRay, oldWorldPos);
-		this._plane.rayIntersect(this._newRay, worldPos);
-		result.setVector(worldPos).subVector(oldWorldPos);
-		result.div(this.transform.scale).scale(0.07);
-		// Then project plane diff to line
-		var d = result.dot(line);
-		result.setVector(line).scale(d);
-		var scale = Math.pow(1 + d, this._scale);
+		ScaleGizmo.prototype._scaleNonUniform = function (mouseState, oldMouseState) {
+			Renderer.mainCamera.getPickRay(oldMouseState.x, oldMouseState.y, 1, 1, oldRay);
+			Renderer.mainCamera.getPickRay(mouseState.x, mouseState.y, 1, 1, newRay);
 
-		this._transformScale.data[this._activeHandle.axis] *= scale;
-	};
+			// Project mousemove to plane
+			this._plane.rayIntersect(oldRay, oldWorldPos);
+			this._plane.rayIntersect(newRay, worldPos);
+
+			result.copy(worldPos).subVector(oldWorldPos);
+			result.div(this.transform.scale).scale(0.07);
+
+			// Then project plane diff to line
+			var d = result.dot(this._line);
+			var scale = Math.pow(1 + d, SCALE);
+
+			this._transformScale.data[this._activeHandle.axis] *= scale;
+		};
+	})();
 
 	ScaleGizmo.prototype.compileRenderables = function () {
 		var boxMesh = new Box(1.4, 1.4, 1.4);
