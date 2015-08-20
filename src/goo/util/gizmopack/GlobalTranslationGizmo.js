@@ -1,15 +1,9 @@
 define([
 	'goo/util/gizmopack/Gizmo',
-	'goo/util/gizmopack/TranslationGizmo',
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
-	'goo/shapes/Quad'
+	'goo/util/gizmopack/TranslationGizmo'
 ], function (
 	Gizmo,
-	TranslationGizmo,
-	MeshData,
-	MeshBuilder,
-	Quad
+	TranslationGizmo
 ) {
 	'use strict';
 

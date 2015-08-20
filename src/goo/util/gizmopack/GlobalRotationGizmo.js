@@ -31,13 +31,7 @@ define([
 		Gizmo.call(this, 'GlobalRotationGizmo');
 
 		this._rotation = new Matrix3x3();
-		this._rotationScale = 4;
-		this._axis = new Vector3();
 		this._direction = new Vector3();
-
-		this._ray = new Ray();
-		this._m1 = new Matrix3x3();
-		this._m2 = new Matrix3x3();
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
@@ -54,51 +48,53 @@ define([
 	GlobalRotationGizmo.prototype = Object.create(Gizmo.prototype);
 	GlobalRotationGizmo.prototype.constructor = GlobalRotationGizmo;
 
-	GlobalRotationGizmo.prototype.activate = function (props) {
-		Gizmo.prototype.activate.call(this, props);
+	(function () {
+		var worldCenter = new Vector3();
+		var pickedPoint = new Vector3();
+		var rotationDirection = new Vector3();
+		var axis = new Vector3();
+		var ray = new Ray();
 
-		var worldCenter = this._v0,
-			pickedPoint = this._v1,
-			rotationDirection = this._v2,
-			axis = this._axis,
-			ray = this._ray;
+		GlobalRotationGizmo.prototype.activate = function (props) {
+			Gizmo.prototype.activate.call(this, props);
 
-		if (this._activeHandle.axis < 3) {
-			// Get rotation axis
-			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			if (this._activeHandle.axis < 3) {
+				// Get rotation axis
+				axis.copy([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 
-			// Get rotation center
-			worldCenter.setVector(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+				// Get rotation center
+				worldCenter.copy(Vector3.ZERO);
+				this.transform.matrix.applyPostPoint(worldCenter);
 
-			// Get picked point in world space (sort of)
-			Renderer.mainCamera.getPickRay(
-				props.x,
-				props.y,
-				1,
-				1,
-				ray
-			);
-			pickedPoint.setVector(ray.origin).subVector(worldCenter);
-			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
+				// Get picked point in world space (sort of)
+				Renderer.mainCamera.getPickRay(
+					props.x,
+					props.y,
+					1,
+					1,
+					ray
+				);
+				pickedPoint.copy(ray.origin).subVector(worldCenter);
+				var d = pickedPoint.length() * 0.9;
+				pickedPoint.copy(ray.direction).scale(d).addVector(ray.origin);
 
-			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
-			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addVector(pickedPoint);
-			Renderer.mainCamera.getScreenCoordinates(
-				rotationDirection,
-				1,
-				1,
-				this._direction
-			);
-			this._direction.subDirect(props.x, props.y, 0);
+				// Get vector from center to picked point, cross it with rotation axis and get drag direction
+				rotationDirection.copy(pickedPoint).subVector(worldCenter);
+				Vector3.cross(axis, rotationDirection, rotationDirection);
+				rotationDirection.addVector(pickedPoint);
+				Renderer.mainCamera.getScreenCoordinates(
+					rotationDirection,
+					1,
+					1,
+					this._direction
+				);
+				this._direction.subDirect(props.x, props.y, 0);
 
-			this._direction.z = 0;
-			this._direction.normalize();
-		}
-	};
+				this._direction.z = 0;
+				this._direction.normalize();
+			}
+		};
+	})();
 
 	GlobalRotationGizmo.prototype.process = RotationGizmo.prototype.process;
 

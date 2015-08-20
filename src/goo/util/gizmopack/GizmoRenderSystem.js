@@ -65,6 +65,7 @@ define([
 		this.viewportWidth = 0;
 		this.viewportHeight = 0;
 		this.domElement = null;
+
 		this.pickingMaterial = Material.createEmptyMaterial(customPickingShader, 'pickingMaterial');
 		this.pickingMaterial.blendState = {
 			blending: 'NoBlending',
@@ -72,6 +73,7 @@ define([
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
+
 		this._devicePixelRatio = 1;
 
 		this._mouseState = new Vector2();

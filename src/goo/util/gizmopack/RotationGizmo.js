@@ -29,13 +29,7 @@ define([
 		Gizmo.call(this, 'RotationGizmo');
 
 		this._rotation = new Matrix3x3();
-		this._rotationScale = 4;
-		this._axis = new Vector3();
 		this._direction = new Vector3();
-
-		this._ray = new Ray();
-		this._m1 = new Matrix3x3();
-		this._m2 = new Matrix3x3();
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
@@ -52,52 +46,56 @@ define([
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 	RotationGizmo.prototype.constructor = RotationGizmo;
 
-	RotationGizmo.prototype.activate = function (props) {
-		Gizmo.prototype.activate.call(this, props);
+	var ROTATION_SCALE = 4;
 
-		var worldCenter = this._v0,
-			pickedPoint = this._v1,
-			rotationDirection = this._v2,
-			axis = this._axis,
-			ray = this._ray;
+	(function () {
+		var worldCenter = new Vector3();
+		var pickedPoint = new Vector3();
+		var rotationDirection = new Vector3();
+		var axis = new Vector3();
+		var ray = new Ray();
 
-		if (this._activeHandle.axis < 3) {
-			// Get rotation axis
-			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
-			this.transform.rotation.applyPost(axis);
+		RotationGizmo.prototype.activate = function (props) {
+			Gizmo.prototype.activate.call(this, props);
 
-			// Get rotation center
-			worldCenter.setVector(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+			if (this._activeHandle.axis < 3) {
+				// Get rotation axis
+				axis.copy([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+				this.transform.rotation.applyPost(axis);
 
-			// Get picked point in world space (sort of)
-			Renderer.mainCamera.getPickRay(
-				props.x,
-				props.y,
-				1,
-				1,
-				ray
-			);
-			pickedPoint.setVector(ray.origin).subVector(worldCenter);
-			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
+				// Get rotation center
+				worldCenter.copy(Vector3.ZERO);
+				this.transform.matrix.applyPostPoint(worldCenter);
 
-			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
-			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addVector(pickedPoint);
-			Renderer.mainCamera.getScreenCoordinates(
-				rotationDirection,
-				1,
-				1,
-				this._direction
-			);
-			this._direction.subDirect(props.x, props.y, 0);
+				// Get picked point in world space (sort of)
+				Renderer.mainCamera.getPickRay(
+					props.x,
+					props.y,
+					1,
+					1,
+					ray
+				);
+				pickedPoint.copy(ray.origin).subVector(worldCenter);
+				var d = pickedPoint.length() * 0.9;
+				pickedPoint.copy(ray.direction).scale(d).addVector(ray.origin);
 
-			this._direction.z = 0;
-			this._direction.normalize();
-		}
-	};
+				// Get vector from center to picked point, cross it with rotation axis and get drag direction
+				rotationDirection.copy(pickedPoint).subVector(worldCenter);
+				Vector3.cross(axis, rotationDirection, rotationDirection);
+				rotationDirection.addVector(pickedPoint);
+				Renderer.mainCamera.getScreenCoordinates(
+					rotationDirection,
+					1,
+					1,
+					this._direction
+				);
+				this._direction.subDirect(props.x, props.y, 0);
+
+				this._direction.z = 0;
+				this._direction.normalize();
+			}
+		};
+	})();
 
 	RotationGizmo.prototype.process = function (mouseState, oldMouseState) {
 		var delta = mouseState.clone().subVector(oldMouseState);
@@ -111,31 +109,35 @@ define([
 		this._postProcess(this.transform.rotation);
 	};
 
-	RotationGizmo.prototype._rotateOnScreen = function (delta) {
-		this._rotation.setIdentity();
+	(function () {
+		var camRotation = new Matrix3x3();
+		var screenRotation = new Matrix3x3();
 
-		this._rotation.rotateY(delta.x * this._rotationScale);
-		this._rotation.rotateX(delta.y * this._rotationScale);
+		RotationGizmo.prototype._rotateOnScreen = function (delta) {
+			this._rotation.setIdentity();
 
-		var camMat = Renderer.mainCamera.getViewMatrix().data;
-		var camRotation = this._m1, screenRotation = this._m2;
+			this._rotation.rotateY(delta.x * ROTATION_SCALE);
+			this._rotation.rotateX(delta.y * ROTATION_SCALE);
 
-		// there has to be a function for this
-		camRotation.set(
-			camMat[0], camMat[1], camMat[2],
-			camMat[4], camMat[5], camMat[6],
-			camMat[8], camMat[9], camMat[10]
-		);
-		screenRotation.set(camRotation).invert();
-		screenRotation.combine(this._rotation);
-		screenRotation.combine(camRotation);
+			var camMat = Renderer.mainCamera.getViewMatrix().data;
 
-		Matrix3x3.combine(
-			screenRotation,
-			this.transform.rotation,
-			this.transform.rotation
-		);
-	};
+			// there has to be a function for this
+			camRotation.set(
+				camMat[0], camMat[1], camMat[2],
+				camMat[4], camMat[5], camMat[6],
+				camMat[8], camMat[9], camMat[10]
+			);
+			screenRotation.set(camRotation).invert();
+			screenRotation.combine(this._rotation);
+			screenRotation.combine(camRotation);
+
+			Matrix3x3.combine(
+				screenRotation,
+				this.transform.rotation,
+				this.transform.rotation
+			);
+		};
+	})();
 
 	// --- functions for snapping to certain angles go here
 	function inclinedType2 (size, t) {
@@ -166,7 +168,7 @@ define([
 		this._rotation.setIdentity();
 
 		var sum = (delta.x * this._direction.x) + (delta.y * this._direction.y);
-		sum *= this._rotationScale;
+		sum *= ROTATION_SCALE;
 
 		// this if can be reduced to just changing tranFun to identity
 		if (this.snap) {
