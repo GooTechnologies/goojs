@@ -50,11 +50,11 @@ define([
 		this.camera = null;
 
 		this.gizmos = [
-			new TranslationGizmo(this),
-			new GlobalTranslationGizmo(this),
-			new RotationGizmo(this),
-			new GlobalRotationGizmo(this),
-			new ScaleGizmo(this)
+			new TranslationGizmo(),
+			new GlobalTranslationGizmo(),
+			new RotationGizmo(),
+			new GlobalRotationGizmo(),
+			new ScaleGizmo()
 		];
 
 		this.active = false;

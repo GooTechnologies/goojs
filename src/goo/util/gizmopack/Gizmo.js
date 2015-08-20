@@ -29,9 +29,9 @@ define([
 
 	/**
 	* 	*/
-	function Gizmo(name, gizmoRenderSystem) {
-		this.name = name || 'Default Gizmo';
-		this.gizmoRenderSystem = gizmoRenderSystem;
+	function Gizmo(name) {
+		this.name = name;
+
 		this._colors = [
 			[1, 0.1, 0.3],
 			[0.3, 1, 0.2],

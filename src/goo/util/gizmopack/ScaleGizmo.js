@@ -69,9 +69,7 @@ define([
 			this._scale
 		);
 
-		var boundEntityTranslation = this.gizmoRenderSystem.entity.transformComponent.worldTransform.translation;
-		var mainCameraTranslation = Renderer.mainCamera.translation;
-		var cameraEntityDistance = mainCameraTranslation.distance(boundEntityTranslation);
+		var cameraEntityDistance = Renderer.mainCamera.translation.distance(this.transform.translation);
 		scale += cameraEntityDistance / 200000 * MathUtils.sign(scale - 1);
 
 		this._transformScale.scale(scale);
