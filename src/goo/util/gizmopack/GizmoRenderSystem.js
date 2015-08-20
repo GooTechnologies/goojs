@@ -60,7 +60,7 @@ define([
 		this.active = false;
 		this.nextGizmo = null;
 		this.setupCallbacks(callbacks);
-		//this.boundEntity = null; //unused
+
 		this.activeGizmo = null;
 		this.viewportWidth = 0;
 		this.viewportHeight = 0;
@@ -262,9 +262,6 @@ define([
 			this.activeGizmo.process(this._mouseState, this._oldMouseState);
 			this._oldMouseState.copy(this._mouseState);
 			this._dirty = false;
-		} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
-			// we're not interested in two way bindings
-			this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform);
 		}
 
 		this.activeGizmo.updateTransforms();
