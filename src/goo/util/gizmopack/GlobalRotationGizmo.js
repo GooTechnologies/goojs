@@ -35,12 +35,8 @@ define([
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
-		this.accumulatedRotationThorX = 0;
-		this.accumulatedRotationThorY = 0;
-		this.accumulatedRotationThorZ = 0;
-		this.oldAngleX = 0;
-		this.oldAngleY = 0;
-		this.oldAngleZ = 0;
+		this._accumulatedRotation = new Vector3();
+		this._oldAngle = new Vector3();
 
 		this.compileRenderables();
 	}

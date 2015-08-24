@@ -33,12 +33,8 @@ define([
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
-		this.accumulatedRotationThorX = 0;
-		this.accumulatedRotationThorY = 0;
-		this.accumulatedRotationThorZ = 0;
-		this.oldAngleX = 0;
-		this.oldAngleY = 0;
-		this.oldAngleZ = 0;
+		this._accumulatedRotation = new Vector3();
+		this._oldAngle = new Vector3();
 
 		this.compileRenderables();
 	}
@@ -172,25 +168,26 @@ define([
 		sum *= ROTATION_SCALE;
 
 		var transformFunction = this.snap ? snapFunction : identityFunction;
+		var newAngle;
 
 		switch (this._activeHandle.axis) {
 			case 0:
-				this.accumulatedRotationThorX += sum;
-				var newAngleX = transformFunction(this.accumulatedRotationThorX);
-				this._rotation.rotateX(newAngleX - this.oldAngleX);
-				this.oldAngleX = newAngleX;
+				this._accumulatedRotation.x += sum;
+				newAngle = transformFunction(this._accumulatedRotation.x);
+				this._rotation.rotateX(newAngle - this._oldAngle.x);
+				this._oldAngle.x = newAngle;
 				break;
 			case 1:
-				this.accumulatedRotationThorY += sum;
-				var newAngleY = transformFunction(this.accumulatedRotationThorY);
-				this._rotation.rotateY(newAngleY - this.oldAngleY);
-				this.oldAngleY = newAngleY;
+				this._accumulatedRotation.y += sum;
+				newAngle = transformFunction(this._accumulatedRotation.y);
+				this._rotation.rotateY(newAngle - this._oldAngle.y);
+				this._oldAngle.y = newAngle;
 				break;
 			case 2:
-				this.accumulatedRotationThorZ += sum;
-				var newAngleZ = transformFunction(this.accumulatedRotationThorZ);
-				this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
-				this.oldAngleZ = newAngleZ;
+				this._accumulatedRotation.z += sum;
+				newAngle = transformFunction(this._accumulatedRotation.z);
+				this._rotation.rotateZ(newAngle - this._oldAngle.z);
+				this._oldAngle.z = newAngle;
 				break;
 		}
 
