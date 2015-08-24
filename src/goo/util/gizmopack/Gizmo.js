@@ -170,15 +170,19 @@ define([
 				// Set plane distance from world origin by projecting world translation to plane normal
 				worldCenter.copy(Vector3.ZERO);
 				this.transform.matrix.applyPostPoint(worldCenter);
+
 				this._plane.constant = worldCenter.dot(normal);
 			} else {
 				// Get gizmo handle points in world space
 				worldCenter.copy(Vector3.ZERO);
 				this.transform.matrix.applyPostPoint(worldCenter);
+
 				worldX.copy(Vector3.UNIT_X);
 				this.transform.matrix.applyPostPoint(worldX);
+
 				worldY.copy(Vector3.UNIT_Y);
 				this.transform.matrix.applyPostPoint(worldY);
+
 				worldZ.copy(Vector3.UNIT_Z);
 				this.transform.matrix.applyPostPoint(worldZ);
 
@@ -190,26 +194,35 @@ define([
 				screenY.subVector(screenCenter);
 				Renderer.mainCamera.getScreenCoordinates(worldZ, 1, 1, screenZ);
 				screenZ.subVector(screenCenter);
-				// Set plane to active axis's adjacent plane with the biggest screen area
-				if (this._activeHandle.axis === 0) {
-					if (screenY.cross(screenX).length() > screenZ.cross(screenX).length()) {
-						normal.copy(worldZ).subVector(worldCenter).normalize();
-					} else {
-						normal.copy(worldY).subVector(worldCenter).normalize();
-					}
-				} else if (this._activeHandle.axis === 1) {
-					if (screenZ.cross(screenY).length() > screenX.cross(screenY).length()) {
-						normal.copy(worldX).subVector(worldCenter).normalize();
-					} else {
-						normal.copy(worldZ).subVector(worldCenter).normalize();
-					}
-				} else {
-					if (screenX.cross(screenZ).length() > screenY.cross(screenZ).length()) {
-						normal.copy(worldY).subVector(worldCenter).normalize();
-					} else {
-						normal.copy(worldX).subVector(worldCenter).normalize();
-					}
+
+				// when dragging on a line
+				// select the plane that's the "most perpendicular" to the camera
+				switch (this._activeHandle.axis) {
+					case 0:
+						normal.copy(
+							screenY.cross(screenX).length() > screenZ.cross(screenX).length() ?
+								worldZ :
+								worldY
+						);
+						break;
+					case 1:
+						normal.copy(
+							screenZ.cross(screenY).length() > screenX.cross(screenY).length() ?
+								worldX :
+								worldZ
+						);
+						break;
+					case 2:
+						normal.copy(
+							screenX.cross(screenZ).length() > screenY.cross(screenZ).length() ?
+								worldY :
+								worldX
+						);
+						break;
 				}
+
+				normal.subVector(worldCenter).normalize();
+
 				// Plane constant is world translation projected on normal
 				this._plane.constant = worldCenter.dot(normal);
 			}
