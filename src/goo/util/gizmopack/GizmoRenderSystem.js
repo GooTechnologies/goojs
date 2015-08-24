@@ -178,6 +178,12 @@ define([
 		}
 	};
 
+	GizmoRenderSystem.prototype.setSnap = function (state) {
+		this.gizmos.forEach(function (gizmo) {
+			gizmo.setSnap(state);
+		});
+	};
+
 	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 		if (callbacks && callbacks.length === 5) {
 			this.gizmos[0].onChange = callbacks[0];

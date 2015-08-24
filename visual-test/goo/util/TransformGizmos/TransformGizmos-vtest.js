@@ -59,9 +59,7 @@ require([
 		document.body.addEventListener('keydown', function (e) {
 			switch (e.which) {
 				case 17: // ctrl
-					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
-						gizmo.setSnap(true);
-					});
+					gizmoRenderSystem.setSnap(true);
 					console.log('snap on');
 					break;
 				case 49: // 1
@@ -93,10 +91,8 @@ require([
 		document.body.addEventListener('keyup', function (e) {
 			switch (e.which) {
 				case 17: // ctrl
-					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
-						gizmo.setSnap(false);
-						console.log('snap off');
-					});
+					gizmoRenderSystem.setSnap(false);
+					console.log('snap off');
 					break;
 			}
 		});
