@@ -68,6 +68,14 @@ define([
 		}
 	};
 
+	/**
+	 * Turns snapping on or off
+	 * @param {boolean} snap
+	 */
+	Gizmo.prototype.setSnap = function (snap) {
+		this._snap = snap;
+	};
+
 	Gizmo.prototype.activate = function (properties) {
 		this._activeHandle = properties.data;
 
@@ -286,7 +294,7 @@ define([
 
 			' final_color.a = opacity;',
 			' gl_FragColor = final_color;',
-			'}'//
+			'}'
 		].join('\n')
 	};
 

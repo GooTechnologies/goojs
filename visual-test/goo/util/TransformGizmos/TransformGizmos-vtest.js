@@ -56,8 +56,14 @@ require([
 	}
 
 	function setupKeys() {
-		document.body.addEventListener('keypress', function (e) {
+		document.body.addEventListener('keydown', function (e) {
 			switch (e.which) {
+				case 17: // ctrl
+					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
+						gizmo.setSnap(true);
+					});
+					console.log('snap on');
+					break;
 				case 49: // 1
 					key1();
 					break;
@@ -81,6 +87,17 @@ require([
 						'4: rotate gizmo, local',
 						'5: scale gizmo'
 					].join('\n'));
+			}
+		});
+
+		document.body.addEventListener('keyup', function (e) {
+			switch (e.which) {
+				case 17: // ctrl
+					gizmoRenderSystem.gizmos.forEach(function (gizmo) {
+						gizmo.setSnap(false);
+						console.log('snap off');
+					});
+					break;
 			}
 		});
 	}

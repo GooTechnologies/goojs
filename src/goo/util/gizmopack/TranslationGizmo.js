@@ -28,6 +28,9 @@ define([
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 
+		this.realTranslation = new Vector3();
+		this._snap = false;
+
 		this.compileRenderables();
 	}
 
@@ -40,6 +43,33 @@ define([
 		this._setPlane();
 		if (this._activeHandle.type === 'Axis') {
 			this._setLine();
+		}
+	};
+
+	function snapToGrid(vector3) {
+		vector3.data[0] = Math.round(vector3.data[0]);
+		vector3.data[1] = Math.round(vector3.data[1]);
+		vector3.data[2] = Math.round(vector3.data[2]);
+	}
+
+	TranslationGizmo.prototype.setSnap = function (snap) {
+		var oldSnap = this._snap;
+		this._snap = snap;
+
+		// unsnap when coming out of snapping mode
+		if (oldSnap && !this._snap) {
+			this.transform.translation.copy(this.realTranslation);
+
+			if (this.onChange instanceof Function) {
+				this.onChange(this.transform.translation);
+			}
+		} else if (!oldSnap && this._snap) {
+			snapToGrid(this.transform.translation);
+			this.transform.update();
+
+			if (this.onChange instanceof Function) {
+				this.onChange(this.transform.translation);
+			}
 		}
 	};
 
@@ -61,6 +91,15 @@ define([
 		};
 	})();
 
+	TranslationGizmo.prototype._addTranslation = function (that) {
+		this.realTranslation.addVector(that);
+		this.transform.translation.copy(this.realTranslation);
+
+		if (this._snap) {
+			snapToGrid(this.transform.translation);
+		}
+	};
+
 	(function () {
 		var oldWorldPos = new Vector3();
 		var worldPos = new Vector3();
@@ -73,7 +112,7 @@ define([
 			moveVector.copy(worldPos).subVector(oldWorldPos);
 
 			// And add to translation
-			this.transform.translation.addVector(moveVector);
+			this._addTranslation(moveVector);
 		};
 	})();
 
@@ -92,7 +131,7 @@ define([
 			var d = moveVector.dot(line);
 			moveVector.copy(line).scale(d);
 
-			this.transform.translation.addVector(moveVector);
+			this._addTranslation(moveVector);
 		};
 	})();
 
