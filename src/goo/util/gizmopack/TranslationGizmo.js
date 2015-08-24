@@ -46,6 +46,11 @@ define([
 		}
 	};
 
+	TranslationGizmo.prototype.copyTransform = function () {
+		Gizmo.prototype.copyTransform.apply(this, arguments);
+		this.realTranslation.copy(this.transform.translation);
+	};
+
 	function snapToGrid(vector3) {
 		vector3.data[0] = Math.round(vector3.data[0]);
 		vector3.data[1] = Math.round(vector3.data[1]);

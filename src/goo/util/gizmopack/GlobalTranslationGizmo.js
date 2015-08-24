@@ -1,8 +1,10 @@
 define([
 	'goo/util/gizmopack/Gizmo',
+	'goo/math/Vector3',
 	'goo/util/gizmopack/TranslationGizmo'
 ], function (
 	Gizmo,
+	Vector3,
 	TranslationGizmo
 ) {
 	'use strict';
@@ -13,6 +15,9 @@ define([
 	 */
 	function GlobalTranslationGizmo() {
 		Gizmo.call(this, 'GlobalTranslationGizmo');
+
+		this.realTranslation = new Vector3();
+		this._snap = false;
 
 		this.compileRenderables();
 	}
@@ -26,9 +31,15 @@ define([
 	GlobalTranslationGizmo.prototype.copyTransform = function (transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
 
+		this.realTranslation.copy(this.transform.translation);
+
 		this.transform.rotation.setIdentity();
 		this.updateTransforms();
 	};
+
+	GlobalTranslationGizmo.prototype.setSnap = TranslationGizmo.prototype.setSnap;
+
+	GlobalTranslationGizmo.prototype._addTranslation = TranslationGizmo.prototype._addTranslation;
 
 	GlobalTranslationGizmo.prototype._moveOnPlane = TranslationGizmo.prototype._moveOnPlane;
 	GlobalTranslationGizmo.prototype._moveOnLine = TranslationGizmo.prototype._moveOnLine;
