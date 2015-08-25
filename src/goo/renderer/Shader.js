@@ -375,18 +375,18 @@ define([
 		if (this.defineKeyDirty) {
 			var key = 'Key:'+this.name;
 			var defineArray = Object.keys(this.defines);
-			for (var i = 0, l = defineArray.length; i < l; i++) {
-				var defineArrayKey = defineArray[i];
+			for (var i = 0; i < defineArray.length; i++) {
+				if (definesIndices.indexOf(defineArray[i]) === -1) {
+					definesIndices.push(defineArray[i]);
+				}
+			}
+			for (var i = 0, l = definesIndices.length; i < l; i++) {
+				var defineArrayKey = definesIndices[i];
 				var defineVal = this.defines[defineArrayKey];
 				if (defineVal === undefined || defineVal === false) {
 					continue;
 				}
-				var defineIndex = definesIndices.indexOf(defineArrayKey);
-				if (defineIndex === -1) {
-					definesIndices.push(defineArrayKey);
-					defineIndex = definesIndices.length;
-				}
-				key += '_'+defineIndex+':'+defineVal;
+				key += '_'+i+':'+defineVal;
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;
@@ -394,6 +394,7 @@ define([
 
 		return this.defineKey;
 	};
+
 
 	Shader.prototype.rebuild = function () {
 		this.shaderProgram = null;
