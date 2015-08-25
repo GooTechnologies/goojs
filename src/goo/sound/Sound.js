@@ -243,7 +243,7 @@ define([
 
 	/**
 	 * Disconnect output of sound from audionodes
-	 * @param {AudioNode[]|AudioNode} nodes
+	 * @param {(Array<AudioNode>|AudioNode)} nodes
 	 */
 	Sound.prototype.disconnectFrom = function (nodes) {
 		if (!nodes) {
