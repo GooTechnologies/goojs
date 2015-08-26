@@ -376,8 +376,13 @@ define([
 			var key = 'Key:'+this.name;
 			var defineArray = Object.keys(this.defines);
 			for (var i = 0; i < defineArray.length; i++) {
-				if (definesIndices.indexOf(defineArray[i]) === -1) {
-					definesIndices.push(defineArray[i]);
+				var defineArrayKey = defineArray[i];
+				var defineVal = this.defines[defineArrayKey];
+				if (defineVal === undefined || defineVal === false) {
+					continue;
+				}
+				if (definesIndices.indexOf(defineArrayKey) === -1) {
+					definesIndices.push(defineArrayKey);
 				}
 			}
 			for (var i = 0, l = definesIndices.length; i < l; i++) {
