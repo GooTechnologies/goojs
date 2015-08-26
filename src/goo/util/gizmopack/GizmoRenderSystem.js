@@ -179,9 +179,9 @@ define([
 	};
 
 	GizmoRenderSystem.prototype.setSnap = function (state) {
-		this.gizmos.forEach(function (gizmo) {
-			gizmo.setSnap(state);
-		});
+		if (!this.activeGizmo) { return; }
+
+		this.activeGizmo.setSnap(state);
 	};
 
 	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
