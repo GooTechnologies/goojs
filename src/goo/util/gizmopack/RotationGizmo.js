@@ -167,7 +167,7 @@ define([
 		var sum = (delta.x * this._direction.x) + (delta.y * this._direction.y);
 		sum *= ROTATION_SCALE;
 
-		var transformFunction = this.snap ? snapFunction : identityFunction;
+		var transformFunction = this._snap ? snapFunction : identityFunction;
 		var newAngle;
 
 		switch (this._activeHandle.axis) {
