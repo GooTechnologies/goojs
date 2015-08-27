@@ -43,7 +43,7 @@ define([
 				shader.setDefine('TEST_DEFINE', true);
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:true');
+				expect(key).toEqual('Key:TestName_0:true');
 				expect(defineIndices).toEqual(['TEST_DEFINE']);
 			});
 			it('can generate define key with various define types (added)', function() {
@@ -53,7 +53,7 @@ define([
 				shader.setDefine('TEST_DEFINE2', 5);
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:true_2:5');
+				expect(key).toEqual('Key:TestName_0:true_1:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE1', 'TEST_DEFINE2']);
 			});
 			it('can generate define key with various define types (added+removed)', function() {
@@ -64,7 +64,7 @@ define([
 				shader.removeDefine('TEST_DEFINE1');
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:5');
+				expect(key).toEqual('Key:TestName_0:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE2']);
 			});
 			it('only re-generate key when dirty', function() {
@@ -76,7 +76,7 @@ define([
 
 				var key = shader.getDefineKey(defineIndices);
 
-				expect(key).toEqual('Key:TestName_1:true');
+				expect(key).toEqual('Key:TestName_0:true');
 
 				shader.defineKey = 'unset';
 
