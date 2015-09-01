@@ -77,6 +77,7 @@ define([
 				} else {
 					script.enabled = true;
 				}
+				
 				if (script.setup && script.enabled) {
 					try {
 						script.setup(script.parameters, script.context, window.goo);
