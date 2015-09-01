@@ -25,8 +25,7 @@ require([
 	'goo/passpack/PosteffectsHandler',
 	'goo/quadpack/QuadComponentHandler',
 	'goo/scriptpack/ScriptHandlers',
-	'goo/scriptpack/ScriptRegister',
-	'goo/scripts/GooClassRegister'
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	Material,
 	Box,
