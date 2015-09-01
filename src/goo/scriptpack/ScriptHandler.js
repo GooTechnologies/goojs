@@ -146,10 +146,10 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(newScriptElement);
 
-		var newScript = window._gooScriptFactories[config.id];
-		if (newScript) {
+		var scriptFactory = window._gooScriptFactories[config.id];
+		if (scriptFactory) {
 			try {
-				newScript = newScript();
+				var newScript = scriptFactory();
 				script.id = config.id;
 				safeUp(newScript, script);
 				script.setup = newScript.setup;
@@ -538,7 +538,6 @@ define([
 
 	/**
 	 * Load an external script
-	 * @private
 	 */
 	function loadExternalScript(script, scriptElem, url) {
 		return PromiseUtils.createPromise(function (resolve, reject) {
@@ -583,7 +582,6 @@ define([
 
 	/**
 	 * Validate external parameters
-	 * @private
 	 */
 	function safeUp(script, outScript) {
 		var errors = script.errors || [];
@@ -633,7 +631,7 @@ define([
 			}
 
 			if (param.options !== undefined && !(param.options instanceof Array)) {
-				errors.push({ message: 'Parameter "key" needs to be array' });
+				errors.push({ message: 'Parameter "options" needs to be array' });
 				continue;
 			}
 
@@ -687,7 +685,6 @@ define([
 	 * @param {string} error.message
 	 * @param {number} [error.line]
 	 * @param {string} [error.file]
-	 * @private
 	 */
 	function setError(script, error) {
 		if (error.file) {

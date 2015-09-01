@@ -129,7 +129,11 @@ define([
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.context) {
-				if (script.cleanup && (script.parameters? script.parameters.enabled : script.enabled)) {
+				if (script.cleanup &&
+					(script.parameters && script.parameters.enabled !== undefined ?
+						script.parameters.enabled :
+						script.enabled)
+				) {
 					try {
 						script.cleanup(script.parameters, script.context, window.goo);
 					} catch (e) {
