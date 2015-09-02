@@ -2,14 +2,12 @@ define([
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils',
-	'goo/util/StringUtils',
-	'goo/util/rsvp'
+	'goo/util/StringUtils'
 ], function (
 	TextureHandler,
 	PromiseUtils,
 	_,
-	StringUtils,
-	RSVP
+	StringUtils
 ) {
 	'use strict';
 
@@ -122,7 +120,7 @@ define([
 			if (typeInGroup(type, 'bundle')) {
 				this.prefill(this._cache[path], reload);
 			}
-			if (this._cache[path] instanceof RSVP.Promise) {
+			if (PromiseUtils.isPromise(this._cache[path])) {
 				return this._cache[path];
 			} else {
 				return PromiseUtils.resolve(this._cache[path]);

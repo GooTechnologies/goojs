@@ -1,13 +1,11 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/util/rsvp',
 	'goo/util/StringUtils',
 	'goo/util/PromiseUtils'
 ], function (
 	ConfigHandler,
 	ComponentHandler,
-	RSVP,
 	StringUtils,
 	PromiseUtils
 ) {
@@ -55,7 +53,7 @@ define([
 			for (var i = 0; i < components.length; i++) {
 				var type = this._getComponentType(components[i]);
 				var p = this._updateComponent(entity, type, null);
-				if (p instanceof RSVP.Promise) {
+				if (PromiseUtils.isPromise(p)) {
 					promises.push(p);
 				}
 			}

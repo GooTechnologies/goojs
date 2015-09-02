@@ -162,5 +162,9 @@ define([
 		return RSVP.all.apply(RSVP, arguments);
 	};
 
+	PromiseUtils.isPromise = function (obj) {
+		return obj instanceof RSVP.Promise;
+	};
+
 	return PromiseUtils;
 });
