@@ -31,7 +31,7 @@ define(function () {
 	 * @param reason
 	 */
 	PromiseUtils.reject = function (reason) {
-		return Promise.reject(value);
+		return Promise.reject(reason);
 	};
 
 

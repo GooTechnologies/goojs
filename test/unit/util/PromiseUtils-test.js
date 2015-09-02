@@ -21,5 +21,56 @@ define([
 				expect(solvedValue).toBeUndefined();
 	        });
 	    });
+
+		describe('optimisticAll', function () {
+			it('resolves when given an empty collection', function (done) {
+				PromiseUtils.optimisticAll([]).then(function (resolves) {
+					expect(resolves).toEqual([]);
+					done();
+				});
+			});
+
+			it('resolves when all promises resolve', function (done) {
+				PromiseUtils.optimisticAll([
+					PromiseUtils.resolve(123),
+					PromiseUtils.resolve(456)
+				]).then(function (resolves) {
+					expect(resolves).toEqual([
+						123,
+						456
+					]);
+
+					done();
+				});
+			});
+
+			it('resolves when some promises resolve', function (done) {
+				PromiseUtils.optimisticAll([
+					PromiseUtils.resolve(123),
+					PromiseUtils.reject(456)
+				]).then(function (resolves) {
+					expect(resolves).toEqual([
+						123,
+						456
+					]);
+
+					done();
+				});
+			});
+
+			it('resolves when no promises resolve', function (done) {
+				PromiseUtils.optimisticAll([
+					PromiseUtils.reject(123),
+					PromiseUtils.reject(456)
+				]).then(function (resolves) {
+					expect(resolves).toEqual([
+						123,
+						456
+					]);
+
+					done();
+				});
+			});
+		});
 	});
 });
