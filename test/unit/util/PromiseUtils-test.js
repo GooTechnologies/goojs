@@ -7,7 +7,7 @@ define([
 
 	describe('PromiseUtils', function () {
 	    describe('createDummyPromise', function () {
-	        it('resolves asynchronously', function (done) {
+	        xit('resolves asynchronously', function (done) {
 				var solvedValue;
 	            var promise = PromiseUtils.createDummyPromise('some value').then(function (value) {
 					solvedValue = value; // store this guy or outside access

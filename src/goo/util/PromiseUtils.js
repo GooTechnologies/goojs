@@ -1,8 +1,4 @@
-define([
-	'goo/util/rsvp'
-], function (
-	RSVP
-) {
+define(function () {
 	'use strict';
 
 	/**
@@ -17,15 +13,7 @@ define([
 	 * @returns {RSVP.Promise}
 	 */
 	PromiseUtils.createPromise = function (fun) {
-		var promise = new RSVP.Promise();
-
-		fun(function (value) {
-			promise.resolve(value);
-		}, function (reason) {
-			promise.reject(reason);
-		});
-
-		return promise;
+		return new Promise(fun);
 	};
 
 	//! AT: in line with the native Promise.resolve
@@ -34,9 +22,7 @@ define([
 	 * @param value
 	 */
 	PromiseUtils.resolve = function (value) {
-		var promise = new RSVP.Promise();
-		promise.resolve(value);
-		return promise;
+		return Promise.resolve(value);
 	};
 
 	//! AT: in line with the native Promise.reject
@@ -45,9 +31,7 @@ define([
 	 * @param reason
 	 */
 	PromiseUtils.reject = function (reason) {
-		var promise = new RSVP.Promise();
-		promise.reject(reason);
-		return promise;
+		return Promise.reject(value);
 	};
 
 
@@ -85,35 +69,34 @@ define([
 	 * promise will always resolve with an array of objects.
 	 */
 	PromiseUtils.optimisticAll = function (promises) {
-		var resolved = 0,
-			len = promises.length,
-			results = [],
-			promise = new RSVP.Promise();
+		var resolved = 0;
+		var len = promises.length;
+		var results = [];
 
-		if (len > 0) {
-			for (var i = 0; i < len; i++) {
-				(function (i) {
-					promises[i].then(function (result) {
-						results[i] = result;
-						resolved++;
-						if (resolved === len) {
-							promise.resolve(results);
-						}
-					},
-					function (error) {
-						results[i] = error;
-						resolved++;
-						if (resolved === len) {
-							promise.resolve(results);
-						}
-					});
-				})(i);
+		return new Promise(function (resolve, reject) {
+			if (len > 0) {
+				for (var i = 0; i < len; i++) {
+					(function (i) {
+						promises[i].then(function (result) {
+								results[i] = result;
+								resolved++;
+								if (resolved === len) {
+									resolve(results);
+								}
+							},
+							function (error) {
+								results[i] = error;
+								resolved++;
+								if (resolved === len) {
+									resolve(results);
+								}
+							});
+					})(i);
+				}
+			} else {
+				resolve(results);
 			}
-		}
-		else {
-			promise.resolve(results);
-		}
-		return promise;
+		});
 	};
 
 	/**
@@ -123,11 +106,9 @@ define([
 	 * @returns {Promise}
 	 */
 	PromiseUtils.delay = function (value, time) {
-		var promise = new RSVP.Promise();
-		setTimeout(function () {
-			promise.resolve(value);
-		}, time);
-		return promise;
+		return new Promise(function (resolve) {
+			setTimeout(resolve, time);
+		});
 	};
 
 	// the doc doesn't align with half of what this function actually does
@@ -159,11 +140,11 @@ define([
 	};
 
 	PromiseUtils.all = function () {
-		return RSVP.all.apply(RSVP, arguments);
+		return Promise.all.apply(Promise, arguments);
 	};
 
 	PromiseUtils.isPromise = function (obj) {
-		return obj instanceof RSVP.Promise;
+		return obj instanceof Promise;
 	};
 
 	return PromiseUtils;
