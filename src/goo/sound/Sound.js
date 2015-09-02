@@ -1,11 +1,11 @@
 define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function (
 	AudioContext,
 	MathUtils,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -37,7 +37,9 @@ define([
 		this._playStart = 0;
 		this._pausePos = 0;
 		//this._endTimer = null;
+
 		this._endPromise = null;
+		this._endPromiseMethods = null;
 
 		this._paused = false;
 
@@ -54,40 +56,45 @@ define([
 	 */
 	Sound.prototype.play = function (when) {
 		when = when || 0;
+
 		if (this._currentSource) {
 			return this._endPromise;
 		}
-		this._endPromise = new RSVP.Promise(); //! AT: this needs refactoring
+
 		if (!this._buffer || this._stream) {
 			return this._endPromise;
 		}
 
-		var currentSource = this._currentSource = AudioContext.getContext().createBufferSource();
+		this._endPromise = PromiseUtils.createPromise(function (resolve, reject) {
+			this._endPromiseMethods = { resolve: resolve, reject: reject };
 
-		this._paused = false;
-		this._currentSource.onended = function () {
-			if (this._currentSource === currentSource && !this._paused) {
-				this.stop();
+			var currentSource = this._currentSource = AudioContext.getContext().createBufferSource();
+
+			this._paused = false;
+			this._currentSource.onended = function () {
+				if (this._currentSource === currentSource && !this._paused) {
+					this.stop();
+				}
+			}.bind(this);
+
+			this._currentSource.playbackRate.value = this._rate;
+			this._currentSource.connect(this._outNode);
+			this._currentSource.buffer = this._buffer;
+			this._currentSource.loop = this._loop;
+			if (this._loop) {
+				this._currentSource.loopStart = this._offset;
+				this._currentSource.loopEnd = this._duration + this._offset;
 			}
-		}.bind(this);
 
-		this._currentSource.playbackRate.value = this._rate;
-		this._currentSource.connect(this._outNode);
-		this._currentSource.buffer = this._buffer;
-		this._currentSource.loop = this._loop;
-		if (this._loop) {
-			this._currentSource.loopStart = this._offset;
-			this._currentSource.loopEnd = this._duration + this._offset;
-		}
+			this._playStart = AudioContext.getContext().currentTime - this._pausePos;
+			var duration = this._duration - this._pausePos;
 
-		this._playStart = AudioContext.getContext().currentTime - this._pausePos;
-		var duration = this._duration - this._pausePos;
-
-		if (this._loop) {
-			this._currentSource.start(when, this._pausePos + this._offset);
-		} else {
-			this._currentSource.start(when, this._pausePos + this._offset, duration);
-		}
+			if (this._loop) {
+				this._currentSource.start(when, this._pausePos + this._offset);
+			} else {
+				this._currentSource.start(when, this._pausePos + this._offset, duration);
+			}
+		}.bind(this));
 
 		return this._endPromise;
 	};
@@ -114,9 +121,11 @@ define([
 	Sound.prototype.stop = function (when) {
 		this._paused = false;
 		this._pausePos = 0;
-		if (this._endPromise) {
-			this._endPromise.resolve();
+
+		if (this._endPromiseMethods) {
+			this._endPromiseMethods.resolve();
 		}
+
 		if (this._currentSource) {
 			this._stop(when);
 		}
@@ -138,11 +147,8 @@ define([
 	Sound.prototype.fade = function (volume, time) {
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		var p = new RSVP.Promise();
-		setTimeout(function () {
-			p.resolve();
-		}, time * 1000);
-		return p;
+
+		return PromiseUtils.delay(time * 1000);
 	};
 
 	Sound.prototype.isPlaying = function () {
