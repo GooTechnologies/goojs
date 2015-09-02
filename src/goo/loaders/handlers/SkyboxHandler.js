@@ -5,7 +5,6 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Skybox',
 	'goo/util/PromiseUtils',
-	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus'
 ], function(
 	ConfigHandler,
@@ -13,7 +12,6 @@ define([
 	Texture,
 	ShaderBuilder,
 	Skybox,
-	PromiseUtils,
 	PromiseUtils,
 	SystemBus
 ) {
