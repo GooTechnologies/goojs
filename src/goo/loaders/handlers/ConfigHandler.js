@@ -1,8 +1,6 @@
 define([
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils'
 ], function (
-	RSVP,
 	PromiseUtils
 ) {
 	'use strict';
@@ -104,7 +102,7 @@ define([
 		this._objects.clear();
 		this._loading.clear();
 
-		return RSVP.all(promises);
+		return PromiseUtils.all(promises);
 	};
 
 	/**

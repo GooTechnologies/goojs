@@ -2,15 +2,11 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	CameraComponent,
 	Camera,
-	RSVP,
-	pu,
 	_
 ) {
 	'use strict';

@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/ScriptComponent',
-	'goo/util/rsvp',
 	'goo/util/ObjectUtils',
 	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus',
@@ -11,7 +10,6 @@ define([
 ], function (
 	ComponentHandler,
 	ScriptComponent,
-	RSVP,
 	_,
 	PromiseUtils,
 	SystemBus,
@@ -89,7 +87,7 @@ define([
 				promises.push(promise);
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function (scripts) {
+			return PromiseUtils.all(promises).then(function (scripts) {
 				component.scripts = scripts;
 				return component;
 			});
@@ -117,7 +115,7 @@ define([
 
 		parameters.enabled = config.enabled !== false;
 
-		return RSVP.all(promises);
+		return PromiseUtils.all(promises);
 	};
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {

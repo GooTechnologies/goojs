@@ -1,12 +1,10 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/HtmlComponent',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	HtmlComponent,
-	RSVP,
 	PromiseUtils
 ) {
 	'use strict';
@@ -167,7 +165,7 @@ define([
 				}
 			}
 
-			return RSVP.all(imagePromises);
+			return PromiseUtils.all(imagePromises);
 		});
 	};
 

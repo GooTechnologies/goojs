@@ -1,11 +1,11 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/animationpack/components/AnimationComponent',
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	AnimationComponent,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -67,7 +67,7 @@ define([
 				});
 				promises.push(p);
 			}
-			return RSVP.all(promises).then(function() {
+			return PromiseUtils.all(promises).then(function() {
 				return component;
 			});
 		});

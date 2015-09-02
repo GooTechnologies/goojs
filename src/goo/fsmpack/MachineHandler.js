@@ -11,7 +11,7 @@ define([
 	State,
 	Machine,
 	Actions,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -78,7 +78,7 @@ define([
 			for (var key in config.states) {
 				promises.push(that._updateState(machine, config.states[key], options));
 			}
-			return RSVP.all(promises).then(function() {
+			return PromiseUtils.all(promises).then(function() {
 				machine.setInitialState(config.initialState);
 				return machine;
 			});
@@ -177,7 +177,7 @@ define([
 		}, null, 'sortValue');
 		*/
 
-		return RSVP.all(promises).then(function(machines) {
+		return PromiseUtils.all(promises).then(function(machines) {
 			for (var i = 0; i < machines; i++) {
 				state.addMachine(machines[i]);
 			}

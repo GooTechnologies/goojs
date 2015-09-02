@@ -2,14 +2,12 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/sound/AudioContext',
 	'goo/sound/Sound',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AudioContext,
 	Sound,
-	RSVP,
 	PromiseUtils,
 	_
 ) {

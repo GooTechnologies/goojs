@@ -5,8 +5,7 @@ define([
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
 	'goo/util/StringUtils',
-	'goo/util/PromiseUtils',
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function (
 	Texture,
 	RendererUtils,
@@ -14,8 +13,7 @@ define([
 	TextureHandler,
 	Ajax,
 	StringUtils,
-	PromiseUtils,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -186,7 +184,7 @@ define([
 			}.bind(this));
 		}.bind(this));
 
-		return RSVP.all(promises).then(function (images) {
+		return PromiseUtils.all(promises).then(function (images) {
 			return PromiseUtils.createPromise(function (resolve, reject) {
 				var width = images[0].width;
 				var height = images[0].height;

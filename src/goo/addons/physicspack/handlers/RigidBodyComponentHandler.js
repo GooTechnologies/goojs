@@ -3,7 +3,6 @@ define([
 	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
-	'goo/util/rsvp',
 	'goo/util/ObjectUtils',
 	'goo/math/Vector3'
 ], function (
@@ -11,7 +10,6 @@ define([
 	RigidBodyComponent,
 	BoundingBox,
 	ShapeCreatorMemoized,
-	RSVP,
 	_,
 	Vector3
 ) {

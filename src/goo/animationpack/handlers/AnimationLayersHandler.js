@@ -12,7 +12,7 @@ define([
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,
-	RSVP,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -79,7 +79,7 @@ define([
 				promises.push(that._parseLayer(layerCfg, object[i++], options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function (layers) {
+			return PromiseUtils.all(promises).then(function (layers) {
 				object.length = layers.length;
 				for (var i = 0; i < layers.length; i++) {
 					object[i] = layers[i];
@@ -125,7 +125,7 @@ define([
 		}, null, 'sortValue');
 
 		// Populate layer
-		return RSVP.all(promises).then(function () {
+		return PromiseUtils.all(promises).then(function () {
 			that._setInitialState(layer, layerConfig.initialStateRef);
 			return layer;
 		});

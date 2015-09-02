@@ -4,7 +4,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Skybox',
-	'goo/util/rsvp',
+	'goo/util/PromiseUtils',
 	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus'
 ], function(
@@ -13,7 +13,7 @@ define([
 	Texture,
 	ShaderBuilder,
 	Skybox,
-	RSVP,
+	PromiseUtils,
 	PromiseUtils,
 	SystemBus
 ) {
@@ -94,7 +94,7 @@ define([
 				promises.push(that._updateSphere(ref, config.sphere, options, skybox));
 			}
 
-			return RSVP.all(promises).then(function (skyboxes) {
+			return PromiseUtils.all(promises).then(function (skyboxes) {
 				if (config.box || config.sphere) {
 					that._activeSkyboxRef = ref;
 				}
@@ -160,7 +160,7 @@ define([
 		});
 
 		// Load all textures
-		return RSVP.all(promises).then(function(textures) {
+		return PromiseUtils.all(promises).then(function(textures) {
 
 			// Check if skybox is the same
 			if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {

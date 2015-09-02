@@ -8,7 +8,7 @@ define([
 		'goo/math/MathUtils',
 		'goo/renderer/Texture',
 		'goo/renderer/TextureCreator',
-		'goo/util/rsvp'
+		'goo/util/PromiseUtils'
 	],
 	function (
 		Terrain,
@@ -20,7 +20,7 @@ define([
 		MathUtils,
 		Texture,
 		TextureCreator,
-		RSVP
+		PromiseUtils
 	) {
 		'use strict';
 
@@ -120,7 +120,7 @@ define([
 			var terrainPromise = this._loadData(terrainData.heightMap);
 			var splatPromise = this._loadData(terrainData.splatMap);
 
-			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
+			return PromiseUtils.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];
 				var splatBuffer = datas[1];
 
@@ -143,19 +143,18 @@ define([
 		};
 
 		TerrainHandler.prototype._loadData = function (url) {
-			var promise = new RSVP.Promise();
+			return PromiseUtils.createPromise(function (resolve, reject) {
+				var ajax = new Ajax();
 
-			var ajax = new Ajax();
-			ajax.get({
-				url: this.resourceFolder + url,
-				responseType: 'arraybuffer'
-			}).then(function (request) {
-				promise.resolve(request.response);
-			}.bind(this), function () {
-				promise.resolve(null);
+				ajax.get({
+					url: this.resourceFolder + url,
+					responseType: 'arraybuffer'
+				}).then(function (request) {
+					resolve(request.response);
+				}.bind(this), function () {
+					resolve(null);
+				}.bind(this));
 			}.bind(this));
-
-			return promise;
 		};
 
 		TerrainHandler.prototype._textureLoad = function (url) {
@@ -172,7 +171,7 @@ define([
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
-			return RSVP.all(promises).then(function (textures) {
+			return PromiseUtils.all(promises).then(function (textures) {
 				this.terrain.init({
 					heightMap: parentMipmap,
 					splatMap: splatMap,

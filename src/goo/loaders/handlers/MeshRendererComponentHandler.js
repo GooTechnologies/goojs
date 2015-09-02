@@ -3,7 +3,6 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
@@ -11,8 +10,7 @@ define([
 	MeshRendererComponent,
 	Material,
 	ShaderLib,
-	RSVP,
-	pu,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -92,7 +90,7 @@ define([
 			_.forEach(materials, function(item) {
 				promises.push(that._load(item.materialRef, options));
 			}, null, 'sortValue');
-			return RSVP.all(promises).then(function(materials) {
+			return PromiseUtils.all(promises).then(function(materials) {
 				var selectionMaterial = component.materials.filter(function(material) {
 					return material.name === 'gooSelectionIndicator';
 				});

@@ -158,5 +158,9 @@ define([
 		return promise;
 	};
 
+	PromiseUtils.all = function () {
+		return RSVP.all.apply(RSVP, arguments);
+	};
+
 	return PromiseUtils;
 });

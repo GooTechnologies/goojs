@@ -3,13 +3,13 @@ define([
 	'goo/entities/SystemBus',
 	'goo/util/ArrayUtils',
 	'goo/util/ObjectUtils',
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function (
 	ConfigHandler,
 	SystemBus,
 	ArrayUtils,
 	_,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -95,7 +95,7 @@ define([
 					}));
 				}
 			}
-			return RSVP.all(promises).then(function() {
+			return PromiseUtils.all(promises).then(function() {
 				return scene;
 			});
 		});
@@ -128,7 +128,7 @@ define([
 			promises.push(that._load(entityConfig.entityRef, options));
 		}, null, 'sortValue');
 
-		return RSVP.all(promises).then(function(entities) {
+		return PromiseUtils.all(promises).then(function(entities) {
 			// Adding new entities
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];

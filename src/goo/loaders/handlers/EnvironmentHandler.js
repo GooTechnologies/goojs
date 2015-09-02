@@ -4,14 +4,14 @@ define([
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function(
 	ConfigHandler,
 	_,
 	SystemBus,
 	ShaderBuilder,
 	Snow,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -155,7 +155,7 @@ define([
 					soundSystem.setReverb(null);
 				}
 			}
-			return RSVP.all(promises).then(function() { return object; });
+			return PromiseUtils.all(promises).then(function() { return object; });
 		});
 	};
 

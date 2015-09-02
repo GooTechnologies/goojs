@@ -5,7 +5,6 @@ define([
 	'goo/animationpack/blendtree/ManagedTransformSource',
 	'goo/animationpack/blendtree/BinaryLerpSource',
 	'goo/animationpack/blendtree/FrozenClipSource',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
@@ -15,7 +14,6 @@ define([
 	ManagedTransformSource,
 	BinaryLerpSource,
 	FrozenClipSource,
-	RSVP,
 	PromiseUtils,
 	_
 ) {
@@ -127,7 +125,7 @@ define([
 					this._parseClipSource(cfg.clipSourceA, null, options),
 					this._parseClipSource(cfg.clipSourceB, null, options)
 				];
-				return RSVP.all(promises).then(function (clipSources) {
+				return PromiseUtils.all(promises).then(function (clipSources) {
 					clipSource = new BinaryLerpSource(clipSources[0], clipSources[1]);
 					if (cfg.blendWeight) {
 						clipSource.blendWeight = cfg.blendWeight;

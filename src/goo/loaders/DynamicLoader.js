@@ -2,7 +2,6 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/Ajax',
-	'goo/util/rsvp',
 	'goo/util/StringUtils',
 	'goo/util/PromiseUtils',
 	'goo/util/ArrayUtils',
@@ -29,7 +28,6 @@ define([
 	ConfigHandler,
 	ComponentHandler,
 	Ajax,
-	RSVP,
 	StringUtils,
 	PromiseUtils,
 	ArrayUtils,
@@ -105,7 +103,7 @@ define([
 
 			this._world.gooRunner.renderer.clearShaderCache();
 		}
-		return RSVP.all(promises);
+		return PromiseUtils.all(promises);
 	};
 
 	/**
@@ -244,7 +242,7 @@ define([
 				});
 			}
 			// When all binary refs are loaded, we're done
-			return RSVP.all(refs.map(load));
+			return PromiseUtils.all(refs.map(load));
 		}
 
 		function traverse(refs) {
@@ -276,7 +274,7 @@ define([
 						promises.push(loadFn(ref));
 					}
 				}
-				return RSVP.all(promises);
+				return PromiseUtils.all(promises);
 			}
 
 			// Resolved when everything is loaded and traversed

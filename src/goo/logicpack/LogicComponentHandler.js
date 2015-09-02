@@ -1,6 +1,5 @@
 define(['goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LogicComponent',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/logic/LogicNodeEntityProxy',
 	'goo/logic/LogicNodeTransformComponent',
@@ -31,7 +30,6 @@ define(['goo/loaders/handlers/ComponentHandler',
 ], function (
 	ComponentHandler,
 	LogicComponent,
-	RSVP,
 	PromiseUtils
 ) {
 	'use strict';

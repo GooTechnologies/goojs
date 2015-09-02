@@ -59,7 +59,7 @@ define([
 					promises.push(p);
 				}
 			}
-			return RSVP.all(promises)
+			return PromiseUtils.all(promises)
 			.then(function () {
 				entity.removeFromWorld();
 				that._objects.delete(ref);

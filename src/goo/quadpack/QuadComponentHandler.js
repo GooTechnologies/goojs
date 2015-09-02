@@ -1,12 +1,10 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils',
 	'goo/quadpack/QuadComponent'
 ], function (
 	ComponentHandler,
-	RSVP,
 	PromiseUtils,
 	_,
 	QuadComponent

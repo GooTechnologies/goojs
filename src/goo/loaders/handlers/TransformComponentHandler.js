@@ -3,13 +3,13 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
 	'goo/util/ObjectUtils',
-	'goo/util/rsvp'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
 	_,
-	RSVP
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -147,7 +147,7 @@ define([
 			}
 
 			// When all children are attached, return component
-			return RSVP.all(promises).then(function () {
+			return PromiseUtils.all(promises).then(function () {
 				component.setUpdated();
 				return component;
 			});

@@ -3,14 +3,14 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/RenderQueue',
-	'goo/util/rsvp',
+	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	Material,
 	ShaderLib,
 	RenderQueue,
-	RSVP,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -183,7 +183,7 @@ define([
 					material.removeTexture(type);
 				}
 			}
-			return RSVP.all(promises).then(function() {
+			return PromiseUtils.all(promises).then(function() {
 				return material;
 			});
 		});

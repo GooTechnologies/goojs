@@ -4,8 +4,6 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/renderer/light/SpotLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/math/Vector',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
@@ -14,8 +12,6 @@ define(['goo/loaders/handlers/ComponentHandler',
 	SpotLight,
 	DirectionalLight,
 	Vector,
-	RSVP,
-	pu,
 	_
 ) {
 	'use strict';

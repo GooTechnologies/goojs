@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/rsvp',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/scriptpack/OrbitNPanControlScript',
 	'goo/scriptpack/FlyControlScript',
@@ -15,7 +14,6 @@ define([
 	'goo/scripts/Scripts'
 ], function (
 	ConfigHandler,
-	RSVP,
 	OrbitCamControlScript,
 	OrbitNPanControlScript,
 	FlyControlScript,
@@ -386,7 +384,7 @@ define([
 				});
 			}
 
-			return RSVP.all(addDependencyPromises)
+			return PromiseUtils.all(addDependencyPromises)
 			.then(function () {
 				var parentElement = that.world.gooRunner.renderer.domElement.parentElement || document.body;
 

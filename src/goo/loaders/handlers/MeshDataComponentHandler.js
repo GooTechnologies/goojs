@@ -3,7 +3,7 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
-	'goo/util/rsvp',
+	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils',
 	'goo/util/StringUtils'
 ], function (
@@ -11,7 +11,7 @@ define([
 	MeshDataComponent,
 	BoundingBox,
 	ShapeCreatorMemoized,
-	RSVP,
+	PromiseUtils,
 	_,
 	StringUtils
 ) {
@@ -111,7 +111,7 @@ define([
 				} else {
 					component.currentPose = null;
 				}
-				return RSVP.all(promises).then(function () {
+				return PromiseUtils.all(promises).then(function () {
 					return component;
 				});
 			} else {

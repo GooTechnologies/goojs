@@ -6,7 +6,7 @@ define([
 ], function (
 	ComponentHandler,
 	StateMachineComponent,
-	RSVP,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -54,7 +54,7 @@ define([
 				promises.push(that._load(machineCfg.machineRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(machines) {
+			return PromiseUtils.all(promises).then(function(machines) {
 				// Adding new machines
 				for (var i = 0; i < machines.length; i++) {
 					if (component._machines.indexOf(machines[i]) === -1) {

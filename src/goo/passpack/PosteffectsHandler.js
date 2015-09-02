@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/ArrayUtils',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils',
 	'goo/renderer/pass/Composer',
@@ -12,7 +11,6 @@ define([
 ], function (
 	ConfigHandler,
 	ArrayUtils,
-	RSVP,
 	PromiseUtils,
 	ObjectUtils,
 	Composer,
@@ -89,7 +87,7 @@ define([
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function (effects) {
+			return PromiseUtils.all(promises).then(function (effects) {
 				for (var i = 0; i < effects.length; i++) {
 					posteffects[i] = effects[i];
 				}
@@ -183,7 +181,7 @@ define([
 			}
 		}
 
-		return RSVP.all(promises).then(function () {
+		return PromiseUtils.all(promises).then(function () {
 			effect.update(config);
 			return effect;
 		});

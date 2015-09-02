@@ -2,14 +2,12 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/SoundComponent',
 	'goo/sound/AudioContext',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils',
 	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
-	RSVP,
 	PromiseUtils,
 	_
 ) {
@@ -98,7 +96,7 @@ define([
 				promises.push(that._load(soundCfg.soundRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(sounds) {
+			return PromiseUtils.all(promises).then(function(sounds) {
 				// Add new sounds
 				for (var i = 0; i < sounds.length; i++) {
 					if (component.sounds.indexOf(sounds[i]) === -1) {

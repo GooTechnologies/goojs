@@ -4,7 +4,6 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtils'
 ], function (
 	ConfigHandler,
@@ -12,7 +11,6 @@ define([
 	MeshData,
 	Shader,
 	ShaderBuilder,
-	RSVP,
 	PromiseUtils
 ) {
 	'use strict';
@@ -71,7 +69,7 @@ define([
 			this.loadObject(config.fshaderRef, options)
 		];
 
-		return RSVP.all(promises).then(function (shaders) {
+		return PromiseUtils.all(promises).then(function (shaders) {
 			var vshader = shaders[0];
 			var fshader = shaders[1];
 
