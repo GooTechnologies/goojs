@@ -1,3 +1,16 @@
+v0.15.5 --- 2015-09-02
+----------------------
+
+###Additions
+ + the third parameter passed to scripts (the "restricted" goo namespace) is now the same as the global goo namespace
+ + Sound.prototype.stop takes an optional parameter that delays the stop
+
+###Fixes
+ * external dependencies for scripts loaded via the *DynamicLoader* are executed in order
+ * duplicate shaders cached under different keys in certain cases
+ * script cleanup functions not executing when parameter definitions are missing
+
+
 v0.15.4 --- 2015-08-13
 ----------------------
 
