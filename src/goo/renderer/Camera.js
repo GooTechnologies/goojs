@@ -272,6 +272,7 @@ define([
 
 		this.fov = source.fov;
 		this.aspect = source.aspect;
+
 		this.near = source.near;
 		this.far = source.far;
 		this.left = source.left;
@@ -391,54 +392,25 @@ define([
 	 */
 	Camera.prototype.onFrustumChange = function () {
 		if (this.projectionMode === Camera.Perspective) {
-			var nearSquared = this._frustumNear * this._frustumNear;
-			var leftSquared = this._frustumLeft * this._frustumLeft;
-			var rightSquared = this._frustumRight * this._frustumRight;
-			var bottomSquared = this._frustumBottom * this._frustumBottom;
-			var topSquared = this._frustumTop * this._frustumTop;
-
-			var inverseLength = 1.0 / Math.sqrt(nearSquared + leftSquared);
-			this._coeffLeft.x = -this._frustumNear * inverseLength;
-			this._coeffLeft.y = -this._frustumLeft * inverseLength;
-
-			inverseLength = 1.0 / Math.sqrt(nearSquared + rightSquared);
-			this._coeffRight.x = this._frustumNear * inverseLength;
-			this._coeffRight.y = this._frustumRight * inverseLength;
-
-			inverseLength = 1.0 / Math.sqrt(nearSquared + bottomSquared);
-			this._coeffBottom.x = this._frustumNear * inverseLength;
-			this._coeffBottom.y = -this._frustumBottom * inverseLength;
-
-			inverseLength = 1.0 / Math.sqrt(nearSquared + topSquared);
-			this._coeffTop.x = -this._frustumNear * inverseLength;
-			this._coeffTop.y = this._frustumTop * inverseLength;
+			this._coeffLeft.setDirect(-this._frustumNear, -this._frustumLeft).normalize();
+			this._coeffRight.setDirect(this._frustumNear, this._frustumRight).normalize();
+			this._coeffBottom.setDirect(this._frustumNear, -this._frustumBottom).normalize();
+			this._coeffTop.setDirect(-this._frustumNear, this._frustumTop).normalize();
 		} else if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
-				this._coeffLeft.x = -1;
-				this._coeffLeft.y = 0;
-
-				this._coeffRight.x = 1;
-				this._coeffRight.y = 0;
+				this._coeffLeft.setDirect(-1, 0);
+				this._coeffRight.setDirect(1, 0);
 			} else {
-				this._coeffLeft.x = 1;
-				this._coeffLeft.y = 0;
-
-				this._coeffRight.x = -1;
-				this._coeffRight.y = 0;
+				this._coeffLeft.setDirect(1, 0);
+				this._coeffRight.setDirect(-1, 0);
 			}
 
 			if (this._frustumTop > this._frustumBottom) {
-				this._coeffBottom.x = -1;
-				this._coeffBottom.y = 0;
-
-				this._coeffTop.x = 1;
-				this._coeffTop.y = 0;
+				this._coeffBottom.setDirect(-1, 0);
+				this._coeffTop.setDirect(1, 0);
 			} else {
-				this._coeffBottom.x = 1;
-				this._coeffBottom.y = 0;
-
-				this._coeffTop.x = -1;
-				this._coeffTop.y = 0;
+				this._coeffBottom.setDirect(1, 0);
+				this._coeffTop.setDirect(-1, 0);
 			}
 		}
 
