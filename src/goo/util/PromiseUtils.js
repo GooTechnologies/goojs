@@ -34,31 +34,6 @@ define(function () {
 		return Promise.reject(reason);
 	};
 
-
-	var createDummyPromiseWarn = false;
-	/**
-	 * Create a promise that resolves or rejects immediately with the given argument.
-	 * @deprecated Use PromiseUtils.resolve/reject instead.
-	 * @param {any} arg
-	 * @param {any} error
-	 * @returns {RSVP.Promise}
-	 */
-	PromiseUtils.createDummyPromise = function (arg, error) {
-		if (!createDummyPromiseWarn) {
-			createDummyPromiseWarn = true;
-			console.warn('PromiseUtils.createDummyPromise is deprecated; please consider using PromiseUtils.resolve/reject instead');
-		}
-
-		var promise = new RSVP.Promise();
-		if (error) {
-			promise.reject(error);
-		} else {
-			promise.resolve(arg);
-		}
-		return promise;
-	};
-
-
 	/**
 	 * Returns a promise that resolves when all given promises are resolved or rejected.
 	 * Like RSVP.all(), except that instead of rejecting, this promise always resolves.
@@ -102,34 +77,6 @@ define(function () {
 		return new Promise(function (resolve) {
 			setTimeout(resolve, time);
 		});
-	};
-
-	// the doc doesn't align with half of what this function actually does
-	/**
-	 * Create a promise that resolves or rejects after the specified delay with the given argument.
-	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; consider using
-	 * PromiseUtils.delay instead
-	 * @param {number} delay in ms
-	 * @returns {RSVP.Promise}
-	 */
-	PromiseUtils.defer = function (delay, arg) {
-		var p1, p2, promise;
-		promise = new RSVP.Promise();
-		if (arg.apply) {
-			p1 = new RSVP.Promise();
-			p2 = p1.then(function () {
-				return arg();
-			});
-			setTimeout(function () {
-				p1.resolve();
-			}, delay);
-			return p2;
-		} else {
-			setTimeout(function () {
-				promise.resolve(arg);
-			}, delay);
-		}
-		return promise;
 	};
 
 	PromiseUtils.all = function () {
