@@ -358,8 +358,8 @@ define([
 			adjustWidth = this.domElement.offsetWidth;
 			adjustHeight = this.domElement.offsetHeight;
 		}
-		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
-		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
+		adjustWidth = Math.max(adjustWidth * devicePixelRatio / this.downScale, 1);
+		adjustHeight = Math.max(adjustHeight * devicePixelRatio / this.downScale, 1);
 
 		var fullWidth = adjustWidth;
 		var fullHeight = adjustHeight;
