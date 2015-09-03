@@ -70,29 +70,22 @@ define(function () {
 	 */
 	PromiseUtils.optimisticAll = function (promises) {
 		var resolved = 0;
-		var len = promises.length;
 		var results = [];
 
 		return new Promise(function (resolve, reject) {
-			if (len > 0) {
-				for (var i = 0; i < len; i++) {
-					(function (i) {
-						promises[i].then(function (result) {
-								results[i] = result;
-								resolved++;
-								if (resolved === len) {
-									resolve(results);
-								}
-							},
-							function (error) {
-								results[i] = error;
-								resolved++;
-								if (resolved === len) {
-									resolve(results);
-								}
-							});
-					})(i);
-				}
+			if (promises.length > 0) {
+				promises.forEach(function (promise, index) {
+					var boundResolveReject = function (resultReason) {
+						results[index] = resultReason;
+						resolved++;
+
+						if (resolved >= promises.length) {
+							resolve(results);
+						}
+					};
+
+					promise.then(boundResolveReject, boundResolveReject);
+				});
 			} else {
 				resolve(results);
 			}
