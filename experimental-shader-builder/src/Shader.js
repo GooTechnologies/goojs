@@ -1,14 +1,23 @@
 define([
-	'shader-bits/data/ContextPair',
+	'shader-bits/data/VertexContext',
+	'shader-bits/data/FragmentContext',
 	'shader-bits/core/ShaderBuilder'
 ], function (
-	ContextPair,
+	VertexContext,
+	FragmentContext,
 	ShaderBuilder
 ) {
 	'use strict';
 
 	function Shader(typeDefinitions) {
-		this.contextPair = new ContextPair(typeDefinitions);
+		this.typeDefinitions = typeDefinitions;
+
+		this.vertexContext = new VertexContext(this.typeDefinitions);
+		this.vertexContext.contextPair = this;
+
+		this.fragmentContext = new FragmentContext(this.typeDefinitions);
+		this.fragmentContext.contextPair = this;
+
 		this._attributes = new Map();
 		this._uniforms = new Map();
 	}
@@ -23,11 +32,11 @@ define([
 		// remove any previously existing node
 		if (this._attributes.has(shaderAttributeName)) {
 			var entry = this._attributes.get(shaderAttributeName);
-			this.contextPair.vertexContext.structure.removeNode(entry.node);
+			this.vertexContext.structure.removeNode(entry.node);
 		}
 
 		// create a new attribute, both in the context and in the externals
-		var node = this.contextPair.vertexContext.createAttribute(shaderAttributeName, type);
+		var node = this.vertexContext.createAttribute(shaderAttributeName, type);
 
 		this._attributes.set(shaderAttributeName, {
 			node: node,
@@ -39,7 +48,7 @@ define([
 
 	function setUniform(contextName) {
 		return function(uniformName, type, valueOrCallback) {
-			var context = this.contextPair[contextName];
+			var context = this[contextName];
 
 			// remove any previously existing node
 			if (this._uniforms.has(uniformName)) {
@@ -63,6 +72,15 @@ define([
 
 	Shader.prototype.setFragmentUniform = setUniform('fragmentContext');
 
+	// verify if there already is one... follow the same pattern as for set uniform and co
+	Shader.prototype.setVertexVarying = function (name, type) {
+		return this.vertexContext.createVarying(name, type);
+	};
+
+	Shader.prototype.setFragmentVarying = function (name, type) {
+		return this.fragmentContext.createVarying(name, type);
+	};
+
 	function extract(map) {
 		var obj = {};
 
@@ -75,13 +93,13 @@ define([
 
 	Shader.prototype.compileDefinition = function () {
 		var vshader = ShaderBuilder.buildShader(
-			this.contextPair.vertexContext.typesToJson(),
-			this.contextPair.vertexContext.structureToJson()
+			this.vertexContext.typesToJson(),
+			this.vertexContext.structureToJson()
 		);
 
 		var fshader = ShaderBuilder.buildShader(
-			this.contextPair.fragmentContext.typesToJson(),
-			this.contextPair.fragmentContext.structureToJson()
+			this.fragmentContext.typesToJson(),
+			this.fragmentContext.structureToJson()
 		);
 
 		return {

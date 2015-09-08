@@ -10,7 +10,7 @@ require([
 	'use strict';
 
 	function createVertex(shader) {
-		var context = shader.contextPair.vertexContext;
+		var context = shader.vertexContext;
 
 		var viewProjectionMatrix = shader.setVertexUniform('viewProjectionMatrix', 'mat4', goo.Shader.VIEW_PROJECTION_MATRIX);
 		var worldMatrix = shader.setVertexUniform('worldMatrix', 'mat4', goo.Shader.WORLD_MATRIX);
@@ -31,20 +31,15 @@ require([
 		mul2.connect(context.position);
 
 		var vertexUV0 = shader.setAttribute('vertexUV0', 'vec2', goo.MeshData.TEXCOORD0);
-
-		// varyings need to be handled by the supershader
-		var texCoord0 = context.createVarying('texCoord0', 'vec2');
+		var texCoord0 = shader.setVertexVarying('texCoord0', 'vec2');
 
 		vertexUV0.connect(texCoord0);
 	}
 
 	function createFragment(shader) {
-		var context = shader.contextPair.fragmentContext;
+		var context = shader.fragmentContext;
 
-		// varyings have to be handled by the supershader
-		// and not by creating the node in the context
-		var texCoord = context.createVarying('texCoord0', 'vec2');
-
+		var texCoord = shader.setFragmentVarying('texCoord0', 'vec2');
 		var diffuse = shader.setFragmentUniform('diffuseMap', 'sampler2D', goo.Shader.DIFFUSE_MAP);
 
 		var texture2D = context.createTexture2D();
