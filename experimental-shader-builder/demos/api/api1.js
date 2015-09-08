@@ -286,4 +286,4 @@ require([
 
 		__replaceBox(fragmentShader, vertexShader);
 	}
-})();
+});

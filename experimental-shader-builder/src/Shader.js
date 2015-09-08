@@ -29,7 +29,7 @@ define([
 		// create a new attribute, both in the context and in the externals
 		var node = this.contextPair.vertexContext.createAttribute(shaderAttributeName, type);
 
-		this._attributes.get(shaderAttributeName, {
+		this._attributes.set(shaderAttributeName, {
 			node: node,
 			meshAttributeName: meshAttributeName
 		});
@@ -48,9 +48,9 @@ define([
 			}
 
 			// create a new attribute, both in the context and in the externals
-			var node = context.createAttribute(uniformName, type);
+			var node = context.createUniform(uniformName, type);
 
-			this._uniforms.get(uniformName, {
+			this._uniforms.set(uniformName, {
 				node: node,
 				valueOrCallback: valueOrCallback
 			});
@@ -75,20 +75,20 @@ define([
 
 	Shader.prototype.compileDefinition = function () {
 		var vshader = ShaderBuilder.buildShader(
-			this.contextPair.vertex.typeDefinitions,
-			this.contextPair.vertex.structure
+			this.contextPair.vertexContext.typesToJson(),
+			this.contextPair.vertexContext.structureToJson()
 		);
 
 		var fshader = ShaderBuilder.buildShader(
-			this.contextPair.fragment.typeDefinitions,
-			this.contextPair.fragment.structure
+			this.contextPair.fragmentContext.typesToJson(),
+			this.contextPair.fragmentContext.structureToJson()
 		);
 
 		return {
 			attributes: extract(this._attributes),
 			uniforms: extract(this._uniforms),
 			vshader: vshader,
-			fhsader: fshader
+			fshader: fshader
 		};
 	};
 

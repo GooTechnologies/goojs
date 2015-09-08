@@ -156,7 +156,7 @@ define([
 	};
 
 	Context.prototype.typesToJson = function () {
-		return this.typeDefinitions.toJson();
+		return this.typeDefinitions;
 	};
 
 	Context.prototype.structureToJson = function () {

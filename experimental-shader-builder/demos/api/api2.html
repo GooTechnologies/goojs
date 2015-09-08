@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<div id="container"></div>
+
+	<script src="../../lib/jquery-2.1.3.min.js"></script>
+	<script src="../../lib/underscore.js"></script>
+
+	<script src="../../../lib/require.js"></script>
+	<script src="../../../out/goo.js"></script>
+
+	<script src="../sub-v.js"></script>
+	<script src="../common.js"></script>
+
+	<script>
+		require.config({
+			paths: {
+				'shader-bits': '../../src'
+			}
+		});
+	</script>
+
+	<script src="api2.js"></script>
+</body>
+</html>
