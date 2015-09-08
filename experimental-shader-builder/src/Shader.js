@@ -23,7 +23,8 @@ define([
 	}
 
 	/**
-	 * Binds a shader attribute name to a mesh attribute name
+	 * Binds a shader attribute name to a mesh attribute name and
+	 * creates a vertex shader attribute node for it.
 	 * @param {string} shaderAttributeName
 	 * @param {string} type
 	 * @param {string} meshAttributeName
@@ -68,8 +69,22 @@ define([
 		};
 	}
 
+	/**
+	 * Binds a shader uniform name to a default value or callback and
+	 * creates a vertex shader uniform node for it.
+	 * @param {string} shaderAttributeName
+	 * @param {string} type
+	 * @param {string} meshAttributeName
+	 */
 	Shader.prototype.setVertexUniform = setUniform('vertexContext');
 
+	/**
+	 * Binds a shader uniform name to a default value or callback and
+	 * creates a fragment shader uniform node for it.
+	 * @param {string} shaderAttributeName
+	 * @param {string} type
+	 * @param {string} meshAttributeName
+	 */
 	Shader.prototype.setFragmentUniform = setUniform('fragmentContext');
 
 	// verify if there already is one... follow the same pattern as for set uniform and co
@@ -91,6 +106,11 @@ define([
 		return obj;
 	}
 
+	/**
+	 * Outputs the shader definition comprising of the source of the vertex and fragment shader
+	 * and mappings for attributes and uniforms.
+	 * @returns {{vshader: string, fshader: string, attributes: *, uniforms: *}}
+	 */
 	Shader.prototype.compileDefinition = function () {
 		var vshader = ShaderBuilder.buildShader(
 			this.vertexContext.typesToJson(),
