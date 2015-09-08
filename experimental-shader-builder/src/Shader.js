@@ -66,8 +66,8 @@ define([
 	function extract(map) {
 		var obj = {};
 
-		map.forEach(function (name, entry) {
-			obj[name] = entry.value;
+		map.forEach(function (value, key) {
+			obj[key] = value.meshAttributeName ? value.meshAttributeName : value.valueOrCallback;
 		});
 
 		return obj;
