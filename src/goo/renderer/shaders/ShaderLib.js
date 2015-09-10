@@ -263,9 +263,9 @@ define([
 
 				'#ifdef LIGHT_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0;',
 					'#elif defined(TEXCOORD0)',
-						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0;',
 					'#endif',
 				'#else',
 					'vec3 N = vec3(0.0, 1.0, 0.0);',
