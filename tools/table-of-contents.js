@@ -1,4 +1,9 @@
+// jshint node:true
 'use strict';
+
+/**
+ * Generates the table of contents for the visual tests.
+ */
 
 var glob = require('glob');
 var path = require('path');
@@ -82,7 +87,7 @@ exports.run = function (rootPath, title) {
 		'<article class="container">',
 		'<h1>Contents</h1>'
 	].join('\n');
-	
+
 	content += printTree(tree);
 
 	content += [
