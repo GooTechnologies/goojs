@@ -714,6 +714,28 @@ define([
 	};
 
 	/**
+	 * Copies component values from the upper-left submatrix of a Matrix4.
+	 * @param {Matrix4} rhs Source matrix.
+	 * @returns {Matrix3} Self for chaining.
+	 */
+	Matrix3.prototype.copyMatrix4 = function (rhs) {
+		var thisData = this.data;
+		var rhsData = rhs.data;
+
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[4];
+		thisData[4] = rhsData[5];
+		thisData[5] = rhsData[6];
+		thisData[6] = rhsData[8];
+		thisData[7] = rhsData[9];
+		thisData[8] = rhsData[10];
+
+		return this;
+	};
+
+	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
 	 * @param {Matrix3} source Source matrix
 	 * @returns {Matrix3} Self to allow chaining

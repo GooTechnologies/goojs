@@ -1,6 +1,11 @@
 // jshint node:true
 'use strict';
 
+/**
+ Strips a module from its require wrapping `define([...], ...`.
+ Regexes are used to parse the source. This is faster than invoking esprima.
+ */
+
 var dependency = require('./dependency');
 var util = require('./util');
 

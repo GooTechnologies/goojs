@@ -1,11 +1,9 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/scripts/Scripts'
+	'goo/entities/SystemBus'
 ], function (
 	System,
-	SystemBus,
-	Scripts
+	SystemBus
 ) {
 	'use strict';
 
@@ -115,8 +113,6 @@ define([
 
 		System.prototype.clear.call(this);
 	};
-
-	Scripts.addClass('ScriptSystem', ScriptSystem);
 
 	return ScriptSystem;
 });

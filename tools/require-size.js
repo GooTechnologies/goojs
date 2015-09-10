@@ -1,3 +1,9 @@
+/**
+ * Computes the size of the require headers.
+ * Useful for figuring out the overhead of require definitions.
+ * Useless since the minifier does not use require in any way.
+ */
+
 var glob = require('glob');
 var fs = require('fs');
 

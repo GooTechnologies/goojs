@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var async = require('async');
 var ScreenShooter = require('./ScreenShooter');
 var imgCompare = require(__dirname + '/../../tools/imgcompare2/imgCompare');
-var toc = require(__dirname + '/../../tools/toc');
+var toc = require(__dirname + '/../../tools/table-of-contents');
 var filterList = require('./filterList').filterList;
 
 function filterArray(array, filters) {

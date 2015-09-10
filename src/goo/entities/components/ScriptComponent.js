@@ -25,7 +25,6 @@ define([
 		Component.apply(this, arguments);
 
 		this.type = 'ScriptComponent';
-		this._gooClasses = Scripts.getClasses();
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;
@@ -78,9 +77,10 @@ define([
 				} else {
 					script.enabled = true;
 				}
+				
 				if (script.setup && script.enabled) {
 					try {
-						script.setup(script.parameters, script.context, this._gooClasses);
+						script.setup(script.parameters, script.context, window.goo);
 					} catch (e) {
 						this._handleError(script, e, 'setup');
 					}
@@ -114,7 +114,7 @@ define([
 				}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.context, this._gooClasses);
+					script.update(script.parameters, script.context, window.goo);
 				} catch (e) {
 					this._handleError(script, e, 'update');
 				}
@@ -130,9 +130,13 @@ define([
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.context) {
-				if (script.cleanup && (script.parameters? script.parameters.enabled : script.enabled)) {
+				if (script.cleanup &&
+					(script.parameters && script.parameters.enabled !== undefined ?
+						script.parameters.enabled :
+						script.enabled)
+				) {
 					try {
-						script.cleanup(script.parameters, script.context, this._gooClasses);
+						script.cleanup(script.parameters, script.context, window.goo);
 					} catch (e) {
 						this._handleError(script, e, 'cleanup');
 					}

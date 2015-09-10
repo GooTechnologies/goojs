@@ -37,7 +37,11 @@ define([
 		} else if (type === Skybox.BOX) {
 			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
-				promise = new TextureCreator().loadTextureCube(images, {flipY: false});
+				promise = new TextureCreator().loadTextureCube(images, {
+					flipY: false,
+					wrapS: 'EdgeClamp',
+					wrapT: 'EdgeClamp'
+				});
 			}
 		} else {
 			throw new Error('Unknown geometry type');

@@ -38,6 +38,7 @@ define([
 	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._scriptElementsByURL = new Map();
 		this._bodyCache = {};
 		this._dependencyPromises = {};
 		this._currentScriptLoading = null;
@@ -72,7 +73,7 @@ define([
 		var script = this._objects.get(ref);
 		if (script && script.cleanup && script.context) {
 			try {
-				script.cleanup(script.parameters, script.context, Scripts.getClasses());
+				script.cleanup(script.parameters, script.context, window.goo);
 			} catch (e) {
 				// Some cleanup error
 			}
@@ -145,10 +146,10 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(newScriptElement);
 
-		var newScript = window._gooScriptFactories[config.id];
-		if (newScript) {
+		var scriptFactory = window._gooScriptFactories[config.id];
+		if (scriptFactory) {
 			try {
-				newScript = newScript();
+				var newScript = scriptFactory();
 				script.id = config.id;
 				ScriptHandler.validateParameters(newScript, script);
 				script.setup = newScript.setup;
@@ -181,6 +182,98 @@ define([
 		return script;
 	};
 
+	/**
+	 * Adds a reference pointing to the specified custom script into the specified
+	 * script element/node.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element into which a reference is to be added.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose reference is to be added.
+	 */
+	function addReference(scriptElement, scriptId) {
+		if (!scriptElement.scriptRefs) {
+			scriptElement.scriptRefs = [scriptId];
+			return;
+		}
+
+		var index = scriptElement.scriptRefs.indexOf(scriptId);
+		if (index === -1) {
+			scriptElement.scriptRefs.push(scriptId);
+		}
+	}
+
+
+	/**
+	 * Removes a reference to the specified custom script from the specified
+	 * script element/node.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element from which the reference is to be removed.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose reference is to be removed.
+	 */
+	function removeReference(scriptElement, scriptId) {
+		if (!scriptElement.scriptRefs) {
+			return;
+		}
+
+		ArrayUtils.remove(scriptElement.scriptRefs, scriptId);
+	}
+
+	/**
+	 * Gets whether the specified script element/node has any references to
+	 * custom scripts.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element which is to be checked for references.
+	 *
+	 * @returns {boolean}
+	 */
+	function hasReferences(scriptElement) {
+		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
+	}
+
+
+	/**
+	 * Gets whether the specified script element has a reference to the specified
+	 * custom script.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element/node which is to be checked.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script which is to be checked.
+	 *
+	 * @returns {boolean}
+	 */
+	function hasReferenceTo(scriptElement, scriptId) {
+		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
+	}
+
+
+	/**
+	 * Gets all the script elements that refer to the specified custom script.
+	 *
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose dependencies are to be
+	 *		returned.
+	 *
+	 * @returns {Array.<HTMLScriptElement>}
+	 */
+	function getReferringDependencies(scriptId) {
+		var dependencies = [];
+		var scriptElements = document.querySelectorAll('script');
+
+		for (var i = 0; i < scriptElements.length; ++i) {
+			var scriptElement = scriptElements[i];
+			if (hasReferenceTo(scriptElement, scriptId)) {
+				dependencies.push(scriptElement);
+			}
+		}
+
+		return dependencies;
+	}
+
 
 	/**
 	 * Update a script that is from the engine. Checks if the class name has changed
@@ -211,6 +304,46 @@ define([
 		return script;
 	};
 
+	/**
+	 * Loads an external javascript lib as a dependency to this script (if it's
+	 * not already loaded). If the dependency fails to load, an error is set
+	 * on the script.
+	 * @param {Object} script config
+	 * @param {string} url location of the javascript lib
+	 * @param {string} scriptId the guid of the script
+	 * @returns {RSVP.Promise} a promise that resolves when the dependency is loaded
+	 */
+	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
+		var that = this;
+
+		// check if element already exists
+		// it might have been loaded by some other script first
+
+		// does this work if the same script component/script reference the same script more than once?
+		var scriptElem = document.querySelector('script[src="' + url + '"]');
+		if (scriptElem) {
+			addReference(scriptElem, scriptId);
+			return this._dependencyPromises[url] || PromiseUtils.resolve();
+		}
+
+		scriptElem = document.createElement('script');
+		scriptElem.src = url;
+		scriptElem.setAttribute('data-script-id', scriptId);
+		scriptElem.isDependency = true;
+		scriptElem.async = false;
+
+		this._scriptElementsByURL.set(url, scriptElem);
+		addReference(scriptElem, scriptId);
+
+		var promise = loadExternalScript(script, scriptElem, url)
+			.then(function () {
+				delete that._dependencyPromises[url];
+			});
+
+		this._dependencyPromises[url] = promise;
+
+		return promise;
+	};
 
 	ScriptHandler.prototype._update = function (ref, config, options) {
 		var that = this;
@@ -255,6 +388,14 @@ define([
 
 			return RSVP.all(addDependencyPromises)
 			.then(function () {
+				var parentElement = that.world.gooRunner.renderer.domElement.parentElement || document.body;
+
+				_.forEach(config.dependencies, function (dependency) {
+					var scriptElement = that._scriptElementsByURL.get(dependency.url);
+					parentElement.appendChild(scriptElement);
+				}, null, 'sortValue');
+
+
 				if (config.className) { // Engine script.
 					that._updateFromClass(script, config, options);
 				} else if (config.body) { // Custom script.
@@ -295,44 +436,7 @@ define([
 		});
 	};
 
-
 	/**
-	 * Loads an external javascript lib as a dependency to this script (if it's
-	 * not already loaded). If the dependency fails to load, an error is set
-	 * on the script.
-	 * @param {Object} script config
-	 * @param {string} url location of the javascript lib
-	 * @param {string} scriptId the guid of the script
-	 * @returns {RSVP.Promise} a promise that resolves when the dependency is loaded
-	 */
-	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
-		var that = this;
-
-		var scriptElem = document.querySelector('script[src="' + url + '"]');
-		if (scriptElem) {
-			addReference(scriptElem, scriptId);
-			return this._dependencyPromises[url] || PromiseUtils.resolve();
-		}
-
-		scriptElem = document.createElement('script');
-		scriptElem.src = url;
-		scriptElem.setAttribute('data-script-id', scriptId);
-		scriptElem.isDependency = true;
-		addReference(scriptElem, scriptId);
-
-		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
-		parentElement.appendChild(scriptElem);
-
-		var result = this._dependencyPromises[url] = loadExternalScript(script, scriptElem, url)
-		.then(function () {
-			delete that._dependencyPromises[url];
-		});
-
-		return result;
-	};
-
-
-	/*
 	 * Removes all the script HTML elements that are not needed by any script
 	 * anymore (i.e. have no references to scripts).
 	 */
@@ -345,99 +449,6 @@ define([
 				scriptElement.parentNode.removeChild(scriptElement);
 			}
 		}
-	}
-
-
-	/*
-	 * Adds a reference pointing to the specified custom script into the specified
-	 * script element/node.
-	 *
-	 * @param {HTMLScriptElement} scriptElement
-	 *		The script element into which a reference is to be added.
-	 * @param {string} scriptId
-	 *		The identifier of the custom script whose reference is to be added.
-	 */
-	function addReference(scriptElement, scriptId) {
-		if (!scriptElement.scriptRefs) {
-			scriptElement.scriptRefs = [scriptId];
-			return;
-		}
-
-		var index = scriptElement.scriptRefs.indexOf(scriptId);
-		if (index === -1) {
-			scriptElement.scriptRefs.push(scriptId);
-		}
-	}
-
-
-	/*
-	 * Removes a reference to the specified custom script from the specified
-	 * script element/node.
-	 *
-	 * @param {HTMLScriptElement} scriptElement
-	 *		The script element from which the reference is to be removed.
-	 * @param {string} scriptId
-	 *		The identifier of the custom script whose reference is to be removed.
-	 */
-	function removeReference(scriptElement, scriptId) {
-		if (!scriptElement.scriptRefs) {
-			return;
-		}
-
-		ArrayUtils.remove(scriptElement.scriptRefs, scriptId);
-	}
-
-	/*
-	 * Gets whether the specified script element/node has any references to
-	 * custom scripts.
-	 *
-	 * @param {HTMLScriptElement} scriptElement
-	 *		The script element which is to be checked for references.
-	 *
-	 * @returns {boolean}
-	 */
-	function hasReferences(scriptElement) {
-		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
-	}
-
-
-	/*
-	 * Gets whether the specified script element has a reference to the specified
-	 * custom script.
-	 *
-	 * @param {HTMLScriptElement} scriptElement
-	 *		The script element/node which is to be checked.
-	 * @param {string} scriptId
-	 *		The identifier of the custom script which is to be checked.
-	 *
-	 * @returns {boolean}
-	 */
-	function hasReferenceTo(scriptElement, scriptId) {
-		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
-	}
-
-
-	/*
-	 * Gets all the script elements that refer to the specified custom script.
-	 *
-	 * @param {string} scriptId
-	 *		The identifier of the custom script whose dependencies are to be
-	 *		returned.
-	 *
-	 * @returns {Array.<HTMLScriptElement>}
-	 */
-	function getReferringDependencies(scriptId) {
-		var dependencies = [];
-		var scriptElements = document.querySelectorAll('script');
-
-		for (var i = 0; i < scriptElements.length; ++i) {
-			var scriptElement = scriptElements[i];
-			if (hasReferenceTo(scriptElement, scriptId)) {
-				dependencies.push(scriptElement);
-			}
-		}
-
-		return dependencies;
 	}
 
 	/**
@@ -530,7 +541,6 @@ define([
 
 	/**
 	 * Load an external script
-	 * @private
 	 */
 	function loadExternalScript(script, scriptElem, url) {
 		return PromiseUtils.createPromise(function (resolve, reject) {
@@ -700,7 +710,6 @@ define([
 	 * @param {string} error.message
 	 * @param {number} [error.line]
 	 * @param {string} [error.file]
-	 * @private
 	 */
 	function setError(script, error) {
 		if (error.file) {

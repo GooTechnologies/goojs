@@ -45,7 +45,7 @@ define([
 				shader.setDefine('TEST_DEFINE', true);
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:true');
+				expect(key).toEqual('Key:TestName_0:true');
 				expect(defineIndices).toEqual(['TEST_DEFINE']);
 			});
 
@@ -56,7 +56,7 @@ define([
 				shader.setDefine('TEST_DEFINE2', 5);
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:true_2:5');
+				expect(key).toEqual('Key:TestName_0:true_1:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE1', 'TEST_DEFINE2']);
 			});
 
@@ -68,7 +68,7 @@ define([
 				shader.removeDefine('TEST_DEFINE1');
 
 				var key = shader.getDefineKey(defineIndices);
-				expect(key).toEqual('Key:TestName_1:5');
+				expect(key).toEqual('Key:TestName_0:5');
 				expect(defineIndices).toEqual(['TEST_DEFINE2']);
 			});
 
@@ -81,7 +81,7 @@ define([
 
 				var key = shader.getDefineKey(defineIndices);
 
-				expect(key).toEqual('Key:TestName_1:true');
+				expect(key).toEqual('Key:TestName_0:true');
 
 				shader.defineKey = 'unset';
 
