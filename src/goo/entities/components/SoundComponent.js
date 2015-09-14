@@ -134,6 +134,8 @@ define([
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
+		this._pannerNode.distanceModel = settings.distanceModel;
+		this._pannerNode.refDistance = settings.refDistance;
 
 		if (this._attachedToCamera || !mvMat) {
 			// The component is attached to the current camera.
@@ -155,15 +157,15 @@ define([
 		mvMat.getTranslation(this._position);
 		this._velocity.setVector(this._position).subVector(this._oldPosition).div(tpf);
 		this._oldPosition.setVector(this._position);
-		this._orientation.setDirect(0, 0, -1);
-		mvMat.applyPostVector(this._orientation);
+		// this._orientation.setDirect(0, 0, -1);
+		// mvMat.applyPostVector(this._orientation);
 
 		var pd = this._position.data;
 		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
 		var vd = this._velocity.data;
 		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-		var od = this._orientation.data;
-		this._pannerNode.setOrientation(od[0], od[1], od[2]);
+		// var od = this._orientation.data;
+		// this._pannerNode.setOrientation(od[0], od[1], od[2]);
 	};
 
 	return SoundComponent;

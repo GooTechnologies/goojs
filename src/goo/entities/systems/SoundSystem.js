@@ -34,7 +34,9 @@ define([
 
 		this._settings = {
 			rolloffFactor: 0.4,
-			maxDistance: 100
+			maxDistance: 100,
+			distanceModel: 'inverse',
+			refDistance: 1
 		};
 		this._pausedSounds = {};
 
@@ -81,7 +83,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.inserted = function(entity) {
+	SoundSystem.prototype.inserted = function (entity) {
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		entity.soundComponent.connectTo({
@@ -96,7 +98,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.deleted = function(entity) {
+	SoundSystem.prototype.deleted = function (entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -112,10 +114,12 @@ define([
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
+	 * @param {number} [config.refDistance] A reference distance for reducing volume as source move further from the listener. The default value is 1.
+	 * @param {string} [config.distanceModel] 'inverse', 'linear' or 'exponential'. Read more at: http://webaudio.github.io/web-audio-api/#idl-def-DistanceModelType
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
-	SoundSystem.prototype.updateConfig = function(config) {
+	SoundSystem.prototype.updateConfig = function (config) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
@@ -142,7 +146,7 @@ define([
 	 * Set the reverb impulse response. The settings are not applied immediately.
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
-	SoundSystem.prototype.setReverb = function(audioBuffer) {
+	SoundSystem.prototype.setReverb = function (audioBuffer) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
@@ -166,7 +170,7 @@ define([
 	/**
 	 * Pause the sound system and thereby all sounds in the scene
 	 */
-	SoundSystem.prototype.pause = function() {
+	SoundSystem.prototype.pause = function () {
 		if (this._pausedSounds) { return; }
 		this._pausedSounds = {};
 		for (var i = 0; i < this.entities.length; i++) {
@@ -184,7 +188,7 @@ define([
 	/**
 	 * Resumes playing of all sounds that were paused
 	 */
-	SoundSystem.prototype.resume = function() {
+	SoundSystem.prototype.resume = function () {
 		if (!this._pausedSounds) { return; }
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
@@ -206,7 +210,7 @@ define([
 	/**
 	 * Stopping the sound system and all sounds in scene
 	 */
-	SoundSystem.prototype.stop = function() {
+	SoundSystem.prototype.stop = function () {
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
 			for (var j = 0; j < sounds.length; j++) {
@@ -217,7 +221,7 @@ define([
 		this._pausedSounds = null;
 	};
 
-	SoundSystem.prototype.process = function(entities, tpf) {
+	SoundSystem.prototype.process = function (entities, tpf) {
 		if (!AudioContext.isSupported()) {
 			// This should never happen because system shouldn't process
 			return;
@@ -237,7 +241,7 @@ define([
 		var relativeTransform = this._relativeTransform;
 
 		var viewMat;
-		if(this._camera){
+		if (this._camera) {
 			viewMat = this._camera.getViewMatrix();
 		}
 
@@ -247,7 +251,7 @@ define([
 
 			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
 
-			if(this._camera && !component._attachedToCamera){
+			if (this._camera && !component._attachedToCamera) {
 				// Give the transform relative to the camera
 				Matrix4x4.combine(viewMat, e.transformComponent.worldTransform.matrix, relativeTransform);
 				component.process(this._settings, relativeTransform, tpf);
