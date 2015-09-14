@@ -360,5 +360,24 @@ define(function () {
 		return MathUtils.randomSeed / 233280;
 	};
 
+	/**
+	 * Defines a property on an object that throws an exception when NaN is being assigned to it.
+	 * Useful for debugging.
+	 * @hidden
+	 * @param object
+	 * @param property
+	 */
+	MathUtils.warnNaN = function (object, property) {
+		var value = object[property];
+
+		Object.defineProperty(object, property, {
+			get: function () { return value; },
+			set: function (_value) {
+				if (isNaN(_value)) { throw new Error('Tried to assign NaN to ' + property); }
+				value = _value;
+			}
+		});
+	};
+
 	return MathUtils;
 });
