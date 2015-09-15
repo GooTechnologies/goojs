@@ -246,7 +246,7 @@ define(function () {
 			return {
 				result: false,
 				reason: 'cannot have cycles'
-			}
+			};
 		}
 
 		return {
@@ -297,14 +297,15 @@ define(function () {
 	};
 
 	Structure.prototype.toJson = function () {
-		return _(this.nodes).map(function (node) {
-			return node.toJson();
-		});
+		return Object.keys(this.nodes).map(function (key) {
+			return this.nodes[key].toJson();
+		}, this);
 	};
 
 	Structure.fromJson = function (json) {
 		var structure = new Structure();
-		_(json).forEach(function (nodeConfig) {
+		Object.keys(json).map(function (key) {
+			var nodeConfig = json[key];
 			var node = (nodeConfig.type === 'external-input' ? ExternalInputNode : FunctionNode).fromJson(nodeConfig);
 			structure.addNode(node);
 		});

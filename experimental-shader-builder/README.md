@@ -6,7 +6,7 @@ It's a template of a pure function that can return multiple values. Once instant
 
 ###Template?
 The body of a shader-bit is written in GLSL that goes through a preprocessor. The preprocessor interprets the content of GLSL comments as JavaScript and the GLSL code as strings.
- 
+
 If, for example, the shader bit `value = input * /*data.times*/;` is instantiated with `{ times: 3 }` the preprocessor is going to output `value = input * 3.0;`. Type conversions are handled automatically (`3` is translated to `3.0` and `[1, 2, 3]` is translated to `vec3(1.0, 2.0, 3.0)`).
 
 Consider another example:
@@ -18,7 +18,7 @@ Consider another example:
 	/*}*/
 ```
 
-This shader bit has the same effect as the previous one except the source code is different. When it is instatiated with `{ times: 3 }` the code will expand to 
+This shader bit has the same effect as the previous one except the source code is different. When it is instatiated with `{ times: 3 }` the code will expand to
 
 ```
 	float original = value;

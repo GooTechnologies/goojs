@@ -15,17 +15,21 @@ define(function () {
 	/**
 	 * Connects this out-port to a node or its in-ports
 	 * @param that
+	 * @return {OutPort}
 	 */
 	OutPort.prototype.connect = function (that) {
 		that.connectedByOutPort(this);
+		return this;
 	};
 
 	/**
 	 * Removes a previously created connection
 	 * @param that
+	 * @return {OutPort}
 	 */
 	OutPort.prototype.disconnect = function (that) {
 		that.disconnectedByOutPort(this);
+		return this;
 	};
 
 	return OutPort;
