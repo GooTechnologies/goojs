@@ -9,6 +9,7 @@ define([
 		var encode = DataFormatter.encode;
 		var decode = DataFormatter.decode;
 
+		// schteppe: should probably not do this for readabilty sake
 		var bindFormat = function (format, fun) {
 			return function (data) { return fun(data, format); };
 		};

@@ -48,7 +48,7 @@ define([
 	};
 
 	function setUniform(contextName) {
-		return function(uniformName, type, valueOrCallback) {
+		return function (uniformName, type, valueOrCallback) {
 			var context = this[contextName];
 
 			// remove any previously existing node
