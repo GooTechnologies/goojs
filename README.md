@@ -121,7 +121,11 @@ See `tools/modoc/README.md` for details about type expressions. The code relevan
 
 ## Releasing
 
-See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
++ Update the CHANGES file and commit
++ Tag with the appropriate label i.e. `git tag v0.15.6`
++ `git push --tags` to push the tag
++ `git push` to push the commit associated with the tag;
+the build system is very sensitive - push in this order only
 
 
 ## Building
