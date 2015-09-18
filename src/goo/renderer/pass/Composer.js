@@ -11,8 +11,6 @@ define([
 ) {
 	'use strict';
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
-
 	/**
 	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
@@ -144,9 +142,9 @@ define([
 			if (pass.needsSwap) {
 				if (maskActive) {
 					var context = this.renderer.context;
-					context.stencilFunc(WebGLRenderingContext.NOTEQUAL, 1, 0xffffffff);
+					context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 					this.copyPass.render(renderer, this.writeBuffer, this.readBuffer, delta, camera, lights);
-					context.stencilFunc(WebGLRenderingContext.EQUAL, 1, 0xffffffff);
+					context.stencilFunc(context.EQUAL, 1, 0xffffffff);
 				}
 				this.swapBuffers();
 			}
