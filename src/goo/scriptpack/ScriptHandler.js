@@ -386,16 +386,15 @@ define([
 				});
 			}
 
+			var parentElement = that.world.gooRunner.renderer.domElement.parentElement || document.body;
+
+			_.forEach(config.dependencies, function (dependency) {
+				var scriptElement = that._scriptElementsByURL.get(dependency.url);
+				parentElement.appendChild(scriptElement);
+			}, null, 'sortValue');
+
 			return RSVP.all(addDependencyPromises)
 			.then(function () {
-				var parentElement = that.world.gooRunner.renderer.domElement.parentElement || document.body;
-
-				_.forEach(config.dependencies, function (dependency) {
-					var scriptElement = that._scriptElementsByURL.get(dependency.url);
-					parentElement.appendChild(scriptElement);
-				}, null, 'sortValue');
-
-
 				if (config.className) { // Engine script.
 					that._updateFromClass(script, config, options);
 				} else if (config.body) { // Custom script.
