@@ -1,3 +1,9 @@
+v0.15.7 --- 2015-09-23
+----------------------
+
+###Fixes
+ * added support for UMD modules in published scenes from Goo Create.
+
 v0.15.6 --- 2015-09-18
 ----------------------
 
