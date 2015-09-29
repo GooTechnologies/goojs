@@ -612,7 +612,7 @@ define([
 								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
 						}
 					} else {
-						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
+						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
 					}
 				}
 			}
