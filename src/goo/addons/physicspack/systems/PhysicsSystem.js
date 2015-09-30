@@ -416,7 +416,9 @@ function (
 		this.passive = false;
 
 		// Initialize all of the physics world
-		this.initialize();
+		if (!this.initialized) {
+			this.initialize();
+		}
 	};
 
 	/**
