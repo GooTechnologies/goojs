@@ -83,8 +83,11 @@ define([
 				var componentName = this._interestComponents[j];
 				if (!entity._hidden && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
+					if (component.debugLevel === 'none') {
+						continue;
+					}
 
-					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
+					var options = { full: this.doRender[componentName] || component.debugLevel === 'full' };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
