@@ -468,19 +468,19 @@ define([
 		}, {
 			key: 'minAscent',
 			description: 'Maximum arc the camera can reach below the target point',
-			'default': -89,
-			type: 'int',
+			'default': -89.99,
+			type: 'float',
 			control: 'slider',
-			min: -89,
-			max: 89
+			min: -89.99,
+			max: 89.99
 		}, {
 			key: 'maxAscent',
 			description: 'Maximum arc the camera can reach above the target point',
-			'default': 89.95,
-			type: 'int',
+			'default': 89.99,
+			type: 'float',
 			control: 'slider',
-			min: -89,
-			max: 89
+			min: -89.99,
+			max: 89.99
 		}, {
 			key: 'clampAzimuth',
 			'default': false,
