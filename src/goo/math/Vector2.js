@@ -45,8 +45,9 @@ define([
 
 	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
 
+	// SHIM START
 	Object.defineProperty(Vector2.prototype, 'data', {
-		get: function(){
+		get: function () {
 			var data = [];
 			var that = this;
 			console.warn('The .data property of Vector2 was removed. Please use the .x and .y properties instead.');
@@ -71,6 +72,12 @@ define([
 			return data;
 		}
 	});
+
+	Vector2.prototype.setVector = function (rhs) {
+		console.warn('The setVector method of Vector2 was removed. Please use the set method instead.');
+		return this.set(rhs);
+	};
+	// SHIM END
 
 	/**
 	 * Zero-vector (0, 0)

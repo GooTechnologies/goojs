@@ -53,8 +53,9 @@ define([
 
 	Vector.setupAliases(Vector4.prototype, [['r'], ['g'], ['b'], ['a']]);
 
+	// SHIM START
 	Object.defineProperty(Vector4.prototype, 'data', {
-		get: function(){
+		get: function () {
 			var data = [];
 			var that = this;
 			console.warn('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.');
@@ -95,6 +96,12 @@ define([
 			return data;
 		}
 	});
+
+	Vector4.prototype.setVector = function (rhs) {
+		console.warn('The setVector method of Vector4 was removed. Please use the set method instead.');
+		return this.set(rhs);
+	};
+	// SHIM END
 
 	/**
 	 * Zero-vector (0, 0, 0, 0)
