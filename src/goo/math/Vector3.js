@@ -42,6 +42,41 @@ define([
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector3.prototype.constructor = Vector3;
 
+	Object.defineProperty(Vector3.prototype, 'data', {
+		get: function(){
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector3 was removed. Please use the .x, .y and .z properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				},
+				'2': {
+					get: function () {
+						return that.z;
+					},
+					set: function (value) {
+						that.z = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
 	// #ifdef DEBUG
 	Vector.setupAliases(Vector3.prototype, [['x'], ['y'], ['z']]);
 	Vector.setupIndices(Vector3.prototype, 3);
