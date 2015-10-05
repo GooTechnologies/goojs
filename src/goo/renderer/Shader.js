@@ -17,7 +17,7 @@ define([
 ) {
 	'use strict';
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
+	/* global WebGLRenderingContext */
 
 	/**
 	 * Defines vertex and fragment shader and uniforms to shader callbacks
@@ -474,9 +474,8 @@ define([
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
 		this.renderer = renderer;
-
-		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
-		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
+		this.vertexShader = this._getShader(context, context.VERTEX_SHADER !== undefined ? context.VERTEX_SHADER : WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
+		this.fragmentShader = this._getShader(context, context.FRAGMENT_SHADER !== undefined ? context.FRAGMENT_SHADER : WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
 		if (this.vertexShader === null || this.fragmentShader === null) {
 			console.error('Shader error - no shaders');
@@ -485,7 +484,7 @@ define([
 		this.shaderProgram = context.createProgram();
 
 		var error = context.getError();
-		if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
+		if (this.shaderProgram === null || error !== 0) {
 			console.error('Shader error: ' + error + ' [shader: ' + this.name + ']');
 			SystemBus.emit('goo.shader.error');
 		}
@@ -495,7 +494,7 @@ define([
 
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);
-		if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
+		if (!context.getProgramParameter(this.shaderProgram, (context.LINK_STATUS !== undefined ? context.LINK_STATUS : WebGLRenderingContext.LINK_STATUS))) {
 			var errInfo = context.getProgramInfoLog(this.shaderProgram);
 			console.error('Could not initialise shaders: ' + errInfo);
 			SystemBus.emit('goo.shader.error', errInfo);
@@ -602,9 +601,9 @@ define([
 		context.compileShader(shader);
 
 		// check if the Shader is successfully compiled
-		if (!context.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
+		if (!context.getShaderParameter(shader, context.COMPILE_STATUS !== undefined ? context.COMPILE_STATUS : WebGLRenderingContext.COMPILE_STATUS)) {
 			var infoLog = context.getShaderInfoLog(shader);
-			var shaderType = type === WebGLRenderingContext.VERTEX_SHADER ? 'VertexShader' : 'FragmentShader';
+			var shaderType = type === (context.VERTEX_SHADER !== undefined ? context.VERTEX_SHADER : WebGLRenderingContext.VERTEX_SHADER) ? 'VertexShader' : 'FragmentShader';
 
 			errorRegExp.lastIndex = 0;
 			var errorMatcher = errorRegExp.exec(infoLog);

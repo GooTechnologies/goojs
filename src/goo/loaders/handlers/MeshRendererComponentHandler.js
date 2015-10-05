@@ -77,7 +77,7 @@ define([
 			component.castShadows = config.castShadows;
 			component.receiveShadows = config.receiveShadows;
 			component.isReflectable = config.reflectable;
-			component.isPickable = config.pickable;
+			//component.isPickable = config.pickable;
 
 			// Materials
 			var materials = config.materials;
