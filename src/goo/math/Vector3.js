@@ -42,6 +42,13 @@ define([
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector3.prototype.constructor = Vector3;
 
+	// #ifdef DEBUG
+	Vector.setupAliases(Vector3.prototype, [['x'], ['y'], ['z']]);
+	Vector.setupIndices(Vector3.prototype, 3);
+	// #endif
+
+	Vector.setupAliases(Vector3.prototype, [['u', 'r'], ['v', 'g'], ['w', 'b']]);
+
 	Object.defineProperty(Vector3.prototype, 'data', {
 		get: function(){
 			var data = [];
@@ -76,13 +83,6 @@ define([
 			return data;
 		}
 	});
-
-	// #ifdef DEBUG
-	Vector.setupAliases(Vector3.prototype, [['x'], ['y'], ['z']]);
-	Vector.setupIndices(Vector3.prototype, 3);
-	// #endif
-
-	Vector.setupAliases(Vector3.prototype, [['u', 'r'], ['v', 'g'], ['w', 'b']]);
 
 	/**
 	 * Zero-vector (0, 0, 0)
