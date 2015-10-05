@@ -58,8 +58,7 @@ define([
 		}
 
 		if (this.clearColor && false) {
-			var oc = this.oldClearColor.data;
-			renderer.setClearColor(oc[0], oc[1], oc[2], oc[3]);
+			renderer.setClearColor(this.oldClearColor.x, this.oldClearColor.y, this.oldClearColor.z, this.oldClearColor.w);
 		}
 	};
 

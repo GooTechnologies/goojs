@@ -397,9 +397,9 @@ define([
 		// set our component updated.
 		transformComponent.setUpdated();
 		SystemBus.emit('goo.cameraPositionChanged', {
-			spherical: ctx.spherical.data,
-			translation: transform.translation.data,
-			lookAtPoint: ctx.lookAtPoint.data,
+			spherical: ctx.spherical.toArray(),
+			translation: transform.translation.toArray(),
+			lookAtPoint: ctx.lookAtPoint.toArray(),
 			id: entity.id
 		});
 	}
