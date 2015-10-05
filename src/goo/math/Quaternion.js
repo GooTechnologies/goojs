@@ -50,7 +50,9 @@ define([
 		// #endif
 	}
 
+	// #ifdef DEBUG
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
+	// #endif
 
 	Quaternion.prototype.set = Vector4.prototype.set;
 	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
