@@ -628,6 +628,14 @@ define([
 	};
 
 	/**
+	 * Returns the components of the vector in array form
+	 * @returns {Array<number>}
+	 */
+	Vector3.prototype.toArray = function () {
+		return [this.x, this.y, this.z];
+	};
+
+	/**
 	 * Creates a Vector3 given an array
 	 * @param {number[3]} array
 	 * @returns {Vector3}
