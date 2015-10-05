@@ -155,7 +155,7 @@ define([
 				return PromiseUtils.resolve();
 			}
 		} else {
-			parameters[key] = _.extend(config);
+			parameters[key] = _.clone(config);
 			// revert to default if value of bad type
 			return PromiseUtils.resolve();
 		}
