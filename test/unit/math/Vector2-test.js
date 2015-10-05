@@ -253,5 +253,28 @@ define([
 				expect(clone).not.toBe(original);
 			});
 		});
+
+		describe('.data shim', function () {
+			it('has working getters', function () {
+				var v = new Vector2(1, 2);
+				expect(v.data[0]).toEqual(1);
+				expect(v.data[1]).toEqual(2);
+			});
+
+			it('has working setters', function () {
+				var v = new Vector2();
+				v.data[0] = 1;
+				v.data[1] = 2;
+				expect(v.x).toEqual(1);
+				expect(v.y).toEqual(2);
+			});
+
+			it('distinguishes vectors', function () {
+				var u = new Vector2(1, 2);
+				var v = new Vector2(4, 5);
+				expect(u.data[0]).toEqual(1);
+				expect(v.data[0]).toEqual(4);
+			});
+		});
 	});
 });

@@ -53,6 +53,49 @@ define([
 
 	Vector.setupAliases(Vector4.prototype, [['r'], ['g'], ['b'], ['a']]);
 
+	Object.defineProperty(Vector4.prototype, 'data', {
+		get: function(){
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				},
+				'2': {
+					get: function () {
+						return that.z;
+					},
+					set: function (value) {
+						that.z = value;
+					}
+				},
+				'3': {
+					get: function () {
+						return that.w;
+					},
+					set: function (value) {
+						that.w = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
 	/**
 	 * Zero-vector (0, 0, 0, 0)
 	 * @type {Vector4}

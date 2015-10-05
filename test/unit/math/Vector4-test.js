@@ -255,5 +255,34 @@ define([
 				expect(clone).not.toBe(original);
 			});
 		});
+
+		describe('.data shim', function () {
+			it('has working getters', function () {
+				var v = new Vector4(1, 2, 3, 4);
+				expect(v.data[0]).toEqual(1);
+				expect(v.data[1]).toEqual(2);
+				expect(v.data[2]).toEqual(3);
+				expect(v.data[3]).toEqual(4);
+			});
+
+			it('has working setters', function () {
+				var v = new Vector4();
+				v.data[0] = 1;
+				v.data[1] = 2;
+				v.data[2] = 3;
+				v.data[3] = 4;
+				expect(v.x).toEqual(1);
+				expect(v.y).toEqual(2);
+				expect(v.z).toEqual(3);
+				expect(v.w).toEqual(4);
+			});
+
+			it('distinguishes vectors', function () {
+				var u = new Vector4(1, 2, 3, 4);
+				var v = new Vector4(5, 6, 7, 8);
+				expect(u.data[0]).toEqual(1);
+				expect(v.data[0]).toEqual(5);
+			});
+		});
 	});
 });

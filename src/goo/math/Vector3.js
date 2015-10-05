@@ -49,6 +49,41 @@ define([
 
 	Vector.setupAliases(Vector3.prototype, [['u', 'r'], ['v', 'g'], ['w', 'b']]);
 
+	Object.defineProperty(Vector3.prototype, 'data', {
+		get: function(){
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector3 was removed. Please use the .x, .y and .z properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				},
+				'2': {
+					get: function () {
+						return that.z;
+					},
+					set: function (value) {
+						that.z = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
 	/**
 	 * Zero-vector (0, 0, 0)
 	 * @type {Vector3}

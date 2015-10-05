@@ -45,6 +45,33 @@ define([
 
 	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
 
+	Object.defineProperty(Vector2.prototype, 'data', {
+		get: function(){
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector2 was removed. Please use the .x and .y properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
 	/**
 	 * Zero-vector (0, 0)
 	 * @type {Vector2}
