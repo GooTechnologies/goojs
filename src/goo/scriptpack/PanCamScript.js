@@ -213,8 +213,8 @@ define([
 				environment.dirty = false;
 			}
 			SystemBus.emit('goo.cameraPositionChanged', {
-				translation: transform.translation.data,
-				lookAtPoint: lookAtPoint ? lookAtPoint.data : null,
+				translation: transform.translation.toArray(),
+				lookAtPoint: lookAtPoint ? lookAtPoint.toArray() : null,
 				id: entity.id
 			});
 		}
