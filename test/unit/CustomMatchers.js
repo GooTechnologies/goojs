@@ -18,8 +18,8 @@ define([
 	var serializeVector = function (vector) {
 		var ret = '(' + vector.x + ' ' + vector.y;
 
-		if (vector.z !== undefined) { ret += ' ' + vector.z; }
-		if (vector.w !== undefined) { ret += ' ' + vector.w; }
+		if (vector._size >= 3) { ret += ' ' + vector.z; }
+		if (vector._size >= 4) { ret += ' ' + vector.w; }
 
 		return ret + ')';
 	};

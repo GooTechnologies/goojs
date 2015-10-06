@@ -315,5 +315,171 @@ define([
 	]);
 	// #endif
 
+	// SHIM START
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.add = function (lhs, rhs, target) {
+		console.warn('Matrix2.add is deprecated. Use Matrix2.prototype.add instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (rhs instanceof Matrix2) {
+			target.e00 = lhs.e00 + rhs.e00;
+			target.e10 = lhs.e10 + rhs.e10;
+			target.e01 = lhs.e01 + rhs.e01;
+			target.e11 = lhs.e11 + rhs.e11;
+		} else {
+			target.e00 = lhs.e00 + rhs;
+			target.e10 = lhs.e10 + rhs;
+			target.e01 = lhs.e01 + rhs;
+			target.e11 = lhs.e11 + rhs;
+		}
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.combine = function (lhs, rhs, target) {
+		console.warn('Matrix2.combine is deprecated. Use Matrix2.prototype.multiply instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (target === lhs || target === rhs) {
+			return Matrix.copy(Matrix2.combine(lhs, rhs), target);
+		}
+
+		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10;
+		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10;
+		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11;
+		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11;
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.div = function (lhs, rhs, target) {
+		console.warn('Matrix2.div is deprecated. Use Matrix2.prototype.div instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (rhs instanceof Matrix2) {
+			target.e00 = lhs.e00 / rhs.e00;
+			target.e10 = lhs.e10 / rhs.e10;
+			target.e01 = lhs.e01 / rhs.e01;
+			target.e11 = lhs.e11 / rhs.e11;
+		} else {
+			rhs = 1.0 / rhs;
+
+			target.e00 = lhs.e00 * rhs;
+			target.e10 = lhs.e10 * rhs;
+			target.e01 = lhs.e01 * rhs;
+			target.e11 = lhs.e11 * rhs;
+		}
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.mul = function (lhs, rhs, target) {
+		console.warn('Matrix2.mul is deprecated. Use Matrix2.prototype.mul instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (rhs instanceof Matrix2) {
+			target.e00 = lhs.e00 * rhs.e00;
+			target.e10 = lhs.e10 * rhs.e10;
+			target.e01 = lhs.e01 * rhs.e01;
+			target.e11 = lhs.e11 * rhs.e11;
+		} else {
+			target.e00 = lhs.e00 * rhs;
+			target.e10 = lhs.e10 * rhs;
+			target.e01 = lhs.e01 * rhs;
+			target.e11 = lhs.e11 * rhs;
+		}
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.transpose = function (source, target) {
+		console.warn('Matrix2.transpose is deprecated. Use Matrix2.prototype.transpose instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (target === source) {
+			return Matrix.copy(Matrix2.transpose(source), target);
+		}
+
+		target.e00 = source.e00;
+		target.e10 = source.e01;
+		target.e01 = source.e10;
+		target.e11 = source.e11;
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.sub = function (lhs, rhs, target) {
+		console.warn('Matrix2.sub is deprecated. Use Matrix2.prototype.sub instead.');
+		if (!target) {
+			target = new Matrix2();
+		}
+
+		if (rhs instanceof Matrix2) {
+			target.e00 = lhs.e00 - rhs.e00;
+			target.e10 = lhs.e10 - rhs.e10;
+			target.e01 = lhs.e01 - rhs.e01;
+			target.e11 = lhs.e11 - rhs.e11;
+		} else {
+			target.e00 = lhs.e00 - rhs;
+			target.e10 = lhs.e10 - rhs;
+			target.e01 = lhs.e01 - rhs;
+			target.e11 = lhs.e11 - rhs;
+		}
+
+		return target;
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.prototype.combine = function (rhs) {
+		console.warn('Matrix2.prototype.combine is deprecated. Use Matrix2.prototype.mul or Matrix2.prototype.mul2 instead.');
+		return Matrix2.combine(this, rhs, this);
+	};
+	
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix2.prototype.div = function (rhs) {
+		console.warn('Matrix2.prototype.div is deprecated.');
+		return Matrix2.div(this, rhs, this);
+	};
+	// SHIM END
+
 	return Matrix2;
 });
