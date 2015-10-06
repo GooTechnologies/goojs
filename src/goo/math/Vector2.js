@@ -1,9 +1,13 @@
 define([
 	'goo/math/MathUtils',
-	'goo/math/Vector'
+	'goo/math/Vector',
+	'goo/math/Vector3',
+	'goo/math/Vector4'
 ], function (
 	MathUtils,
-	Vector
+	Vector,
+	Vector3,
+	Vector4
 ) {
 	'use strict';
 
@@ -44,40 +48,6 @@ define([
 	// #endif
 
 	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
-
-	// SHIM START
-	Object.defineProperty(Vector2.prototype, 'data', {
-		get: function () {
-			var data = [];
-			var that = this;
-			console.warn('The .data property of Vector2 was removed. Please use the .x and .y properties instead.');
-			Object.defineProperties(data, {
-				'0': {
-					get: function () {
-						return that.x;
-					},
-					set: function (value) {
-						that.x = value;
-					}
-				},
-				'1': {
-					get: function () {
-						return that.y;
-					},
-					set: function (value) {
-						that.y = value;
-					}
-				}
-			});
-			return data;
-		}
-	});
-
-	Vector2.prototype.setVector = function (rhs) {
-		console.warn('The setVector method of Vector2 was removed. Please use the set method instead.');
-		return this.set(rhs);
-	};
-	// SHIM END
 
 	/**
 	 * Zero-vector (0, 0)
@@ -365,8 +335,13 @@ define([
 	 * v.set(new Vector2(2, 4)); // v == (2, 4)
 	 */
 	Vector2.prototype.set = function (rhs) {
-		this.x = rhs.x;
-		this.y = rhs.y;
+		if(rhs instanceof Vector2 || rhs instanceof Vector3 || rhs instanceof Vector4){
+			this.x = rhs.x;
+			this.y = rhs.y;
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+		}
 
 		return this;
 	};
@@ -565,6 +540,236 @@ define([
 		'distance', 'distanceSquared'
 	]);
 	// #endif
+
+	// SHIM START
+	Object.defineProperty(Vector2.prototype, 'data', {
+		get: function () {
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector2 was removed. Please use the .x and .y properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
+	Vector2.prototype.setVector = function (rhs) {
+		console.warn('The setVector method of Vector2 was removed. Please use the set method instead.');
+		return this.set(rhs);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.add = function (lhs, rhs, target) {
+		console.warn('Vector2.add is deprecated.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] + rdata[0];
+		target.data[1] = ldata[1] + rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.sub = function (lhs, rhs, target) {
+		console.warn('Vector2.sub is deprecated.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+
+		target.data[0] = ldata[0] - rdata[0];
+		target.data[1] = ldata[1] - rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.mul = function (lhs, rhs, target) {
+		console.warn('Vector2.mul is deprecated.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] * rdata[0];
+		target.data[1] = ldata[1] * rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.div = function (lhs, rhs, target) {
+		console.warn('Vector2.div is deprecated.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] / rdata[0];
+		target.data[1] = ldata[1] / rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.dot = function (lhs, rhs) {
+		console.warn('Vector2.dot is deprecated.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs];
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1];
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.prototype.dotVector = function (rhs) {
+		console.warn('Vector2.prototype.dotVector is deprecated.');
+		var ldata = this.data;
+		var rdata = rhs.data;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1];
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.prototype.addVector = function (vector) {
+		console.warn('Vector2.prototype.addVector is deprecated.');
+		this.data[0] += vector.data[0];
+		this.data[1] += vector.data[1];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.prototype.mulVector = function (vector) {
+		console.warn('Vector2.prototype.mulVector is deprecated.');
+		this.data[0] *= vector.data[0];
+		this.data[1] *= vector.data[1];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.prototype.setArray = function (array) {
+		console.warn('Vector2.prototype.setArray is deprecated.');
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector2.prototype.subVector = function (vector) {
+		console.warn('Vector2.prototype.subVector is deprecated.');
+		this.data[0] -= vector.data[0];
+		this.data[1] -= vector.data[1];
+
+		return this;
+	};
+
+	//!schteppe: not shimming Vector2.prototype.seta, it's been warned about forever
+	//!schteppe: not shimming Vector2.prototype.setd, it's been warned about forever
+	//!schteppe: not shimming Vector2.prototype.setv, it's been warned about forever
+
+	// SHIM END
 
 	return Vector2;
 });
