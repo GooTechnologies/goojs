@@ -1,3 +1,250 @@
+v1.0.0
+------
+
+### Additions
+
+ + Matrix2.prototype.equals
+ + Matrix2.prototype.mul2
+ + Matrix2.prototype.scale
+ + Matrix2.prototype.set
+ + Matrix3.prototype.copyMatrix4
+ + Matrix3.prototype.equals
+ + Matrix3.prototype.mul2
+ + Matrix3.prototype.scale
+ + Matrix3.prototype.set
+ + Matrix4.prototype.equals
+ + Matrix4.prototype.mul2
+ + Matrix4.prototype.scale
+ + Matrix4.prototype.set
+ + Vector2.fromAny
+ + Vector2.fromArray
+ + Vector2.prototype.applyPost
+ + Vector2.prototype.applyPre
+ + Vector2.prototype.distance
+ + Vector2.prototype.distanceSquared
+ + Vector2.prototype.divDirect
+ + Vector2.prototype.dotDirect
+ + Vector2.prototype.equals
+ + Vector2.prototype.equalsDirect
+ + Vector2.prototype.getComponent
+ + Vector2.prototype.length
+ + Vector2.prototype.lengthSquared
+ + Vector2.prototype.lerp
+ + Vector2.prototype.negate
+ + Vector2.prototype.normalize
+ + Vector2.prototype.set
+ + Vector2.prototype.setComponent
+ + Vector2.prototype.unsafeNormalize
+ + Vector3.fromAny
+ + Vector3.fromArray
+ + Vector3.prototype.applyPost
+ + Vector3.prototype.applyPostPoint
+ + Vector3.prototype.applyPostVector
+ + Vector3.prototype.applyPre
+ + Vector3.prototype.crossDirect
+ + Vector3.prototype.divDirect
+ + Vector3.prototype.dotDirect
+ + Vector3.prototype.equals
+ + Vector3.prototype.equalsDirect
+ + Vector3.prototype.getComponent
+ + Vector3.prototype.negate
+ + Vector3.prototype.set
+ + Vector3.prototype.setComponent
+ + Vector3.prototype.toArray
+ + Vector3.prototype.unsafeNormalize
+ + Vector4.fromAny
+ + Vector4.fromArray
+ + Vector4.prototype.applyPost
+ + Vector4.prototype.applyPre
+ + Vector4.prototype.distance
+ + Vector4.prototype.distanceSquared
+ + Vector4.prototype.divDirect
+ + Vector4.prototype.dotDirect
+ + Vector4.prototype.equals
+ + Vector4.prototype.equalsDirect
+ + Vector4.prototype.getComponent
+ + Vector4.prototype.length
+ + Vector4.prototype.lengthSquared
+ + Vector4.prototype.negate
+ + Vector4.prototype.normalize
+ + Vector4.prototype.reflect
+ + Vector4.prototype.set
+ + Vector4.prototype.setComponent
+ + Vector4.prototype.unsafeNormalize
+
+### Deprecated
+
+The following classes were renamed. You can still use the old classes but when you do, you’ll get a warning in the console.
+
+ - Matrix2x2 - use Matrix2 instead
+ - Matrix3x3 - use Matrix3 instead
+ - Matrix4x4 - use Matrix4 instead
+
+The following methods in the math classes were deprecated. Most of the methods were shimmed, so you can use them as before - but you’ll get warnings. Don’t worry, there are alternatives, and the warnings should point you in the right direction.
+
+ - Matrix.add
+ - Matrix.combine
+ - Matrix.copy
+ - Matrix.div
+ - Matrix.equals
+ - Matrix.mul
+ - Matrix.prototype.add
+ - Matrix.prototype.clone
+ - Matrix.prototype.combine
+ - Matrix.prototype.copy
+ - Matrix.prototype.div
+ - Matrix.prototype.equals
+ - Matrix.prototype.isNormal
+ - Matrix.prototype.isOrthogonal
+ - Matrix.prototype.isOrthonormal
+ - Matrix.prototype.mul
+ - Matrix.prototype.set
+ - Matrix.prototype.sub
+ - Matrix.prototype.toString
+ - Matrix.prototype.transpose
+ - Matrix.sub
+ - Matrix.transpose
+ - Matrix2.add
+ - Matrix2.combine
+ - Matrix2.div
+ - Matrix2.mul
+ - Matrix2.prototype.combine
+ - Matrix2.prototype.div
+ - Matrix2.sub
+ - Matrix2.transpose
+ - Matrix3.add
+ - Matrix3.combine
+ - Matrix3.div
+ - Matrix3.mul
+ - Matrix3.prototype.applyPost
+ - Matrix3.prototype.applyPre
+ - Matrix3.prototype.combine
+ - Matrix3.prototype.div
+ - Matrix3.sub
+ - Matrix3.transpose
+ - Matrix4.add
+ - Matrix4.combine
+ - Matrix4.div
+ - Matrix4.mul
+ - Matrix4.prototype.applyPost
+ - Matrix4.prototype.applyPostPoint
+ - Matrix4.prototype.applyPostVector
+ - Matrix4.prototype.applyPre
+ - Matrix4.prototype.combine
+ - Matrix4.prototype.div
+ - Matrix4.sub
+ - Matrix4.transpose
+ - Quaternion.add
+ - Quaternion.ALLOWED_DEVIANCE
+ - Quaternion.div
+ - Quaternion.mul
+ - Quaternion.prototype.add
+ - Quaternion.prototype.div
+ - Quaternion.prototype.dot
+ - Quaternion.prototype.magnitude
+ - Quaternion.prototype.magnitudeSquared
+ - Quaternion.prototype.normalize  - > Vector4 normalize
+ - Quaternion.prototype.scalarAdd
+ - Quaternion.prototype.scalarDiv
+ - Quaternion.prototype.scalarMul
+ - Quaternion.prototype.scalarSub
+ - Quaternion.prototype.setArray
+ - Quaternion.prototype.setVector
+ - Quaternion.prototype.sub
+ - Quaternion.scalarAdd
+ - Quaternion.scalarDiv
+ - Quaternion.scalarMul
+ - Quaternion.scalarSub
+ - Quaternion.sub
+ - Vector.add
+ - Vector.apply
+ - Vector.copy
+ - Vector.distance
+ - Vector.distanceSquared
+ - Vector.div
+ - Vector.dot
+ - Vector.equals
+ - Vector.mul
+ - Vector.prototype.add
+ - Vector.prototype.apply
+ - Vector.prototype.clone
+ - Vector.prototype.copy
+ - Vector.prototype.distance
+ - Vector.prototype.distanceSquared
+ - Vector.prototype.div
+ - Vector.prototype.dot
+ - Vector.prototype.equals
+ - Vector.prototype.invert
+ - Vector.prototype.length
+ - Vector.prototype.lengthSquared
+ - Vector.prototype.mul
+ - Vector.prototype.normalize
+ - Vector.prototype.scale
+ - Vector.prototype.set
+ - Vector.prototype.sub
+ - Vector.prototype.toString
+ - Vector.sub
+ - Vector2.add
+ - Vector2.div
+ - Vector2.dot
+ - Vector2.mul
+ - Vector2.prototype.addVector
+ - Vector2.prototype.dotVector
+ - Vector2.prototype.mulVector
+ - Vector2.prototype.setArray
+ - Vector2.prototype.subVector
+ - Vector2.sub
+ - Vector3.add
+ - Vector3.addv
+ - Vector3.cross
+ - Vector3.distance
+ - Vector3.distanceSquared
+ - Vector3.div
+ - Vector3.dot
+ - Vector3.mul
+ - Vector3.prototype.addVector
+ - Vector3.prototype.dotVector
+ - Vector3.prototype.invert
+ - Vector3.prototype.mulVector
+ - Vector3.prototype.setArray
+ - Vector3.prototype.subVector
+ - Vector3.sub
+ - Vector4.add
+ - Vector4.div
+ - Vector4.dot
+ - Vector4.mul
+ - Vector4.prototype.addVector
+ - Vector4.prototype.dotVector
+ - Vector4.prototype.mulVector
+ - Vector4.prototype.setArray
+ - Vector4.prototype.setVector
+ - Vector4.prototype.subVector
+ - Vector4.sub
+
+Also, the .data property was removed from all vector classes. Use the .x, .y, .z, .w properties instead. But we shimmed it, so you should be able to use it as before - with console warnings. (Hopefully you didn't use this private property anyway).
+
+### Removed
+
+ - Vector4.prototype.setd
+ - Vector4.prototype.setv
+ - Vector4.prototype.seta
+ - Vector3.prototype.setd
+ - Vector3.prototype.setv
+ - Vector3.prototype.sub_d
+ - Vector3.prototype.seta
+ - Vector3.prototype.subv
+ - Vector3.prototype.muld
+ - Vector3.prototype.mulv
+ - Vector3.prototype.add_d
+ - Vector3.prototype.addv
+ - Vector3.dotv
+ - Vector2.prototype.setd
+ - Vector2.prototype.setv
+ - Vector2.prototype.seta
+ - Quaternion.prototype.seta
+ - Quaternion.prototype.setd
+ - Quaternion.prototype.setv
+
 v0.15.9 --- 2015-10-01
 ----------------------
 
