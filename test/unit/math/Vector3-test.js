@@ -372,7 +372,7 @@ define([
 			});
 		});
 
-		describe('shim', function () {
+		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 			describe('.data', function () {
 				it('has working getters', function () {
 					var v = new Vector3(1, 2, 3);

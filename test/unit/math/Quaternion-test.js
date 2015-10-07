@@ -33,7 +33,7 @@ define([
 
 				expect(quaternion).toBeCloseToVector(expected);
 			});
-			
+
 			it('creates a vector when given an array', function () {
 				var vector = new Quaternion([1, 2, 3, 4]);
 				var expected = new Quaternion(1, 2, 3, 4);
@@ -255,7 +255,7 @@ define([
 			});
 		});
 		
-		describe('shim', function () {
+		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 
 			it('can add two quaternions',function () {
 				var p = new Quaternion(1,1,1,1);
