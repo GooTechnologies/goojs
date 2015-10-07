@@ -12,5 +12,5 @@ define([
 	Matrix2x2.prototype = Object.create(Matrix2.prototype);
 	Matrix2x2.prototype.constructor = Matrix2x2;
 
-	return Matrix2;
+	return Matrix2x2;
 });
