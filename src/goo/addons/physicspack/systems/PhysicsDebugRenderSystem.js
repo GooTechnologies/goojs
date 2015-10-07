@@ -155,7 +155,7 @@ function (
 			var scale = collider.radius;
 			targetTransform.scale.set(scale, scale, scale);
 		} else if (collider instanceof BoxCollider) {
-			targetTransform.scale.copy(collider.halfExtents).mul(2);
+			targetTransform.scale.copy(collider.halfExtents).scale(2);
 		} else if (collider instanceof CylinderCollider) {
 			targetTransform.scale.set(collider.radius, collider.radius, collider.height);
 		} else if (collider instanceof PlaneCollider) {

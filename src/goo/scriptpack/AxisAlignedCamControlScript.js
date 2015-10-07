@@ -16,12 +16,12 @@ define([
 	function AxisAlignedCamControlScript() {
 		function setup(params, env) {
 			// Look axis
-			env.axis = new Vector3(Vector3.UNIT_Z);
+			env.axis = Vector3.UNIT_Z.clone();
 			// Up axis will most often be Y but you never know...
-			env.upAxis = new Vector3(Vector3.UNIT_Y);
+			env.upAxis = Vector3.UNIT_Y.clone();
 			setView(params, env, params.view);
 			env.currentView = params.view;
-			env.lookAtPoint	= new Vector3(Vector3.ZERO);
+			env.lookAtPoint	= new Vector3();
 			env.distance	= params.distance;
 			env.smoothness	= Math.pow(MathUtils.clamp(params.smoothness, 0, 1), 0.3);
 			env.axisAlignedDirty = true;

@@ -13,6 +13,8 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		this.enabled = true;
 
 		this.installedAPI = new Set();
+
+		this.forceDebug = false;
 	}
 
 	/**
