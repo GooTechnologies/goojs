@@ -33,6 +33,21 @@ define([
 
 				expect(quaternion).toBeCloseToVector(expected);
 			});
+			
+			it('creates a vector when given an array', function () {
+				var vector = new Quaternion([1, 2, 3, 4]);
+				var expected = new Quaternion(1, 2, 3, 4);
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given a vector', function () {
+				var original = new Quaternion(1, 2, 3, 4);
+				var vector = new Quaternion(original);
+				var expected = new Quaternion(1, 2, 3, 4);
+
+				expect(vector).toBeCloseToVector(expected);
+			});
 		});
 
 		describe('mul', function () {

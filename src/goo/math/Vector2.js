@@ -27,9 +27,20 @@ define([
 		// #endif
 
 		if (arguments.length === 0) {
+			// Nothing given
 			this.x = 0;
 			this.y = 0;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Vector2) {
+				// Vector2
+				this.copy(arguments[0]);
+			} else {
+				// Array
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+			}
 		} else {
+			// Numbers
 			this.x = x;
 			this.y = y;
 		}

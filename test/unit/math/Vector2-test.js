@@ -26,6 +26,21 @@ define([
 
 				expect(vector).toBeCloseToVector(expected);
 			});
+
+			it('creates a vector when given an array', function () {
+				var vector = new Vector2([11, 22]);
+				var expected = new Vector2(11,22);
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given a vector', function () {
+				var original = new Vector2(1, 2);
+				var vector = new Vector2(original);
+				var expected = new Vector2(1, 2);
+
+				expect(vector).toBeCloseToVector(expected);
+			});
 		});
 
 		describe('indices', function () {
