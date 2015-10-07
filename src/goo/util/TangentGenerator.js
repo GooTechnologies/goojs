@@ -55,14 +55,15 @@ define([
 			tan2[i] = new Vector3();
 		}
 
-		function getVector2Array (buf) {
+		function getVector2Array(buf) {
 			var arr = [];
 			for (var i = 0; i < buf.length; i += 2) {
 				arr.push(new Vector2(buf[i + 0], buf[i + 1]));
 			}
 			return arr;
 		}
-		function getVector3Array (buf) {
+
+		function getVector3Array(buf) {
 			var arr = [];
 			for (var i = 0; i < buf.length; i += 3) {
 				arr.push(new Vector3(buf[i + 0], buf[i + 1], buf[i + 2]));
