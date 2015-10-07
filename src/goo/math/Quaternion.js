@@ -54,16 +54,38 @@ define([
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 	// #endif
 
-	Quaternion.prototype.set = Vector4.prototype.set;
 	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
 	Quaternion.prototype.dot = Vector4.prototype.dot;
 	Quaternion.prototype.length = Vector4.prototype.length;
 	Quaternion.prototype.lengthSquared = Vector4.prototype.lengthSquared;
 	Quaternion.prototype.normalize = Vector4.prototype.normalize;
 	Quaternion.prototype.equals = Vector4.prototype.equals;
-	Quaternion.prototype.copy = Vector4.prototype.copy;
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
+
+	Quaternion.prototype.copy = function (rhs) {
+		this.x = rhs.x;
+		this.y = rhs.y;
+		this.z = rhs.z;
+		this.w = rhs.w;
+		return this;
+	};
+
+	Quaternion.prototype.set = function (rhs) {
+		if(rhs instanceof Quaternion){
+			this.x = rhs.x;
+			this.y = rhs.y;
+			this.z = rhs.z;
+			this.w = rhs.w;
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+			this.z = arguments[2];
+			this.w = arguments[3];
+		}
+
+		return this;
+	};
 
 	/**
 	 * Computes the spherical linear interpolation between startQuat and endQuat.
@@ -410,6 +432,347 @@ define([
 		'distance', 'distanceSquared'
 	]);
 	// #endif
+
+	// SHIM START
+
+	Object.defineProperty(Quaternion.prototype, 'data', {
+		get: function () {
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Quaternion was removed. Please use the .x, .y, .z and .w properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				},
+				'2': {
+					get: function () {
+						return that.z;
+					},
+					set: function (value) {
+						that.z = value;
+					}
+				},
+				'3': {
+					get: function () {
+						return that.w;
+					},
+					set: function (value) {
+						that.w = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.add = function (lhs, rhs, target) {
+	 	console.warn('Quaternion.add is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		target.x = lhs.x + rhs.x;
+		target.y = lhs.y + rhs.y;
+		target.z = lhs.z + rhs.z;
+		target.w = lhs.w + rhs.w;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.div = function (lhs, rhs, target) {
+	 	console.warn('Quaternion.div is deprecated');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		var clean = true;
+
+		target.x = (clean &= rhs.x < 0 || rhs.x > 0) ? lhs.x / rhs.x : 0;
+		target.y = (clean &= rhs.y < 0 || rhs.y > 0) ? lhs.y / rhs.y : 0;
+		target.z = (clean &= rhs.z < 0 || rhs.z > 0) ? lhs.z / rhs.z : 0;
+		target.w = (clean &= rhs.w < 0 || rhs.w > 0) ? lhs.w / rhs.w : 0;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.mul = function(a, b, out) {
+	 	console.warn('Quaternion.mul is deprecated.');
+		var ax = a.x, ay = a.y, az = a.z, aw = a.w,
+			bx = b.x, by = b.y, bz = b.z, bw = b.w;
+
+		out.x = ax * bw + aw * bx + ay * bz - az * by;
+		out.y = ay * bw + aw * by + az * bx - ax * bz;
+		out.z = az * bw + aw * bz + ax * by - ay * bx;
+		out.w = aw * bw - ax * bx - ay * by - az * bz;
+		return out;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.sub = function (lhs, rhs, target) {
+	 	console.warn('Quaternion.sub is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		target.x = lhs.x - rhs.x;
+		target.y = lhs.y - rhs.y;
+		target.z = lhs.z - rhs.z;
+		target.w = lhs.w - rhs.w;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.add = function (rhs) {
+	 	console.warn('Quaternion.prototype.add is deprecated.');
+		return Quaternion.add(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.div = function (rhs) {
+	 	console.warn('Quaternion.prototype.div is deprecated.');
+		return Quaternion.div(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.dot = function (rhs) {
+	 	console.warn('Quaternion.prototype.dot is deprecated.');
+		var ldata = this.data;
+		var rdata = rhs.data || rhs;
+
+		var sum = 0.0;
+
+		sum += this.x * rhs.x;
+		sum += this.y * rhs.y;
+		sum += this.z * rhs.z;
+		sum += this.w * rhs.w;
+
+		return sum;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.magnitude = function () {
+	 	console.warn('Quaternion.prototype.magnitude is deprecated.');
+		var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+		if (magnitudeSQ === 1.0) {
+			return 1.0;
+		}
+		return Math.sqrt(magnitudeSQ);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.magnitudeSquared = function () {
+	 	console.warn('Quaternion.prototype.magnitudeSquared is deprecated.');
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarAdd = function (lhs, rhs, target) {
+	 	console.warn('Quaternion.prototype.scalarAdd is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		target.x = lhs.x + rhs;
+		target.y = lhs.y + rhs;
+		target.z = lhs.z + rhs;
+		target.w = lhs.w + rhs;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarDiv = function (lhs, rhs, target) {
+		console.warn('Quaternion.scalarDiv is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		var clean = true;
+
+		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
+
+		target.x = lhs.x * rhs;
+		target.y = lhs.y * rhs;
+		target.z = lhs.z * rhs;
+		target.w = lhs.w * rhs;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarMul = function (lhs, rhs, target) {
+		console.warn('Quaternion.scalarMul is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		target.x = lhs.x * rhs;
+		target.y = lhs.y * rhs;
+		target.z = lhs.z * rhs;
+		target.w = lhs.w * rhs;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.scalarSub = function (lhs, rhs, target) {
+	 	console.warn('Quaternion.scalarSub is deprecated.');
+		if (!target) {
+			target = new Quaternion();
+		}
+
+		target.x = lhs.x - rhs;
+		target.y = lhs.y - rhs;
+		target.z = lhs.z - rhs;
+		target.w = lhs.w - rhs;
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.setArray = function (array) {
+	 	console.warn('Quaternion.prototype.setArray is deprecated.');
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+		this.w = array[3];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.setDirect = function (x, y, z, w) {
+	 	console.warn('Quaternion.prototype.setDirect is deprecated.');
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.setVector = function (quat) {
+	 	console.warn('Quaternion.prototype.setVector is deprecated.');
+		this.x = quat.x;
+		this.y = quat.y;
+		this.z = quat.z;
+		this.w = quat.w;
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.sub = function (rhs) {
+	 	console.warn('Quaternion.prototype.sub is deprecated.');
+		return Quaternion.sub(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.scalarAdd = function (rhs) {
+	 	console.warn('Quaternion.prototype.scalarAdd is deprecated.');
+		return Quaternion.scalarAdd(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.scalarSub = function (rhs) {
+	 	console.warn('Quaternion.prototype.scalarSub is deprecated.');
+		return Quaternion.scalarSub(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.scalarMul = function (rhs) {
+	 	console.warn('Quaternion.prototype.scalarMul is deprecated.');
+		return Quaternion.scalarMul(this, rhs, this);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	 Quaternion.prototype.scalarDiv = function (rhs) {
+	 	console.warn('Quaternion.prototype.scalarDiv is deprecated.');
+		return Quaternion.scalarDiv(this, rhs, this);
+	};
+
+	// SHIM END
 
 	return Quaternion;
 });

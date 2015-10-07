@@ -53,56 +53,6 @@ define([
 
 	Vector.setupAliases(Vector4.prototype, [['r'], ['g'], ['b'], ['a']]);
 
-	// SHIM START
-	Object.defineProperty(Vector4.prototype, 'data', {
-		get: function () {
-			var data = [];
-			var that = this;
-			console.warn('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.');
-			Object.defineProperties(data, {
-				'0': {
-					get: function () {
-						return that.x;
-					},
-					set: function (value) {
-						that.x = value;
-					}
-				},
-				'1': {
-					get: function () {
-						return that.y;
-					},
-					set: function (value) {
-						that.y = value;
-					}
-				},
-				'2': {
-					get: function () {
-						return that.z;
-					},
-					set: function (value) {
-						that.z = value;
-					}
-				},
-				'3': {
-					get: function () {
-						return that.w;
-					},
-					set: function (value) {
-						that.w = value;
-					}
-				}
-			});
-			return data;
-		}
-	});
-
-	Vector4.prototype.setVector = function (rhs) {
-		console.warn('The setVector method of Vector4 was removed. Please use the set method instead.');
-		return this.set(rhs);
-	};
-	// SHIM END
-
 	/**
 	 * Zero-vector (0, 0, 0, 0)
 	 * @type {Vector4}
@@ -447,10 +397,17 @@ define([
 	 * v.set(new Vector4(2, 4, 6, 8)); // v == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.set = function (rhs) {
-		this.x = rhs.x;
-		this.y = rhs.y;
-		this.z = rhs.z;
-		this.w = rhs.w;
+		if(rhs instanceof Vector4){
+			this.x = rhs.x;
+			this.y = rhs.y;
+			this.z = rhs.z;
+			this.w = rhs.w;
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+			this.z = arguments[2];
+			this.w = arguments[3];
+		}
 
 		return this;
 	};
@@ -671,6 +628,281 @@ define([
 		'distance', 'distanceSquared'
 	]);
 	// #endif
+
+	// SHIM START
+	Object.defineProperty(Vector4.prototype, 'data', {
+		get: function () {
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				},
+				'2': {
+					get: function () {
+						return that.z;
+					},
+					set: function (value) {
+						that.z = value;
+					}
+				},
+				'3': {
+					get: function () {
+						return that.w;
+					},
+					set: function (value) {
+						that.w = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
+	Vector4.prototype.setVector = function (rhs) {
+		console.warn('The setVector method of Vector4 is deprecated. Please use the set method instead.');
+		return this.set(rhs);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.add = function (lhs, rhs, target) {
+		console.warn('Vector4.add is deprecated. Use Vector4.prototype.add instead.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs, lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs, rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector4();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] + rdata[0];
+		target.data[1] = ldata[1] + rdata[1];
+		target.data[2] = ldata[2] + rdata[2];
+		target.data[3] = ldata[3] + rdata[3];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.sub = function (lhs, rhs, target) {
+		console.warn('Vector4.sub is deprecated. Use Vector4.prototype.sub instead.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs, lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs, rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector4();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] - rdata[0];
+		target.data[1] = ldata[1] - rdata[1];
+		target.data[2] = ldata[2] - rdata[2];
+		target.data[3] = ldata[3] - rdata[3];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.mul = function (lhs, rhs, target) {
+		console.warn('Vector4.mul is deprecated. Use Vector4.prototype.mul instead.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs, lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs, rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector4();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] * rdata[0];
+		target.data[1] = ldata[1] * rdata[1];
+		target.data[2] = ldata[2] * rdata[2];
+		target.data[3] = ldata[3] * rdata[3];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.div = function (lhs, rhs, target) {
+		console.warn('Vector4.div is deprecated. Use Vector4.prototype.div instead.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs, lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs, rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector4();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		target.data[0] = ldata[0] / rdata[0];
+		target.data[1] = ldata[1] / rdata[1];
+		target.data[2] = ldata[2] / rdata[2];
+		target.data[3] = ldata[3] / rdata[3];
+
+		return target;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.dot = function (lhs, rhs) {
+		console.warn('Vector4.dot is deprecated. Use Vector4.prototype.dot instead.');
+		if (typeof lhs === 'number') {
+			lhs = [lhs, lhs, lhs, lhs];
+		}
+
+		if (typeof rhs === 'number') {
+			rhs = [rhs, rhs, rhs, rhs];
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2] +
+			ldata[3] * rdata[3];
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.addVector = function (vector) {
+		console.warn('Vector4.prototype.addVector is deprecated. Use .add instead.');
+		this.data[0] += vector.data[0];
+		this.data[1] += vector.data[1];
+		this.data[2] += vector.data[2];
+		this.data[3] += vector.data[3];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.dotVector = function (rhs) {
+		console.warn('Vector4.prototype.dotVector is deprecated. Use .dot instead.');
+		var ldata = this.data;
+		var rdata = rhs.data;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2] +
+			ldata[3] * rdata[3];
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.mulVector = function (vector) {
+		console.warn('Vector4.prototype.mulVector is deprecated. Use .mul instead.');
+		this.data[0] *= vector.data[0];
+		this.data[1] *= vector.data[1];
+		this.data[2] *= vector.data[2];
+		this.data[3] *= vector.data[3];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.setArray = function (array) {
+		console.warn('Vector4.prototype.setArray is deprecated.');
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+		this.data[2] = array[2];
+		this.data[3] = array[3];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.setVector = function (vector) {
+		console.warn('Vector4.prototype.setVector is deprecated. Use .set instead.');
+		this.data[0] = vector.data[0];
+		this.data[1] = vector.data[1];
+		this.data[2] = vector.data[2];
+		this.data[3] = vector.data[3];
+
+		return this;
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Vector4.prototype.subVector = function (vector) {
+		console.warn('Vector4.prototype.subVector is deprecated. Use .sub instead.');
+		this.data[0] -= vector.data[0];
+		this.data[1] -= vector.data[1];
+		this.data[2] -= vector.data[2];
+		this.data[3] -= vector.data[3];
+
+		return this;
+	};
+
+	// SHIM END
 
 	return Vector4;
 });
