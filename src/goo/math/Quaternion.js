@@ -446,6 +446,26 @@ define([
 	]);
 	// #endif
 
+	/**
+	 * Sets the vector's values from 4 numeric arguments
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Quaternion} Self to allow chaining
+	 * @example
+	 * var q = new Quaternion(); // q == (0, 0, 0, 0)
+	 * q.setDirect(2, 4, 6, 8); // q == (2, 4, 6, 8)
+	 */
+	 Quaternion.prototype.setDirect = function (x, y, z, w) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
+
+		return this;
+	};
+	
 	// SHIM START
 
 	Object.defineProperty(Quaternion.prototype, 'data', {
@@ -708,20 +728,6 @@ define([
 		this.y = array[1];
 		this.z = array[2];
 		this.w = array[3];
-
-		return this;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	 Quaternion.prototype.setDirect = function (x, y, z, w) {
-	 	console.warn('Quaternion.prototype.setDirect is deprecated.');
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.w = w;
 
 		return this;
 	};
