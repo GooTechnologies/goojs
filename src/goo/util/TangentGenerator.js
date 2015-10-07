@@ -127,7 +127,7 @@ define([
 
 			// Gram-Schmidt orthogonalize
 			var dot = n.dot(t);
-			calc1.copy(t).sub(calc2.copy(n).mul(dot)).normalize();
+			calc1.copy(t).sub(calc2.copy(n).scale(dot)).normalize();
 			tangentBuffer[a * 4 + 0] = calc1.x;
 			tangentBuffer[a * 4 + 1] = calc1.y;
 			tangentBuffer[a * 4 + 2] = calc1.z;
