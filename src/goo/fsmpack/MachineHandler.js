@@ -31,18 +31,6 @@ define([
 	MachineHandler.prototype.constructor = MachineHandler;
 
 	ConfigHandler._registerClass('machine', MachineHandler);
-	MachineHandler.prototype._remove = function (ref) {
-		var machine = this._objects.get(ref);
-		if (machine) {
-			/**
-			 * Removes a machine
-			 * @param {ref}
-			 * @private
-			 */
-			machine.removeFromParent();
-		}
-		this._objects.delete(ref);
-	};
 
 	/**
 	 * Creates an empty machine

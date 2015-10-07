@@ -46,12 +46,13 @@ define([
 	 */
 	StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
+		options.reload = true;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
 			var promises = [];
-			_.forEach(config.machines, function (machineCfg) {
-				promises.push(that._load(machineCfg.machineRef, options));
+			_.forEach(config.machines, function (machineConfig) {
+				promises.push(that._load(machineConfig.machineRef, options));
 			}, null, 'sortValue');
 
 			return RSVP.all(promises).then(function (machines) {
