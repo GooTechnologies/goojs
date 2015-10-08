@@ -438,6 +438,15 @@ define([
 		return new Quaternion(this.x, this.y, this.z, this.w);
 	};
 
+	/**
+	 * Calculates the dot product between the current quaternion and another quaternion.
+	 * @param rhs Quaternion on the right-hand side.
+	 * @returns {number} The dot product.
+	 */
+	Quaternion.prototype.dot = function (q) {
+		return this.x * q.x + this.y * q.y + this.z * q.z + this.w * q.w;
+	};
+
 	// #ifdef DEBUG
 	Vector.addReturnChecks(Quaternion.prototype, [
 		'dot', 'dotDirect',
@@ -465,7 +474,7 @@ define([
 
 		return this;
 	};
-	
+
 	// SHIM START
 
 	Object.defineProperty(Quaternion.prototype, 'data', {
@@ -599,25 +608,6 @@ define([
 	 Quaternion.prototype.div = function (rhs) {
 	 	console.warn('Quaternion.prototype.div is deprecated.');
 		return Quaternion.div(this, rhs, this);
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	 Quaternion.prototype.dot = function (rhs) {
-	 	console.warn('Quaternion.prototype.dot is deprecated.');
-		var ldata = this.data;
-		var rdata = rhs.data || rhs;
-
-		var sum = 0.0;
-
-		sum += this.x * rhs.x;
-		sum += this.y * rhs.y;
-		sum += this.z * rhs.z;
-		sum += this.w * rhs.w;
-
-		return sum;
 	};
 
 	/**

@@ -140,7 +140,6 @@ The following methods in the math classes were deprecated. Most of the methods w
  - Quaternion.mul
  - Quaternion.prototype.add
  - Quaternion.prototype.div
- - Quaternion.prototype.dot
  - Quaternion.prototype.magnitude
  - Quaternion.prototype.magnitudeSquared
  - Quaternion.prototype.normalize  - > Vector4 normalize
