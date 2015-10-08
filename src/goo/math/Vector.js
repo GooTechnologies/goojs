@@ -99,7 +99,7 @@ define([
 		get: function () {
 			var data = [];
 			var that = this;
-			console.warn('The .data property of Vector was removed, dont use it.');
+			console.warn('The .data property of Vector was removed, please use the .x, .y, .z, .w properties instead.');
 			Object.defineProperties(data, {
 				'0': {
 					get: function () {
