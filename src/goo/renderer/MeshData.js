@@ -50,11 +50,13 @@ define([
 		this.store = undefined;
 		this.wireframeData = undefined;
 		this.flatMeshData = undefined;
+		this.__boundingTree = undefined;
 
 		this._attributeDataNeedsRefresh = false;
 		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
 
 		// #ifdef DEBUG
 		Object.seal(this);

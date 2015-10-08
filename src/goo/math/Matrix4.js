@@ -1062,17 +1062,8 @@ define([
 	 * @deprecated
 	 */
 	Matrix4.prototype.applyPostPoint = function (rhs) {
-		console.warn('Matrix4.prototype.applyPostPoint is deprecated');
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-
-		var d = this.data;
-		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
-		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
-		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
-
-		return rhs;
+		console.warn('Matrix4.prototype.applyPostPoint is deprecated, use Vector4.prototype.applyPostPoint instead');
+		return rhs.applyPostPoint(this);
 	};
 	
 	/**
@@ -1080,7 +1071,7 @@ define([
 	 * @deprecated
 	 */
 	Matrix4.prototype.applyPostVector = function (rhs) {
-		console.warn('Matrix4.prototype.applyPostVector is deprecated');
+		console.warn('Matrix4.prototype.applyPostVector is deprecated, use Vector4.prototype.applyPostVector instead');
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;
