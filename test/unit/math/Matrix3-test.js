@@ -251,7 +251,7 @@ define([
 			});
 		});
 
-		describe('shims', function () {
+		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 			it('Matrix3.add', function () {
 				var a = new Matrix3(1, 1, 1, 1, 1, 1, 1, 1, 1);
 				Matrix3.add(a, a, a);

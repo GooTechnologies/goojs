@@ -72,7 +72,6 @@ define([
 			var expectedResult = new Quaternion(Math.sin(half), 0, 0, Math.cos(half));
 
 			Quaternion.slerp(quat1, quat2, 0.5, result);
-			console.log(result.data, expectedResult.data)
 			expect(result.equals(expectedResult)).toBeTruthy();
 		});
 
@@ -362,11 +361,6 @@ define([
 					var inverse = new Quaternion().copy(original).invert();
 					expect(inverse).toBeCloseToVector(new Quaternion(-1/30, -2/30, -3/30, 4/30).normalize());
 				});
-			});
-
-			it('can dot',function () {
-				var q = new Quaternion(1,1,1,1);
-				expect(q.dot(q)).toEqual(4);
 			});
 
 			it('can be set from rotation matrix', function () {
