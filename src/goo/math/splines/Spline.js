@@ -1,6 +1,10 @@
 define([
+	'goo/math/Vector2',
+	'goo/math/Vector3',
 	'goo/math/Vector4'
 ], function (
+	Vector2,
+	Vector3,
 	Vector4
 ) {
 	'use strict';
@@ -17,10 +21,17 @@ define([
 
 	(function () {
 		// should be of the same type as p0, p1, p2
-		// using Vector4 here because it can hold instances of Vector2/3/4
-		var term0 = new Vector4();
-		var term1 = new Vector4();
-		var term2 = new Vector4();
+		var term0_v4 = new Vector4();
+		var term1_v4 = new Vector4();
+		var term2_v4 = new Vector4();
+
+		var term0_v3 = new Vector3();
+		var term1_v3 = new Vector3();
+		var term2_v3 = new Vector3();
+
+		var term0_v2 = new Vector2();
+		var term1_v2 = new Vector2();
+		var term2_v2 = new Vector2();
 
 		/**
 		 * Interpolate on a quadratic Bezier curve
@@ -41,26 +52,59 @@ define([
 			var it = 1 - t;
 			var it2 = it * it;
 
-			p0.copyTo(term0);
-			term0.scale(it2);
+			if(store instanceof Vector4){
+				p0.copyTo(term0_v4);
+				term0_v4.scale(it2);
 
-			p1.copyTo(term1);
-			term1.scale(it * t * 2);
+				p1.copyTo(term1_v4);
+				term1_v4.scale(it * t * 2);
 
-			p2.copyTo(term2);
-			term2.scale(t2);
+				p2.copyTo(term2_v4);
+				term2_v4.scale(t2);
 
-			store.set(term0).add(term1).add(term2);
+				store.set(term0_v4).add(term1_v4).add(term2_v4);
+			} else if(store instanceof Vector3){
+				p0.copyTo(term0_v3);
+				term0_v3.scale(it2);
+
+				p1.copyTo(term1_v3);
+				term1_v3.scale(it * t * 2);
+
+				p2.copyTo(term2_v3);
+				term2_v3.scale(t2);
+
+				store.set(term0_v3).add(term1_v3).add(term2_v3);
+			} else if(store instanceof Vector2){
+				p0.copyTo(term0_v2);
+				term0_v2.scale(it2);
+
+				p1.copyTo(term1_v2);
+				term1_v2.scale(it * t * 2);
+
+				p2.copyTo(term2_v2);
+				term2_v2.scale(t2);
+
+				store.set(term0_v2).add(term1_v2).add(term2_v2);
+			}
 		};
 	})();
 
 	(function () {
 		// should be of the same type as p0, p1, p2, p3
-		// using Vector4 here because it can hold instances of Vector2/3/4
-		var term0 = new Vector4();
-		var term1 = new Vector4();
-		var term2 = new Vector4();
-		var term3 = new Vector4();
+		var term0_v4 = new Vector4();
+		var term1_v4 = new Vector4();
+		var term2_v4 = new Vector4();
+		var term3_v4 = new Vector4();
+
+		var term0_v3 = new Vector3();
+		var term1_v3 = new Vector3();
+		var term2_v3 = new Vector3();
+		var term3_v3 = new Vector3();
+
+		var term0_v2 = new Vector2();
+		var term1_v2 = new Vector2();
+		var term2_v2 = new Vector2();
+		var term3_v2 = new Vector2();
 
 		/**
 		 * Interpolate on a quadratic Bezier curve
@@ -85,19 +129,49 @@ define([
 			var it2 = it * it;
 			var it3 = it2 * it;
 
-			p0.copyTo(term0);
-			term0.scale(it3);
+			if(store instanceof Vector4){
+				p0.copyTo(term0_v4);
+				term0_v4.scale(it3);
 
-			p1.copyTo(term1);
-			term1.scale(it2 * t * 3);
+				p1.copyTo(term1_v4);
+				term1_v4.scale(it2 * t * 3);
 
-			p2.copyTo(term2);
-			term2.scale(it * t2 * 3);
+				p2.copyTo(term2_v4);
+				term2_v4.scale(it * t2 * 3);
 
-			p3.copyTo(term3);
-			term3.scale(t3);
+				p3.copyTo(term3_v4);
+				term3_v4.scale(t3);
 
-			store.set(term0).add(term1).add(term2).add(term3);
+				store.set(term0_v4).add(term1_v4).add(term2_v4).add(term3_v4);
+			} else if(store instanceof Vector3){
+				p0.copyTo(term0_v3);
+				term0_v3.scale(it3);
+
+				p1.copyTo(term1_v3);
+				term1_v3.scale(it2 * t * 3);
+
+				p2.copyTo(term2_v3);
+				term2_v3.scale(it * t2 * 3);
+
+				p3.copyTo(term3_v3);
+				term3_v3.scale(t3);
+
+				store.set(term0_v3).add(term1_v3).add(term2_v3).add(term3_v3);
+			} else if(store instanceof Vector2){
+				p0.copyTo(term0_v2);
+				term0_v2.scale(it3);
+
+				p1.copyTo(term1_v2);
+				term1_v2.scale(it2 * t * 3);
+
+				p2.copyTo(term2_v2);
+				term2_v2.scale(it * t2 * 3);
+
+				p3.copyTo(term3_v2);
+				term3_v2.scale(t3);
+
+				store.set(term0_v2).add(term1_v2).add(term2_v2).add(term3_v2);
+			}
 		};
 	})();
 
