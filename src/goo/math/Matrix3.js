@@ -958,7 +958,7 @@ define([
 	 * @deprecated
 	 */
 	Matrix3.transpose = function (source, target) {
-		console.warn(' is deprecated - use instead.');
+		console.warn('Matrix3.transpose is deprecated - use Matrix3.prototype.transpose instead.');
 		if (!target) {
 			target = new Matrix3();
 		}
@@ -1000,17 +1000,16 @@ define([
 	 * @deprecated
 	 */
 	Matrix3.prototype.applyPost = function (rhs) {
-		console.warn(' is deprecated - use instead.');
-		var target = rhs.data;
+		console.warn('Matrix3.prototype.applyPost is deprecated - use Vector3.prototype.applyPost instead.');
 		var source = this.data;
 
-		var x = target[0];
-		var y = target[1];
-		var z = target[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		target[0] = source[0] * x + source[3] * y + source[6] * z;
-		target[1] = source[1] * x + source[4] * y + source[7] * z;
-		target[2] = source[2] * x + source[5] * y + source[8] * z;
+		rhs.x = source[0] * x + source[3] * y + source[6] * z;
+		rhs.y = source[1] * x + source[4] * y + source[7] * z;
+		rhs.z = source[2] * x + source[5] * y + source[8] * z;
 
 		return rhs;
 	};
@@ -1020,24 +1019,21 @@ define([
 	 * @deprecated
 	 */
 	Matrix3.prototype.applyPre = function (rhs) {
-		console.warn(' is deprecated - use instead.');
+		console.warn('Matrix3.prototype.applyPre is deprecated - use Vector3.prototype.applyPre instead.');
 		var target = rhs.data;
 		var source = this.data;
 
-		var x = target[0];
-		var y = target[1];
-		var z = target[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		target[0] = source[0] * x + source[1] * y + source[2] * z;
-		target[1] = source[3] * x + source[4] * y + source[5] * z;
-		target[2] = source[6] * x + source[7] * y + source[8] * z;
+		rhs.x = source[0] * x + source[1] * y + source[2] * z;
+		rhs.y = source[3] * x + source[4] * y + source[5] * z;
+		rhs.z = source[6] * x + source[7] * y + source[8] * z;
 
 		return rhs;
 	};
 	// SHIM END
-
-
-
 
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix3.prototype, [

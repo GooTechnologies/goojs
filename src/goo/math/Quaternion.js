@@ -283,7 +283,7 @@ define([
 	 * @returns {Matrix3} The normalized rotation matrix representation of this quaternion.
 	 */
 	Quaternion.prototype.toRotationMatrix = function (store) {
-		var result = store;
+		var result = store || new Matrix3();
 
 		var norm = this.lengthSquared();
 		var s = norm > 0.0 ? 2.0 / norm : 0.0;

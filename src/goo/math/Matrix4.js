@@ -1009,16 +1009,16 @@ define([
 	 */
 	Matrix4.prototype.applyPre = function (rhs) {
 		console.warn('Matrix4.prototype.applyPre is deprecated, use Vector4.prototype.applyPre instead');
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
-		var w = rhs.data[3];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
+		var w = rhs.w;
 
 		var s = this.data;
-		rhs.data[0] = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
-		rhs.data[1] = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
-		rhs.data[2] = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
-		rhs.data[3] = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
+		rhs.x = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
+		rhs.y = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
+		rhs.z = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
+		rhs.w = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
 
 		return rhs;
 	};
@@ -1029,16 +1029,16 @@ define([
 	 */
 	Matrix4.prototype.applyPost = function (rhs) {
 		console.warn('Matrix4.prototype.applyPost is deprecated, use Vector4.prototype.applyPost instead');
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
-		var w = rhs.data[3];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
+		var w = rhs.w;
 
 		var s = this.data;
-		rhs.data[0] = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
-		rhs.data[1] = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
-		rhs.data[2] = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
-		rhs.data[3] = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
+		rhs.x = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
+		rhs.y = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
+		rhs.z = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
+		rhs.w = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
 
 		return rhs;
 	};
@@ -1049,14 +1049,14 @@ define([
 	 */
 	Matrix4.prototype.applyPostPoint = function (rhs) {
 		console.warn('Matrix4.prototype.applyPostPoint is deprecated');
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
 		var d = this.data;
-		rhs.data[0] = d[0] * x + d[4] * y + d[8] * z + d[12];
-		rhs.data[1] = d[1] * x + d[5] * y + d[9] * z + d[13];
-		rhs.data[2] = d[2] * x + d[6] * y + d[10] * z + d[14];
+		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
+		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
+		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
 
 		return rhs;
 	};

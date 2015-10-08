@@ -131,9 +131,23 @@ define([
 	 * v1.add(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.add = function (rhs) {
-		this.x += rhs.x;
-		this.y += rhs.y;
-		this.z += rhs.z;
+		if(rhs instanceof Vector3){
+			this.x += rhs.x;
+			this.y += rhs.y;
+			this.z += rhs.z;
+		} else if(typeof(rhs) === 'object' && rhs.length) {
+			console.warn('Passing arrays to Vector3.prototype.add is deprecated - use Vector3.prototype.addDirect instead.');
+			this.x += rhs[0];
+			this.y += rhs[1];
+			this.z += rhs[2];
+		} else if(typeof(rhs) === 'number') {
+			console.warn('Passing numbers to Vector3.prototype.add is deprecated - use Vector3.prototype.addDirect instead.');
+			this.x += rhs;
+			this.y += rhs;
+			this.z += rhs;
+		} else {
+			console.warn('Vector3.prototype.add only supports vector arguments now.');
+		}
 
 		return this;
 	};
@@ -213,9 +227,16 @@ define([
 	 * v1.mul(v2); // v1 == (4, 10, 18)
 	 */
 	Vector3.prototype.mul = function (rhs) {
-		this.x *= rhs.x;
-		this.y *= rhs.y;
-		this.z *= rhs.z;
+		if(typeof(rhs) === 'number'){
+			console.warn('Vector3.prototype.mul only accepts vector arguments now. Please use Vector3.prototype.scale instead.');
+			this.x *= rhs;
+			this.y *= rhs;
+			this.z *= rhs;
+		} else {
+			this.x *= rhs.x;
+			this.y *= rhs.y;
+			this.z *= rhs.z;
+		}
 
 		return this;
 	};
@@ -789,9 +810,9 @@ define([
 	 */
 	Vector3.distanceSquared = function (lhs, rhs) {
 		console.warn('Vector3.distanceSquared is deprecated. Use Vector3.prototype.distanceSquared instead.');
-		var x = lhs.data[0] - rhs.data[0],
-			y = lhs.data[1] - rhs.data[1],
-			z = lhs.data[2] - rhs.data[2];
+		var x = lhs.x - rhs.x,
+			y = lhs.y - rhs.y,
+			z = lhs.z - rhs.z;
 		return x * x + y * y + z * z;
 	};
 
