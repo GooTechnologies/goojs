@@ -565,11 +565,25 @@ define([
 	 */
 	Matrix4.prototype.getRotation = function (store) {
 		var d = this.data;
-		store.set(
-			d[0], d[1], d[2],
-			d[4], d[5], d[6],
-			d[8], d[9], d[10]
-		);
+		var sd = store.data;
+
+		sd[0] = d[0];
+		sd[1] = d[1];
+		sd[2] = d[2];
+		sd[3] = d[3];
+		sd[4] = d[4];
+		sd[5] = d[5];
+		sd[6] = d[6];
+		sd[7] = d[7];
+		sd[8] = d[8];
+		sd[9] = d[9];
+		sd[10] = d[10];
+		sd[11] = d[11];
+		sd[12] = d[12];
+		sd[13] = d[13];
+		sd[14] = d[14];
+		sd[15] = d[15];
+
 		return this;
 	};
 

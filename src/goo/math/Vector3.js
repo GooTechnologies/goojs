@@ -1,9 +1,11 @@
 define([
 	'goo/math/MathUtils',
-	'goo/math/Vector'
+	'goo/math/Vector',
+	'goo/math/Vector4'
 ], function (
 	MathUtils,
-	Vector
+	Vector,
+	Vector4
 ) {
 	'use strict';
 
@@ -135,7 +137,12 @@ define([
 			this.x += rhs.x;
 			this.y += rhs.y;
 			this.z += rhs.z;
-		} else if(typeof(rhs) === 'object' && rhs.length) {
+		} else if(rhs instanceof Vector4){
+			console.warn('Passing a Vector4 argument to Vector3.prototype.add is deprecated. Consider using .addDirect instead.');
+			this.x += rhs.x;
+			this.y += rhs.y;
+			this.z += rhs.z;
+		} else if(typeof(rhs) === 'object' && typeof(rhs.length) === 'number') {
 			console.warn('Passing arrays to Vector3.prototype.add is deprecated - use Vector3.prototype.addDirect instead.');
 			this.x += rhs[0];
 			this.y += rhs[1];
@@ -281,9 +288,16 @@ define([
 	 * v.div(1, 2, 3); // v == (2, 2, 2)
 	 */
 	Vector3.prototype.div = function (rhs) {
-		this.x /= rhs.x;
-		this.y /= rhs.y;
-		this.z /= rhs.z;
+		if(typeof(rhs) === 'number'){
+			console.warn('Passing a number argument to Vector3.prototype.div is deprecated. Use Vector3.prototype.divDirect instead.');
+			this.x /= rhs;
+			this.y /= rhs;
+			this.z /= rhs;
+		} else {
+			this.x /= rhs.x;
+			this.y /= rhs.y;
+			this.z /= rhs.z;
+		}
 
 		return this;
 	};
@@ -441,7 +455,7 @@ define([
 	 * v.set(new Vector3(2, 4, 6)); // v == (2, 4, 6)
 	 */
 	Vector3.prototype.set = function (rhs) {
-		if(rhs instanceof Vector3){
+		if(rhs instanceof Vector3 || rhs instanceof Vector4){
 			this.x = rhs.x;
 			this.y = rhs.y;
 			this.z = rhs.z;
@@ -913,9 +927,9 @@ define([
 	 */
 	Vector3.prototype.addVector = function (vector) {
 		console.warn('Vector3.prototype.addVector is deprecated. Use Vector3.prototype.add instead.');
-		this.data[0] += vector.data[0];
-		this.data[1] += vector.data[1];
-		this.data[2] += vector.data[2];
+		this.x += vector.x;
+		this.y += vector.y;
+		this.z += vector.z;
 
 		return this;
 	};
@@ -926,9 +940,9 @@ define([
 	 */
 	Vector3.prototype.mulVector = function (vec3) {
 		console.warn('Vector3.prototype.mulVector is deprecated. Use .mul instead.');
-		this.data[0] *= vec3.data[0];
-		this.data[1] *= vec3.data[1];
-		this.data[2] *= vec3.data[2];
+		this.x *= vec3.x;
+		this.y *= vec3.y;
+		this.z *= vec3.z;
 
 		return this;
 	};
@@ -953,9 +967,9 @@ define([
 	 */
 	Vector3.prototype.invert = function () {
 		console.warn('Vector3.prototype.invert is deprecated.');
-		this.data[0] = 0.0 - this.data[0];
-		this.data[1] = 0.0 - this.data[1];
-		this.data[2] = 0.0 - this.data[2];
+		this.x = 0.0 - this.x;
+		this.y = 0.0 - this.y;
+		this.z = 0.0 - this.z;
 		return this;
 	};
 
@@ -965,9 +979,9 @@ define([
 	 */
 	Vector3.prototype.setArray = function (array) {
 		console.warn('Vector3.prototype.setArray is deprecated.');
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
 
 		return this;
 	};
@@ -978,9 +992,9 @@ define([
 	 */
 	Vector3.prototype.subVector = function (vector) {
 		console.warn('Vector3.prototype.subVector is deprecated. Use .sub instead.');
-		this.data[0] -= vector.data[0];
-		this.data[1] -= vector.data[1];
-		this.data[2] -= vector.data[2];
+		this.x -= vector.x;
+		this.y -= vector.y;
+		this.z -= vector.z;
 
 		return this;
 	};
