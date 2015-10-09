@@ -55,7 +55,9 @@ define([
 	ScriptComponent.prototype.constructor = ScriptComponent;
 
 	/**
-	 * Runs the .setup method on each script; called when the ScriptComponent is attached to the entity or when the entity is added to the world.
+	 * Runs the .setup method on each script; called when the ScriptComponent is
+	 * attached to the entity or when the entity is added to the world.
+	 *
 	 * @private
 	 * @param entity
 	 */
@@ -77,7 +79,7 @@ define([
 				} else {
 					script.enabled = true;
 				}
-				
+
 				if (script.setup && script.enabled) {
 					try {
 						script.setup(script.parameters, script.context, window.goo);
@@ -145,6 +147,28 @@ define([
 				script.context = null;
 			}
 		}
+	};
+
+	/**
+	 * Enables all the scripts that are in the component.
+	 */
+	ScriptComponent.prototype.startScripts = function () {
+		this.scripts.forEach(function (script) {
+			if (script.parameters && script.parameters.enabled === false) {
+				script.enabled = false;
+			} else {
+				script.enabled = true;
+			}
+		});
+	};
+
+	/**
+	 * Disables all the scripts that are in the component.
+	 */
+	ScriptComponent.prototype.stopScripts = function () {
+		this.scripts.forEach(function (script) {
+			script.enabled = false;
+		});
 	};
 
 	/**
