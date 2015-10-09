@@ -427,7 +427,9 @@ function (
 	/**
 	 * Resumes simulation and starts updating the entities after stop() or pause(); an alias for `.play`
 	 */
-	PhysicsSystem.prototype.resume = PhysicsSystem.prototype.play;
+	PhysicsSystem.prototype.resume = function () {
+		this.passive = false;
+	};
 
 	/**
 	 * Stops simulation.
