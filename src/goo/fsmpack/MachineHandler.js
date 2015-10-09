@@ -25,6 +25,18 @@ define([
 	 */
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
+
+		this.specialFlagA = true;
+
+		//this._loading.set = function (key, value) {
+		//	console.log('set', key, value);
+		//	Map.prototype.set.apply(this, arguments);
+		//};
+		//
+		//this._loading.delete = function (key) {
+		//	console.log('delete', key);
+		//	Map.prototype.delete.apply(this, arguments);
+		//};
 	}
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
