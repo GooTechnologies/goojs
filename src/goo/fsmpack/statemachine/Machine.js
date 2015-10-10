@@ -4,7 +4,6 @@ define([], function (
 	'use strict';
 
 	function Machine(name) {
-		console.log('new');
 		this.name = name;
 		this._fsm = null;
 		this.initialState = 'entry';

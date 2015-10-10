@@ -46,6 +46,7 @@ define([
 	 */
 	StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
+		options = options || {}
 		options.reload = true;
 
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {

@@ -61,7 +61,8 @@
     "selenium-webdriver": "~2.45.1",
     "uglify-js": "~2.4.21",
     "underscore": "~1.8.3",
-    "wrench": ">=1.5.8"
+    "wrench": ">=1.5.8",
+    "zeparser": "^0.0.7"
   },
   "engines": {
     "node": ">=0.8.2"
