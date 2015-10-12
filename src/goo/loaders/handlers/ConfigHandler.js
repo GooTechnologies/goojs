@@ -72,6 +72,10 @@ define([
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
 
+		if (!options) {
+			options = {};
+		}
+
 		if (this._loading.has(ref) && !options.instantiate) {
 			return this._loading.get(ref);
 		} else if (this._objects.has(ref) && !options.reload) {
@@ -130,6 +134,11 @@ define([
 			this._remove(ref, options);
 			return PromiseUtils.resolve();
 		}
+
+		if (!options) {
+			options = {};
+		}
+
 		if (!this._objects.has(ref) || options.instantiate) {
 			this._objects.set(ref, this._create());
 		}
