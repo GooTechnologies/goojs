@@ -131,20 +131,20 @@ define([
 				var progress = i / (this.verts.length - 1);
 				if (options.twist) {
 					twist.fromAngles(0, 0, options.twist(progress));
-					rotation.combine(twist);
+					rotation.mul(twist);
 				}
 
 				scale = options.scale ? options.scale(progress) : 1;
 
 				forward.copy(FORWARD);
-				rotation.applyPost(forward);
+				forward.applyPost(rotation);
 
 				right.copy(forward).cross(up).normalize();
 				up.copy(right).cross(forward);
 
 				for (var j = 0; j < that.verts.length; j += 3) {
 					var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
-					rotation.applyPost(vertex);
+					vertex.applyPost(rotation);
 					vertex.scale(scale);
 					vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
 

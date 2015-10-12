@@ -32,9 +32,9 @@ require([
 		var particleParameters = {
 			getEmissionVelocity: function (particle, particleEntity) {
 				var vec3 = particle.velocity;
-				vec3.data[0] = 0;
-				vec3.data[1] = 2;
-				vec3.data[2] = 0;
+				vec3.x = 0;
+				vec3.y = 2;
+				vec3.z = 0;
 			},
 			particleCount: 50,
 			releaseRatePerSecond: 1,
@@ -64,8 +64,8 @@ require([
 	var spiralInfluence = new ParticleInfluence({
 		apply: function (tpf, particle, particleIndex) {
 			var pos = particle.position;
-			pos.data[0] += Math.sin(particle.age) * 0.1;
-			pos.data[2] += Math.cos(particle.age) * 0.1;
+			pos.x += Math.sin(particle.age) * 0.1;
+			pos.z += Math.cos(particle.age) * 0.1;
 		}
 	});
 	entity2.particleComponent.emitters[0].influences.push(spiralInfluence);

@@ -161,7 +161,7 @@ function (
 		} else if (collider instanceof PlaneCollider) {
 			targetTransform.scale.set(1, 1, 1);
 		} else if (collider instanceof MeshCollider) {
-			targetTransform.scale.setVector(collider.scale);
+			targetTransform.scale.set(collider.scale);
 		}
 	};
 

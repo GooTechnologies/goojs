@@ -47,6 +47,8 @@ define([
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 
+	LineRenderSystem.axis = ['x', 'y', 'z'];
+
 	//setup a preset of colors
 	LineRenderSystem.prototype.WHITE = new Vector3(1, 1, 1);
 	LineRenderSystem.prototype.RED = new Vector3(1, 0, 0);
@@ -86,15 +88,18 @@ define([
 	 * @param {Matrix4} transformMatrix
 	 */
 	LineRenderSystem.prototype._drawAxisLine = function (start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
+		var startAxis = LineRenderSystem.axis[startDataIndex];
+		var endAxis = LineRenderSystem.axis[endDataIndex];
+
 		var lineStart = tmpVec2.set(start);
-		lineStart.data[startDataIndex] += startEndDelta.data[startDataIndex] * startPolarity;
+		lineStart[startAxis] += startEndDelta[startAxis] * startPolarity;
 
 		var lineEnd = tmpVec3.set(lineStart);
-		lineEnd.data[endDataIndex] += startEndDelta.data[endDataIndex] * endPolarity;
+		lineEnd[endAxis] += startEndDelta[endAxis] * endPolarity;
 
 		if (transformMatrix !== undefined) {
-			transformMatrix.applyPostPoint(lineStart);
-			transformMatrix.applyPostPoint(lineEnd);
+			lineStart.applyPostPoint(transformMatrix);
+			lineEnd.applyPostPoint(transformMatrix);
 		}
 
 		this.drawLine(lineStart, lineEnd, color);

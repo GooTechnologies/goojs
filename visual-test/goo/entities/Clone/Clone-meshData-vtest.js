@@ -43,11 +43,7 @@ require([
 	function noiseIt(meshData) {
 		meshData.applyFunction(MeshData.POSITION, function (vertex) {
 			vertex.scale(0.1 + V.rng.nextFloat());
-			return [
-				vertex.x,
-				vertex.y,
-				vertex.z
-			];
+			return vertex;
 		});
 		meshData.setAttributeDataUpdated(MeshData.POSITION);
 	}

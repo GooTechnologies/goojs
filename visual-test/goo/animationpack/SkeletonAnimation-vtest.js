@@ -89,10 +89,10 @@ require([
 		
 		if (joint._parentIndex != Joint.NO_PARENT) {
 			var parentJoint = joints[joint._parentIndex];
-			var invT = parentJoint._inverseBindPose.translation.data;
-			tArray[0] -= invT[0];
-			tArray[1] -= invT[1];
-			tArray[2] -= invT[2];
+			var invT = parentJoint._inverseBindPose.translation;
+			tArray.x -= invT.x;
+			tArray.y -= invT.y;
+			tArray.z -= invT.z;
 			getInvT(parentJoint, joints, tArray);
 		}
 
@@ -108,15 +108,15 @@ require([
 		// inverse bind pose, it uses the offset from it to create the resulting transform
 
 		// TODO : Rotation and scale.
-		var invT = joint._inverseBindPose.translation.data;
+		var invT = joint._inverseBindPose.translation;
 		getInvT(joint, joints, invT);
 
 		var translation = [];
 
 		for (var i = 0; i < t.length; i+=3) {
-			translation[i] = -invT[0] + t[i];
-			translation[i+1] = -invT[1] + t[i+1];
-			translation[i+2] = -invT[2] + t[i+2];
+			translation[i] = -invT.x + t[i];
+			translation[i+1] = -invT.y + t[i+1];
+			translation[i+2] = -invT.z + t[i+2];
 		}
 
 		var channel = new JointChannel(
@@ -131,7 +131,7 @@ require([
 
 		channels.push(channel);
 
-		return channel
+		return channel;
 	}
 
 
@@ -255,9 +255,9 @@ require([
 		var q1 = new Quaternion();
 		var q2 = new Quaternion();
 		//q1.fromAngleNormalAxis(MathUtils.HALF_PI * 0.95, Vector3.UNIT_X);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
 
 		var trans = [
 			0,0,0,
@@ -287,10 +287,10 @@ require([
 
 		var rots = [];
 		q2.fromAngleNormalAxis(MathUtils.HALF_PI * 0.5, new Vector3(1, 1, 0).normalize());
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
+		Array.prototype.push.apply(rots, [q2.x, q2.y, q2.z, q2.w]);
 		q2.fromAngleNormalAxis(-MathUtils.HALF_PI * 0.5, new Vector3(1, 1, 0).normalize());
-		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, [q2.x, q2.y, q2.z, q2.w]);
 		var trans = [
 			0,0,0,
 			0,0.25,0,
@@ -314,9 +314,9 @@ require([
 
 		var rots = [];
 		q2.fromAngleNormalAxis(MathUtils.HALF_PI, Vector3.UNIT_Y);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q1.data);
-		Array.prototype.push.apply(rots, q2.data);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
+		Array.prototype.push.apply(rots, [q1.x, q1.y, q1.z, q1.w]);
+		Array.prototype.push.apply(rots, [q2.x, q2.y, q2.z, q2.w]);
 		var scales = [
 			2,2,2,
 			1,1,1,

@@ -10,6 +10,7 @@ require([
 	'goo/math/Matrix3',
 	'goo/timelinepack/ValueChannel',
 	'goo/timelinepack/EventChannel',
+	'goo/util/Tween',
 	'lib/V'
 ], function (
 	GooRunner,
@@ -23,6 +24,7 @@ require([
 	Matrix3,
 	ValueChannel,
 	EventChannel,
+	TWEEN,
 	V
 ) {
 	'use strict';

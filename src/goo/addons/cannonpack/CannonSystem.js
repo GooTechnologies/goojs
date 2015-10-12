@@ -172,7 +172,7 @@ define([
 			position.vadd(tmpVec, tmpVec);
 			entity.transformComponent.setTranslation(tmpVec.x, tmpVec.y, tmpVec.z);
 
-			tmpQuat.set(cannonQuat);
+			tmpQuat.setDirect(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 			entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
 			entity.transformComponent.setUpdated();
 		}
