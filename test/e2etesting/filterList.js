@@ -31,6 +31,7 @@ var filterList = [
 
 	'physicspack', // tests that just need screenshots; silenting them until that is resolved
 	'Cannon-cylinder',
+	'Clone-camera',
 	'Spline',
 	'TextComponent',
 	'TextMeshGenerator',
