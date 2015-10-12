@@ -37,6 +37,20 @@ define([
 		return new StateMachineComponent();
 	};
 
+	StateMachineComponentHandler.prototype._remove = function (entity) {
+		var component = entity.stateMachineComponent;
+		if (component) {
+			component._machines.forEach(function (machine) {
+				machine.cleanup();
+				component.removeMachine(machine);
+			});
+
+			component.cleanup();
+		}
+
+		entity.clearComponent(this._type);
+	};
+
 	/**
 	 * Update engine statemachine component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
@@ -48,6 +62,7 @@ define([
 		var that = this;
 		options = options || {}
 		options.reload = true;
+		options.instantiate = true;
 
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }

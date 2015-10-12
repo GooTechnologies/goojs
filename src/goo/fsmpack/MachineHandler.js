@@ -25,8 +25,6 @@ define([
 	 */
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
-
-		this.specialFlagA = true;
 	}
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
