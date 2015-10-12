@@ -1,11 +1,11 @@
 define([
 	'goo/particles/ParticleUtils',
 	'goo/renderer/Renderer',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ParticleUtils,
 	Renderer,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -23,7 +23,7 @@ define([
 	 * @param {number} [options.releaseRatePerSecond=10] Target number of particles per second to spawn
 	 */
 	function ParticleEmitter(options) {
-		ObjectUtil.copyOptions(this, options, {
+		ObjectUtils.copyOptions(this, options, {
 			totalParticlesToSpawn: -1,
 			maxLifetime: 3.0,
 			minLifetime: 2.0,

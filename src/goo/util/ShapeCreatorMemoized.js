@@ -6,7 +6,7 @@ define([
 	'goo/shapes/Torus',
 	'goo/shapes/Disk',
 	'goo/shapes/Cone',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Box,
 	Quad,
@@ -15,7 +15,7 @@ define([
 	Torus,
 	Disk,
 	Cone,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -68,7 +68,7 @@ define([
 
 	ShapeCreatorMemoized.createBox = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			textureMode: 'Uniform'
 		});
 
@@ -90,7 +90,7 @@ define([
 
 	ShapeCreatorMemoized.createSphere = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			zSamples: 8,
 			radialSamples: 8,
 			textureMode: 'Projected',
@@ -112,7 +112,7 @@ define([
 
 	ShapeCreatorMemoized.createCylinder = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			radialSamples: 8,
 			radius: 1
 		});
@@ -130,7 +130,7 @@ define([
 
 	ShapeCreatorMemoized.createTorus = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			radialSamples: 8,
 			circleSamples: 12,
 			tubeRadius: 0.2,
@@ -152,7 +152,7 @@ define([
 
 	ShapeCreatorMemoized.createDisk = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			radialSamples: 8,
 			pointiness: 0,
 			radius: 1
@@ -176,7 +176,7 @@ define([
 
 	ShapeCreatorMemoized.createCone = function (options, oldMeshData) {
 		options = options || {};
-		ObjectUtil.defaults(options, {
+		ObjectUtils.defaults(options, {
 			radialSamples: 8,
 			height: 0,
 			radius: 1

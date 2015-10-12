@@ -1,9 +1,9 @@
 define([
 	'goo/math/Vector2',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Vector2,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -23,7 +23,7 @@ define([
 		this.width = Math.floor(width);
 		this.height = Math.floor(height);
 
-		ObjectUtil.copyOptions(this, options, {
+		ObjectUtils.copyOptions(this, options, {
 			wrapS: 'EdgeClamp',
 			wrapT: 'EdgeClamp',
 			magFilter: 'Bilinear',

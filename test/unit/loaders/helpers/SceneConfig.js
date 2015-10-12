@@ -1,5 +1,5 @@
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	_
 ) {

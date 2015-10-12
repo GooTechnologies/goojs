@@ -1,9 +1,9 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -21,7 +21,7 @@ define([
 		this.world = null;
 		this.mass = 1;
 
-		ObjectUtil.copyOptions(this, options, {
+		ObjectUtils.copyOptions(this, options, {
 			shape: 'box',
 			width: 1,
 			height: 1,

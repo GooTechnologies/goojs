@@ -1,9 +1,9 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -40,7 +40,7 @@ define([
 
 		this.type = 'P2Component';
 
-		ObjectUtil.copyOptions(this, options, {
+		ObjectUtils.copyOptions(this, options, {
 			mass: 0,
 			linearDamping: 0,
 			angularDamping: 0,
