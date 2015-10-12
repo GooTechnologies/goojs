@@ -14,7 +14,7 @@ define([
 	function shim(f){
 		return function(){
 			console.warn('ObjectUtil has been renamed to ObjectUtils, please use ObjectUtils instead.');
-			f.apply(this, arguments);
+			return f.apply(this, arguments);
 		};
 	}
 
