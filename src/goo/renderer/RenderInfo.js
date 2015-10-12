@@ -14,6 +14,10 @@ define([
 
 	function RenderInfo() {
 		this.reset();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -33,10 +37,6 @@ define([
 		this.material = null;
 		this.transform = null;
 		this.currentPose = null;
-
-		// #ifdef DEBUG
-		Object.seal(this);
-		// #endif
 	};
 
 	/**
