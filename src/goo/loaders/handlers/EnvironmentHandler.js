@@ -1,17 +1,17 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Snow', // TODO Should move!
-	'goo/util/rsvp'
+	'goo/util/ObjectUtils',
+	'goo/util/PromiseUtils',
+	'goo/util/Snow' // TODO Should move!
 ], function (
 	ConfigHandler,
-	_,
 	SystemBus,
 	ShaderBuilder,
-	Snow,
-	RSVP
+	_,
+	PromiseUtils,
+	Snow
 ) {
 	'use strict';
 
@@ -132,16 +132,7 @@ define([
 			var promises = [];
 
 			// Skybox
-			if (config.skyboxRef) {
-				EnvironmentHandler.currentSkyboxRef = config.skyboxRef;
-				promises.push(that._load(config.skyboxRef, { reload: true }));
-			} else if (EnvironmentHandler.currentSkyboxRef) {
-				var p = that.updateObject(EnvironmentHandler.currentSkyboxRef, null)
-				.then(function () {
-					delete EnvironmentHandler.currentSkyboxRef;
-				});
-				promises.push(p);
-			}
+			promises.push(that._updateSkybox(config.skyboxRef));
 
 			// Sound
 			var soundSystem = that.world.getSystem('SoundSystem');
@@ -156,10 +147,25 @@ define([
 					soundSystem.setReverb(null);
 				}
 			}
-			return RSVP.all(promises).then(function () { return object; });
+			return PromiseUtils.all(promises).then(function () { return object; });
 		});
 	};
 
+	EnvironmentHandler.currentSkyboxRef = null;
+
+	EnvironmentHandler.prototype._updateSkybox = function (skyboxRef) {
+		if (skyboxRef) {
+			EnvironmentHandler.currentSkyboxRef = skyboxRef;
+			return this._load(skyboxRef, { reload: true });
+		} else if (EnvironmentHandler.currentSkyboxRef) {
+			return this.updateObject(EnvironmentHandler.currentSkyboxRef, null).then(function () {
+				EnvironmentHandler.currentSkyboxRef = null;
+				return null;
+			});
+		} else {
+			return PromiseUtils.resolve();
+		}
+	};
 
 	EnvironmentHandler.weatherHandlers = {
 		snow: {

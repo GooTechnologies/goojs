@@ -1,28 +1,24 @@
 define([
+	'goo/entities/SystemBus',
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/EnvironmentHandler',
-	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Skybox',
-	'goo/util/rsvp',
+	'goo/renderer/Texture',
 	'goo/util/PromiseUtils',
-	'goo/entities/SystemBus'
+	'goo/util/Skybox'
 ], function (
+	SystemBus,
 	ConfigHandler,
 	EnvironmentHandler,
-	Texture,
 	ShaderBuilder,
-	Skybox,
-	RSVP,
+	Texture,
 	PromiseUtils,
-	SystemBus
+	Skybox
 ) {
 	'use strict';
 
 	function SkyboxHandler() {
 		ConfigHandler.apply(this, arguments);
-
-		this._activeSkyboxRef = null;
 
 		// Skybox entity
 		var skybox = new Skybox('box', [], null, 0);
@@ -58,19 +54,8 @@ define([
 
 	SkyboxHandler.prototype._remove = function (ref) {
 		this._objects.delete(ref);
-
-		// We can only remove the skybox if it is the one that is currently
-		// active. Otherwise the scene will be left with no skybox in cases
-		// where it shouldn't be.
-		if (this._activeSkyboxRef === ref) {
-			this._hide(this._skybox);
-			this._hide(this._skysphere);
-			this._skyboxTexture.setImage(null);
-			this._activeSkyshape = null;
-			ShaderBuilder.SKYBOX = null;
-			ShaderBuilder.SKYSPHERE = null;
-			this._activeSkyboxRef = null;
-		}
+		this._skyboxTexture.setImage(null);
+		this._hide();
 	};
 
 	SkyboxHandler.prototype._create = function () {
@@ -81,145 +66,118 @@ define([
 	};
 
 	SkyboxHandler.prototype._update = function (ref, config, options) {
-		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (skybox) {
+		// Only update the skybox which is loaded by the environment.
+		if (EnvironmentHandler.currentSkyboxRef !== ref) {
+			return PromiseUtils.resolve([]);
+		}
+
+		return ConfigHandler.prototype._update.call(this, ref, config, options)
+		.then(function (skybox) {
 			if (!skybox) {
+				this._hide();
 				return PromiseUtils.resolve([]);
 			}
 
-			var promises = [];
-			if (config.box) {
-				promises.push(that._updateBox(ref, config.box, options, skybox));
-			}
-			if (config.sphere) {
-				promises.push(that._updateSphere(ref, config.sphere, options, skybox));
-			}
+			this._updateBoxOrSphere(ref, config, options, skybox)
+			.then(this._show.bind(this));
+		}.bind(this));
+	};
 
-			return RSVP.all(promises).then(function (skyboxes) {
-				if (config.box || config.sphere) {
-					that._activeSkyboxRef = ref;
-				}
-
-				return skyboxes;
-			});
-		});
+	SkyboxHandler.prototype._updateBoxOrSphere = function (ref, config, options, skybox) {
+		if (config.box && config.box.enabled) {
+			return this._updateBox(ref, config.box, options, skybox);
+		} else if (config.sphere && config.sphere.enabled) {
+			return this._updateSphere(ref, config.sphere, options, skybox);
+		}
 	};
 
 	SkyboxHandler.prototype._updateSphere = function (ref, config, options, skybox) {
-		var that = this;
+		if (!config) { return PromiseUtils.resolve(); }
 
 		if (config.sphereRef) {
-			return this._load(config.sphereRef, options).then(function (texture) {
+			return this._load(config.sphereRef, options)
+			.then(function (texture) {
 				if (!texture || !texture.image) {
 					SystemBus.emit('goo.error.skybox', {
 						type: 'Sphere',
 						message: 'The skysphere needs an image to display.'
 					});
-					that._hide(that._skysphere);
 					return;
 				}
-				var skyTex = that._skysphereTexture;
+
+				var skyTex = this._skysphereTexture;
 				skybox.textures = [texture];
 				skyTex.setImage(texture.image);
 
-				if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
-					that._show(that._skysphere);
-				} else {
-					that._hide(that._skysphere);
-				}
-				return that._skysphere;
-			});
+				return this._skysphere;
+			}.bind(this));
 		} else {
-			that._skysphereTexture.setImage(null);
-			that._hide(that._skysphere);
+			this._skysphereTexture.setImage(null);
+			return PromiseUtils.resolve(this._skysphere);
 		}
-		return PromiseUtils.resolve(that._skysphere);
 	};
-
-	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
-
-	//! AT: this can definitely be moved elsewhere
-	function isEqual(a, b) {
-		var len = a.length;
-		if (len !== b.length) {
-			return false;
-		}
-		while (len--) {
-			if (a[len] !== b[len]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 
 	SkyboxHandler.prototype._updateBox = function (ref, config, options, skybox) {
-		var that = this;
+		if (!config) { return PromiseUtils.resolve(); }
 
-		var promises = sides.map(function (side) {
-			return config[side] ? that._load(config[side], options) : PromiseUtils.resolve();
-		});
+		return this._loadSideTextures(config, options)
+		.then(function (textures) {
+			var images = textures
+				.map(function (tex) { return tex ? tex.image : null; })
+				.filter(Boolean);
 
-		// Load all textures
-		return RSVP.all(promises).then(function (textures) {
-			// Check if skybox is the same
-			if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {
-				return that._skybox;
-			}
+			if (images.length > 0) {
+				skybox.textures = textures;
+				var skyTex = this._skyboxTexture;
+				skyTex.setImage(images);
+				skyTex.image.dataReady = true;
 
-			var images = textures.map(function (texture) { return texture ? texture.image : null; });
+				var maxSize = getMaxSize(images);
+				skyTex.image.width = maxSize.width;
+				skyTex.image.height = maxSize.height;
 
-			// If no textures were found, clear skybox and return
-			if (images.filter(Boolean).length === 0) {
-				that._skyboxTexture.setImage(null);
-				that._hide(that._skybox);
-				return that._skybox;
-			}
-
-
-			var w = 1;
-			var h = 1;
-			for (var i = 0; i < images.length; i++) {
-				if (images[i]) {
-					w = Math.max(w, images[i].width);
-					h = Math.max(h, images[i].width);
-				}
-			}
-
-			skybox.textures = textures;
-			var skyTex = that._skyboxTexture;
-			skyTex.setImage(images);
-			skyTex.image.width = w;
-			skyTex.image.height = h;
-			skyTex.image.dataReady = true;
-			skyTex.setNeedsUpdate();
-
-			if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
-				that._show(that._skybox);
+				skyTex.setNeedsUpdate();
 			} else {
-				that._hide(that._skybox);
+				this._skyboxTexture.setImage(null);
 			}
 
-			return that._skybox;
-		});
+			return this._skybox;
+		}.bind(this));
 	};
 
-	SkyboxHandler.prototype._hide = function (skyshape) {
-		var renderSystem = this.world.getSystem('RenderSystem');
-		renderSystem.removed(skyshape);
-		if (skyshape === this._skybox) {
-			ShaderBuilder.SKYBOX = null;
-		} else if (skyshape === this._skysphere) {
-			ShaderBuilder.SKYSPHERE = null;
+	var SIDES = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
+
+	SkyboxHandler.prototype._loadSideTextures = function (config, options) {
+		var loadSide = (function (side) {
+			return config[side] ? this._load(config[side], options) : PromiseUtils.resolve();
+		}).bind(this);
+
+		return PromiseUtils.all(SIDES.map(loadSide));
+	};
+
+	function getMaxSize(images) {
+		var size = {width: 1, height: 1};
+
+		images.forEach(function (image) {
+			size.width = Math.max(size.width, image.width);
+			size.height = Math.max(size.height, image.width);
+		});
+
+		return size;
+	}
+
+	SkyboxHandler.prototype._hide = function () {
+		if (this._activeSkyshape) {
+			this.world.getSystem('RenderSystem').removed(this._activeSkyshape);
 		}
+
+		ShaderBuilder.SKYBOX = null;
+		ShaderBuilder.SKYSPHERE = null;
 	};
 
 	SkyboxHandler.prototype._show = function (skyshape) {
-		var renderSystem = this.world.getSystem('RenderSystem');
-		if (this._activeSkyshape) {
-			renderSystem.removed(this._activeSkyshape);
-		}
-		renderSystem.added(skyshape);
+		this._hide();
+		this.world.getSystem('RenderSystem').added(skyshape);
 		this._activeSkyshape = skyshape;
 		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
 		ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;

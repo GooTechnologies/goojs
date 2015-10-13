@@ -50,6 +50,18 @@ define([
 		return promise;
 	};
 
+	/**
+	 * Creates a promise which resolves when all the specified promises have
+	 * resolved.
+	 *
+	 * @param {Promise[]} promises
+	 *
+	 * @return {Promise}
+	 */
+	PromiseUtils.all = function (promises) {
+		return RSVP.all(promises);
+	};
+
 
 	var createDummyPromiseWarn = false;
 	/**
