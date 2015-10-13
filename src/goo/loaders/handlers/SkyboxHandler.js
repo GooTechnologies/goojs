@@ -118,13 +118,14 @@ define([
 					that._hide(that._skysphere);
 					return;
 				}
-				var skyTex = that._skysphereTexture;
-				skybox.textures = [texture];
-				skyTex.setImage(texture.image);
 
 				if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
+					var skyTex = that._skysphereTexture;
+					skybox.textures = [texture];
+					skyTex.setImage(texture.image);
+
 					that._show(that._skysphere);
-				} else {
+				} else if (!config.enabled) {
 					that._hide(that._skysphere);
 				}
 				return that._skysphere;
@@ -186,17 +187,17 @@ define([
 				}
 			}
 
-			skybox.textures = textures;
-			var skyTex = that._skyboxTexture;
-			skyTex.setImage(images);
-			skyTex.image.width = w;
-			skyTex.image.height = h;
-			skyTex.image.dataReady = true;
-			skyTex.setNeedsUpdate();
-
 			if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
+				skybox.textures = textures;
+				var skyTex = that._skyboxTexture;
+				skyTex.setImage(images);
+				skyTex.image.width = w;
+				skyTex.image.height = h;
+				skyTex.image.dataReady = true;
+				skyTex.setNeedsUpdate();
+
 				that._show(that._skybox);
-			} else {
+			} else if (!config.enabled) {
 				that._hide(that._skybox);
 			}
 
