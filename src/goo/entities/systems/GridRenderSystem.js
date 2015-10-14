@@ -9,8 +9,7 @@ define([
 	'goo/util/ObjectUtils',
 	'goo/math/Transform',
 	'goo/math/MathUtils',
-	'goo/shapes/Grid',
-	'goo/shapes/Quad'
+	'goo/shapes/Grid'
 ], function (
 	System,
 	SystemBus,
@@ -22,8 +21,7 @@ define([
 	ObjectUtils,
 	Transform,
 	MathUtils,
-	Grid,
-	Quad
+	Grid
 ) {
 	'use strict';
 
@@ -41,8 +39,8 @@ define([
 			surface: true
 		};
 
-		this.scale = 2; //1000
-		this.count = 10; //100
+		this.scale = 1000; //100
+		this.count = 100; //100
 
 		this.camera = null;
 		this.lights = [];
@@ -58,12 +56,12 @@ define([
 
 		var gridMaterial1 = new Material(gridShaderDef, 'Grid Material');
 		gridMaterial1.blendState.blending = 'TransparencyBlending';
-		gridMaterial1.uniforms.color = [0, 1, 0, 1];
+		gridMaterial1.uniforms.color = [0, 0, 0, 1];
 		gridMaterial1.depthState.write = true;
 		gridMaterial1.depthState.enabled = true;
 		var gridMaterial2 = new Material(gridShaderDef, 'Grid Material');
 		gridMaterial2.blendState.blending = 'TransparencyBlending';
-		gridMaterial2.uniforms.color = [1, 0, 0, 1];
+		gridMaterial2.uniforms.color = [0, 0, 0, 1];
 		gridMaterial2.depthState.write = true;
 		gridMaterial2.depthState.enabled = true;
 
@@ -79,29 +77,12 @@ define([
 			transform: this.transform2
 		};
 
-
-		// It ain't pretty, but it works
-		var surfaceShader = ObjectUtils.deepClone(ShaderLib.simpleColored);
-		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
-		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
-		surfaceMaterial.uniforms.opacity = 0.9;
-		surfaceMaterial.blendState.blending = 'CustomBlending';
-		surfaceMaterial.cullState.enabled = false;
-		surfaceMaterial.depthState.write = true;
-		surfaceMaterial.depthState.enabled = true;
-		surfaceMaterial.offsetState.enabled = true;
-		surfaceMaterial.offsetState.units = 10;
-		surfaceMaterial.offsetState.factor = 0.8;
-
-		this.surface = {
-			meshData: new Quad(),
-			materials: [surfaceMaterial],
-			transform: this.transform
-		};
-
-		this.oldHeightScale = 0;
-		this.oldX = 0;
-		this.oldZ = 0;
+		this.oldHeightScale1 = 0;
+		this.oldX1 = 0;
+		this.oldZ1 = 0;
+		this.oldHeightScale1 = 0;
+		this.oldX1 = 0;
+		this.oldZ1 = 0;
 
 		// stop using this pattern - use instead .bind()
 		var that = this;
@@ -121,59 +102,78 @@ define([
 
 	GridRenderSystem.prototype.deleted = function (/*entity*/) {};
 
-	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
-		var count = this.renderList.length = 0;
-		// if (this.doRender.surface) {
-		// 	this.renderList[count++] = this.surface;
-		// }
-		if (this.doRender.grid) {
-			this.renderList[count++] = this.grid1;
-			this.renderList[count++] = this.grid2;
+	function smoothstep(t, level) {
+		for (var i = 0; i < level; ++i) {
+			t = Math.pow(t, 2) * (3 - 2 * t);
 		}
-		this.renderList.length = count;
+		return t;
+	}
 
-		var y = this.camera.translation.y;
-		var heightScale = Math.pow(2, Math.floor(Math.pow(y, 0.5) / 2)) * this.scale;
-		var blender = y / 10 - Math.floor(y / 10);
-		// blender = Math.abs(blender - 0.5) * 2;
+	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
+		if (!this.doRender.grid) {
+			return;
+		}
 
-		// var fader = MathUtils.moduloPositive(blender + 0.5, 1);
-		var fader = Math.abs(blender*2 - 1) * 1;
-		this.grid1.materials[0].uniforms.opacity = fader;
-		// this.grid2.materials[0].uniforms.opacity = 1 - fader;
-		this.grid2.materials[0].uniforms.opacity = 0;
+		var y = Math.max(this.camera.translation.y, 1) / this.scale;
 
+		var y1 = Math.pow(y, 0.25);
+		var blender1 = 1 - Math.abs(y1 - Math.floor(y1) - 0.5) * 2;
+		var heightScale1 = Math.pow(2, Math.floor(y1)*4+2) * this.scale;
 
-		blender = Math.abs(blender - 0.5) * 2;
-		var mult1 = 1 + Math.round(blender);
-		var mult2 = 1 + Math.round(1 - blender);
+		var y2 = Math.pow(y, 0.25) + 0.5;
+		var blender2 = 1 - Math.abs(y2 - Math.floor(y2) - 0.5) * 2;
+		var heightScale2 = Math.pow(2, Math.floor(y2)*4) * this.scale;
 
+		blender1 = smoothstep(blender1, 5);
+		blender2 = smoothstep(blender2, 5);
 
-		var x = Math.floor(this.camera.translation.x * this.count / heightScale);
-		var z = Math.floor(this.camera.translation.z * this.count / heightScale);
-		if (heightScale !== this.oldHeightScale || x !== this.oldX || z !== this.oldZ) {
-			this.transform1.scale.setDirect(heightScale * mult1, heightScale * mult1, heightScale * mult1);
-			this.transform1.translation.x = x * heightScale * mult1 / this.count;
-			this.transform1.translation.z = z * heightScale * mult1 / this.count;
+		this.grid1.materials[0].uniforms.opacity = blender1;
+		// this.grid1.materials[0].uniforms.opacity = 0;
+		// this.grid1.materials[0].uniforms.opacity = 1;
+
+		this.grid2.materials[0].uniforms.opacity = blender2;
+		// this.grid2.materials[0].uniforms.opacity = 0;
+		// this.grid2.materials[0].uniforms.opacity = 1;
+
+		var x = Math.floor(this.camera.translation.x * this.count / heightScale1);
+		var z = Math.floor(this.camera.translation.z * this.count / heightScale1);
+		if (heightScale1 !== this.oldHeightScale1 || x !== this.oldX1 || z !== this.oldZ1) {
+			this.transform1.scale.setDirect(heightScale1, heightScale1, heightScale1);
+			this.transform1.translation.x = x * heightScale1 / this.count;
+			this.transform1.translation.z = z * heightScale1 / this.count;
 			this.transform1.update();
 
-			this.transform2.scale.setDirect(heightScale * mult2, heightScale * mult2, heightScale * mult2);
-			this.transform2.translation.x = x * heightScale * mult2 / this.count;
-			this.transform2.translation.z = z * heightScale * mult2 / this.count;
+			this.oldX1 = x;
+			this.oldZ1 = z;
+			this.oldHeightScale1 = heightScale1;
+		}
+
+		var x = Math.floor(this.camera.translation.x * this.count / heightScale2);
+		var z = Math.floor(this.camera.translation.z * this.count / heightScale2);
+		if (heightScale2 !== this.oldHeightScale2 || x !== this.oldX2 || z !== this.oldZ2) {
+			this.transform2.scale.setDirect(heightScale2, heightScale2, heightScale2);
+			this.transform2.translation.x = x * heightScale2 / this.count;
+			this.transform2.translation.z = z * heightScale2 / this.count;
 			this.transform2.update();
 
-			this.oldX = x;
-			this.oldZ = z;
-			this.oldHeightScale = heightScale;
+			this.oldX2 = x;
+			this.oldZ2 = z;
+			this.oldHeightScale2 = heightScale2;
+		}
 
-			// console.log(x, z);
+		if (blender1 > blender2) {
+			this.renderList[0] = this.grid1;
+			this.renderList[1] = this.grid2;
+		} else {
+			this.renderList[0] = this.grid2;
+			this.renderList[1] = this.grid1;
 		}
 	};
 
 	GridRenderSystem.prototype.render = function (renderer/*, picking*/) {
 		renderer.checkResize(this.camera);
 
-		if (this.camera) {
+		if (this.camera && this.doRender.grid) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
 		}
 	};
@@ -241,7 +241,8 @@ define([
 				'} else {',
 					'gl_FragColor = color;',
 				'}',
-				'gl_FragColor.a = opacity;',
+				'float lerpVal = 1.0 - clamp(depth / 100.0, 0.0, 1.0);',
+				'gl_FragColor.a = opacity * lerpVal;',
 			'}'
 		].join('\n')
 	};

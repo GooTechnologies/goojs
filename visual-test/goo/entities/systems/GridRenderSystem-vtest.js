@@ -25,18 +25,17 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Keys 1, 2 switch main camera\nkey 3 starts/stops the spinning of camera 1');
+	V.describe('GridRenderSystem Test');
 
 	var goo = V.initGoo();
 	var world = goo.world;
 
 	var gridRenderSystem = new GridRenderSystem();
-	gridRenderSystem.surface.materials[0].uniforms.opacity = 0.0;
 	goo.renderSystems.push(gridRenderSystem);
 	world.setSystem(gridRenderSystem);
 
 	// add spheres to have the cameras view them
-	V.addColoredSpheres();
+	// V.addColoredSpheres();
 
 	// add light
 	V.addLights();
@@ -53,7 +52,10 @@ require([
 	});
 
 	// camera 1 - spinning
-	var cameraEntity = V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
+	var cameraEntity = V.addOrbitCamera(new Vector3(25, 0, 0));
+	cameraEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
+
+	world.createEntity('Sphere', new Sphere(8, 8, 1), new Material(ShaderLib.simpleLit)).addToWorld();
 
 	V.process();
 });
