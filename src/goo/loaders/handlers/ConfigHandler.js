@@ -76,7 +76,7 @@ define([
 			options = {};
 		}
 
-		if (this._loading.has(ref) && !options.instantiate) {
+		if (this._loading.has(ref) && !(options.instantiate && ConfigHandler.getTypeForRef(ref) === 'machine')) {
 			return this._loading.get(ref);
 		} else if (this._objects.has(ref) && !options.reload) {
 			return PromiseUtils.resolve(this._objects.get(ref));
@@ -128,6 +128,9 @@ define([
 		return promise;
 	};
 
+	ConfigHandler.getTypeForRef = function (ref) {
+		return ref.substr(ref.lastIndexOf('.') + 1).toLowerCase();
+	};
 
 	ConfigHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
@@ -139,7 +142,7 @@ define([
 			options = {};
 		}
 
-		if (!this._objects.has(ref) || options.instantiate) {
+		if (!this._objects.has(ref) || (options.instantiate && ConfigHandler.getTypeForRef(ref) === 'machine')) {
 			this._objects.set(ref, this._create());
 		}
 		this._prepare(config);
