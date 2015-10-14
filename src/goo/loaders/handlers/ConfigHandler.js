@@ -143,8 +143,6 @@ define([
 		}
 
 		if (!this._objects.has(ref) || (options.instantiate && ConfigHandler.getTypeForRef(ref) === 'machine')) {
-			if(options.instantiate)
-				console.log('.instantiate', ref)
 			this._objects.set(ref, this._create());
 		}
 		this._prepare(config);
