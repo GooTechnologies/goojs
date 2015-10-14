@@ -8,6 +8,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/util/ObjectUtils',
 	'goo/math/Transform',
+	'goo/math/MathUtils',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
 ], function (
@@ -20,6 +21,7 @@ define([
 	ShaderLib,
 	ObjectUtils,
 	Transform,
+	MathUtils,
 	Grid,
 	Quad
 ) {
@@ -39,22 +41,45 @@ define([
 			surface: true
 		};
 
+		this.scale = 2; //1000
+		this.count = 10; //100
+
 		this.camera = null;
 		this.lights = [];
-		this.transform = new Transform();
-		this.transform.rotation.rotateX(-Math.PI / 2);
-		this.transform.scale.setDirect(1000, 1000, 1000);
-		this.transform.update();
+		this.transform1 = new Transform();
+		this.transform1.rotation.rotateX(-Math.PI / 2);
+		this.transform1.scale.setDirect(this.scale, this.scale, this.scale);
+		this.transform1.update();
 
-		var gridMaterial = new Material(gridShaderDef, 'Grid Material');
-		gridMaterial.depthState.write = true;
-		gridMaterial.depthState.enabled = true;
+		this.transform2 = new Transform();
+		this.transform2.rotation.rotateX(-Math.PI / 2);
+		this.transform2.scale.setDirect(this.scale, this.scale, this.scale);
+		this.transform2.update();
 
-		this.grid = {
-			meshData: new Grid(100, 100),
-			materials: [gridMaterial],
-			transform: this.transform
+		var gridMaterial1 = new Material(gridShaderDef, 'Grid Material');
+		gridMaterial1.blendState.blending = 'TransparencyBlending';
+		gridMaterial1.uniforms.color = [0, 1, 0, 1];
+		gridMaterial1.depthState.write = true;
+		gridMaterial1.depthState.enabled = true;
+		var gridMaterial2 = new Material(gridShaderDef, 'Grid Material');
+		gridMaterial2.blendState.blending = 'TransparencyBlending';
+		gridMaterial2.uniforms.color = [1, 0, 0, 1];
+		gridMaterial2.depthState.write = true;
+		gridMaterial2.depthState.enabled = true;
+
+		var gridMesh = new Grid(this.count, this.count);
+		this.grid1 = {
+			meshData: gridMesh,
+			materials: [gridMaterial1],
+			transform: this.transform1
 		};
+		this.grid2 = {
+			meshData: gridMesh,
+			materials: [gridMaterial2],
+			transform: this.transform2
+		};
+
+
 		// It ain't pretty, but it works
 		var surfaceShader = ObjectUtils.deepClone(ShaderLib.simpleColored);
 		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
@@ -73,6 +98,10 @@ define([
 			materials: [surfaceMaterial],
 			transform: this.transform
 		};
+
+		this.oldHeightScale = 0;
+		this.oldX = 0;
+		this.oldZ = 0;
 
 		// stop using this pattern - use instead .bind()
 		var that = this;
@@ -94,13 +123,51 @@ define([
 
 	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		var count = this.renderList.length = 0;
-		if (this.doRender.surface) {
-			this.renderList[count++] = this.surface;
-		}
+		// if (this.doRender.surface) {
+		// 	this.renderList[count++] = this.surface;
+		// }
 		if (this.doRender.grid) {
-			this.renderList[count++] = this.grid;
+			this.renderList[count++] = this.grid1;
+			this.renderList[count++] = this.grid2;
 		}
 		this.renderList.length = count;
+
+		var y = this.camera.translation.y;
+		var heightScale = Math.pow(2, Math.floor(Math.pow(y, 0.5) / 2)) * this.scale;
+		var blender = y / 10 - Math.floor(y / 10);
+		// blender = Math.abs(blender - 0.5) * 2;
+
+		// var fader = MathUtils.moduloPositive(blender + 0.5, 1);
+		var fader = Math.abs(blender*2 - 1) * 1;
+		this.grid1.materials[0].uniforms.opacity = fader;
+		// this.grid2.materials[0].uniforms.opacity = 1 - fader;
+		this.grid2.materials[0].uniforms.opacity = 0;
+
+
+		blender = Math.abs(blender - 0.5) * 2;
+		var mult1 = 1 + Math.round(blender);
+		var mult2 = 1 + Math.round(1 - blender);
+
+
+		var x = Math.floor(this.camera.translation.x * this.count / heightScale);
+		var z = Math.floor(this.camera.translation.z * this.count / heightScale);
+		if (heightScale !== this.oldHeightScale || x !== this.oldX || z !== this.oldZ) {
+			this.transform1.scale.setDirect(heightScale * mult1, heightScale * mult1, heightScale * mult1);
+			this.transform1.translation.x = x * heightScale * mult1 / this.count;
+			this.transform1.translation.z = z * heightScale * mult1 / this.count;
+			this.transform1.update();
+
+			this.transform2.scale.setDirect(heightScale * mult2, heightScale * mult2, heightScale * mult2);
+			this.transform2.translation.x = x * heightScale * mult2 / this.count;
+			this.transform2.translation.z = z * heightScale * mult2 / this.count;
+			this.transform2.update();
+
+			this.oldX = x;
+			this.oldZ = z;
+			this.oldHeightScale = heightScale;
+
+			// console.log(x, z);
+		}
 	};
 
 	GridRenderSystem.prototype.render = function (renderer/*, picking*/) {
@@ -132,7 +199,8 @@ define([
 			fogOn: false,
 			fogColor: [0.1, 0.1, 0.1, 1],
 			fogNear: Shader.NEAR_PLANE,
-			fogFar: Shader.FAR_PLANE
+			fogFar: Shader.FAR_PLANE,
+			opacity: 1
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -160,6 +228,7 @@ define([
 			'uniform float fogNear;',
 			'uniform float fogFar;',
 			'uniform bool fogOn;',
+			'uniform float opacity;',
 
 			'varying float depth;',
 
@@ -172,6 +241,7 @@ define([
 				'} else {',
 					'gl_FragColor = color;',
 				'}',
+				'gl_FragColor.a = opacity;',
 			'}'
 		].join('\n')
 	};
