@@ -35,12 +35,11 @@ define([
 
 		this.renderList = [];
 		this.doRender = {
-			grid: true,
-			surface: true
+			grid: true
 		};
 
-		this.scale = 1000; //100
-		this.count = 100; //100
+		this.scale = 62.5;
+		this.count = 100;
 
 		this.camera = null;
 		this.lights = [];
@@ -54,15 +53,16 @@ define([
 		this.transform2.scale.setDirect(this.scale, this.scale, this.scale);
 		this.transform2.update();
 
+		var col = 0.2;
 		var gridMaterial1 = new Material(gridShaderDef, 'Grid Material');
 		gridMaterial1.blendState.blending = 'TransparencyBlending';
-		gridMaterial1.uniforms.color = [0, 0, 0, 1];
-		gridMaterial1.depthState.write = true;
+		gridMaterial1.uniforms.color = [col, col, col, 1];
+		gridMaterial1.depthState.write = false;
 		gridMaterial1.depthState.enabled = true;
 		var gridMaterial2 = new Material(gridShaderDef, 'Grid Material');
 		gridMaterial2.blendState.blending = 'TransparencyBlending';
-		gridMaterial2.uniforms.color = [0, 0, 0, 1];
-		gridMaterial2.depthState.write = true;
+		gridMaterial2.uniforms.color = [col, col, col, 1];
+		gridMaterial2.depthState.write = false;
 		gridMaterial2.depthState.enabled = true;
 
 		var gridMesh = new Grid(this.count, this.count);
@@ -114,26 +114,26 @@ define([
 			return;
 		}
 
-		var y = Math.max(this.camera.translation.y, 1) / this.scale;
+		var y = Math.max(Math.abs(this.camera.translation.y) / 10, 0);
 
-		var y1 = Math.pow(y, 0.25);
+		var y1 = Math.pow(y, 0.15);
 		var blender1 = 1 - Math.abs(y1 - Math.floor(y1) - 0.5) * 2;
-		var heightScale1 = Math.pow(2, Math.floor(y1)*4+2) * this.scale;
+		blender1 = Math.min(blender1 * 2, 1);
+		var heightScale1 = Math.pow(2, Math.floor(y1) * 4 + 2) * this.scale;
 
-		var y2 = Math.pow(y, 0.25) + 0.5;
+		var y2 = Math.pow(y, 0.15) + 0.5;
 		var blender2 = 1 - Math.abs(y2 - Math.floor(y2) - 0.5) * 2;
-		var heightScale2 = Math.pow(2, Math.floor(y2)*4) * this.scale;
+		blender2 = Math.min(blender2 * 2, 1);
+		var heightScale2 = Math.pow(2, Math.floor(y2) * 4) * this.scale;
 
-		blender1 = smoothstep(blender1, 5);
-		blender2 = smoothstep(blender2, 5);
+		blender1 = smoothstep(blender1, 1);
+		blender2 = smoothstep(blender2, 1);
 
+		this.grid1.materials[0].uniforms.scale = heightScale1;
 		this.grid1.materials[0].uniforms.opacity = blender1;
-		// this.grid1.materials[0].uniforms.opacity = 0;
-		// this.grid1.materials[0].uniforms.opacity = 1;
 
+		this.grid2.materials[0].uniforms.scale = heightScale2;
 		this.grid2.materials[0].uniforms.opacity = blender2;
-		// this.grid2.materials[0].uniforms.opacity = 0;
-		// this.grid2.materials[0].uniforms.opacity = 1;
 
 		var x = Math.floor(this.camera.translation.x * this.count / heightScale1);
 		var z = Math.floor(this.camera.translation.z * this.count / heightScale1);
@@ -148,8 +148,8 @@ define([
 			this.oldHeightScale1 = heightScale1;
 		}
 
-		var x = Math.floor(this.camera.translation.x * this.count / heightScale2);
-		var z = Math.floor(this.camera.translation.z * this.count / heightScale2);
+		x = Math.floor(this.camera.translation.x * this.count / heightScale2);
+		z = Math.floor(this.camera.translation.z * this.count / heightScale2);
 		if (heightScale2 !== this.oldHeightScale2 || x !== this.oldX2 || z !== this.oldZ2) {
 			this.transform2.scale.setDirect(heightScale2, heightScale2, heightScale2);
 			this.transform2.translation.x = x * heightScale2 / this.count;
@@ -196,11 +196,10 @@ define([
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			color: [0.55, 0.55, 0.55, 1],
-			fogOn: false,
-			fogColor: [0.1, 0.1, 0.1, 1],
 			fogNear: Shader.NEAR_PLANE,
 			fogFar: Shader.FAR_PLANE,
-			opacity: 1
+			opacity: 1,
+			scale: 1
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -211,11 +210,10 @@ define([
 
 			'varying float depth;',
 
-			'void main(void)',
-			'{',
+			'void main(void) {',
 				'vec4 viewPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 
-				'depth = viewPosition.z;',
+				'depth = -viewPosition.z;',
 
 				'gl_Position = projectionMatrix * viewPosition;',
 			'}'
@@ -223,25 +221,17 @@ define([
 		fshader: [
 			'precision mediump float;',
 
-			'uniform vec4 fogColor;',
 			'uniform vec4 color;',
 			'uniform float fogNear;',
 			'uniform float fogFar;',
-			'uniform bool fogOn;',
 			'uniform float opacity;',
+			'uniform float scale;',
 
 			'varying float depth;',
 
-			'void main(void)',
-			'{',
-				'if (fogOn) {',
-					'float lerpVal = clamp(depth / (-fogFar + fogNear), 0.0, 1.0);',
-					'lerpVal = pow(lerpVal, 1.5);',
-					'gl_FragColor = mix(color, fogColor, lerpVal);',
-				'} else {',
-					'gl_FragColor = color;',
-				'}',
-				'float lerpVal = 1.0 - clamp(depth / 100.0, 0.0, 1.0);',
+			'void main(void) {',
+				'gl_FragColor = color;',
+				'float lerpVal = 1.0 - clamp(depth * 3.0 / min(scale, fogFar * 3.0), 0.0, 1.0);',
 				'gl_FragColor.a = opacity * lerpVal;',
 			'}'
 		].join('\n')
