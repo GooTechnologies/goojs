@@ -1,1 +1,1 @@
-define(['goo/renderer/shadow/ShadowHandler'], function(ShadowHandler) {});
+define(['goo/renderer/shadow/ShadowHandler'], function (ShadowHandler) {});

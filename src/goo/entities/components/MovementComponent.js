@@ -36,7 +36,7 @@ define([
 		 * Adds velocity to movement. Typically useful for things such as gravity and slingshots.
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
-		MovementComponent.prototype.addVelocity = function(vec3) {
+		MovementComponent.prototype.addVelocity = function (vec3) {
 			this.velocity.add(vec3);
 		};
 
@@ -45,7 +45,7 @@ define([
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
 
-		MovementComponent.prototype.setVelocity = function(vec3) {
+		MovementComponent.prototype.setVelocity = function (vec3) {
 			this.velocity.set(vec3);
 		};
 
@@ -54,7 +54,7 @@ define([
 		 * @returns {Vector3} velocity vector
 		 */
 
-		MovementComponent.prototype.getVelocity = function() {
+		MovementComponent.prototype.getVelocity = function () {
 			return this.velocity;
 		};
 
@@ -63,7 +63,7 @@ define([
 		 * @param {Vector3} vec3 rotational velocity impulse vector.
 		 */
 
-		MovementComponent.prototype.addRotationVelocity = function(vec3) {
+		MovementComponent.prototype.addRotationVelocity = function (vec3) {
 			this.rotationVelocity.add(vec3);
 		};
 		/**
@@ -71,7 +71,7 @@ define([
 		 * @param {Vector3} vec3 rotational velocity vector.
 		 */
 
-		MovementComponent.prototype.setRotationVelocity = function(vec3) {
+		MovementComponent.prototype.setRotationVelocity = function (vec3) {
 			this.rotationVelocity.set(vec3);
 		};
 
@@ -80,7 +80,7 @@ define([
 		 * @returns {Vector3} the rotational velocity
 		 */
 
-		MovementComponent.prototype.getRotationVelocity = function() {
+		MovementComponent.prototype.getRotationVelocity = function () {
 			return this.rotationVelocity;
 		};
 

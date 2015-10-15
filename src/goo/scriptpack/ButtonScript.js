@@ -17,7 +17,6 @@ define([
 	 * Attaches mouse events to an entity.
 	 */
 	function ButtonScript() {
-
 		function setup(params, env) {
 			env.button = ['Any', 'Left', 'Middle', 'Right'].indexOf(params.button) - 1;
 			if (env.button < -1) {

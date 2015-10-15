@@ -76,13 +76,32 @@ define([
 		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
 
 		// apply current color to mesh
-		if (!Vector.equals(this.lastColor, this.color)) {
+		if (!this.lastColor.equals(this.color)) {
 			var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);
-			colorBuffer.set(this.color.data, this.index * 16 + 0);
-			colorBuffer.set(this.color.data, this.index * 16 + 4);
-			colorBuffer.set(this.color.data, this.index * 16 + 8);
-			colorBuffer.set(this.color.data, this.index * 16 + 12);
-			this.lastColor.setVector(this.color);
+
+			var offset = this.index * 16;
+
+			colorBuffer[offset + 0 + 0] = this.color.r;
+			colorBuffer[offset + 0 + 1] = this.color.g;
+			colorBuffer[offset + 0 + 2] = this.color.b;
+			colorBuffer[offset + 0 + 3] = this.color.a;
+
+			colorBuffer[offset + 4 + 0] = this.color.r;
+			colorBuffer[offset + 4 + 1] = this.color.g;
+			colorBuffer[offset + 4 + 2] = this.color.b;
+			colorBuffer[offset + 4 + 3] = this.color.a;
+
+			colorBuffer[offset + 8 + 0] = this.color.r;
+			colorBuffer[offset + 8 + 1] = this.color.g;
+			colorBuffer[offset + 8 + 2] = this.color.b;
+			colorBuffer[offset + 8 + 3] = this.color.a;
+
+			colorBuffer[offset + 12 + 0] = this.color.r;
+			colorBuffer[offset + 12 + 1] = this.color.g;
+			colorBuffer[offset + 12 + 2] = this.color.b;
+			colorBuffer[offset + 12 + 3] = this.color.a;
+
+			this.lastColor.set(this.color);
 		}
 
 		// determine our particle plane
@@ -90,35 +109,45 @@ define([
 			this.emitter.getParticleBillboardVectors(this, particleEntity);
 		}
 		if (this.spin === 0) {
-			this.bbX.mulDirect(this.size, this.size, this.size);
-			this.bbY.mulDirect(this.size, this.size, this.size);
+			this.bbX.scale(this.size);
+			this.bbY.scale(this.size);
 		} else {
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
-			this.bbY.setVector(this.bbX);
-			this.bbX.mulDirect(cA, cA, cA).addDirect(upX * sA, upY * sA, upZ * sA);
-			this.bbY.mulDirect(-sA, -sA, -sA).addDirect(upX * cA, upY * cA, upZ * cA);
+			this.bbY.set(this.bbX);
+			this.bbX.scale(cA).addDirect(upX * sA, upY * sA, upZ * sA);
+			this.bbY.scale(-sA).addDirect(upX * cA, upY * cA, upZ * cA);
 		}
 
 		// apply billboard vectors to mesh verts
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
+		var offset = this.index * 12;
+
 		// bottom right point
-		calcVec.setVector(this.position).subVector(this.bbX).subVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
+		calcVec.set(this.position).sub(this.bbX).sub(this.bbY);
+		vertexBuffer[offset + 0 + 0] = calcVec.x;
+		vertexBuffer[offset + 0 + 1] = calcVec.y;
+		vertexBuffer[offset + 0 + 2] = calcVec.z;
 
 		// top right point
-		calcVec.setVector(this.position).subVector(this.bbX).addVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
+		calcVec.set(this.position).sub(this.bbX).add(this.bbY);
+		vertexBuffer[offset + 3 + 0] = calcVec.x;
+		vertexBuffer[offset + 3 + 1] = calcVec.y;
+		vertexBuffer[offset + 3 + 2] = calcVec.z;
 
 		// top left point
-		calcVec.setVector(this.position).addVector(this.bbX).addVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
+		calcVec.set(this.position).add(this.bbX).add(this.bbY);
+		vertexBuffer[offset + 6 + 0] = calcVec.x;
+		vertexBuffer[offset + 6 + 1] = calcVec.y;
+		vertexBuffer[offset + 6 + 2] = calcVec.z;
 
 		// bottom left corner
-		calcVec.setVector(this.position).addVector(this.bbX).subVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
+		calcVec.set(this.position).add(this.bbX).sub(this.bbY);
+		vertexBuffer[offset + 9 + 0] = calcVec.x;
+		vertexBuffer[offset + 9 + 1] = calcVec.y;
+		vertexBuffer[offset + 9 + 2] = calcVec.z;
 
 		if (this.lastUVIndex !== this.uvIndex) {
 			var uvBuffer = this.parent.meshData.getAttributeBuffer(MeshData.TEXCOORD0);
@@ -127,6 +156,7 @@ define([
 			var uDelta = 1.0 / this.parent.uRange;
 			var vDelta = 1.0 / this.parent.vRange;
 
+			//! AT: why go through this array?! there's only 2 values; what's the point?
 			tmpArray[0] = uIndex + uDelta;
 			tmpArray[1] = vIndex - vDelta;
 			uvBuffer.set(tmpArray, this.index * 8 + 0);

@@ -10,7 +10,6 @@ define([
 	'use strict';
 
 	describe('BoxCollider', function () {
-
 		it('can clone', function () {
 			var collider = new BoxCollider({
 				halfExtents: new Vector3(1, 2, 3)
@@ -24,10 +23,9 @@ define([
 				halfExtents: new Vector3(1, 2, 3)
 			});
 			var transform = new Transform();
-			transform.scale.set(1, 2, 3);
+			transform.scale.setDirect(1, 2, 3);
 			collider.transform(transform, collider);
 			expect(collider.halfExtents).toEqual(new Vector3(1, 4, 9));
 		});
-
 	});
 });

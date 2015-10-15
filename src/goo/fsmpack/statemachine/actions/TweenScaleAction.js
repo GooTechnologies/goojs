@@ -1,12 +1,12 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
-],
-
-	function(
+	'goo/math/Vector3',
+	'goo/util/TWEEN'
+], function (
 	Action,
-	Vector3
-	) {
+	Vector3,
+	TWEEN
+) {
 	'use strict';
 
 	function TweenScaleAction(/*id, settings*/) {
@@ -63,20 +63,20 @@ define([
 		}]
 	};
 
-	TweenScaleAction.prototype.configure = function(settings) {
+	TweenScaleAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenScaleAction.prototype._setup = function() {
-		this.tween = new window.TWEEN.Tween();
+	TweenScaleAction.prototype._setup = function () {
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {
@@ -85,33 +85,33 @@ define([
 		}
 	};
 
-	TweenScaleAction.prototype._run = function(fsm) {
+	TweenScaleAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;
-		var initialScale = new Vector3().copy(scale);
+		var initialScale = scale.clone();
 
 		var fakeFrom = { x: initialScale.x, y: initialScale.y, z: initialScale.z };
 		var fakeTo;
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			var to = Vector3.add(initialScale, this.to);
+			var to = Vector3.fromArray(this.to).add(initialScale);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		}

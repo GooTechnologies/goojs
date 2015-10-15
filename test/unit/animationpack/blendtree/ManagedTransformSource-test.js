@@ -1,1 +1,1 @@
-define(['goo/animationpack/blendtree/ManagedTransformSource'], function(ManagedTransformSource) {});
+define(['goo/animationpack/blendtree/ManagedTransformSource'], function (ManagedTransformSource) {});

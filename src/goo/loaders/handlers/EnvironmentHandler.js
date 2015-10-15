@@ -1,11 +1,11 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!
 	'goo/util/rsvp'
-], function(
+], function (
 	ConfigHandler,
 	_,
 	SystemBus,
@@ -16,11 +16,11 @@ define([
 	'use strict';
 
 	var defaults = {
-		backgroundColor: [0.3,0.3,0.3,1],
-		globalAmbient: [0,0,0],
+		backgroundColor: [0.3, 0.3, 0.3, 1],
+		globalAmbient: [0, 0, 0],
 		fog: {
 			enabled: false,
-			color: [1,1,1],
+			color: [1, 1, 1],
 			near: 10,
 			far: 1000
 		}
@@ -48,17 +48,17 @@ define([
 	EnvironmentHandler.prototype.constructor = EnvironmentHandler;
 	ConfigHandler._registerClass('environment', EnvironmentHandler);
 
-	EnvironmentHandler.prototype._prepare = function(config) {
+	EnvironmentHandler.prototype._prepare = function (config) {
 		_.defaults(config, defaults);
 	};
 
-	EnvironmentHandler.prototype._create = function() {
+	EnvironmentHandler.prototype._create = function () {
 		return {
 			weatherState: {}
 		};
 	};
 
-	EnvironmentHandler.prototype._remove = function(ref) {
+	EnvironmentHandler.prototype._remove = function (ref) {
 		var object = this._objects.get(ref);
 		this._objects.delete(ref);
 		if (!object) {
@@ -73,9 +73,9 @@ define([
 		// Reset environment
 		SystemBus.emit('goo.setClearColor', defaults.backgroundColor);
 		ShaderBuilder.CLEAR_COLOR = defaults.backgroundColor;
-		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient.slice(0,3);
+		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient.slice(0, 3);
 		ShaderBuilder.USE_FOG = defaults.fog.enabled;
-		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0,3);
+		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0, 3);
 		ShaderBuilder.FOG_SETTINGS = [defaults.fog.near, defaults.fog.far];
 
 		// Reset Sound
@@ -89,16 +89,25 @@ define([
 	/**
 	 * Adds/updates/removes an environment
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated environment or null if removed
 	 */
-	EnvironmentHandler.prototype._update = function(ref, config, options) {
+	EnvironmentHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (object) {
 			if (!object) { return; }
-			object.backgroundColor = config.backgroundColor.slice(0);
-			object.globalAmbient = config.globalAmbient.slice(0,3);
+
+			var backgroundColor = config.backgroundColor;
+			var alpha = backgroundColor[3];
+			// Premultiply alpha
+			object.backgroundColor = [
+				backgroundColor[0] * alpha,
+				backgroundColor[1] * alpha,
+				backgroundColor[2] * alpha,
+				backgroundColor[3]
+			];
+			object.globalAmbient = config.globalAmbient.slice(0, 3);
 
 			object.fog = _.deepClone(config.fog);
 
@@ -109,7 +118,7 @@ define([
 			ShaderBuilder.CLEAR_COLOR = object.backgroundColor;
 			ShaderBuilder.GLOBAL_AMBIENT = object.globalAmbient;
 			ShaderBuilder.USE_FOG = object.fog.enabled;
-			ShaderBuilder.FOG_COLOR = object.fog.color.slice(0,3);
+			ShaderBuilder.FOG_COLOR = object.fog.color.slice(0, 3);
 			ShaderBuilder.FOG_SETTINGS = [object.fog.near, config.fog.far];
 
 			// Weather
@@ -125,7 +134,7 @@ define([
 			// Skybox
 			if (config.skyboxRef) {
 				EnvironmentHandler.currentSkyboxRef = config.skyboxRef;
-				promises.push(that._load(config.skyboxRef, {reload: true}));
+				promises.push(that._load(config.skyboxRef, { reload: true }));
 			} else if (EnvironmentHandler.currentSkyboxRef) {
 				var p = that.updateObject(EnvironmentHandler.currentSkyboxRef, null)
 				.then(function () {
@@ -139,7 +148,7 @@ define([
 			if (config.sound && soundSystem) {
 				soundSystem.updateConfig(config.sound);
 				if (config.sound.reverbRef) {
-					var p = that._load(config.sound.reverbRef, options).then(function(sound) {
+					var p = that._load(config.sound.reverbRef, options).then(function (sound) {
 						soundSystem.setReverb(sound._buffer);
 					});
 					promises.push(p);
@@ -147,26 +156,25 @@ define([
 					soundSystem.setReverb(null);
 				}
 			}
-			return RSVP.all(promises).then(function() { return object; });
+			return RSVP.all(promises).then(function () { return object; });
 		});
 	};
 
 
 	EnvironmentHandler.weatherHandlers = {
 		snow: {
-			update: function(config, weatherState) {
+			update: function (config, weatherState) {
 				if (config.enabled) {
-					if (weatherState.snow && weatherState.snow.enabled) {
-						// adjust snow
-						weatherState.snow.snow.setEmissionVelocity(config.velocity);
-						weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
-						weatherState.snow.snow.setEmissionHeight(config.height);
-					} else {
+					if (!weatherState.snow || !weatherState.snow.enabled) {
 						// add snow
 						weatherState.snow = weatherState.snow || {};
 						weatherState.snow.enabled = true;
 						weatherState.snow.snow = new Snow(this.world.gooRunner);
 					}
+
+					weatherState.snow.snow.setEmissionVelocity(config.velocity);
+					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
+					weatherState.snow.snow.setEmissionHeight(config.height);
 				} else {
 					if (weatherState.snow && weatherState.snow.enabled) {
 						// remove snow
@@ -176,8 +184,8 @@ define([
 					}
 				}
 			},
-			remove: function(weatherState) {
-				if (weatherState.snow.snow) {
+			remove: function (weatherState) {
+				if (weatherState.snow && weatherState.snow.snow) {
 					weatherState.snow.snow.remove();
 					weatherState.snow.enabled = false;
 					delete weatherState.snow.snow;

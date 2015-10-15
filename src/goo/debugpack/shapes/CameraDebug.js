@@ -2,14 +2,16 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
+	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
 ], function (
-		MeshData,
-		MeshBuilder,
-		Transform,
-		Box,
-		Cylinder
+	MeshData,
+	MeshBuilder,
+	Transform,
+	Vector3,
+	Box,
+	Cylinder
 ) {
 	'use strict';
 
@@ -17,18 +19,18 @@ define([
 		this._camera = CameraDebug.buildCamera();
 	}
 
-	CameraDebug.prototype.getMesh = function(camera, options) {
+	CameraDebug.prototype.getMesh = function (camera, options) {
 		return options.full ? [this._camera, CameraDebug.buildFrustum(camera)] : [this._camera];
 	};
 
-	CameraDebug.buildFrustum = function(camera) {
+	CameraDebug.buildFrustum = function (camera) {
 		var near = camera.near;
 		var far = camera.far;
 		var aspect = camera.aspect;
 		var tanFar, tanNear;
 
 		if (camera.projectionMode === 0) {
-			var tan = Math.tan(camera.fov/2 * Math.PI/180);
+			var tan = Math.tan(camera.fov / 2 * Math.PI / 180);
 			tanFar = tan * far;
 			tanNear = tan * near;
 		} else {
@@ -40,7 +42,7 @@ define([
 		var f0, f1, f2, f3;
 		f0 = {
 			x: -tanFar * aspect,
-			y:  tanFar,
+			y: tanFar,
 			z: -far
 		};
 
@@ -51,21 +53,21 @@ define([
 		};
 
 		f2 = {
-			x:  tanFar * aspect,
+			x: tanFar * aspect,
 			y: -tanFar,
 			z: -far
 		};
 
 		f3 = {
-			x:  tanFar * aspect,
-			y:  tanFar,
+			x: tanFar * aspect,
+			y: tanFar,
 			z: -far
 		};
 
 		var n0, n1, n2, n3;
 		n0 = {
 			x: -tanNear * aspect,
-			y:  tanNear,
+			y: tanNear,
 			z: -near
 		};
 
@@ -76,14 +78,14 @@ define([
 		};
 
 		n2 = {
-			x:  tanNear * aspect,
+			x: tanNear * aspect,
 			y: -tanNear,
 			z: -near
 		};
 
 		n3 = {
-			x:  tanNear * aspect,
-			y:  tanNear,
+			x: tanNear * aspect,
+			y: tanNear,
 			z: -near
 		};
 
@@ -125,7 +127,7 @@ define([
 		return meshData;
 	};
 
-	CameraDebug.buildCamera = function() {
+	CameraDebug.buildCamera = function () {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 
@@ -134,11 +136,12 @@ define([
 		var cameraBox3 = new Box(0.3, 1, 1.6);
 
 		var cameraBox4 = new Box(0.2, 0.15, 0.7);
-		cameraBox4.applyFunction(MeshData.POSITION, function(vert) {
-			return [
+		cameraBox4.applyFunction(MeshData.POSITION, function (vert) {
+			return new Vector3(
 				vert.x + vert.x / ((vert.z + 1.1) * 0.3),
 				vert.y + vert.y / ((vert.z + 1.1) * 0.3),
-				vert.z];
+				vert.z
+			);
 		});
 
 		transform.translation.setDirect(0.0, 0.0, 0.0);

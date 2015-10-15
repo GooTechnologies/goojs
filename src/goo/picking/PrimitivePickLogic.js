@@ -29,7 +29,7 @@ define([
 
 	PrimitivePickLogic.prototype.removed = function (entity) {
 		// clear bounding tree
-		if( entity.meshDataComponent && entity.meshDataComponent.meshData) {
+		if ( entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			entity.meshDataComponent.meshData.__boundingTree = null;
 		}
 	};

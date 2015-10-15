@@ -43,7 +43,7 @@ define([
 	CrunchLoader.cCRNFmtDXT3 = 1;
 	CrunchLoader.cCRNFmtDXT5 = 2;
 
-	CrunchLoader.prototype.arrayBufferCopy = function(src, dst, dstByteOffset, numBytes) {
+	CrunchLoader.prototype.arrayBufferCopy = function (src, dst, dstByteOffset, numBytes) {
 		var dst32Offset = dstByteOffset / 4,
 			tail = (numBytes % 4),
 			src32 = new Uint32Array(src.buffer, 0, (numBytes - tail) / 4),
@@ -58,7 +58,7 @@ define([
 		}
 	};
 
-	CrunchLoader.prototype.load = function(arrayBuffer, texture, flipped/*, arrayByteOffset, arrayByteLength*/) {
+	CrunchLoader.prototype.load = function (arrayBuffer, texture, flipped/*, arrayByteOffset, arrayByteLength*/) {
 		if (typeof (window.CrunchModule) === 'undefined') {
 			console.warn('Crunch library not loaded! Include a script tag pointing to lib/crunch/crunch.js in your html-file.');
 			return;
@@ -171,7 +171,7 @@ define([
 	 * @param {number} height
 	 * @returns {Uint16Array} dst
 	 */
-	CrunchLoader.prototype.dxtToRgb565 = function(src, src16Offset, width, height) {
+	CrunchLoader.prototype.dxtToRgb565 = function (src, src16Offset, width, height) {
 		var c = new Uint16Array(4);
 		var dst = new Uint16Array(width * height);
 		// var nWords = (width * height) / 4;

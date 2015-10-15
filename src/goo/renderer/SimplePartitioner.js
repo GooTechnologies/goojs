@@ -23,6 +23,7 @@ define(['goo/renderer/Camera'],
 			var entity = entities[i];
 
 			if (entity.skip || entity.meshRendererComponent.hidden) {
+				entity.isVisible = false;
 				continue;
 			}
 

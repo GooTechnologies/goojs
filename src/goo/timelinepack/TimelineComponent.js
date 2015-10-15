@@ -42,7 +42,7 @@ define([
 		var time = this.time + tpf;
 		if (time > this.duration) {
 			if (this.loop) {
-				time = time % this.duration;
+				time %= this.duration;
 			} else {
 				time = this.duration;
 			}
@@ -78,7 +78,7 @@ define([
 	/**
 	 * Retrieves the values of all channels
 	 * @private
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	TimelineComponent.prototype.getValues = function () {
 		var retVal = {};

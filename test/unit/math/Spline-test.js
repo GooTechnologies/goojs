@@ -1,10 +1,14 @@
 define([
 	'goo/math/splines/Spline',
 	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'test/CustomMatchers'
 ], function (
 	Spline,
 	Vector2,
+	Vector3,
+	Vector4,
 	CustomMatchers
 ) {
 	'use strict';
@@ -29,6 +33,24 @@ define([
 				var start = new Vector2(2, 4);
 				var mid = new Vector2(10, 20);
 				var end = new Vector2(8, 6);
+				Spline.quadraticInterpolation(start, mid, end, 1, point);
+				expect(point).toBeCloseToVector(end);
+			});
+
+			it('works with Vector3', function () {
+				var point = new Vector3();
+				var start = new Vector3(1,2,3);
+				var mid = new Vector3(1,2,3);
+				var end = new Vector3(1,2,3);
+				Spline.quadraticInterpolation(start, mid, end, 1, point);
+				expect(point).toBeCloseToVector(end);
+			});
+
+			it('works with Vector4', function () {
+				var point = new Vector4();
+				var start = new Vector4(1,2,3,4);
+				var mid = new Vector4(1,2,3,4);
+				var end = new Vector4(1,2,3,4);
 				Spline.quadraticInterpolation(start, mid, end, 1, point);
 				expect(point).toBeCloseToVector(end);
 			});

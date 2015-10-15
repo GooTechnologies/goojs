@@ -1,1 +1,1 @@
-define(['goo/entities/systems/RenderSystem'], function(RenderSystem) {});
+define(['goo/entities/systems/RenderSystem'], function (RenderSystem) {});

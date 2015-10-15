@@ -33,7 +33,7 @@ function (
 	 * @param {Collider} targetCollider
 	 */
 	BoxCollider.prototype.transform = function (transform, targetCollider) {
-		targetCollider.halfExtents.setVector(transform.scale).mulVector(this.halfExtents);
+		targetCollider.halfExtents.set(transform.scale).mul(this.halfExtents);
 	};
 
 	/**

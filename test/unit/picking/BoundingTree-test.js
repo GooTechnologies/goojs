@@ -1,1 +1,1 @@
-define(['goo/picking/BoundingTree'], function(BoundingTree) {});
+define(['goo/picking/BoundingTree'], function (BoundingTree) {});

@@ -1,5 +1,16 @@
+// jshint node:true
 'use strict';
 
+/**
+ * Only `#ifdef`/`#endif` directives are supported
+ */
+
+/**
+ * Strips the `#ifdef` preprocessor directives and eventual code that lies in unused blocks.
+ * @param {string} source
+ * @param {Object} defines A map-like object of string -> true/false
+ * @returns {string}
+ */
 function preprocess(source, defines) {
 	var lines = source.split('\n');
 

@@ -1,9 +1,10 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
-	PromiseUtil
+	PromiseUtils,
+	ObjectUtils
 ) {
-
 	'use strict';
 
 	// TODO: make promise based instead of sending callbacks
@@ -18,7 +19,7 @@ define([
 	 * Loads an image element from a given URL and returns the image rendered on a canvas within a callback.
 	 *
 	 * @param {string} canvasPath	                 The URL to the image to render to the canvas.
-	 * @param {object} [options]
+	 * @param {Object} [options]
 	 * @param {number} [options.width]             Resulting width of the canvas, falls back to image width.
 	 * @param {number} [options.height]            Resulting height of the canvas, falls back to image height.
 	 * @param {number} [options.sourceX]           Where to start clipping in x
@@ -30,12 +31,12 @@ define([
 	 * @param {number} [options.destWidth]         Destination frame width
 	 * @param {number} [options.destHeight]        Destination frame height
 	 * @param {number} [options.resizeToFit=false] If true, the image is stretched to fit and centered on the canvas.
-	 * @param {function} callback
+	 * @param {Function} callback
 	 */
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
 		var options = {};
 		if (arguments.length === 3) {
-			// Called with loadCanvasFromPath(path,options,callback)
+			// Called with loadCanvasFromPath(path, options, callback)
 			options = arguments[1];
 			callback = arguments[2];
 		}
@@ -62,29 +63,34 @@ define([
 				return callback();
 			}
 
-			// Canvas size
-			options.width =  options.width  ? options.width :  img.width;
-			options.height = options.height ? options.height : img.height;
+			ObjectUtils.defaults(options, {
+				// Canvas size
+				width: img.width,
+				height: img.height,
 
-			// Clipping window size & position
-			options.sourceX = options.sourceX ? options.sourceX : 0;
-			options.sourceY = options.sourceY ? options.sourceY : 0;
-			options.sourceWidth = options.sourceWidth ? options.sourceWidth : img.width;
-			options.sourceHeight = options.sourceHeight ? options.sourceHeight : img.height;
+				// Clipping window size & position
+				sourceX: 0,
+				sourceY: 0,
+				sourceWidth: img.width,
+				sourceHeight: img.height,
 
-			// Destination window size & position
-			options.destX = options.destX ? options.destX : 0;
-			options.destY = options.destY ? options.destY : 0;
-			options.destWidth = options.destWidth ? options.destWidth : options.width;
-			options.destHeight = options.destHeight ? options.destHeight : options.height;
+				// Destination window size & position
+				destX: 0,
+				destY: 0
+			});
 
-			if (options.resizeToFit){
+			ObjectUtils.defaults(options, {
+				destWidth: options.width,
+				destHeight: options.height
+			});
+
+			if (options.resizeToFit) {
 				// preserve aspect ratio of input image and center it
 				var ratio = options.sourceWidth / options.sourceHeight;
-				if (ratio > 1){
+				if (ratio > 1) {
 					options.destHeight = options.destWidth / ratio;
 					options.destY = (options.height - options.destHeight) * 0.5;
-				} else if (ratio < 1){
+				} else if (ratio < 1) {
 					options.destWidth = options.destHeight * ratio;
 					options.destX = (options.width - options.destWidth) * 0.5;
 				}
@@ -95,11 +101,13 @@ define([
 			canvas.height = options.height;
 
 			// Render to canvas
-			context.drawImage(	img,
-								options.sourceX,		options.sourceY,
-								options.sourceWidth,	options.sourceHeight,
-								options.destX,			options.destY,
-								options.destWidth,		options.destHeight);
+			context.drawImage(
+				img,
+				options.sourceX, options.sourceY,
+				options.sourceWidth, options.sourceHeight,
+				options.destX, options.destY,
+				options.destWidth, options.destHeight
+			);
 
 			callback(canvas);
 		};
@@ -109,21 +117,19 @@ define([
 	 * Renders an SVG to a canvas element.
 	 *
 	 * @param {string} svgSource			The SVG XML source code
-	 * @param {object} options				Will be passed to loadCanvasFromPath.
-	 * @param {function} callback			Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
+	 * @param {Object} options				Will be passed to loadCanvasFromPath.
+	 * @param {Function} callback			Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
 	 * @example
 	 * var data = '&lt;svg xmlns="http://www.w3.org/2000/svg" width=100 height=100&gt;&lt;rect x=0 y=0 width=100 height=100 fill="blue" /&gt;&lt;/svg&gt;';
 	 * CanvasUtils.renderSvgToCanvas(data, {
 	 *     resizeToFit:true,
 	 *     width:100,
 	 *     height:100
-	 * }, function(canvas){
+	 * }, function (canvas){
 	 *     // canvas is an HTMLCanvasElement
 	 * });
 	 */
 	CanvasUtils.renderSvgToCanvas = function (svgSource, options, callback) {
-		var DOMURL = window.URL || window.webkitURL || window;
-
 		var url = 'data:image/svg+xml;base64,' + btoa(svgSource);
 
 		CanvasUtils.loadCanvasFromPath(url, options, callback);
@@ -158,6 +164,7 @@ define([
 	};
 
 	/**
+	 *
 	 * Convert SVG XML content to an HTMLImageElement.
 	 * @param  {string} data
 	 * @returns {RSVP.Promise} Promise that resolves with the Image.
@@ -170,7 +177,7 @@ define([
 		var img = new Image();
 		img.src = DOMURL.createObjectURL(svg);
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			img.onload = function () {
 				resolve(img);
 			};

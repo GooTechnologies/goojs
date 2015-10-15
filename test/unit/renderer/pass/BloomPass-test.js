@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/BloomPass'], function(BloomPass) {});
+define(['goo/renderer/pass/BloomPass'], function (BloomPass) {});

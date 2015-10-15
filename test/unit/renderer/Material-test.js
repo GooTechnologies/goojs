@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib'
-], function(
+], function (
 	Material,
 	ShaderLib
 	) {

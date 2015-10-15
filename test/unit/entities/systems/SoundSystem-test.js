@@ -1,1 +1,1 @@
-define(['goo/entities/systems/SoundSystem'], function(SoundSystem) {});
+define(['goo/entities/systems/SoundSystem'], function (SoundSystem) {});

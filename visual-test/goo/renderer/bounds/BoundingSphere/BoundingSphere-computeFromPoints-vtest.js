@@ -50,9 +50,9 @@ require([
 	var boundingSphere = new BoundingSphere();
 	boundingSphere.computeFromPoints(shapeMeshData.dataViews.POSITION);
 	var radius = boundingSphere.radius;
-	var xCenter = boundingSphere.center.data[0];
-	var yCenter = boundingSphere.center.data[1];
-	var zCenter = boundingSphere.center.data[2];
+	var xCenter = boundingSphere.center.x;
+	var yCenter = boundingSphere.center.y;
+	var zCenter = boundingSphere.center.z;
 
 	var sphereMeshData = new Sphere(10, 16, radius);
 	goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();

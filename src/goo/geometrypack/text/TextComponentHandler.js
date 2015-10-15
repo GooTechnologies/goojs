@@ -1,19 +1,19 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/geometrypack/text/TextComponent',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	TextComponent,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
 	/**
 	 * For handling loading of text components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function.
-	 * @param {function} updateObject The handler function.
+	 * @param {Function} getConfig The config loader function.
+	 * @param {Function} updateObject The handler function.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -51,8 +51,8 @@ define([
 	/**
 	 * Update engine textComponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	TextComponentHandler.prototype.update = function (entity, config, options) {
@@ -61,7 +61,7 @@ define([
 
 			// load font
 
-			return PromiseUtil.createPromise(function (resolve, reject) {
+			return PromiseUtils.createPromise(function (resolve, reject) {
 				opentype.load(config.font.fontRef, function (err, font) {
 					if (err) {
 						console.error(err);
@@ -88,23 +88,7 @@ define([
 					resolve(component);
 				});
 			});
-			/*// Load material
-			return this._load(config.materialRef, options).then(function (material) {
-				// setting this here until the frontend sends good values
-				material.cullState.enabled = true;
-
-				// If the component already has these components, they need to be overridden
-				if (entity.meshDataComponent !== component.meshDataComponent) {
-					entity.setComponent(component.meshDataComponent);
-				}
-
-				component.setMaterial(material);
-				component.setText();
-				component.meshDataComponent.autoCompute = true;
-
-				return component;
-			});*/
-		}.bind(this));
+		});
 	};
 
 	return TextComponentHandler;

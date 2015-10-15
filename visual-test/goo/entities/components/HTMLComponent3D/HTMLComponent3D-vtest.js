@@ -29,8 +29,7 @@ require([
 	'goo/passpack/PosteffectsHandler',
 	'goo/quadpack/QuadComponentHandler',
 	'goo/scriptpack/ScriptHandlers',
-	'goo/scriptpack/ScriptRegister',
-	'goo/scripts/GooClassRegister'
+	'goo/scriptpack/ScriptRegister'
 ], function(
 	Camera,
 	HtmlComponent,
@@ -294,13 +293,13 @@ require([
 				height: height
 			});
 			var entity = world.createEntity(position, htmlComponent);
-			entity.setScale(0.1, 0.1, 1);
+			// entity.setScale(0.1, 0.1, 1);
 			entity.setRotation(rotation);
 			entity.addToWorld();
 		}
 
-		createIFrame(500, 281, [-40, 20, -20], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
-		createIFrame(768, 640, [40, 20, -20], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
+		// createIFrame(500, 281, [-40, 20, -20], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
+		// createIFrame(768, 640, [40, 20, -20], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
 		createIFrame(1024, 768, [0, 20, -80], [0, 0, 0], 'https://duckduckgo.com/');
 
 		var environmentPath = '../../../addons/Water/resources/skybox/';

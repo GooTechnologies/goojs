@@ -37,7 +37,7 @@ define([
 
 		/**
 		 * Dictates wether this light will 'cast' shadows or not
-		 * @type boolean
+		 * @type {boolean}
 		 * @default
 		 */
 		this.shadowCaster = false;
@@ -49,11 +49,11 @@ define([
 		this.lightCookie = null;
 
 		/**
-		 * @type {object}
+		 * @type {Object}
 		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000
-		 * @property {number[]} resolution 512x512
+		 * @property {Array<number>} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
 		 * @property {number} darkness Shadow contribution
 		 * @property {string} shadowType Possible values 'VSM' = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
@@ -70,7 +70,7 @@ define([
 		//! AT: please extract this in its own class
 
 		this.changedProperties = false;
-		this.changedColor =  false;
+		this.changedColor = false;
 	}
 
 	Light.prototype.destroy = function (renderer) {

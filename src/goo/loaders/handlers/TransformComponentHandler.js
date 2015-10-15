@@ -2,7 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/util/rsvp'
 ], function (
 	ComponentHandler,
@@ -17,8 +17,8 @@ define([
 	 * For handling loading of transform component
 	 * @extends ComponentHandler
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @hidden
 	 */
 	function TransformComponentHandler() {
@@ -32,7 +32,7 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	TransformComponentHandler.prototype._prepare = function (config) {
@@ -76,8 +76,8 @@ define([
 	/**
 	 * Update engine transform component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	TransformComponentHandler.prototype.update = function (entity, config, options) {
@@ -111,7 +111,7 @@ define([
 			}
 
 			// Translation
-			component.transform.translation.setArray(config.translation);
+			component.transform.translation.setDirect(config.translation[0], config.translation[1], config.translation[2]);
 			// Rotation
 			component.transform.setRotationXYZ(
 				MathUtils.DEG_TO_RAD * config.rotation[0],
@@ -119,7 +119,7 @@ define([
 				MathUtils.DEG_TO_RAD * config.rotation[2]
 			);
 			// Scale
-			component.transform.scale.setArray(config.scale);
+			component.transform.scale.setDirect(config.scale[0], config.scale[1], config.scale[2]);
 
 			var promises = [];
 			if (config.children) {

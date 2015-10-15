@@ -65,7 +65,7 @@ define([
 		transform.matrix.getTranslation(this.translation);
 
 		this.direction.setDirect(0.0, 0.0, -1.0);
-		transform.matrix.applyPostVector(this.direction);
+		this.direction.applyPostVector(transform.matrix);
 	};
 
 	SpotLight.prototype.copy = function (source) {

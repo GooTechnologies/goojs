@@ -1,6 +1,6 @@
 define(
 
-function() {
+function () {
 	'use strict';
 
 	/**
@@ -11,7 +11,7 @@ function() {
 		var keySchedule_i = 0;
 		var keySchedule_j = 0;
 
-		this.init = function(seed) {
+		this.init = function (seed) {
 			for (var i = 0; i < 256; i++) {
 				keySchedule[i] = i;
 			}
@@ -38,7 +38,7 @@ function() {
 			return keySchedule[(keySchedule[keySchedule_i] + keySchedule[keySchedule_j]) % 256];
 		}
 
-		this.getRandomNumber = function() {
+		this.getRandomNumber = function () {
 			var number = 0;
 			var multiplier = 1;
 			for (var i = 0; i < 8; i++) {

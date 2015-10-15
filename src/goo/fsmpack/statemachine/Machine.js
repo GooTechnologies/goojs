@@ -86,7 +86,7 @@ define([], function (
 		}
 	};
 
-	Machine.prototype.getCurrentState = function() {
+	Machine.prototype.getCurrentState = function () {
 		return this.currentState;
 	};
 

@@ -1,1 +1,1 @@
-define(['goo/entities/systems/ScriptSystem'], function(ScriptSystem) {});
+define(['goo/entities/systems/ScriptSystem'], function (ScriptSystem) {});

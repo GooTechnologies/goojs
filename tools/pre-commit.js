@@ -1,8 +1,11 @@
 // jshint node:true
 'use strict';
 
-var exec = require('child_process').exec;
+var childProcess = require('child_process');
 var path = require('path');
+
+var exec = childProcess.exec;
+var spawn = childProcess.spawn;
 
 function fail(message) {
 	process.stdout.write(message);
@@ -31,15 +34,10 @@ exec('node ./tools/cycleDetector.js', null, function (error, stdout, stderr) {
 				process.exit(0);
 			}
 
-			var command = path.resolve('./node_modules/.bin/jshint');
-			var child1 = exec(command + ' --reporter=tools/jshint-reporter.js ' + files.join(' '));
-
-			child1.stdout.on('data', function (data) {
-				process.stdout.write(data);
-			});
-			child1.stderr.on('data', function (data) {
-				process.stderr.write(data);
-			});
+			var child1 = spawn('node',
+				[path.resolve('./node_modules/eslint/bin/eslint.js')].concat(files),
+				{ stdio: 'inherit' }
+			);
 
 			child1.on('exit', function (code) {
 				if (code !== 0) {

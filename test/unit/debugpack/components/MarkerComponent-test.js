@@ -1,1 +1,1 @@
-define(['goo/debugpack/components/MarkerComponent'], function(MarkerComponent) {});
+define(['goo/debugpack/components/MarkerComponent'], function (MarkerComponent) {});

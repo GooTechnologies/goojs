@@ -11,10 +11,8 @@ define([
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/HtmlComponent'
-], function(
+	'goo/entities/components/MeshDataComponent'
+], function (
 	World,
 	Entity,
 	EntityUtils,
@@ -27,17 +25,15 @@ define([
 	TransformSystem,
 	TransformComponent,
 	MeshRendererComponent,
-	MeshDataComponent,
-	LightComponent,
-	HtmlComponent
+	MeshDataComponent
 ) {
 	'use strict';
 
-	describe('EntityUtils', function() {
+	describe('EntityUtils', function () {
 		var world;
 		var meshData = new Box();
 
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 			world.registerComponent(TransformComponent);
 			world.registerComponent(MeshDataComponent);
@@ -45,7 +41,7 @@ define([
 			Entity.entityCount = 0;
 		});
 
-		it('can get the root entity', function() {
+		it('can get the root entity', function () {
 			var e1 = world.createEntity();
 			var e2 = world.createEntity();
 			e1.transformComponent.attachChild(e2.transformComponent);
@@ -58,15 +54,15 @@ define([
 			expect(EntityUtils.getRoot(e3)).toBe(e1);
 		});
 
-		it('can get the total bounding box', function() {
+		it('can get the total bounding box', function () {
 			var e1 = world.createEntity(meshData, new MeshRendererComponent());
 			var e2 = world.createEntity(meshData, new MeshRendererComponent(), [10, 10, 10]);
 			e1.transformComponent.attachChild(e2.transformComponent);
 			var e3 = world.createEntity(meshData, new MeshRendererComponent(), [10, 10, 10]);
 			e2.transformComponent.attachChild(e3.transformComponent);
 			world.process();
-			var es = [e1,e2,e3,e1,e2,e3];
-			for( var i=0; i<es.length; i++ ) {
+			var es = [e1, e2, e3, e1, e2, e3];
+			for (var i = 0; i<es.length; i++) {
 				var e = es[i];
 				e.transformComponent.updateTransform();
 				e.transformComponent.updateWorldTransform();

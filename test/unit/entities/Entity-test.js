@@ -35,10 +35,10 @@ define([
 ) {
 	'use strict';
 
-	describe('Entity', function() {
+	describe('Entity', function () {
 		var world;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 			Entity.entityCount = 0;
 
@@ -60,7 +60,7 @@ define([
 			world.add(new ScriptSystem(world));
 		});
 
-		it('addToWorld', function() {
+		it('addToWorld', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			entity1.addToWorld();
@@ -70,7 +70,7 @@ define([
 			expect(world.entityManager.containsEntity(entity2)).toBe(true);
 		});
 
-		it('addToWorld recursive', function() {
+		it('addToWorld recursive', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			var entity3 = world.createEntity();
@@ -83,7 +83,7 @@ define([
 			expect(world.entityManager.containsEntity(entity3)).toBe(true);
 		});
 
-		it('addToWorld non-recursive', function() {
+		it('addToWorld non-recursive', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			var entity3 = world.createEntity();
@@ -96,7 +96,7 @@ define([
 			expect(world.entityManager.containsEntity(entity3)).toBe(false);
 		});
 
-		it('removeFromWorld', function() {
+		it('removeFromWorld', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			entity1.addToWorld();
@@ -108,7 +108,7 @@ define([
 			expect(world.entityManager.containsEntity(entity2)).toBe(true);
 		});
 
-		it('removeFromWorld recursive', function() {
+		it('removeFromWorld recursive', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			var entity3 = world.createEntity();
@@ -130,7 +130,7 @@ define([
 			expect(entity3.transformComponent.parent).toBe(entity2.transformComponent);
 		});
 
-		it('removeFromWorld non-recursive', function() {
+		it('removeFromWorld non-recursive', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			var entity3 = world.createEntity();
@@ -153,7 +153,7 @@ define([
 			expect(entity3.transformComponent.parent).toBeNull();
 		});
 
-		it('toString', function() {
+		it('toString', function () {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity('myEnt');
 			var entity3 = world.createEntity();
@@ -162,18 +162,18 @@ define([
 			expect(entity3.toString()).toBe('Entity_2');
 		});
 
-		it('all entities should have TransformComponent', function() {
+		it('all entities should have TransformComponent', function () {
 			var entity = world.createEntity();
 			expect(entity.transformComponent !== undefined).toBe(true);
 		});
 
-		it('setComponent', function() {
+		it('setComponent', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
 			expect(entity.meshDataComponent !== undefined).toBe(true);
 		});
 
-		it('cannot add the same component twice', function() {
+		it('cannot add the same component twice', function () {
 			var entity = world.createEntity();
 			var component = new MeshDataComponent();
 			entity.setComponent(component);
@@ -181,14 +181,14 @@ define([
 			expect(entity._components.length).toBe(2);
 		});
 
-		it('cannot add more than one component of the same type to the same entity', function() {
+		it('cannot add more than one component of the same type to the same entity', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
 			entity.setComponent(new MeshDataComponent());
 			expect(entity._components.length).toBe(2);
 		});
 
-		it('discards the second added component of the same type', function() {
+		it('discards the second added component of the same type', function () {
 			var entity = world.createEntity();
 			var component1 = new MeshDataComponent();
 			var component2 = new MeshDataComponent();
@@ -198,7 +198,7 @@ define([
 			expect(gotComponent).toBe(component1);
 		});
 
-		it('getComponent', function() {
+		it('getComponent', function () {
 			var entity = world.createEntity();
 			var mdc = new MeshDataComponent();
 			entity.setComponent(mdc);
@@ -207,7 +207,7 @@ define([
 			expect(entity.getComponent('TransformComponent') !== undefined).toBe(true);
 		});
 
-		it('hasComponent', function() {
+		it('hasComponent', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
 			expect(entity.hasComponent('alabalaportocala')).toBe(false);
@@ -215,7 +215,7 @@ define([
 			expect(entity.hasComponent('MeshDataComponent')).toBe(true);
 		});
 
-		it('clears a component', function() {
+		it('clears a component', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
 			entity.setComponent(new MeshRendererComponent());
@@ -226,25 +226,25 @@ define([
 			expect(entity.hasComponent('MeshRendererComponent')).toBe(false);
 		});
 
-		it('installs the api of a component', function() {
+		it('installs the api of a component', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new TransformComponent());
 			expect(entity.setTranslation).toBeTruthy();
 		});
 
-		it('removes the api of a component', function() {
+		it('removes the api of a component', function () {
 			var entity = world.createEntity();
 			entity.clearComponent('TransformComponent');
 			expect(entity.setTranslation).toBeFalsy();
 		});
 
-		it('does not override existing methods on install', function() {
+		it('does not override existing methods on install', function () {
 			var a = 0;
 			function FishComponent() {
 				Component.apply(this, arguments);
 				this.type = 'FishComponent';
 				this.api = {
-					swim: function() { a += 123; }
+					swim: function () { a += 123; }
 				};
 			}
 			FishComponent.prototype = Object.create(Component.prototype);
@@ -255,7 +255,7 @@ define([
 				Component.apply(this, arguments);
 				this.type = 'BananaComponent';
 				this.api = {
-					swim: function() { b += 234; }
+					swim: function () { b += 234; }
 				};
 			}
 			BananaComponent.prototype = Object.create(Component.prototype);
@@ -272,13 +272,13 @@ define([
 			expect(b).toEqual(0);
 		});
 
-		it('does not remove what it did not manage to install', function() {
+		it('does not remove what it did not manage to install', function () {
 			var a = 0;
 			function FishComponent() {
 				Component.apply(this, arguments);
 				this.type = 'FishComponent';
 				this.api = {
-					swim: function() { a += 123; }
+					swim: function () { a += 123; }
 				};
 			}
 			FishComponent.prototype = Object.create(Component.prototype);
@@ -289,7 +289,7 @@ define([
 				Component.apply(this, arguments);
 				this.type = 'BananaComponent';
 				this.api = {
-					swim: function() { b += 234; }
+					swim: function () { b += 234; }
 				};
 			}
 			BananaComponent.prototype = Object.create(Component.prototype);
@@ -310,7 +310,7 @@ define([
 		});
 
 		//! AT: these should stay in their respective component test files
-		it('returns itself after calling set()', function() {
+		it('returns itself after calling set()', function () {
 			var entity = new Entity(world);
 			var translation = [1, 2, 3];
 			var sameEntity = entity.set(translation);
@@ -318,7 +318,7 @@ define([
 			expect(sameEntity).toEqual(entity);
 		});
 
-		it('sets a TransformComponent', function() {
+		it('sets a TransformComponent', function () {
 			var entity = new Entity(world);
 			var transformComponent = new TransformComponent();
 			entity.set(transformComponent);
@@ -327,7 +327,7 @@ define([
 		});
 
 		// ---
-		it('sets a MeshDataComponent when trying to add a mesh', function() {
+		it('sets a MeshDataComponent when trying to add a mesh', function () {
 			var entity = new Entity(world);
 			var meshData = new Box();
 			entity.set(meshData);
@@ -336,7 +336,7 @@ define([
 			expect(entity.meshDataComponent.meshData).toEqual(meshData);
 		});
 
-		it('sets a MeshRendererComponent when trying to add a material', function() {
+		it('sets a MeshRendererComponent when trying to add a material', function () {
 			var entity = new Entity(world);
 			var material = new Material(ShaderLib.simple);
 			entity.set(material);
@@ -345,7 +345,7 @@ define([
 			expect(entity.meshRendererComponent.materials).toEqual([material]);
 		});
 
-		it('sets a CameraComponent when trying to add a camera', function() {
+		it('sets a CameraComponent when trying to add a camera', function () {
 			var entity = new Entity(world);
 			var camera = new Camera();
 			entity.set(camera);
@@ -354,7 +354,7 @@ define([
 			expect(entity.cameraComponent.camera).toBe(camera);
 		});
 
-		it('sets a LightComponent when trying to add a light', function() {
+		it('sets a LightComponent when trying to add a light', function () {
 			var entity = new Entity(world);
 			var light = new PointLight();
 			entity.set(light);
@@ -363,7 +363,7 @@ define([
 			expect(entity.lightComponent.light).toBe(light);
 		});
 
-		it('sets a ScriptComponent when trying to some functions / objects with a run function', function() {
+		it('sets a ScriptComponent when trying to some functions / objects with a run function', function () {
 			var entity = new Entity(world);
 			var script1 = { run: function () { } };
 			var script2 = function () { };
@@ -376,7 +376,7 @@ define([
 
 		/*
 		//! AT: disputed
-		it('cannot clear a transform component', function() {
+		it('cannot clear a transform component', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
 			world.process();

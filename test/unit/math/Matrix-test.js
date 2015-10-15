@@ -12,6 +12,8 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
+		// SHIM START
+
 		describe('add', function () {
 			it('can perform component-wise addition between two matrices', function () {
 				var a = new Matrix(2, 2).set(2, 4, 6, 8);
@@ -256,5 +258,7 @@ define([
 				expect(m1.equals(m2)).toBeFalsy();
 			});
 		});
+
+		// SHIM END
 	});
 });

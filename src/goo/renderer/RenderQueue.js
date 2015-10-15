@@ -40,7 +40,7 @@ define(['goo/math/Vector3'], function (Vector3) {
 	var tmpVec = new Vector3();
 
 	/**
-	 * @param {Entity[]} renderList
+	 * @param {Array<Entity>} renderList
 	 * @param {Camera} camera
 	 */
 	RenderQueue.prototype.sort = function (renderList, camera) {
@@ -62,9 +62,9 @@ define(['goo/math/Vector3'], function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
-				distance = tmpVec.setVector(camera.translation).subVector(bound.center).lengthSquared();
+				distance = tmpVec.set(camera.translation).sub(bound.center).lengthSquared();
 			} else if (renderable.transformComponent) {
-				distance = tmpVec.setVector(camera.translation).subVector(renderable.transformComponent.worldTransform.translation).lengthSquared();
+				distance = tmpVec.set(camera.translation).sub(renderable.transformComponent.worldTransform.translation).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
 
@@ -83,14 +83,15 @@ define(['goo/math/Vector3'], function (Vector3) {
 		for (var bucketIndex = 0, l = bucketSortList.length; bucketIndex < l; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
-			if (key >= 0) {
+			var bl = bucket.length;
+			if (bl > 1 && key >= 0) {
 				if (key < RenderQueue.TRANSPARENT) {
 					bucket.sort(this.opaqueSorter);
 				} else {
 					bucket.sort(this.transparentSorter);
 				}
 			}
-			for (var i = 0, bl = bucket.length; i < bl; i++) {
+			for (var i = 0; i < bl; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}

@@ -10,10 +10,10 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('HtmlComponentHandler', function () {
 		var loader;
-	
+
 		beforeEach(function () {
 			var world = new World();
 			world.gooRunner = {

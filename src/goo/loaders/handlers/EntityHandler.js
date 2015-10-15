@@ -2,14 +2,14 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil'
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils'
 ], function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
-	StringUtil,
-	PromiseUtil
+	StringUtils,
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -88,8 +88,8 @@ define([
 	/**
 	 * Adds/updates/removes an entity
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	EntityHandler.prototype._update = function (ref, config, options) {
@@ -111,7 +111,7 @@ define([
 					var p = that._updateComponent(entity, type, config.components[type], options);
 					if (p) { promises.push(p); }
 					else {
-						console.error("Error handling component " + type);
+						console.error('Error handling component ' + type);
 					}
 				}
 			}
@@ -125,7 +125,7 @@ define([
 				}
 			}
 			// When all is done, hide or show and return
-			return PromiseUtil.optimisticAll(promises).then(function (/*components*/) {
+			return PromiseUtils.optimisticAll(promises).then(function (/*components*/) {
 				if (config.hidden) {
 					entity.hide();
 				} else {
@@ -140,8 +140,8 @@ define([
 	 * Adds/updates/removes a component on an entity
 	 * @param {Entity} entity
 	 * @param {string} type
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with updated entity
 	 * @private
 	 */
@@ -165,7 +165,7 @@ define([
 	EntityHandler.prototype._getComponentType = function (component) {
 		var type = component.type;
 		type = type.slice(0, type.lastIndexOf('Component'));
-		type = StringUtil.uncapitalize(type);
+		type = StringUtils.uncapitalize(type);
 		if (type === 'howler') { type = 'sound'; } // HowlerComponent should be renamed
 		return type;
 	};

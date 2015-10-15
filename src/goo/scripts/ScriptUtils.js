@@ -1,11 +1,11 @@
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
-	_
+	ObjectUtils
 ) {
 	'use strict';
 
-	var ScriptUtils = {};
+	function ScriptUtils() {}
 
 
 	ScriptUtils.defaultsByType = {
@@ -16,16 +16,51 @@ define([
 		'vec3': [0, 0, 0],
 		'vec4': [0, 0, 0, 0],
 		'boolean': false,
-		'texture': {},
-		'entity': {}
+		'texture': null,
+		'entity': null
 	};
+
+
+	ScriptUtils.typeValidators = (function () {
+		var typeOf = function (type) {
+			return function (data) {
+				return typeof data === type;
+			};
+		};
+
+		var isVec = function (length) {
+			return function (data) {
+				return data instanceof Array && data.length === length;
+			};
+		};
+
+		var isRef = function (refType) {
+			return function (data) {
+				return data &&
+					(typeof data.enabled === 'boolean') &&
+					(typeof data[refType + 'Ref'] === 'string');
+			};
+		};
+
+		return {
+			'float': typeOf('number'),
+			'string': typeOf('string'),
+			'boolean': typeOf('boolean'),
+			'int': function (data) { return typeOf('number')(data) && data % 1 === 0; },
+			'vec2': isVec(2),
+			'vec3': isVec(3),
+			'vec4': isVec(4),
+			'texture': isRef('texture'),
+			'entity': isRef('entity')
+		};
+	})();
 
 
 	/**
 	 * Fill a passed parameters object with defaults from spec
-	 * @private
-	 * @param parameters {object} The type of object passed as parameters to a script
-	 * @param specs {Array.<{key, name, default, description}>}
+	 * @hidden
+	 * @param parameters {Object} The type of object passed as parameters to a script
+	 * @param specs {Array<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
 		if (!(specs instanceof Array)) { return; }
@@ -36,13 +71,13 @@ define([
 				return;
 			}
 
-			if (spec['default'] === null || spec['default'] === undefined) {
-				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+			if (spec.default === null || spec.default === undefined) {
+				spec.default = ObjectUtils.deepClone(ScriptUtils.defaultsByType[spec.type]);
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = _.clone(spec['default']);
+				parameters[spec.key] = ObjectUtils.clone(spec.default);
 			}
 		});
 
@@ -56,14 +91,14 @@ define([
 
 	/**
 	 * Fills specs' names with their prettyprinted keys (x -> x, maxX -> Max X, myBluePanda -> My Blue Panda)
-	 * @private
-	 * @param specs {Array.<{key, name, default, description}>}
+	 * @hidden
+	 * @param specs {Array<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
 		if (!(specs instanceof Array)) { return; }
 
 		function getNameFromKey(key) {
-			if(typeof key !== 'string' || key.length === 0) { return ''; }
+			if (typeof key !== 'string' || key.length === 0) { return ''; }
 			var capitalisedKey = key[0].toUpperCase() + key.slice(1);
 			return capitalisedKey.replace(/(.)([A-Z])/g, '$1 $2');
 		}
@@ -98,7 +133,7 @@ define([
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,
-		'Space':32,
+		'Space': 32,
 		'Pageup': 33,
 		'Pagedown': 34,
 		'End': 35,
@@ -204,7 +239,7 @@ define([
 		'Backslash': 220
 	};
 
-	ScriptUtils._keyInverse = (function(assoc) {
+	ScriptUtils._keyInverse = (function (assoc) {
 		var inverseAssoc = {};
 
 		var keys = Object.keys(assoc);
@@ -214,7 +249,7 @@ define([
 		return inverseAssoc;
 	}(ScriptUtils._keys));
 
-	ScriptUtils.keyForCode = function(code) {
+	ScriptUtils.keyForCode = function (code) {
 		return ScriptUtils._keyInverse[code];
 	};
 

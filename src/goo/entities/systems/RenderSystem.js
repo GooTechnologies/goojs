@@ -4,20 +4,20 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling
-	 * @property {Boolean} doRender Only render if set to true
+	 * @property {boolean} doRender Only render if set to true
 	 * @extends System
 	 */
 	function RenderSystem() {
@@ -53,7 +53,7 @@ define([
 			x: 0,
 			y: 0,
 			pickingStore: {},
-			pickingCallback: function(id, depth) {
+			pickingCallback: function (id, depth) {
 				console.log(id, depth);
 			},
 			skipUpdateBuffer: false
@@ -133,27 +133,27 @@ define([
 			return;
 		}
 		var fshader;
-		switch(key) {
+		switch (key) {
 			case 'wireframe':
 			case 'color':
-				fshader = ObjectUtil.deepClone(ShaderLib.simpleColored.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simpleColored.fshader);
 				break;
 			case 'lit':
-				fshader = ObjectUtil.deepClone(ShaderLib.simpleLit.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simpleLit.fshader);
 				break;
 			case 'texture':
-				fshader = ObjectUtil.deepClone(ShaderLib.textured.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.textured.fshader);
 				break;
 			case 'normals':
-				fshader = ObjectUtil.deepClone(ShaderLib.showNormals.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.showNormals.fshader);
 				break;
 			case 'simple':
-				fshader = ObjectUtil.deepClone(ShaderLib.simple.fshader);
+				fshader = ObjectUtils.deepClone(ShaderLib.simple.fshader);
 				break;
 		}
-		var shaderDef = ObjectUtil.deepClone(ShaderLib.uber);
+		var shaderDef = ObjectUtils.deepClone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
-		if(key !== 'flat') {
+		if (key !== 'flat') {
 			this._debugMaterials[key] = new Material(shaderDef, key);
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
@@ -175,20 +175,20 @@ define([
 		}
 	};
 
-	RenderSystem.prototype.setDebugMaterial = function(key) {
-		if(!key || key === '') {
+	RenderSystem.prototype.setDebugMaterial = function (key) {
+		if (!key || key === '') {
 			this.overrideMaterials = [];
 			return;
 		}
 		var debugs = key.split('+');
 		this.overrideMaterials = [];
 
-		for(var i = 0; i < debugs.length; i++) {
+		for (var i = 0; i < debugs.length; i++) {
 			var key = debugs[i];
-			if(!this._debugMaterials[key]) {
+			if (!this._debugMaterials[key]) {
 				this._createDebugMaterial(key);
 			}
-			if(key === '') {
+			if (key === '') {
 				this.overrideMaterials.push(null);
 			} else {
 				this.overrideMaterials.push(this._debugMaterials[key]);

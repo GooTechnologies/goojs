@@ -21,31 +21,47 @@ require([
 
 	V.describe([
 		'Select and entity and transform it using the transform gizmos.',
-		'Change the active gizmo by hitting 1, 2 or 3.'
+		'Change the active gizmo by hitting 1, 2, 3, 4 or 5.'
 	].join('\n'));
 
 	V.button('1', key1);
 	V.button('2', key2);
 	V.button('3', key3);
+	V.button('4', key4);
+	V.button('5', key5);
 
 	function key1() {
-		console.log('translation');
+		console.log('translation, global');
 		gizmoRenderSystem.setActiveGizmo(0);
 	}
 
 	function key2() {
-		console.log('rotation');
+		console.log('translation, local');
 		gizmoRenderSystem.setActiveGizmo(1);
 	}
 
 	function key3() {
-		console.log('scale');
+		console.log('rotation, local');
 		gizmoRenderSystem.setActiveGizmo(2);
 	}
 
+	function key4() {
+		console.log('rotation, global');
+		gizmoRenderSystem.setActiveGizmo(3);
+	}
+
+	function key5() {
+		console.log('scale');
+		gizmoRenderSystem.setActiveGizmo(4);
+	}
+
 	function setupKeys() {
-		document.body.addEventListener('keypress', function (e) {
+		document.body.addEventListener('keydown', function (e) {
 			switch (e.which) {
+				case 17: // ctrl
+					gizmoRenderSystem.setSnap(true);
+					console.log('snap on');
+					break;
 				case 49: // 1
 					key1();
 					break;
@@ -55,8 +71,29 @@ require([
 				case 51: // 3
 					key3();
 					break;
+				case 52: // 4
+					key4();
+					break;
+				case 53: // 5
+					key5();
+					break;
 				default:
-					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
+					console.log([
+						'1: translate gizmo, global',
+						'2: translate gizmo, local',
+						'3: rotate gizmo, global',
+						'4: rotate gizmo, local',
+						'5: scale gizmo'
+					].join('\n'));
+			}
+		});
+
+		document.body.addEventListener('keyup', function (e) {
+			switch (e.which) {
+				case 17: // ctrl
+					gizmoRenderSystem.setSnap(false);
+					console.log('snap off');
+					break;
 			}
 		});
 	}
@@ -126,8 +163,6 @@ require([
 	setupKeys();
 
 	gizmoRenderSystem.show(sphereEntity);
-
-	console.log('Pick entities to select them and press 1, 2, 3 to switch between transform gizmos');
 
 	V.process();
 });

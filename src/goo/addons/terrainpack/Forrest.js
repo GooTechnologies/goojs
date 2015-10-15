@@ -60,39 +60,39 @@ define([
 		var loader = new DynamicLoader({
 			world: world,
 			preloadBinaries: true,
-			rootPath: "res/trees2"
+			rootPath: 'res/trees2'
 		});
 		return promise.then(function () {
-			console.log("loading bundle ", bundle);
-			return loader.load("root.bundle");
+			console.log('loading bundle ', bundle);
+			return loader.load('root.bundle');
 		}).then(function (configs) {
 			// find scene and update it.
 			for (var ref in configs) {
 				console.log(ref);
-				// if (ref.indexOf(".scene") != -1) {
+				// if (ref.indexOf('.scene') != -1) {
 				// 	return loader.update(ref, configs[ref]).then(function () {
 				// 		return configs;
 				// 	});
 				// }
 			}
-			console.error("Config in bundle ", bundle, " contained no scene?!");
+			console.error('Config in bundle ', bundle, ' contained no scene?!');
 		});
 	};
 
 	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
 		var p = new RSVP.Promise();
 
-		var bundlesToLoad = ["fish"];
+		var bundlesToLoad = ['fish'];
 		for (var i = 0; i < bundlesToLoad.length; i++) {
 			p = chainBundleLoading(world, p, bundlesToLoad[i]);
 		}
 
 		p.then(function () {
-			console.log("loaded forrest", forrestTypes);
+			console.log('loaded forrest', forrestTypes);
 		}, function (e) {
-			console.log("Error! ", e);
+			console.log('Error! ', e);
 		}).then(null, function (e) {
-			console.log("Error! ", e);
+			console.log('Error! ', e);
 		});
 
 		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
@@ -132,7 +132,7 @@ define([
 		this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
-		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
 		this.grid = [];
 		this.gridState = [];
 		var dummyMesh = this.createForrestPatch(0, 0, 1);
@@ -265,18 +265,18 @@ define([
 		var w = type.w * size;
 		var h = type.h * size;
 		meshData.getAttributeBuffer('OFFSET').set([
-			-w*0.5, 0,
-			-w*0.5, h,
-			w*0.5, h,
-			w*0.5, 0
+			-w * 0.5, 0,
+			-w * 0.5, h,
+			w * 0.5, h,
+			w * 0.5, 0
 		]);
 		return meshData;
 	};
 
 	Forrest.prototype.getPointInPatch = function (x, z, patchX, patchZ, patchSpacing) {
 		var pos = [0, 0, 0];
-		pos[0] = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
-		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
+		pos[0] = patchX + (x + MathUtils.fastRandom() * 0.75) * patchSpacing;
+		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom() * 0.75) * patchSpacing;
 
 		pos[1] = this.terrainQuery.getHeightAt(pos);
 		if (pos[1] === null) {
@@ -367,10 +367,10 @@ define([
 			0, type.h, type.h, 0
 		]);
 		meshData.getAttributeBuffer('OFFSET').set([
-			-type.w*0.5, 0,
-			-type.w*0.5, type.h,
-			type.w*0.5, type.h,
-			type.w*0.5, 0
+			-type.w * 0.5, 0,
+			-type.w * 0.5, type.h,
+			type.w * 0.5, type.h,
+			type.w * 0.5, 0
 		]);
 
 		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
@@ -391,17 +391,17 @@ define([
 				}
 			}
 		],
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0,
-			base : 'BASE',
-			offset : 'OFFSET'
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0,
+			base: 'BASE',
+			offset: 'OFFSET'
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			normalMap : Shader.NORMAL_MAP,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			normalMap: Shader.NORMAL_MAP,
 			discardThreshold: -0.01,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
@@ -409,7 +409,7 @@ define([
 			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			time : Shader.TIME
+			time: Shader.TIME
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);

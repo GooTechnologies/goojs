@@ -1,1 +1,1 @@
-define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {});
+define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {});

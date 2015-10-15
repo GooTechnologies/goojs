@@ -156,25 +156,25 @@ require([
 
 			if (descendant.hasTag('collider') && descendant.hasComponent('MeshDataComponent')) {
 				var md = descendant.meshDataComponent.meshData;
-				var scale = descendant.transformComponent.worldTransform.scale.data;
+				var scale = descendant.transformComponent.worldTransform.scale;
 				var collider;
 
 				if (md instanceof Sphere) {
-					collider = new CannonSphereColliderComponent({ radius: md.radius * scale[0] });
+					collider = new CannonSphereColliderComponent({ radius: md.radius * scale.x });
 				} else if (md instanceof Box) {
 					collider = new CannonBoxColliderComponent({
 						halfExtents: new Vector3(
-							md.xExtent * scale[0],
-							md.yExtent * scale[1],
-							md.zExtent * scale[2]
+							md.xExtent * scale.x,
+							md.yExtent * scale.y,
+							md.zExtent * scale.z
 						)
 					});
 				} else if (md instanceof Cylinder) {
 					// The goo & cannon cylinders are both along Z. Nice!
 					collider = new CannonCylinderColliderComponent({
-						radiusTop: md.radiusTop * scale[0],
-						radiusBottom: md.radiusBottom * scale[0],
-						height: md.height * scale[2],
+						radiusTop: md.radiusTop * scale.x,
+						radiusBottom: md.radiusBottom * scale.x,
+						height: md.height * scale.z,
 						numSegments: 10
 					});
 				} else {

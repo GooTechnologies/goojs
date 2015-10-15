@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -16,13 +16,13 @@ define(
 		function LogicNodeMax() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMax.logicInterface;
-			this.type = "LogicNodeMax";
+			this.type = 'LogicNodeMax';
 		}
 
 		LogicNodeMax.prototype = Object.create(LogicNode.prototype);
-		LogicNodeMax.editorName = "Max";
+		LogicNodeMax.editorName = 'Max';
 
-		LogicNodeMax.prototype.onInputChanged = function(instDesc) {
+		LogicNodeMax.prototype.onInputChanged = function (instDesc) {
 			var val1 = LogicLayer.readPort(instDesc, LogicNodeMax.inportX);
 			var val2 = LogicLayer.readPort(instDesc, LogicNodeMax.inportY);
 			var out = Math.max(val1, val2);
@@ -31,11 +31,11 @@ define(
 		};
 
 		LogicNodeMax.logicInterface = new LogicInterface();
-		LogicNodeMax.outportSum = LogicNodeMax.logicInterface.addOutputProperty("max", "float");
-		LogicNodeMax.inportX = LogicNodeMax.logicInterface.addInputProperty("x", "float", 0);
-		LogicNodeMax.inportY = LogicNodeMax.logicInterface.addInputProperty("y", "float", 0);
+		LogicNodeMax.outportSum = LogicNodeMax.logicInterface.addOutputProperty('max', 'float');
+		LogicNodeMax.inportX = LogicNodeMax.logicInterface.addInputProperty('x', 'float', 0);
+		LogicNodeMax.inportY = LogicNodeMax.logicInterface.addInputProperty('y', 'float', 0);
 
-		LogicNodes.registerType("LogicNodeMax", LogicNodeMax);
+		LogicNodes.registerType('LogicNodeMax', LogicNodeMax);
 
 		return LogicNodeMax;
 	});

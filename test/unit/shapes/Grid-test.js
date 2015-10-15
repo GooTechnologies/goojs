@@ -1,1 +1,1 @@
-define(['goo/shapes/Grid'], function(Grid) {});
+define(['goo/shapes/Grid'], function (Grid) {});

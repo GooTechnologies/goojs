@@ -4,7 +4,7 @@ require([
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtils',
 	'goo/passpack/PassLib',
 	'goo/shapes/Cone',
 	'goo/math/Vector3',
@@ -18,7 +18,7 @@ require([
 	Composer,
 	RenderPass,
 	FullscreenPass,
-	Util,
+	ObjectUtils,
 	PassLib,
 	Cone,
 	Vector3,
@@ -45,15 +45,16 @@ require([
 
 	// --- test shape
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cone.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var coneMeshData = new Cone(64, 4, 8);
 	var coneEntity = world.createEntity(coneMeshData, material).addToWorld();
 	V.showNormals(coneEntity);
 
 	var renderPass = new RenderPass(renderSystem.renderList);
-	var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+	var outPass = new FullscreenPass(ObjectUtils.clone(ShaderLib.copy));
 	outPass.renderToScreen = true;
 
 //	var blur = new PassLib.Blur();

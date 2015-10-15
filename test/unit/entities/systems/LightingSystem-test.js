@@ -12,7 +12,7 @@ define([
 	LightingSystem
 ) {
 	'use strict';
-	
+
 	describe('LightingSystem', function () {
 		describe('inserted', function () {
 			it('will update a light\'s transform', function () {

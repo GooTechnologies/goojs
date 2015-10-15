@@ -13,13 +13,12 @@ define([
 	'goo/debugpack/shapes/MeshRendererDebug',
 	'goo/debugpack/shapes/SkeletonDebug',
 	'goo/renderer/Material',
-	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/Transform',
 	'goo/renderer/Camera',
 	'goo/renderer/Renderer'
-], function(
+], function (
 	LightComponent,
 	CameraComponent,
 	MeshRendererComponent,
@@ -34,7 +33,6 @@ define([
 	MeshRendererDebug,
 	SkeletonDebug,
 	Material,
-	Util,
 	ShaderLib,
 	ShaderBuilder,
 	Transform,
@@ -49,7 +47,7 @@ define([
 	var meshRendererDebug = new MeshRendererDebug();
 	var skeletonDebug = new SkeletonDebug();
 
-	DebugDrawHelper.getRenderablesFor = function(component, options) {
+	DebugDrawHelper.getRenderablesFor = function (component, options) {
 		var meshes, material;
 
 		if (component.type === 'LightComponent') {
@@ -80,9 +78,9 @@ define([
 					write: false
 				};
 				material.renderQueue = 3000;
-				material.uniforms.materialDiffuse = [0,0,0,1];
+				material.uniforms.materialDiffuse = [0, 0, 0, 1];
 				material.uniforms.materialDiffuse[len] = 0.8;
-				material.uniforms.materialAmbient = [0,0,0,1];
+				material.uniforms.materialAmbient = [0, 0, 0, 1];
 				material.uniforms.materialAmbient[len] = 0.5;
 				renderables[len] = {
 					meshData: meshes[len],
@@ -103,7 +101,7 @@ define([
 		});
 	};
 
-	DebugDrawHelper.update = function(renderables, component, camera) {
+	DebugDrawHelper.update = function (renderables, component, camera) {
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
@@ -134,7 +132,7 @@ define([
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
 		var mainCamera = Renderer.mainCamera;
-		if(mainCamera){
+		if (mainCamera) {
 			var camPosition = mainCamera.translation;
 			var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 			if (mainCamera.projectionMode === Camera.Parallel) {
@@ -154,15 +152,15 @@ define([
 	DebugDrawHelper.LightComponent = {};
 	DebugDrawHelper.CameraComponent = {};
 
-	DebugDrawHelper.LightComponent.updateMaterial = function(material, component) {
+	DebugDrawHelper.LightComponent.updateMaterial = function (material, component) {
 		var light = component.light;
 		var color = material.uniforms.color = material.uniforms.color || [];
-		color[0] = light.color.data[0];
-		color[1] = light.color.data[1];
-		color[2] = light.color.data[2];
+		color[0] = light.color.x;
+		color[1] = light.color.y;
+		color[2] = light.color.z;
 	};
 
-	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
+	DebugDrawHelper.LightComponent.updateTransform = function (transform, component) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
 			var range = light.range;
@@ -176,14 +174,14 @@ define([
 		transform.update();
 	};
 
-	DebugDrawHelper.CameraComponent.updateMaterial = function(material/*, component*/) {
+	DebugDrawHelper.CameraComponent.updateMaterial = function (material/*, component*/) {
 		material.uniforms.color = material.uniforms.color || [1, 1, 1];
 	};
 
-	DebugDrawHelper.CameraComponent.updateTransform = function(/*transform, component*/) {
+	DebugDrawHelper.CameraComponent.updateTransform = function (/*transform, component*/) {
 		// var camera = component.camera;
 		// var z = camera.far;
-		// var y = z * Math.tan(camera.fov/2 * Math.PI/180);
+		// var y = z * Math.tan(camera.fov / 2 * Math.PI/180);
 		// var x = y * camera.aspect;
 		// transform.scale.setDirect(x, y, z);
 		// transform.update();

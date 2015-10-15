@@ -1,8 +1,7 @@
 define([
 	'goo/addons/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
-],
-function (
+], function (
 	PhysicsJoint,
 	Vector3
 ) {
@@ -23,7 +22,7 @@ function (
 		/**
 		 * @type {Vector3}
 		 */
-		this.localPivot = settings.localPivot ? new Vector3(settings.localPivot) : new Vector3(0, 0.5, 0);
+		this.localPivot = settings.localPivot ? Vector3.fromAny(settings.localPivot) : new Vector3(0, 0.5, 0);
 
 		/**
 		 * Automatically compute the connectedLocalPivot by using the entities initial transforms.
@@ -36,9 +35,9 @@ function (
 		 * The pivot point defined inside the connected entity.
 		 * @type {Vector3}
 		 */
-		this.connectedLocalPivot = settings.connectedLocalPivot ? new Vector3(settings.connectedLocalPivot) : new Vector3(0, 0.5, 0);
-
+		this.connectedLocalPivot = settings.connectedLocalPivot ? Vector3.fromAny(settings.connectedLocalPivot) : new Vector3(0, 0.5, 0);
 	}
+
 	BallJoint.prototype = Object.create(PhysicsJoint.prototype);
 	BallJoint.prototype.constructor = BallJoint;
 

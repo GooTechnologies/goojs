@@ -33,8 +33,9 @@ require([
 
 	function createEntity(meshData, ammoSettings, pos) {
 		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
-		material.setTexture('DIFFUSE_MAP', texture);
+		new TextureCreator().loadTexture2D(resourcePath + '/goo.png').then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 		return world.createEntity(meshData, material, pos)
 			.set(new AmmoComponent(ammoSettings))
 			.addToWorld();

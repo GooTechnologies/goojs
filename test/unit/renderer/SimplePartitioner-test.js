@@ -1,1 +1,1 @@
-define(['goo/renderer/SimplePartitioner'], function(SimplePartitioner) {});
+define(['goo/renderer/SimplePartitioner'], function (SimplePartitioner) {});

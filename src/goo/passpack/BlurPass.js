@@ -1,15 +1,15 @@
 define([
 	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
 ], function (
 	Material,
-	FullscreenUtil,
+	FullscreenUtils,
 	RenderTarget,
-	ObjectUtil,
+	ObjectUtils,
 	ShaderLib,
 	Pass
 ) {
@@ -18,11 +18,11 @@ define([
 	/**
 	 * <pre>
 	 * settings: {
-	 *     target : null,
-	 *     strength : 1.0,
-	 *     sigma : 4.0,
-	 *     sizeX : 256,
-	 *     sizeY : 256
+	 *     target: null,
+	 *     strength: 1.0,
+	 *     sigma: 4.0,
+	 *     sizeX: 256,
+	 *     sizeY: 256
 	 * }
 	 * </pre>
 	 */
@@ -48,18 +48,18 @@ define([
 		});
 
 		this.renderable = {
-			meshData : FullscreenUtil.quad,
-			materials : []
+			meshData: FullscreenUtils.quad,
+			materials: []
 		};
 
 		this.copyMaterial = new Material(ShaderLib.copyPure);
 		this.copyMaterial.uniforms.opacity = strength;
 		this.copyMaterial.blendState.blending = 'CustomBlending';
 
-		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
+		this.convolutionShader = ObjectUtils.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
-			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
 		};
 		this.convolutionShader.uniforms.uImageIncrement = this.blurX;
 		this.convolutionShader.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
@@ -111,20 +111,20 @@ define([
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionMaterial.uniforms.uImageIncrement = this.blurY;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionMaterial.uniforms.uImageIncrement = this.blurX;
 
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
 
 		this.renderable.materials[0] = this.copyMaterial;
 		this.copyMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
 
 		if (this.target !== null) {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], this.target, this.clear);
 		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], readBuffer, this.clear);
+			renderer.render(this.renderable, FullscreenUtils.camera, [], readBuffer, this.clear);
 		}
 	};
 

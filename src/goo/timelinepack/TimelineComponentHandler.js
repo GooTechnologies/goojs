@@ -3,23 +3,21 @@ define([
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/ValueChannel',
 	'goo/timelinepack/EventChannel',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils',
+	'goo/util/TWEEN'
 ], function (
 	ComponentHandler,
 	TimelineComponent,
 	ValueChannel,
 	EventChannel,
-	PromiseUtil,
-	ArrayUtil,
+	ArrayUtils,
 	SystemBus,
-	_
+	ObjectUtils,
+	TWEEN
 ) {
 	'use strict';
-
-	var TWEEN = window.TWEEN;
 
 	/**
 	 * @hidden
@@ -33,19 +31,19 @@ define([
 	TimelineComponentHandler.prototype.constructor = TimelineComponentHandler;
 	ComponentHandler._registerClass('timeline', TimelineComponentHandler);
 
-	TimelineComponentHandler.prototype._prepare = function(/*config*/) {};
+	TimelineComponentHandler.prototype._prepare = function (/*config*/) {};
 
-	TimelineComponentHandler.prototype._create = function() {
+	TimelineComponentHandler.prototype._create = function () {
 		return new TimelineComponent();
 	};
 
 	TimelineComponentHandler.tweenMap = {
-		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 0),
-		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 1),
-		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 2),
-		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 0),
-		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 1),
-		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 2),
+		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'x'),
+		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'y'),
+		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'z'),
+		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'x'),
+		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'y'),
+		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'z'),
 		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
 		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
 		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2)
@@ -65,7 +63,7 @@ define([
 	function updateValueChannelKeyframe(keyframeConfig, keyframeId, channel) {
 		var needsResorting = false;
 
-		var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
+		var keyframe = ArrayUtils.find(channel.keyframes, function (keyframe) {
 			return keyframe.id === keyframeId;
 		});
 
@@ -97,7 +95,7 @@ define([
 	function updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig) {
 		var needsResorting = false;
 
-		var callbackEntry = ArrayUtil.find(channel.keyframes, function (callbackEntry) {
+		var callbackEntry = ArrayUtils.find(channel.keyframes, function (callbackEntry) {
 			return callbackEntry.id === keyframeId;
 		});
 
@@ -125,7 +123,7 @@ define([
 
 	function updateChannel(channelConfig, channelId, component, entityResolver, rotationMap) {
 		// search for existing one
-		var channel = ArrayUtil.find(component.channels, function (channel) {
+		var channel = ArrayUtils.find(component.channels, function (channel) {
 			return channel.id === channelId;
 		});
 
@@ -186,7 +184,7 @@ define([
 		}
 	}
 
-	TimelineComponentHandler.prototype.update = function(entity, config, options) {
+	TimelineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
@@ -206,7 +204,7 @@ define([
 			};
 			var rotationMap = {};
 
-			_.forEach(config.channels, function (channelConfig) {
+			ObjectUtils.forEach(config.channels, function (channelConfig) {
 				updateChannel(channelConfig, channelConfig.id, component, entityResolver, rotationMap);
 			}, null, 'sortValue');
 

@@ -125,7 +125,7 @@ require([
 		var lampMaterial = new Material(ShaderLib.simpleColored);
 		lampMaterial.uniforms.color = color;
 
-		var light = new PointLight(new Vector3(color[0], color[1], color[2]));
+		var light = new PointLight(Vector3.fromArray(color));
 		light.range = 10;
 
 		return world.createEntity(lampMeshData, lampMaterial, 'lamp1', [x, y, z], light).addToWorld();

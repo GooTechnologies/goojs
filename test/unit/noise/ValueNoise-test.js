@@ -1,1 +1,1 @@
-define(['goo/noise/ValueNoise'], function(ValueNoise) {});
+define(['goo/noise/ValueNoise'], function (ValueNoise) {});

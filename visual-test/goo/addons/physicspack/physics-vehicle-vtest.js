@@ -50,6 +50,7 @@ require([
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
+		rigidBodyComponent.initialize();
 	}
 
 	function createVehicle(x, y, z) {

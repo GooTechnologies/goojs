@@ -10,7 +10,7 @@ define([
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
 	 *        normal vector. In other words: d = N dot X
 	 * @param {Vector3} normal Normal of the plane.
-	 * @param {Number} constant The plane offset along the normal.
+	 * @param {number} constant The plane offset along the normal.
 	 */
 	function Plane(normal, constant) {
 		this.normal = normal ? normal.clone() : Vector3.UNIT_Y.clone();
@@ -28,7 +28,7 @@ define([
 
 	/**
 	 * @param {Vector3} point
-	 * @returns {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
+	 * @returns {number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
@@ -43,8 +43,8 @@ define([
 	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.setVector(pointB).subVector(pointA);
-		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
+		this.normal.set(pointB).sub(pointA);
+		this.normal.cross(new Vector3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z)).normalize();
 		this.constant = this.normal.dot(pointA);
 		return this;
 	};
@@ -57,12 +57,12 @@ define([
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;
-		if (typeof(result) === 'undefined') {
+		if (typeof result === 'undefined') {
 			result = new Vector3();
 		}
 
 		var dotProd = this.normal.dot(unitVector) * 2;
-		result.set(unitVector).sub([this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd]);
+		result.set(unitVector).sub(new Vector3(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd));
 		return result;
 	};
 
@@ -72,28 +72,32 @@ define([
 	 * Get the intersection of a ray with a plane.
 	 * @param {Ray} ray
 	 * @param {Vector3} [store]
-	 * @param {bool} [suppressWarnings=false]
-	 * @param {bool} [precision=1e-8]
-	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
+	 * @param {boolean} [suppressWarnings=false]
+	 * @param {boolean} [precision=1e-8]
+	 * @returns {Vector3} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
-		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
+		//! AT: the only function with a suppressWarnings
+		precision = typeof precision === 'undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
-		var lDotN = ray.direction.dotVector(this.normal);
+		var lDotN = ray.direction.dot(this.normal);
 		if (Math.abs(lDotN) < precision) {
 			//! AT: this is the only function where we have this suppressWarnings mechanism
 			if (!suppressWarnings) {
-				console.warn('Ray parallell with plane');
+				console.warn('Ray parallel with plane');
 			}
 			return null;
 		}
-		var c = this.constant;
-		var pMinusL0DotN = p0.setVector(this.normal).scale(c).subVector(ray.origin).dotVector(this.normal);
 
-		var d = pMinusL0DotN / lDotN;
+		var pMinusL0DotN = p0.set(this.normal)
+			.scale(this.constant)
+			.sub(ray.origin)
+			.dot(this.normal);
 
-		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
+		return store.set(ray.direction)
+			.scale(pMinusL0DotN / lDotN)
+			.add(ray.origin);
 	};
 
 	/**

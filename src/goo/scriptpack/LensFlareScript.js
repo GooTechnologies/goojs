@@ -29,7 +29,7 @@ define([
 		var textures = {};
 
 		var textureShapes = {
-			splash: { trailStartRadius: 25, trailEndRadius: 0},
+			splash: { trailStartRadius: 25, trailEndRadius: 0 },
 			ring: [
 				{ fraction: 0.00, value: 0 },
 				{ fraction: 0.70, value: 0 },
@@ -113,18 +113,18 @@ define([
 			lightColor = [args.color[0], args.color[1], args.color[2], 1];
 
 			quadData = [
-				{ size: 2.53, tx: 'bell', intensity: 0.70, displace:  1    },
-				{ size: 0.53, tx: 'dot',  intensity: 0.70, displace:  1    },
-				{ size: 0.83, tx: 'bell', intensity: 0.20, displace:  0.8  },
-				{ size: 0.40, tx: 'ring', intensity: 0.10, displace:  0.6  },
-				{ size: 0.30, tx: 'bell', intensity: 0.10, displace:  0.4  },
-				{ size: 0.60, tx: 'bell', intensity: 0.10, displace:  0.3  },
-				{ size: 0.30, tx: 'dot',  intensity: 0.10, displace:  0.15 },
+				{ size: 2.53, tx: 'bell', intensity: 0.70, displace: 1 },
+				{ size: 0.53, tx: 'dot',  intensity: 0.70, displace: 1 },
+				{ size: 0.83, tx: 'bell', intensity: 0.20, displace: 0.8 },
+				{ size: 0.40, tx: 'ring', intensity: 0.10, displace: 0.6 },
+				{ size: 0.30, tx: 'bell', intensity: 0.10, displace: 0.4 },
+				{ size: 0.60, tx: 'bell', intensity: 0.10, displace: 0.3 },
+				{ size: 0.30, tx: 'dot',  intensity: 0.10, displace: 0.15 },
 				{ size: 0.22, tx: 'ring', intensity: 0.03, displace: -0.25 },
-				{ size: 0.36, tx: 'dot',  intensity: 0.05, displace: -0.5  },
-				{ size: 0.80, tx: 'ring', intensity: 0.10, displace: -0.8  },
-				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1  },
-				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5  }
+				{ size: 0.36, tx: 'dot',  intensity: 0.05, displace: -0.5 },
+				{ size: 0.80, tx: 'ring', intensity: 0.10, displace: -0.8 },
+				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1 },
+				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5 }
 			];
 		}
 
@@ -165,7 +165,7 @@ define([
 		key: 'LensFlareScript',
 		name: 'Lens Flare Script',
 		description: 'Makes an entity shine with some lensflare effect.',
-		parameters : [{
+		parameters: [{
 			key: 'scale',
 			name: 'Scale',
 			type: 'float',
@@ -183,7 +183,7 @@ define([
 			'default': 1,
 			min: 0.01,
 			// REVIEW: why 2 for so many of these params? can they be normalized
-			//! AT: [0,1] might be the normal domain but the upper allowed bound is 2 because it allows for superbright/superfancy lens flares
+			//! AT: [0, 1] might be the normal domain but the upper allowed bound is 2 because it allows for superbright/superfancy lens flares
 			max: 2
 		}, {
 			key: 'edgeRelevance',
@@ -251,8 +251,8 @@ define([
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
 		this.displacementVector.sub(this.centerVector);
 		this.distance = this.displacementVector.length();
-		this.distanceVector.set(0, 0, -this.distance);
-		this.camRot.applyPost(this.distanceVector);
+		this.distanceVector.setDirect(0, 0, -this.distance);
+		this.distanceVector.applyPost(this.camRot);
 		this.centerVector.add(this.distanceVector);
 		this.positionVector.set(this.centerVector);
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
@@ -269,7 +269,7 @@ define([
 
 	function FlareQuad(lightColor, tx, displace, size, intensity, systemScale, edgeDampen, edgeScaling, textures, world) {
 		this.sizeVector = new Vector3(size, size, size);
-		this.sizeVector.mul(systemScale);
+		this.sizeVector.scale(systemScale);
 		this.positionVector = new Vector3();
 		this.flareVector = new Vector3();
 		this.intensity = intensity;
@@ -308,7 +308,7 @@ define([
 	FlareQuad.prototype.updatePosition = function (flareGeometry) {
 		this.flareVector.set(flareGeometry.displacementVector);
 		this.positionVector.set(flareGeometry.positionVector);
-		this.flareVector.mul(this.displace);
+		this.flareVector.scale(this.displace);
 		this.positionVector.add(this.flareVector);
 
 		this.material.uniforms.materialEmissive = [
@@ -322,7 +322,7 @@ define([
 
 		var quadTransform = this.quad.transformComponent.transform;
 		quadTransform.scale.set(this.sizeVector);
-		quadTransform.scale.mul(scaleFactor);
+		quadTransform.scale.scale(scaleFactor);
 		quadTransform.rotation.set(flareGeometry.camRot);
 		quadTransform.translation.set(this.positionVector);
 		this.quad.transformComponent.updateTransform();

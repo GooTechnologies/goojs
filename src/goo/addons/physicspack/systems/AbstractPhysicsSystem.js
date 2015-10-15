@@ -15,7 +15,7 @@ function (
 	function AbstractPhysicsSystem() {
 		System.apply(this, arguments);
 
-		this.priority = -1; // make sure it processes after transformsystem and collidersystem
+		this.priority = -1;
 
 		/**
 		 * Entitites that holds ColliderComponents, but aren't instantiated since they have no RigidBodyComponent
@@ -92,6 +92,33 @@ function (
 		this._emitEvent('goo.physics.endContact', entityA, entityB);
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerEnter = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerEnter', triggerEntity, otherEntity);
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerStay = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerStay', triggerEntity, otherEntity);
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} triggerEntity
+	 * @param  {Entity} otherEntity
+	 */
+	AbstractPhysicsSystem.prototype.emitTriggerExit = function (triggerEntity, otherEntity) {
+		this._emitEvent('goo.physics.triggerExit', triggerEntity, otherEntity);
+	};
+
 	AbstractPhysicsSystem.prototype._emitEvent = function (channel, entityA, entityB) {
 		event.entityA = entityA;
 		event.entityB = entityB;
@@ -102,6 +129,7 @@ function (
 
 	AbstractPhysicsSystem.prototype._colliderInserted = function (/*entity*/) {};
 	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
+	AbstractPhysicsSystem.prototype._colliderDeletedComponent = function (/*entity*/) {};
 
 	return AbstractPhysicsSystem;
 });

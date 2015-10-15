@@ -18,7 +18,7 @@ define([
 
 	/**
 	 * Adds entities to this selection. Any resulting duplicates are removed.
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities The entities to add
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities The entities to add
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
@@ -27,17 +27,17 @@ define([
 
 		var union;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		//! AT: this long/short separation only minimizes the number of ifs performed
 		// while costing more memory (which is allocated on the stack anyways since the hashTable array never leaves this function
 		// would love to see a benchmark though
 		var shortArray, longArray;
-		if (that.length > this.top.length) {
+		if (entities.length > this.top.length) {
 			shortArray = this.top;
-			longArray = that;
+			longArray = entities;
 		} else {
-			shortArray = that;
+			shortArray = entities;
 			longArray = this.top;
 		}
 
@@ -63,7 +63,7 @@ define([
 
 	/**
 	 * Returns the common entities between this selection and the given parameter(s)
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
@@ -72,17 +72,17 @@ define([
 
 		var intersection;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		//! AT: this long/short separation only minimizes the number of ifs performed
 		// while costing more memory (which is allocated on the stack anyways since the hashTable array never leaves this function
 		// would love to see a benchmark though
 		var shortArray, longArray;
-		if (that.length > this.top.length) {
+		if (entities.length > this.top.length) {
 			shortArray = this.top;
-			longArray = that;
+			longArray = entities;
 		} else {
-			shortArray = that;
+			shortArray = entities;
 			longArray = this.top;
 		}
 
@@ -107,7 +107,7 @@ define([
 
 	/**
 	 * Removes entities from the current selection
-	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities Entities to remove from the selection
+	 * @param {(Entity | Array<Entity> | EntitySelection)} entities Entities to remove from the selection
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
@@ -116,11 +116,11 @@ define([
 
 		var difference;
 
-		var that = toArray.apply(null, arguments);
+		var entities = toArray.apply(null, arguments);
 
 		var hashTable = [];
-		for (var i = 0; i < that.length; i++) {
-			var id = that[i].id;
+		for (var i = 0; i < entities.length; i++) {
+			var id = entities[i].id;
 			hashTable[id] = true;
 		}
 
@@ -189,7 +189,7 @@ define([
 		// could use flatMap
 		if (this.top === null) { return this; }
 
-		var children = this.top.map(function(entity) {
+		var children = this.top.map(function (entity) {
 			return entity.transformComponent.children.map(function (childTransform) {
 				return childTransform.entity;
 			});

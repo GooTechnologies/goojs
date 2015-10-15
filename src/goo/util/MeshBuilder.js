@@ -1,16 +1,12 @@
 define([
-        'goo/renderer/MeshData',
-        'goo/math/Vector3',
-        // 'goo/math/Matrix3x3',
-        'goo/entities/EntityUtils'
-        ],
-
-	function (
-		MeshData,
-		Vector3,
-		// Matrix3x3,
-		EntityUtils
-	) {
+	'goo/renderer/MeshData',
+	'goo/math/Vector3',
+	'goo/entities/EntityUtils'
+], function (
+	MeshData,
+	Vector3,
+	EntityUtils
+) {
 	'use strict';
 
 	/**
@@ -20,18 +16,18 @@ define([
 	 * @example
 	 * var meshBuilder = new MeshBuilder();
 	 * var transform = new Transform();
-	 * 
+	 *
 	 * var box1 = new Box(0.3, 1, 1.6);
 	 * var box2 = new Box(0.2, 0.15, 0.7);
-	 * 
+	 *
 	 * transform.translation.setDirect(0, 0, 1.3);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box1, transform);
-     * 
+     *
 	 * transform.translation.setDirect(0, 0, 0);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box2, transform);
-     * 
+     *
 	 * var meshData = meshBuilder.build()[0];
 	 * goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit)).addToWorld();
 
@@ -71,7 +67,7 @@ define([
 		});
 	};
 
-	// var normalMatrix = new Matrix3x3();
+	// var normalMatrix = new Matrix3();
 	var vert = new Vector3();
 	/**
 	 * add MeshData to this MeshBuilder
@@ -79,18 +75,19 @@ define([
 	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
-			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
+			throw new Error('Maximum number of vertices for a mesh to add is 65535. Got: ' + meshData.vertexCount);
 		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
 			this._generateMesh();
 		}
 
 		var matrix = transform.matrix;
 		var rotation = transform.rotation;
-		// Matrix3x3.invert(transform.rotation, normalMatrix);
-		// Matrix3x3.transpose(normalMatrix, normalMatrix);
+		// Matrix3.invert(transform.rotation, normalMatrix);
+		// Matrix3.transpose(normalMatrix, normalMatrix);
 
 		var attributeMap = meshData.attributeMap;
 		var keys = Object.keys(attributeMap);
+
 		for (var ii = 0, l = keys.length; ii < l; ii++) {
 			var key = keys[ii];
 			var map = attributeMap[key];
@@ -102,13 +99,14 @@ define([
 				attribute.map = {
 					count: map.count,
 					type: map.type,
-					stride : map.stride,
-					offset : map.offset,
+					stride: map.stride,
+					offset: map.offset,
 					normalized: map.normalized
 				};
 			}
 
 			var view = meshData.getAttributeBuffer(key);
+
 			var viewLength = view.length;
 			var array = attribute.array;
 			var count = map.count;
@@ -116,27 +114,27 @@ define([
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					matrix.applyPostPoint(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
+					vert.applyPostPoint(matrix);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
+					vert.applyPost(rotation);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
-					array[vertexPos + i + 3] = view[i + 3];
+					vert.applyPost(rotation);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
+					array[vertexPos + i + 3] = view.w;
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {
@@ -151,7 +149,7 @@ define([
 		this.vertexCounter += meshData.vertexCount;
 		this.indexCounter += meshData.indexCount;
 
-		if(meshData.indexLengths) {
+		if (meshData.indexLengths) {
 			this.indexLengths = this.indexLengths.concat(meshData.indexLengths);
 		} else {
 			this.indexLengths = this.indexLengths.concat(meshData.getIndexBuffer().length);
@@ -213,7 +211,7 @@ define([
 
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
-	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * @returns {Array<MeshData>} array of meshData, but currently there will only be one entry so you can always use [0].
 	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
 	 */
 	MeshBuilder.prototype.build = function () {

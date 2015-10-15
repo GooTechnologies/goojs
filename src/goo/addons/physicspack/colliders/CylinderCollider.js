@@ -38,8 +38,8 @@ function (
 	 */
 	CylinderCollider.prototype.transform = function (transform, targetCollider) {
 		var s = transform.scale;
-		targetCollider.radius = Math.max(s[0], s[1]) * this.radius;
-		targetCollider.height = s[2] * this.height;
+		targetCollider.radius = Math.max(s.x, s.y) * this.radius;
+		targetCollider.height = s.z * this.height;
 	};
 
 	/**

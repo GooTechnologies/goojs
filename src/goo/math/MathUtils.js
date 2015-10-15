@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-define([], function () {
+define(function () {
 	'use strict';
 
 	/**
@@ -122,7 +122,7 @@ define([], function () {
 	 */
 	MathUtils.radialClamp = function (value, min, max) {
 		// Rotating coordinates to be mirrored
-		var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+		var zero = (min + max) / 2 + ((max > min) ? Math.PI : 0);
 		var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
 		var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
 		var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
@@ -193,15 +193,16 @@ define([], function () {
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {Vector3} store
+	 * @example
 	 * var sphericalCoord = new Vector3();
 	 * var pos = entity.transformComponent.transform.translation.
 	 * MathUtils.cartesianToSpherical(pos.x, pos.y, pos.z, sphericalCoord);
 	 */
-	MathUtils.cartesianToSpherical = function (x,y,z, store) {
-		var a = Math.sqrt(x*x + z*z);
-		store.x = Math.sqrt(x*x+y*y+z*z); // radius
-		store.y = Math.atan2(z,x); // azimuth
-		store.z = Math.atan2(y,a); // polar
+	MathUtils.cartesianToSpherical = function (x, y, z, store) {
+		var a = Math.sqrt(x * x + z * z);
+		store.x = Math.sqrt(x * x + y * y + z * z); // radius
+		store.y = Math.atan2(z, x); // azimuth
+		store.z = Math.atan2(y, a); // polar
 	};
 
 	/**
@@ -215,7 +216,7 @@ define([], function () {
 	 * @param {number} R.x
 	 * @param {number} R.y
 	 * @param {number} R.z
-	 * @returns {number[]} The triangle's normal
+	 * @returns {Array<number>} The triangle's normal
 	 */
 	MathUtils.getTriangleNormal = function (p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;
@@ -245,11 +246,27 @@ define([], function () {
 	/**
 	 * Gets the nearest higher power of two for a value
 	 * @param {number} value Number to get the nearest power of two from
-	 * @returns {number} Nearest power of two 
+	 * @returns {number} Nearest power of two
 	 */
-	MathUtils.nearestHigherPowerOfTwo = function (value) {
-		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
+	MathUtils.nearestPowerOfTwo = function (value) {
+		value--;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		value |= value >> 16;
+		value++;
+		return value;
 	};
+
+	/**
+	 * Gets the nearest higher power of two for a value
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0;
+	 * Consider using MathUtils.nearestPowerOfTwo instead
+	 * @param {number} value Number to get the nearest power of two from
+	 * @returns {number} Nearest power of two
+	 */
+	MathUtils.nearestHigherPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Returns true if the 2 values supplied are approximately the same
@@ -258,7 +275,7 @@ define([], function () {
 	 * @param tolerance
 	 * @returns {boolean}
 	 */
-	MathUtils.closeTo = function(v1, v2, tolerance) {
+	MathUtils.closeTo = function (v1, v2, tolerance) {
 		tolerance = typeof tolerance !== 'undefined' ? tolerance : 0.001;
 		return Math.abs(v1 - v2) <= tolerance;
 	};
@@ -300,7 +317,6 @@ define([], function () {
 		// assuming the point is inside the triangle
 		var totalArea = t1Area + t2Area + t3Area;
 		if (!totalArea) {
-
 			if (p[0] === t1[0] && p[2] === t1[2]) {
 				return t1;
 			} else if (p[0] === t2[0] && p[2] === t2[2]) {
@@ -315,7 +331,7 @@ define([], function () {
 	};
 
 	/**
-	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1. 
+	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	 * This is useful in cases where a threshold function with a smooth transition is desired.
 	 * @param {number} edge0 Specifies the value of the lower edge of the Hermite function.
 	 * @param {number} edge1 Specifies the value of the upper edge of the Hermite function.
@@ -338,9 +354,28 @@ define([], function () {
 	 * Rough random generation with seeding. Set random seed through MathUtils.randomSeed = {new seed value}
 	 * @returns {number} Random number between 0 and 1.
 	 */
-	MathUtils.fastRandom = function() {
+	MathUtils.fastRandom = function () {
 		MathUtils.randomSeed = (MathUtils.randomSeed * 9301 + 49297) % 233280;
 		return MathUtils.randomSeed / 233280;
+	};
+
+	/**
+	 * Defines a property on an object that throws an exception when NaN is being assigned to it.
+	 * Useful for debugging.
+	 * @hidden
+	 * @param object
+	 * @param property
+	 */
+	MathUtils.warnNaN = function (object, property) {
+		var value = object[property];
+
+		Object.defineProperty(object, property, {
+			get: function () { return value; },
+			set: function (_value) {
+				if (isNaN(_value)) { throw new Error('Tried to assign NaN to ' + property); }
+				value = _value;
+			}
+		});
 	};
 
 	return MathUtils;

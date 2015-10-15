@@ -1,1 +1,1 @@
-define(['goo/loaders/crunch/CrunchLoader'], function(CrunchLoader) {});
+define(['goo/loaders/crunch/CrunchLoader'], function (CrunchLoader) {});

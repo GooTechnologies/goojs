@@ -64,9 +64,9 @@ require([
 	var xSize = mergedBoundingBox.xExtent * 2;
 	var ySize = mergedBoundingBox.yExtent * 2;
 	var zSize = mergedBoundingBox.zExtent * 2;
-	var xCenter = mergedBoundingBox.center.data[0];
-	var yCenter = mergedBoundingBox.center.data[1];
-	var zCenter = mergedBoundingBox.center.data[2];
+	var xCenter = mergedBoundingBox.center.x;
+	var yCenter = mergedBoundingBox.center.y;
+	var zCenter = mergedBoundingBox.center.z;
 
 	var boxMeshData = new Box(xSize, ySize, zSize);
 	goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();

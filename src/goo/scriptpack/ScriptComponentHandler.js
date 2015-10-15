@@ -2,8 +2,8 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/ScriptComponent',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
-	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtils',
+	'goo/util/PromiseUtils',
 	'goo/entities/SystemBus',
 
 	'goo/scripts/Scripts',
@@ -13,7 +13,7 @@ define([
 	ScriptComponent,
 	RSVP,
 	_,
-	PromiseUtil,
+	PromiseUtils,
 	SystemBus,
 
 	Scripts,
@@ -96,26 +96,47 @@ define([
 		});
 	};
 
+	/**
+	 * Sets the parameters of a script instance
+	 * @private
+	 * @param parameters The parameters of the new script instance to fill out
+	 * @param config Script values from the json config
+	 * @param externals Parameter definitions as defined in a script's external.parameters object
+	 * @param options Dynamic loader options
+	 * @returns {*}
+	 */
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
+		// is externals ever falsy?
 		if (!externals || !externals.parameters) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 
-		var promises = [];
-		for (var i = 0; i < externals.parameters.length; i++) {
-			var external = externals.parameters[i];
-			this._setParameter(parameters, config[external.key], external, options);
-		}
-		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
+		var promises = externals.parameters.map(function (external) {
+			return this._setParameter(parameters, config[external.key], external, options);
+		}, this);
+
+		parameters.enabled = config.enabled !== false;
+
 		return RSVP.all(promises);
 	};
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
+
+		if (!ScriptUtils.typeValidators[external.type](config)) {
+			if (typeof external.default === 'undefined') {
+				parameters[key] = _.deepClone(ScriptUtils.defaultsByType[external.type]);
+			} else {
+				parameters[key] = _.deepClone(external.default);
+			}
+
+			return PromiseUtils.resolve();
+		}
+
 		if (external.type === 'texture') {
 			if (!config || !config.textureRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			} else {
 				return this._load(config.textureRef, options).then(function (texture) {
 					parameters[key] = texture;
@@ -124,22 +145,26 @@ define([
 		} else if (external.type === 'entity') {
 			if (!config || !config.entityRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			} else {
-				return this._load(config.entityRef, options).then(function (entity) {
+				// return
+				this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
 				});
+
+				return PromiseUtils.resolve();
 			}
 		} else {
-			parameters[key] = _.extend(config);
-			return PromiseUtil.resolve();
+			parameters[key] = _.clone(config);
+			// revert to default if value of bad type
+			return PromiseUtils.resolve();
 		}
 	};
 
 	/**
 	 * Creates a new script engine.
 	 *
-	 * @param {object} scriptName
+	 * @param {Object} scriptName
 	 *		The name of the script which is to be created.
 	 *
 	 * @returns {Promise}
@@ -158,7 +183,7 @@ define([
 			externals: script.externals
 		});
 
-		return PromiseUtil.resolve(script);
+		return PromiseUtils.resolve(script);
 	}
 
 	return ScriptComponentHandler;

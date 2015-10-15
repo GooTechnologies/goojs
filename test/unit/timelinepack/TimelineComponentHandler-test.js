@@ -5,7 +5,7 @@ define([
 	'test/loaders/Configs',
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/TimelineComponentHandler'
-], function(
+], function (
 	World,
 	Material,
 	DynamicLoader,

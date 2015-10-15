@@ -3,7 +3,7 @@ define([
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils',
 	'goo/renderer/Renderer',
-	'goo/math/Plane',
+	'goo/math/Plane'
 ], function (
 	Vector3,
 	Scripts,
@@ -16,11 +16,8 @@ define([
 	var CANNON = window.CANNON;
 
 	function CannonPickScript() {
-		var fwdVector, leftVector, moveVector, calcVector, calcVector2;
 		var pickButton;
-		var lookAtPoint;
 		var mouseState;
-		var devicePixelRatio;
 		var cannonSystem;
 		var plane = new Plane();
 
@@ -39,21 +36,11 @@ define([
 			if (pickButton < -1) {
 				pickButton = -1;
 			}
-			lookAtPoint = env.goingToLookAt;
-			fwdVector = new Vector3(Vector3.UNIT_Y);
-			leftVector = new Vector3(Vector3.UNIT_X).invert();
-			moveVector = new Vector3();
-			calcVector = new Vector3();
-			calcVector2 = new Vector3();
-
-			var renderer = env.world.gooRunner.renderer;
-			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
-				window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 			// Joint body
-			cannonSystem = env.world.getSystem("CannonSystem");
+			cannonSystem = env.world.getSystem('CannonSystem');
 			var shape = new CANNON.Sphere(0.1);
-			var jointBody = env.jointBody = new CANNON.RigidBody(0,shape);
+			var jointBody = env.jointBody = new CANNON.RigidBody(0, shape);
 			jointBody.collisionFilterGroup = 2;
 			jointBody.collisionFilterMask = 2;
 			cannonSystem.world.add(jointBody);
@@ -68,7 +55,7 @@ define([
 				down: false
 			};
 			var listeners = env.listeners = {
-				mousedown: function(event) {
+				mousedown: function (event) {
 					if (!parameters.whenUsed || env.entity === env.activeCameraEntity) {
 						var button = event.button;
 						if (button === 0) {
@@ -85,7 +72,7 @@ define([
 						}
 					}
 				},
-				mouseup: function(event) {
+				mouseup: function (event) {
 					var button = event.button;
 					if (button === 0) {
 						if (event.altKey) {
@@ -99,7 +86,7 @@ define([
 						mouseState.dx = mouseState.dy = 0;
 					}
 				},
-				mousemove: function(event) {
+				mousemove: function (event) {
 					if (!parameters.whenUsed || env.entity === env.activeCameraEntity) {
 						if (mouseState.down) {
 							mouseState.x = event.clientX;
@@ -108,12 +95,12 @@ define([
 						}
 					}
 				},
-				mouseleave: function(/*event*/) {
+				mouseleave: function (/*event*/) {
 					mouseState.down = false;
 					mouseState.ox = mouseState.x;
 					mouseState.oy = mouseState.y;
 				},
-				touchstart: function(event) {
+				touchstart: function (event) {
 					if (!parameters.whenUsed || env.entity === env.activeCameraEntity) {
 						mouseState.down = (event.targetTouches.length === 2);
 						if (!mouseState.down) { return; }
@@ -123,7 +110,7 @@ define([
 						mouseState.oy = mouseState.y = center[1];
 					}
 				},
-				touchmove: function(event) {
+				touchmove: function (event) {
 					if (!parameters.whenUsed || env.entity === env.activeCameraEntity) {
 						if (!mouseState.down) { return; }
 
@@ -132,7 +119,7 @@ define([
 						mouseState.y = center[1];
 					}
 				},
-				touchend: function(/*event*/) {
+				touchend: function (/*event*/) {
 					mouseState.down = false;
 					mouseState.ox = mouseState.x;
 					mouseState.oy = mouseState.y;
@@ -154,13 +141,12 @@ define([
 			var mainCam = Renderer.mainCamera;
 
 			if (mainCam && mouseState.down && !env.mouseConstraint) {
-
 				// Shoot cannon.js ray. Not included in Goo Engine yet, so let's use it directly
 				var bodies = [];
-				var physicsEntities = env.world.by.system("CannonSystem").toArray();
-				for(var i=0; i<physicsEntities.length; i++){
+				var physicsEntities = env.world.by.system('CannonSystem').toArray();
+				for (var i = 0; i < physicsEntities.length; i++) {
 					var b = physicsEntities[i].cannonRigidbodyComponent.body;
-					if(b && b.shape instanceof CANNON.Box && b.motionstate === CANNON.Body.DYNAMIC){ // Cannon only supports convex with ray intersection
+					if (b && b.shape instanceof CANNON.Box && b.motionstate === CANNON.Body.DYNAMIC) { // Cannon only supports convex with ray intersection
 						bodies.push(b);
 					}
 				}
@@ -170,21 +156,19 @@ define([
 				var direction = new CANNON.Vec3(gooRay.direction.x, gooRay.direction.y, gooRay.direction.z);
 				var r = new CANNON.Ray(origin, direction);
 				var result = r.intersectBodies(bodies);
-				if(result.length){
+				if (result.length) {
 					var b = result[0].body;
 					var p = result[0].point;
-					addMouseConstraint(params, env, p.x, p.y, p.z, b, gooRay.direction.mul(-1));
+					addMouseConstraint(params, env, p.x, p.y, p.z, b, gooRay.direction.scale(-1));
 				}
-			} else if(mainCam && mouseState.down && env.mouseConstraint && (mouseState.dx !== 0 || mouseState.dy !== 0)){
-
+			} else if (mainCam && mouseState.down && env.mouseConstraint && (mouseState.dx !== 0 || mouseState.dy !== 0)) {
 				// Get the current mouse point on the moving plane
 				var mainCam = Renderer.mainCamera;
 				var gooRay = mainCam.getPickRay(mouseState.x, mouseState.y, window.innerWidth, window.innerHeight);
 				var newPositionWorld = new Vector3();
 				plane.rayIntersect(gooRay, newPositionWorld, true);
 				moveJointToPoint(params, env, newPositionWorld);
-
-			} else if(!mouseState.down) {
+			} else if (!mouseState.down) {
 				// Remove constraint
 				removeJointConstraint(params, env);
 			}
@@ -201,27 +185,26 @@ define([
 			env.constrainedBody = body;
 
 			// Vector to the clicked point, relative to the body
-			var v1 = new CANNON.Vec3(x,y,z).vsub(env.constrainedBody.position);
+			var v1 = new CANNON.Vec3(x, y, z).vsub(env.constrainedBody.position);
 
 			// Apply anti-quaternion to vector to tranform it into the local body coordinate system
 			var antiRot = env.constrainedBody.quaternion.inverse();
 			var pivot = antiRot.vmult(v1); // pivot is not in local body coordinates
 
 			// Move the cannon click marker particle to the click position
-			env.jointBody.position.set(x,y,z);
+			env.jointBody.position.set(x, y, z);
 
 			// Create a new constraint
 			// The pivot for the jointBody is zero
-			env.mouseConstraint = new CANNON.PointToPointConstraint(env.constrainedBody, pivot, env.jointBody, new CANNON.Vec3(0,0,0));
+			env.mouseConstraint = new CANNON.PointToPointConstraint(env.constrainedBody, pivot, env.jointBody, new CANNON.Vec3(0, 0, 0));
 
 			// Add the constriant to world
 			cannonSystem.world.addConstraint(env.mouseConstraint);
 
 			// Set plane distance from world origin by projecting world translation to plane normal
-			var worldCenter = new Vector3(x,y,z);
+			var worldCenter = new Vector3(x, y, z);
 			plane.constant = worldCenter.dot(normal);
-			plane.normal.setVector(normal);
-
+			plane.normal.set(normal);
 		}
 
 		// This functions moves the transparent joint body to a new postion in space
@@ -231,10 +214,10 @@ define([
 			env.mouseConstraint.update();
 		}
 
-		function removeJointConstraint(params, env){
-		  // Remove constriant from world
-		  cannonSystem.world.removeConstraint(env.mouseConstraint);
-		  env.mouseConstraint = false;
+		function removeJointConstraint(params, env) {
+			// Remove constriant from world
+			cannonSystem.world.removeConstraint(env.mouseConstraint);
+			env.mouseConstraint = false;
 		}
 
 		return {

@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/Composer'], function(Composer) {});
+define(['goo/renderer/pass/Composer'], function (Composer) {});

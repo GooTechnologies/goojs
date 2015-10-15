@@ -16,7 +16,7 @@ function () {
 	/*
 	 * Arms the data to be triggered on next animation loop
 	 * @param {number} index The index of the data in the {@link TriggerChannel}, so we only trigger once per triggerdata
-	 * @param {string[]} triggers String keys that will trigger callbacks in the {@link AnimationComponent}
+	 * @param {Array<string>} triggers String keys that will trigger callbacks in the {@link AnimationComponent}
 	 */
 	TriggerData.prototype.arm = function (index, triggers) {
 		if (triggers === null || triggers.length === 0) {
@@ -25,7 +25,7 @@ function () {
 		} else if (index !== this._currentIndex) {
 			this._currentTriggers.length = 0;
 			for ( var i = 0, max = triggers.length; i < max; i++) {
-				if(triggers[i] && triggers[i] !== '') {
+				if (triggers[i] && triggers[i] !== '') {
 					this._currentTriggers.push(triggers[i]);
 				}
 			}

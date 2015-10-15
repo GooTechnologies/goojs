@@ -1,1 +1,1 @@
-define(['goo/entities/components/Component'], function(Component) {});
+define(['goo/entities/components/Component'], function (Component) {});

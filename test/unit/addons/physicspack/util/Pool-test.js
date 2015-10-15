@@ -12,8 +12,8 @@ define([
 	function createPool() {
 		return new Pool({
 			create: function () { return new Vector3(); },
-			init: Vector3.prototype.set,
-			destroy: function (vector) { vector.set(0, 0, 0); } // just for testing
+			init: Vector3.prototype.setDirect,
+			destroy: function (vector) { vector.setDirect(0, 0, 0); } // just for testing
 		});
 	}
 

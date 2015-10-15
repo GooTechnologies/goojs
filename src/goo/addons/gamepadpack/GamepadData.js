@@ -1,9 +1,10 @@
 define([
-	'goo/math/Vector2'
+	'goo/math/Vector2',
+	'goo/math/MathUtils'
 ], function (
-	Vector2
-	) {
-
+	Vector2,
+	MathUtils
+) {
 	'use strict';
 
 	/**
@@ -28,20 +29,19 @@ define([
 		this.rightAmount = 0.0;
 	}
 
-	GamepadData.prototype.recalculateData = function(gamepad) {
+	GamepadData.prototype.recalculateData = function (gamepad) {
 		this.recalculateSticks(gamepad);
 		this.recalculateButtons(gamepad);
 	};
 
-	GamepadData.prototype.resetData = function(gamepad) {
+	GamepadData.prototype.resetData = function (gamepad) {
 		var activeButtonLength = gamepad.buttons.length;
 		for (var i = 0; i < activeButtonLength; i++) {
 			this.buttonData[i].pressed = false;
 		}
 	};
 
-	GamepadData.prototype.recalculateButtons = function(gamepad) {
-
+	GamepadData.prototype.recalculateButtons = function (gamepad) {
 		var buttons = gamepad.buttons;
 		var numOfButtons = buttons.length;
 		for (var i = 0; i < numOfButtons; i++) {
@@ -60,7 +60,7 @@ define([
 		}
 	};
 
-	GamepadData.prototype.recalculateSticks = function(gamepad) {
+	GamepadData.prototype.recalculateSticks = function (gamepad) {
 		var axes = gamepad.axes;
 
 		var leftX = axes[0];
@@ -77,19 +77,18 @@ define([
 	/**
 	 *
 	 * @param {Vector2} dirVector
-	 * @param {Number} x
-	 * @param {Number} y
+	 * @param {number} x
+	 * @param {number} y
 	 */
-	GamepadData.prototype.calculateStickDirection = function(dirVector, x, y) {
+	GamepadData.prototype.calculateStickDirection = function (dirVector, x, y) {
 		dirVector.setDirect(x, y);
 		var length = dirVector.length();
-		if (length > 0.0000001) {
-			dirVector.data[0] /= length;
-			dirVector.data[1] /= length;
+		if (length > MathUtils.EPSILON) {
+			dirVector.scale(1 / length);
 		}
 	};
 
-	GamepadData.prototype.calculateStickAmount = function(x, y) {
+	GamepadData.prototype.calculateStickAmount = function (x, y) {
 		return Math.max(Math.abs(x), Math.abs(y));
 	};
 

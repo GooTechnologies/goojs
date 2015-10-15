@@ -1,1 +1,1 @@
-define(['goo/picking/PrimitivePickLogic'], function(PrimitivePickLogic) {});
+define(['goo/picking/PrimitivePickLogic'], function (PrimitivePickLogic) {});

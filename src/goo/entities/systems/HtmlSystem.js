@@ -181,7 +181,8 @@ define([
 			component.updated = false;
 
 			var worldTransform = entity.transformComponent.worldTransform;
-			style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1/component.width +', ' + 1/component.height + ')';
+			style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1 +', ' + 1 + ')';
+			// style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1/component.width +', ' + 1/component.height + ')';
 			this.setStyle(domElement, 'transform', style);
 		}
 	};

@@ -74,7 +74,7 @@ define([
 		if (idx > -1) {
 			sound.stop();
 			this.sounds.splice(idx, 1);
-			sound.connectTo();
+			sound.disconnectFrom([this._inNode, this._outWetNode]);
 		}
 	};
 
@@ -93,7 +93,7 @@ define([
 
 	/**
 	 * Connect output of component to audionodes
-	 * @param {object} [nodes]
+	 * @param {Object} [nodes]
 	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
@@ -110,7 +110,7 @@ define([
 
 	/**
 	 * Updates the component valueas according to config
-	 * @param {object} [config]
+	 * @param {Object} [config]
 	 * @param {number} config.volume
 	 * @param {number} config.reverb
 	 */
@@ -126,8 +126,8 @@ define([
 	/**
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
-	 * @param {object} settings See {@link SoundSystem}
-	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
+	 * @param {Object} settings See {@link SoundSystem}
+	 * @param {Matrix4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
 	 * @hidden
 	 */
@@ -153,17 +153,14 @@ define([
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.setVector(this._position).subVector(this._oldPosition).div(tpf);
-		this._oldPosition.setVector(this._position);
+		this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
+		this._oldPosition.set(this._position);
 		this._orientation.setDirect(0, 0, -1);
-		mvMat.applyPostVector(this._orientation);
+		this._orientation.applyPostVector(mvMat);
 
-		var pd = this._position.data;
-		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-		var vd = this._velocity.data;
-		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-		var od = this._orientation.data;
-		this._pannerNode.setOrientation(od[0], od[1], od[2]);
+		this._pannerNode.setPosition(this._position.x, this._position.y, this._position.z);
+		this._pannerNode.setVelocity(this._velocity.x, this._velocity.y, this._velocity.z);
+		this._pannerNode.setOrientation(this._orientation.x, this._orientation.y, this._orientation.z);
 	};
 
 	return SoundComponent;

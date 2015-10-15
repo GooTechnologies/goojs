@@ -1,14 +1,14 @@
 define([
 	'goo/renderer/RenderQueue',
 	'goo/math/Vector3'
-], function(
+], function (
 	RenderQueue,
 	Vector3
 ) {
 	'use strict';
 
-	describe('RenderQueue Sorting', function() {
-		var createRenderable = function(name, renderQueueBucket, translation, defineKey) {
+	describe('RenderQueue Sorting', function () {
+		var createRenderable = function (name, renderQueueBucket, translation, defineKey) {
 			var renderable = {
 				name: name,
 				defineKey: defineKey,
@@ -24,7 +24,7 @@ define([
 			};
 			if (defineKey) {
 				renderable.meshRendererComponent.materials.push({
-					getRenderQueue: function() {
+					getRenderQueue: function () {
 						return renderQueueBucket;
 					},
 					shader: {
@@ -36,13 +36,13 @@ define([
 		};
 
 		var renderQueue, camera;
-		beforeEach(function() {
+		beforeEach(function () {
 			renderQueue = new RenderQueue();
 			camera = {
 				translation: new Vector3(0, 0, 100)
 			};
 		});
-		it('objects without materials remain unsorted', function() {
+		it('objects without materials remain unsorted', function () {
 			var r1 = createRenderable('R1', RenderQueue.OPAQUE, new Vector3(0, 0, 0), null);
 			var r2 = createRenderable('R2', RenderQueue.OPAQUE, new Vector3(0, 0, 10), null);
 			var r3 = createRenderable('R3', RenderQueue.OPAQUE, new Vector3(0, 0, 20), null);
@@ -53,7 +53,7 @@ define([
 
 			expect(renderList).toEqual([r1, r2, r3]);
 		});
-		it('can sort equal objects based on distance, front to back', function() {
+		it('can sort equal objects based on distance, front to back', function () {
 			var r1 = createRenderable('R1', RenderQueue.OPAQUE, new Vector3(0, 0, 0), 'Key1');
 			var r2 = createRenderable('R2', RenderQueue.OPAQUE, new Vector3(0, 0, 10), 'Key1');
 			var r3 = createRenderable('R3', RenderQueue.OPAQUE, new Vector3(0, 0, 20), 'Key1');
@@ -64,7 +64,7 @@ define([
 
 			expect(renderList).toEqual([r3, r2, r1]);
 		});
-		it('can sort objects based on distance and shader keys', function() {
+		it('can sort objects based on distance and shader keys', function () {
 			var r1 = createRenderable('R1', RenderQueue.OPAQUE, new Vector3(0, 0, 0), 'Key1');
 			var r2 = createRenderable('R2', RenderQueue.OPAQUE, new Vector3(0, 0, 10), 'Key2_extra');
 			var r3 = createRenderable('R3', RenderQueue.OPAQUE, new Vector3(0, 0, 20), 'Key1');
@@ -76,7 +76,7 @@ define([
 
 			expect(renderList).toEqual([r4, r2, r3, r1]);
 		});
-		it('can sort objects based on distance and similar shader keys', function() {
+		it('can sort objects based on distance and similar shader keys', function () {
 			var r1 = createRenderable('R1', RenderQueue.OPAQUE, new Vector3(0, 0, 0), 'Key1');
 			var r2 = createRenderable('R2', RenderQueue.OPAQUE, new Vector3(0, 0, 10), 'Key2_extra');
 			var r3 = createRenderable('R3', RenderQueue.OPAQUE, new Vector3(0, 0, 20), 'Key3_extra');
@@ -91,7 +91,7 @@ define([
 			expect(renderList).toEqual([r6, r3, r5, r2, r4, r1]);
 		});
 
-		it('can sort transparent objects based on distance, back to front', function() {
+		it('can sort transparent objects based on distance, back to front', function () {
 			var r1 = createRenderable('R1', RenderQueue.TRANSPARENT, new Vector3(0, 0, 0), 'Key1');
 			var r2 = createRenderable('R2', RenderQueue.TRANSPARENT, new Vector3(0, 0, -10), 'Key1');
 			var r3 = createRenderable('R3', RenderQueue.TRANSPARENT, new Vector3(0, 0, -20), 'Key1');
@@ -103,7 +103,7 @@ define([
 			expect(renderList).toEqual([r3, r2, r1]);
 		});
 
-		it('can correctly sort both opaque and transparent objects', function() {
+		it('can correctly sort both opaque and transparent objects', function () {
 			var r1 = createRenderable('R1', RenderQueue.TRANSPARENT, new Vector3(0, 0, 0), 'Key1');
 			var r2 = createRenderable('R2', RenderQueue.OPAQUE, new Vector3(0, 0, 10), 'Key1');
 			var r3 = createRenderable('R3', RenderQueue.TRANSPARENT, new Vector3(0, 0, -20), 'Key1');

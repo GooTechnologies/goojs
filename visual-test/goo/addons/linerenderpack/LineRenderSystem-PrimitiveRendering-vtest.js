@@ -5,7 +5,7 @@ require([
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
 	'goo/math/Vector3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/MeshData',
 	'goo/renderer/TextureCreator',
 	'goo/addons/linerenderpack/LineRenderSystem',
@@ -16,7 +16,7 @@ require([
 			 Quad,
 			 Sphere,
 			 Vector3,
-			 Matrix4x4,
+			 Matrix4,
 			 MeshData,
 			 TextureCreator,
 			 LineRenderSystem,
@@ -40,7 +40,7 @@ require([
 
 	var rotatedBoxMin = new Vector3(-1, -1, -1);
 	var rotatedBoxMax = new Vector3(1, 1, 1);
-	var rotationMatrix = new Matrix4x4();
+	var rotationMatrix = new Matrix4();
 
 	var crossPosition = new Vector3(2.5, 0, 0);
 
@@ -74,7 +74,7 @@ require([
 			}
 
 			coloredLinesStart.setDirect(4 + i, 1, 0);
-			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, -2, 0);
+			coloredLinesEnd.set(coloredLinesStart).addDirect(0, -2, 0);
 
 			lineRenderSystem.drawLine(coloredLinesStart, coloredLinesEnd, color);
 		}

@@ -1,6 +1,6 @@
 define(
 
-	function() {
+	function () {
 		'use strict';
 
 		/**
@@ -24,7 +24,7 @@ define(
 			// If instantiated in a logic layer.
 			this.logicInstance = null;
 
-			// For now this needs to be set to true in the constructor of those who wants it, or 
+			// For now this needs to be set to true in the constructor of those who wants it, or
 			// at least before addToWorldLogic is called.
 			this.wantsProcessCall = false;
 		}
@@ -35,7 +35,7 @@ define(
 		 *
 		 * @param {world} World to add it to
 		 */
-		LogicNode.prototype.addToLogicLayer = function(logicLayer, withId) {
+		LogicNode.prototype.addToLogicLayer = function (logicLayer, withId) {
 			// Cleanup of previous; this will also remove connections so we always need to (re-) add them.
 			if (this.logicInstance !== null) {
 				this.logicInstance.remove();
@@ -55,7 +55,7 @@ define(
 			}
 		};
 
-		LogicNode.prototype.configure = function(nodeData) {
+		LogicNode.prototype.configure = function (nodeData) {
 			var c = (nodeData.config !== undefined) ? nodeData.config : {};
 			this.onConfigure(c);
 			this.config = c;
@@ -67,18 +67,18 @@ define(
 		 * this function and not configure.
 		 * @param newConfig The new configuration data.
 		 */
-		LogicNode.prototype.onConfigure = function() {};
+		LogicNode.prototype.onConfigure = function () {};
 
 		/**
 		 * When logic system is started.
 		 */
-		LogicNode.prototype.onSystemStarted = function() {};
+		LogicNode.prototype.onSystemStarted = function () {};
 
 		/**
 		 * Called when system is stopped.
 		 * @param stopForPause If true, world has been paused. Otherwise stopped & reset.
 		 */
-		LogicNode.prototype.onSystemStopped = function() {};
+		LogicNode.prototype.onSystemStopped = function () {};
 
 		/**
 		 * Called when node receives an input value.
@@ -86,7 +86,7 @@ define(
 		 * @param port Port ID
 		 * @param nv New value on that particular port.
 		 */
-		LogicNode.prototype.onInputChanged = function() {};
+		LogicNode.prototype.onInputChanged = function () {};
 
 		LogicNode._instanceCount = 0;
 

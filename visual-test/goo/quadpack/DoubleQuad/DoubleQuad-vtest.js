@@ -32,8 +32,9 @@ require([
 	material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
 	material.renderQueue = 2000;
 	material.uniforms.discardThreshold = 0.1;
-	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var normalConeMeshData = new DoubleQuad();
 	var normalConeEntity = world.createEntity(normalConeMeshData, material).addToWorld();

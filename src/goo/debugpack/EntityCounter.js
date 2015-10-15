@@ -19,16 +19,16 @@ define([],
 	 * @param {GooRunner} goo A GooRunner reference
 	 * @returns {EntityCounter} Self to allow chaining
 	 */
-	EntityCounter.prototype.inject = function(goo) {
+	EntityCounter.prototype.inject = function (goo) {
 		this.goo = goo;
 
 		this.texHandle = createPanel();
 		var that = this;
 
 		var skippedFrame = 0;
-		this.goo.callbacks.push(function() {
+		this.goo.callbacks.push(function () {
 			skippedFrame--;
-			if(skippedFrame <= 0) {
+			if (skippedFrame <= 0) {
 				skippedFrame = that.skipFrames;
 				var outStr = '';
 

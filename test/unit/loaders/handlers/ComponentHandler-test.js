@@ -1,1 +1,1 @@
-define(['goo/loaders/handlers/ComponentHandler'], function(ComponentHandler) {});
+define(['goo/loaders/handlers/ComponentHandler'], function (ComponentHandler) {});

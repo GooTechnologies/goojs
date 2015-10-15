@@ -1,12 +1,12 @@
 define([
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/math/MathUtils'
 ], function (
 	Vector3,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	MathUtils
 ) {
 	'use strict';
@@ -18,15 +18,15 @@ define([
 	 */
 	function Transform() {
 		/** Read only, will be updated automatically by {@link Transform.update}
-		 * @type {Matrix4x4}
+		 * @type {Matrix4}
 		 */
-		this.matrix = new Matrix4x4();
-		this.normalMatrix = new Matrix3x3();
+		this.matrix = new Matrix4();
+		this.normalMatrix = new Matrix3();
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();
-		/** @type {Matrix3x3} */
-		this.rotation = new Matrix3x3();
+		/** @type {Matrix3} */
+		this.rotation = new Matrix3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
 
@@ -37,7 +37,7 @@ define([
 
 	var tmpVec = new Vector3();
 	var tmpVec2 = new Vector3();
-	var tmpMat1 = new Matrix3x3();
+	var tmpMat1 = new Matrix3();
 
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
@@ -50,26 +50,26 @@ define([
 		target = target || new Transform();
 
 		// Translation
-		tmpVec.setVector(rhs.translation);
+		tmpVec.set(rhs.translation);
 		// Rotate translation
-		lhs.rotation.applyPost(tmpVec);
+		tmpVec.applyPost(lhs.rotation);
 		// Scale translation
-		tmpVec.mulVector(lhs.scale);
+		tmpVec.mul(lhs.scale);
 		// Translate translation
-		tmpVec.addVector(lhs.translation);
+		tmpVec.add(lhs.translation);
 
 		// Scale
-		tmpVec2.setVector(rhs.scale);
+		tmpVec2.set(rhs.scale);
 		// Scale scale
-		tmpVec2.mulVector(lhs.scale);
+		tmpVec2.mul(lhs.scale);
 
 		// Rotation
 		// Rotate rotation
-		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
+		tmpMat1.mul2(lhs.rotation, rhs.rotation);
 
 		target.rotation.copy(tmpMat1);
-		target.scale.setVector(tmpVec2);
-		target.translation.setVector(tmpVec);
+		target.scale.set(tmpVec2);
+		target.translation.set(tmpVec);
 
 		target.update();
 
@@ -87,30 +87,35 @@ define([
 
 	// TODO: sort this crap out!
 	Transform.prototype.multiply = function (a, b) {
-		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
+		this.matrix.mul2(a.matrix, b.matrix);
 
 		tmpMat1.data.set(a.rotation.data);
 		//tmpMat1.multiplyDiagonalPost(a.scale, tmpMat1);
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
-		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
-		this.translation.setVector(b.translation);
-		this.translation.mulVector(a.scale);
-		tmpMat1.applyPost(this.translation).addVector(a.translation);
+		this.rotation.mul2(tmpMat1, this.rotation);
+		this.translation.set(b.translation);
+		this.translation.mul(a.scale);
+		this.translation.applyPost(tmpMat1).add(a.translation);
 
-		tmpVec.setVector(a.scale).mulVector(b.scale);
-		this.scale.setVector(tmpVec);
+		tmpVec.set(a.scale).mul(b.scale);
+		this.scale.set(tmpVec);
+
+		return this;
 	};
 
 	/**
 	 * Set Transform to identity
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.setVector(Vector3.ZERO);
+		this.translation.set(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.setVector(Vector3.ONE);
+		this.scale.set(Vector3.ONE);
+
+		return this;
 	};
 
 	/**
@@ -127,13 +132,13 @@ define([
 	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
-		store.setVector(point);
+		store.set(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);
 		// store.add(this.translation);
 
-		this.matrix.applyPostPoint(store);
+		store.applyPostPoint(this.matrix);
 
 		return store;
 	};
@@ -155,40 +160,44 @@ define([
 		store.copy(vector);
 
 		store.setDirect(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
-		this.rotation.applyPost(store);
+		store.applyPost(this.rotation);
 
 		return store;
 	};
 
 	/**
 	 * Updates the transform according to set scaling, rotation and translation. This is done automatically by the engine
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.update = function () {
 		var target = this.matrix.data;
 		var rotation = this.rotation.data;
-		var scale = this.scale.data;
-		var translation = this.translation.data;
+		var scale = this.scale;
+		var translation = this.translation;
 
-		target[0] = scale[0] * rotation[0];
-		target[1] = scale[0] * rotation[1];
-		target[2] = scale[0] * rotation[2];
+		target[0] = scale.x * rotation[0];
+		target[1] = scale.x * rotation[1];
+		target[2] = scale.x * rotation[2];
 		target[3] = 0.0;
-		target[4] = scale[1] * rotation[3];
-		target[5] = scale[1] * rotation[4];
-		target[6] = scale[1] * rotation[5];
+		target[4] = scale.y * rotation[3];
+		target[5] = scale.y * rotation[4];
+		target[6] = scale.y * rotation[5];
 		target[7] = 0.0;
-		target[8] = scale[2] * rotation[6];
-		target[9] = scale[2] * rotation[7];
-		target[10] = scale[2] * rotation[8];
+		target[8] = scale.z * rotation[6];
+		target[9] = scale.z * rotation[7];
+		target[10] = scale.z * rotation[8];
 		target[11] = 0.0;
-		target[12] = translation[0];
-		target[13] = translation[1];
-		target[14] = translation[2];
+		target[12] = translation.x;
+		target[13] = translation.y;
+		target[14] = translation.z;
 		target[15] = 1.0;
+
+		return this;
 	};
 
 	/**
 	 * Updates the normal matrix. This is done automatically by the engine.
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.updateNormalMatrix = function () {
 		// Copy upper left of 4x4 to 3x3
@@ -206,51 +215,60 @@ define([
 
 		// invert + transpose if non-uniform scaling
 		// RH: Should we check against epsilon here?
-		var scale = this.scale.data;
-		if (scale[0] !== scale[1] || scale[0] !== scale[2]) {
-			Matrix3x3.invert(this.normalMatrix, tmpMat1);
-			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
+		var scale = this.scale;
+		if (scale.x !== scale.y || scale.x !== scale.z) {
+			this.normalMatrix.invert().transpose();
 		}
+
+		return this;
 	};
 
 	/**
 	 * Copy supplied transform into this transform
 	 * @param {Transform} transform
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
-		this.translation.setVector(transform.translation);
+		this.translation.set(transform.translation);
 		this.rotation.copy(transform.rotation);
-		this.scale.setVector(transform.scale);
+		this.scale.set(transform.scale);
+
+		return this;
 	};
 
 	/**
-	 * Set this transform's rotation to rotation around X, Y and Z axis.
-	 * The rotation is applied in XYZ order.
+	 * Set this transform's rotation to rotation around X, Y and Z axis. Euler order is YZX.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
+
+		return this;
 	};
 
 	/**
 	 * Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.lookAt = function (position, up) {
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
 
-		tmpVec.setVector(position).subVector(this.translation);
+		tmpVec.set(position).sub(this.translation);
 		if (tmpVec.lengthSquared() > MathUtils.EPSILON) { // should be epsilon^2 but it hopefully doesn't matter
 			tmpVec.normalize();
 			this.rotation.lookAt(tmpVec, up);
 		}
+
+		return this;
 	};
 
 	/**
@@ -284,18 +302,13 @@ define([
 		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.scale.setVector(Vector3.ONE).div(this.scale);
-		result.translation.copy(this.translation).invert().mulVector(result.scale);
-		result.rotation.applyPost(result.translation);
+		result.scale.set(Vector3.ONE).div(this.scale);
+		result.translation.copy(this.translation).negate().mul(result.scale);
+		result.translation.applyPost(result.rotation);
 
 		// result.update();
 
 		return result;
-	};
-
-	//! AT: the second toString in the whole engine
-	Transform.prototype.toString = function () {
-		return '' + this.matrix;
 	};
 
 	/**

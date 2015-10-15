@@ -1,7 +1,9 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/util/TWEEN'
 ], function (
-	Action
+	Action,
+	TWEEN
 ) {
 	'use strict';
 
@@ -58,15 +60,15 @@ define([
 		this.to = settings.to;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenLightColorAction.prototype._setup = function (/*fsm*/) {
-		this.tween = new window.TWEEN.Tween();
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenLightColorAction.prototype.cleanup = function (/*fsm*/) {
@@ -87,15 +89,15 @@ define([
 
 			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				color.data[0] += this.x - old.x;
-				color.data[1] += this.y - old.y;
-				color.data[2] += this.z - old.z;
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
+				color.x += this.x - old.x;
+				color.y += this.y - old.y;
+				color.z += this.z - old.z;
 
 				old.x = this.x;
 				old.y = this.y;
 				old.z = this.z;
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		}

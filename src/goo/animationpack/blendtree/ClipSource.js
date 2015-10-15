@@ -11,7 +11,7 @@ define([
 	 * A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param {AnimationClip} clip the clip to use.
 	 * @param {string} [filter] 'Exclude' or 'Include'
-	 * @param {string[]} [channelNames]
+	 * @param {Array<string>} [channelNames]
 	 */
 	function ClipSource(clip, filter, channelNames) {
 		this._clip = clip;
@@ -28,7 +28,7 @@ define([
 	/**
 	 * Sets the filter on the joints which the clipsource will affect
 	 * @param {string} [filter] 'Exclude' or 'Include'
-	 * @param {string[]} [channelNames]
+	 * @param {Array<string>} [channelNames]
 	 */
 	ClipSource.prototype.setFilter = function (filter, channelNames) {
 		if (filter && channelNames) {
@@ -48,7 +48,7 @@ define([
 	 */
 	ClipSource.prototype.setTime = function (globalTime) {
 		var instance = this._clipInstance;
-		if (typeof(instance._startTime) !== 'number') {
+		if (typeof instance._startTime !== 'number') {
 			instance._startTime = globalTime;
 		}
 
@@ -114,7 +114,7 @@ define([
 	 * @private
 	 */
 	ClipSource.prototype.resetClips = function (globalTime) {
-		this._clipInstance._startTime = typeof(globalTime) !== 'undefined' ? globalTime : 0;
+		this._clipInstance._startTime = typeof globalTime !== 'undefined' ? globalTime : 0;
 		this._clipInstance._active = true;
 	};
 
@@ -166,7 +166,7 @@ define([
 	 * @returns {ClipSource}
 	 */
 	ClipSource.prototype.clone = function () {
-	    var cloned = new ClipSource(this._clip);
+		var cloned = new ClipSource(this._clip);
 
 		cloned._clipInstance = this._clipInstance.clone();
 

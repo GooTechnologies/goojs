@@ -1,7 +1,9 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/util/TWEEN'
 ], function (
-	Action
+	Action,
+	TWEEN
 ) {
 	'use strict';
 
@@ -58,9 +60,9 @@ define([
 		this.to = settings.to;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
@@ -70,7 +72,7 @@ define([
 		var meshRendererComponent = entity.meshRendererComponent;
 
 		if (meshRendererComponent) {
-			this.tween = new window.TWEEN.Tween();
+			this.tween = new TWEEN.Tween();
 
 			this.material = meshRendererComponent.materials[0];
 			this.oldBlending = this.material.blendState.blending;

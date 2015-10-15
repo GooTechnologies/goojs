@@ -32,7 +32,7 @@ define([
 		it('loads an entity with a transformComponent', function (done) {
 			var config = Configs.entity(['transform']);
 			loader.preload(Configs.get());
-			loader.load(config.id).then(function (entity) {
+			loader.load(config.id).then(function (entity) {
 				expect(entity.transformComponent).toEqual(jasmine.any(TransformComponent));
 				done();
 			});
@@ -48,26 +48,26 @@ define([
 			loader.load(config.id).then(function (entity) {
 				var t = entity.transformComponent.transform;
 				var ct = config.components.transform;
-				expect(t.translation).toBeCloseToVector(new Vector3(ct.translation));
-				expect(t.scale).toBeCloseToVector(new Vector3(ct.scale));
+				expect(t.translation).toBeCloseToVector(Vector3.fromArray(ct.translation));
+				expect(t.scale).toBeCloseToVector(Vector3.fromArray(ct.scale));
 				var rotation = t.rotation.toAngles();
-				rotation.mul(180 / Math.PI);
-				expect(rotation).toBeCloseToVector(new Vector3(ct.rotation));
+				rotation.scale(180 / Math.PI);
+				expect(rotation).toBeCloseToVector(Vector3.fromArray(ct.rotation));
 				done();
 			});
 		});
 
 		it('updates existing transformcomponent', function (done) {
-			var component;
+			//var component;
 			var config = Configs.entity(['transform']);
 
 			var newConfig = Configs.entity(['transform']);
-			newConfig.components.transform.translation = [1,2,3];
+			newConfig.components.transform.translation = [1, 2, 3];
 			newConfig.id = config.id;
 
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
-				component = entity.transformComponent;
+				//component = entity.transformComponent;
 
 				return loader.update(config.id, newConfig);
 			}).then(function (entity) {
@@ -75,11 +75,11 @@ define([
 
 				var t = entity.transformComponent.transform;
 				var ct = newConfig.components.transform;
-				expect(t.translation).toBeCloseToVector(new Vector3(ct.translation));
-				expect(t.scale).toBeCloseToVector(new Vector3(ct.scale));
+				expect(t.translation).toBeCloseToVector(Vector3.fromArray(ct.translation));
+				expect(t.scale).toBeCloseToVector(Vector3.fromArray(ct.scale));
 				var rotation = t.rotation.toAngles();
-				rotation.mul(180 / Math.PI);
-				expect(rotation).toBeCloseToVector(new Vector3(ct.rotation));
+				rotation.scale(180 / Math.PI);
+				expect(rotation).toBeCloseToVector(Vector3.fromArray(ct.rotation));
 				done();
 			});
 		});

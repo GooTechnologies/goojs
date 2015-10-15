@@ -138,7 +138,7 @@ function () {
 	].join('\n');
 
 	ShaderFragment.methods = {
-		packDepth : [
+		packDepth: [
 			'vec4 packDepth( const in float depth ) {',
 				'const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );',
 				'const vec4 bit_mask  = vec4( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );',
@@ -147,14 +147,14 @@ function () {
 				'return res;',
 			'}'
 		].join('\n'),
-		unpackDepth : [
+		unpackDepth: [
 			'float unpackDepth( const in vec4 rgba_depth ) {',
 				'const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );',
 				'float depth = dot( rgba_depth, bit_shift );',
 				'return depth;',
 			'}'
 		].join('\n'),
-		packFloat : [
+		packFloat: [
 			packCommon,
 			'vec4 packFloat (float val) {',
 				'if (val == 0.0) return vec4(0, 0, 0, 0);',
@@ -193,19 +193,19 @@ function () {
 				'return sign * mantissa * exp2(exponent);',
 			'}'
 		].join('\n'),
-		packDepth16 : [
+		packDepth16: [
 			'vec2 packDepth16( const in float depth ) {',
 				'const vec2 bias = vec2(1.0 / 255.0, 0.0);',
 				'vec2 res = vec2(depth, fract(depth * 255.0));',
 				'return res - (res.yy * bias);',
 			'}'
 		].join('\n'),
-		unpackDepth16 : [
+		unpackDepth16: [
 			'float unpackDepth16( const in vec2 rg_depth ) {',
 				'return rg_depth.x + (rg_depth.y / 255.0);',
 			'}'
 		].join('\n'),
-		hsv : [
+		hsv: [
 			'vec3 rgb2hsv(vec3 c) {',
 				'vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);',
 				'vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));',
@@ -214,7 +214,7 @@ function () {
 				'float e = 1.0e-10;',
 				'return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);',
 			'}',
-			'vec3 hsv2rgb(vec3 c){',
+			'vec3 hsv2rgb(vec3 c) {',
 				'vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);',
 				'vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);',
 				'return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);',
@@ -269,7 +269,7 @@ function () {
 		'#define LevelsControlInputRange(color, minInput, maxInput)						min(max(color - vec3(minInput), vec3(0.0)) / (vec3(maxInput) - vec3(minInput)), vec3(1.0))',
 		'#define LevelsControlInput(color, minInput, gamma, maxInput)					GammaCorrection(LevelsControlInputRange(color, minInput, maxInput), gamma)',
 		'#define LevelsControlOutputRange(color, minOutput, maxOutput)					mix(vec3(minOutput), vec3(maxOutput), color)',
-		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)',
+		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)'
 	].join('\n');
 
 	return ShaderFragment;

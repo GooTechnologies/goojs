@@ -1,1 +1,1 @@
-define(['goo/particles/ParticleLib'], function(ParticleLib) {});
+define(['goo/particles/ParticleLib'], function (ParticleLib) {});

@@ -2,22 +2,18 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4',
-	'goo/math/Vector'
+	'goo/entities/EntitySelection'
 ], function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection,
-	Matrix4x4,
-	Vector
+	EntitySelection
 ) {
 	'use strict';
 
 	/**
 	 * Holds the transform of an entity. It also allows for a scene graph to be created,
-	 * in which transforms are inherited down the tree.<br>
+	 * in which transforms are inherited down the tree.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends Component
 	 */
@@ -34,7 +30,7 @@ define([
 		this.parent = null;
 		/**
 		 * Child TransformComponents in the "scene graph".
-		 * @type {TransformComponent[]}
+		 * @type {Array<TransformComponent>}
 		 */
 		this.children = [];
 
@@ -72,7 +68,7 @@ define([
 		/**
 		 * Sets the translation of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setTranslation method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setTranslation: function () {
@@ -83,7 +79,7 @@ define([
 		/**
 		 * Sets the rotation of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setRotation method
-		 * @param {Vector3|number[]} angle
+		 * @param {(Vector3|Array<number>)} angle
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setRotation: function () {
@@ -94,7 +90,7 @@ define([
 		/**
 		 * Sets the scale of this entity. Injected on entities with a transformComponent
 		 * @target-class Entity setScale method
-		 * @param {Vector3|number[]} scale
+		 * @param {(Vector3|Array<number>)} scale
 		 * @returns {Entity} Self to allow chaining
 		 */
 		setScale: function () {
@@ -105,7 +101,7 @@ define([
 		/**
 		 * Orients the entity so it faces the supplied look at point. Injected on entities with a transformComponent
 		 * @target-class Entity lookAt method
-		 * @param {Vector3|number[]} lookAtPoint
+		 * @param {(Vector3|Array<number>)} lookAtPoint
 		 * @returns {Entity} Self to allow chaining
 		 */
 		lookAt: function () {
@@ -116,7 +112,7 @@ define([
 		/**
 		 * Translates the entity with the supplied amount multipled by the entity's orientation. Injected on entities with a transformComponent
 		 * @target-class Entity move method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		move: function () {
@@ -154,7 +150,7 @@ define([
 		/**
 		 * Translates the entity with the given amount. Injected on entities with a transformComponent
 		 * @target-class Entity addTranslation method
-		 * @param {Vector3|number[]} translation
+		 * @param {(Vector3|Array<number>)} translation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		addTranslation: function () {
@@ -165,7 +161,7 @@ define([
 		/**
 		 * Rotates the entity with the given amount. Injected on entities with a transformComponent
 		 * @target-class Entity addRotation method
-		 * @param {Vector3|number[]} rotation
+		 * @param {(Vector3|Array<number>)} rotation
 		 * @returns {Entity} Self to allow chaining
 		 */
 		addRotation: function () {
@@ -222,8 +218,8 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverse method
-		 * @param {(Entity, number) -> boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
-		 * @param {number} [levelOffset=0]
+		 * @param {function (entity: Entity, level: number) : boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
+		 * @param {number} [level=0]
 		 * @returns {Entity} Self to allow chaining
 		 */
 		traverse: function (callback, level) {
@@ -244,7 +240,7 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverseUp method
-		 * @param {(Entity) -> boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
+		 * @param {function (entity: Entity) : boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
 		 * @returns {Entity} Self to allow chaining
 		 */
 		traverseUp: function (callback) {
@@ -389,11 +385,11 @@ define([
 	 * sphereEntity.setTranslation(1, 1, 0);
 	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} translation Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		Vector.prototype.set.apply(this.transform.translation, arguments);
+		this.transform.translation.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -419,11 +415,11 @@ define([
 	 * Sets this transform's scale.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		Vector.prototype.set.apply(this.transform.scale, arguments);
+		this.transform.scale.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -436,21 +432,17 @@ define([
 	 * boxEntity.addTranslation(new Vector(1, 2, 1));
 	 * boxEntity.transformComponent.addTranslation(1, 2, 1);
 	 *
-     * @param {Vector | number[] | number...} Component values.
+     * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		if (arguments.length === 3) {
-			this.transform.translation.add(arguments);
-		} else {
-			this.transform.translation.add(arguments[0]);
-		}
+		this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
 
 	/**
-	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians).
+	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians, Euler order YZX).
 	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * <br /><i>Injected into entity when adding component.</i>.
 	 * @example
@@ -467,15 +459,15 @@ define([
 	};
 
 	/**
-	 * Adds to this transform's rotation using Euler angles (in radians).
+	 * Adds to this transform's rotation using Euler angles (in radians, Euler order YZX).
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
 	 * console.log(boxEntity.getRotation().toString()); // [0.79, 0, 0]
-	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD*45.0, 0, 0));
+	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD * 45.0, 0, 0));
 	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addRotation = function () {
@@ -496,14 +488,14 @@ define([
 	};
 
 	/**
-	 * Sets this transform's rotation around X, Y and Z axis (Euler angles, in radians).
+	 * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX).
 	 * The rotation is applied in X, Y, Z order.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * boxEntity.setRotation(Math.PI, 0, 0);
 	 * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
 	 *
-	 * @param {Vector | number[] | number...} Component values.
+	 * @param {(Vector | Array<number>)} Component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
@@ -526,7 +518,7 @@ define([
 	 * Sets the transform to look in a specific direction.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector3} position Target position.
+	 * @param {(Vector3|Entity)} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
@@ -534,16 +526,20 @@ define([
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
 		if (arguments.length === 3) {
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
+		} else if (position.transformComponent) {
+			if (position.transformComponent._dirty) {
+				position.transformComponent.updateWorldTransform();
+			}
+			this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
 		} else {
 			if (Array.isArray(position)) {
-				position = new Vector3(position);
+				position = Vector3.fromArray(position);
 			}
 			if (Array.isArray(up)) {
-				up = new Vector3(up);
+				up = Vector3.fromArray(up);
 			}
 			this.transform.lookAt(position, up);
 		}
-
 		this._dirty = true;
 		return this;
 	};
@@ -551,18 +547,17 @@ define([
 	/**
 	 * Adds to the translation in a local direction.<br/>
 	 * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
-	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
+	 * So for example move(0, 0, -1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
 	 *
 	 * @function
-	 * @param {Vector | number[] | number...} component values.
+	 * @param {(Vector | Array<number>)} component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.move = (function(){
-		var moveLocalDirection = new Vector3();
+	TransformComponent.prototype.move = (function () {
 		var moveWorldDirection = new Vector3();
 		return function () {
-			moveLocalDirection.set.apply(moveLocalDirection, arguments);
+			var moveLocalDirection = Vector3.fromAny.apply(null, arguments);
 			this.transform.applyForwardVector(moveLocalDirection, moveWorldDirection);
 			this.addTranslation(moveWorldDirection);
 			return this;
@@ -684,7 +679,7 @@ define([
 			transformComponent.transform.translation.setDirect(obj[0], obj[1], obj[2]);
 			matched = true;
 		} else if (obj instanceof Vector3) {
-			transformComponent.transform.translation.setDirect(obj.data[0], obj.data[1], obj.data[2]);
+			transformComponent.transform.translation.setDirect(obj.x, obj.y, obj.z);
 			matched = true;
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {

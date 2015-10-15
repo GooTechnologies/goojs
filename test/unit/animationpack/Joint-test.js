@@ -1,1 +1,1 @@
-define(['goo/animationpack/Joint'], function(Joint) {});
+define(['goo/animationpack/Joint'], function (Joint) {});

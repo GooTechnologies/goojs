@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/AbstractAnimationChannel'], function(AbstractAnimationChannel) {});
+define(['goo/animationpack/clip/AbstractAnimationChannel'], function (AbstractAnimationChannel) {});

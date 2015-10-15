@@ -1,1 +1,1 @@
-define(['goo/animationpack/Skeleton'], function(Skeleton) {});
+define(['goo/animationpack/Skeleton'], function (Skeleton) {});

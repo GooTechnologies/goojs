@@ -1,14 +1,13 @@
 define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils'
-], function(
+], function (
 	AudioContext,
 	MathUtils
 ) {
 	'use strict';
 
 	function OscillatorSound() {
-
 		// Settings
 		this.id = null;
 		this._volume = 1.0;
@@ -21,12 +20,12 @@ define([
 		this.connectTo();
 	}
 
-	OscillatorSound.prototype.stop = function() {
+	OscillatorSound.prototype.stop = function () {
 		this._oscNode.stop();
 		this._oscNode = null;
 	};
 
-	OscillatorSound.prototype.play = function() {
+	OscillatorSound.prototype.play = function () {
 		this._oscNode = AudioContext.getContext().createOscillator();
 		this._oscNode.connect(this._outNode);
 		this._oscNode.frequency.value = this._frequency;
@@ -35,7 +34,7 @@ define([
 		this._oscNode.start();
 	};
 
-	OscillatorSound.prototype.update = function(config) {
+	OscillatorSound.prototype.update = function (config) {
 		if (config.volume !== undefined) {
 			this._volume = MathUtils.clamp(config.volume, 0, 1);
 			this._outNode.gain.value = this._volume;
@@ -56,9 +55,9 @@ define([
 
 	/**
 	 * Connect output of sound to audionodes
-	 * @param {AudioNode[]|AudioNode} nodes
+	 * @param {(Array<AudioNode> | AudioNode)} nodes
 	 */
-	OscillatorSound.prototype.connectTo = function(nodes) {
+	OscillatorSound.prototype.connectTo = function (nodes) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;

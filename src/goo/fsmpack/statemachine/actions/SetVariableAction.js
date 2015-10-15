@@ -1,10 +1,10 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
-	], function (
+	'goo/fsmpack/statemachine/FsmUtils'
+], function (
 	Action,
-	FSMUtil
-	) {
+	FsmUtils
+) {
 	'use strict';
 
 	function SetVariableAction(/*id, settings*/) {
@@ -13,7 +13,7 @@ define([
 
 	SetVariableAction.prototype = Object.create(Action.prototype);
 
-	SetVariableAction.prototype.configure = function(settings) {
+	SetVariableAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 0;
@@ -38,10 +38,10 @@ define([
 		transitions: []
 	};
 
-	SetVariableAction.prototype._run = function(fsm) {
+	SetVariableAction.prototype._run = function (fsm) {
 		if (this.variable) {
-			fsm.applyOnVariable(this.variable, function() {
-				return FSMUtil.getValue(this.amount, fsm);
+			fsm.applyOnVariable(this.variable, function () {
+				return FsmUtils.getValue(this.amount, fsm);
 			}.bind(this));
 		}
 	};

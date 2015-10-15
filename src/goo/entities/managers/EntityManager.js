@@ -1,12 +1,10 @@
 define([
 	'goo/entities/managers/Manager',
 	'goo/entities/EntitySelection'
-],
-
-	function (
-		Manager,
-		EntitySelection
-	) {
+], function (
+	Manager,
+	EntitySelection
+) {
 	'use strict';
 
 	/**
@@ -68,7 +66,7 @@ define([
 	 * Checks if an entity exists
 	 *
 	 * @param entity Entity to check for
-	 * @returns {Boolean} true if the entity exists
+	 * @returns {boolean} true if the entity exists
 	 */
 	EntityManager.prototype.containsEntity = function (entity) {
 		return this._entitiesByIndex.has(entity._index);
