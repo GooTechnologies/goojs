@@ -18,12 +18,12 @@ define([
 	SyncFadeTransitionState.prototype = Object.create(FadeTransitionState.prototype);
 	SyncFadeTransitionState.prototype.constructor = SyncFadeTransitionState;
 
-	SyncFadeTransitionState.prototype.resetClips = function(globalTime) {
+	SyncFadeTransitionState.prototype.resetClips = function (globalTime) {
 		FadeTransitionState.prototype.resetClips.call(this, globalTime);
 		this._targetState.resetClips(this._sourceState._globalStartTime);
 	};
 
-	SyncFadeTransitionState.prototype.shiftClipTime = function(shiftTime) {
+	SyncFadeTransitionState.prototype.shiftClipTime = function (shiftTime) {
 		FadeTransitionState.prototype.shiftClipTime.call(this, shiftTime);
 		this._targetState.shiftClipTime(this._sourceState._globalStartTime + shiftTime);
 		this._sourceState.shiftClipTime(shiftTime);

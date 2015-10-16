@@ -99,7 +99,7 @@ define([], function () {
 
 	/**
 	 * Applies a function on the elements of this selection producing a new collection
-	 * @param predicate The function to apply to each element
+	 * @param fun The function to apply to each element
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.map = function (fun) {
@@ -149,15 +149,15 @@ define([], function () {
 
 	/**
 	 * Adds elements to this selection. Any resulting duplicates are removed.
-	 * @param elements {Element | Element[] | Element... | Selection} The element(s) to add
+	 * @param {(Element | Array<Element> | Selection)} elements The element(s) to add
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.and = function () {
 		if (this.top === null) { return this; }
 
-		var that = toArray.apply(null, arguments);
+		var elements = toArray.apply(null, arguments);
 
-		var union = this.top.concat(that);
+		var union = this.top.concat(elements);
 		union = removeDuplicates(union);
 		this.stack.push(union);
 		this.top = union;
@@ -167,13 +167,13 @@ define([], function () {
 
 	/**
 	 * Returns the common elements between this selection and the given parameter(s)
-	 * @param elements {Element | Element[] | Element... | Selection}
+	 * @param {(Element | Array<Element> | Selection)} elements
 	 * @returns {Selection} Returns self to allow chaining
 	 */
-	Selection.prototype.intersects = function (that) {
+	Selection.prototype.intersects = function () {
 		if (this.top === null) { return this; }
 
-		var that = toArray.apply(null, arguments);
+		var elements = toArray.apply(null, arguments);
 
 		var intersection = [];
 
@@ -184,11 +184,11 @@ define([], function () {
 		// worst case scenario: both arrays are of the same length and this optimisation is useless - it takes
 		// O(shortArray.length * log(longArray.length)) time
 		var shortArray, longArray;
-		if (that.length > this.top.length) {
+		if (elements.length > this.top.length) {
 			shortArray = this.top;
-			longArray = that;
+			longArray = elements;
 		} else {
-			shortArray = that;
+			shortArray = elements;
 			longArray = this.top;
 		}
 
@@ -207,19 +207,19 @@ define([], function () {
 
 	/**
 	 * Removes elements from the current selection
-	 * @param elements {Element | Element[] | Element... | Selection} Elements to remove from the selection
+	 * @param elements {(Element | Array<Element> | Selection)} Elements to remove from the selection
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.without = function () {
 		if (this.top === null) { return this; }
 
-		var that = toArray.apply(null, arguments);
+		var elements = toArray.apply(null, arguments);
 
 		var difference = [];
 
 		for (var i = 0; i < this.top.length; i++) {
 			var element = this.top[i];
-			if (that.indexOf(element) === -1) {
+			if (elements.indexOf(element) === -1) {
 				difference.push(element);
 			}
 		}

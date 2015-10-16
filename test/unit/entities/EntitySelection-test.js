@@ -30,7 +30,7 @@ define([
 		});
 
 		describe('constructor', function () {
-//			it('constructs an empty selection if given no parameters', function() {
+//			it('constructs an empty selection if given no parameters', function () {
 //
 //			});
 		});

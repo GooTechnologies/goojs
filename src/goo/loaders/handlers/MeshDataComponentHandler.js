@@ -4,8 +4,8 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
-	'goo/util/StringUtil'
+	'goo/util/ObjectUtils',
+	'goo/util/StringUtils'
 ], function (
 	ComponentHandler,
 	MeshDataComponent,
@@ -13,15 +13,15 @@ define([
 	ShapeCreatorMemoized,
 	RSVP,
 	_,
-	StringUtil
+	StringUtils
 ) {
 	'use strict';
 
 	/**
 	 * For handling loading of meshdatacomponents
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -36,8 +36,8 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
+	 * @param {Object} config
+	 * @returns {Object}
 	 * @private
 	 */
 	MeshDataComponentHandler.prototype._prepare = function (config) {
@@ -69,16 +69,16 @@ define([
 	/**
 	 * Update engine meshdatacomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 MeshDataComponentHandler.prototype.update = function (entity, config, options) {
+	MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			if (config.shape) {
-				var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
+				var shapeCreator = ShapeCreatorMemoized['create' + StringUtils.capitalize(config.shape)];
 				if (shapeCreator) {
 					component.meshData = shapeCreator(config.shapeOptions, component.meshData);
 					component.autoCompute = true;
@@ -98,7 +98,7 @@ define([
 						bounding.xExtent = size[0] / 2;
 						bounding.yExtent = size[1] / 2;
 						bounding.zExtent = size[2] / 2;
-						bounding.center.setArray(center);
+						bounding.center.setDirect(center[0], center[1], center[2]);
 						component.modelBound = bounding;
 						component.autoCompute = false;
 					}

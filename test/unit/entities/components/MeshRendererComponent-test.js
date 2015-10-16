@@ -4,7 +4,7 @@ define([
 	'goo/entities/Entity',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib'
-], function(
+], function (
 	World,
 	MeshRendererComponent,
 	Entity,
@@ -13,16 +13,16 @@ define([
 ) {
 	'use strict';
 
-	describe('MeshRendererComponent', function() {
+	describe('MeshRendererComponent', function () {
 		var world;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 			world.registerComponent(MeshRendererComponent);
 		});
 
 		describe('.applyOnEntity', function () {
-			it('sets a MeshRendererComponent when trying to add a Material', function() {
+			it('sets a MeshRendererComponent when trying to add a Material', function () {
 				var entity = new Entity(world);
 				var material = new Material(ShaderLib.simpleColored, '');
 				entity.set(material);

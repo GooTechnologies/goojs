@@ -1,15 +1,14 @@
 define([
 	'goo/scripts/ScriptUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ScriptUtils,
-	_
+	ObjectUtils
 ) {
 	'use strict';
 
 	// the collection of scripts
 	var _scripts = {};
-	var _gooClasses = {};
 
 	// the static class which just holds the following methods
 	var Scripts = {};
@@ -25,13 +24,19 @@ define([
 		_scripts[key] = factoryFunction;
 	};
 
-	Scripts.addClass = function (name, klass) {
-		_gooClasses[name] = klass;
-	};
+	Scripts.addClass = ObjectUtils.warnOnce(
+		'Scripts.addClass is deprecated; please consider using the global goo object instead',
+		function (name, klass) {
+			// deprecated as of v0.15.3 and scheduled for removal in version 0.17.0
+		}
+	);
 
-	Scripts.getClasses = function () {
-		return _gooClasses;
-	};
+	Scripts.getClasses = ObjectUtils.warnOnce(
+		'Scripts.getClasses is deprecated; please consider using the global goo object instead',
+		function () {
+			return window.goo;
+		}
+	);
 
 	Scripts.getScript = function (key) {
 		return _scripts[key];
@@ -59,7 +64,7 @@ define([
 		}
 
 		if (options) {
-			_.extend(script.parameters, options);
+			ObjectUtils.extend(script.parameters, options);
 		}
 
 		return script;

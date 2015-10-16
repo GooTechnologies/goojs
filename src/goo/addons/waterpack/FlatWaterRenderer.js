@@ -28,7 +28,7 @@ define([
 	'use strict';
 
 	/**
-	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
+	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example
 	 * @param {Object} [settings] Water settings passed in a JSON object
 	 * @param {boolean} [settings.useRefraction=true] Render refraction in water
@@ -65,12 +65,14 @@ define([
 			texture = settings.normalsTexture;
 		} else if (settings.normalsUrl) {
 			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
-			texture = new TextureCreator().loadTexture2D(normalsTextureUrl);
+			new TextureCreator().loadTexture2D(normalsTextureUrl).then(function (texture) {
+				waterMaterial.setTexture('NORMAL_MAP', texture);
+			});
 		} else {
 			var flatNormalData = new Uint8Array([127, 127, 255, 255]);
 			texture = new Texture(flatNormalData, null, 1, 1);
+			waterMaterial.setTexture('NORMAL_MAP', texture);
 		}
-		waterMaterial.setTexture('NORMAL_MAP', texture);
 		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 
@@ -98,7 +100,7 @@ define([
 			return;
 		}
 
-		entities = entities.filter(function(entity) {
+		entities = entities.filter(function (entity) {
 			return entity.meshRendererComponent.isReflectable;
 		});
 
@@ -137,33 +139,33 @@ define([
 			var camLocation = this.camLocation;
 			var camReflectPos = this.camReflectPos;
 
-			camLocation.setVector(camera.translation);
+			camLocation.set(camera.translation);
 			var planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectPos.setVector(camLocation.subVector(calcVect));
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectPos.set(camLocation.sub(calcVect));
 
-			camLocation.setVector(camera.translation).addVector(camera._direction);
+			camLocation.set(camera.translation).add(camera._direction);
 			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectDir.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
-			camLocation.setVector(camera.translation).addVector(camera._up);
+			camLocation.set(camera.translation).add(camera._up);
 			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectUp.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
-			camReflectLeft.setVector(camReflectUp).cross(camReflectDir).normalize();
+			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
 
-			this.waterCamera.translation.setVector(camReflectPos);
-			this.waterCamera._direction.setVector(camReflectDir);
-			this.waterCamera._up.setVector(camReflectUp);
-			this.waterCamera._left.setVector(camReflectLeft);
+			this.waterCamera.translation.set(camReflectPos);
+			this.waterCamera._direction.set(camReflectDir);
+			this.waterCamera._up.set(camReflectUp);
+			this.waterCamera._left.set(camReflectLeft);
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 
 			if (this.skybox && this.followCam) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setVector(camReflectPos);
+				target.translation.set(camReflectPos);
 				target.update();
 			}
 		}
@@ -208,7 +210,7 @@ define([
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setVector(source).addVector(this.offset);
+			target.translation.set(source).add(this.offset);
 			target.update();
 			this.waterCamera._updatePMatrix = true;
 		}
@@ -241,7 +243,7 @@ define([
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-	        normalMatrix: Shader.NORMAL_MATRIX,
+			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
 
 			normalMap: 'NORMAL_MAP',
@@ -434,14 +436,14 @@ define([
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
+		attributes: {
+			vertexPosition: MeshData.POSITION,
 			vertexJointIDs: MeshData.JOINTIDS,
 			vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms: {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			waterHeight: 0,
 			waterDensity: 0.05

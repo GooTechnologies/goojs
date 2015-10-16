@@ -1,12 +1,11 @@
-define([], function (
-) {
+define(function () {
 	'use strict';
 
 	/**
-	 * Library of particles<br>
-	 * @@example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
+	 * Library of particles
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
 	 */
-	var ParticleLib = {};
+	function ParticleLib() {}
 
 	/**
 	 * Returns a set of parameters for a smoke particle emitter
@@ -20,9 +19,9 @@ define([], function (
 			function (particle/*, particleEntity*/) {
 				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				vec3.data[0] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
-				vec3.data[1] = (Math.random() + 4.0) * 2 * options.scale;
-				vec3.data[2] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.x = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.y = (Math.random() + 4.0) * 2 * options.scale;
+				vec3.z = (Math.random() - 0.5) * 2 * options.spread * options.scale;
 				return vec3;
 			};
 		options.color = options.color || [0, 0, 0];
@@ -66,13 +65,13 @@ define([], function (
 			getEmissionVelocity: function (particle/*, particleEntity*/) {
 				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				vec3.data[0] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
-				vec3.data[1] = (Math.random() + 1.0) * options.velocity * options.scale;
-				vec3.data[2] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.x = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.y = (Math.random() + 1.0) * options.velocity * options.scale;
+				vec3.z = (Math.random() - 0.5) * 2 * options.spread * options.scale;
 				return vec3;
 			},
 			timeline: [{
-				timeOffset : 0.0,
+				timeOffset: 0.0,
 				spin: 0,
 				mass: 1,
 				size: 2.0 * options.scale,
@@ -118,7 +117,7 @@ define([], function (
 				return vec3;
 			},
 			timeline: [{
-				timeOffset : 0.0,
+				timeOffset: 0.0,
 				spin: 0,
 				mass: 1,
 				size: 1.0 * options.scale,

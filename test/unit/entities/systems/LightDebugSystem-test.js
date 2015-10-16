@@ -1,1 +1,1 @@
-define(['goo/debugpack/systems/LightDebugSystem'], function(LightDebugSystem) {});
+define(['goo/debugpack/systems/LightDebugSystem'], function (LightDebugSystem) {});

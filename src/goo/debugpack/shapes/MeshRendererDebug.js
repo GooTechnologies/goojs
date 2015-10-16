@@ -6,10 +6,10 @@ define([
 	'use strict';
 
 	function MeshRendererDebug() {
-		this._meshes = [buildBox(1,1,1), null];
+		this._meshes = [buildBox(1, 1, 1), null];
 	}
 
-	MeshRendererDebug.prototype.getMesh = function() {
+	MeshRendererDebug.prototype.getMesh = function () {
 		return this._meshes;
 	};
 

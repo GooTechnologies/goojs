@@ -1,1 +1,1 @@
-define(['goo/entities/systems/CameraSystem'], function(CameraSystem) {});
+define(['goo/entities/systems/CameraSystem'], function (CameraSystem) {});

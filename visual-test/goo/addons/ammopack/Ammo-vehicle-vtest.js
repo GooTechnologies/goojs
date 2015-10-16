@@ -104,18 +104,19 @@ require([
 			var transform = chassis.transformComponent.transform;
 			var pos = transform.translation;
 			behindCar.setDirect(0,0,-16);
-			transform.rotation.applyPost(behindCar);
-			behindCar.addVector(pos).addDirect(0,15,0);
+			behindCar.applyPost(transform.rotation);
+			behindCar.add(pos).addDirect(0,15,0);
 			entity.transformComponent.transform.translation.lerp(behindCar,0.05);
-			entity.lookAt(aboveCar.setVector(pos).addDirect(0,1,0),Vector3.UNIT_Y);
+			entity.lookAt(aboveCar.set(pos).addDirect(0,1,0),Vector3.UNIT_Y);
 		};
 
 		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScriptObject).addToWorld();
 	}
 
-	var texture = new TextureCreator().loadTexture2D('../../../resources/goo.png');
 	var material = new Material(ShaderLib.texturedLit);
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/goo.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 	function createEntity(goo, meshData, ammoSettings, pos) {
 		var entity = goo.world.createEntity(meshData, material, pos);
 		if (ammoSettings !== undefined) {

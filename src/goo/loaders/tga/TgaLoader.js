@@ -50,7 +50,7 @@ define([
 	 *
 	 * @param {Uint8Array} data - Binary data of the TGA file
 	 */
-	TgaLoader.prototype.loadData = function(data) {
+	TgaLoader.prototype.loadData = function (data) {
 		// Not enough data to contain header ?
 		if (data.length < 19) {
 			throw new Error('Targa::load() - Not enough data to contain header.');
@@ -116,7 +116,7 @@ define([
 	 *
 	 * @throws Error
 	 */
-	TgaLoader.prototype.checkHeader = function() {
+	TgaLoader.prototype.checkHeader = function () {
 		switch (this.header.image_type) {
 			// Check indexed type
 			case TgaLoader.TYPE_INDEXED:
@@ -161,7 +161,7 @@ define([
 	 *
 	 * @param {Uint8Array} data - Binary data of the TGA file
 	 */
-	TgaLoader.prototype.parse = function(data) {
+	TgaLoader.prototype.parse = function (data) {
 		var _header,
 			numAlphaBits,
 			pixel_data,
@@ -235,7 +235,7 @@ define([
 	 * @param {imageData} imageData - Optional ImageData to work with
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageData = function(imageData) {
+	TgaLoader.prototype.getImageData = function (imageData) {
 		var width = this.header.width,
 			height = this.header.height,
 			x_start,
@@ -312,7 +312,7 @@ define([
 	 *
 	 * @returns {canvas}
 	 */
-	TgaLoader.prototype.getCanvas = function() {
+	TgaLoader.prototype.getCanvas = function () {
 		var canvas = document.createElement('canvas');
 		var ctx = canvas.getContext('2d');
 		var imageData = ctx.createImageData(this.header.width, this.header.height);
@@ -328,7 +328,7 @@ define([
 	 * @param {string} type - Optional image content-type to output (default: image/png)
 	 * @returns {canvas}
 	 */
-	TgaLoader.prototype.getDataURL = function(type) {
+	TgaLoader.prototype.getDataURL = function (type) {
 		return this.getCanvas().toDataURL(type || "image/png");
 	};
 
@@ -344,7 +344,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageData8bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageData8bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image,
 			colormap = this.palettes;
 		var width = this.header.width;
@@ -376,7 +376,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageData16bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageData16bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image;
 		var width = this.header.width;
 		var color, i = 0,
@@ -407,7 +407,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageData24bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageData24bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image;
 		var width = this.header.width;
 		var i = 0,
@@ -437,7 +437,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageData32bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageData32bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image;
 		var width = this.header.width;
 		var i = 0,
@@ -467,7 +467,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageDataGrey8bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageDataGrey8bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image;
 		var width = this.header.width;
 		var color, i = 0,
@@ -498,7 +498,7 @@ define([
 	 * @param {int} x_end   - stop at pixel x.
 	 * @returns {imageData}
 	 */
-	TgaLoader.prototype.getImageDataGrey16bits = function(imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
+	TgaLoader.prototype.getImageDataGrey16bits = function (imageData, y_start, y_step, y_end, x_start, x_step, x_end) {
 		var image = this.image;
 		var width = this.header.width;
 		var i = 0,

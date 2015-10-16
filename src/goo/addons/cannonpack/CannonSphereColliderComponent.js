@@ -8,9 +8,9 @@ define([
 	/* global CANNON */
 
 	/**
-	 * Sphere collider for the {@link CannonSystem}.<br>
+	 * Sphere collider for the {@link CannonSystem}.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 */
 	function CannonSphereColliderComponent(settings) {

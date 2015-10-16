@@ -1,7 +1,7 @@
 define([
-	'goo/util/PromiseUtil'
-],  function (
-	PromiseUtil
+	'goo/util/PromiseUtils'
+], function (
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -13,8 +13,8 @@ define([
 	 * the handler with the loader.
 	 *
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
 	 * @hidden
 	 */
@@ -28,10 +28,10 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
-	ComponentHandler.prototype._prepare = function(/*config*/) {};
+	ComponentHandler.prototype._prepare = function (/*config*/) {};
 
 	/**
 	 * Create engine component object based on the config. Should be overridden in subclasses.
@@ -40,8 +40,8 @@ define([
 	 * @private
 	 * @abstract
 	 */
-	ComponentHandler.prototype._create = function() {
-		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
+	ComponentHandler.prototype._create = function () {
+		throw new Error('ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)');
 	};
 
 	/**
@@ -49,17 +49,17 @@ define([
 	 * @param {Entity} entity The entity from which this component should be removed.
 	 * @private
 	 */
-	ComponentHandler.prototype._remove = function(entity) {
+	ComponentHandler.prototype._remove = function (entity) {
 		entity.clearComponent(this._type);
 	};
 
 	/**
 	 * Loads object for given ref
 	 * @param {string} ref
-	 * @param {object} options
+	 * @param {Object} options
 	 * @private
 	 */
-	ComponentHandler.prototype._load = function(ref, options) {
+	ComponentHandler.prototype._load = function (ref, options) {
 		return this.loadObject(ref, options);
 	};
 
@@ -67,26 +67,26 @@ define([
 	 * Update engine component object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{EntityHandler} to load new component configs into the engine.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
-	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
-		if(!entity) {
-			return PromiseUtil.reject('Entity is missing');
+	ComponentHandler.prototype.update = function (entity, config/*, options*/) {
+		if (!entity) {
+			return PromiseUtils.reject('Entity is missing');
 		}
 		if (!config) {
 			this._remove(entity);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		var component = entity.getComponent(this._type);
-		if(!component) {
+		if (!component) {
 			component = this._create();
 			entity.setComponent(component);
 		}
 		this._prepare(config);
 
-		return PromiseUtil.resolve(component);
+		return PromiseUtils.resolve(component);
 	};
 
 
@@ -98,7 +98,7 @@ define([
 	 * @param {string} type
 	 * @returns {Class} A subclass of {ComponentHandler}, or null if no registered handler for the given type was found.
 	 */
-	ComponentHandler.getHandler = function(type) {
+	ComponentHandler.getHandler = function (type) {
 		return ComponentHandler.handlerClasses[type];
 	};
 
@@ -107,10 +107,9 @@ define([
 	 * @param {string} type
 	 * @param {Class} klass the class to register for this component type
 	 */
-	ComponentHandler._registerClass = function(type, klass) {
+	ComponentHandler._registerClass = function (type, klass) {
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 
 	return ComponentHandler;
-
 });

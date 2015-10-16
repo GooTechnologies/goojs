@@ -1,1 +1,1 @@
-define(['goo/animationpack/state/SteadyState'], function(SteadyState) {});
+define(['goo/animationpack/state/SteadyState'], function (SteadyState) {});

@@ -3,14 +3,14 @@ define([
 	'goo/sound/AudioContext',
 	'goo/sound/Sound',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AudioContext,
 	Sound,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -65,7 +65,7 @@ define([
 
 	/**
 	 * Preparing sound config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	SoundHandler.prototype._prepare = function (config) {
@@ -73,7 +73,7 @@ define([
 			loop: false,
 			audioRefs: {},
 			volume: 1.0,
-			name: "A Sound"
+			name: 'A Sound'
 		});
 	};
 
@@ -89,13 +89,13 @@ define([
 	/**
 	 * Adds/updates/removes a sound
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {
 		if (!AudioContext.isSupported()) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (sound) {
@@ -112,7 +112,7 @@ define([
 					} else {
 						/*jshint -W083 */
 						return that.loadObject(ref).then(function (buffer) {
-							return PromiseUtil.createPromise(function (resolve, reject) {
+							return PromiseUtils.createPromise(function (resolve, reject) {
 								AudioContext.getContext().decodeAudioData(buffer, function (audioBuffer) {
 									resolve(audioBuffer);
 								}, function (/*err*/) {

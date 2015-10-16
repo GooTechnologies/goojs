@@ -1,1 +1,1 @@
-define(['goo/geometrypack/FilledPolygon'], function(FilledPolygon) {});
+define(['goo/geometrypack/FilledPolygon'], function (FilledPolygon) {});

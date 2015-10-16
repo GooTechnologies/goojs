@@ -1,20 +1,48 @@
 define([
-	'goo/math/Vector'
+	'goo/math/MathUtils',
+	'goo/math/Vector',
+	'goo/math/Vector3',
+	'goo/math/Vector4'
 ], function (
-	Vector
+	MathUtils,
+	Vector,
+	Vector3,
+	Vector4
 ) {
 	'use strict';
 
 	/**
-	 * Vector with 2 components.
+	 * Vector with 2 components
 	 * @extends Vector
-	 * @param {Vector2|number[]|...number} arguments Initial values for the components.
+	 * @param {number} x
+	 * @param {number} y
+	 * @example
+	 * var v1 = new Vector2(); // v1 == (0, 0)
+	 * var v2 = new Vector2(1, 2); // v2 == (1, 2)
 	 */
-	function Vector2() {
-		Vector.call(this, 2);
+	function Vector2(x, y) {
+		// #ifdef DEBUG
+		this._x = 0;
+		this._y = 0;
+		// #endif
 
-		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+		if (arguments.length === 0) {
+			// Nothing given
+			this.x = 0;
+			this.y = 0;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Vector2) {
+				// Vector2
+				this.copy(arguments[0]);
+			} else {
+				// Array
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+			}
+		} else {
+			// Numbers
+			this.x = x;
+			this.y = y;
 		}
 
 		// #ifdef DEBUG
@@ -25,26 +53,544 @@ define([
 	Vector2.prototype = Object.create(Vector.prototype);
 	Vector2.prototype.constructor = Vector2;
 
-	Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);
+	// #ifdef DEBUG
+	Vector.setupAliases(Vector2.prototype, [['x'], ['y']]);
+	Vector.setupIndices(Vector2.prototype, 2);
+	// #endif
 
-	Vector2.ZERO = new Vector2(0, 0);
-	Vector2.ONE = new Vector2(1, 1);
-	Vector2.UNIT_X = new Vector2(1, 0);
-	Vector2.UNIT_Y = new Vector2(0, 1);
-
-	// general purpose vector for holding intermediate data that has no better than 'tmpVec'
-	var tmpVec = new Vector2();
+	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
 
 	/**
-	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
-	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2} [target] Target vector for storage.
-	 * @returns {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 * Zero-vector (0, 0)
+	 * @type {Vector2}
+	 */
+	Vector2.ZERO = new Vector2(0, 0);
+
+	/**
+	 * One-vector (1, 1)
+	 * @type {Vector2}
+	 */
+	Vector2.ONE = new Vector2(1, 1);
+
+	/**
+	 * Unit-X (1, 0)
+	 * @type {Vector2}
+	 */
+	Vector2.UNIT_X = new Vector2(1, 0);
+
+	/**
+	 * Unit-Y (0, 1)
+	 * @type {Vector2}
+	 */
+	Vector2.UNIT_Y = new Vector2(0, 1);
+
+	/**
+	 * Returns the vector component associated with the given index.
+	 * Vector components are numbered from 0 to 2 in this order: x, y.
+	 * @param {number} index
+	 * @returns {number}
+	 */
+	Vector2.prototype.getComponent = function (index) {
+		switch (index) {
+			case 0: return this.x;
+			case 1: return this.y;
+		}
+	};
+
+	/**
+	 * Sets the vector component associated with the given index to a given value.
+	 * Vector components are numbered from 0 to 2 in this order: x, y.
+	 * @param {number} index
+	 * @param {number} value
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.setComponent = function (index, value) {
+		switch (index) {
+			case 0: this.x = value; break;
+			case 1: this.y = value; break;
+		}
+		return this;
+	};
+
+	/**
+	 * Adds a vector to the current vector
+	 * @param rhs {Vector2}
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector2(1, 2);
+	 * var v2 = new Vector2(4, 5);
+	 * v1.add(v2); // v1 == (5, 7)
+	 */
+	Vector2.prototype.add = function (rhs) {
+		this.x += rhs.x;
+		this.y += rhs.y;
+
+		return this;
+	};
+
+	/**
+	 * Adds numbers 'x', 'y' to the current Vector2 values
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(1, 2);
+	 * v.addDirect(2, 4); // v == (3, 6)
+	 */
+	Vector2.prototype.addDirect = function (x, y) {
+		this.x += x;
+		this.y += y;
+
+		return this;
+	};
+
+	/**
+	 * Adds a vector from the current vector
+	 * @param rhs {Vector2}
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector2(4, 5);
+	 * var v2 = new Vector2(1, 2);
+	 * v1.sub(v2); // v1 == (3, 3)
+	 */
+	Vector2.prototype.sub = function (rhs) {
+		this.x -= rhs.x;
+		this.y -= rhs.y;
+
+		return this;
+	};
+
+	/**
+	 * Subtracts numbers 'x', 'y' from the current Vector2
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(); // v == (0, 0)
+	 * v.subDirect(1, 2); // v == (-1, -2)
+	 */
+	Vector2.prototype.subDirect = function (x, y) {
+		this.x -= x;
+		this.y -= y;
+
+		return this;
+	};
+
+	/**
+	 * Performs component-wise negation of the vector
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.negate = function () {
+		this.x = -this.x;
+		this.y = -this.y;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies the current vector by another vector
+	 * @param rhs {Vector2}
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector2(4, 5);
+	 * var v2 = new Vector2(1, 2);
+	 * v1.mul(v2); // v1 == (4, 10)
+	 */
+	Vector2.prototype.mul = function (rhs) {
+		this.x *= rhs.x;
+		this.y *= rhs.y;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies the current Vector2 by numbers 'x', 'y' as inputs
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(1, 2);
+	 * v.mulDirect(2, 4); // v == (2, 8)
+	 */
+	Vector2.prototype.mulDirect = function (x, y) {
+		this.x *= x;
+		this.y *= y;
+
+		return this;
+	};
+
+	/**
+	 * Scales the vector by a factor
+	 * @param {number} factor
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.scale = function (factor) {
+		this.x *= factor;
+		this.y *= factor;
+
+		return this;
+	};
+
+	/**
+	 * Divides the current Vector2 by another vector
+	 * @param {Vector2} rhs
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(4, 16);
+	 * v.div(2, 4); // v == (2, 16)
+	 */
+	Vector2.prototype.div = function (rhs) {
+		this.x /= rhs.x;
+		this.y /= rhs.y;
+
+		return this;
+	};
+
+	/**
+	 * Divides the current Vector2 by numbers 'x', 'y' as inputs
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(4, 9);
+	 * v.divDirect(2, 3); // v == (2, 3)
+	 */
+	Vector2.prototype.divDirect = function (x, y) {
+		this.x /= x;
+		this.y /= y;
+
+		return this;
+	};
+
+	/**
+	 * Computes the dot product between the current vector and another vector
+	 * @param {Vector2} rhs
+	 * @returns {number}
+	 */
+	Vector2.prototype.dot = function (rhs) {
+		return this.x * rhs.x +
+			this.y * rhs.y;
+	};
+
+	/**
+	 * Computes the dot product between the current vector and another vector given as 2 numeric values
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {number}
+	 */
+	Vector2.prototype.dotDirect = function (x, y) {
+		return this.x * x +
+			this.y * y;
+	};
+
+	/**
+	 * Returns whether this vector is aproximately equal to a given vector
+	 * @param rhs
+	 * @returns {boolean}
+	 */
+	Vector2.prototype.equals = function (rhs) {
+		return (Math.abs(this.x - rhs.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - rhs.y) <= MathUtils.EPSILON);
+	};
+
+	/**
+	 * Returns whether this vector is approximately equal to a given vector given as 2 numeric values
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {boolean}
+	 */
+	Vector2.prototype.equalsDirect = function (x, y) {
+		return (Math.abs(this.x - x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - y) <= MathUtils.EPSILON);
+	};
+
+	/**
+	 * Linearly interpolates between the current Vector2 and an 'end' Vector2
+	 * @param {Vector2} end End Vector2
+	 * @param {number} factor Interpolation factor between 0.0 and 1.0
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var from = new Vector2(1, 2);
+	 * var to = new Vector2(3, 4);
+	 * var midway = from.clone().lerp(to, 0.5); // midway == (2, 3)
+	 */
+	Vector2.prototype.lerp = function (end, factor) {
+		this.x += (end.x - this.x) * factor;
+		this.y += (end.y - this.y) * factor;
+
+		return this;
+	};
+
+	(function () {
+		var tmpVec = new Vector2();
+
+		/**
+		 * Reflects a vector relative to the plane obtained from the normal parameter.
+		 * @param {Vector2} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+		 * @returns {Vector2} Self to allow chaining
+		 */
+		Vector2.prototype.reflect = function (normal) {
+			tmpVec.copy(normal);
+			tmpVec.scale(2 * this.dot(normal));
+			this.sub(tmpVec);
+			return this;
+		};
+	})();
+
+	/**
+	 * Sets the vector's values from another vector's values
+	 * @param {Vector2} rhs
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(); // v == (0, 0)
+	 * v.set(new Vector2(2, 4)); // v == (2, 4)
+	 */
+	Vector2.prototype.set = function (rhs) {
+		if(rhs instanceof Vector2 || rhs instanceof Vector3 || rhs instanceof Vector4){
+			this.x = rhs.x;
+			this.y = rhs.y;
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+		}
+
+		return this;
+	};
+
+	/**
+	 * Sets the vector's values from 2 numeric arguments
+	 * @param {number} x
+	 * @param {number} y
+	 * @returns {Vector2} Self to allow chaining
+	 * @example
+	 * var v = new Vector2(); // v == (0, 0)
+	 * v.setDirect(2, 4); // v == (2, 4)
+	 */
+	Vector2.prototype.setDirect = function (x, y) {
+		this.x = x;
+		this.y = y;
+
+		return this;
+	};
+
+	/**
+	 * Calculates the squared length/magnitude of the current Vector2.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @returns {number} squared length
+	 * @example
+	 * var v = new Vector2(0, 9);
+	 * v.lengthSquared(); // 81
+	 */
+	Vector2.prototype.lengthSquared = function () {
+		return this.x * this.x + this.y * this.y;
+	};
+
+	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector2.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	/**
+	 * Normalizes the current vector
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.normalize = function () {
+		var length = this.length();
+
+		if (length < MathUtils.EPSILON) {
+			this.x = 0;
+			this.y = 0;
+		} else {
+			this.x /= length;
+			this.y /= length;
+		}
+
+		return this;
+	};
+
+	/**
+	 * Normalizes the current vector; this method does not perform special checks for zero length vectors
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.unsafeNormalize = function () {
+		var length = this.length();
+
+		this.x /= length;
+		this.y /= length;
+
+		return this;
+	};
+
+	/**
+	 * Computes the squared distance between the current Vector2 and another Vector2.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector2} rhs Vector2
+	 * @returns {number} distance squared
+	 * @example
+	 * var v1 = new Vector2(); // v1 == (0, 0)
+	 * var v2 = new Vector2(0, 9);
+	 * v1.distanceSquared(v2); // 81
+	 */
+	Vector2.prototype.distanceSquared = function (rhs) {
+		var deltaX = this.x - rhs.x;
+		var deltaY = this.y - rhs.y;
+
+		return deltaX * deltaX + deltaY * deltaY;
+	};
+
+	/**
+	 * Computes the distance between the current Vector2 and another Vector2.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector2} rhs Vector2
+	 * @returns {number} distance
+	 * @example
+	 * var v1 = new Vector2(); // v1 == (0, 0)
+	 * var v2 = new Vector2(0, 9);
+	 * v1.distance(v2); // 9
+	 */
+	Vector2.prototype.distance = function (rhs) {
+		return Math.sqrt(this.distanceSquared(rhs));
+	};
+
+	/**
+	 * Multiplies this vector with a Matrix2
+	 * @param {Matrix2} matrix
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.applyPre = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+
+		this.x = source[0] * x + source[1] * y;
+		this.y = source[2] * x + source[3] * y;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies a Matrix2 with this vector
+	 * @param {Matrix2} matrix
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.applyPost = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+
+		this.x = source[0] * x + source[2] * y;
+		this.y = source[1] * x + source[3] * y;
+
+		return this;
+	};
+
+	/**
+	 * Clones the vector
+	 * @returns {Vector2} Clone of self
+	 */
+	Vector2.prototype.clone = function () {
+		return new Vector2(this.x, this.y);
+	};
+
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector2} Source vector
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.copy = Vector2.prototype.set;
+
+	/**
+	 * Copies this vector over another. Not equivalent to `target.copy(this)` when
+	 * the target vector has more components than the source vector
+	 * @param {Vector} target
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.copyTo = function (target) {
+		target.x = this.x;
+		target.y = this.y;
+
+		return this;
+	};
+
+	/**
+	 * Creates a Vector2 given an array
+	 * @param {number[2]} array
+	 * @returns {Vector2}
+	 */
+	Vector2.fromArray = function (array) {
+		return new Vector2(array[0], array[1]);
+	};
+
+	/**
+	 * Creates a Vector2 given 3 numbers, an array, an {x, y} object or another Vector2
+	 * @returns {Vector2}
+	 */
+	Vector2.fromAny = function () {
+		if (arguments.length === 2) {
+			return Vector2.fromArray(arguments);
+		} else if (arguments[0] instanceof Array) {
+			return Vector2.fromArray(arguments[0]);
+		} else {
+			var vectorLike = arguments[0];
+			return new Vector2(vectorLike.x, vectorLike.y);
+		}
+	};
+
+	// #ifdef DEBUG
+	Vector.addReturnChecks(Vector2.prototype, [
+		'dot', 'dotDirect',
+		'length', 'lengthSquared',
+		'distance', 'distanceSquared'
+	]);
+	// #endif
+
+	// SHIM START
+	Object.defineProperty(Vector2.prototype, 'data', {
+		get: function () {
+			var data = [];
+			var that = this;
+			console.warn('The .data property of Vector2 was removed. Please use the .x and .y properties instead.');
+			Object.defineProperties(data, {
+				'0': {
+					get: function () {
+						return that.x;
+					},
+					set: function (value) {
+						that.x = value;
+					}
+				},
+				'1': {
+					get: function () {
+						return that.y;
+					},
+					set: function (value) {
+						that.y = value;
+					}
+				}
+			});
+			return data;
+		}
+	});
+
+	Vector2.prototype.setVector = function (rhs) {
+		console.warn('The setVector method of Vector2 was removed. Please use the set method instead.');
+		return this.set(rhs);
+	};
+
+	/**
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.add = function (lhs, rhs, target) {
+		console.warn('Vector2.add is deprecated.');
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -67,25 +613,11 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {Vector2} Self for chaining.
-	 */
-	Vector2.prototype.add = function (rhs) {
-		return Vector2.add(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
-	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2} [target] Target vector for storage.
-	 * @returns {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.sub = function (lhs, rhs, target) {
+		console.warn('Vector2.sub is deprecated.');
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -109,26 +641,11 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise subtraction and stores the result locally. Equivalent of 'return (this = this - rhs);'.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {Vector2} Self for chaining.
-	 */
-
-	Vector2.prototype.sub = function (rhs) {
-		return Vector2.sub(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
-	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2} [target] Target vector for storage.
-	 * @returns {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.mul = function (lhs, rhs, target) {
+		console.warn('Vector2.mul is deprecated.');
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -151,25 +668,11 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise multiplication and stores the result locally. Equivalent of 'return (this = this * rhs);'.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {Vector2} Self for chaining.
-	 */
-	Vector2.prototype.mul = function (rhs) {
-		return Vector2.mul(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
-	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2} [target] Target vector for storage.
-	 * @returns {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.div = function (lhs, rhs, target) {
+		console.warn('Vector2.div is deprecated.');
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -192,24 +695,11 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {Vector2} Self for chaining.
-	 */
-	Vector2.prototype.div = function (rhs) {
-		return Vector2.div(this, rhs, this);
-	};
-
-	/**
-	 * Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
-	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {number} Dot product.
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.dot = function (lhs, rhs) {
+		console.warn('Vector2.dot is deprecated.');
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -226,21 +716,11 @@ define([
 	};
 
 	/**
-	 * Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
-	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
-	 *            every component.
-	 * @returns {number} Dot product.
-	 */
-	Vector2.prototype.dot = function (rhs) {
-		return Vector2.dot(this, rhs);
-	};
-
-	/**
-	 * Computes the dot product between the current vector and 'rhs'.
-	 * @param {Vector2} rhs
-	 * @returns {number}
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.prototype.dotVector = function (rhs) {
+		console.warn('Vector2.prototype.dotVector is deprecated.');
 		var ldata = this.data;
 		var rdata = rhs.data;
 
@@ -249,221 +729,58 @@ define([
 	};
 
 	/**
-	 * Reflects a vector relative to the plane obtained from the normal parameter.
-	 * @param {Vector2} normal Defines the plane that reflects the vector. Assumed to be of unit length.
-	 * @returns {Vector2} Self to allow chaining
-	 */
-	Vector2.prototype.reflect = function (normal) {
-		tmpVec.copy(normal);
-		tmpVec.scale(2 * this.dot(normal));
-		this.subVector(tmpVec);
-		return this;
-	};
-
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
-	/**
-	 * Sets the vector's values from 2 numeric arguments
-	 * @param {number} x
-	 * @param {number} y
-	 * @returns {Vector2} Self to allow chaining
-	 * @example
-	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.setDirect(2, 4); // v1 == (2, 4)
-	 */
-	Vector2.prototype.setDirect = function (x, y) {
-		this.data[0] = x;
-		this.data[1] = y;
-
-		return this;
-	};
-
-	Vector2.prototype.setd = addWarning(
-		Vector2.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
-	/**
-	 * Sets the vector's values from an array
-	 * @param {number[]} array
-	 * @returns {Vector2} Self to allow chaining
-	 * @example
-	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.setArray([2, 4]); // v1 == (2, 4)
-	 */
-	Vector2.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-
-		return this;
-	};
-
-	Vector2.prototype.seta = addWarning(
-		Vector2.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
-	/**
-	 * Sets the vector's values from another vector
-	 * @param {Vector2} vector
-	 * @returns {Vector2} Self to allow chaining
-	 * @example
-	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.setVector(new Vector2(2, 4)); // v1 == (2, 4)
-	 */
-	Vector2.prototype.setVector = function (vector) {
-		this.data[0] = vector.data[0];
-		this.data[1] = vector.data[1];
-
-		return this;
-	};
-
-	Vector2.prototype.setv = addWarning(
-		Vector2.prototype.setVector, '.setv is deprecated; please use .setVector instead');
-
-	/**
-	 * Adds arguments 'x', 'y' to the current vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.addd(2, 4); // v1 == (3, 6)
-	 */
-	Vector2.prototype.addDirect = function (x, y) {
-		this.data[0] += x;
-		this.data[1] += y;
-
-		return this;
-	};
-
-	/**
-	 * Adds the vector argument to the current vector
-	 * @param {Vector2} vector
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.addVector(new Vector2(2, 4)); // v1 == (3, 6)
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.prototype.addVector = function (vector) {
+		console.warn('Vector2.prototype.addVector is deprecated.');
 		this.data[0] += vector.data[0];
 		this.data[1] += vector.data[1];
 
 		return this;
 	};
 
-
 	/**
-	 * Multiplies the vector by arguments 'x', 'y'
-	 * @param {number} x
-	 * @param {number} y
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.mulDirect(2, 4); // v1 == (2, 8)
-	 */
-	Vector2.prototype.mulDirect = function (x, y) {
-		this.data[0] *= x;
-		this.data[1] *= y;
-
-		return this;
-	};
-
-	/**
-	 * Multiplies the vector by the argument
-	 * @param {Vector2} vector
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.mulVector(new Vector2(2, 4)); // v1 == (2, 8)
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.prototype.mulVector = function (vector) {
+		console.warn('Vector2.prototype.mulVector is deprecated.');
 		this.data[0] *= vector.data[0];
 		this.data[1] *= vector.data[1];
 
 		return this;
 	};
 
-
 	/**
-	 * Subtracts arguments 'x', 'y' form the current vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.subd(2, 4); // v1 == (-1, -2)
+	 * @hidden
+	 * @deprecated
 	 */
-	Vector2.prototype.subDirect = function (x, y) {
-		this.data[0] -= x;
-		this.data[1] -= y;
+	Vector2.prototype.setArray = function (array) {
+		console.warn('Vector2.prototype.setArray is deprecated.');
+		this.data[0] = array[0];
+		this.data[1] = array[1];
 
 		return this;
 	};
 
 	/**
-	 * Subtracts the vector argument from the current vector
-	 * @param {Vector2} vector
-	 * @returns {Vector2} this for chaining
-	 * @example
-	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.addVector(new Vector2(2, 4)); // v1 == (-1, -2)
+	 * @hidden
+	 * @deprecated
 	 */
 	Vector2.prototype.subVector = function (vector) {
+		console.warn('Vector2.prototype.subVector is deprecated.');
 		this.data[0] -= vector.data[0];
 		this.data[1] -= vector.data[1];
 
 		return this;
 	};
 
+	//!schteppe: not shimming Vector2.prototype.seta, it's been warned about forever
+	//!schteppe: not shimming Vector2.prototype.setd, it's been warned about forever
+	//!schteppe: not shimming Vector2.prototype.setv, it's been warned about forever
 
-	/**
-	 * Scales the vector by a factor
-	 * @param {number} factor
-	 * @returns {Vector2} Self for chaining
-	 */
-	Vector2.prototype.scale = function (factor) {
-		this.data[0] *= factor;
-		this.data[1] *= factor;
-		return this;
-	};
-
-	/**
-	 * Clones the vector.
-	 * @returns {Vector2} Clone of self.
-	 */
-	Vector2.prototype.clone = function () {
-		return new Vector2().copy(this);
-	};
-
-	/**
-	 * Copies the values of another vector to this vector; an alias for .setVector
-	 * @param {Vector2} Source vector
-	 */
-	Vector2.prototype.copy = Vector2.prototype.setVector;
-
-	Vector2.prototype.copyTo = function (destination) {
-		destination.data[0] = this.data[0];
-		destination.data[1] = this.data[1];
-		return this;
-	};
-
-	// #ifdef DEBUG
-	Vector.addPostChecks(Vector2.prototype, [
-		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
-		'reflect',
-		'setDirect', 'setArray', 'setVector',
-		'addDirect', 'addVector',
-		'subDirect', 'subVector',
-		'mulDirect', 'mulVector',
-		'scale'
-	]);
-	// #endif
+	// SHIM END
 
 	return Vector2;
 });

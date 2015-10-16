@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon Mar 10 2014 10:17:32 GMT+0100 (CET)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
 	// base path, that will be used to resolve files and exclude
@@ -15,9 +15,9 @@ module.exports = function(config) {
 	// list of files / patterns to load in the browser
 	files: [
 		{ pattern: 'test/unit/**/*.png', included: false },
+		{ pattern: 'test/unit/**/*.mp4', included: false },
 		{ pattern: 'test/unit/all-tests.js', included: false },
 		'test/unit/karma-main.js',
-		'visual-test/lib/Tween.js',
 		'lib/cannon/cannon.min.js',
 		{ pattern: 'src/**/*.js', included: false },
 		{ pattern: 'lib/**/*.js', included: false },

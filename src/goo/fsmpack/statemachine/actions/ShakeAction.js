@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/TWEEN'
 ], function (
 	Action,
-	Vector3
+	Vector3,
+	TWEEN
 ) {
 	'use strict';
 
@@ -53,17 +55,17 @@ define([
 		}]
 	};
 
-	ShakeAction.prototype.configure = function(settings) {
+	ShakeAction.prototype.configure = function (settings) {
 		this.startLevel = settings.startLevel;
 		this.endLevel = settings.endLevel;
 		this.time = settings.time;
 		this.speed = { 'Fast': 1, 'Medium': 2, 'Slow': 4 }[settings.speed];
-		this.easing = window.TWEEN.Easing.Quadratic.InOut;
+		this.easing = TWEEN.Easing.Quadratic.InOut;
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	ShakeAction.prototype._setup = function() {
-		this.tween = new window.TWEEN.Tween();
+	ShakeAction.prototype._setup = function () {
+		this.tween = new TWEEN.Tween();
 	};
 
 	ShakeAction.prototype.cleanup = function (/*fsm*/) {
@@ -72,7 +74,7 @@ define([
 		}
 	};
 
-	ShakeAction.prototype._run = function(fsm) {
+	ShakeAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -84,28 +86,28 @@ define([
 
 		var that = this;
 		var iter = 0;
-		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function () {
 			iter++;
 			if (iter > that.speed) {
 				iter = 0;
 
 				target.setDirect(
-					- oldVal.data[0] + (Math.random()-0.5) * this.level * 2,
-					- oldVal.data[1] + (Math.random()-0.5) * this.level * 2,
-					- oldVal.data[2] + (Math.random()-0.5) * this.level * 2
+					-oldVal.x + (Math.random() - 0.5) * this.level * 2,
+					-oldVal.y + (Math.random() - 0.5) * this.level * 2,
+					-oldVal.z + (Math.random() - 0.5) * this.level * 2
 				);
 			}
 
 			vel.setDirect(
-				vel.data[0] * 0.98 + (target.data[0]) * 0.1,
-				vel.data[1] * 0.98 + (target.data[1]) * 0.1,
-				vel.data[2] * 0.98 + (target.data[2]) * 0.1
+				vel.x * 0.98 + (target.x) * 0.1,
+				vel.y * 0.98 + (target.y) * 0.1,
+				vel.z * 0.98 + (target.z) * 0.1
 			);
 
 			translation.add(vel).sub(oldVal);
 			oldVal.copy(vel);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			translation.sub(oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);

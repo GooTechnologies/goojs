@@ -1,5 +1,5 @@
-/*jshint strict: false, evil: true */
-/* global exports */
+// jshint node:true
+/* jshint strict: false, evil: true */
 var fs = require('graceful-fs');
 var file = require('file');
 
@@ -50,38 +50,46 @@ function getProperFileName(fileName) {
 	return fileName.replace(/\\/g, '/');
 }
 
+function parseModulePaths(source) {
+	var startArray = source.indexOf('[');
+	var endArray = source.indexOf(']');
+	var firstFunction = source.indexOf('function');
+
+	var arrayStr = source.substring(startArray, endArray + 1);
+
+	if (endArray === -1 || (endArray > -1 && firstFunction < endArray)) {
+		return [];
+	} else {
+		// JSON.parse would choke on a lot of things (comments, single quotes, etc)
+		return eval(arrayStr);
+	}
+}
+
+function parseModuleBindings(source) {
+	var firstFunction = source.indexOf('function');
+	var startList = source.indexOf('(', firstFunction);
+	var endList = source.indexOf(')', startList);
+
+	var listStr = source.slice(startList + 1, endList);
+
+	if (listStr.indexOf(',') === -1) {
+		return [];
+	} else {
+		return listStr.split(',').map(function (parameter) {
+			return parameter.trim();
+		});
+	}
+}
+
 function getDependencies(fileName, callback) {
-	fs.readFile(fileName, 'utf8', function (err, data) {
+	fs.readFile(fileName, 'utf8', function (err, source) {
 		if (err) { throw err; }
 
-		var startArray = data.indexOf('[');
-		var endArray = data.indexOf(']');
-		var firstFunction = data.indexOf('function');
-
-		var arrayStr = data.substring(startArray, endArray + 1);
-
-		/*
-		// this will choke on a lot of stuff (extra comma at the end, comments, ...)
-		arrayStr = arrayStr.replace(/'/g, '"');
-		try {
-			var array = JSON.parse(arrayStr);
-		} catch(e) {
-			console.log('--- error ---');
-			console.log(arrayStr);
-			throw e;
-		}
-		*/
-
-		var array;
-		if (endArray === -1 || (endArray > -1 && firstFunction < endArray)) {
-			array = [];
-		} else {
-			array = eval(arrayStr);
-		}
+		var modulePaths = parseModulePaths(source);
 
 		var properFileName = getProperFileName(fileName);
 
-		callback(properFileName, array);
+		callback(properFileName, modulePaths);
 	});
 }
 
@@ -124,8 +132,8 @@ function getDependants(rootPath, fileName, callback) {
 	});
 }
 
-exports.Dependency = {
-	getTree: getTree,
-	getDependencies: getDependencies,
-	getDependants: getDependants
-};
+exports.getTree = getTree;
+exports.getDependencies = getDependencies;
+exports.getDependants = getDependants;
+exports.parseModulePaths = parseModulePaths;
+exports.parseModuleBindings = parseModuleBindings;

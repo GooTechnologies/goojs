@@ -1,14 +1,12 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/fsmpack/statemachine/State',
 	'goo/fsmpack/statemachine/Machine',
 	'goo/fsmpack/statemachine/actions/Actions',
 	'goo/util/rsvp'
-], function(
+], function (
 	ConfigHandler,
-	PromiseUtil,
 	_,
 	State,
 	Machine,
@@ -33,39 +31,27 @@ define([
 	MachineHandler.prototype.constructor = MachineHandler;
 
 	ConfigHandler._registerClass('machine', MachineHandler);
-	MachineHandler.prototype._remove = function(ref) {
-		var machine = this._objects.get(ref);
-		if (machine) {
-			/**
-			 * Removes a machine
-			 * @param {ref}
-			 * @private
-			 */
-			machine.removeFromParent();
-		}
-		this._objects.delete(ref);
-	};
 
 	/**
 	 * Creates an empty machine
 	 * @returns {Machine}
 	 * @private
 	 */
-	 MachineHandler.prototype._create = function() {
+	MachineHandler.prototype._create = function () {
 		return new Machine();
 	};
 
 	/**
 	 * Adds/updates/removes a machine
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @private
 	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
 	 */
-	 MachineHandler.prototype._update = function(ref, config, options) {
+	MachineHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(machine) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (machine) {
 			if (!machine) { return; }
 			machine.name = config.name;
 
@@ -80,7 +66,7 @@ define([
 			for (var key in config.states) {
 				promises.push(that._updateState(machine, config.states[key], options));
 			}
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				machine.setInitialState(config.initialState);
 				return machine;
 			});
@@ -90,10 +76,10 @@ define([
 	/**
 	 * Update actions on a state
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
-	MachineHandler.prototype._updateActions = function(state, stateConfig) {
+	MachineHandler.prototype._updateActions = function (state, stateConfig) {
 		// Remove old actions
 		for (var i = 0; i < state._actions.length; i++) {
 			var action = state._actions[i];
@@ -106,7 +92,7 @@ define([
 		// Update new and existing ones
 		// For actions, order is (or will be) important
 		var actions = [];
-		_.forEach(stateConfig.actions, function(actionConfig) {
+		_.forEach(stateConfig.actions, function (actionConfig) {
 			var action = state.getAction(actionConfig.id);
 			if (!action) {
 				var Action = Actions.actionForType(actionConfig.type);
@@ -126,10 +112,10 @@ define([
 	/**
 	 * Update transitions on the machine
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
-	MachineHandler.prototype._updateTransitions = function(state, stateConfig) {
+	MachineHandler.prototype._updateTransitions = function (state, stateConfig) {
 		state._transitions = {};
 		for (var key in stateConfig.transitions) {
 			var transition = stateConfig.transitions[key];
@@ -140,10 +126,10 @@ define([
 	/**
 	 * Update states on the machine. This includes loading childMachines
 	 * @param {State} state
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
-	MachineHandler.prototype._updateState = function(machine, stateConfig, options) {
+	MachineHandler.prototype._updateState = function (machine, stateConfig, options) {
 		var state;
 		if (machine._states && machine._states[stateConfig.id]) {
 			state = machine._states[stateConfig.id];
@@ -161,7 +147,7 @@ define([
 		// Removing
 		for (var i = 0; i < state._machines; i++) {
 			var childMachine = state._machines[i];
-			if(!stateConfig.childMachines[childMachine.id]) {
+			if (!stateConfig.childMachines[childMachine.id]) {
 				state.removeMachine(childMachine);
 				i--;
 			}
@@ -174,12 +160,12 @@ define([
 
 		/*
 		// TODO: Test and use this. Will make the promises sorted correctly.
-		_.forEach(stateConfig.childMachines, function(childMachineConfig) {
+		_.forEach(stateConfig.childMachines, function (childMachineConfig) {
 			promises.push(that._load(childMachineConfig.machineRef, options));
 		}, null, 'sortValue');
 		*/
 
-		return RSVP.all(promises).then(function(machines) {
+		return RSVP.all(promises).then(function (machines) {
 			for (var i = 0; i < machines; i++) {
 				state.addMachine(machines[i]);
 			}

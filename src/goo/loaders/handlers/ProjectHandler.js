@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler'
-
 ], function (
 	ConfigHandler
 ) {
@@ -35,9 +34,9 @@ define([
 	/**
 	 * Removes project from engine, i e removes mainScene, i e removes scene entities from world
 	 * @param {string} ref}
-	 * @param {object} options
+	 * @param {Object} options
 	 */
-	ProjectHandler.prototype._remove = function(ref, options) {
+	ProjectHandler.prototype._remove = function (ref, options) {
 		var project = this._objects.get(ref);
 		if (project) {
 			this.updateObject(project.mainScene.id, null, options);
@@ -46,10 +45,10 @@ define([
 
 	/**
 	 * Creates an empty project object
-	 * @returns {object}
+	 * @returns {Object}
 	 * @private
 	 */
-	ProjectHandler.prototype._create = function() {
+	ProjectHandler.prototype._create = function () {
 		return {
 			mainScene: null
 		};
@@ -58,16 +57,16 @@ define([
 	/**
 	 * Creates/updates/removes a project
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
-	 ProjectHandler.prototype._update = function(ref, config, options) {
+	ProjectHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(project) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (project) {
 			if (!project) { return; }
 			function loadPromise() {
-				return that._load(config.mainSceneRef, options).then(function(scene) {
+				return that._load(config.mainSceneRef, options).then(function (scene) {
 					project.mainScene = scene;
 					return project;
 				});

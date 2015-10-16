@@ -1,9 +1,9 @@
 define([
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -16,9 +16,8 @@ define([
 	 * the handler with the loader.
 	 *
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @returns {ComponentHandler}
+	 * @param {Function} getConfig The config loader function. See {DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @hidden
 	 */
 	function ConfigHandler(world, getConfig, updateObject, loadObject) {
@@ -32,7 +31,7 @@ define([
 
 	/**
 	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
-	 * @returns {object} the newly created Entity, Material or other engine object
+	 * @returns {Object} the newly created Entity, Material or other engine object
 	 * @private
 	 */
 	ConfigHandler.prototype._create = function () {
@@ -52,7 +51,7 @@ define([
 
 	/**
 	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	ConfigHandler.prototype._prepare = function (config) {};
@@ -60,7 +59,7 @@ define([
 	/**
 	 * Loads object for given ref
 	 * @param {string} ref
-	 * @param {object} options
+	 * @param {Object} options
 	 * @private
 	 */
 	ConfigHandler.prototype._load = function (ref, options) {
@@ -73,10 +72,14 @@ define([
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
 
-		if (this._loading.has(ref)) {
+		if (!options) {
+			options = {};
+		}
+
+		if (this._loading.has(ref) && !(options.instantiate && ConfigHandler.getTypeForRef(ref) === 'machine')) {
 			return this._loading.get(ref);
 		} else if (this._objects.has(ref) && !options.reload) {
-			return PromiseUtil.resolve(this._objects.get(ref));
+			return PromiseUtils.resolve(this._objects.get(ref));
 		} else {
 			var promise = this.getConfig(ref, options).then(function (config) {
 				return this.update(ref, config, options);
@@ -89,8 +92,6 @@ define([
 				this._loading.delete(ref);
 				throw err;
 			}.bind(this));
-
-			this._loading.set(ref, promise);
 
 			return promise;
 		}
@@ -113,7 +114,7 @@ define([
 	 * This method is called by #{DynamicLoader} to load new resources into the engine.
 	 *
 	 * @param {string} ref The ref of this config
-	 * @param {object} config
+	 * @param {Object} config
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function (ref, config, options) {
@@ -127,17 +128,25 @@ define([
 		return promise;
 	};
 
+	ConfigHandler.getTypeForRef = function (ref) {
+		return ref.substr(ref.lastIndexOf('.') + 1).toLowerCase();
+	};
 
 	ConfigHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref, options);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
-		if (!this._objects.has(ref)) {
+
+		if (!options) {
+			options = {};
+		}
+
+		if (!this._objects.has(ref) || (options.instantiate && ConfigHandler.getTypeForRef(ref) === 'machine')) {
 			this._objects.set(ref, this._create());
 		}
 		this._prepare(config);
-		return PromiseUtil.resolve(this._objects.get(ref));
+		return PromiseUtils.resolve(this._objects.get(ref));
 	};
 
 	ConfigHandler.handlerClasses = {};

@@ -1,17 +1,16 @@
-define(
-[
-	"goo/shapes/Disk"
-], function(
+define([
+	'goo/shapes/Disk'
+], function (
 	Disk
 ) {
-	"use strict";
+	'use strict';
 
-	describe("Disk", function() {
+	describe('Disk', function () {
 		var a = new Disk(8, 1);
 
-		it("Number of vertices and indices", function() {
+		it('Number of vertices and indices', function () {
 			expect(a.vertexCount).toEqual(9);
-			expect(a.indexCount).toEqual(8*3);
+			expect(a.indexCount).toEqual(8 * 3);
 		});
 	});
 });

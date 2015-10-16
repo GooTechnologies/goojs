@@ -6,7 +6,7 @@ define([
 	'goo/animationpack/clip/AnimationClip',
 	'goo/loaders/DynamicLoader',
 	'test/loaders/Configs'
-], function(
+], function (
 	World,
 	AnimationLayer,
 	SteadyState,
@@ -19,7 +19,7 @@ define([
 
 	describe('AnimationLayersHandler', function () {
 		var loader;
-		
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -28,7 +28,7 @@ define([
 				ajax: false
 			});
 		});
-		
+
 		it('loads a collection of animation layers', function (done) {
 			var layersConfig = Configs.animation();
 			loader.preload(Configs.get());
@@ -41,7 +41,7 @@ define([
 				done();
 			});
 		});
-		
+
 		it('sorts animation layers correctly', function (done) {
 			var layersConfig = Configs.animation();
 			loader.preload(Configs.get());

@@ -1,1 +1,1 @@
-define(['goo/renderer/ShaderCall'], function(ShaderCall) {});
+define(['goo/renderer/ShaderCall'], function (ShaderCall) {});

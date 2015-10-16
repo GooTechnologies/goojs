@@ -1,7 +1,7 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Scripts,
 	BoundingBox,
@@ -82,7 +82,7 @@ define([
 
 						if (script.setup) { newScript.setup = script.setup; }
 						if (script.update) { newScript.update = script.update; }
-						if (script.setup) { newScript.cleanup = script.cleanup; }
+						if (script.cleanup) { newScript.cleanup = script.cleanup; }
 						scriptComponent.scripts.push(newScript);
 					}
 				}
@@ -118,7 +118,7 @@ define([
 	 * @param {boolean} [settings.shareMaterials=false] Cloning entities clones their materials by default
 	 * @param {boolean} [settings.shareUniforms=false] Cloning entities clones their materials' uniforms by default
 	 * @param {boolean} [settings.shareTextures=false] Cloning entities clones their materials' textures by default
-	 * @param {function (Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+	 * @param {function (entity: Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 	 * @returns {Entity} The cloned entity.
 	 */
 	EntityUtils.clone = function (world, entity, settings) {
@@ -175,7 +175,7 @@ define([
 					if (boundingVolume instanceof BoundingBox) {
 						mergedWorldBound.copy(boundingVolume);
 					} else {
-						mergedWorldBound.center.setVector(boundingVolume.center);
+						mergedWorldBound.center.set(boundingVolume.center);
 						mergedWorldBound.xExtent = mergedWorldBound.yExtent = mergedWorldBound.zExtent = boundingVolume.radius;
 					}
 					first = false;

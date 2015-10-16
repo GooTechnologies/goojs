@@ -1,7 +1,9 @@
 GooJS
 =====
 
-Goo Engine in JavaScript
+Goo Engine in JavaScript.
+This document should answer quick questions about setting up a dev environment for working on the engine.
+Every major component and external tools have their own `README.md` files in their respective directory.
 
 
 TL;DR
@@ -42,10 +44,9 @@ This also means that `git commit file.js` may not actually check file.js.
 Note: If you get a TypeError on Windows when running the JSHint script, try doing a SET HOME=%HOMEPATH% before running it.
 
 
-Tests
------
+## Tests
 
-The tests use Jasmine (http://pivotal.github.com/jasmine/) and Karma (http://karma-runner.github.io/).
+The tests use [http://pivotal.github.com/jasmine/](Jasmine) and are invoked by the build script (`CI`) through [http://karma-runner.github.io/](Karma).
 
 
 ### Karma
@@ -54,7 +55,7 @@ Open up a server and the open [http://localhost:your-fav-port/goojs/test/test.ht
 
 OR
 
-Run `grunt test`
+Run `grunt unittest`
 
 This will start a browser and run all tests with Karma once. If you want to use the more convenient Karma server, continue with the following steps.
 
@@ -88,7 +89,7 @@ OR use the following command instead (adjusting the path if necessary):
 
 To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
 
-    coffee ../simple-node-server/app.coffee --goo-path .
+    python -m SimpleHTTPServer 8000
 
 And then open http://localhost:8000/test/test.html
 
@@ -96,19 +97,39 @@ And then open http://localhost:8000/test/test.html
 
 Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul), which is built in to Karma. Every time the tests are run a code coverage result is saved into the folder `coverage/`, e.g. `coverage/Chrome 33.0.1750 (Mac OS X 10.9.2)/index.html`.
 
-JS Doc
-------
+
+## Visual tests
+
+`grunt e2e` to launch the visual test comparison tool
+
+Visual tests serve both as documentation and to check that features (still) work. Every new feature should be accompanied by a visual test. See `visual-test/README.md` for more details.
+
+
+## JS Doc
 
 `grunt jsdoc` - outputs to `out-doc`
 
-GooJS uses a custom documentation compiler; see `tools/modoc/README.md`
+GooJS uses a custom documentation compiler, *modoc*; see `tools/modoc/README.md` for more details.
+
+
+## Tern type expressions
+ 
+`grunt tern` - outputs to `out-tern`
+
+See `tools/modoc/README.md` for details about type expressions. The code relevant for tern is in `tools/modoc`.
+
 
 ## Releasing
 
-See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
++ Update the CHANGES file and commit
++ Tag with the appropriate label i.e. `git tag v0.15.6`
++ `git push --tags` to push the tag
++ `git push` to push the commit associated with the tag;
+the build system is very sensitive - push in this order only
+
 
 ## Building
 
-- Minified and mangled: `grunt`
-- Minified: `grunt minify-no-mangle`
-- Concatenated: `grunt minify-dev`
++ Minified and mangled: `grunt`
++ Minified: `grunt minify-no-mangle`
++ Concatenated: `grunt minify-dev`

@@ -37,7 +37,7 @@ require([
 
 	function createMesh(meshData, material, x, y, z) {
 		var entity = goo.world.createEntity(meshData, material);
-		entity.transformComponent.transform.translation.set(x, y, z);
+		entity.transformComponent.transform.translation.setDirect(x, y, z);
 		entity.addToWorld();
 	}
 

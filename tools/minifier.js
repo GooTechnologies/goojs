@@ -1,57 +1,55 @@
 // jshint node:true
 'use strict';
 
-var Dependency = require('./dependency').Dependency;
-var topoSort = require('./topo-sort');
-var derequire = require('./derequire-module');
 var fs = require('fs');
-var esprima = require('esprima');
-var escodegen = require('escodegen');
 var uglify = require('uglify-js');
 
+var dependency = require('./dependency');
+var topoSort = require('./topo-sort');
+var derequire = require('./derequire-module-regex');
+var util = require('./util');
 
+var stripJS = util.stripEnding.bind(null, '.js');
 
-function stripJS(string) {
-	return string.slice(0, -3);
-}
-
+/**
+ * Transforms a dependency tree into a graph usable by the topological sort function.
+ * In this case it just strips the ".js" extension from the nodes since the extensions do not appear in the adjacency lists.
+ * @param { string -> string[] } dependencies
+ * @returns { string -> string[] }
+ */
 function graphise(dependencies) {
-	var graph = {};
-	Object.keys(dependencies).forEach(function (key) {
+	return Object.keys(dependencies).reduce(function (graph, key) {
 		graph[stripJS(key)] = dependencies[key];
-	});
-
-	return graph;
+		return graph;
+	}, {});
 }
 
+/**
+ * Shallow copies an object while filtering its properties; not equivalent to lodash/underscore's _.filter since they return arrays
+ * @param obj
+ * @param predicate
+ * @returns {object}
+ */
 function filterObj(obj, predicate) {
-	var filtered = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (filtered, key) {
 		if (predicate(obj[key], key)) {
 			filtered[key] = obj[key];
 		}
-	});
-
-	return filtered;
+		return filtered;
+	}, {});
 }
 
+/**
+ * Applies a function to every property of an object and returns another object containing the results; not equivalent to lodash/underscore's _.map since they return arrays
+ * @param obj
+ * @param fun
+ * @returns {object}
+ */
 function mapObj(obj, fun) {
-	var newObj = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (newObj, key) {
 		newObj[key] = fun(obj[key], key);
-	});
-
-	return newObj;
-}
-
-function getProgram(body) {
-	return {
-		"type": "Program",
-		"body": [{
-			"type": "ExpressionStatement",
-			"expression": body
-		}]
-	};
+		return newObj;
+	}, {});
 }
 
 function minify(source, options) {
@@ -80,7 +78,7 @@ function wrapPack(source, modules) {
 	ret += 'if (typeof require === "function") {\n';
 	ret += modules.map(function (module) {
 		return 'define("' + module + '", [], function () { return goo.' +
-			derequire.safenIdentifier(afterLastSlash(module)) + '; });';
+			util.safenIdentifier(afterLastSlash(module)) + '; });';
 	}).join('\n') + '\n';
 	ret += '}\n';
 
@@ -116,7 +114,7 @@ function run(rootPath, packPath, outFile, options, callback) {
 	callback = callback || function () {};
 
 	// build dependency tree
-	Dependency.getTree(rootPath + '/', function (dependencies) {
+	dependency.getTree(rootPath + '/', function (dependencies) {
 		var graph = graphise(dependencies);
 
 		if (packPath) {
@@ -142,13 +140,7 @@ function run(rootPath, packPath, outFile, options, callback) {
 
 		var processedModules = sortedModules.map(function (modulePath) {
 			var source = fs.readFileSync(rootPath + '/' + modulePath + '.js', 'utf8');
-
-			var tree = esprima.parse(source);
-			var strippedModule = derequire.transform(modulePath, tree.body[0].expression);
-
-			var program = getProgram(strippedModule);
-
-			return escodegen.generate(program);
+			return derequire.transform(modulePath, source);
 		});
 
 		var concatenatedModules = processedModules.join('\n');

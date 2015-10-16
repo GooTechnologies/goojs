@@ -11,7 +11,7 @@ define(function () {
 	/**
 	 * Sends messages to all listeners with provided callback function.
 	 *
-	 * @param {string | string[]} channels channel(s) addressed
+	 * @param {(string | Array<string>)} channels channel(s) addressed
 	 * @param {Object} data
 	 * @param {boolean} [storeEmit=false] Store the emit data for transmitting to future listeners
 	 */
@@ -19,11 +19,11 @@ define(function () {
 		storeEmit = !!storeEmit;
 
 		if (typeof channels === 'string') {
-			channels = [channels];
-		}
-
-		for (var i = 0; i < channels.length; i++) {
-			this._emitToSingle(channels[i], data, storeEmit);
+			this._emitToSingle(channels, data, storeEmit);
+		} else {
+			for (var i = 0; i < channels.length; i++) {
+				this._emitToSingle(channels[i], data, storeEmit);
+			}
 		}
 
 		return this;
@@ -31,7 +31,7 @@ define(function () {
 
 	/**
 	 * Retrieves the last message sent on a channel. This will only work if message preservation is enabled when emitting.
-	 * @param channel
+	 * @param channelName
 	 */
 	Bus.prototype.getLastMessageOn = function (channelName) {
 		var node = this._getNode(channelName);
@@ -63,21 +63,11 @@ define(function () {
 		return node;
 	};
 
-	Bus.prototype._emitToSingle = function (channelName, data, storeEmit) {
-		var node = this._getNode(channelName, storeEmit);
-		if (node) {
-			this._emitToAll(node, data);
-			if (storeEmit) {
-				node.latestData = data;
-			}
-		}
-	};
-
-	Bus.prototype._emitToAll = function (node, data) {
+	function emitToListeners(node, data, channelName, bus) {
 		for (var i = 0; i < node.listeners.length; i++) {
 			var listener = node.listeners[i];
 			if (listener) {
-				listener(data);
+				listener(data, channelName, bus);
 			} else {
 				// some listeners may be set to null by the removeListener & co methods
 				// the array is compacted here and not in the removeListener methods
@@ -86,16 +76,31 @@ define(function () {
 				i--;
 			}
 		}
+	}
 
-		// emit on the child channels as well
-		node.children.forEach(function (child) {
-			this._emitToAll(child, data);
-		}.bind(this));
+	function emitToAll(node, data, channelName, bus) {
+		function traverse(node) {
+			emitToListeners(node, data, channelName, bus);
+			node.children.forEach(traverse);
+		}
+
+		traverse(node);
+	}
+
+	Bus.prototype._emitToSingle = function (channelName, data, storeEmit) {
+		var node = this._getNode(channelName, storeEmit);
+		if (node) {
+			emitToAll(node, data, channelName, this);
+			if (storeEmit) {
+				node.latestData = data;
+				node.latestChannel = channelName;
+			}
+		}
 	};
 
 	/**
 	 * Register callback for a channel
-	 * @param {String} channelName
+	 * @param {string} channelName
 	 * @param {Function} callback function (data)
 	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
 	 */
@@ -120,7 +125,7 @@ define(function () {
 		if (node.listeners.indexOf(callback) === -1) {
 			node.listeners.push(callback);
 			if (retrieveLatestEmit && node.latestData) {
-				callback(node.latestData);
+				callback(node.latestData, node.latestChannel, this);
 			}
 		}
 
@@ -185,7 +190,7 @@ define(function () {
 
 		node.children.forEach(function (child) {
 			this._removeListener(child, callbackToRemove);
-		}.bind(this));
+		}, this);
 	};
 
 	/**

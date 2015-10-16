@@ -1,5 +1,5 @@
-modoc
-=====
+modoc (& tern definition compiler)
+==================================
 
 Documentation extractor and renderer.
 
@@ -33,7 +33,11 @@ The extractor can figure out what members do instances of classes have by lookin
 
 Methods, static methods and static members are also detectable by looking for assignments to the prototype of the class or to the constructor itself. Members and static members are not extracted unless they are accompanied by a jsdoc comment. Methods and static methods are extracted default (even if and accompanying jsdoc comment is missing). Items whose names begin with an `_` are filtered out and so are items with an `@private` or an `@hidden`.
 
-If you wish to document anything that is not covered by either of these cases you can just place a jsdoc comment (block, starting with a `*`) that contains an `@target-class` anywhere (in any file). 
+If you wish to document anything that is not covered by either of these cases you can just place a jsdoc comment (block, starting with a `*`) that contains an `@target-class` anywhere (in any file).
+ 
+###Type expressions
+
+Type expressions are used in `@param` and `@returns` tags. The type expression parser is mainly used to build the tern definitions used by the create code editor, but expressions should be correct and written in the same format nevertheless. Most elements of [the closure compiler expression](https://developers.google.com/closure/compiler/docs/js-for-compiler#types) are supported - there are missing ones since they're missing in tern as well (non-nullables (`!`), varargs (`...`), the *UNKNOWN* type (`?`)).
 
 ###Supported tags
 

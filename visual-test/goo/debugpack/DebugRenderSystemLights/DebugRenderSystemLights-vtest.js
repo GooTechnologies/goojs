@@ -32,9 +32,9 @@ require([
 		entity.set(function(entity) {
 			var light = entity.getComponent('LightComponent').light;
 
-			light.color.data[0] = Math.cos(world.time + offset) * 0.5 + 0.5;
-			light.color.data[1] = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
-			light.color.data[2] = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
+			light.color.x = Math.cos(world.time + offset) * 0.5 + 0.5;
+			light.color.y = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
+			light.color.z = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
 
 			if (light.range !== undefined) {
 				light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;

@@ -1,33 +1,33 @@
 define([
 	'goo/renderer/ShaderCall',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/entities/SystemBus'
 ], function (
 	ShaderCall,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	World,
 	RenderQueue,
-	ObjectUtil,
+	ObjectUtils,
 	SystemBus
 ) {
 	'use strict';
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
+	/* global WebGLRenderingContext */
 
 	/**
 	 * Defines vertex and fragment shader and uniforms to shader callbacks
-	 * @param {String} name Shader name (mostly for debug/tool use)
+	 * @param {string} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
 	 *
 	 * <code>
 	 * {
-	 *    vshader : [required] vertex shader source
-	 *    fshader : [required] fragment shader source
+	 *    vshader: [required] vertex shader source
+	 *    fshader: [required] fragment shader source
 	 *    defines : shader definitions (becomes #define)
 	 *    attributes : attribute bindings
 	 *       attribute bindings need to map to an attribute in the meshdata being rendered
@@ -56,41 +56,42 @@ define([
 		this.vertexShader = null;
 		this.fragmentShader = null;
 
-		/** The renderer where the program and shaders were allocated.
-		 * @type {WebGLContext|null}
+		/**
+		 * The renderer where the program and shaders were allocated.
+		 * @type {WebGLRenderingContext}
 		 */
 		this.renderer = null;
 
 		/**
 		 * Attributes detected in the shader source code.
 		 * Maps attribute variable's name to <code>{format: string}</code>
-		 * @type {Object.<string, object>}}
+		 * @type {Object<string, object>}}
 		 */
 		this.attributeMapping = {};
 
 		/**
 		 * Maps attribute variable's name to attribute location (from getAttribLocation).
-		 * @type {Object.<string, number>}
+		 * @type {Object<string, number>}
 		 */
 		this.attributeIndexMapping = {};
 
 		/**
 		 * Uniforms detected in the shader source code.
 		 * Maps variable name to <code>{format: string}</code>.
-		 * @type {Object.<string, object>}
+		 * @type {Object<string, object>}
 		 */
 		this.uniformMapping = {};
 
 		/**
 		 * Maps uniform variable name to ShaderCall object.
-		 * @type {Object.<string, ShaderCall>}
+		 * @type {Object<string, ShaderCall>}
 		 */
 		this.uniformCallMapping = {};
 
 		/**
 		 * Texture slots detected in the shader source code.
 		 * Will be an array of <code>{format: string, name: string}</code>
-		 * @type {object[]}
+		 * @type {Array}
 		 */
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
@@ -145,7 +146,7 @@ define([
 	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
-		return new Shader(this.name, ObjectUtil.deepClone({
+		return new Shader(this.name, ObjectUtils.deepClone({
 			precision: this.precision,
 			processors: this.processors,
 			builder: this.builder,
@@ -188,7 +189,7 @@ define([
 	 */
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
-	Shader.prototype.compileProgram = function(renderer) {
+	Shader.prototype.compileProgram = function (renderer) {
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
 			this.addDefines(this.defines);
@@ -197,7 +198,7 @@ define([
 		}
 	};
 
-	Shader.prototype.activateProgram = function(record, context) {
+	Shader.prototype.activateProgram = function (record, context) {
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
@@ -205,7 +206,7 @@ define([
 		}
 	};
 
-	Shader.prototype.bindAttributeKey = function(record, renderer, attributeMap, key) {
+	Shader.prototype.bindAttributeKey = function (record, renderer, attributeMap, key) {
 		var attribute = attributeMap[this.attributes[key]];
 		if (!attribute) {
 			return;
@@ -221,7 +222,7 @@ define([
 		renderer.bindVertexAttribute(attributeIndex, attribute);
 	};
 
-	Shader.prototype.bindAttributes = function(record, renderer, attributeMap) {
+	Shader.prototype.bindAttributes = function (record, renderer, attributeMap) {
 		if (this.attributes) {
 			for (var i = 0, l = this.attributeKeys.length; i < l; i++) {
 				this.bindAttributeKey(record, renderer, attributeMap, this.attributeKeys[i]);
@@ -229,7 +230,7 @@ define([
 		}
 	};
 
-	Shader.prototype.disableAttributes = function(record, context) {
+	Shader.prototype.disableAttributes = function (record, context) {
 		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -240,7 +241,7 @@ define([
 		}
 	};
 
-	Shader.prototype.enableAttributes = function(record, context) {
+	Shader.prototype.enableAttributes = function (record, context) {
 		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -251,7 +252,7 @@ define([
 		}
 	};
 
-	Shader.prototype.matchUniforms = function(shaderInfo) {
+	Shader.prototype.matchUniforms = function (shaderInfo) {
 		var uniforms = this.matchedUniforms;
 		if (uniforms) {
 			this.textureIndex = 0;
@@ -280,7 +281,7 @@ define([
 		this.matchUniforms(shaderInfo);
 	};
 
-	Shader.prototype.defineValue = function(shaderInfo, name) {
+	Shader.prototype.defineValue = function (shaderInfo, name) {
 		var defValue = shaderInfo.material.uniforms[name];
 		if (defValue === undefined) {
 			defValue = this.uniforms[name];
@@ -289,7 +290,7 @@ define([
 	};
 
 
-	Shader.prototype.mapSlot = function(shaderInfo, mapping, slot) {
+	Shader.prototype.mapSlot = function (shaderInfo, mapping, slot) {
 		var maps = shaderInfo.material.getTexture(slot.mapping);
 		if (maps instanceof Array) {
 			this.arrayType(mapping, slot, maps);
@@ -299,7 +300,7 @@ define([
 		}
 	};
 
-	Shader.prototype.arrayType = function(mapping, slot, maps) {
+	Shader.prototype.arrayType = function (mapping, slot, maps) {
 		var arr = [];
 		slot.index = [];
 		for (var i = 0; i < maps.length; i++) {
@@ -309,7 +310,7 @@ define([
 		mapping.call(arr);
 	};
 
-	Shader.prototype.stringType = function(shaderInfo, name, mapping) {
+	Shader.prototype.stringType = function (shaderInfo, name, mapping) {
 		var callback = this.currentCallbacks[name];
 		if (callback) {
 			callback(mapping, shaderInfo);
@@ -321,7 +322,7 @@ define([
 		}
 	};
 
-	Shader.prototype.callMapping = function(shaderInfo, name, mapping) {
+	Shader.prototype.callMapping = function (shaderInfo, name, mapping) {
 		var defValue = this.defineValue(shaderInfo, name);
 		var type = typeof defValue;
 		if (type === 'string') {
@@ -372,20 +373,25 @@ define([
 
 	Shader.prototype.getDefineKey = function (definesIndices) {
 		if (this.defineKeyDirty) {
-			var key = 'Key:'+this.name;
+			var key = 'Key:' + this.name;
 			var defineArray = Object.keys(this.defines);
-			for (var i = 0, l = defineArray.length; i < l; i++) {
+			for (var i = 0; i < defineArray.length; i++) {
 				var defineArrayKey = defineArray[i];
 				var defineVal = this.defines[defineArrayKey];
 				if (defineVal === undefined || defineVal === false) {
 					continue;
 				}
-				var defineIndex = definesIndices.indexOf(defineArrayKey);
-				if (defineIndex === -1) {
+				if (definesIndices.indexOf(defineArrayKey) === -1) {
 					definesIndices.push(defineArrayKey);
-					defineIndex = definesIndices.length;
 				}
-				key += '_'+defineIndex+':'+defineVal;
+			}
+			for (var i = 0, l = definesIndices.length; i < l; i++) {
+				var defineArrayKey = definesIndices[i];
+				var defineVal = this.defines[defineArrayKey];
+				if (defineVal === undefined || defineVal === false) {
+					continue;
+				}
+				key += '_' + i + ':' + defineVal;
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;
@@ -393,6 +399,7 @@ define([
 
 		return this.defineKey;
 	};
+
 
 	Shader.prototype.rebuild = function () {
 		this.shaderProgram = null;
@@ -417,10 +424,10 @@ define([
 	/**
 	 * Extract shader variable definitions from shader source code.
 	 * @param {string} source The source code.
-	 * @param {object} target
-	 * @param {object} target.attributeMapping
-	 * @param {object} target.uniformMapping
-	 * @param {object[]} target.textureSlots
+	 * @param {Object} target
+	 * @param {Object} target.attributeMapping
+	 * @param {Object} target.uniformMapping
+	 * @param {Array} target.textureSlots
 	 */
 	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;
@@ -439,15 +446,15 @@ define([
 					definition.format = 'floatarray';
 				} else if (definition.format === 'int') {
 					definition.format = 'intarray';
-				} else if (definition.format.indexOf("sampler") === 0) {
+				} else if (definition.format.indexOf('sampler') === 0) {
 					definition.format = 'samplerArray';
 				}
 			}
 
-			if ("attribute" === type) {
+			if (type === 'attribute') {
 				target.attributeMapping[variableName] = definition;
 			} else {
-				if (definition.format.indexOf("sampler") === 0) {
+				if (definition.format.indexOf('sampler') === 0) {
 					var textureSlot = {
 						format: definition.format,
 						name: variableName,
@@ -467,18 +474,17 @@ define([
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
 		this.renderer = renderer;
-
-		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
-		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
+		this.vertexShader = this._getShader(context, context.VERTEX_SHADER !== undefined ? context.VERTEX_SHADER : WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
+		this.fragmentShader = this._getShader(context, context.FRAGMENT_SHADER !== undefined ? context.FRAGMENT_SHADER : WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
 		if (this.vertexShader === null || this.fragmentShader === null) {
-			console.error("Shader error - no shaders");
+			console.error('Shader error - no shaders');
 		}
 
 		this.shaderProgram = context.createProgram();
 
 		var error = context.getError();
-		if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
+		if (this.shaderProgram === null || error !== 0) {
 			console.error('Shader error: ' + error + ' [shader: ' + this.name + ']');
 			SystemBus.emit('goo.shader.error');
 		}
@@ -488,7 +494,7 @@ define([
 
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);
-		if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
+		if (!context.getProgramParameter(this.shaderProgram, (context.LINK_STATUS !== undefined ? context.LINK_STATUS : WebGLRenderingContext.LINK_STATUS))) {
 			var errInfo = context.getProgramInfoLog(this.shaderProgram);
 			console.error('Could not initialise shaders: ' + errInfo);
 			SystemBus.emit('goo.shader.error', errInfo);
@@ -595,9 +601,9 @@ define([
 		context.compileShader(shader);
 
 		// check if the Shader is successfully compiled
-		if (!context.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
+		if (!context.getShaderParameter(shader, context.COMPILE_STATUS !== undefined ? context.COMPILE_STATUS : WebGLRenderingContext.COMPILE_STATUS)) {
 			var infoLog = context.getShaderInfoLog(shader);
-			var shaderType = type === WebGLRenderingContext.VERTEX_SHADER ? 'VertexShader' : 'FragmentShader';
+			var shaderType = type === (context.VERTEX_SHADER !== undefined ? context.VERTEX_SHADER : WebGLRenderingContext.VERTEX_SHADER) ? 'VertexShader' : 'FragmentShader';
 
 			errorRegExp.lastIndex = 0;
 			var errorMatcher = errorRegExp.exec(infoLog);
@@ -676,12 +682,12 @@ define([
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3x3.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3.IDENTITY;
 			uniformCall.uniformMatrix3fv(matrix);
 		};
 
@@ -713,7 +719,7 @@ define([
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
-						uniformCall.uniform3f(light.translation.data[0], light.translation.data[1], light.translation.data[2]);
+						uniformCall.uniform3f(light.translation.x, light.translation.y, light.translation.z);
 					} else {
 						uniformCall.uniform3f(-20, 20, 20);
 					}
@@ -726,7 +732,7 @@ define([
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
-			uniformCall.uniform3f(cameraPosition.data[0], cameraPosition.data[1], cameraPosition.data[2]);
+			uniformCall.uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		};
 		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera.near);

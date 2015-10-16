@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicNodes'
 	],
 
-	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
+	function (LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 		'use strict';
 
 		/**
@@ -18,23 +18,23 @@ define(
 			LogicNode.call(this);
 			this.wantsProcessCall = true;
 			this.logicInterface = LogicNodeRandom.logicInterface;
-			this.type = "LogicNodeRandom";
+			this.type = 'LogicNodeRandom';
 		}
 
-		// Logic interface set-up	
+		// Logic interface set-up
 		LogicNodeRandom.prototype = Object.create(LogicNode.prototype);
-		LogicNodeRandom.editorName = "Random";
+		LogicNodeRandom.editorName = 'Random';
 		LogicNodeRandom.logicInterface = new LogicInterface();
 
 		// ports
-		LogicNodeRandom.outPropRandom = LogicNodeRandom.logicInterface.addOutputProperty("Random0_1", "float");
+		LogicNodeRandom.outPropRandom = LogicNodeRandom.logicInterface.addOutputProperty('Random0_1', 'float');
 
 		// Process
-		LogicNodeRandom.prototype.processLogic = function() {
+		LogicNodeRandom.prototype.processLogic = function () {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeRandom.outPropRandom, Math.random());
 		};
 
-		LogicNodes.registerType("LogicNodeRandom", LogicNodeRandom);
+		LogicNodes.registerType('LogicNodeRandom', LogicNodeRandom);
 
 		return LogicNodeRandom;
 	});

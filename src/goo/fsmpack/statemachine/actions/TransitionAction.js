@@ -25,7 +25,7 @@ define([
 		}]
 	};
 
-	TransitionAction.prototype._run = function(fsm) {
+	TransitionAction.prototype._run = function (fsm) {
 		fsm.send(this.transitions.transition);
 	};
 

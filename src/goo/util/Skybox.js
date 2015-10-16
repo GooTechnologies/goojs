@@ -6,8 +6,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/TextureCreator',
 	'goo/math/Transform'
-
-],  function (
+], function (
 	Box,
 	Sphere,
 	MeshData,
@@ -26,26 +25,34 @@ define([
 	 * @param yRotation
 	 */
 	function Skybox(type, images, textureMode, yRotation) {
-		var texture;
+		var promise;
 		if (type === Skybox.SPHERE) {
 			this.meshData = new Sphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
-			if(images) {
-				texture = new TextureCreator().loadTexture2D(images);
+			if (images) {
+				promise = new TextureCreator().loadTexture2D(images);
 			}
 		} else if (type === Skybox.BOX) {
 			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
-				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
+				promise = new TextureCreator().loadTextureCube(images, {
+					flipY: false,
+					wrapS: 'EdgeClamp',
+					wrapT: 'EdgeClamp'
+				});
 			}
 		} else {
 			throw new Error('Unknown geometry type');
 		}
 		var material = new Material(shaders[type], 'Skybox material');
 
-		material.setTexture(Shader.DIFFUSE_MAP, texture);
+		if (promise) {
+			promise.then(function (texture) {
+				material.setTexture(Shader.DIFFUSE_MAP, texture);
+			});
+		}
 
 		material.cullState.cullFace = 'Front';
 		material.depthState.enabled = false;
@@ -76,47 +83,47 @@ define([
 			near: Shader.NEAR_PLANE,
 			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader: [ //
-			'attribute vec3 vertexPosition;', //
+		vshader: [
+			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
-			'uniform vec3 cameraPosition;', //
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
 			'uniform float near;',
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;',
 
-			'void main(void) {', //
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
+			'void main(void) {',
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);',
 			' worldPos += vec4(cameraPosition, 0.0);',
-			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'	eyeVec = worldPos.xyz - cameraPosition;', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
+			'	eyeVec = worldPos.xyz - cameraPosition;',
 			' eyeVec.x = -eyeVec.x;',
 			' eyeVec = (worldMatrix * vec4(eyeVec, 0.0)).xyz;',
 			'}'//
 		].join('\n'),
-		fshader: [//
-			'precision mediump float;',//
+		fshader: [
+			'precision mediump float;',
 
-			'uniform samplerCube diffuseMap;',//
+			'uniform samplerCube diffuseMap;',
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;',
 
-			'void main(void)',//
-			'{',//
-			'	vec4 cube = textureCube(diffuseMap, eyeVec);',//
+			'void main(void)',
+			'{',
+			'	vec4 cube = textureCube(diffuseMap, eyeVec);',
 			' if (cube.a < 0.05) discard;',
-			'	gl_FragColor = cube;',//
+			'	gl_FragColor = cube;',
 
-			 //' gl_FragColor = vec4(1.0,0.0,0.0,1.0);',//
+			//' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
 			'}'//
 		].join('\n')
 	};
 	shaders.sphere = {
 		attributes: {
 			vertexPosition: MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
 			viewMatrix: Shader.VIEW_MATRIX,
@@ -126,28 +133,28 @@ define([
 			near: Shader.NEAR_PLANE,
 			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader: [ //
-			'attribute vec3 vertexPosition;', //
+		vshader: [
+			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
-			'uniform vec3 cameraPosition;', //
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
 			'uniform float near;',
 
 			'varying vec2 texCoord0;',
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;',
 
-			'void main(void) {', //
+			'void main(void) {',
 			'	texCoord0 = vertexUV0;',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);',
 			' worldPos += vec4(cameraPosition, 0.0);',
-			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'	eyeVec = cameraPosition - worldPos.xyz;', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
+			'	eyeVec = cameraPosition - worldPos.xyz;',
 			'}'//
 		].join('\n'),
-		fshader: [//
+		fshader: [
 			'precision mediump float;',
 
 			'uniform sampler2D diffuseMap;',
@@ -162,8 +169,6 @@ define([
 			'}'//
 		].join('\n')
 	};
-
-
 
 	return Skybox;
 });

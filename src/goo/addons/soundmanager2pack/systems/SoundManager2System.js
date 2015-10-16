@@ -23,10 +23,10 @@ define([
 		} else {
 			window.soundManager.bind(this).setup({
 				url: 'swf',
-				onready: function() {
+				onready: function () {
 					this.isReady = true;
 				},
-				ontimeout: function() {
+				ontimeout: function () {
 					console.warn('Failed to load soundmanager');
 				}
 			});
@@ -35,7 +35,7 @@ define([
 
 	SoundManager2System.prototype = Object.create(System.prototype);
 
-	SoundManager2System.prototype.inserted = function(entity) {
+	SoundManager2System.prototype.inserted = function (entity) {
 		var soundManagerComponent = entity.soundManager2Component;
 
 		for (var i = 0; i < soundManagerComponent.sounds.length; i++) {
@@ -45,7 +45,7 @@ define([
 		}
 	};
 
-	SoundManager2System.prototype.deleted = function(/*entity*/) {
+	SoundManager2System.prototype.deleted = function (/*entity*/) {
 		//var soundManagerComponent = entity.soundManager2Component;
 
 		// if (soundManagerComponent) {
@@ -53,7 +53,7 @@ define([
 		// }
 	};
 
-	SoundManager2System.prototype.process = function(/*entities , tpf */) {
+	SoundManager2System.prototype.process = function (/*entities , tpf */) {
 		/*for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var soundManagerComponent = entity.soundManager2Component;

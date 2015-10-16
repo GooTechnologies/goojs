@@ -3,17 +3,15 @@ define([
 	'goo/entities/components/MovementComponent',
 	'goo/entities/systems/MovementSystem',
 	'goo/entities/components/TransformComponent'
-], function(
+], function (
 	GroundBoundMovementScript,
 	MovementComponent,
 	MovementSystem,
 	TransformComponent
-	) {
+) {
 	'use strict';
 
-
-
-	describe('Movement script tests', function() {
+	xdescribe('Movement script tests', function () {
 		var movementSystem = new MovementSystem();
 		var groundBoundMovementScript;
 		var entity;
@@ -23,20 +21,20 @@ define([
 		}
 
 		var mockGround = {
-			getTerrainHeightAt:getHeight,
-			getTerrainNormalAt:function(){return {data:[0, 1, 0]};}
+			getTerrainHeightAt: getHeight,
+			getTerrainNormalAt: function () { return { data: [0, 1, 0] }; }
 		};
 
-		var setEntityTranformData = function(entity, data) {
+		var setEntityTranformData = function (entity, data) {
 			entity.transformComponent.transform.translation.data = data;
 		};
 
-		beforeEach(function() {
+		beforeEach(function () {
 			groundBoundMovementScript = new GroundBoundMovementScript();
 			entity = {
 				transformComponent: new TransformComponent(),
 				movementComponent: new MovementComponent(),
-				_world:{tpf:0.1}
+				_world: { tpf: 0.1 }
 			};
 			setEntityTranformData(entity, [0, 0, 0]);
 
@@ -46,18 +44,14 @@ define([
 			groundBoundMovementScript.rotLerp = 0.1;
 		});
 
-		it ('finds ground contact when below ground', function() {
-
+		it('finds ground contact when below ground', function () {
 			setEntityTranformData(entity, [0, -1, 0]);
 			groundBoundMovementScript.setTerrainSystem(mockGround);
 			groundBoundMovementScript.run(entity);
 			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
-
 		});
 
-
-		it ('finds velocity curvature after jump to match', function() {
-
+		it('finds velocity curvature after jump to match', function () {
 			setEntityTranformData(entity, [0, -1, 0]);
 			groundBoundMovementScript.setTerrainSystem(mockGround);
 
@@ -120,9 +114,5 @@ define([
 			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
 			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
 		});
-
 	});
-
-
-
 });

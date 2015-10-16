@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	SystemBus,
@@ -13,7 +13,8 @@ define([
 
 	/**
 	 * Contains scripts to be executed each frame when set on an active entity.
-	 * @param {object[]|object} [scripts] A script-object or an array of script-objects to attach to the entity.
+	 * @param {(Object|Array<Object>)} [scripts] A script-object or an array of script-objects to attach to the
+	 * entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>,
 	 * which runs on every frame update.
 	 *
@@ -24,7 +25,6 @@ define([
 		Component.apply(this, arguments);
 
 		this.type = 'ScriptComponent';
-		this._gooClasses = Scripts.getClasses();
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;
@@ -34,11 +34,11 @@ define([
 			/**
 			* Array of scripts tied to this script component. Scripts can be added to the component
 			* using the constructor or by manually adding to the array.
-			* @type {object[]}
+			* @type {Array}
 			* @example
 			* // Add a script to script component
 			* var scriptComponent = new ScriptComponent();
-			* var controlScript = new WASDControlScript();
+			* var controlScript = new WasdControlScript();
 			* scriptComponent.scripts.push(controlScript);
 			*/
 			this.scripts = [];
@@ -55,7 +55,9 @@ define([
 	ScriptComponent.prototype.constructor = ScriptComponent;
 
 	/**
-	 * Runs the .setup method on each script; called when the ScriptComponent is attached to the entity or when the entity is added to the world.
+	 * Runs the .setup method on each script; called when the ScriptComponent is
+	 * attached to the entity or when the entity is added to the world.
+	 *
 	 * @private
 	 * @param entity
 	 */
@@ -77,9 +79,10 @@ define([
 				} else {
 					script.enabled = true;
 				}
+
 				if (script.setup && script.enabled) {
 					try {
-						script.setup(script.parameters, script.context, this._gooClasses);
+						script.setup(script.parameters, script.context, window.goo);
 					} catch (e) {
 						this._handleError(script, e, 'setup');
 					}
@@ -113,7 +116,7 @@ define([
 				}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.context, this._gooClasses);
+					script.update(script.parameters, script.context, window.goo);
 				} catch (e) {
 					this._handleError(script, e, 'update');
 				}
@@ -129,9 +132,13 @@ define([
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.context) {
-				if (script.cleanup) {
+				if (script.cleanup &&
+					(script.parameters && script.parameters.enabled !== undefined ?
+						script.parameters.enabled :
+						script.enabled)
+				) {
 					try {
-						script.cleanup(script.parameters, script.context, this._gooClasses);
+						script.cleanup(script.parameters, script.context, window.goo);
 					} catch (e) {
 						this._handleError(script, e, 'cleanup');
 					}
@@ -140,6 +147,28 @@ define([
 				script.context = null;
 			}
 		}
+	};
+
+	/**
+	 * Enables all the scripts that are in the component.
+	 */
+	ScriptComponent.prototype.startScripts = function () {
+		this.scripts.forEach(function (script) {
+			if (script.parameters && script.parameters.enabled === false) {
+				script.enabled = false;
+			} else {
+				script.enabled = true;
+			}
+		});
+	};
+
+	/**
+	 * Disables all the scripts that are in the component.
+	 */
+	ScriptComponent.prototype.stopScripts = function () {
+		this.scripts.forEach(function (script) {
+			script.enabled = false;
+		});
 	};
 
 	/**

@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/BlurPass'], function(BlurPass) {});
+define(['goo/renderer/pass/BlurPass'], function (BlurPass) {});

@@ -1,1 +1,1 @@
-define(['goo/geometrypack/Surface'], function(Surface) {});
+define(['goo/geometrypack/Surface'], function (Surface) {});

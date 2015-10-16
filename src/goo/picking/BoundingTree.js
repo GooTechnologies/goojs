@@ -22,15 +22,15 @@ define([
 		this.boundType = boundType ? boundType : BoundingTree.BOUNDTYPE_BOX;
 	}
 
-	BoundingTree.BOUNDTYPE_SPHERE = "sphere";
-	BoundingTree.BOUNDTYPE_BOX = "box";
+	BoundingTree.BOUNDTYPE_SPHERE = 'sphere';
+	BoundingTree.BOUNDTYPE_BOX = 'box';
 
 	BoundingTree.MAX_PRIMITIVES_PER_LEAF = 16;
 
 	BoundingTree.prototype.construct = function (entity) {
 		// check entity has required components
 		if (!entity.meshRendererComponent || !entity.meshDataComponent || !entity.transformComponent) {
-			console.warn("Entity missing required components for boundingtree construction: ", entity);
+			console.warn('Entity missing required components for boundingtree construction: ', entity);
 			return;
 		}
 
@@ -189,13 +189,13 @@ define([
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
 					var vec = new Vector3();
-					vec.setVector(vecStore);
+					vec.set(vecStore);
 					result.points.push(vec);
 
 					result.vertices = result.vertices || [];
 					var verticesCopy = [];
 					for (var copyIndex = vertices.length - 1; copyIndex >= 0; copyIndex--) {
-						verticesCopy[copyIndex] = new Vector3().setVector(vertices[copyIndex]);
+						verticesCopy[copyIndex] = new Vector3().set(vertices[copyIndex]);
 					}
 					result.vertices.push(verticesCopy);
 				}

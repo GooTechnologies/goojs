@@ -1,1 +1,1 @@
-define(['goo/debugpack/BoundingVolumeMeshBuilder'], function(BoundingVolumeMeshBuilder) {});
+define(['goo/debugpack/BoundingVolumeMeshBuilder'], function (BoundingVolumeMeshBuilder) {});

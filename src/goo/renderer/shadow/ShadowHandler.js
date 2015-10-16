@@ -39,8 +39,8 @@ define([
 		this.blurfilter = Material.createShader(ShaderLib.convolution, 'blurfilter');
 		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
 		this.blurfilter.defines = {
-			KERNEL_SIZE_FLOAT : kernelSize.toFixed(1),
-			KERNEL_SIZE_INT : kernelSize.toFixed(0)
+			KERNEL_SIZE_FLOAT: kernelSize.toFixed(1),
+			KERNEL_SIZE_INT: kernelSize.toFixed(0)
 		};
 		this.blurfilter.uniforms.cKernel = ShaderLib.convolution.buildKernel(sigma);
 
@@ -67,8 +67,8 @@ define([
 
 		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
 				type: 'Float',
-				magFilter : 'NearestNeighbor',
-				minFilter : 'NearestNeighborNoMipMaps'
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps'
 			});
 		shadowSettings.shadowData.shadowResult = null;
 
@@ -118,7 +118,7 @@ define([
 				// Update transformation
 				lightCamera.translation.copy(light.translation);
 				if (light.direction) {
-					tmpVec.setVector(light.translation).addVector(light.direction);
+					tmpVec.set(light.translation).add(light.direction);
 					lightCamera.lookAt(tmpVec, shadowSettings.upVector);
 				} else {
 					lightCamera.lookAt(Vector3.ZERO, shadowSettings.upVector);
@@ -132,8 +132,8 @@ define([
 					record.resolution[1] !== shadowSettings.resolution[1] ||
 					record.near !== shadowSettings.near ||
 					record.far !== shadowSettings.far ||
-					record.size !== shadowSettings.size) {
-
+					record.size !== shadowSettings.size
+				) {
 					if (!record.resolution ||
 						record.resolution[0] !== shadowSettings.resolution[0] ||
 						record.resolution[1] !== shadowSettings.resolution[1]) {
@@ -173,7 +173,7 @@ define([
 				for (var j = 0; j < 16; j++) {
 					vpm[j] = matrix[j];
 				}
-				
+
 				if (light.shadowCaster) {
 					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 2 : 0);
 					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);

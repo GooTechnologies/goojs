@@ -62,8 +62,8 @@ define(['goo/entities/systems/System'], function (System) {
 				var result = this.pickLogic.getPickResult(this.pickRay, entity);
 				if (result && result.distances && result.distances.length) {
 					pickList.push({
-						"entity" : entity,
-						"intersection" : result
+						'entity': entity,
+						'intersection': result
 					});
 				}
 			}
@@ -74,8 +74,8 @@ define(['goo/entities/systems/System'], function (System) {
 				var result = meshRendererComponent.worldBound.intersectsRayWhere(this.pickRay);
 				if (result && result.distances.length) {
 					pickList.push({
-						"entity" : entity,
-						"intersection" : result
+						'entity': entity,
+						'intersection': result
 					});
 				}
 			}

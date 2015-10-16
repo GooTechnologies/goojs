@@ -1,20 +1,20 @@
 define([
 	'goo/util/ObjectUtil'
-], function(
+], function (
 	_
 ) {
 	'use strict';
 	return {
-		material: function() {
+		material: function () {
 			var material = this.gooObject('material', 'Dummy');
 			_.extend(material, {
 				uniforms: {
 					materialAmbient: {
-						value: [0,0,0,1],
+						value: [0, 0, 0, 1],
 						enabled: true
 					},
 					materialDiffuse: {
-						value: [1,1,1,1],
+						value: [1, 1, 1, 1],
 						enabled: true
 					}
 				},
@@ -39,13 +39,13 @@ define([
 			});
 			return material;
 		},
-		texture: function() {
+		texture: function () {
 			var texture = this.gooObject('texture', 'Dummy');
 			_.extend(texture, {
 				magFilter: 'Bilinear',
 				minFilter: 'Trilinear',
-				offset: [0,0],
-				repeat: [1,1],
+				offset: [0, 0],
+				repeat: [1, 1],
 				imageRef: (window.__karma__ ? 'base/test/unit/loaders/res/' : '') + 'checker.png',
 				wrapS: 'Repeat',
 				wrapT: 'Repeat',
@@ -54,13 +54,13 @@ define([
 			});
 			return texture;
 		},
-		textureSVG: function() {
+		textureSVG: function () {
 			var texture = this.gooObject('texture', 'Dummy');
 			_.extend(texture, {
 				magFilter: 'Bilinear',
 				minFilter: 'Trilinear',
-				offset: [0,0],
-				repeat: [1,1],
+				offset: [0, 0],
+				repeat: [1, 1],
 				svgData: "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect x='0' y='0' width='200' height='100' fill='blue' /></svg>",
 				wrapS: 'Repeat',
 				wrapT: 'Repeat',
@@ -69,7 +69,7 @@ define([
 			});
 			return texture;
 		},
-		shader: function() {
+		shader: function () {
 			var shader = this.gooObject('shader', 'Dummy');
 			_.extend(shader, {
 				attributes: {
@@ -91,13 +91,13 @@ define([
 			});
 			return shader;
 		},
-		vshader: function() {
+		vshader: function () {
 			var ref = this.randomRef('vert');
 			var code = "void main() { gl_Position = vec4(1.0); }";
 			this.addToBundle(code, ref);
 			return ref;
 		},
-		fshader: function() {
+		fshader: function () {
 			var ref = this.randomRef('frag');
 			var code = "void main() { gl_FragColor = vec4(1.0); }";
 			this.addToBundle(code, ref);

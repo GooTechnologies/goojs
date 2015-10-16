@@ -1,5 +1,8 @@
 // Main module for Jasmine HTML test runner
 /*global jasmine:true */
+
+'use strict';
+
 require.config({
 	paths: {
 		'goo': '../../src/goo',
@@ -10,7 +13,7 @@ require.config({
 	waitSeconds: 5
 });
 
-require(['lib/jasmine-2.0.0/boot'], function () {
+require(['lib/jasmine-2.3.4/boot'], function () {
 	require(['test/CustomMatchers', 'test/all-tests'], function () {
 		window.onload();
 	});

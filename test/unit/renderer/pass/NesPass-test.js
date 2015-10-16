@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/NesPass'], function(NesPass) {});
+define(['goo/renderer/pass/NesPass'], function (NesPass) {});

@@ -67,11 +67,11 @@ define([
 	 * @param {boolean} [parameters.antialias=true] Specifies if antialiasing should be turned on or no
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
-	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
+	 * @param {HTMLCanvasElement}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
 	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
-	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
+	 * @param {(boolean | string | { position, color })} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
 	 * If the parameter is not specified then the logo is placed in the top right corner.
 	 * If no logo is desired then this parameter should have the 'false' value.
 	 * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
@@ -80,23 +80,25 @@ define([
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
-
 	function GooRunner(parameters) {
 		parameters = parameters || {};
 
 		GameUtils.initAllShims();
 
-		/** Automatically created Goo world.
+		/**
+		 * Automatically created Goo world.
 		 * @type {World}
 		 */
 		this.world = new World(this);
 
-		/** Automatically created renderer.
+		/**
+		 * Automatically created renderer.
 		 * @type {Renderer}
 		 */
 		this.renderer = new Renderer(parameters);
 
-		/** Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
+		/**
+		 * Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
 		 * @type {boolean}
 		 * @default true
 		 */
@@ -124,24 +126,28 @@ define([
 			}
 		}
 
-		/** A list of callbacks to call every frame, before the world is processed.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, before the world is processed.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksPreProcess = [];
 
-		/** A list of callbacks to call every frame, after the world is processed and before the rendering is done.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, after the world is processed and before the rendering is done.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksPreRender = [];
 
-		/** A list of callbacks to call every frame, after the rendering is done.
-		 * @type {Array.<function(number)>}
+		/**
+		 * A list of callbacks to call every frame, after the rendering is done.
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacks = [];
 
-		/** A list of callbacks to call once, in the following frame, before the world is processed.<br>
+		/**
+		 * A list of callbacks to call once, in the following frame, before the world is processed.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
-		 * @type {Array.<function(number)>}
+		 * @type {Array<function (tpf: number)>}
 		 */
 		this.callbacksNextFrame = [];
 
@@ -204,7 +210,7 @@ define([
 			doPick: false,
 			pickingCallback: null,
 			pickingStore: {},
-			clearColorStore: []
+			clearColorStore: [] //! AT: why is this an array and not a vector4?
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
@@ -410,11 +416,11 @@ define([
 			}
 			// handle pick requests
 			if (this._picking.doPick && Renderer.mainCamera) {
-				var cc = this.renderer.clearColor.data;
-				this._picking.clearColorStore[0] = cc[0];
-				this._picking.clearColorStore[1] = cc[1];
-				this._picking.clearColorStore[2] = cc[2];
-				this._picking.clearColorStore[3] = cc[3];
+				var clearColor = this.renderer.clearColor;
+				this._picking.clearColorStore[0] = clearColor.r;
+				this._picking.clearColorStore[1] = clearColor.g;
+				this._picking.clearColorStore[2] = clearColor.b;
+				this._picking.clearColorStore[3] = clearColor.a;
 				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
@@ -545,35 +551,44 @@ define([
 		// shift+7 = textured
 		// shift+8 = regular material + wireframe
 		// shift+click = log picked entity
-		var activeKey = 'shiftKey';
-		document.addEventListener("keydown", function (e) {
-			if (e.which === 32 && e[activeKey]) { // Space
-				GameUtils.toggleFullScreen();
-			} else if (e.which === 13 && e[activeKey]) { // Enter
-				GameUtils.togglePointerLock();
-			} else if (e.which === 49 && e[activeKey]) { // 1
-				this.renderSystem.setDebugMaterial();
-			} else if ((e.which === 50 || e.which === 222) && e[activeKey]) { // 2
-				this.renderSystem.setDebugMaterial('normals');
-			} else if (e.which === 51 && e[activeKey]) { // 3
-				this.renderSystem.setDebugMaterial('lit');
-			} else if (e.which === 52 && e[activeKey]) { // 4
-				this.renderSystem.setDebugMaterial('color');
-			} else if (e.which === 53 && e[activeKey]) { // 5
-				this.renderSystem.setDebugMaterial('wireframe');
-			} else if (e.which === 54 && e[activeKey]) { // 6
-				this.renderSystem.setDebugMaterial('flat');
-			} else if ((e.which === 55 || e.which === 191) && e[activeKey]) { // 7
-				this.renderSystem.setDebugMaterial('texture');
-			} else if ((e.which === 56) && e[activeKey]) { // 8
-				this.renderSystem.setDebugMaterial('+wireframe');
+		var ACTIVE_KEY = 'shiftKey';
+
+		var modesByKeyCode = {
+			50: 'normals',
+			222: 'normals',
+			51: 'lit',
+			52: 'color',
+			53: 'wireframe',
+			54: 'flat',
+			55: 'texture',
+			191: 'texture',
+			56: '+wireframe'
+		};
+
+		document.addEventListener('keydown', function (event) {
+			if (!event[ACTIVE_KEY]) { return; }
+
+			switch (event.which) {
+				case 32: // Space
+					GameUtils.toggleFullScreen();
+					break;
+				case 13: // Enter
+					GameUtils.togglePointerLock();
+					break;
+				case 49: // 1
+					this.renderSystem.setDebugMaterial();
+					break;
+				default:
+					if (modesByKeyCode[event.which]) {
+						this.renderSystem.setDebugMaterial(modesByKeyCode[event.which]);
+					}
 			}
 		}.bind(this), false);
 
-		document.addEventListener('mousedown', function (e) {
-			if (e[activeKey]) {
-				var x = e.clientX;
-				var y = e.clientY;
+		document.addEventListener('mousedown', function (event) {
+			if (event[ACTIVE_KEY]) {
+				var x = event.clientX;
+				var y = event.clientY;
 				this.pick(x, y, function (id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
@@ -583,11 +598,11 @@ define([
 	};
 
 	/**
-	 * Adds an event listener to the GooRunner.<br>
+	 * Adds an event listener to the GooRunner.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param  {function(event)} callback Callback function.
+	 * @param  {function (event)} callback Callback function.
 	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
 	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
 	 * @param {number} callback.event.depth Depth of pick ray intersection.
@@ -597,7 +612,7 @@ define([
 	 * @param {Event} callback.event.domEvent Original DOM event.
 	 * @param {number} callback.event.id Entity pick ID. -1 if no entity was picked.
 	 * @example
-	 * gooRunner.addEventListener('mousedown', function(event) {
+	 * gooRunner.addEventListener('mousedown', function (event) {
 	 *   if (event.entity) {
 	 *     console.log('clicked entity', event.entity.name);
 	 *     console.log('clicked point', event.intersection);
@@ -621,7 +636,7 @@ define([
 	 * Removes an event listener from the GooRunner.
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param {function(event)} callback Callback to remove from event listener.
+	 * @param {function (event)} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if (!this._eventListeners[type]) {
@@ -640,7 +655,7 @@ define([
 	 * Triggers an event on the GooRunner (force).
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param {object} evt The GooRunner-style event
+	 * @param {Object} evt The GooRunner-style event
 	 * @param {Entity} evt.entity Event entity.
 	 * @param {number} evt.x Event canvas X coordinate.
 	 * @param {number} evt.y Event canvas Y coordinate.
@@ -707,7 +722,7 @@ define([
 			this.pick(x, y, function (index, depth) {
 				var dpx = this.renderer.devicePixelRatio;
 				var entity = this.world.entityManager.getEntityByIndex(index);
-				var intersection = Renderer.mainCamera.getWorldPosition(x*dpx, y*dpx, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
+				var intersection = Renderer.mainCamera.getWorldPosition(x * dpx, y * dpx, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,
@@ -773,7 +788,7 @@ define([
 
 	/**
 	 * Takes an image snapshot from the 3d scene at next render call.
-	 * @param {function} callback
+	 * @param {Function} callback
 	 */
 	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);
@@ -798,7 +813,7 @@ define([
 	};
 
 	/**
-	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.<br>
+	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example
 	 * @param {number} x screen coordinate
 	 * @param {number} y screen coordinate
@@ -806,16 +821,11 @@ define([
 	 */
 	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
-		var currentClearColor = this.renderer.clearColor.data;
+		var currentClearColor = this.renderer.clearColor;
 
 		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
-		var savedClearColor = [
-			currentClearColor[0],
-			currentClearColor[1],
-			currentClearColor[2],
-			currentClearColor[3]
-		];
+		var savedClearColor = currentClearColor.clone();
 
 		// change the clear color
 		this.renderer.setClearColor(0, 0, 0, 1);
@@ -824,7 +834,7 @@ define([
 		this.renderSystem.renderToPick(this.renderer, false);
 
 		// restore the clear color
-		this.renderer.setClearColor.apply(this.renderer, savedClearColor);
+		this.renderer.setClearColor(savedClearColor.r, savedClearColor.g, savedClearColor.b, savedClearColor.a);
 
 		// get the picking data from the buffer
 		var pickingStore = {};

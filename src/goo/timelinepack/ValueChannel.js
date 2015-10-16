@@ -25,7 +25,7 @@ define([
 	 * @param id
 	 * @param time Start time
 	 * @param value
-	 * @param {function(number)} easingFunction
+	 * @param {function (number)} easingFunction
 	 */
 	ValueChannel.prototype.addKeyframe = function (id, time, value, easingFunction) {
 		var newKeyframe = {
@@ -86,7 +86,7 @@ define([
 	ValueChannel.prototype.setTime = ValueChannel.prototype.update;
 
 	// tween factories
-	ValueChannel.getSimpleTransformTweener = function (type, dimensionIndex, entityId, resolver) {
+	ValueChannel.getSimpleTransformTweener = function (type, vectorComponent, entityId, resolver) {
 		var entity;
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
@@ -102,7 +102,7 @@ define([
 			// it's a temporary fix in the engine until the issue is patched in create
 			// https://trello.com/c/cj8XQnUz/1588-normal-user-can-t-import-prefabs-with-timelines-if-not-all-animated-objects-are-in-the-prefab
 			if (entity) {
-				entity.transformComponent.transform[type].data[dimensionIndex] = value;
+				entity.transformComponent.transform[type][vectorComponent] = value;
 				entity.transformComponent.setUpdated();
 			}
 		};

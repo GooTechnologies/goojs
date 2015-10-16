@@ -56,7 +56,9 @@ define([
 		var waterMaterial = this.waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
 
-		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D('../resources/water/waternormals3.png'));
+		new TextureCreator().loadTexture2D('../resources/water/waternormals3.png').then(function (texture) {
+			waterMaterial.setTexture('NORMAL_MAP', texture);
+		});
 		waterMaterial.setTexture('REFLECTION_MAP', this.renderTarget);
 		waterMaterial.setTexture('BUMP_MAP', this.heightTarget);
 		waterMaterial.setTexture('NORMAL_MAP_COARSE', this.normalTarget);
@@ -64,7 +66,7 @@ define([
 
 		var materialWire = this.materialWire = new Material(ShaderLib.simple, 'mat');
 		materialWire.wireframe = true;
-		materialWire.wireframeColor = [0,0,0];
+		materialWire.wireframeColor = [0, 0, 0];
 
 		this.calcVect = new Vector3();
 		this.camReflectDir = new Vector3();
@@ -77,19 +79,16 @@ define([
 
 		var projData = this.projData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 4, 6);
 		projData.getAttributeBuffer(MeshData.POSITION).set([
-			0,0,0,
-			1,0,0,
-			1,1,0,
-			0,1,0
+			0, 0, 0,
+			1, 0, 0,
+			1, 1, 0,
+			0, 1, 0
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
 		var materialProj = new Material(projShaderDef, 'mat');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/uniformclouds.jpg');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/perlin_noise.png');
-		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');
 		this.projRenderable = {
-			meshData : projData,
-			materials : [materialProj]
+			meshData: projData,
+			materials: [materialProj]
 		};
 	}
 
@@ -139,17 +138,17 @@ define([
 
 			camLocation.set(camera.translation);
 			var planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectPos.set(camLocation.sub(calcVect));
 
 			camLocation.set(camera.translation).add(camera._direction);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
 			camLocation.set(camera.translation).add(camera._up);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
 			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
@@ -163,7 +162,7 @@ define([
 
 			if (this.skybox) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setVector(camReflectPos);
+				target.translation.set(camReflectPos);
 				target.update();
 			}
 		}
@@ -186,7 +185,7 @@ define([
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setVector(source);
+			target.translation.set(source);
 			target.update();
 		}
 	};
@@ -208,7 +207,7 @@ define([
 	var waterShaderDef = {
 		attributes: {
 			//vertexPosition: MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
 			viewMatrix: Shader.VIEW_MATRIX,
@@ -242,50 +241,50 @@ define([
 			camNear: Shader.NEAR_PLANE,
 			camFar: Shader.FAR_PLANE,
 			time: Shader.TIME,
-			intersectBottomLeft: [0,0,0,0],
-			intersectTopLeft: [0,0,0,0],
-			intersectTopRight: [0,0,0,0],
-			intersectBottomRight: [0,0,0,0],
+			intersectBottomLeft: [0, 0, 0, 0],
+			intersectTopLeft: [0, 0, 0, 0],
+			intersectTopRight: [0, 0, 0, 0],
+			intersectBottomRight: [0, 0, 0, 0],
 			grid: false,
 			heightMultiplier: 50.0,
-			density: [1,1]
-			//screenSize: [1,1]
+			density: [1, 1]
+			//screenSize: [1, 1]
 		},
-		vshader: [ //
-			//'attribute vec3 vertexPosition;', //
-			'attribute vec2 vertexUV0;', //
+		vshader: [
+			//'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
 
-			'uniform vec3 vertexNormal;', //
-			'uniform vec4 vertexTangent;', //
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform vec3 vertexNormal;',
+			'uniform vec4 vertexTangent;',
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
 			'uniform mat3 normalMatrix;',
-			'uniform vec3 cameraPosition;', //
+			'uniform vec3 cameraPosition;',
 			'uniform float time;',
 			'uniform vec3 sunDirection;',
 			'uniform float coarseStrength;',
 			'uniform float heightMultiplier;',
 			//'uniform vec2 screenSize;',
 
-			'uniform sampler2D bump;',//
+			'uniform sampler2D bump;',
 
 			'uniform vec4 intersectBottomLeft;',
 			'uniform vec4 intersectTopLeft;',
 			'uniform vec4 intersectTopRight;',
 			'uniform vec4 intersectBottomRight;',
 
-			'varying vec2 texCoord0;',//
-			'varying vec2 texCoord1;',//
-			'varying vec3 eyeVec;',//
-			'varying vec3 sunDir;',//
+			'varying vec2 texCoord0;',
+			'varying vec2 texCoord1;',
+			'varying vec3 eyeVec;',
+			'varying vec3 sunDir;',
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 			'varying vec3 normal;',
 
 			// ShaderFragment.features.noise3d,
 
-			'void main(void) {', //
+			'void main(void) {',
 			'	vec4 pointTop = mix(intersectTopLeft, intersectTopRight, vertexUV0.x);',
 			'	vec4 pointBottom = mix(intersectBottomLeft, intersectBottomRight, vertexUV0.x);',
 			'	vec4 pointFinal = mix(pointTop, pointBottom, 1.0 - vertexUV0.y);',
@@ -308,13 +307,13 @@ define([
 			'	float height = texture2D(bump, projCoord).x;',
 			'	pointFinal.y = height * heightMultiplier;',
 
-			'	texCoord1 = vertexUV0;',//
+			'	texCoord1 = vertexUV0;',
 
             '	vec4 pos = worldMatrix * vec4(pointFinal.xyz, 1.0);',
 			'	worldPos = pos.xyz;',
 			// '	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
-			'	texCoord0 = worldPos.xz * 2.0;',//
+			'	texCoord0 = worldPos.xz * 2.0;',
 
 			'	vec3 n = normalize(normalMatrix * vertexNormal);',
 			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
@@ -326,14 +325,14 @@ define([
 
 			'	sunDir = sunDirection * rotMat;',
 
-			'	viewCoords = projectionMatrix * viewMatrix * pos;', //
+			'	viewCoords = projectionMatrix * viewMatrix * pos;',
 			'	gl_Position = viewCoords;',
 			'}'//
 		].join('\n'),
-		fshader: [//
-			'uniform sampler2D normalMap;',//
-			'uniform sampler2D reflection;',//
-			'uniform sampler2D normalMapCoarse;',//
+		fshader: [
+			'uniform sampler2D normalMap;',
+			'uniform sampler2D reflection;',
+			'uniform sampler2D normalMapCoarse;',
 
 			'uniform vec3 waterColor;',
 			'uniform bool abovewater;',
@@ -370,8 +369,8 @@ define([
 			'    return noise/4.0-1.0;',
 			'}',
 
-			'void main(void)',//
-			'{',//
+			'void main(void)',
+			'{',
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
 
@@ -383,7 +382,7 @@ define([
 			'	vec2 normCoords = texCoord0;',
 			'	vec4 noise = getNoise(normCoords);',
 			'	vec3 normalVector = normalize(noise.xyz * vec3(1.8 * detailStrength, 1.8 * detailStrength, 1.0) + coarseNormal.xyz * vec3(1.8 * coarseStrength, 1.8 * coarseStrength, 1.0));',
-			// '	vec3 normalVector = vec3(0.0,0.0,1.0);',
+			// '	vec3 normalVector = vec3(0.0, 0.0, 1.0);',
 
 			'	vec3 localView = normalize(eyeVec);',
 			'	float fresnel = dot(normalize(normalVector*vec3(1.0, 1.0, 1.0)), localView);',
@@ -443,35 +442,35 @@ define([
 	};
 
 	var projShaderDef = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			//diffuseMap : Shader.TEXTURE0,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			//diffuseMap: Shader.TEXTURE0,
 			//camNear: Shader.NEAR_PLANE,
 			//camFar: Shader.FAR_PLANE,
 			time: Shader.TIME
 		},
-		vshader : [ //
-		'attribute vec3 vertexPosition;', //
+		vshader: [
+		'attribute vec3 vertexPosition;',
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
-		'uniform mat4 worldMatrix;',//
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
 
-		'varying vec4 worldPos;',//
-		'varying vec4 viewCoords;',//
+		'varying vec4 worldPos;',
+		'varying vec4 viewCoords;',
 
-		'void main(void) {', //
+		'void main(void) {',
 		'	worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
 		'	viewCoords = viewMatrix * worldPos;',
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+		'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'precision mediump float;',
 
 		//'uniform sampler2D diffuseMap;',
@@ -497,13 +496,13 @@ define([
 		'    return noise/5.0-1.0;',
 		'}',
 
-		'void main(void)',//
-		'{',//
+		'void main(void)',
+		'{',
 		//'	float fs = camFar * 0.5;',
 		// '	float fogDist = clamp(max(viewCoords.z - fs, 0.0)/(camFar - camNear - fs), 0.0, 1.0);',
 		'	float fogDist = clamp(-viewCoords.z / 1000.0, 0.0, 1.0);',
 
-		// '	gl_FragColor = mix(texture2D(diffuseMap, worldPos.xz * 0.001), vec4(0.5), fogDist);',//
+		// '	gl_FragColor = mix(texture2D(diffuseMap, worldPos.xz * 0.001), vec4(0.5), fogDist);',
 
 		// '	vec4 noise = getNoise(diffuseMap, worldPos.xz * 1.0);',
 		// '	gl_FragColor = noise;',

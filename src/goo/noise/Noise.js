@@ -34,13 +34,13 @@ define([
 	 * Splits a real-valued number into a record for use in smooth interpolation.
 	 * @hidden
 	 * @param {Float} x Input value.
-	 * @returns {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
+	 * @returns {Object} Object containing 'i0', 'i1', 'f0' and 'f1' members. (Integer, Integer, Float, Float)
 	 */
 	Noise.split = function (x) {
 		var i = Math.floor(x);
 		var f = MathUtils.scurve5(x - i);
 
-		return { "i0" : i + 0, "i1" : i + 1, "f0" : 1.0 - f, "f1" : 0.0 + f };
+		return { 'i0': i + 0, 'i1': i + 1, 'f0': 1.0 - f, 'f1': 0.0 + f };
 	};
 
 	/**

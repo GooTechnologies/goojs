@@ -10,10 +10,10 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('SceneHandler', function () {
 		var loader;
-		
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -22,7 +22,7 @@ define([
 				ajax: false
 			});
 		});
-		
+
 		it('loads a scene with entities', function (done) {
 			var config = Configs.scene();
 			loader.preload(Configs.get());

@@ -45,9 +45,12 @@ define([
 				SystemBus.addListener('goo.setCurrentCamera', listener);
 				entity.setAsMainCamera();
 				expect(listener).toHaveBeenCalledWith({
-					camera: camera,
-					entity: entity
-				});
+						camera: camera,
+						entity: entity
+					},
+					'goo.setCurrentCamera',
+					SystemBus
+				);
 			});
 
 			it('returns the calling entity', function () {

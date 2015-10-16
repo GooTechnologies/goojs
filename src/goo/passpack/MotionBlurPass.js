@@ -2,7 +2,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/MeshData',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/pass/FullscreenPass',
@@ -11,7 +11,7 @@ define([
 	Material,
 	Shader,
 	ShaderLib,
-	FullscreenUtil,
+	FullscreenUtils,
 	MeshData,
 	RenderTarget,
 	FullscreenPass,
@@ -82,25 +82,25 @@ define([
 	var blendShader = {
 		defines: {},
 		processors: [function (shader, shaderInfo) {
-			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
+			if (shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
 				shader.setDefine('MOTION_MAP', true);
 			} else {
 				shader.removeDefine('MOTION_MAP');
 			}
 		}],
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			blend : 0.90,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			blend: 0.90,
 			scale: 1.0,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			motionMap : 'MOTION_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			motionMap: 'MOTION_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -114,7 +114,7 @@ define([
 			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D motionMap;',
 		'uniform float blend;',

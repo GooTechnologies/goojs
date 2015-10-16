@@ -1,30 +1,27 @@
-define(['goo/loaders/handlers/ComponentHandler',
+define([
+	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/SpotLight',
 	'goo/renderer/light/DirectionalLight',
-	'goo/math/Vector',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/math/Vector3',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	LightComponent,
 	PointLight,
 	SpotLight,
 	DirectionalLight,
-	Vector,
-	RSVP,
-	pu,
-	_
+	Vector3,
+	ObjectUtils
 ) {
 	'use strict';
 
 	/**
 	 * For handling loading of light components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -51,11 +48,11 @@ define(['goo/loaders/handlers/ComponentHandler',
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	LightComponentHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtils.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
 			shadowCaster: false,
@@ -68,7 +65,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 
 		if (config.shadowCaster && supportsShadows()) {
 			config.shadowSettings = config.shadowSettings || {};
-			_.defaults(config.shadowSettings, {
+			ObjectUtils.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
 				near: 1,
 				far: 1000,
@@ -98,8 +95,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	/**
 	 * Update engine cameracomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	LightComponentHandler.prototype.update = function (entity, config, options) {
@@ -113,7 +110,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			var light = component.light;
-			if(!light || Light[config.type] !== light.constructor) {
+			if (!light || Light[config.type] !== light.constructor) {
 				light = new Light[config.type]();
 				component.light = light;
 			}
@@ -124,16 +121,16 @@ define(['goo/loaders/handlers/ComponentHandler',
 					if (key === 'shadowSettings') {
 						for (var key in value) {
 							var shadowVal = value[key];
-							if (light.shadowSettings[key] instanceof Vector) {
-								light.shadowSettings[key].set(shadowVal);
+							if (light.shadowSettings[key] instanceof Vector3) {
+								light.shadowSettings[key].setDirect(shadowVal[0], shadowVal[1], shadowVal[2]);
 							} else {
-								light.shadowSettings[key] = _.clone(shadowVal);
+								light.shadowSettings[key] = ObjectUtils.clone(shadowVal);
 							}
 						}
-					}	else if (light[key] instanceof Vector) {
-						light[key].set(value);
+					} else if (light[key] instanceof Vector3) {
+						light[key].setDirect(value[0], value[1], value[2]);
 					} else {
-						light[key] = _.clone(value);
+						light[key] = ObjectUtils.clone(value);
 					}
 				}
 			}

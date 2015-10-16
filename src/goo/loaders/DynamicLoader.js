@@ -3,9 +3,9 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/Ajax',
 	'goo/util/rsvp',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/util/ArrayUtil',
+	'goo/util/StringUtils',
+	'goo/util/PromiseUtils',
+	'goo/util/ArrayUtils',
 	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
@@ -30,9 +30,9 @@ define([
 	ComponentHandler,
 	Ajax,
 	RSVP,
-	StringUtil,
-	PromiseUtil,
-	ArrayUtil,
+	StringUtils,
+	PromiseUtils,
+	ArrayUtils,
 	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
@@ -40,7 +40,7 @@ define([
 
 	/**
 	 * Class to load objects into the engine, or to update objects based on the data model.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {World} options.world The target World object.
 	 * @param {string} options.rootPath The root path from where to get resources.
 	 * @param {Ajax} [options.ajax=new Ajax(options.rootPath)]
@@ -71,7 +71,7 @@ define([
 	 * Load configs into the loader cache without loading anything into the engine.
 	 * Subsequent calls to load and update will draw configs from the prefilled cache.
 	 *
-	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
+	 * @param {Object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
 	 * the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
@@ -114,7 +114,7 @@ define([
 	 * registered {@link ConfigHandler}.
 	 *
 	 * @param {string} ref Ref of object to load.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
 	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
 	 * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
@@ -137,9 +137,9 @@ define([
 	 * type, updating behavior is determined by the registered {ConfigHandler}.
 	 *
 	 * @param {string} ref Ref of object to update.
-	 * @param {object} [config] New configuration (formatted according to data model).
+	 * @param {Object} [config] New configuration (formatted according to data model).
 	 * If omitted, works the same as {DynamicLoader.load}.
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 	 */
@@ -151,7 +151,7 @@ define([
 			return that._updateObject(ref, config, options);
 		})
 		.then(null, function (err) {
-			console.error("Error updating " + ref + " " + err);
+			console.error('Error updating ' + ref + ' ' + err);
 			throw err;
 		});
 	};
@@ -164,8 +164,8 @@ define([
 	 * Loads the object specified by the ref. If an object is already loaded,
 	 * it will return that object without updating it.
 	 * @param {string} ref
-	 * @param {object} options
-	 * @returns {object} Depending on what type of ref was loaded.
+	 * @param {Object} options
+	 * @returns {Object} Depending on what type of ref was loaded.
 	 * @private
 	 */
 	DynamicLoader.prototype._loadObject = function (ref, options) {
@@ -186,9 +186,9 @@ define([
 	/**
 	 * Updates object identified by ref according to config
 	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
-	 * @returns {object} Depending on what's being updated
+	 * @param {Object} config
+	 * @param {Object} options
+	 * @returns {Object} Depending on what's being updated
 	 * @private
 	 */
 	DynamicLoader.prototype._updateObject = function (ref, config, options) {
@@ -197,10 +197,10 @@ define([
 		if (handler) {
 			return handler.update(ref, config, options);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		} else {
 			console.warn('No handler for type ' + type);
-			return PromiseUtil.resolve(config);
+			return PromiseUtils.resolve(config);
 		}
 	};
 
@@ -218,12 +218,18 @@ define([
 
 	/**
 	 * Recursively traverses all configs and preloads the binary files referenced.
-	 * @param {object} references one-level object of references, like in datamodel
-	 * @param {object} options See {DynamicLoader.load}
+	 * @param {Object} references one-level object of references, like in datamodel
+	 * @param {Object} options See {DynamicLoader.load}
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
 	DynamicLoader.prototype._loadBinariesFromRefs = function (references, options) {
+		if (typeof references === 'string') {
+			var reference = references;
+			references = {};
+			references[reference] = reference;
+		}
+
 		var that = this;
 		function loadBinaryRefs(refs) {
 			var handled = 0;
@@ -237,9 +243,8 @@ define([
 					}
 				});
 			}
-
 			// When all binary refs are loaded, we're done
-			return RSVP.all(refs.map(function (ref) { return load(ref); }));
+			return RSVP.all(refs.map(load));
 		}
 
 		function traverse(refs) {
@@ -255,12 +260,13 @@ define([
 			function traverseFn(config) {
 				var promises = [];
 				if (config.lazy === true) {
-					return PromiseUtil.resolve();
+					return PromiseUtils.resolve();
 				}
-				var refs = that._getRefsFromConfig(config);
 
-				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
-					var ref = refs[keys[i]];
+				var refs = DynamicLoader._getRefsFromConfig(config);
+
+				for (var i = 0, len = refs.length; i < len; i++) {
+					var ref = refs[i];
 					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
 						// If it's a binary ref, store it in the list
 						binaryRefs.add(ref);
@@ -275,7 +281,7 @@ define([
 
 			// Resolved when everything is loaded and traversed
 			return traverseFn({ collectionRefs: refs }).then(function () {
-				return ArrayUtil.fromValues(binaryRefs);
+				return ArrayUtils.fromValues(binaryRefs);
 			});
 		}
 
@@ -293,48 +299,85 @@ define([
 		if (handler) { return handler; }
 		var Handler = ConfigHandler.getHandler(type);
 		if (Handler) {
-			return this._handlers[type] = new Handler(
+			this._handlers[type] = new Handler(
 				this._world,
 				this._loadRef.bind(this),
 				this._updateObject.bind(this),
 				this._loadObject.bind(this)
 			);
+			return this._handlers[type];
 		}
 		return null;
 	};
 
+
+	var BINARY_HASH_LENGTH = 40;
+	var JSON_HASH_LENGTH = 32;
+
 	/**
-	 * Find all the references in a config, and return in a flat list.
+	 * Determine if a string is a valid goo data model id
 	 *
-	 * @param {object} config Config.
-	 * @returns {string[]} refs References.
+	 * @param {string} id
+	 * @returns {boolean}
 	 * @private
 	 */
+	var isValidId = function(id) {
+		if (typeof id !== 'string') {
+			return false;
+		}
+		var tokens = id.split('.');
+		return tokens[0] &&
+			(tokens[0].length === BINARY_HASH_LENGTH || tokens[0].length === JSON_HASH_LENGTH) &&
+			tokens[1];
+	};
 
-	var refRegex = new RegExp('\\S+refs?$', 'i');
-
-	DynamicLoader.prototype._getRefsFromConfig = function (config) {
+	/**
+	 * Traverses a json-like structure and collects refs in an array
+	 * @param config
+	 * @returns {Array}
+	 * @hidden
+	 */
+	DynamicLoader._getRefsFromConfig = function (config) {
 		var refs = [];
+
 		function traverse(key, value) {
-			if (refRegex.test(key) && key !== 'thumbnailRef') {
-				// Refs
-				if (value instanceof Object) {
-					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
-						if (value[keys[i]]) {
-							refs.push(value[keys[i]]);
-						}
+			// Multiple refs
+			if (StringUtils.endsWith(key.toLowerCase(), 'refs') && value instanceof Object) {
+				var foundRefs = 0;
+				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					if (isValidId(value[keys[i]])) {
+						refs.push(value[keys[i]]);
+						foundRefs++;
 					}
-				} else if (value) {
-					// Ref
-					refs.push(value);
 				}
-			} else if (value instanceof Object && key !== 'assets') {
+				if (foundRefs > 0) {
+					return;
+				}
+			}
+
+			// Single ref
+			if (
+				StringUtils.endsWith(key.toLowerCase(), 'ref') &&
+				key !== 'thumbnailRef' &&
+				isValidId(value)
+			) {
+				refs.push(value);
+				return;
+			}
+
+			// Regular object (step into)
+			if (
+				value instanceof Object &&
+				key !== 'assets' &&
+				!(value instanceof Array)
+			) {
 				// Go down a level
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
 					traverse(keys[i], value[keys[i]]);
 				}
 			}
 		}
+
 		traverse('', config);
 		return refs;
 	};

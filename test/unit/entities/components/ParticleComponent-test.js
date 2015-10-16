@@ -1,1 +1,1 @@
-define(['goo/entities/components/ParticleComponent'], function(ParticleComponent) {});
+define(['goo/entities/components/ParticleComponent'], function (ParticleComponent) {});

@@ -27,27 +27,27 @@ define([
 	Edge.prototype.setData = function (vec1, vec2) {
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
-		var v1_y = vec1.data[1];
-		var v2_y = vec2.data[1];
+		var v1_y = vec1.y;
+		var v2_y = vec2.y;
 		if (v1_y < v2_y ) {
-			this.x0 = vec1.data[0];
-			this.x1 = vec2.data[0];
+			this.x0 = vec1.x;
+			this.x1 = vec2.x;
 
 			this.y0 = v1_y;
 			this.y1 = v2_y;
 
-			this.z0 = vec1.data[2];
-			this.z1 = vec2.data[2];
+			this.z0 = vec1.z;
+			this.z1 = vec2.z;
 		}
 		else {
-			this.x0 = vec2.data[0];
-			this.x1 = vec1.data[0];
+			this.x0 = vec2.x;
+			this.x1 = vec1.x;
 
 			this.y0 = v2_y;
 			this.y1 = v1_y;
 
-			this.z0 = vec2.data[2];
-			this.z1 = vec1.data[2];
+			this.z0 = vec2.z;
+			this.z1 = vec1.z;
 		}
 
 		// Reset the between faces to false.

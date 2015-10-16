@@ -30,16 +30,17 @@ require([
 	function loadSkybox () {
 		var environmentPath = 'resources/skybox/';
 		// left, right, bottom, top, back, front
-		var textureCube = new TextureCreator().loadTextureCube([
+		skybox = createBox(skyboxShader, 10, 10, 10);
+		new TextureCreator().loadTextureCube([
 			environmentPath + '1.jpg',
 			environmentPath + '3.jpg',
 			environmentPath + '5.jpg',
 			environmentPath + '6.jpg',
 			environmentPath + '4.jpg',
 			environmentPath + '2.jpg'
-		]);
-		skybox = createBox(skyboxShader, 10, 10, 10);
-		skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		]).then(function (textureCube) {
+			skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		});
 		skybox.meshRendererComponent.materials[0].cullState.cullFace = 'Front';
 		skybox.meshRendererComponent.materials[0].depthState.enabled = false;
 		skybox.meshRendererComponent.materials[0].renderQueue = 0;
@@ -49,7 +50,7 @@ require([
 		goo.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
-			target.translation.setVector(source.translation);
+			target.translation.set(source.translation);
 			target.update();
 		});
 	}

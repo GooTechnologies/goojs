@@ -8,7 +8,7 @@ define(
 		'goo/math/Vector3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
 		'use strict';
 
 		/**
@@ -18,17 +18,17 @@ define(
 		function LogicNodeMeshRendererComponent() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMeshRendererComponent.logicInterface;
-			this.type = "MeshRendererComponent";
+			this.type = 'MeshRendererComponent';
 		}
 
 		LogicNodeMeshRendererComponent.prototype = Object.create(LogicNode.prototype);
-		LogicNodeMeshRendererComponent.editorName = "MeshRendererComponent";
+		LogicNodeMeshRendererComponent.editorName = 'MeshRendererComponent';
 
-		LogicNodeMeshRendererComponent.prototype.onConfigure = function(config) {
+		LogicNodeMeshRendererComponent.prototype.onConfigure = function (config) {
 			this.entityRef = config.entityRef;
 		};
 
-		LogicNodeMeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeMeshRendererComponent.prototype.onInputChanged = function (instDesc, portID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 
@@ -39,7 +39,7 @@ define(
 			}
 		};
 
-		LogicNodeMeshRendererComponent.prototype.onEvent = function(instDesc, event) {
+		LogicNodeMeshRendererComponent.prototype.onEvent = function (instDesc, event) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 
@@ -50,16 +50,16 @@ define(
 			}
 		};
 
-		LogicNodeMeshRendererComponent.logicInterface = new LogicInterface("Material");
-		LogicNodeMeshRendererComponent.inportShadows = LogicNodeMeshRendererComponent.logicInterface.addInputEvent("toggle-shadows");
-		LogicNodeMeshRendererComponent.inportHidden = LogicNodeMeshRendererComponent.logicInterface.addInputEvent("toggle-hidden");
-		LogicNodeMeshRendererComponent.inportAmbient = LogicNodeMeshRendererComponent.logicInterface.addInputProperty("ambient", "Vector3", new Vector3(0.5, 0.0, 0.0));
+		LogicNodeMeshRendererComponent.logicInterface = new LogicInterface('Material');
+		LogicNodeMeshRendererComponent.inportShadows = LogicNodeMeshRendererComponent.logicInterface.addInputEvent('toggle-shadows');
+		LogicNodeMeshRendererComponent.inportHidden = LogicNodeMeshRendererComponent.logicInterface.addInputEvent('toggle-hidden');
+		LogicNodeMeshRendererComponent.inportAmbient = LogicNodeMeshRendererComponent.logicInterface.addInputProperty('ambient', 'Vector3', new Vector3(0.5, 0.0, 0.0));
 		LogicNodeMeshRendererComponent.logicInterface.addConfigEntry({
 			name: 'entityRef',
 			type: 'entityRef',
 			label: 'Entity'
 		});
-		LogicNodes.registerType("MeshRendererComponent", LogicNodeMeshRendererComponent);
+		LogicNodes.registerType('MeshRendererComponent', LogicNodeMeshRendererComponent);
 
 		return LogicNodeMeshRendererComponent;
 	});

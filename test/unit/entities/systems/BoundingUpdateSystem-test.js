@@ -1,1 +1,1 @@
-define(['goo/entities/systems/BoundingUpdateSystem'], function(BoundingUpdateSystem) {});
+define(['goo/entities/systems/BoundingUpdateSystem'], function (BoundingUpdateSystem) {});

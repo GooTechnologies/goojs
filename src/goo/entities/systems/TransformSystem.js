@@ -23,7 +23,8 @@ define([
 	TransformSystem.prototype.process = function (entities) {
 		numUpdates = 0;
 		var i, transformComponent;
-		for (i = 0; i < entities.length; i++) {
+		var l = entities.length;
+		for (i = 0; i < l; i++) {
 			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
@@ -32,7 +33,7 @@ define([
 		}
 
 		// Traverse from root nodes and down, depth first
-		for (i = 0; i < entities.length; i++) {
+		for (i = 0; i < l; i++) {
 			var entity = entities[i];
 			transformComponent = entity.transformComponent;
 			if (transformComponent.parent === null) {

@@ -1,14 +1,14 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/StringUtil',
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils',
+	'goo/util/StringUtils',
 	'goo/util/rsvp'
 ], function (
 	TextureHandler,
-	PromiseUtil,
+	PromiseUtils,
 	_,
-	StringUtil,
+	StringUtils,
 	RSVP
 ) {
 	'use strict';
@@ -16,7 +16,7 @@ define([
 	/**
 	 * Ajax helper class
 	 * @param {string} rootPath
-	 * @param {object} options
+	 * @param {Object} options
 	 */
 	function Ajax(rootPath, options) {
 		if (rootPath) {
@@ -31,7 +31,7 @@ define([
 
 	/**
 	 * Prefill ajax cache with data
-	 * @param {object} bundle Pairs of key-configs
+	 * @param {Object} bundle Pairs of key-configs
 	 * @param {boolean} [clear=false] If set to true will overwrite cache, otherwise extend it
 	 */
 	Ajax.prototype.prefill = function (bundle, clear) {
@@ -53,7 +53,7 @@ define([
 	/**
 	 * Uses GET to retrieve data at a remote location.
 	 * @hidden
-	 * @param {object} options
+	 * @param {Object} options
 	 * @param {string} options.url
 	 * @returns {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
 	 */
@@ -70,7 +70,7 @@ define([
 			request.responseType = options.responseType;
 		}
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var handleStateChange = function () {
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
@@ -92,6 +92,12 @@ define([
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
 	Ajax.crossOrigin = false;
 
+	var MIME_TYPES = {
+		mp4: 'video/mp4',
+		ogv: 'video/ogg',
+		webm: 'video/webm'
+	};
+
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
 	 *
@@ -103,7 +109,7 @@ define([
 	 */
 	Ajax.prototype.load = function (path, reload) {
 		var that = this;
-		var path2 = StringUtil.parseURL(path).path;//! AT: dunno what to call this
+		var path2 = StringUtils.parseURL(path).path;//! AT: dunno what to call this
 		var type = path2.substr(path2.lastIndexOf('.') + 1).toLowerCase();
 
 		function typeInGroup(type, group) {
@@ -111,11 +117,12 @@ define([
 		}
 
 		if (!path) {
-			PromiseUtil.reject('Path was undefined');
+			PromiseUtils.reject('Path was undefined'); //! AT: no return?
+			// anyways, the engine should not call this method without a path
 		}
 
 		if (path.indexOf(Ajax.ENGINE_SHADER_PREFIX) === 0) {
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 
 		if (this._cache[path] && !reload) {
@@ -125,22 +132,21 @@ define([
 			if (this._cache[path] instanceof RSVP.Promise) {
 				return this._cache[path];
 			} else {
-				return PromiseUtil.resolve(this._cache[path]);
+				return PromiseUtils.resolve(this._cache[path]);
 			}
 		}
 
-		var url = (this._rootPath) ? this._rootPath + path : path;
+		var url = this._rootPath ? this._rootPath + path : path;
+
 		if (typeInGroup(type, 'image')) {
-			return this._cache[path] = this._loadImage(url);
+			this._cache[path] = this._loadImage(url);
+			return this._cache[path];
 		} else if (typeInGroup(type, 'video')) {
-			var mimeTypes = {
-				mp4: 'video/mp4',
-				ogv: 'video/ogg',
-				webm: 'video/webm'
-			};
-			return this._cache[path] = this._loadVideo(url, mimeTypes[type]);
+			this._cache[path] = this._loadVideo(url, MIME_TYPES[type]);
+			return this._cache[path];
 		} else if (typeInGroup(type, 'audio')) {
-			return this._cache[path] = this._loadAudio(url);
+			this._cache[path] = this._loadAudio(url);
+			return this._cache[path];
 		}
 
 		var ajaxProperties = {
@@ -169,14 +175,14 @@ define([
 
 	Ajax.prototype.update = function (path, config) {
 		this._cache[path] = config;
-		return PromiseUtil.resolve(config);
+		return PromiseUtils.resolve(config);
 	};
 
 	/**
 	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
-	 * loader.loadImage('resources/image.png').then(function(image) {
+	 * loader.loadImage('resources/image.png').then(function (image) {
 	 *   // handle {@link Image} image
 	 * });
 	 * @param {string} url Path to whatever shall be loaded.
@@ -189,7 +195,7 @@ define([
 			image.crossOrigin = 'anonymous';
 		}
 
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var onLoad = function loadHandler() {
 				image.dataReady = true;
 				if (window.URL && window.URL.revokeObjectURL !== undefined) {
@@ -214,16 +220,44 @@ define([
 	};
 
 	Ajax.prototype._loadVideo = function (url, mimeType) {
+		var VIDEO_LOAD_TIMEOUT = 1000; // Timeout to 'canplay' event.
 		var video = document.createElement('video');
+		var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
 
-		var promise = PromiseUtil.createPromise(function (resolve, reject) {
-			video.addEventListener('canplay', function () {
-				video.dataReady = true;
+		var promise = PromiseUtils.createPromise(function (resolve, reject) {
+			var timeout;
+
+			var _resolve = function () {
+				if (!video.dataReady) {
+					console.warn('Video is not ready');
+				}
+				video.removeEventListener('canplay', canPlay);
+				video.removeEventListener('loadstart', loadStart);
+				clearTimeout(timeout);
 				resolve(video);
-			}, false);
+			};
+
+			var canPlay = function () {
+				video.dataReady = true;
+				_resolve();
+			};
+
+			var loadStart = function () {
+				if (iOS) {
+					_resolve();
+				}
+				else {
+					timeout = setTimeout(_resolve, VIDEO_LOAD_TIMEOUT);
+				}
+			};
+
+			// iOS doesn't auto-load video
+			video.addEventListener('canplay', canPlay, false);
+			video.addEventListener('loadstart', loadStart, false);
+
 			video.addEventListener('error', function (e) {
 				reject('Could not load video from ' + url + ', ' + e);
 			}, false);
@@ -257,7 +291,7 @@ define([
 	};
 
 	// TODO Put this somewhere nicer
-	Ajax.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
+	Ajax.ENGINE_SHADER_PREFIX = 'GOO_ENGINE_SHADERS/';
 
 	function addKeys(obj, keys) {
 		for (var i = 0; i < keys.length; i++) {

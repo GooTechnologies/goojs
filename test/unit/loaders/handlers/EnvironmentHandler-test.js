@@ -18,7 +18,7 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('EnvironmentHandler', function () {
 		var loader, world;
 
@@ -54,6 +54,7 @@ define([
 				expect(world._addedEntities).toContain(
 					environment.weatherState.snow.snow.particleCloudEntity
 				);
+
 				done();
 			});
 		});

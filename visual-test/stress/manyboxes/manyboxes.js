@@ -25,7 +25,7 @@ require([
 	material2.renderQueue = 2000;
 	material2.blendState.blending = 'CustomBlending';
 
-	var numBoxes = 20;
+	var numBoxes = 10;
 	var size = 0.7;
 	var box = new Box(size, size, size);
 	for (var i = 0; i < numBoxes; i++) {

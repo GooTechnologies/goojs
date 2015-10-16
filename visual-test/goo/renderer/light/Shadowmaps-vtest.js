@@ -16,7 +16,7 @@ require([
 	Box,
 	Sphere,
 	V
-	) {
+) {
 	'use strict';
 
 	V.describe('All implemented shadow types');
@@ -31,19 +31,19 @@ require([
 
 		var pointlightGui = gui.addFolder('Point Light');
 		var data = {
-			color: [pointLight.color.data[0] * 255, pointLight.color.data[1] * 255, pointLight.color.data[2] * 255]
+			color: [pointLight.color.x * 255, pointLight.color.y * 255, pointLight.color.z * 255]
 		};
 		var controller = pointlightGui.addColor(data, 'color');
-		controller.onChange(function() {
+		controller.onChange(function () {
 			pointLight.color.seta(data.color).div(255);
 			pointLight.changedColor = true;
 		});
 		var controller = pointlightGui.add(pointLight, 'intensity', 0, 1);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			pointLight.changedProperties = true;
 		});
 		var controller = pointlightGui.add(pointLight, 'range', 0, 10);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			pointLight.changedProperties = true;
 		});
 		pointlightGui.add(pointLight, 'shadowCaster');
@@ -62,15 +62,15 @@ require([
 
 		var directionallightGui = gui.addFolder('Directional Light');
 		var data = {
-			color: [directionalLight.color.data[0] * 255, directionalLight.color.data[1] * 255, directionalLight.color.data[2] * 255]
+			color: [directionalLight.color.x * 255, directionalLight.color.y * 255, directionalLight.color.z * 255]
 		};
 		var controller = directionallightGui.addColor(data, 'color');
-		controller.onChange(function() {
+		controller.onChange(function () {
 			directionalLight.color.seta(data.color).div(255);
 			directionalLight.changedColor = true;
 		});
 		var controller = directionallightGui.add(directionalLight, 'intensity', 0, 1);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			directionalLight.changedProperties = true;
 		});
 		directionallightGui.add(directionalLight, 'shadowCaster');
@@ -91,27 +91,27 @@ require([
 
 		var spotLightGui = gui.addFolder('Spot Light' + ind++);
 		var data = {
-			color: [spotLight.color.data[0] * 255, spotLight.color.data[1] * 255, spotLight.color.data[2] * 255]
+			color: [spotLight.color.x * 255, spotLight.color.y * 255, spotLight.color.z * 255]
 		};
 		var controller = spotLightGui.addColor(data, 'color');
-		controller.onChange(function() {
+		controller.onChange(function () {
 			spotLight.color.seta(data.color).div(255);
 			spotLight.changedColor = true;
 		});
 		var controller = spotLightGui.add(spotLight, 'angle', 0, 90);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			spotLight.changedProperties = true;
 		});
 		var controller = spotLightGui.add(spotLight, 'penumbra', 0, 90);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			spotLight.changedProperties = true;
 		});
 		var controller = spotLightGui.add(spotLight, 'intensity', 0, 2);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			spotLight.changedProperties = true;
 		});
 		var controller = spotLightGui.add(spotLight, 'range', 0, 30);
-		controller.onChange(function() {
+		controller.onChange(function () {
 			spotLight.changedProperties = true;
 		});
 		spotLightGui.add(spotLight, 'shadowCaster');
@@ -135,7 +135,13 @@ require([
 		sphere.meshRendererComponent.castShadows = true;
 	});
 
-	goo.world.createEntity(new Box(30, 30, 0.5), V.getColoredMaterial(1, 1, 1, 1), [0, 0, -6]).addToWorld();
+	var plane = goo.world.createEntity(
+		new Box(30, 30, 0.5),
+		V.getColoredMaterial(1, 1, 1, 1),
+		[0, 0, -6]
+	).addToWorld();
+
+	gui.add(plane.meshRendererComponent, 'receiveShadows');
 
 	addPointLight(goo);
 	addDirectionalLight(goo);

@@ -31,9 +31,9 @@ require([
 		material2.wireframe = true;
 
 		var radius = boundingSphere.radius;
-		var xCenter = boundingSphere.center.data[0];
-		var yCenter = boundingSphere.center.data[1];
-		var zCenter = boundingSphere.center.data[2];
+		var xCenter = boundingSphere.center.x;
+		var yCenter = boundingSphere.center.y;
+		var zCenter = boundingSphere.center.z;
 
 		var sphereMeshData = new Sphere(16, 16, radius);
 		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
@@ -47,9 +47,9 @@ require([
 		var xSize = boundingBox.xExtent * 2;
 		var ySize = boundingBox.yExtent * 2;
 		var zSize = boundingBox.zExtent * 2;
-		var xCenter = boundingBox.center.data[0];
-		var yCenter = boundingBox.center.data[1];
-		var zCenter = boundingBox.center.data[2];
+		var xCenter = boundingBox.center.x;
+		var yCenter = boundingBox.center.y;
+		var zCenter = boundingBox.center.z;
 
 		var boxMeshData = new Box(xSize, ySize, zSize);
 		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();

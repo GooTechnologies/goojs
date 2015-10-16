@@ -1,9 +1,9 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/StringUtil'
+	'goo/util/StringUtils'
 ], function (
 	Component,
-	StringUtil
+	StringUtils
 ) {
 	'use strict';
 
@@ -14,13 +14,13 @@ define([
 	 * For example, an entity with a {@link TransformComponent} and a {@link LightComponent} will be a light source in 3D space.
 	 * Note that when attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
 	 * @param {World} world The {@link World} this entity will be part of after calling .addToWorld().
-	 * @param {String} [name] Entity name.
+	 * @param {string} [name] Entity name.
 	 * @param {number} [id] Entity id.
 	 */
 	function Entity(world, name, id) {
 		this._world = world;
 		this._components = [];
-		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
+		this.id = id !== undefined ? id : StringUtils.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
 		this._tags = new Set();
@@ -53,6 +53,12 @@ define([
 		 * @private
 		 */
 		this._hidden = false;
+
+		/**
+		 * True if the entity is within the frustum
+		 * @type {boolean}
+		 */
+		this.isVisible = false;
 
 		/** Mark entity as static.
 		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.

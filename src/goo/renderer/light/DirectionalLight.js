@@ -39,7 +39,7 @@ define([
 	DirectionalLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 		this.direction.setDirect(0.0, 0.0, -1.0);
-		transform.matrix.applyPostVector(this.direction);
+		this.direction.applyPostVector(transform.matrix);
 	};
 
 	DirectionalLight.prototype.copy = function (source) {

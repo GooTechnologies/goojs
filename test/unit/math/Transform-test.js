@@ -33,13 +33,13 @@ define([
 	}
 
 	describe('Transform', function () {
-		var t, v1, v2, v3;
+		var t, v1, v2;
 
 		//! AT: refactor this out of here; MathUtil should have something like this
 		function rnd(n) {
-			if(n) {
+			if (n) {
 				return Math.random() * n;
-			} else {
+			} else {
 				return Math.random();
 			}
 		}
@@ -49,7 +49,6 @@ define([
 			t = new Transform();
 			v1 = new Vector3(10, 20, 30);
 			v2 = new Vector3(0, 0, 0);
-			v3 = new Vector3(0, 0, 0);
 		});
 
 		it('is identity by default', function () {
@@ -98,18 +97,20 @@ define([
 		});
 
 		it('combines correctly', function () {
-			t.translation.setd(rnd(5), rnd(5), rnd(5));
-			t.scale.setd(3, 3, 3);
+			//! AT: really bad idea to use random numbers
+			// if the test fails for some numbers once in a full moon you won't be able to reproduce it
+			t.translation.setDirect(rnd(5), rnd(5), rnd(5));
+			t.scale.setDirect(3, 3, 3);
 			t.setRotationXYZ(rnd(5), rnd(5), rnd(5));
 			t.update();
 			var t2 = new Transform();
-			t2.translation.setd(rnd(5), rnd(5), rnd(5));
+			t2.translation.setDirect(rnd(5), rnd(5), rnd(5));
 			t2.setRotationXYZ(rnd(5), rnd(5), rnd(5));
-			t2.scale.setd(rnd(5), rnd(5), rnd(5));
+			t2.scale.setDirect(rnd(5), rnd(5), rnd(5));
 			t2.update();
 			var t3 = Transform.combine(t, t2);
 			t3.update();
-			t.matrix.combine(t2.matrix);
+			t.matrix.mul(t2.matrix);
 			expect(t3.matrix).toBeCloseToMatrix(t.matrix);
 		});
 
@@ -167,10 +168,10 @@ define([
 		describe('combine', function () {
 			it('combines and updates the resulting transform', function () {
 				var transform1 = new Transform();
-				transform1.translation.set(1, 2, 3);
+				transform1.translation.setDirect(1, 2, 3);
 
 				var transform2 = new Transform();
-				transform2.translation.set(11, 22, 33);
+				transform2.translation.setDirect(11, 22, 33);
 
 				var result = Transform.combine(transform1, transform2);
 				expect(result.translation.equals(new Vector3(1, 2, 3).add(new Vector3(11, 22, 33)))).toBeTruthy();
@@ -184,17 +185,15 @@ define([
 
 		describe('multiply', function () {
 			it('can multiply and keep scaling correct', function () {
-
 				var transform1 = new Transform();
-				transform1.scale.set(1, 2, 3);
+				transform1.scale.setDirect(1, 2, 3);
 
 				var transform2 = new Transform();
-				transform2.scale.set(4, 5, 6);
+				transform2.scale.setDirect(4, 5, 6);
 
 				transform1.multiply(transform1, transform2);
 
 				expect(transform1.scale).toBeCloseToVector(new Vector3(1 * 4, 2 * 5, 3 * 6));
-
 			});
 		});
 

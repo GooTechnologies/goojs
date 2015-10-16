@@ -1,1 +1,1 @@
-define(['goo/animationpack/state/SyncFadeTransitionState'], function(SyncFadeTransitionState) {});
+define(['goo/animationpack/state/SyncFadeTransitionState'], function (SyncFadeTransitionState) {});

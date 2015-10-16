@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
 	Vector3,
@@ -14,9 +14,9 @@ define([
 	/**
 	 * A 3D object with all points equi-distance from a center point.
 	 * @extends MeshData
-	 * @param {Number} [zSamples=8] Number of segments.
-	 * @param {Number} [radialSamples=8] Number of slices.
-	 * @param {Number} [radius=0.5] Radius.
+	 * @param {number} [zSamples=8] Number of segments.
+	 * @param {number} [radialSamples=8] Number of slices.
+	 * @param {number} [radius=0.5] Radius.
 	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
@@ -28,16 +28,16 @@ define([
 			textureMode = props.textureMode;
 		}
 		/** Number of segments.
-		 * @type {Number}
+		 * @type {number}
 		 * @default 8
 		 */
 		this.zSamples = (zSamples !== undefined ? zSamples : 8) + 1;
 		/** Number of slices.
-		 * @type {Number}
+		 * @type {number}
 		 * @default 8
 		 */
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
-		/** @type {Number}
+		/** @type {number}
 		 * @default 0.5
 		 */
 		this.radius = radius !== undefined ? radius : 0.5;
@@ -59,12 +59,12 @@ define([
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
-		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
+		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples + 1 : this.zSamples;
 
 		// If Projected & Linear use shared pole vertices the uv-mapping will get too distorted, so let them
 		// have full 'rings' of vertices for a straighter texture mapping.
 		this._useSharedPoleVertices = (this.textureMode !== Sphere.TextureModes.Projected) &&
-		                              (this.textureMode !== Sphere.TextureModes.Linear);
+			(this.textureMode !== Sphere.TextureModes.Linear);
 
 		// sharedVert = pole vertex that represents a whole layer. When not using shared vertices,
 		// full layers are used for both poles.
@@ -121,12 +121,12 @@ define([
 		var tempVb = new Vector3();
 		var tempVc = new Vector3();
 		for (var iZ = zBegin; iZ < zEnd; iZ++) {
-			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi/2, pi/2)
-			var fZFraction = Math.sin(fAFraction); // in (-1,1)
+			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi / 2, pi / 2)
+			var fZFraction = Math.sin(fAFraction); // in (-1, 1)
 			var fZ = this.radius * fZFraction;
 
 			// compute center of slice
-			var kSliceCenter = tempVb.set(0, 0, 0);
+			var kSliceCenter = tempVb.setDirect(0, 0, 0);
 			kSliceCenter.z += fZ;
 
 			// compute radius of slice
@@ -136,15 +136,15 @@ define([
 			var kNormal;
 			var iSave = i;
 			for (var iR = 0; iR < this.radialSamples; iR++) {
-				var fRadialFraction = iR * fInvRS; // in [0,1)
-				var kRadial = tempVc.set(afCos[iR], afSin[iR], 0);
-				Vector3.mul(kRadial, fSliceRadius, tempVa);
+				var fRadialFraction = iR * fInvRS; // in [0, 1)
+				var kRadial = tempVc.setDirect(afCos[iR], afSin[iR], 0);
+				tempVa.copy(kRadial).scale(fSliceRadius);
 
 				vbuf[i * 3 + 0] = kSliceCenter.x + tempVa.x;
 				vbuf[i * 3 + 1] = kSliceCenter.y + tempVa.y;
 				vbuf[i * 3 + 2] = kSliceCenter.z + tempVa.z;
 
-				kNormal = tempVa.set(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
+				kNormal = tempVa.setDirect(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
 				kNormal.normalize();
 				if (!this.viewInside) {
 					norms[i * 3 + 0] = kNormal.x;
@@ -220,7 +220,7 @@ define([
 				vbuf[i * 3 + 1] = sliceR * afSin[iR];
 				vbuf[i * 3 + 2] = z;
 
-				var kNormal = tempVa.set(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
+				var kNormal = tempVa.setDirect(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
 				kNormal.normalize();
 				if (!this.viewInside) {
 					norms[i * 3 + 0] = kNormal.x;
@@ -308,7 +308,7 @@ define([
 
 		var iZStart = 0;
 		if (!this._useSharedPoleVertices) {
-			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be 
+			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be
 			// used only for the pole.
 			iZStart = this.radialSamples + 1;
 		}
@@ -340,8 +340,8 @@ define([
 
 		// south pole triangles
 		for (var i = 0; i < this.radialSamples; i++) {
-
 			var i0, i1, i2;
+
 			if (!this._useSharedPoleVertices) {
 				i0 = i;
 				i1 = i + this.radialSamples + 2;
@@ -367,10 +367,10 @@ define([
 		// - point iOffset point to the start of the last generated ring of vertices
 		var iOffset = (zEnd - zBegin - 1) * (this.radialSamples + 1);
 		for (var i = 0; i < this.radialSamples; i++) {
-
 			var i0, i1, i2;
+
 			if (!this._useSharedPoleVertices) {
-				// as we are in the last pole ring (with iOffset added), step back to the 
+				// as we are in the last pole ring (with iOffset added), step back to the
 				// next-to-last as there is no pole vertex in this mode.
 				i0 = i + iOffset - this.radialSamples - 1;
 				i1 = i + iOffset - this.radialSamples;

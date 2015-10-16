@@ -3,17 +3,17 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BloomPass',
 	'goo/passpack/BlurPass',
-	'goo/passpack/DoGPass',
+	'goo/passpack/DogPass',
 	'goo/passpack/MotionBlurPass',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ShaderLibExtra,
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
-	DoGPass,
+	DogPass,
 	MotionBlurPass,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -85,12 +85,12 @@ define([
 	];
 
 	function DiffOfGaussians(id) {
-		DoGPass.call(this, arguments);
+		DogPass.call(this, arguments);
 		this.id = id;
 	}
 
 	//! AT: we use both "DiffOfGaussians" and "DoG"
-	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
+	DiffOfGaussians.prototype = Object.create(DogPass.prototype);
 	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
 
 	DiffOfGaussians.prototype.update = function (config) {
@@ -119,7 +119,6 @@ define([
 		if (options.backgroundMix !== undefined) {
 			this.updateBackgroundMix(options.backgroundMix);
 		}
-
 	};
 
 	DiffOfGaussians.label = 'Edge detect';
@@ -214,7 +213,7 @@ define([
 	];
 
 	function Vignette(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.vignette));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.vignette));
 		this.id = id;
 	}
 	Vignette.prototype = Object.create(FullscreenPass.prototype);
@@ -223,10 +222,10 @@ define([
 	Vignette.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.offset !== undefined) {
+		if (options.offset !== undefined) {
 			shader.uniforms.offset = options.offset;
 		}
-		if(options.darkness !== undefined) {
+		if (options.darkness !== undefined) {
 			shader.uniforms.darkness = options.darkness;
 		}
 		if (config.enabled !== undefined) {
@@ -258,7 +257,7 @@ define([
 	];
 
 	function Sepia(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.sepia));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.sepia));
 		this.id = id;
 	}
 	Sepia.prototype = Object.create(FullscreenPass.prototype);
@@ -266,7 +265,7 @@ define([
 
 	Sepia.prototype.update = function (config) {
 		var options = config.options;
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			this.material.uniforms.amount = options.amount / 100;
 		}
 		if (config.enabled !== undefined) {
@@ -287,7 +286,7 @@ define([
 	];
 
 	function Grain(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.film));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.film));
 		this.id = id;
 	}
 	Grain.prototype = Object.create(FullscreenPass.prototype);
@@ -296,7 +295,7 @@ define([
 	Grain.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.nIntensity !== undefined) {
+		if (options.nIntensity !== undefined) {
 			shader.uniforms.nIntensity = options.nIntensity / 100;
 		}
 		if (options.sIntensity !== undefined) {
@@ -310,38 +309,34 @@ define([
 		}
 	};
 	Grain.label = 'Film Grain';
-	Grain.options = [
-		{
-			key: 'nIntensity',
-			type: 'int',
-			control: 'slider',
-			name: 'Noise',
-			min: 0,
-			max: 100,
-			'default': 50
-		},
-		{
-			key: 'sIntensity',
-			type: 'int',
-			control: 'slider',
-			name: "Line Intensity",
-			min: 0,
-			max: 100,
-			'default': 50
-		},
-		{
-			key: 'sCount',
-			type: 'int',
-			control: 'slider',
-			name: "Line Count",
-			min: 1,
-			max: 4096,
-			'default': 1024
-		}
-	];
+	Grain.options = [{
+		key: 'nIntensity',
+		type: 'int',
+		control: 'slider',
+		name: 'Noise',
+		min: 0,
+		max: 100,
+		'default': 50
+	}, {
+		key: 'sIntensity',
+		type: 'int',
+		control: 'slider',
+		name: 'Line Intensity',
+		min: 0,
+		max: 100,
+		'default': 50
+	}, {
+		key: 'sCount',
+		type: 'int',
+		control: 'slider',
+		name: 'Line Count',
+		min: 1,
+		max: 4096,
+		'default': 1024
+	}];
 
 	function Noise(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.noise));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.noise));
 		this.id = id;
 	}
 	Noise.prototype = Object.create(FullscreenPass.prototype);
@@ -350,7 +345,7 @@ define([
 	Noise.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.nIntensity !== undefined) {
+		if (options.nIntensity !== undefined) {
 			shader.uniforms.nIntensity = options.nIntensity / 100;
 		}
 		if (config.enabled !== undefined) {
@@ -371,7 +366,7 @@ define([
 	];
 
 	function RgbShift(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.rgbshift));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.rgbshift));
 		this.id = id;
 	}
 	RgbShift.prototype = Object.create(FullscreenPass.prototype);
@@ -380,10 +375,10 @@ define([
 	RgbShift.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			shader.uniforms.amount = options.amount;
 		}
-		if(options.angle !== undefined) {
+		if (options.angle !== undefined) {
 			shader.uniforms.angle = options.angle;
 		}
 		if (config.enabled !== undefined) {
@@ -415,7 +410,7 @@ define([
 	];
 
 	function Bleach(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.bleachbypass));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.bleachbypass));
 		this.id = id;
 	}
 	Bleach.prototype = Object.create(FullscreenPass.prototype);
@@ -424,7 +419,7 @@ define([
 	Bleach.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.opacity !== undefined) {
+		if (options.opacity !== undefined) {
 			shader.uniforms.opacity = options.opacity;
 		}
 		if (config.enabled !== undefined) {
@@ -446,7 +441,7 @@ define([
 	];
 
 	function HSB(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.hsb));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.hsb));
 		this.id = id;
 	}
 	HSB.prototype = Object.create(FullscreenPass.prototype);
@@ -455,13 +450,13 @@ define([
 	HSB.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.hue !== undefined) {
+		if (options.hue !== undefined) {
 			shader.uniforms.hue = options.hue;
 		}
-		if(options.saturation !== undefined) {
+		if (options.saturation !== undefined) {
 			shader.uniforms.saturation = options.saturation;
 		}
-		if(options.brightness !== undefined) {
+		if (options.brightness !== undefined) {
 			shader.uniforms.brightness = options.brightness;
 		}
 		if (config.enabled !== undefined) {
@@ -503,7 +498,7 @@ define([
 	];
 
 	function Colorify(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.colorify));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.colorify));
 		this.id = id;
 	}
 	Colorify.prototype = Object.create(FullscreenPass.prototype);
@@ -512,10 +507,10 @@ define([
 	Colorify.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.color !== undefined) {
+		if (options.color !== undefined) {
 			shader.uniforms.color = options.color;
 		}
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			shader.uniforms.amount = options.amount;
 		}
 		if (config.enabled !== undefined) {
@@ -544,7 +539,7 @@ define([
 	];
 
 	function Hatch(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.hatch));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.hatch));
 		this.id = id;
 	}
 	Hatch.prototype = Object.create(FullscreenPass.prototype);
@@ -553,10 +548,10 @@ define([
 	Hatch.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.width !== undefined) {
+		if (options.width !== undefined) {
 			shader.uniforms.width = options.width;
 		}
-		if(options.spread !== undefined) {
+		if (options.spread !== undefined) {
 			shader.uniforms.spread = options.spread;
 		}
 		if (config.enabled !== undefined) {
@@ -587,7 +582,7 @@ define([
 	];
 
 	function Dot(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.dotscreen));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.dotscreen));
 		this.id = id;
 	}
 	Dot.prototype = Object.create(FullscreenPass.prototype);
@@ -596,16 +591,16 @@ define([
 	Dot.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.angle !== undefined) {
+		if (options.angle !== undefined) {
 			shader.uniforms.angle = options.angle;
 		}
-		if(options.scale !== undefined) {
+		if (options.scale !== undefined) {
 			shader.uniforms.scale = options.scale;
 		}
-		if(options.sizex !== undefined) {
+		if (options.sizex !== undefined) {
 			shader.uniforms.tSize[0] = options.sizex;
 		}
-		if(options.sizey !== undefined) {
+		if (options.sizey !== undefined) {
 			shader.uniforms.tSize[1] = options.sizey;
 		}
 		if (config.enabled !== undefined) {
@@ -656,7 +651,7 @@ define([
 	];
 
 	function Contrast(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.brightnesscontrast));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.brightnesscontrast));
 		this.id = id;
 	}
 	Contrast.prototype = Object.create(FullscreenPass.prototype);
@@ -665,13 +660,13 @@ define([
 	Contrast.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.brightness !== undefined) {
+		if (options.brightness !== undefined) {
 			shader.uniforms.brightness = options.brightness;
 		}
-		if(options.contrast !== undefined) {
+		if (options.contrast !== undefined) {
 			shader.uniforms.contrast = options.contrast;
 		}
-		if(options.saturation !== undefined) {
+		if (options.saturation !== undefined) {
 			shader.uniforms.saturation = options.saturation;
 		}
 		if (config.enabled !== undefined) {
@@ -756,7 +751,7 @@ define([
 	];
 
 	function Antialias(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.antialias));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.antialias));
 		this.id = id;
 	}
 	Antialias.prototype = Object.create(FullscreenPass.prototype);
@@ -788,7 +783,7 @@ define([
 	];
 
 	function Radial(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.radial));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.radial));
 		this.id = id;
 	}
 	Radial.prototype = Object.create(FullscreenPass.prototype);
@@ -833,7 +828,7 @@ define([
 	];
 
 	function Overlay(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.overlay));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.overlay));
 		this.id = id;
 	}
 	Overlay.prototype = Object.create(FullscreenPass.prototype);
@@ -923,7 +918,7 @@ define([
 	];
 
 	function Levels(id) {
-		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.levels));
+		FullscreenPass.call(this, ObjectUtils.deepClone(ShaderLibExtra.levels));
 		this.id = id;
 	}
 	Levels.prototype = Object.create(FullscreenPass.prototype);

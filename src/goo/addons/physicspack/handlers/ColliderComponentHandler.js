@@ -4,7 +4,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
@@ -41,8 +41,8 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
+	 * @param {Object} config
+	 * @returns {Object}
 	 * @private
 	 */
 	ColliderComponentHandler.prototype._prepare = function (config) {
@@ -79,8 +79,8 @@ define([
 	/**
 	 * Update engine collider component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	ColliderComponentHandler.prototype.update = function (entity, config, options) {
@@ -110,14 +110,6 @@ define([
 			component.material.friction = config.friction;
 			component.material.restitution = config.restitution;
 			component.isTrigger = config.isTrigger;
-			component.setToDirty();
-
-			entity.traverseUp(function (entity) {
-				if (entity.rigidBodyComponent) {
-					entity.rigidBodyComponent.initialize();
-					entity.rigidBodyComponent.setToDirty();
-				}
-			});
 
 			return component;
 		});

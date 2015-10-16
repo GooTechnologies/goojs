@@ -1,7 +1,7 @@
 define(
 	[],
 
-	function() {
+	function () {
 	'use strict';
 
 	/**
@@ -11,7 +11,7 @@ define(
 		this.installedAPI = {};
 	}
 
-	Manager.prototype.applyAPI = function(worldBy) {
+	Manager.prototype.applyAPI = function (worldBy) {
 		var api = this.api;
 		for (var key in api) {
 			if (typeof worldBy[key] === 'undefined') {

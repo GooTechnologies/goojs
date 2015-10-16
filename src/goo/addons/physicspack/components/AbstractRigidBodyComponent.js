@@ -4,8 +4,7 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Transform',
 	'goo/entities/SystemBus'
-],
-function (
+], function (
 	Component,
 	Vector3,
 	Quaternion,
@@ -28,12 +27,6 @@ function (
 		 * @type {Array}
 		 */
 		this.joints = [];
-
-		/**
-		 * Will be set to true if any the body needs to be reinitialized.
-		 * @type {boolean}
-		 */
-		this._dirty = true;
 	}
 	AbstractRigidBodyComponent.prototype = Object.create(Component.prototype);
 	AbstractRigidBodyComponent.prototype.constructor = AbstractRigidBodyComponent;
@@ -53,7 +46,6 @@ function (
 		var index = joints.indexOf(joint);
 		if (index !== -1) {
 			joints.splice(index, 1);
-			this.destroyJoint(joint);
 		}
 	};
 
@@ -106,7 +98,7 @@ function (
 	/**
 	 * Traverse the tree of colliders from a root entity and down.
 	 * @param  {Entity}   entity
-	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
+	 * @param  {Function} callback A callback to be called for each collider below or on the same entity. The arguments to the callback are: colliderEntity, collider, localPosition and localQuaternion.
 	 */
 	AbstractRigidBodyComponent.prototype.traverseColliders = function (entity, callback) {
 		// Needed for getting the RigidBody-local transform of each collider
@@ -124,7 +116,6 @@ function (
 
 			var collider = childEntity.colliderComponent;
 			if (collider) {
-
 				childEntity.transformComponent.updateTransform();
 				childEntity.transformComponent.updateWorldTransform();
 
@@ -163,18 +154,6 @@ function (
 	 * @param entity
 	 */
 	AbstractRigidBodyComponent.prototype.detached = function (/*entity*/) {
-
-		// Destroy joints
-		var joints = this.joints;
-		var len = joints.length;
-		for (var i = 0; i !== len; i++) {
-			this.destroyJoint(joints[i]);
-		}
-		joints.length = 0;
-
-		// Destroy the body
-		this.destroy();
-
 		this._entity = null;
 		this._system = null;
 	};

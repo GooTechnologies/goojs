@@ -1,8 +1,10 @@
 define([
 	'goo/entities/systems/System',
+	'goo/util/TWEEN',
 	'goo/fsmpack/statemachine/actions/Actions'
 ], function (
-	System
+	System,
+	TWEEN
 ) {
 	'use strict';
 
@@ -21,7 +23,7 @@ define([
 
 		/**
 		 * Current time, in seconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.time = 0;
 
@@ -49,7 +51,8 @@ define([
 				component.cleanup();
 			}
 			this.time = 0;
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
+			// remove all sounds a bit hard but in reality no tween should remain alive between runs
+			TWEEN.removeAll();
 			this.passive = true;
 			return;
 		}
@@ -65,7 +68,7 @@ define([
 			}
 		}
 
-		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
+		TWEEN.update(this.engine.world.time * 1000); // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
 			component = entities[i].stateMachineComponent;
@@ -82,14 +85,6 @@ define([
 	};
 
 	/**
-	 * Stops updating the entities
-	 */
-	StateMachineSystem.prototype.pause = function () {
-		this.passive = true;
-		this.paused = true;
-	};
-
-	/**
 	 * Resumes updating the entities
 	 */
 	StateMachineSystem.prototype.play = function () {
@@ -101,9 +96,22 @@ define([
 	};
 
 	/**
+	 * Stops updating the entities
+	 */
+	StateMachineSystem.prototype.pause = function () {
+		this.passive = true;
+		this.paused = true;
+	};
+
+	/**
+	 * Resumes updating the entities; an alias for `.play`
+	 */
+	StateMachineSystem.prototype.resume = StateMachineSystem.prototype.play;
+
+	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	StateMachineSystem.prototype.reset = function () {
+	StateMachineSystem.prototype.stop = function () {
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;

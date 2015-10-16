@@ -1,12 +1,10 @@
 define([
 	'goo/entities/components/Component',
 	'goo/renderer/light/Light'
-],
-
-	function (
-		Component,
-		Light
-	) {
+], function (
+	Component,
+	Light
+) {
 	'use strict';
 
 	/**

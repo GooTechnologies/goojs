@@ -1,11 +1,11 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
-	'goo/util/StringUtil'
+	'goo/util/StringUtils'
 ], function (
 	System,
 	SystemBus,
-	StringUtil
+	StringUtils
 ) {
 	'use strict';
 
@@ -44,7 +44,7 @@ define([
 	};
 
 	function formatTag(tag) {
-		return StringUtil.capitalize(tag);
+		return StringUtils.capitalize(tag);
 	}
 
 	ProximitySystem.prototype.getFor = function (tag) {

@@ -3,14 +3,14 @@ define([
 	'goo/animationpack/Joint',
 	'goo/animationpack/Skeleton',
 	'goo/animationpack/SkeletonPose',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	Joint,
 	Skeleton,
 	SkeletonPose,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -35,17 +35,17 @@ define([
 	 * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
 	 * are rarely updated.
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
+	SkeletonHandler.prototype._update = function (ref, config/*, options*/) {
 		if (!this._objects.has(ref)) {
 			if (!config) {
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			}
 			var joints = [];
-			_.forEach(config.joints, function(jointConfig) {
+			_.forEach(config.joints, function (jointConfig) {
 				var joint = new Joint(jointConfig.name);
 				joint._index = jointConfig.index;
 				joint._parentIndex = jointConfig.parentIndex;
@@ -60,7 +60,7 @@ define([
 			this._objects.set(ref, pose);
 		}
 
-		return PromiseUtil.resolve(this._objects.get(ref));
+		return PromiseUtils.resolve(this._objects.get(ref));
 	};
 
 	return SkeletonHandler;

@@ -51,12 +51,12 @@ define([
 		}]
 	};
 
-	MouseDownAction.prototype._setup = function() {
+	MouseDownAction.prototype._setup = function () {
 		document.addEventListener('mousedown', this.mouseEventListener);
 		document.addEventListener('touchstart', this.touchEventListener);
 	};
 
-	MouseDownAction.prototype._run = function(fsm) {
+	MouseDownAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.button === 'touch') {
@@ -71,7 +71,7 @@ define([
 		}
 	};
 
-	MouseDownAction.prototype.exit = function() {
+	MouseDownAction.prototype.exit = function () {
 		document.removeEventListener('mousedown', this.mouseEventListener);
 		document.removeEventListener('touchstart', this.touchEventListener);
 	};

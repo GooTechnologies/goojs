@@ -1,1 +1,1 @@
-define(['goo/debugpack/DebugDrawHelper'], function(DebugDrawHelper) {});
+define(['goo/debugpack/DebugDrawHelper'], function (DebugDrawHelper) {});

@@ -1,6 +1,6 @@
 define(
 
-	function() {
+	function () {
 		'use strict';
 
 		/**
@@ -14,13 +14,13 @@ define(
 
 			// Name builds the data name prefix
 			if (name === undefined) {
-				this.dn_pfx = "";
+				this.dn_pfx = '';
 			} else {
-				this.dn_pfx = name + "-";
+				this.dn_pfx = name + '-';
 			}
 		}
 
-		LogicInterface.prototype.addInputProperty = function(name_, valueType, defaultValue) {
+		LogicInterface.prototype.addInputProperty = function (name_, valueType, defaultValue) {
 			this.ports.push({
 				id: ++LogicInterface._portID,
 				input: true,
@@ -33,7 +33,7 @@ define(
 			return LogicInterface._portID;
 		};
 
-		LogicInterface.prototype.addOutputProperty = function(name_, valueType) {
+		LogicInterface.prototype.addOutputProperty = function (name_, valueType) {
 			this.ports.push({
 				id: ++LogicInterface._portID,
 				input: false,
@@ -45,7 +45,7 @@ define(
 			return LogicInterface._portID;
 		};
 
-		LogicInterface.prototype.addInputEvent = function(name_) {
+		LogicInterface.prototype.addInputEvent = function (name_) {
 			this.ports.push({
 				id: ++LogicInterface._portID,
 				input: true,
@@ -56,7 +56,7 @@ define(
 			return LogicInterface._portID;
 		};
 
-		LogicInterface.prototype.addOutputEvent = function(name_) {
+		LogicInterface.prototype.addOutputEvent = function (name_) {
 			this.ports.push({
 				id: ++LogicInterface._portID,
 				input: false,
@@ -67,7 +67,7 @@ define(
 			return LogicInterface._portID;
 		};
 
-		LogicInterface.createDynamicInput = function(name_) {
+		LogicInterface.createDynamicInput = function (name_) {
 			return {
 				id: LogicInterface.makeDynamicId(),
 				input: true,
@@ -78,7 +78,7 @@ define(
 			};
 		};
 
-		LogicInterface.createDynamicOutput = function(name_) {
+		LogicInterface.createDynamicOutput = function (name_) {
 			return {
 				id: LogicInterface.makeDynamicId(),
 				input: false,
@@ -93,23 +93,23 @@ define(
 		 * The config entry here is an object containing all the parameters that go into the automatically
 		 * generated goo-property-edit when editing the schematics
 		 */
-		LogicInterface.prototype.addConfigEntry = function(conf) {
+		LogicInterface.prototype.addConfigEntry = function (conf) {
 			this.configOpts.push(conf);
 		};
 
-		LogicInterface.prototype.getConfigEntries = function() {
+		LogicInterface.prototype.getConfigEntries = function () {
 			return this.configOpts;
 		};
 
-		LogicInterface.prototype.getPorts = function() {
+		LogicInterface.prototype.getPorts = function () {
 			return this.ports;
 		};
 
-		LogicInterface.isDynamicPortName = function(name) {
-			return name[0] === "$";
+		LogicInterface.isDynamicPortName = function (name) {
+			return name[0] === '$';
 		};
 
-		LogicInterface.makeDynamicId = function() {
+		LogicInterface.makeDynamicId = function () {
 			return ++LogicInterface._portID;
 		};
 
@@ -117,26 +117,26 @@ define(
 		 * Computes a name for the port that can be saved in the data model without having it confused when (other) ports are added/removed
 		 * @param port Port description object as returned by createDynamicInput/Output or from the getPorts() array.
 		 */
-		LogicInterface.makePortDataName = function(port) {
+		LogicInterface.makePortDataName = function (port) {
 			if (port.dataname !== undefined) {
 				return port.dataname;
 			} else {
-				var prefix = port.input ? "in-" : "out-";
+				var prefix = port.input ? 'in-' : 'out-';
 				if (port.property) {
-					prefix += "prop-";
+					prefix += 'prop-';
 				}
 				if (port.event) {
-					prefix += "event-";
+					prefix += 'event-';
 				}
 
 				// tag dynamic ports with $ at the start so they can be routed
 				// properly.
-				var dyn = (port.dynamic === true) ? "$" : "";
+				var dyn = (port.dynamic === true) ? '$' : '';
 				return dyn + prefix + port.name;
 			}
 		};
 
-		LogicInterface.assignPortDataName = function(port, dataname) {
+		LogicInterface.assignPortDataName = function (port, dataname) {
 			port.dataname = dataname;
 		};
 

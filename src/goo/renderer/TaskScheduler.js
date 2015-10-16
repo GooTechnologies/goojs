@@ -1,7 +1,7 @@
 define([
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
-	PromiseUtil
+	PromiseUtils
 	) {
 	'use strict';
 
@@ -25,7 +25,7 @@ define([
 
 	// Engine loop must be disabled while running this
 	TaskScheduler.each = function (queue) {
-		return PromiseUtil.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var i = 0;
 
 			function process() {

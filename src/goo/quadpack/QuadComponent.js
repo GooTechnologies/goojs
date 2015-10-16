@@ -5,7 +5,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Material',
-	'goo/util/ObjectUtil',
+	'goo/util/ObjectUtils',
 	'goo/renderer/Texture'
 ], function (
 	Component,
@@ -23,7 +23,7 @@ define([
 	 * Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.
 	 * @see QuadSystem
 	 * @param {HTMLImageElement} [image]
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.width=1]	Width of the Quad mesh. See [Quad]{@link Quad}
 	 * @param {number} [settings.height=1]
 	 * @param {number} [settings.tileX=1]	Number of tiles in the Quad. See [Quad]{@link Quad}
@@ -37,10 +37,10 @@ define([
 
 		settings = settings || {};
 		var defaults = {
-			width	: 1,
-			height	: 1,
-			tileX	: 1,
-			tileY	: 1,
+			width: 1,
+			height: 1,
+			tileX: 1,
+			tileY: 1,
 			preserveAspectRatio : true
 		};
 		_.defaults(settings, defaults); //! AT: this will mutate settings which is BAD!!!

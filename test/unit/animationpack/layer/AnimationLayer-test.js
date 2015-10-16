@@ -1,1 +1,1 @@
-define(['goo/animationpack/layer/AnimationLayer'], function(AnimationLayer) {});
+define(['goo/animationpack/layer/AnimationLayer'], function (AnimationLayer) {});

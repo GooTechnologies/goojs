@@ -6,6 +6,9 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
 	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsCylinderDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsSphereDebugShape',
+	'goo/addons/physicspack/shapes/PhysicsBoxDebugShape',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
@@ -26,6 +29,9 @@ function (
 	Box,
 	Cylinder,
 	PhysicsPlaneDebugShape,
+	PhysicsCylinderDebugShape,
+	PhysicsSphereDebugShape,
+	PhysicsBoxDebugShape,
 	SphereCollider,
 	BoxCollider,
 	CylinderCollider,
@@ -59,8 +65,8 @@ function (
 		}.bind(this));
 
 		/**
-		 * If set to true, all entities with any physics in them will be debug rendered, and the selection will be disregarded.
-		 * @type {Boolean}
+		 * If set to true, all entities with a ColliderComponent attached is rendered, and the selection is disregarded.
+		 * @type {boolean}
 		 */
 		this.renderAll = true;
 
@@ -70,9 +76,9 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.sphereMeshData = new Sphere(8, 8, 1);
-		this.boxMeshData = new Box(1, 1, 1);
-		this.cylinderMeshData = new Cylinder(10, 1, 1, 1);
+		this.sphereMeshData = new PhysicsSphereDebugShape(32);
+		this.boxMeshData = new PhysicsBoxDebugShape();
+		this.cylinderMeshData = new PhysicsCylinderDebugShape(32);
 		this.planeMeshData = new PhysicsPlaneDebugShape();
 
 		this.material = new Material(ShaderLib.simpleColored);
@@ -120,7 +126,7 @@ function (
 
 			// Colliders
 			if (entity.colliderComponent) {
-
+				entity.colliderComponent.updateWorldCollider();
 				var collider = entity.colliderComponent.worldCollider;
 				var meshData = this.getMeshData(collider);
 				var renderable = this.renderablePool.get(meshData, this.material);
@@ -149,13 +155,13 @@ function (
 			var scale = collider.radius;
 			targetTransform.scale.set(scale, scale, scale);
 		} else if (collider instanceof BoxCollider) {
-			targetTransform.scale.copy(collider.halfExtents).mul(2);
+			targetTransform.scale.copy(collider.halfExtents).scale(2);
 		} else if (collider instanceof CylinderCollider) {
 			targetTransform.scale.set(collider.radius, collider.radius, collider.height);
 		} else if (collider instanceof PlaneCollider) {
 			targetTransform.scale.set(1, 1, 1);
 		} else if (collider instanceof MeshCollider) {
-			targetTransform.scale.setVector(collider.scale);
+			targetTransform.scale.set(collider.scale);
 		}
 	};
 

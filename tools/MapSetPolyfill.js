@@ -2,7 +2,7 @@
 // Object.is shim from the MDN
 
 // not a require module, but a simple self contained polyfill
-// separately minified and attached to the engine
+// separately minified and prepended to the engine
 (function () {
 	'use strict';
 

@@ -1,13 +1,10 @@
 define([
 	'goo/entities/systems/System',
 	'goo/addons/gamepadpack/GamepadData'
-],
-
-	function(
+], function (
 	System,
 	GamepadData
-	) {
-
+) {
 	'use strict';
 
 	/**
@@ -31,17 +28,16 @@ define([
 		} else {
 			this.updateGamepads = function () {};
 
-			var that = this;
-			window.addEventListener('gamepadconnected', function(e) {
-					that.mozGamepadHandler(e, true);
-			}, false);
-			window.addEventListener('gamepaddisconnected', function(e) {
-					that.mozGamepadHandler(e, false);
-			}, false);
+			window.addEventListener('gamepadconnected', function (e) {
+				this.mozGamepadHandler(e, true);
+			}.bind(this), false);
+			window.addEventListener('gamepaddisconnected', function (e) {
+				this.mozGamepadHandler(e, false);
+			}.bind(this), false);
 		}
 	}
 
-	GamepadSystem.prototype.checkGamepadMapping = function(gamepad) {
+	GamepadSystem.prototype.checkGamepadMapping = function (gamepad) {
 		if (!gamepad.mapping) {
 			console.warn('No mapping set on gamepad #' + gamepad.index);
 		} else if (gamepad.mapping !== 'standard') {
@@ -52,7 +48,7 @@ define([
 	GamepadSystem.prototype = Object.create(System.prototype);
 	GamepadSystem.prototype.constructor = GamepadSystem;
 
-	GamepadSystem.prototype.mozGamepadHandler = function(event, connecting) {
+	GamepadSystem.prototype.mozGamepadHandler = function (event, connecting) {
 		var gamepad = event.gamepad;
 		if (connecting) {
 			this.gamepads[gamepad.index] = gamepad;
@@ -62,8 +58,7 @@ define([
 		}
 	};
 
-	GamepadSystem.prototype.chromeGamepadUpdate = function() {
-
+	GamepadSystem.prototype.chromeGamepadUpdate = function () {
 		var updatedGamepads = navigator.webkitGetGamepads();
 		var numOfGamePads = updatedGamepads.length;
 		for (var i = 0; i < numOfGamePads; i++) {
@@ -75,8 +70,7 @@ define([
 	};
 
 
-	GamepadSystem.prototype.updateGamepadData = function() {
-
+	GamepadSystem.prototype.updateGamepadData = function () {
 		this.updateGamepads();
 
 		var numOfGamePads = this.gamepads.length;
@@ -88,8 +82,7 @@ define([
 		}
 	};
 
-
-	GamepadSystem.prototype.resetGamepadData = function() {
+	GamepadSystem.prototype.resetGamepadData = function () {
 		var numOfGamePads = this.gamepads.length;
 		for (var i = 0; i < numOfGamePads; i++) {
 			var gamepad = this.gamepads[i];
@@ -99,61 +92,61 @@ define([
 		}
 	};
 
+	GamepadSystem.prototype._processEntity = function (entity) {
+		var gamepadComponent = entity.gamepadComponent;
+		var gamepadIndex = gamepadComponent.gamepadIndex;
+		var data = this.gamepadData[gamepadIndex];
+		var gamepad = this.gamepads[gamepadIndex];
 
-	GamepadSystem.prototype.process = function(entities) {
+		if (!gamepad) {
+			return;
+		}
 
+		// TODO: Refactor the functions to be in an array in the component.
+		var rawX, rawY, rawData;
+		if (gamepadComponent.leftStickFunction) {
+			rawX = gamepad.axes[0];
+			rawY = gamepad.axes[1];
+			rawData = [rawX, rawY];
+			gamepadComponent.leftStickFunction(entity, data.leftStickDirection, data.leftAmount, rawData);
+		}
+
+		if (gamepadComponent.rightStickFunction) {
+			rawX = gamepad.axes[2];
+			rawY = gamepad.axes[3];
+			rawData = [rawX, rawY];
+			gamepadComponent.rightStickFunction(entity, data.rightStickDirection, data.rightAmount, rawData);
+		}
+
+		var buttonIndex, buttonData;
+		for (buttonIndex in gamepadComponent.buttonDownFunctions) {
+			buttonData = data.buttonData[buttonIndex];
+			if (buttonData.down === true) {
+				gamepadComponent.buttonDownFunctions[buttonIndex](entity, buttonData.value);
+			}
+		}
+
+		for (buttonIndex in gamepadComponent.buttonUpFunctions) {
+			buttonData = data.buttonData[buttonIndex];
+			if (buttonData.down === false) {
+				gamepadComponent.buttonUpFunctions[buttonIndex](entity, buttonData.value);
+			}
+		}
+
+		for (buttonIndex in gamepadComponent.buttonPressedFunctions) {
+			buttonData = data.buttonData[buttonIndex];
+			if (buttonData.pressed === true) {
+				gamepadComponent.buttonPressedFunctions[buttonIndex](entity, buttonData.value);
+			}
+		}
+	};
+
+	GamepadSystem.prototype.process = function (entities) {
 		this.updateGamepadData();
 
 		var numOfEntities = entities.length;
 		for (var i = 0; i < numOfEntities; i++) {
-			var entity = entities[i];
-			var gamepadComponent = entity.gamepadComponent;
-
-			var gamepadIndex = gamepadComponent.gamepadIndex;
-			var data = this.gamepadData[gamepadIndex];
-			var gamepad = this.gamepads[gamepadIndex];
-
-			if (!gamepad) {
-				return;
-			}
-
-			// TODO: Refactor the functions to be in an array in the component.
-			var rawX, rawY, rawData;
-			if (gamepadComponent.leftStickFunction) {
-				rawX = gamepad.axes[0];
-				rawY = gamepad.axes[1];
-				rawData = [rawX, rawY];
-				gamepadComponent.leftStickFunction(entity, data.leftStickDirection, data.leftAmount, rawData);
-			}
-
-			if (gamepadComponent.rightStickFunction) {
-				rawX = gamepad.axes[2];
-				rawY = gamepad.axes[3];
-				rawData = [rawX, rawY];
-				gamepadComponent.rightStickFunction(entity, data.rightStickDirection, data.rightAmount, rawData);
-			}
-
-			var buttonIndex, buttonData;
-			for (buttonIndex in gamepadComponent.buttonDownFunctions) {
-				buttonData = data.buttonData[buttonIndex];
-				if (buttonData.down === true) {
-					gamepadComponent.buttonDownFunctions[buttonIndex](entity, buttonData.value);
-				}
-			}
-
-			for (buttonIndex in gamepadComponent.buttonUpFunctions) {
-				buttonData = data.buttonData[buttonIndex];
-				if (buttonData.down === false) {
-					gamepadComponent.buttonUpFunctions[buttonIndex](entity, buttonData.value);
-				}
-			}
-
-			for (buttonIndex in gamepadComponent.buttonPressedFunctions) {
-				buttonData = data.buttonData[buttonIndex];
-				if (buttonData.pressed === true) {
-					gamepadComponent.buttonPressedFunctions[buttonIndex](entity, buttonData.value);
-				}
-			}
+			this._processEntity(entities[i]);
 		}
 
 		this.resetGamepadData();

@@ -8,7 +8,7 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
-	'goo/fsmpack/statemachine/actions/WASDAction',
+	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
 	'goo/fsmpack/statemachine/actions/RotateAction',
@@ -65,17 +65,35 @@ define([
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
-	'goo/fsmpack/statemachine/actions/HTMLAction',
+	'goo/fsmpack/statemachine/actions/HtmlAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
-	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
-], function (
+	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
 
+	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
+	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
+
+	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
+
+	'goo/fsmpack/statemachine/actions/CompareCounterAction',
+	'goo/fsmpack/statemachine/actions/CompareCountersAction',
+	'goo/fsmpack/statemachine/actions/SetCounterAction',
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+], function (
+	_ // placeholder // what for?
 ) {
 	'use strict';
 
 	var _actions = {};
 
 	var Actions = {};
+
+	var IGNORED_ACTIONS = [
+		'Eval',
+		'HTMLPick',
+		'Remove',
+		'Collides',
+		'Tag'
+	];
 
 	Actions.register = function (name, actionClass) {
 		_actions[name] = actionClass;
@@ -90,10 +108,9 @@ define([
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (key === 'Eval' || key === 'HTMLPick' || key === 'Remove') {
-				continue;
+			if (IGNORED_ACTIONS.indexOf(key) === -1) {
+				actions[key] = _actions[key];
 			}
-			actions[key] = _actions[key];
 		}
 		return actions;
 	};

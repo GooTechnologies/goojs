@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/Shader',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Shader,
 	_
@@ -51,21 +51,24 @@ define([
 		 * There was an idea to specify and jsdoc uniforms.materialDiffuse etc instead,
 		 * since those are the ones we use now
 		 */
+
 		/* Specification of colors for this Material
 		 * @type {Object}
-		 * @property {number[]} ambient The ambient color, [r, g, b, a]
-		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
-		 * @property {number[]} emissive The emissive color, [r, g, b, a]
-		 * @property {number[]} specular The specular color, [r, g, b, a]
+		 * @property {Array<number>} ambient The ambient color, [r, g, b, a]
+		 * @property {Array<number>} diffuse The diffuse color, [r, g, b, a]
+		 * @property {Array<number>} emissive The emissive color, [r, g, b, a]
+		 * @property {Array<number>} specular The specular color, [r, g, b, a]
 		 * @property {number} shininess The shininess exponent.
-		 * */
-		/*this.materialState = {
+		 */
+		/*
+		this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
 			diffuse: Shader.DEFAULT_DIFFUSE,
 			emissive: Shader.DEFAULT_EMISSIVE,
 			specular: Shader.DEFAULT_SPECULAR,
 			shininess: Shader.DEFAULT_SHININESS
 		};
+		*/
 
 		/** Specification of culling for this Material
 		 * @type {Object}
@@ -81,10 +84,10 @@ define([
 
 		/** Specification of blending for this Material
 		 * @type {Object}
-		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
-		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
-		 * @property {String} blendSrc possible values: <strong>'SrcAlphaFactor'</strong>, 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
-		 * @property {String} blendDst possible values: 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', <strong>'OneMinusSrcAlphaFactor'</strong>, 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'DstAlphaFactor'
+		 * @property {string} blending possible values: <strong>'NoBlending'</strong>, 'TransparencyBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
+		 * @property {string} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
+		 * @property {string} blendSrc possible values: <strong>'SrcAlphaFactor'</strong>, 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
+		 * @property {string} blendDst possible values: 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', <strong>'OneMinusSrcAlphaFactor'</strong>, 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'DstAlphaFactor'
 		 */
 		this.blendState = {
 			blending: 'NoBlending',
@@ -151,7 +154,7 @@ define([
 	/**
 	 * Sets a texture in a specific slot
 	 *
-	 * @param {String} name Name of texture slot
+	 * @param {string} name Name of texture slot
 	 * @param {Texture} texture Texture to set
 	 */
 	Material.prototype.setTexture = function (name, texture) {
@@ -161,7 +164,7 @@ define([
 	/**
 	 * Gets a texture in a specific slot
 	 *
-	 * @param {String} name Name of texture slot to retrieve texture from
+	 * @param {string} name Name of texture slot to retrieve texture from
 	 * @returns {Texture} Texture if found, or undefined if not in slot
 	 */
 	Material.prototype.getTexture = function (name) {
@@ -171,7 +174,7 @@ define([
 	/**
 	 * Removes a texture in a specific slot
 	 *
-	 * @param {String} name Name of texture slot to remove
+	 * @param {string} name Name of texture slot to remove
 	 */
 	Material.prototype.removeTexture = function (name) {
 		delete this._textureMaps[name];
@@ -180,7 +183,7 @@ define([
 	/**
 	 * Get all textures as an array
 	 *
-	 * @returns {Texture[]} Array containing all set textures
+	 * @returns {Array<Texture>} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
@@ -239,7 +242,7 @@ define([
 		if (options.shareUniforms) {
 			clone.uniforms = this.uniforms;
 		} else {
-			clone.uniforms = _.clone(this.uniforms);
+			clone.uniforms = _.deepClone(this.uniforms);
 		}
 
 		if (options.shareTextures) {
@@ -289,7 +292,7 @@ define([
 	 * Creates a new or finds an existing, cached Shader object
 	 *
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
-	 * @param {String} [name=DefaultShader]
+	 * @param {string} [name=DefaultShader]
 	 * @returns {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
@@ -301,7 +304,7 @@ define([
 		return shader;
 	};
 
-	/** 
+	/**
 	 * Clears the shader cache.
 	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
 	 */

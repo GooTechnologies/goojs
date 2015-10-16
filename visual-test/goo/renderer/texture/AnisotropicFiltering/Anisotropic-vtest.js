@@ -36,8 +36,9 @@ require([
 		var material = new Material(ShaderLib.texturedLit);
 		var entity = world.createEntity(meshData, material);
 
-		var texture = textureCreator.loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
-		material.setTexture('DIFFUSE_MAP', texture);
+		textureCreator.loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy }).then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 
 		return entity;
 	}
