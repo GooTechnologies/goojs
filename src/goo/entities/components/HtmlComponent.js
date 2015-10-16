@@ -32,8 +32,8 @@ function (
 		this.hidden = false;
 
 		this.useTransformComponent = settings.useTransformComponent !== undefined ? settings.useTransformComponent : true;
-		this.width = settings.width || 100;
-		this.height = settings.height || 100;
+		this.width = settings.width || 500;
+		this.height = settings.height || 500;
 		this.backfaceVisibility = settings.backfaceVisibility || 'hidden'; //'visible'
 
 		this.updated = true;

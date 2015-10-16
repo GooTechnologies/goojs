@@ -115,7 +115,7 @@ define([
 
 				component.initDom(domElement);
 			}
-			component.setSize(config.width, config.height);
+			component.setSize(config.width !== undefined ? config.width : 500, config.height !== undefined ? config.height : 500);
 
 			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
 			var styleChanged = config.style !== domElement.prevStyle;
