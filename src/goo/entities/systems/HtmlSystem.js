@@ -37,11 +37,12 @@ define([
 
 		var rootDom = this.rootDom = document.createElement('div');
 		document.body.appendChild(rootDom);
+		// rootDom.style.pointerEvents = 'none';
 		rootDom.style.zIndex = '-1';
 		rootDom.style.position = 'absolute';
 		rootDom.style.overflow = 'hidden';
-		// rootDom.style.pointerEvents = 'none';
-		rootDom.style.WebkitTransformStyle = 'preserve-3d';
+		// rootDom.style.webkitTransformStyle = 'preserve-3d';
+		// rootDom.style.mozTransformStyle = 'preserve-3d';
 		rootDom.style.transformStyle = 'preserve-3d';
 		rootDom.style.width = '100%';
 		rootDom.style.height = '100%';
@@ -51,12 +52,13 @@ define([
 		rootDom.style.right = '0px';
 
 		var cameraDom = this.cameraDom = document.createElement('div');
-		cameraDom.style.WebkitTransformStyle = 'preserve-3d';
+		// cameraDom.style.webkitTransformStyle = 'preserve-3d';
+		// cameraDom.style.mozTransformStyle = 'preserve-3d';
 		cameraDom.style.transformStyle = 'preserve-3d';
 		cameraDom.style.width = '100%';
 		cameraDom.style.height = '100%';
 
-		rootDom.appendChild( cameraDom );
+		rootDom.appendChild(cameraDom);
 
 		// SystemBus.addListener('goo.viewportResize', function(data) {
 		// 	this.rootDom.style.width = data.width + 'px';
@@ -65,11 +67,6 @@ define([
 		// 	this.cameraDom.style.height = data.height + 'px';
 		// }.bind(this));
 
-		// var frontMaterial = new Material(ShaderLib.uber);
-		// frontMaterial.renderQueue = 10000;
-		// frontMaterial.uniforms.opacity = 0.0;
-		// frontMaterial.uniforms.materialAmbient = [0, 0, 0, 0];
-		// frontMaterial.uniforms.materialDiffuse = [0, 0, 0, 0];
 		var frontMaterial = new Material(ShaderLib.simple);
 		frontMaterial.blendState.blending = 'CustomBlending';
 		frontMaterial.blendState.blendSrc = 'ZeroFactor';
@@ -81,31 +78,35 @@ define([
 
 		this.materials = [frontMaterial, backMaterial];
 
-		this.prefixes = ['', '-webkit-'];
+		// this.prefixes = ['', '-webkit-', '-moz-'];
+		// this.prefixes = ['', '-webkit-'];
+		this.prefixes = [''];
 		this.styleCache = new Map();
+
+		this.precisionScale = 1000; // Thanks browsers
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
 	HtmlSystem.prototype.constructor = HtmlSystem;
 
-	var getCameraCSSMatrix = function (matrix) {
+	HtmlSystem.prototype.getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
 
 		return 'matrix3d('
 			+ elements[0] + ',' + (-elements[1]) + ',' + elements[2] + ',' + elements[3] + ','
 			+ elements[4] + ',' + (-elements[5]) + ',' + elements[6] + ',' + elements[7] + ','
 			+ elements[8] + ',' + (-elements[9]) + ',' + elements[10] + ',' + elements[11] + ','
-			+ elements[12] + ',' + (-elements[13]) + ',' + elements[14] + ',' + elements[15] + ')';
+			+ elements[12] * this.precisionScale + ',' + (-elements[13]) * this.precisionScale + ',' + elements[14] * this.precisionScale + ',' + elements[15] + ')';
 	};
 
-	var getEntityCSSMatrix = function (matrix) {
+	HtmlSystem.prototype.getEntityCSSMatrix = function (matrix) {
 		var elements = matrix.data;
 
 		return 'translate3d(-50%,-50%,0) matrix3d('
 			+ elements[0] + ',' + elements[1] + ',' + elements[2] + ',' + elements[3] + ','
 			+ (-elements[4]) + ',' + (-elements[5]) + ',' + (-elements[6]) + ',' + (-elements[7]) + ','
 			+ elements[8] + ',' + elements[9] + ',' + elements[10] + ',' + elements[11] + ','
-			+ elements[12] + ',' + elements[13] + ',' + elements[14] + ',' + elements[15] + ')';
+			+ elements[12] * this.precisionScale + ',' + elements[13] * this.precisionScale + ',' + elements[14] * this.precisionScale + ',' + elements[15] + ')';
 	};
 
 	HtmlSystem.prototype.setStyle = function (element, property, style) {
@@ -140,7 +141,7 @@ define([
 
 		var viewMatrix = camera.getViewMatrix();
 		style = 'translate3d(0,0,' + fov + 'px) ' + 
-				getCameraCSSMatrix(viewMatrix) +
+				this.getCameraCSSMatrix(viewMatrix) +
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
 		this.setStyle(this.cameraDom, 'transform', style);
 
@@ -181,7 +182,7 @@ define([
 			component.updated = false;
 
 			var worldTransform = entity.transformComponent.worldTransform;
-			style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1/component.width +', ' + 1/component.height + ')';
+			style = this.getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + this.precisionScale / component.width + ', ' + this.precisionScale / component.height + ')';
 			this.setStyle(domElement, 'transform', style);
 		}
 	};

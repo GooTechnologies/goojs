@@ -224,7 +224,7 @@ require([
 
 	var goo = V.initGoo({
 		alpha: true,
-		showStats: false
+		showStats: true
 	});
 	var world = goo.world;
 	goo.world.add(new AnimationSystem());
@@ -255,7 +255,8 @@ require([
 		var goon = world.by.name('goon_mesh').first();
 		// goon.meshRendererComponent.isReflectable = true;
 		// goon.setTranslation(0, -1000, 3000);
-		goon.setScale(20, 20, 20);
+		// goon.setScale(20, 20, 20);
+		// goon.hide();
 
 		goo.renderSystems[0].composers.length = 0;
 
@@ -268,8 +269,8 @@ require([
 		setupKeys();
 
 		V.addLights();
-		var camEntity = addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 6), new Vector3(), 'Right');
-		camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
+		var camEntity = addOrbitCamera(new Vector3(15, Math.PI / 1.5, Math.PI / 6), new Vector3(), 'Right');
+		camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 1000);
 		camEntity.setAsMainCamera();
 
 		// console.log(window.WindowHelper);
@@ -277,12 +278,10 @@ require([
 
 		var material2 = new Material(ShaderLib.uber);
 		material2.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
-		var box2 = new Box(100, 20, 100);
-		world.createEntity([0, -10, 0], box2, material2).addToWorld();
+		var box2 = new Box(10, 1, 10);
+		world.createEntity([0, -1, 0], box2, material2).addToWorld();
 
 		function createIFrame(width, height, position, rotation, src) {
-			width = 768;
-			height = 640;
 			var domElement = document.createElement('iframe');
 			domElement.src = src;
 			domElement.style.border = 'none';
@@ -294,14 +293,15 @@ require([
 				height: height
 			});
 			var entity = world.createEntity(position, htmlComponent);
-			entity.setScale(0.1, 0.1, 1);
+			var aspect = width / height;
+			entity.setScale(3 * aspect, 3, 1);
 			entity.setRotation(rotation);
 			entity.addToWorld();
 		}
 
-		createIFrame(500, 281, [-40, 20, -20], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
-		createIFrame(768, 640, [40, 20, -20], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
-		createIFrame(1024, 768, [0, 20, -80], [0, 0, 0], 'https://duckduckgo.com/');
+		createIFrame(500, 281, [-4, 2, -2], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
+		createIFrame(768, 640, [4, 2, -2], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
+		createIFrame(1000, 1000, [0, 2, -4], [0, 0, 0], 'https://duckduckgo.com/');
 
 		var environmentPath = '../../../addons/Water/resources/skybox/';
 		var images = [

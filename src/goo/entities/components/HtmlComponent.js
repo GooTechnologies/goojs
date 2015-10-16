@@ -86,11 +86,6 @@ function (
 		this.domElement.style.backgroundColor = 'white';
 		this.domElement.style.WebkitBackfaceVisibility = this.backfaceVisibility;
 		this.domElement.style.backfaceVisibility = this.backfaceVisibility;
-		// domElement.style.position = 'absolute';
-		// domElement.style.top = '0px';
-		// domElement.style.bottom = '0px';
-		// domElement.style.left = '0px';
-		// domElement.style.right = '0px';
 		this.setSize(this.width, this.height);
 	};
 
