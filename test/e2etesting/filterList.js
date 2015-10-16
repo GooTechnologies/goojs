@@ -41,7 +41,9 @@ var filterList = [
 	'ParticleInfluence',
 	'HeightMap',
 	'SkeletonAnimation',
-	'Sound-shared'
+	'Sound-shared',
+
+	'GridRenderSystem' // until we can render updated screenshot
 ];
 
 exports.filterList = filterList;
