@@ -78,13 +78,14 @@ function (
 		}
 		this.domElement = document.createElement('div');
 		if (domElement) {
+			this.childDom = domElement;
 			this.domElement.appendChild(domElement);
 		}
 		this.domElement.style.position = 'absolute';
 		this.domElement.style.margin = '0px';
 		this.domElement.style.padding = '0px';
 		this.domElement.style.backgroundColor = 'white';
-		this.domElement.style.WebkitBackfaceVisibility = this.backfaceVisibility;
+		// this.domElement.style.WebkitBackfaceVisibility = this.backfaceVisibility;
 		this.domElement.style.backfaceVisibility = this.backfaceVisibility;
 		this.setSize(this.width, this.height);
 	};

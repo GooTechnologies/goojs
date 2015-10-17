@@ -303,6 +303,17 @@ require([
 			entity.addToWorld();
 		}
 
+		var domElement = document.createElement('div');
+		domElement.innerText = 'Blaha blaha';
+		var htmlComponent = new HtmlComponent(domElement, {
+			width: 200,
+			height: 50
+		});
+		var entity = world.createEntity([0, 5, 0], htmlComponent);
+		var aspect = 200 / 50;
+		entity.setScale(1 * aspect, 1, 1);
+		entity.addToWorld();
+
 		createIFrame(500, 281, [-4, 2, -2], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
 		createIFrame(768, 640, [4, 2, -2], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
 		createIFrame(1000, 1000, [0, 2, -4], [0, 0, 0], 'https://duckduckgo.com/');

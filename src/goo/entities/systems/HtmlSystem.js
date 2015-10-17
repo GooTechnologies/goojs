@@ -152,19 +152,22 @@ define([
 			if (!component.useTransformComponent) {
 				if (!domElement.parentNode || domElement.parentNode === this.cameraDom) {
 					var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
-					parentEl.appendChild(domElement);
+					parentEl.appendChild(component.childDom);
 				}
 
 				domElement.style.display = component.hidden ? 'none' : '';
 				// var translation = entity.getTranslation();
 				// var style = 'translate(' + translation.x * 100 + 'px,' + translation.y * 100 + 'px)';
 				// this.setStyle(domElement, 'transform', style);
-				this.setStyle(domElement, 'transform', '');
+				// this.setStyle(domElement, 'transform', '');
 				component.updated = true;
 				continue;
 			} else {
 				if (domElement.parentNode !== this.cameraDom) {
 					this.cameraDom.appendChild(domElement);
+				}
+				if (component.childDom.parentNode !== domElement) {
+					domElement.appendChild(component.childDom);
 				}
 			}
 
