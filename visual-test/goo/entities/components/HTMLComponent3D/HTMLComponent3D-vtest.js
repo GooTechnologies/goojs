@@ -64,11 +64,11 @@ require([
 	}
 
 	function key2() {
-		gizmoRenderSystem.setActiveGizmo(1);
+		gizmoRenderSystem.setActiveGizmo(2);
 	}
 
 	function key3() {
-		gizmoRenderSystem.setActiveGizmo(2);
+		gizmoRenderSystem.setActiveGizmo(4);
 	}
 
 	function setupKeys() {
