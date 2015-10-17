@@ -150,7 +150,7 @@ define([
 
 			// Always show if not using transform (if not hidden)
 			if (!component.useTransformComponent) {
-				if (!domElement.parentNode) {
+				if (!domElement.parentNode || domElement.parentNode === this.cameraDom) {
 					var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
 					parentEl.appendChild(domElement);
 				}
@@ -159,6 +159,8 @@ define([
 				// var translation = entity.getTranslation();
 				// var style = 'translate(' + translation.x * 100 + 'px,' + translation.y * 100 + 'px)';
 				// this.setStyle(domElement, 'transform', style);
+				this.setStyle(domElement, 'transform', '');
+				component.updated = true;
 				continue;
 			} else {
 				if (domElement.parentNode !== this.cameraDom) {

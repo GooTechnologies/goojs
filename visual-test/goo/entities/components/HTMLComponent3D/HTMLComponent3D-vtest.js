@@ -103,6 +103,11 @@ require([
 						entitySelected.htmlComponent.setSize(w*2, h*2);
 					}
 					break;
+				case 56: // 8
+					if (entitySelected) {
+						entitySelected.htmlComponent.useTransformComponent = !entitySelected.htmlComponent.useTransformComponent;
+					}
+					break;
 
 				default:
 					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
