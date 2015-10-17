@@ -186,7 +186,7 @@ define([
 	HtmlComponentHandler.prototype._remove = function (entity) {
 		var component = entity.htmlComponent;
 		ComponentHandler.prototype._remove.call(this, entity);
-		if (component.domElement) {
+		if (component.domElement && component.domElement.parentNode) {
 			component.domElement.parentNode.removeChild(component.domElement);
 		}
 

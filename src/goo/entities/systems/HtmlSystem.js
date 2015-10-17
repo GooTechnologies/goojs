@@ -131,16 +131,14 @@ define([
 			return;
 		}
 
-		var style;
-
-		var width = this.renderer.viewportWidth;
-		var height = this.renderer.viewportHeight;
+		var width = this.renderer.viewportWidth / this.renderer.devicePixelRatio;
+		var height = this.renderer.viewportHeight / this.renderer.devicePixelRatio;
 		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * height;
 
 		this.setStyle(this.rootDom, 'perspective', fov + 'px');
 
 		var viewMatrix = camera.getViewMatrix();
-		style = 'translate3d(0,0,' + fov + 'px) ' + 
+		var style = 'translate3d(0,0,' + fov + 'px) ' + 
 				this.getCameraCSSMatrix(viewMatrix) +
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
 		this.setStyle(this.cameraDom, 'transform', style);
@@ -158,9 +156,9 @@ define([
 				}
 
 				domElement.style.display = component.hidden ? 'none' : '';
-				var translation = entity.getTranslation();
-				var style = 'translate(' + translation.x*100 + 'px,' + translation.y*100 + 'px)';
-				this.setStyle(domElement, 'transform', style);
+				// var translation = entity.getTranslation();
+				// var style = 'translate(' + translation.x * 100 + 'px,' + translation.y * 100 + 'px)';
+				// this.setStyle(domElement, 'transform', style);
 				continue;
 			} else {
 				if (domElement.parentNode !== this.cameraDom) {
@@ -182,7 +180,9 @@ define([
 			component.updated = false;
 
 			var worldTransform = entity.transformComponent.worldTransform;
-			style = this.getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + this.precisionScale / component.width + ', ' + this.precisionScale / component.height + ')';
+			style = this.getEntityCSSMatrix(worldTransform.matrix) + 
+					' scale(' + this.precisionScale / component.width + 
+					', ' + this.precisionScale / component.height + ')';
 			this.setStyle(domElement, 'transform', style);
 		}
 	};
