@@ -166,7 +166,7 @@ define([
 				if (domElement.parentNode !== this.cameraDom) {
 					this.cameraDom.appendChild(domElement);
 				}
-				if (component.childDom.parentNode !== domElement) {
+				if (component.childDom && component.childDom.parentNode !== domElement) {
 					domElement.appendChild(component.childDom);
 				}
 			}
