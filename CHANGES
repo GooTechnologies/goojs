@@ -1,5 +1,11 @@
-v1.0.0
-------
+v0.15.11 --- 2015-10-16
+----------------------
+
+### Additions
+ + GridRenderSystem now supports infinite grid with fading and adaptive resolution
+
+v0.15.10 --- 2015-10-15
+----------------------
 
 ### Additions
 
