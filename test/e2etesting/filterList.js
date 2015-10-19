@@ -14,6 +14,7 @@ var filterList = [
 	'goofy',
 	'TimelineComponent',
 	'HTMLComponent', // displays nothing on the canvas, it's html!
+	'Dom3dComponent', // displays nothing on the canvas, it's html!
 	'Cannon-terrain', // needs fixing
 	'HtmlComponentHandler', // displays nothing on the canvas, it's html!
 	'CrunchLoader',
