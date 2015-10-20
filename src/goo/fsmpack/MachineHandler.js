@@ -41,6 +41,25 @@ define([
 		return new Machine();
 	};
 
+	MachineHandler.prototype.load = function (ref, options) {
+		if (!options) {
+			options = {};
+		}
+
+		return this.getConfig(ref, options)
+		.then(function (config) {
+			return this.update(ref, config, options);
+		}.bind(this))
+		.then(function (object) {
+			this._loading.delete(ref);
+			return object;
+		}.bind(this))
+		.then(null, function (err) {
+			this._loading.delete(ref);
+			throw err;
+		}.bind(this));
+	};
+
 	/**
 	 * Adds/updates/removes a machine
 	 * @param {string} ref
@@ -51,25 +70,42 @@ define([
 	 */
 	MachineHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (machine) {
-			if (!machine) { return; }
-			machine.name = config.name;
 
-			// Remove old states
-			for (var key in machine._states) {
-				if (!config.states[key]) {
-					machine.removeState(key);
-				}
+		if (!config) {
+			this._remove(ref, options);
+			return PromiseUtils.resolve();
+		}
+
+		if (!options) {
+			options = {};
+		}
+
+		if (!this._objects.has(ref)) {
+			this._objects.set(ref, []);
+		}
+
+		this._prepare(config);
+
+		var machine = this._create();
+		this._objects.get(ref).push(machine);
+
+		machine.name = config.name;
+
+		// Remove old states
+		for (var key in machine._states) {
+			if (!config.states[key]) {
+				machine.removeState(key);
 			}
-			// Update existing states and create new ones
-			var promises = [];
-			for (var key in config.states) {
-				promises.push(that._updateState(machine, config.states[key], options));
-			}
-			return RSVP.all(promises).then(function () {
-				machine.setInitialState(config.initialState);
-				return machine;
-			});
+		}
+		// Update existing states and create new ones
+		var promises = [];
+		for (var key in config.states) {
+			promises.push(that._updateState(machine, config.states[key], options));
+		}
+
+		return RSVP.all(promises).then(function () {
+			machine.setInitialState(config.initialState);
+			return machine;
 		});
 	};
 
