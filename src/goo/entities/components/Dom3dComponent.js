@@ -72,6 +72,12 @@ function (
 		}
 		this.domElement = document.createElement('div');
 		if (domElement) {
+			if (!domElement.style.width) {
+				domElement.style.width = "100%";
+			}
+			if (!domElement.style.height) {
+				domElement.style.height = "100%";
+			}
 			this.domElement.appendChild(domElement);
 		}
 		this.domElement.style.position = 'absolute';
@@ -80,6 +86,7 @@ function (
 		this.domElement.style.backgroundColor = 'white';
 		// this.domElement.style.WebkitBackfaceVisibility = this.backfaceVisibility;
 		this.domElement.style.backfaceVisibility = this.backfaceVisibility;
+		this.domElement.style.overflow = 'hidden';
 		this.setSize(this.width, this.height);
 	};
 

@@ -154,6 +154,17 @@ define([
 
 			domElement.innerHTML = wrappedStyle + config.innerHtml;
 
+			var children = domElement.childNodes;
+			if (children.length === 1) {
+				var child = children[0];
+				if (!child.style.width) {
+					child.style.width = "100%";
+				}
+				if (!child.style.height) {
+					child.style.height = "100%";
+				}
+			}
+
 			function loadImage(htmlImage, imageRef) {
 				return that.loadObject(imageRef, options)
 				.then(function (image) {
