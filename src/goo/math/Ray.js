@@ -23,6 +23,7 @@ define([
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 	var tmpVec4 = new Vector3();
+	var tmpVec5 = new Vector3();
 
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar == true)
@@ -32,12 +33,12 @@ define([
 	 * @param locationStore Vector3 to store our intersection point in.
 	 * @returns true if this ray intersects a polygon described by the given vertices.
 	 */
-	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore) {
+	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore, skipBackSide) {
 		if (polygonVertices.length === 3) {
-			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore);
+			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore, skipBackSide);
 		} else if (polygonVertices.length === 4) {
-			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore)
-				|| this.intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], doPlanar, locationStore);
+			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore, skipBackSide)
+				|| this.intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], doPlanar, locationStore, skipBackSide);
 		}
 		return false;
 	};
@@ -52,8 +53,7 @@ define([
 	 * @param [locationStore]
 	 * @returns true if this ray intersects a triangle formed by the given three points.
 	 */
-	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = tmpVec1.set(this.origin).sub(pointA);
+	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore, skipBackSide) {
 		var edge1 = tmpVec2.set(pointB).sub(pointA);
 		var edge2 = tmpVec3.set(pointC).sub(pointA);
 		var norm = tmpVec4.set(edge1).cross(edge2);
@@ -63,6 +63,9 @@ define([
 		if (dirDotNorm > MathUtils.EPSILON) {
 			sign = 1.0;
 		} else if (dirDotNorm < -MathUtils.EPSILON) {
+			if (skipBackSide) {
+				return false;
+			}
 			sign = -1.0;
 			dirDotNorm = -dirDotNorm;
 		} else {
@@ -70,7 +73,9 @@ define([
 			return false;
 		}
 
-		var dirDotDiffxEdge2 = sign * this.direction.dot(edge2.copy(diff).cross(edge2));
+		var diff = tmpVec1.set(this.origin).sub(pointA);
+
+		var dirDotDiffxEdge2 = sign * this.direction.dot(tmpVec5.copy(diff).cross(edge2));
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
 			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.cross(diff));

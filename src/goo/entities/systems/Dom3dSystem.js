@@ -7,6 +7,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Matrix4x4',
 	'goo/math/Vector3',
+	'goo/math/Ray',
 	'goo/math/MathUtils'
 ], function (
 	System,
@@ -17,6 +18,7 @@ define([
 	Quad,
 	Matrix4x4,
 	Vector3,
+	Ray,
 	MathUtils
 ) {
 	'use strict';
@@ -34,6 +36,75 @@ define([
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			this.camera = newCam.camera;
 		}.bind(this));
+
+		var ray = new Ray();
+		var polygonVertices = [new Vector3(), new Vector3(), new Vector3(), new Vector3()];
+		var offsets = [new Vector3(-0.5, -0.5, 0), new Vector3(-0.5, 0.5, 0), new Vector3(0.5, 0.5, 0), new Vector3(0.5, -0.5, 0)];
+		var doPlanar = false;
+
+		var that = this;
+		var doPick = function (event) {
+			if (!that.camera) {
+				return;
+			}
+
+			that.camera.getPickRay(event.x, event.y, that.renderer.domElement.offsetWidth, that.renderer.domElement.offsetHeight, ray);
+
+			var intersects = false;
+			for (var i = 0; i < that._activeEntities.length; i++) {
+				var entity = that._activeEntities[i];
+
+				for (var j = 0; j < polygonVertices.length; j++) {
+					var vec = polygonVertices[j];
+					vec.set(offsets[j]);
+					vec.applyPostPoint(entity.transformComponent.transform.matrix);
+				}
+
+				intersects = ray.intersects(polygonVertices, doPlanar, null, true);
+				if (intersects) {
+					break;
+				}
+			}
+
+			return intersects;
+		};
+
+		var handlePick = function (event) {
+			var intersects = doPick(event);
+
+			if (intersects) {
+				// event.preventDefault();
+				// event.stopPropagation();
+				that.renderer.domElement.style.pointerEvents = 'none';
+				var gooWrapper = document.getElementById('goo-canvas-wrapper');
+				if (gooWrapper) {
+					gooWrapper.style.pointerEvents = 'none';
+				}
+			} else {
+				that.renderer.domElement.style.pointerEvents = '';
+				var gooWrapper = document.getElementById('goo-canvas-wrapper');
+				if (gooWrapper) {
+					gooWrapper.style.pointerEvents = '';
+				}
+			}
+		};
+
+		var drag = false;
+		document.addEventListener('mousedown', function (event) {
+			drag = !doPick(event);
+		}, false);
+		document.addEventListener('mouseup', function (event) {
+			drag = false;
+
+			handlePick(event);
+		}, false);
+		document.addEventListener('mousemove', function (event) {
+			if (drag) {
+				return;
+			}
+
+			handlePick(event);
+		}, false);
 
 		var rootDom = this.rootDom = document.createElement('div');
 		document.body.appendChild(rootDom);

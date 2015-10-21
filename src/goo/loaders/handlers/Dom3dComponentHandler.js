@@ -73,46 +73,6 @@ define([
 				domElement = document.createElement('div');
 				domElement.id = safeEntityId;
 				domElement.className = 'goo-entity';
-				domElement.addEventListener('mousedown', function (domEvent) {
-					var gooRunner = entity._world.gooRunner;
-					var evt = {
-						entity: entity,
-						depth: 0,
-						x: domEvent.pageX,
-						y: domEvent.pageY,
-						domEvent: domEvent,
-						id: entity.id,
-						type: 'mousedown'
-					};
-					gooRunner.triggerEvent('mousedown', evt);
-				});
-				domElement.addEventListener('mouseup', function (domEvent) {
-					var gooRunner = entity._world.gooRunner;
-					var evt = {
-						entity: entity,
-						depth: 0,
-						x: domEvent.pageX,
-						y: domEvent.pageY,
-						domEvent: domEvent,
-						id: entity.id,
-						type: 'mouseup'
-					};
-					gooRunner.triggerEvent('mouseup', evt);
-				});
-				domElement.addEventListener('click', function (domEvent) {
-					var gooRunner = entity._world.gooRunner;
-					var evt = {
-						entity: entity,
-						depth: 0,
-						x: domEvent.pageX,
-						y: domEvent.pageY,
-						domEvent: domEvent,
-						id: entity.id,
-						type: 'click'
-					};
-					gooRunner.triggerEvent('click', evt);
-				});
-
 				component.initDom(domElement);
 			}
 			component.setSize(config.width !== undefined ? config.width : 500, config.height !== undefined ? config.height : 500);
@@ -128,20 +88,6 @@ define([
 			if (entity.meshDataComponent !== component.meshDataComponent) {
 				entity.setComponent(component.meshDataComponent);
 			}
-			// create new meshdata if needed?
-			// if (!entity.meshRendererComponent || !entity.meshDataComponent) {
-			// 	var quad = new Quad(component.width, component.height);
-			// 	entity.set(quad);
-			// 	entity.set(this.materialTransparent);
-
-			// 	var parent = entity.parent();
-			// 	if (parent) {
-			// 		entity.removeFromWorld();
-			// 		entity._world.processEntityChanges();
-			// 		entity.addToWorld();
-			// 	}
-			// }
-
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtils.resolve();
 			}
