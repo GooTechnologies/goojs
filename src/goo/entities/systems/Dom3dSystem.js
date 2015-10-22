@@ -42,6 +42,8 @@ define([
 		var offsets = [new Vector3(-0.5, -0.5, 0), new Vector3(-0.5, 0.5, 0), new Vector3(0.5, 0.5, 0), new Vector3(0.5, -0.5, 0)];
 		var doPlanar = false;
 
+		var doesIntersect = false;
+
 		var that = this;
 		var doPick = function (event) {
 			if (!that.camera) {
@@ -72,11 +74,13 @@ define([
 		var handlePick = function (event) {
 			var intersects = doPick(event);
 
-			if (intersects) {
+			if (intersects && !doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', true);
-			} else {
+			} else if (!intersects && doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', false);
 			}
+
+			doesIntersect = intersects;
 		};
 
 		var drag = false;
