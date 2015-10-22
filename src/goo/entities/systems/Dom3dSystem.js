@@ -73,19 +73,11 @@ define([
 			var intersects = doPick(event);
 
 			if (intersects) {
-				// event.preventDefault();
-				// event.stopPropagation();
+				SystemBus.emit('goo.dom3d.enabled', true);
 				that.renderer.domElement.style.pointerEvents = 'none';
-				var gooWrapper = document.getElementById('goo-canvas-wrapper');
-				if (gooWrapper) {
-					gooWrapper.style.pointerEvents = 'none';
-				}
 			} else {
+				SystemBus.emit('goo.dom3d.enabled', false);
 				that.renderer.domElement.style.pointerEvents = '';
-				var gooWrapper = document.getElementById('goo-canvas-wrapper');
-				if (gooWrapper) {
-					gooWrapper.style.pointerEvents = '';
-				}
 			}
 		};
 
