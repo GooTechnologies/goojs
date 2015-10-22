@@ -74,10 +74,8 @@ define([
 
 			if (intersects) {
 				SystemBus.emit('goo.dom3d.enabled', true);
-				that.renderer.domElement.style.pointerEvents = 'none';
 			} else {
 				SystemBus.emit('goo.dom3d.enabled', false);
-				that.renderer.domElement.style.pointerEvents = '';
 			}
 		};
 

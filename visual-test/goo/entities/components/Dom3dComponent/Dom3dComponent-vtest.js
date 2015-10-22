@@ -1,5 +1,6 @@
 require([
 	'goo/renderer/Camera',
+	'goo/entities/SystemBus',
 	'goo/entities/components/Dom3dComponent',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
@@ -32,6 +33,7 @@ require([
 	'goo/scriptpack/ScriptRegister'
 ], function(
 	Camera,
+	SystemBus,
 	Dom3dComponent,
 	Material,
 	ShaderLib,
@@ -244,6 +246,14 @@ require([
 	var boundingSystem = world.getSystem('BoundingUpdateSystem');
 	var renderSystem = world.getSystem('RenderSystem');
 	var renderer = goo.renderer;
+
+	SystemBus.addListener('goo.dom3d.enabled', function (val) {
+		if (val) {
+			goo.renderer.domElement.style.pointerEvents = 'none';
+		} else {
+			goo.renderer.domElement.style.pointerEvents = '';
+		}
+	});
 
 	// Load the project
 	loadProject(goo).then(function() {
