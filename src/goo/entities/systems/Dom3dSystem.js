@@ -43,6 +43,7 @@ define([
 		var doPlanar = false;
 
 		var doesIntersect = false;
+		this.playing = false;
 
 		var that = this;
 		var doPick = function (event) {
@@ -76,8 +77,10 @@ define([
 
 			if (intersects && !doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', true);
+				that.renderer.domElement.style.pointerEvents = 'none';
 			} else if (!intersects && doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', false);
+				that.renderer.domElement.style.pointerEvents = '';
 			}
 
 			doesIntersect = intersects;
@@ -90,20 +93,23 @@ define([
 		document.addEventListener('mouseup', function (event) {
 			drag = false;
 
-			handlePick(event);
+			if (that.playing) {
+				handlePick(event);
+			}
 		}, false);
 		document.addEventListener('mousemove', function (event) {
 			if (drag) {
 				return;
 			}
 
-			handlePick(event);
+			if (that.playing) {
+				handlePick(event);
+			}
 		}, false);
 
 		var rootDom = this.rootDom = document.createElement('div');
-		document.body.appendChild(rootDom);
-		// rootDom.style.pointerEvents = 'none';
-		rootDom.style.zIndex = '-1';
+		this.renderer.domElement.parentNode.insertBefore(rootDom, this.renderer.domElement);
+
 		rootDom.style.position = 'absolute';
 		rootDom.style.overflow = 'hidden';
 		// rootDom.style.webkitTransformStyle = 'preserve-3d';
@@ -145,6 +151,19 @@ define([
 
 	Dom3dSystem.prototype = Object.create(System.prototype);
 	Dom3dSystem.prototype.constructor = Dom3dSystem;
+
+	Dom3dSystem.prototype.play = function () {
+		this.playing = true;
+	};
+
+	Dom3dSystem.prototype.pause = function () {
+	};
+
+	Dom3dSystem.prototype.resume = Dom3dSystem.prototype.play;
+
+	Dom3dSystem.prototype.stop = function () {
+		this.playing = false;
+	};
 
 	Dom3dSystem.prototype.getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
