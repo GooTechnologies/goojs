@@ -43,7 +43,7 @@ define([
 		var doPlanar = false;
 
 		var doesIntersect = false;
-		this.playing = false;
+		this.playing = true;
 
 		var that = this;
 		var doPick = function (event) {
