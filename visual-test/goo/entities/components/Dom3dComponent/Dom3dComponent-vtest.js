@@ -266,7 +266,7 @@ require([
 			goo.renderer.checkResize(Renderer.mainCamera);
 		}
 	}).then(function() {
-		var goon = world.by.name('goon_mesh').first();
+		// var goon = world.by.name('goon_mesh').first();
 		// goon.meshRendererComponent.isReflectable = true;
 		// goon.setTranslation(0, -1000, 3000);
 		// goon.setScale(20, 20, 20);

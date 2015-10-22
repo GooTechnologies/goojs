@@ -47,50 +47,56 @@ define([
 
 		var that = this;
 		var doPick = function (event) {
-			if (!that.camera) {
-				return;
-			}
-
 			that.camera.getPickRay(event.x, event.y, that.renderer.domElement.offsetWidth, that.renderer.domElement.offsetHeight, ray);
 
-			var intersects = false;
 			for (var i = 0; i < that._activeEntities.length; i++) {
 				var entity = that._activeEntities[i];
 
 				for (var j = 0; j < polygonVertices.length; j++) {
 					var vec = polygonVertices[j];
 					vec.set(offsets[j]);
-					vec.applyPostPoint(entity.transformComponent.transform.matrix);
+					vec.applyPostPoint(entity.transformComponent.worldTransform.matrix);
 				}
 
-				intersects = ray.intersects(polygonVertices, doPlanar, null, true);
-				if (intersects) {
-					break;
+				if (ray.intersects(polygonVertices, doPlanar, null, true)) {
+					return true;
 				}
 			}
 
-			return intersects;
+			return false;
 		};
 
 		var handlePick = function (event) {
+			if (!that.camera || that._activeEntities.length === 0) {
+				return false;
+			}
+
 			var intersects = doPick(event);
 
 			if (intersects && !doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', true);
 				that.renderer.domElement.style.pointerEvents = 'none';
+				doesIntersect = true;
 			} else if (!intersects && doesIntersect) {
 				SystemBus.emit('goo.dom3d.enabled', false);
 				that.renderer.domElement.style.pointerEvents = '';
+				doesIntersect = false;
 			}
-
-			doesIntersect = intersects;
 		};
 
 		var drag = false;
 		document.addEventListener('mousedown', function (event) {
+			if (!that.camera || that._activeEntities.length === 0) {
+				return;
+			}
+
 			drag = !doPick(event);
 		}, false);
 		document.addEventListener('mouseup', function (event) {
+			if (!that.camera || that._activeEntities.length === 0) {
+				return;
+			}
+
 			drag = false;
 
 			if (that.playing) {
@@ -98,7 +104,7 @@ define([
 			}
 		}, false);
 		document.addEventListener('mousemove', function (event) {
-			if (drag) {
+			if (drag || !that.camera || that._activeEntities.length === 0) {
 				return;
 			}
 
