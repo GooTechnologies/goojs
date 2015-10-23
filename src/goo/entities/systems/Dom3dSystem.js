@@ -47,7 +47,18 @@ define([
 
 		var that = this;
 		var doPick = function (event) {
-			that.camera.getPickRay(event.x, event.y, that.renderer.domElement.offsetWidth, that.renderer.domElement.offsetHeight, ray);
+			var x, y;
+			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
+				x = event.changedTouches[0].pageX - event.changedTouches[0].target.getBoundingClientRect().left;
+				y = event.changedTouches[0].pageY - event.changedTouches[0].target.getBoundingClientRect().top;
+			} else {
+				var target = event.target || event.srcElement;
+				var rect = target.getBoundingClientRect();
+				x = event.clientX - rect.left;
+				y = event.clientY - rect.top;
+			}
+
+			that.camera.getPickRay(x, y, that.renderer.domElement.offsetWidth, that.renderer.domElement.offsetHeight, ray);
 
 			for (var i = 0; i < that._activeEntities.length; i++) {
 				var entity = that._activeEntities[i];
@@ -102,6 +113,13 @@ define([
 			if (that.playing) {
 				handlePick(event);
 			}
+
+			// for (var i = 0, l = that._activeEntities.length; i < l; i++) {
+			// 	var entity = that._activeEntities[i];
+			// 	var component = entity.dom3dComponent;
+			// 	component.updated = true;
+			// }
+			// that.styleCache.clear();
 		}, false);
 		document.addEventListener('mousemove', function (event) {
 			if (drag || !that.camera || that._activeEntities.length === 0) {
@@ -118,6 +136,7 @@ define([
 
 		rootDom.style.position = 'absolute';
 		rootDom.style.overflow = 'hidden';
+		rootDom.style.userSelect = 'none';
 		// rootDom.style.webkitTransformStyle = 'preserve-3d';
 		// rootDom.style.mozTransformStyle = 'preserve-3d';
 		rootDom.style.transformStyle = 'preserve-3d';
@@ -129,6 +148,7 @@ define([
 		rootDom.style.right = '0px';
 
 		var cameraDom = this.cameraDom = document.createElement('div');
+		cameraDom.style.userSelect = 'none';
 		// cameraDom.style.webkitTransformStyle = 'preserve-3d';
 		// cameraDom.style.mozTransformStyle = 'preserve-3d';
 		cameraDom.style.transformStyle = 'preserve-3d';
