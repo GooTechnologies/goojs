@@ -44,11 +44,11 @@ define([
 		if (this._activeHandle.type === 'Axis') {
 			this._setLine();
 		}
+		this.realTranslation.copy(this.transform.translation);
 	};
 
 	TranslationGizmo.prototype.copyTransform = function () {
 		Gizmo.prototype.copyTransform.apply(this, arguments);
-		this.realTranslation.copy(this.transform.translation);
 	};
 
 	function snapToGrid(vector3) {
@@ -58,24 +58,7 @@ define([
 	}
 
 	TranslationGizmo.prototype.setSnap = function (snap) {
-		var oldSnap = this._snap;
 		this._snap = snap;
-
-		// unsnap when coming out of snapping mode
-		if (oldSnap && !this._snap) {
-			this.transform.translation.copy(this.realTranslation);
-
-			if (this.onChange instanceof Function) {
-				this.onChange(this.transform.translation);
-			}
-		} else if (!oldSnap && this._snap) {
-			snapToGrid(this.transform.translation);
-			this.transform.update();
-
-			if (this.onChange instanceof Function) {
-				this.onChange(this.transform.translation);
-			}
-		}
 	};
 
 	(function () {
@@ -96,8 +79,8 @@ define([
 		};
 	})();
 
-	TranslationGizmo.prototype._addTranslation = function (that) {
-		this.realTranslation.add(that);
+	TranslationGizmo.prototype._addTranslation = function (moveVector) {
+		this.realTranslation.add(moveVector);
 		this.transform.translation.copy(this.realTranslation);
 
 		if (this._snap) {
