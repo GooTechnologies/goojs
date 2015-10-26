@@ -31,8 +31,6 @@ define([
 	GlobalTranslationGizmo.prototype.copyTransform = function (transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
 
-		this.realTranslation.copy(this.transform.translation);
-
 		this.transform.rotation.setIdentity();
 		this.updateTransforms();
 	};
