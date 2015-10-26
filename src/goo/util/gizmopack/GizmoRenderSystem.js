@@ -226,12 +226,8 @@ define([
 			if (this.entity.transformComponent.parent) {
 				inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 				inverseRotation.invert();
+				this.entity.transformComponent.transform.rotation.mul(inverseRotation);
 			}
-
-			this.entity.transformComponent.transform.rotation.mul2(
-				inverseRotation,
-				this.entity.transformComponent.transform.rotation
-			);
 
 			this.entity.transformComponent.setUpdated();
 		}.bind(this);
@@ -320,9 +316,9 @@ define([
 	};
 
 	var customPickingShader = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
 		processors: [
 			function (shader, shaderInfo) {
@@ -335,17 +331,17 @@ define([
 				}
 			}
 		],
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraFar : Shader.FAR_PLANE,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraFar: Shader.FAR_PLANE,
 			thickness: 0.0,
-			id : function (shaderInfo) {
+			id: function (shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'#ifdef NORMAL',
 			'attribute vec3 vertexNormal;',
@@ -369,8 +365,8 @@ define([
 			'depth = length(mvPosition.xyz) / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
-		].join("\n"),
-		fshader : [
+		].join('\n'),
+		fshader: [
 		'uniform float id;',
 
 		'varying float depth;',
@@ -382,7 +378,7 @@ define([
 			'vec2 packedDepth = packDepth16(depth);',
 			'gl_FragColor = vec4(packedId, packedDepth);',
 		'}'
-		].join("\n")
+		].join('\n')
 	};
 
 	return GizmoRenderSystem;

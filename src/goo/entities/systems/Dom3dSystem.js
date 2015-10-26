@@ -48,12 +48,12 @@ define([
 		var that = this;
 		var doPick = function (event) {
 			var x, y;
+			var domTarget = that.renderer.domElement;
 			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
-				x = event.changedTouches[0].pageX - event.changedTouches[0].target.getBoundingClientRect().left;
-				y = event.changedTouches[0].pageY - event.changedTouches[0].target.getBoundingClientRect().top;
+				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
+				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
 			} else {
-				var target = event.target || event.srcElement;
-				var rect = target.getBoundingClientRect();
+				var rect = domTarget.getBoundingClientRect();
 				x = event.clientX - rect.left;
 				y = event.clientY - rect.top;
 			}
@@ -113,13 +113,6 @@ define([
 			if (that.playing) {
 				handlePick(event);
 			}
-
-			// for (var i = 0, l = that._activeEntities.length; i < l; i++) {
-			// 	var entity = that._activeEntities[i];
-			// 	var component = entity.dom3dComponent;
-			// 	component.updated = true;
-			// }
-			// that.styleCache.clear();
 		}, false);
 		document.addEventListener('mousemove', function (event) {
 			if (drag || !that.camera || that._activeEntities.length === 0) {
@@ -136,7 +129,9 @@ define([
 
 		rootDom.style.position = 'absolute';
 		rootDom.style.overflow = 'hidden';
-		rootDom.style.userSelect = 'none';
+		rootDom.style.webkitUserSelect = 'none';
+		rootDom.style.mozUserSelect = 'none';
+		rootDom.style.msUserSelect = 'none';
 		// rootDom.style.webkitTransformStyle = 'preserve-3d';
 		// rootDom.style.mozTransformStyle = 'preserve-3d';
 		rootDom.style.transformStyle = 'preserve-3d';
@@ -148,7 +143,9 @@ define([
 		rootDom.style.right = '0px';
 
 		var cameraDom = this.cameraDom = document.createElement('div');
-		cameraDom.style.userSelect = 'none';
+		cameraDom.style.webkitUserSelect = 'none';
+		cameraDom.style.mozUserSelect = 'none';
+		cameraDom.style.msUserSelect = 'none';
 		// cameraDom.style.webkitTransformStyle = 'preserve-3d';
 		// cameraDom.style.mozTransformStyle = 'preserve-3d';
 		cameraDom.style.transformStyle = 'preserve-3d';
@@ -240,9 +237,9 @@ define([
 		this.setStyle(this.rootDom, 'perspective', fov + 'px');
 
 		var viewMatrix = camera.getViewMatrix();
-		var style = 'translate3d(0,0,' + fov + 'px) ' + 
+		var style = 'translate3d(0,0,' + fov + 'px) ' +
 				this.getCameraCSSMatrix(viewMatrix) +
-				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
+				' translate3d(' + (width / 2) + 'px,' + (height / 2) + 'px, 0)';
 		this.setStyle(this.cameraDom, 'transform', style);
 
 		for (var i = 0, l = entities.length; i < l; i++) {
@@ -268,8 +265,8 @@ define([
 			component.updated = false;
 
 			var worldTransform = entity.transformComponent.worldTransform;
-			style = this.getEntityCSSMatrix(worldTransform.matrix) + 
-					' scale(' + this.precisionScale / component.width + 
+			style = this.getEntityCSSMatrix(worldTransform.matrix) +
+					' scale(' + this.precisionScale / component.width +
 					', ' + this.precisionScale / component.height + ')';
 			this.setStyle(domElement, 'transform', style);
 		}
