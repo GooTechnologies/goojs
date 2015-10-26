@@ -101,6 +101,7 @@ define([
 
 		this.overridePrecision = shaderDefinition.precision || null;
 		this.processors = shaderDefinition.processors;
+		this.matprocessors = shaderDefinition.matprocessors;
 		this.builder = shaderDefinition.builder;
 		this.defines = shaderDefinition.defines || {};
 		this.attributes = shaderDefinition.attributes || {};
@@ -149,6 +150,7 @@ define([
 		return new Shader(this.name, ObjectUtils.deepClone({
 			precision: this.precision,
 			processors: this.processors,
+			matprocessors: this.matprocessors,
 			builder: this.builder,
 			defines: this.defines,
 			attributes: this.attributes,
@@ -252,13 +254,29 @@ define([
 		}
 	};
 
+	var uniformFilter = new Set();
+	uniformFilter.add('viewProjectionMatrix');
+	uniformFilter.add('worldMatrix');
+	uniformFilter.add('normalMatrix');
+	var materialCache = new Set();
+	var materialProcessorCache = new Set();
+
 	Shader.prototype.matchUniforms = function (shaderInfo) {
 		var uniforms = this.matchedUniforms;
 		if (uniforms) {
 			this.textureIndex = 0;
 
-			for (var i = 0, l = uniforms.length; i < l; i++) {
-				this._bindUniform(uniforms[i], shaderInfo);
+			if (materialCache.has(shaderInfo.material)) {
+				for (var i = 0, l = uniforms.length; i < l; i++) {
+					if (uniformFilter.has(uniforms[i])) {
+						this._bindUniform(uniforms[i], shaderInfo);
+					}
+				}
+			} else {
+				for (var i = 0, l = uniforms.length; i < l; i++) {
+					this._bindUniform(uniforms[i], shaderInfo);
+				}
+				materialCache.add(shaderInfo.material);
 			}
 		}
 	};
@@ -357,6 +375,8 @@ define([
 
 	Shader.prototype.startFrame = function () {
 		this.frameStart = true;
+		materialCache.clear();
+		materialProcessorCache.clear();
 	};
 
 	Shader.prototype.endFrame = function () {
@@ -365,6 +385,13 @@ define([
 
 	Shader.prototype.updateProcessors = function (renderInfo) {
 		if (this.processors) {
+			if (!materialProcessorCache.has(renderInfo.material)) {
+				for (var j = 0; j < this.matprocessors.length; j++) {
+					this.matprocessors[j](this, renderInfo);
+				}
+			}
+			materialProcessorCache.add(renderInfo.material);
+
 			for (var j = 0; j < this.processors.length; j++) {
 				this.processors[j](this, renderInfo);
 			}

@@ -23,6 +23,9 @@ define([
 	 * It supports lights, animations, reflective materials, normal, diffuse, AO and light textures, transparency, fog and shadows.
 	 */
 	ShaderLib.uber = {
+		matprocessors: [
+			ShaderBuilder.uber.matprocessor,
+		],
 		processors: [
 			ShaderBuilder.uber.processor,
 			ShaderBuilder.light.processor,

@@ -181,31 +181,30 @@ define([
 			}
 		},
 
+		matprocessor: function (shader, shaderInfo) {
+			var material = shaderInfo.material;
+			var textureMaps = material._textureMaps;
+
+			ShaderBuilder.uber.reflectivity(shader, material);
+			ShaderBuilder.uber.sky(shader, material);
+			ShaderBuilder.uber.txMaps(shader, textureMaps);
+			ShaderBuilder.uber.uniforms(shader, textureMaps);
+			ShaderBuilder.uber.discard(shader, material);
+			ShaderBuilder.uber.opacity(shader, material);
+			ShaderBuilder.uber.fog(shader);
+		},
+
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			var material = shaderInfo.material;
 			var textureMaps = material._textureMaps;
 
+			ShaderBuilder.uber.defines(shader, attributeMap); // per obj
+			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps); // per obj
+			ShaderBuilder.uber.normalTangents(shader, shaderInfo); // per obj
+
 			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
-
-			ShaderBuilder.uber.reflectivity(shader, material);
-			ShaderBuilder.uber.sky(shader, material);
-
-
-			ShaderBuilder.uber.defines(shader, attributeMap);
-			ShaderBuilder.uber.txMaps(shader, textureMaps);
-
-
-			ShaderBuilder.uber.uniforms(shader, textureMaps);
-			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
-
-			ShaderBuilder.uber.discard(shader, material);
-			ShaderBuilder.uber.opacity(shader, material);
-
-			ShaderBuilder.uber.fog(shader);
-
 			shader.setDefine('SKIP_SPECULAR', true);
-			ShaderBuilder.uber.normalTangents(shader, shaderInfo);
 		}
 	};
 
