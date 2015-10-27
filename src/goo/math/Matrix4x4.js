@@ -11,6 +11,9 @@ define([
 	}
 	Matrix4x4.prototype = Object.create(Matrix4.prototype);
 	Matrix4x4.prototype.constructor = Matrix4x4;
+	for (var x in Matrix4) {
+		Matrix4x4[x] = Matrix4[x];
+	}
 
 	return Matrix4x4;
 });

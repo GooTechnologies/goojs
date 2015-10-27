@@ -11,6 +11,9 @@ define([
 	}
 	Matrix2x2.prototype = Object.create(Matrix2.prototype);
 	Matrix2x2.prototype.constructor = Matrix2x2;
+	for (var x in Matrix2) {
+		Matrix2x2[x] = Matrix2[x];
+	}
 
 	return Matrix2x2;
 });
