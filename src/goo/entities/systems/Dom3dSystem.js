@@ -35,15 +35,38 @@ define([
 
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			this.camera = newCam.camera;
-		}.bind(this));
+		}.bind(this), true);
 
+		this.playing = true;
+
+		var frontMaterial = new Material(ShaderLib.simple);
+		frontMaterial.blendState.blending = 'CustomBlending';
+		frontMaterial.blendState.blendSrc = 'ZeroFactor';
+		frontMaterial.blendState.blendDst = 'ZeroFactor';
+
+		var backMaterial = new Material(ShaderLib.uber);
+		backMaterial.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
+		backMaterial.cullState.cullFace = 'Front';
+
+		this.materials = [frontMaterial, backMaterial];
+
+		// this.prefixes = ['', '-webkit-', '-moz-'];
+		this.prefixes = ['', '-webkit-'];
+		this.styleCache = new Map();
+
+		this.precisionScale = 1000; // Thanks browsers
+	}
+
+	Dom3dSystem.prototype = Object.create(System.prototype);
+	Dom3dSystem.prototype.constructor = Dom3dSystem;
+
+	Dom3dSystem.prototype.init = function () {
 		var ray = new Ray();
 		var polygonVertices = [new Vector3(), new Vector3(), new Vector3(), new Vector3()];
 		var offsets = [new Vector3(-0.5, -0.5, 0), new Vector3(-0.5, 0.5, 0), new Vector3(0.5, 0.5, 0), new Vector3(0.5, -0.5, 0)];
 		var doPlanar = false;
 
 		var doesIntersect = false;
-		this.playing = true;
 
 		var that = this;
 		var doPick = function (event) {
@@ -153,27 +176,7 @@ define([
 		cameraDom.style.height = '100%';
 
 		rootDom.appendChild(cameraDom);
-
-		var frontMaterial = new Material(ShaderLib.simple);
-		frontMaterial.blendState.blending = 'CustomBlending';
-		frontMaterial.blendState.blendSrc = 'ZeroFactor';
-		frontMaterial.blendState.blendDst = 'ZeroFactor';
-
-		var backMaterial = new Material(ShaderLib.uber);
-		backMaterial.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
-		backMaterial.cullState.cullFace = 'Front';
-
-		this.materials = [frontMaterial, backMaterial];
-
-		// this.prefixes = ['', '-webkit-', '-moz-'];
-		this.prefixes = ['', '-webkit-'];
-		this.styleCache = new Map();
-
-		this.precisionScale = 1000; // Thanks browsers
-	}
-
-	Dom3dSystem.prototype = Object.create(System.prototype);
-	Dom3dSystem.prototype.constructor = Dom3dSystem;
+	};
 
 	Dom3dSystem.prototype.play = function () {
 		this.playing = true;
@@ -226,8 +229,13 @@ define([
 
 	Dom3dSystem.prototype.process = function (entities) {
 		var camera = this.camera;
-		if (!camera) {
+		if (!camera || entities.length === 0) {
 			return;
+		}
+
+		// lazy init
+		if (this.renderer.domElement.parentNode && !this.rootDom) {
+			this.init();
 		}
 
 		var width = this.renderer.viewportWidth / this.renderer.devicePixelRatio;
