@@ -106,7 +106,6 @@ define([
 				backgroundColor[2] * alpha,
 				backgroundColor[3]
 			];
-			console.log(config.backgroundColor);
 			object.globalAmbient = config.globalAmbient.slice(0, 3);
 
 			object.fog = _.deepClone(config.fog);
