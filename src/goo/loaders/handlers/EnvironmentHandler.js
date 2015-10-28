@@ -99,12 +99,10 @@ define([
 			if (!object) { return; }
 
 			var backgroundColor = config.backgroundColor;
-			var alpha = backgroundColor[3];
-			// Premultiply alpha
 			object.backgroundColor = [
-				backgroundColor[0] * alpha,
-				backgroundColor[1] * alpha,
-				backgroundColor[2] * alpha,
+				backgroundColor[0],
+				backgroundColor[1],
+				backgroundColor[2],
 				backgroundColor[3]
 			];
 			object.globalAmbient = config.globalAmbient.slice(0, 3);
