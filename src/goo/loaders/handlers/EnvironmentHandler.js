@@ -99,12 +99,14 @@ define([
 			if (!object) { return; }
 
 			var backgroundColor = config.backgroundColor;
+			var alpha = backgroundColor[3];
 			object.backgroundColor = [
-				backgroundColor[0],
-				backgroundColor[1],
-				backgroundColor[2],
+				backgroundColor[0] * alpha,
+				backgroundColor[1] * alpha,
+				backgroundColor[2] * alpha,
 				backgroundColor[3]
 			];
+			console.log(config.backgroundColor);
 			object.globalAmbient = config.globalAmbient.slice(0, 3);
 
 			object.fog = _.deepClone(config.fog);
