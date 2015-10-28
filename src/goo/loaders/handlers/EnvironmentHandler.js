@@ -173,13 +173,11 @@ define([
 					weatherState.snow.snow.setEmissionVelocity(config.velocity);
 					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
 					weatherState.snow.snow.setEmissionHeight(config.height);
-				} else {
-					if (weatherState.snow && weatherState.snow.enabled) {
-						// remove snow
-						weatherState.snow.snow.remove();
-						weatherState.snow.enabled = false;
-						delete weatherState.snow.snow;
-					}
+				} else if (weatherState.snow && weatherState.snow.enabled) {
+					// remove snow
+					weatherState.snow.snow.remove();
+					weatherState.snow.enabled = false;
+					delete weatherState.snow.snow;
 				}
 			},
 			remove: function (weatherState) {

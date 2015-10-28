@@ -618,6 +618,8 @@ define([
 
 		childComponent.parent = this;
 		this.children.push(childComponent);
+
+		childComponent.setUpdated();
 	};
 
 	/**
@@ -629,7 +631,7 @@ define([
 	 */
 	TransformComponent.prototype.detachChild = function (childComponent, keepTransform) {
 		if (childComponent === this) {
-			console.warn('attachChild: An object can\'t be removed from itself.');
+			console.warn('detachChild: An object can\'t be removed from itself.');
 			return;
 		}
 
@@ -642,6 +644,8 @@ define([
 			childComponent.parent = null;
 			this.children.splice(index, 1);
 		}
+
+		childComponent.setUpdated();
 	};
 
 	/**

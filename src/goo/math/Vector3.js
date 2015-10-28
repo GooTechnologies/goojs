@@ -133,21 +133,21 @@ define([
 	 * v1.add(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.add = function (rhs) {
-		if(rhs instanceof Vector3){
+		if (rhs instanceof Vector3) {
 			this.x += rhs.x;
 			this.y += rhs.y;
 			this.z += rhs.z;
-		} else if(rhs instanceof Vector4){
+		} else if (rhs instanceof Vector4) {
 			console.warn('Passing a Vector4 argument to Vector3.prototype.add is deprecated. Consider using .addDirect instead.');
 			this.x += rhs.x;
 			this.y += rhs.y;
 			this.z += rhs.z;
-		} else if(typeof(rhs) === 'object' && typeof(rhs.length) === 'number') {
+		} else if (typeof (rhs) === 'object' && typeof (rhs.length) === 'number') {
 			console.warn('Passing arrays to Vector3.prototype.add is deprecated - use Vector3.prototype.addDirect instead.');
 			this.x += rhs[0];
 			this.y += rhs[1];
 			this.z += rhs[2];
-		} else if(typeof(rhs) === 'number') {
+		} else if (typeof (rhs) === 'number') {
 			console.warn('Passing numbers to Vector3.prototype.add is deprecated - use Vector3.prototype.addDirect instead.');
 			this.x += rhs;
 			this.y += rhs;
@@ -234,7 +234,7 @@ define([
 	 * v1.mul(v2); // v1 == (4, 10, 18)
 	 */
 	Vector3.prototype.mul = function (rhs) {
-		if(typeof(rhs) === 'number'){
+		if (typeof (rhs) === 'number') {
 			console.warn('Vector3.prototype.mul only accepts vector arguments now. Please use Vector3.prototype.scale instead.');
 			this.x *= rhs;
 			this.y *= rhs;
@@ -288,7 +288,7 @@ define([
 	 * v.div(1, 2, 3); // v == (2, 2, 2)
 	 */
 	Vector3.prototype.div = function (rhs) {
-		if(typeof(rhs) === 'number'){
+		if (typeof (rhs) === 'number') {
 			console.warn('Passing a number argument to Vector3.prototype.div is deprecated. Use Vector3.prototype.divDirect instead.');
 			this.x /= rhs;
 			this.y /= rhs;
@@ -455,7 +455,7 @@ define([
 	 * v.set(new Vector3(2, 4, 6)); // v == (2, 4, 6)
 	 */
 	Vector3.prototype.set = function (rhs) {
-		if(rhs instanceof Vector3 || rhs instanceof Vector4){
+		if (rhs instanceof Vector3 || rhs instanceof Vector4) {
 			this.x = rhs.x;
 			this.y = rhs.y;
 			this.z = rhs.z;
@@ -966,10 +966,11 @@ define([
 	 * @deprecated
 	 */
 	Vector3.prototype.invert = function () {
-		console.warn('Vector3.prototype.invert is deprecated.');
+		console.warn('Vector3.prototype.invert is deprecated. Use .negate instead.');
 		this.x = 0.0 - this.x;
 		this.y = 0.0 - this.y;
 		this.z = 0.0 - this.z;
+
 		return this;
 	};
 
