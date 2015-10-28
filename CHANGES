@@ -1,3 +1,15 @@
+v0.15.12 --- 2015-10-28
+----------------------
+
+### Additions
+ + Added dom3d (html3d) functionality, for mixing dom and WebGL
+
+### Fixes
+  * Fixed bug in Ray.js intersection code
+  * Fixed snapping
+  * Fixed bug with reseting clearcolor in SetClearColorAction
+  * Lots of fixes for math backwards compatibility
+
 v0.15.11 --- 2015-10-16
 ----------------------
 
