@@ -619,7 +619,7 @@ define([
 		childComponent.parent = this;
 		this.children.push(childComponent);
 
-		childComponent.setUpdated();
+		// childComponent.setUpdated();
 	};
 
 	/**
@@ -645,7 +645,7 @@ define([
 			this.children.splice(index, 1);
 		}
 
-		childComponent.setUpdated();
+		// childComponent.setUpdated();
 	};
 
 	/**
