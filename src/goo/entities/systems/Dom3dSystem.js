@@ -189,6 +189,11 @@ define([
 
 	Dom3dSystem.prototype.stop = function () {
 		this.playing = false;
+
+		SystemBus.emit('goo.dom3d.enabled', false);
+		if (this.renderer.domElement) {
+			this.renderer.domElement.style.pointerEvents = '';
+		}
 	};
 
 	Dom3dSystem.prototype.getCameraCSSMatrix = function (matrix) {
