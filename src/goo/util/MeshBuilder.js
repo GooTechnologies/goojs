@@ -1,9 +1,11 @@
 define([
 	'goo/renderer/MeshData',
+	'goo/renderer/Capabilities',
 	'goo/math/Vector3',
 	'goo/entities/EntityUtils'
 ], function (
 	MeshData,
+	Capabilities,
 	Vector3,
 	EntityUtils
 ) {
@@ -74,10 +76,12 @@ define([
 	 * @param {MeshData} meshData
 	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
-		if (meshData.vertexCount >= 65536) {
-			throw new Error('Maximum number of vertices for a mesh to add is 65535. Got: ' + meshData.vertexCount);
-		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
-			this._generateMesh();
+		if (!Capabilities.ElementIndexUInt) {
+			if (meshData.vertexCount >= 65536) {
+				throw new Error('Maximum number of vertices for a mesh to add is 65535. Got: ' + meshData.vertexCount);
+			} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
+				this._generateMesh();
+			}
 		}
 
 		var matrix = transform.matrix;
