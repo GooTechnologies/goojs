@@ -722,7 +722,10 @@ define([
 			this.pick(x, y, function (index, depth) {
 				var dpx = this.renderer.devicePixelRatio;
 				var entity = this.world.entityManager.getEntityByIndex(index);
-				var intersection = Renderer.mainCamera.getWorldPosition(x * dpx, y * dpx, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
+				var intersection = null;
+				if (index !== -1 && depth > 0) {
+					intersection = Renderer.mainCamera.getWorldPosition(x * dpx, y * dpx, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
+				}
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,

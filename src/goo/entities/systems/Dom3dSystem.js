@@ -198,22 +198,24 @@ define([
 
 	Dom3dSystem.prototype.getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
+		var scale = this.precisionScale;
 
 		return 'matrix3d('
 			+ elements[0] + ',' + (-elements[1]) + ',' + elements[2] + ',' + elements[3] + ','
 			+ elements[4] + ',' + (-elements[5]) + ',' + elements[6] + ',' + elements[7] + ','
 			+ elements[8] + ',' + (-elements[9]) + ',' + elements[10] + ',' + elements[11] + ','
-			+ elements[12] * this.precisionScale + ',' + (-elements[13]) * this.precisionScale + ',' + elements[14] * this.precisionScale + ',' + elements[15] + ')';
+			+ elements[12] * scale + ',' + (-elements[13]) * scale + ',' + elements[14] * scale + ',' + elements[15] + ')';
 	};
 
 	Dom3dSystem.prototype.getEntityCSSMatrix = function (matrix) {
 		var elements = matrix.data;
+		var scale = this.precisionScale;
 
 		return 'translate3d(-50%,-50%,0) matrix3d('
 			+ elements[0] + ',' + elements[1] + ',' + elements[2] + ',' + elements[3] + ','
 			+ (-elements[4]) + ',' + (-elements[5]) + ',' + (-elements[6]) + ',' + (-elements[7]) + ','
 			+ elements[8] + ',' + elements[9] + ',' + elements[10] + ',' + elements[11] + ','
-			+ elements[12] * this.precisionScale + ',' + elements[13] * this.precisionScale + ',' + elements[14] * this.precisionScale + ',' + elements[15] + ')';
+			+ elements[12] * scale + ',' + elements[13] * scale + ',' + elements[14] * scale + ',' + elements[15] + ')';
 	};
 
 	Dom3dSystem.prototype.setStyle = function (element, property, style) {
@@ -243,8 +245,13 @@ define([
 			this.init();
 		}
 
-		var width = this.renderer.viewportWidth / this.renderer.devicePixelRatio;
-		var height = this.renderer.viewportHeight / this.renderer.devicePixelRatio;
+		var dpr = window.devicePixelRatio ? window.devicePixelRatio / this.renderer.svg.currentScale : 1;
+		window.dpr = dpr;
+		window.dpx = window.devicePixelRatio;
+		window.dps = this.renderer.svg.currentScale;
+
+		var width = this.renderer.viewportWidth / window.dps;
+		var height = this.renderer.viewportHeight / window.dps;
 		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * height;
 
 		this.setStyle(this.rootDom, 'perspective', fov + 'px');
