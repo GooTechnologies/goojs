@@ -245,13 +245,8 @@ define([
 			this.init();
 		}
 
-		var dpr = window.devicePixelRatio ? window.devicePixelRatio / this.renderer.svg.currentScale : 1;
-		window.dpr = dpr;
-		window.dpx = window.devicePixelRatio;
-		window.dps = this.renderer.svg.currentScale;
-
-		var width = this.renderer.viewportWidth / window.dps;
-		var height = this.renderer.viewportHeight / window.dps;
+		var width = this.renderer.viewportWidth / this.renderer.svg.currentScale;
+		var height = this.renderer.viewportHeight / this.renderer.svg.currentScale;
 		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * height;
 
 		this.setStyle(this.rootDom, 'perspective', fov + 'px');
