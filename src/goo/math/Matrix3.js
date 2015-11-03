@@ -2,10 +2,12 @@ define([
 	'goo/math/MathUtils',
 	'goo/math/Matrix',
 	'goo/math/Vector3'
+	'goo/util/ObjectUtils'
 ], function (
 	MathUtils,
 	Matrix,
-	Vector3
+	Vector3,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -757,282 +759,302 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix3.add = function (lhs, rhs, target) {
-		console.warn('Matrix3.add is deprecated - use Matrix3.prototype.add instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
+	Matrix3.add = ObjectUtils.warnOnce(
+		'Matrix3.add is deprecated - use Matrix3.prototype.add instead.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
 
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3) {
-			var rd = rhs.data;
-			td[0] = ld[0] + rd[0];
-			td[1] = ld[1] + rd[1];
-			td[2] = ld[2] + rd[2];
-			td[3] = ld[3] + rd[3];
-			td[4] = ld[4] + rd[4];
-			td[5] = ld[5] + rd[5];
-			td[6] = ld[6] + rd[6];
-			td[7] = ld[7] + rd[7];
-			td[8] = ld[8] + rd[8];
-		} else {
-			td[0] = ld[0] + rhs;
-			td[1] = ld[1] + rhs;
-			td[2] = ld[2] + rhs;
-			td[3] = ld[3] + rhs;
-			td[4] = ld[4] + rhs;
-			td[5] = ld[5] + rhs;
-			td[6] = ld[6] + rhs;
-			td[7] = ld[7] + rhs;
-			td[8] = ld[8] + rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.sub = function (lhs, rhs, target) {
-		console.warn('Matrix3.sub is deprecated - use Matrix3.prototype.sub instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
-
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3) {
-			var rd = rhs.data;
-			td[0] = ld[0] - rd[0];
-			td[1] = ld[1] - rd[1];
-			td[2] = ld[2] - rd[2];
-			td[3] = ld[3] - rd[3];
-			td[4] = ld[4] - rd[4];
-			td[5] = ld[5] - rd[5];
-			td[6] = ld[6] - rd[6];
-			td[7] = ld[7] - rd[7];
-			td[8] = ld[8] - rd[8];
-		} else {
-			td[0] = ld[0] - rhs;
-			td[1] = ld[1] - rhs;
-			td[2] = ld[2] - rhs;
-			td[3] = ld[3] - rhs;
-			td[4] = ld[4] - rhs;
-			td[5] = ld[5] - rhs;
-			td[6] = ld[6] - rhs;
-			td[7] = ld[7] - rhs;
-			td[8] = ld[8] - rhs;
-		}
-
-		return target;
-	};
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.mul = function (lhs, rhs, target) {
-		console.warn('Matrix3.mul is deprecated - use Matrix3.prototype.mul instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
-
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3) {
-			var rd = rhs.data;
-			td[0] = ld[0] * rd[0];
-			td[1] = ld[1] * rd[1];
-			td[2] = ld[2] * rd[2];
-			td[3] = ld[3] * rd[3];
-			td[4] = ld[4] * rd[4];
-			td[5] = ld[5] * rd[5];
-			td[6] = ld[6] * rd[6];
-			td[7] = ld[7] * rd[7];
-			td[8] = ld[8] * rd[8];
-		} else {
-			td[0] = ld[0] * rhs;
-			td[1] = ld[1] * rhs;
-			td[2] = ld[2] * rhs;
-			td[3] = ld[3] * rhs;
-			td[4] = ld[4] * rhs;
-			td[5] = ld[5] * rhs;
-			td[6] = ld[6] * rhs;
-			td[7] = ld[7] * rhs;
-			td[8] = ld[8] * rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.div = function (lhs, rhs, target) {
-		console.warn('Matrix3.div is deprecated - use Matrix3.prototype.div instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
-
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3) {
-			var rd = rhs.data;
-			td[0] = ld[0] / rd[0];
-			td[1] = ld[1] / rd[1];
-			td[2] = ld[2] / rd[2];
-			td[3] = ld[3] / rd[3];
-			td[4] = ld[4] / rd[4];
-			td[5] = ld[5] / rd[5];
-			td[6] = ld[6] / rd[6];
-			td[7] = ld[7] / rd[7];
-			td[8] = ld[8] / rd[8];
-		} else {
-			td[0] = ld[0] / rhs;
-			td[1] = ld[1] / rhs;
-			td[2] = ld[2] / rhs;
-			td[3] = ld[3] / rhs;
-			td[4] = ld[4] / rhs;
-			td[5] = ld[5] / rhs;
-			td[6] = ld[6] / rhs;
-			td[7] = ld[7] / rhs;
-			td[8] = ld[8] / rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.prototype.div = function (rhs) {
-		console.warn('Matrix3.prototype.div is deprecated.');
-		return Matrix3.div(this, rhs, this);
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.combine = function (lhs, rhs, target) {
-		console.warn('Matrix3.combine is deprecated - use Matrix3.prototype.mul or .mul2 instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
-
-		var s1d = lhs.data;
-		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
-			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
-			m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
-		var s2d = rhs.data;
-		var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
-			n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
-			n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
-
-		var rd = target.data;
-		rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
-		rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
-		rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
-
-		rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
-		rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
-		rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
-
-		rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
-		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
-		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
-
-		return target;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.prototype.combine = function (rhs) {
-		console.warn('Matrix3.prototype.combine is deprecated - use Matrix3.prototype.mul or .mul2 instead.');
-		return Matrix3.combine(this, rhs, this);
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix3.transpose = function (source, target) {
-		console.warn('Matrix3.transpose is deprecated - use Matrix3.prototype.transpose instead.');
-		if (!target) {
-			target = new Matrix3();
-		}
-
-		var s = source.data;
-		var t = target.data;
-
-		if (target === source) {
-			var e01 = s[3];
-			var e02 = s[6];
-			var e12 = s[7];
-
-			t[3] = s[1];
-			t[6] = s[2];
-			t[7] = s[5];
-
-			t[1] = e01;
-			t[2] = e02;
-			t[5] = e12;
+			var td = target.data, ld = lhs.data;
+			if (rhs instanceof Matrix3) {
+				var rd = rhs.data;
+				td[0] = ld[0] + rd[0];
+				td[1] = ld[1] + rd[1];
+				td[2] = ld[2] + rd[2];
+				td[3] = ld[3] + rd[3];
+				td[4] = ld[4] + rd[4];
+				td[5] = ld[5] + rd[5];
+				td[6] = ld[6] + rd[6];
+				td[7] = ld[7] + rd[7];
+				td[8] = ld[8] + rd[8];
+			} else {
+				td[0] = ld[0] + rhs;
+				td[1] = ld[1] + rhs;
+				td[2] = ld[2] + rhs;
+				td[3] = ld[3] + rhs;
+				td[4] = ld[4] + rhs;
+				td[5] = ld[5] + rhs;
+				td[6] = ld[6] + rhs;
+				td[7] = ld[7] + rhs;
+				td[8] = ld[8] + rhs;
+			}
 
 			return target;
 		}
-
-		t[0] = s[0];
-		t[1] = s[3];
-		t[2] = s[6];
-		t[3] = s[1];
-		t[4] = s[4];
-		t[5] = s[7];
-		t[6] = s[2];
-		t[7] = s[5];
-		t[8] = s[8];
-
-		return target;
-	};
+	);
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix3.prototype.applyPost = function (rhs) {
-		console.warn('Matrix3.prototype.applyPost is deprecated - use Vector3.prototype.applyPost instead.');
-		var source = this.data;
+	Matrix3.sub = ObjectUtils.warnOnce(
+		'Matrix3.sub is deprecated - use Matrix3.prototype.sub instead.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
 
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+			var td = target.data, ld = lhs.data;
+			if (rhs instanceof Matrix3) {
+				var rd = rhs.data;
+				td[0] = ld[0] - rd[0];
+				td[1] = ld[1] - rd[1];
+				td[2] = ld[2] - rd[2];
+				td[3] = ld[3] - rd[3];
+				td[4] = ld[4] - rd[4];
+				td[5] = ld[5] - rd[5];
+				td[6] = ld[6] - rd[6];
+				td[7] = ld[7] - rd[7];
+				td[8] = ld[8] - rd[8];
+			} else {
+				td[0] = ld[0] - rhs;
+				td[1] = ld[1] - rhs;
+				td[2] = ld[2] - rhs;
+				td[3] = ld[3] - rhs;
+				td[4] = ld[4] - rhs;
+				td[5] = ld[5] - rhs;
+				td[6] = ld[6] - rhs;
+				td[7] = ld[7] - rhs;
+				td[8] = ld[8] - rhs;
+			}
 
-		rhs.x = source[0] * x + source[3] * y + source[6] * z;
-		rhs.y = source[1] * x + source[4] * y + source[7] * z;
-		rhs.z = source[2] * x + source[5] * y + source[8] * z;
+			return target;
+		}
+	);
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.mul = ObjectUtils.warnOnce(
+		'Matrix3.mul is deprecated - use Matrix3.prototype.mul instead.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
 
-		return rhs;
-	};
+			var td = target.data, ld = lhs.data;
+			if (rhs instanceof Matrix3) {
+				var rd = rhs.data;
+				td[0] = ld[0] * rd[0];
+				td[1] = ld[1] * rd[1];
+				td[2] = ld[2] * rd[2];
+				td[3] = ld[3] * rd[3];
+				td[4] = ld[4] * rd[4];
+				td[5] = ld[5] * rd[5];
+				td[6] = ld[6] * rd[6];
+				td[7] = ld[7] * rd[7];
+				td[8] = ld[8] * rd[8];
+			} else {
+				td[0] = ld[0] * rhs;
+				td[1] = ld[1] * rhs;
+				td[2] = ld[2] * rhs;
+				td[3] = ld[3] * rhs;
+				td[4] = ld[4] * rhs;
+				td[5] = ld[5] * rhs;
+				td[6] = ld[6] * rhs;
+				td[7] = ld[7] * rhs;
+				td[8] = ld[8] * rhs;
+			}
+
+			return target;
+		}
+	);
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix3.prototype.applyPre = function (rhs) {
-		console.warn('Matrix3.prototype.applyPre is deprecated - use Vector3.prototype.applyPre instead.');
-		var target = rhs.data;
-		var source = this.data;
+	Matrix3.div = ObjectUtils.warnOnce(
+		'Matrix3.div is deprecated - use Matrix3.prototype.div instead.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
 
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+			var td = target.data, ld = lhs.data;
+			if (rhs instanceof Matrix3) {
+				var rd = rhs.data;
+				td[0] = ld[0] / rd[0];
+				td[1] = ld[1] / rd[1];
+				td[2] = ld[2] / rd[2];
+				td[3] = ld[3] / rd[3];
+				td[4] = ld[4] / rd[4];
+				td[5] = ld[5] / rd[5];
+				td[6] = ld[6] / rd[6];
+				td[7] = ld[7] / rd[7];
+				td[8] = ld[8] / rd[8];
+			} else {
+				td[0] = ld[0] / rhs;
+				td[1] = ld[1] / rhs;
+				td[2] = ld[2] / rhs;
+				td[3] = ld[3] / rhs;
+				td[4] = ld[4] / rhs;
+				td[5] = ld[5] / rhs;
+				td[6] = ld[6] / rhs;
+				td[7] = ld[7] / rhs;
+				td[8] = ld[8] / rhs;
+			}
 
-		rhs.x = source[0] * x + source[1] * y + source[2] * z;
-		rhs.y = source[3] * x + source[4] * y + source[5] * z;
-		rhs.z = source[6] * x + source[7] * y + source[8] * z;
+			return target;
+		}
+	);
 
-		return rhs;
-	};
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.prototype.div = ObjectUtils.warnOnce(
+		'Matrix3.prototype.div is deprecated.',
+		function (rhs) {
+			return Matrix3.div(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.combine = ObjectUtils.warnOnce(
+		'Matrix3.combine is deprecated - use Matrix3.prototype.mul or .mul2 instead.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
+
+			var s1d = lhs.data;
+			var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
+				m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
+				m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
+			var s2d = rhs.data;
+			var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
+				n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
+				n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
+
+			var rd = target.data;
+			rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
+			rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
+			rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
+
+			rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
+			rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
+			rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
+
+			rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
+			rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
+			rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.prototype.combine = ObjectUtils.warnOnce(
+		'Matrix3.prototype.combine is deprecated - use Matrix3.prototype.mul or .mul2 instead.',
+		function (rhs) {
+			return Matrix3.combine(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.transpose = ObjectUtils.warnOnce(
+		'Matrix3.transpose is deprecated - use Matrix3.prototype.transpose instead.',
+		function (source, target) {
+			if (!target) {
+				target = new Matrix3();
+			}
+
+			var s = source.data;
+			var t = target.data;
+
+			if (target === source) {
+				var e01 = s[3];
+				var e02 = s[6];
+				var e12 = s[7];
+
+				t[3] = s[1];
+				t[6] = s[2];
+				t[7] = s[5];
+
+				t[1] = e01;
+				t[2] = e02;
+				t[5] = e12;
+
+				return target;
+			}
+
+			t[0] = s[0];
+			t[1] = s[3];
+			t[2] = s[6];
+			t[3] = s[1];
+			t[4] = s[4];
+			t[5] = s[7];
+			t[6] = s[2];
+			t[7] = s[5];
+			t[8] = s[8];
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.prototype.applyPost = ObjectUtils.warnOnce(
+		'Matrix3.prototype.applyPost is deprecated - use Vector3.prototype.applyPost instead.',
+		function (rhs) {
+			var source = this.data;
+
+			var x = rhs.x;
+			var y = rhs.y;
+			var z = rhs.z;
+
+			rhs.x = source[0] * x + source[3] * y + source[6] * z;
+			rhs.y = source[1] * x + source[4] * y + source[7] * z;
+			rhs.z = source[2] * x + source[5] * y + source[8] * z;
+
+			return rhs;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix3.prototype.applyPre = ObjectUtils.warnOnce(
+		'Matrix3.prototype.applyPre is deprecated - use Vector3.prototype.applyPre instead.',
+		function (rhs) {
+			var target = rhs.data;
+			var source = this.data;
+
+			var x = rhs.x;
+			var y = rhs.y;
+			var z = rhs.z;
+
+			rhs.x = source[0] * x + source[1] * y + source[2] * z;
+			rhs.y = source[3] * x + source[4] * y + source[5] * z;
+			rhs.z = source[6] * x + source[7] * y + source[8] * z;
+
+			return rhs;
+		}
+	);
 	// SHIM END
 
 	// #ifdef DEBUG

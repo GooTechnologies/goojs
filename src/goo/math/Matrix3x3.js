@@ -1,14 +1,18 @@
 define([
-	'goo/math/Matrix3'
+	'goo/math/Matrix3',
+	'goo/util/ObjectUtils'
 ], function (
-	Matrix3
+	Matrix3,
+	ObjectUtils
 ) {
 	'use strict';
 
-	function Matrix3x3(){
-		console.warn('Matrix3x3 has been renamed to Matrix3.');
-		Matrix3.apply(this, arguments);
-	}
+	var Matrix3x3 = ObjectUtils.warnOnce(
+		'Matrix3x3 has been renamed to Matrix3.',
+		function () {
+			Matrix3.apply(this, arguments);
+		}
+	);
 
 	Matrix3x3.prototype = Object.create(Matrix3.prototype);
 	Matrix3x3.prototype.constructor = Matrix3x3;
