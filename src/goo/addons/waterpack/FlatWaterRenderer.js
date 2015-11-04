@@ -63,6 +63,7 @@ define([
 		var texture = null;
 		if (settings.normalsTexture) {
 			texture = settings.normalsTexture;
+			waterMaterial.setTexture('NORMAL_MAP', texture);
 		} else if (settings.normalsUrl) {
 			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 			new TextureCreator().loadTexture2D(normalsTextureUrl).then(function (texture) {
@@ -73,7 +74,6 @@ define([
 			texture = new Texture(flatNormalData, null, 1, 1);
 			waterMaterial.setTexture('NORMAL_MAP', texture);
 		}
-		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 
 		this.skybox = null;
@@ -205,6 +205,10 @@ define([
 			} else {
 				this.skybox.skip = false;
 			}
+		}
+
+		if (!this.waterMaterial.getTexture('REFLECTION_MAP')) {
+			this.waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		}
 
 		if (aboveWater && this.skybox && this.followCam) {
