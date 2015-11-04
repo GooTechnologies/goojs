@@ -1,6 +1,8 @@
 define([
+	'goo/util/ObjectUtils',
 	'goo/math/MathUtils'
 ], function (
+	ObjectUtils,
 	MathUtils
 	) {
 	'use strict';
@@ -96,10 +98,9 @@ define([
 
 	// SHIM START
 	Object.defineProperty(Vector.prototype, 'data', {
-		get: function () {
+		get: ObjectUtils.warnOnce('The .data property of Vector was removed, please use the .x, .y, .z, .w properties instead.', function () {
 			var data = [];
 			var that = this;
-			console.warn('The .data property of Vector was removed, please use the .x, .y, .z, .w properties instead.');
 			Object.defineProperties(data, {
 				'0': {
 					get: function () {
@@ -135,15 +136,14 @@ define([
 				}
 			});
 			return data;
-		}
+		})
 	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.add = function (lhs, rhs, target) {
-		console.warn('Vector.add is deprecated.');
+	Vector.add = ObjectUtils.warnOnce('Vector.add is deprecated.', function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = lhs._size;
@@ -157,23 +157,21 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.add = function (rhs) {
-		console.warn('Vector.prototype.add is deprecated.');
+	Vector.prototype.add = ObjectUtils.warnOnce('Vector.prototype.add is deprecated.', function (rhs) {
 		return Vector.add(this, rhs, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.sub = function (lhs, rhs, target) {
-		console.warn('Vector.sub is deprecated.');
+	Vector.sub = ObjectUtils.warnOnce('Vector.sub is deprecated.', function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = lhs._size;
@@ -187,23 +185,21 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.sub = function (rhs) {
-		console.warn('Vector.prototype.sub is deprecated.');
+	Vector.prototype.sub = ObjectUtils.warnOnce('Vector.prototype.sub is deprecated.', function (rhs) {
 		return Vector.sub(this, rhs, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.mul = function (lhs, rhs, target) {
-		console.warn('Vector.mul is deprecated.');
+	Vector.mul = ObjectUtils.warnOnce('Vector.mul is deprecated.', function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = lhs._size;
@@ -217,23 +213,21 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.mul = function (rhs) {
-		console.warn('Vector.prototype.mul is deprecated.');
+	Vector.prototype.mul = ObjectUtils.warnOnce('Vector.prototype.mul is deprecated.', function (rhs) {
 		return Vector.mul(this, rhs, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.div = function (lhs, rhs, target) {
-		console.warn('Vector.div is deprecated.');
+	Vector.div = ObjectUtils.warnOnce('Vector.div is deprecated.', function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = lhs._size;
@@ -247,23 +241,21 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.div = function (rhs) {
-		console.warn('Vector.prototype.div is deprecated.');
+	Vector.prototype.div = ObjectUtils.warnOnce('Vector.prototype.div is deprecated.', function (rhs) {
 		return Vector.div(this, rhs, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.copy = function (source, target) {
-		console.warn('Vector.copy is deprecated.');
+	Vector.copy = ObjectUtils.warnOnce('Vector.copy is deprecated.', function (source, target) {
 		var size = source._size;
 
 		if (!target) {
@@ -275,27 +267,25 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.copy = function (source) {
-		console.warn('Vector.prototype.copy  is deprecated.');
+	Vector.prototype.copy = ObjectUtils.warnOnce('Vector.prototype.copy  is deprecated.', function (source) {
 		var size = source._size;
 		for(var i=0; i<size; i++){
 			this.data[i] = source.data[i];
 		}
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.dot = function (lhs, rhs) {
-		console.warn('Vector.dot is deprecated.');
+	Vector.dot = ObjectUtils.warnOnce('Vector.dot is deprecated.', function (lhs, rhs) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = lhs._size;
@@ -307,23 +297,21 @@ define([
 		}
 
 		return sum;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.dot = function (rhs) {
-		console.warn('Vector.prototype.dot is deprecated.');
+	Vector.prototype.dot = ObjectUtils.warnOnce('Vector.prototype.dot is deprecated.', function (rhs) {
 		return Vector.dot(this, rhs);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.apply = function (lhs, rhs, target) {
-		console.warn('Vector.apply is deprecated.');
+	Vector.apply = ObjectUtils.warnOnce('Vector.apply is deprecated.', function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 		var size = rhs._size;
@@ -351,23 +339,21 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.apply = function (lhs) {
-		console.warn('Vector.prototype.apply is deprecated.');
+	Vector.prototype.apply = ObjectUtils.warnOnce('Vector.prototype.apply is deprecated.', function (lhs) {
 		return Vector.apply(lhs, this, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.equals = function (lhs, rhs) {
-		console.warn('Vector.equals is deprecated.');
+	Vector.equals = ObjectUtils.warnOnce('Vector.equals is deprecated.', function (lhs, rhs) {
 		var lhsLength = lhs._size;
 		if (lhsLength !== rhs._size) {
 			return false;
@@ -384,102 +370,92 @@ define([
 		}
 
 		return true;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.equals = function (rhs) {
-		console.warn('Vector.prototype.equals is deprecated.');
+	Vector.prototype.equals = ObjectUtils.warnOnce('Vector.prototype.equals is deprecated.', function (rhs) {
 		return Vector.equals(this, rhs);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.distanceSquared = function (lhs, rhs) {
-		console.warn('Vector.distanceSquared is deprecated.');
+	Vector.distanceSquared = ObjectUtils.warnOnce('Vector.distanceSquared is deprecated.', function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).lengthSquared();
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.distanceSquared = function (rhs) {
-		console.warn('Vector.prototype.distanceSquared is deprecated.');
+	Vector.prototype.distanceSquared = ObjectUtils.warnOnce('Vector.prototype.distanceSquared is deprecated.', function (rhs) {
 		return Vector.sub(this, rhs).lengthSquared();
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.distance = function (lhs, rhs) {
-		console.warn('Vector.distance is deprecated.');
+	Vector.distance = ObjectUtils.warnOnce('Vector.distance is deprecated.', function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).length();
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.distance = function (rhs) {
-		console.warn('Vector.prototype.distance is deprecated.');
+	Vector.prototype.distance = ObjectUtils.warnOnce('Vector.prototype.distance is deprecated.', function (rhs) {
 		return Vector.sub(this, rhs).length();
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.lengthSquared = function () {
-		console.warn('Vector.prototype.lengthSquared is deprecated.');
+	Vector.prototype.lengthSquared = ObjectUtils.warnOnce('Vector.prototype.lengthSquared is deprecated.', function () {
 		return Vector.dot(this, this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.length = function () {
-		console.warn('Vector.prototype.length is deprecated.');
+	Vector.prototype.length = ObjectUtils.warnOnce('Vector.prototype.length is deprecated.', function () {
 		return Math.sqrt(Vector.dot(this, this));
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.scale = function(factor) {
-		console.warn('Vector.prototype.scale is deprecated.');
+	Vector.prototype.scale = ObjectUtils.warnOnce('Vector.prototype.scale is deprecated.', function(factor) {
 		for (var i = this._size - 1; i >= 0; i--) {
 			this.data[i] *= factor;
 		}
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.invert = function () {
-		console.warn('Vector.prototype.invert is deprecated.');
+	Vector.prototype.invert = ObjectUtils.warnOnce('Vector.prototype.invert is deprecated.', function () {
 		for (var i = 0; i < this._size; i++) {
 			this.data[i] = 0.0 - this.data[i];
 		}
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.normalize = function () {
-		console.warn('Vector.prototype.normalize is deprecated.');
+	Vector.prototype.normalize = ObjectUtils.warnOnce('Vector.prototype.normalize is deprecated.', function () {
 		var l = this.length();
 		var dataLength = this._size;
 
@@ -495,23 +471,21 @@ define([
 		}
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.clone = function () {
-		console.warn('Vector.prototype.clone is deprecated.');
+	Vector.prototype.clone = ObjectUtils.warnOnce('Vector.prototype.clone is deprecated.', function () {
 		return Vector.copy(this);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.set = function () {
-		console.warn('Vector.prototype.set is deprecated.');
+	Vector.prototype.set = ObjectUtils.warnOnce('Vector.prototype.set is deprecated.', function () {
 		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
@@ -527,14 +501,13 @@ define([
 		}
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector.prototype.toString = function () {
-		console.warn('Vector.prototype.toString is deprecated.');
+	Vector.prototype.toString = ObjectUtils.warnOnce('Vector.prototype.toString is deprecated.', function () {
 		var string = '';
 
 		string += '[';
@@ -547,7 +520,7 @@ define([
 		string += ']';
 
 		return string;
-	};
+	});
 	// SHIM END
 
 	return Vector;
