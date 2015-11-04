@@ -4,6 +4,8 @@
 var _ = require('underscore');
 
 var jsdocParser = require('./jsdoc-parser');
+var typeParser = require('./type-expressions/type-parser');
+var jsdocSerializer = require('./type-expressions/jsdoc-serializer');
 var util = require('./util');
 
 // regex compilation for `[]()` links, `@link` and types (big mess)
@@ -40,7 +42,23 @@ var expandIcons = function (string) {
 	return string.replace(warningRegex, '<span class="icon-warning-yellow"></span>');
 };
 
-var processType = _.compose(linkTypes, escapeType);
+var translateType = function (closureType) {
+	if (closureType.trim().length > 0) {
+		try {
+			var parsed = typeParser.parse(closureType);
+			var jsdocType = jsdocSerializer.serialize(parsed);
+			console.log(closureType, jsdocType);
+			return jsdocType;
+		} catch (e) {
+			console.warn(e);
+			return closureType;
+		}
+	} else {
+		return '';
+	}
+};
+
+var processType = _.compose(linkTypes, escapeType, translateType);
 
 var link = function (comment) {
 	if (!comment) { return; }
