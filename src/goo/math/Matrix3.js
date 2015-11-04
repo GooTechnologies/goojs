@@ -1,7 +1,7 @@
 define([
 	'goo/math/MathUtils',
 	'goo/math/Matrix',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
 	'goo/util/ObjectUtils'
 ], function (
 	MathUtils,

@@ -458,7 +458,7 @@ define([
 	 */
 
 	Matrix.equals = ObjectUtils.warnOnce(
-		'Matrix.equals is deprecated. Use Matrix2/3/4.prototype.equals instead.'
+		'Matrix.equals is deprecated. Use Matrix2/3/4.prototype.equals instead.',
 		function (lhs, rhs) {
 			if (lhs.rows !== rhs.rows || lhs.cols !== rhs.cols) {
 				return false;

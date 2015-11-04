@@ -518,10 +518,10 @@ define([
 							that.w = value;
 						}
 					}
-				}
-			));
-			return data;
-		}
+				});
+				return data;
+			}
+		)
 	});
 
 	/**
