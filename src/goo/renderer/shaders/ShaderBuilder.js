@@ -1,4 +1,5 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/renderer/MeshData',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
@@ -7,6 +8,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
 ], function (
+	Capabilities,
 	MeshData,
 	PointLight,
 	DirectionalLight,
@@ -568,57 +570,57 @@ define([
 
 								'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths' + i + '.z >= 0.0 && depth.z <= 1.0) {'
 							);
-									if (light.shadowSettings.shadowType === 'PCF') {
-										fragment.push(
-											'depth.z *= 0.96;',
-											'float shadowPcf = 0.0;',
-											'const float shadowDelta = 1.0 / 9.0;',
-											'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
-											'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
+							if (light.shadowSettings.shadowType === 'PCF') {
+								fragment.push(
+									'depth.z *= 0.96;',
+									'float shadowPcf = 0.0;',
+									'const float shadowDelta = 1.0 / 9.0;',
+									'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
+									'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
 
-											'float dx0 = -1.25 * xPixelOffset;',
-											'float dy0 = -1.25 * yPixelOffset;',
-											'float dx1 = 1.25 * xPixelOffset;',
-											'float dy1 = 1.25 * yPixelOffset;',
+									'float dx0 = -1.25 * xPixelOffset;',
+									'float dy0 = -1.25 * yPixelOffset;',
+									'float dx1 = 1.25 * xPixelOffset;',
+									'float dy1 = 1.25 * yPixelOffset;',
 
-											'float fDepth = 0.0;',
+									'float fDepth = 0.0;',
 
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth =  texture2D(shadowMaps' + i + ', depth.xy).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1)).r;',
-											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-											'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
-											//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness' + i + ') + shadowDarkness' + i + ';'
-										);
-									} else if (light.shadowSettings.shadowType === 'VSM') {
-										fragment.push(
-										'vec4 texel = texture2D(shadowMaps' + i + ', depth.xy);',
-										'vec2 moments = vec2(texel.x, texel.y);',
-										'shadow = ChebychevInequality(moments, depth.z);',
-										// 'shadow = VsmFixLightBleed(shadow, 0.5);',
-										'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
-										);
-									} else {
-										fragment.push(
-										'depth.z *= 0.96;',
-										'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
-										'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness' + i + ';'
-										);
-									}
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth =  texture2D(shadowMaps' + i + ', depth.xy).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
+									//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness' + i + ') + shadowDarkness' + i + ';'
+								);
+							} else if (light.shadowSettings.shadowType === 'VSM') {
+								fragment.push(
+									'vec4 texel = texture2D(shadowMaps' + i + ', depth.xy);',
+									'vec2 moments = vec2(texel.x, texel.y);',
+									'shadow = ChebychevInequality(moments, depth.z);',
+									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
+									'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
+								);
+							} else {
+								fragment.push(
+									'depth.z *= 0.96;',
+									'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
+									'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness' + i + ';'
+								);
+							}
 							fragment.push(
 								'}',
 								'shadow = clamp(shadow, 0.0, 1.0);'
@@ -797,7 +799,8 @@ define([
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				shader.setDefine('JOINT_COUNT', Math.max(shaderInfo.meshData.paletteMap.length * 3, 80));
+				var maxUniforms = Math.max(Capabilities.maxVertexUniformVectors / 4 - 10, 0); // Just estimate available
+				shader.setDefine('JOINT_COUNT', Math.min(shaderInfo.meshData.paletteMap.length * 3, maxUniforms));
 			} else {
 				shader.removeDefine('JOINT_COUNT');
 			}

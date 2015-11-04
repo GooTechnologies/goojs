@@ -67,6 +67,10 @@ define([
 	ProjectedGrid.prototype.constructor = ProjectedGrid;
 
 	ProjectedGrid.prototype.update = function (camera) {
+		if (camera.translation.y === 0) {
+			return;
+		}
+
 		var upperBound = this.upperBound;
 		var mainCamera = this.mainCamera;
 
@@ -190,10 +194,12 @@ define([
 		var spaceTransformation = new Vector4();
 		var intersections = this.intersections;
 		for (var i = 0; i < nrPoints; i++) {
-			spaceTransformation.setDirect(intersections[i].x, 0.0, this.intersections[i].z, 1.0);
-			modelViewProjectionMatrix.applyPost(spaceTransformation);
-			intersections[i].setDirect(spaceTransformation.x, spaceTransformation.y, 0);
-			intersections[i].div(spaceTransformation.w);
+			var intersection = intersections[i];
+			spaceTransformation.setDirect(intersection.x, 0.0, intersection.z, 1.0);
+			// modelViewProjectionMatrix.applyPost(spaceTransformation);
+			spaceTransformation.applyPost(modelViewProjectionMatrix);
+			intersection.setDirect(spaceTransformation.x, spaceTransformation.y, 0);
+			intersection.scale(1 / spaceTransformation.w);
 		}
 
 		// find min/max in projector space
@@ -265,8 +271,10 @@ define([
 		this.origin.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, -1, 1);
 		this.direction.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, 1, 1);
 
-		modelViewProjectionInverseMatrix.applyPost(this.origin);
-		modelViewProjectionInverseMatrix.applyPost(this.direction);
+		// modelViewProjectionInverseMatrix.applyPost(this.origin);
+		// modelViewProjectionInverseMatrix.applyPost(this.direction);
+		this.origin.applyPost(modelViewProjectionInverseMatrix);
+		this.direction.applyPost(modelViewProjectionInverseMatrix);
 
 		this.direction.sub(this.origin);
 

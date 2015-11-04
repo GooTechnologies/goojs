@@ -6,7 +6,9 @@ define([
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment'
@@ -18,7 +20,9 @@ define([
 	RenderTarget,
 	FullscreenPass,
 	Vector3,
+	Vector4,
 	Material,
+	Texture,
 	TextureCreator,
 	ShaderLib,
 	ShaderFragment
@@ -56,17 +60,28 @@ define([
 		var waterMaterial = this.waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
 
-		new TextureCreator().loadTexture2D('../resources/water/waternormals3.png').then(function (texture) {
+		var texture = null;
+		if (settings.normalsTexture) {
+			texture = settings.normalsTexture;
+		} else if (settings.normalsUrl) {
+			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
+			new TextureCreator().loadTexture2D(normalsTextureUrl).then(function (texture) {
+				waterMaterial.setTexture('NORMAL_MAP', texture);
+			});
+		} else {
+			var flatNormalData = new Uint8Array([127, 127, 255, 255]);
+			texture = new Texture(flatNormalData, null, 1, 1);
 			waterMaterial.setTexture('NORMAL_MAP', texture);
-		});
+		}
 		waterMaterial.setTexture('REFLECTION_MAP', this.renderTarget);
 		waterMaterial.setTexture('BUMP_MAP', this.heightTarget);
 		waterMaterial.setTexture('NORMAL_MAP_COARSE', this.normalTarget);
 		//waterMaterial.shader.uniforms.screenSize = [this.heightTarget.width, this.heightTarget.height];
+		// waterMaterial.wireframe = true;
 
-		var materialWire = this.materialWire = new Material(ShaderLib.simple, 'mat');
-		materialWire.wireframe = true;
-		materialWire.wireframeColor = [0, 0, 0];
+		// var materialWire = this.materialWire = new Material(ShaderLib.simple, 'mat');
+		// materialWire.wireframe = true;
+		// materialWire.wireframeColor = [0, 0, 0];
 
 		this.calcVect = new Vector3();
 		this.camReflectDir = new Vector3();
@@ -76,6 +91,7 @@ define([
 		this.camReflectPos = new Vector3();
 
 		this.waterEntity = null;
+		this.clipPlane = new Vector4();
 
 		var projData = this.projData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 4, 6);
 		projData.getAttributeBuffer(MeshData.POSITION).set([
@@ -110,6 +126,14 @@ define([
 	};
 
 	ProjectedGridWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
+		if (!this.waterEntity) {
+			return;
+		}
+
+		entities = entities.filter(function (entity) {
+			return entity.meshRendererComponent.isReflectable;
+		});
+
 		var meshData = this.waterEntity.meshDataComponent.meshData;
 		meshData.update(camera);
 		this.waterMaterial.shader.uniforms.intersectBottomLeft = [meshData.intersectBottomLeft.x, meshData.intersectBottomLeft.y, meshData.intersectBottomLeft.z, meshData.intersectBottomLeft.w];
@@ -175,6 +199,9 @@ define([
 
 		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
+
+		this.clipPlane.setDirect(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 		renderer.render(this.renderList, this.waterCamera, lights, this.renderTarget, true);
 
@@ -471,8 +498,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader: [
-		'precision mediump float;',
-
 		//'uniform sampler2D diffuseMap;',
 		//'uniform float opacity;',
 		//'uniform float camNear;',

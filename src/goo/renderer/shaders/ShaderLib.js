@@ -914,7 +914,7 @@ define([
 			height: 0.05
 		},
 		vshader: [
-			'attribute vec3 vertexPossition;',
+			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
 			'uniform mat4 viewMatrix;',

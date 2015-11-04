@@ -43,6 +43,7 @@ var filterList = [
 	'HeightMap',
 	'SkeletonAnimation',
 	'Sound-shared',
+	'projected-water',
 
 	'GridRenderSystem' // until we can render updated screenshot
 ];
