@@ -127,7 +127,7 @@ define([
 
 	/**
 	 * Adds a vector to the current vector
-	 * @param rhs {Vector3}
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
@@ -181,7 +181,7 @@ define([
 
 	/**
 	 * Adds a vector from the current vector
-	 * @param rhs {Vector3}
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);
@@ -228,7 +228,7 @@ define([
 
 	/**
 	 * Multiplies the current vector by another vector
-	 * @param rhs {Vector3}
+	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);

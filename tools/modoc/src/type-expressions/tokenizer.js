@@ -8,7 +8,7 @@ var makeToken = function (type, data) {
 };
 
 var isIdentifier = function (char) {
-	return /[_?\w]/.test(char);
+	return /[_?\w\.]/.test(char);
 };
 
 var isSymbol = function (char) {
@@ -16,7 +16,7 @@ var isSymbol = function (char) {
 };
 
 var chopIdentifier = function (string, offset) {
-	var result = /^(\??)([_A-Za-z][.\w]*[\w]?)(=?)/.exec(string.substr(offset));
+	var result = /^((?:\?|\.{3})?)([_A-Za-z][.\w]*[\w]?)(=?)/.exec(string.substr(offset));
 
 	var token = makeToken('identifier', result[2]);
 
