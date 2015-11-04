@@ -28,11 +28,10 @@ define([
 		this.camera = null;
 
 		/**
-		 *A managed array of all the LineRenderers render objects.
-		 * @type {Object[]}
-		 * */
+		 * A managed array of all the LineRenderers render objects.
+		 * @type {Object}
+		 */
 		this.renderList = [];
-
 
 		//add the camera
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {

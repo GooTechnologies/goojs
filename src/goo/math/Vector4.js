@@ -412,7 +412,7 @@ define([
 	 * v.set(new Vector4(2, 4, 6, 8)); // v == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.set = function (rhs) {
-		if(rhs instanceof Vector4){
+		if (rhs instanceof Vector4) {
 			this.x = rhs.x;
 			this.y = rhs.y;
 			this.z = rhs.z;
@@ -687,6 +687,10 @@ define([
 		})
 	});
 
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
 	Vector4.prototype.setVector = ObjectUtils.warnOnce('The setVector method of Vector4 is deprecated. Please use the set method instead.', function (rhs) {
 		return this.set(rhs);
 	});

@@ -14,21 +14,22 @@ define([
 	 * @extends Matrix
 	 * @param {number...} arguments Initial values for the matrix components.
 	 */
-	function Matrix2(
-		e00, e10,
-		e01, e11
-	) {
+	function Matrix2() {
 		Matrix.call(this, 2, 2);
 
 		if (arguments.length === 0) {
 			this.data[0] = 1;
 			this.data[3] = 1;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Matrix2) {
+				this.copy(arguments[0]);
+			} else {
+				this.setArray(arguments[0]);
+			}
 		} else {
-			this.data[0] = e00;
-			this.data[1] = e10;
-
-			this.data[2] = e01;
-			this.data[3] = e11;
+			for (var i = 0; i < arguments.length; i++) {
+				this.data[i] = arguments[i];
+			}
 		}
 
 		// #ifdef DEBUG
@@ -285,6 +286,22 @@ define([
 	Matrix2.prototype.copy = function (rhs) {
 		var thisData = this.data;
 		var rhsData = rhs.data;
+
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[3];
+
+		return this;
+	};
+
+	/**
+	 * Sets matrix values from an array.
+	 * @param {number[4]} rhsData Array source
+	 * @returns {Matrix2} Self for chaining.
+	 */
+	Matrix2.prototype.setArray = function (rhsData) {
+		var thisData = this.data;
 
 		thisData[0] = rhsData[0];
 		thisData[1] = rhsData[1];

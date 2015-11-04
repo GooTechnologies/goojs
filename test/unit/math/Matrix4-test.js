@@ -33,6 +33,24 @@ define([
 
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix4([11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176]);
+				var expected = new Matrix4();
+
+				for (var i = 0; i < 16; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given another matrix', function () {
+				var expected = new Matrix4(11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176);
+				var matrix = new Matrix4(expected);
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
 		});
 
 
@@ -252,7 +270,6 @@ define([
 		});
 
 		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
-			
 			it('can add two matrices component-wise', function () {
 				var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
@@ -336,5 +353,4 @@ define([
 			});
 		});
 	});
-
 });

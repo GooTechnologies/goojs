@@ -31,6 +31,24 @@ define([
 
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix3([11, 22, 33, 44, 55, 66, 77, 88, 99]);
+				var expected = new Matrix3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given another matrix', function () {
+				var expected = new Matrix3(11, 22, 33, 44, 55, 66, 77, 88, 99);
+				var matrix = new Matrix3(expected);
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
 		});
 
 		describe('mul', function () {
@@ -263,14 +281,14 @@ define([
 				Matrix3.sub(a, a, a);
 				expect(a).toBeCloseToMatrix(new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0));
 			});
-			
+
 			it('Matrix3.combine', function () {
 				var a = new Matrix3(2, 0, 0, 0, 2, 0, 0, 0, 2);
 				var b = new Matrix3(3, 0, 0, 0, 3, 0, 0, 0, 3);
 				Matrix3.combine(a, b, a);
 				expect(a).toBeCloseToMatrix(new Matrix3(6, 0, 0, 0, 6, 0, 0, 0, 6));
 			});
-			
+
 			it('Matrix3.prototype.combine', function () {
 				var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 				var b = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);

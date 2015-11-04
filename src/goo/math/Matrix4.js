@@ -14,12 +14,7 @@ define([
 	 * @extends Matrix
 	 * @param {Matrix4|number[]|...number} arguments Initial values for the components.
 	 */
-	function Matrix4(
-		e00, e10, e20, e30,
-		e01, e11, e21, e31,
-		e02, e12, e22, e32,
-		e03, e13, e23, e33
-	) {
+	function Matrix4() {
 		Matrix.call(this, 4, 4);
 
 		if (arguments.length === 0) {
@@ -27,26 +22,16 @@ define([
 			this.data[5] = 1;
 			this.data[10] = 1;
 			this.data[15] = 1;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Matrix4) {
+				this.copy(arguments[0]);
+			} else {
+				this.setArray(arguments[0]);
+			}
 		} else {
-			this.data[0] = e00;
-			this.data[1] = e10;
-			this.data[2] = e20;
-			this.data[3] = e30;
-
-			this.data[4] = e01;
-			this.data[5] = e11;
-			this.data[6] = e21;
-			this.data[7] = e31;
-
-			this.data[8] = e02;
-			this.data[9] = e12;
-			this.data[10] = e22;
-			this.data[11] = e32;
-
-			this.data[12] = e03;
-			this.data[13] = e13;
-			this.data[14] = e23;
-			this.data[15] = e33;
+			for (var i = 0; i < arguments.length; i++) {
+				this.data[i] = arguments[i];
+			}
 		}
 
 		// #ifdef DEBUG
@@ -683,6 +668,34 @@ define([
 	};
 
 	/**
+	 * Sets matrix values from an array.
+	 * @param {number[16]} rhsData Array source
+	 * @returns {Matrix4} Self for chaining.
+	 */
+	Matrix4.prototype.setArray = function (rhsData) {
+		var thisData = this.data;
+
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[3];
+		thisData[4] = rhsData[4];
+		thisData[5] = rhsData[5];
+		thisData[6] = rhsData[6];
+		thisData[7] = rhsData[7];
+		thisData[8] = rhsData[8];
+		thisData[9] = rhsData[9];
+		thisData[10] = rhsData[10];
+		thisData[11] = rhsData[11];
+		thisData[12] = rhsData[12];
+		thisData[13] = rhsData[13];
+		thisData[14] = rhsData[14];
+		thisData[15] = rhsData[15];
+
+		return this;
+	};
+
+	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
 	 * @param {Matrix4} source Source matrix
 	 * @returns {Matrix4} Self to allow chaining
@@ -899,7 +912,6 @@ define([
 				target.e13 = lhs.e13 * rhs;
 				target.e23 = lhs.e23 * rhs;
 				target.e33 = lhs.e33 * rhs;
-
 			}
 
 			return target;

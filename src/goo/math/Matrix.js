@@ -591,7 +591,7 @@ define([
 	 */
 
 	Matrix.prototype.set = ObjectUtils.warnOnce(
-		'Matrix.prorotype.set is deprecated. Use Matrix2/3/4.prototype.set instead.',
+		'Matrix.prototype.set is deprecated. Use Matrix2/3/4.prototype.set instead.',
 		function () {
 			if (arguments.length === 1 && typeof arguments[0] === 'object') {
 				if (arguments[0] instanceof Matrix) {

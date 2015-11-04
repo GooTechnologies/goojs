@@ -29,29 +29,23 @@ define([
 	 * // Passing in an existing Matrix3
 	 * var m4 = new Matrix3(m1); // m4 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 */
-	function Matrix3(
-		e00, e10, e20,
-		e01, e11, e21,
-		e02, e12, e22
-	) {
+	function Matrix3() {
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
 			this.data[0] = 1;
 			this.data[4] = 1;
 			this.data[8] = 1;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Matrix3) {
+				this.copy(arguments[0]);
+			} else {
+				this.setArray(arguments[0]);
+			}
 		} else {
-			this.data[0] = e00;
-			this.data[1] = e10;
-			this.data[2] = e20;
-
-			this.data[3] = e01;
-			this.data[4] = e11;
-			this.data[5] = e21;
-
-			this.data[6] = e02;
-			this.data[7] = e12;
-			this.data[8] = e22;
+			for (var i = 0; i < arguments.length; i++) {
+				this.data[i] = arguments[i];
+			}
 		}
 
 		// #ifdef DEBUG
@@ -738,6 +732,27 @@ define([
 	};
 
 	/**
+	 * Sets matrix values from an array.
+	 * @param {number[9]} rhsData Array source
+	 * @returns {Matrix3} Self for chaining.
+	 */
+	Matrix3.prototype.setArray = function (rhsData) {
+		var thisData = this.data;
+
+		thisData[0] = rhsData[0];
+		thisData[1] = rhsData[1];
+		thisData[2] = rhsData[2];
+		thisData[3] = rhsData[3];
+		thisData[4] = rhsData[4];
+		thisData[5] = rhsData[5];
+		thisData[6] = rhsData[6];
+		thisData[7] = rhsData[7];
+		thisData[8] = rhsData[8];
+
+		return this;
+	};
+
+	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
 	 * @param {Matrix3} source Source matrix
 	 * @returns {Matrix3} Self to allow chaining
@@ -1041,7 +1056,6 @@ define([
 	Matrix3.prototype.applyPre = ObjectUtils.warnOnce(
 		'Matrix3.prototype.applyPre is deprecated - use Vector3.prototype.applyPre instead.',
 		function (rhs) {
-			var target = rhs.data;
 			var source = this.data;
 
 			var x = rhs.x;
