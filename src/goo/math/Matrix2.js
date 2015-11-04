@@ -297,7 +297,7 @@ define([
 
 	/**
 	 * Sets matrix values from an array.
-	 * @param {number[4]} rhsData Array source
+	 * @param {Array<number>} rhsData Array source
 	 * @returns {Matrix2} Self for chaining.
 	 */
 	Matrix2.prototype.setArray = function (rhsData) {

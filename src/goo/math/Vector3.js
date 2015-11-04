@@ -692,7 +692,7 @@ define([
 
 	/**
 	 * Creates a Vector3 given an array
-	 * @param {number[3]} array
+	 * @param {Array<number>} array
 	 * @returns {Vector3}
 	 */
 	Vector3.fromArray = function (array) {

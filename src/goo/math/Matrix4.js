@@ -12,7 +12,7 @@ define([
 	/**
 	 * Matrix with 4x4 components.
 	 * @extends Matrix
-	 * @param {Matrix4|number[]|...number} arguments Initial values for the components.
+	 * @param {(Matrix4|Array<number>)} arguments Initial values for the components.
 	 */
 	function Matrix4() {
 		Matrix.call(this, 4, 4);
@@ -669,7 +669,7 @@ define([
 
 	/**
 	 * Sets matrix values from an array.
-	 * @param {number[16]} rhsData Array source
+	 * @param {Array<number>} rhsData Array source
 	 * @returns {Matrix4} Self for chaining.
 	 */
 	Matrix4.prototype.setArray = function (rhsData) {

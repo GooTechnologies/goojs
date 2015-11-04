@@ -15,7 +15,7 @@ define([
 	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * Creates a new Matrix3 by passing in either a current Matrix3, number Array, or a set of 9 numbers.
 	 * @extends Matrix
-	 * @param {Matrix3|number[]|...number} arguments Initial values for the components.
+	 * @param {(Matrix3|Array<number>)} arguments Initial values for the components.
 	 * @example
 	 * // Passing in no arguments
 	 * var m1 = new Matrix3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -733,7 +733,7 @@ define([
 
 	/**
 	 * Sets matrix values from an array.
-	 * @param {number[9]} rhsData Array source
+	 * @param {Array<number>} rhsData Array source
 	 * @returns {Matrix3} Self for chaining.
 	 */
 	Matrix3.prototype.setArray = function (rhsData) {

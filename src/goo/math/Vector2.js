@@ -524,7 +524,7 @@ define([
 
 	/**
 	 * Creates a Vector2 given an array
-	 * @param {number[2]} array
+	 * @param {Array<number>} array
 	 * @returns {Vector2}
 	 */
 	Vector2.fromArray = function (array) {
