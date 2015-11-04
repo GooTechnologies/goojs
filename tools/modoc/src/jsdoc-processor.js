@@ -47,7 +47,6 @@ var translateType = function (closureType) {
 		try {
 			var parsed = typeParser.parse(closureType);
 			var jsdocType = jsdocSerializer.serialize(parsed);
-			console.log(closureType, jsdocType);
 			return jsdocType;
 		} catch (e) {
 			console.warn(e);
