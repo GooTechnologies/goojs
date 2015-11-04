@@ -1,7 +1,9 @@
 define([
+	'goo/util/ObjectUtils',
 	'goo/math/MathUtils',
 	'goo/math/Vector'
 ], function (
+	ObjectUtils,
 	MathUtils,
 	Vector
 ) {
@@ -644,10 +646,9 @@ define([
 
 	// SHIM START
 	Object.defineProperty(Vector4.prototype, 'data', {
-		get: function () {
+		get: ObjectUtils.warnOnce('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.', function () {
 			var data = [];
 			var that = this;
-			console.warn('The .data property of Vector4 was removed. Please use the .x, .y, .z and .w properties instead.');
 			Object.defineProperties(data, {
 				'0': {
 					get: function () {
@@ -683,20 +684,18 @@ define([
 				}
 			});
 			return data;
-		}
+		})
 	});
 
-	Vector4.prototype.setVector = function (rhs) {
-		console.warn('The setVector method of Vector4 is deprecated. Please use the set method instead.');
+	Vector4.prototype.setVector = ObjectUtils.warnOnce('The setVector method of Vector4 is deprecated. Please use the set method instead.', function (rhs) {
 		return this.set(rhs);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.add = function (lhs, rhs, target) {
-		console.warn('Vector4.add is deprecated. Use Vector4.prototype.add instead.');
+	Vector4.add = ObjectUtils.warnOnce('Vector4.add is deprecated. Use Vector4.prototype.add instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -718,14 +717,13 @@ define([
 		target.data[3] = ldata[3] + rdata[3];
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.sub = function (lhs, rhs, target) {
-		console.warn('Vector4.sub is deprecated. Use Vector4.prototype.sub instead.');
+	Vector4.sub = ObjectUtils.warnOnce('Vector4.sub is deprecated. Use Vector4.prototype.sub instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -747,14 +745,13 @@ define([
 		target.data[3] = ldata[3] - rdata[3];
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.mul = function (lhs, rhs, target) {
-		console.warn('Vector4.mul is deprecated. Use Vector4.prototype.mul instead.');
+	Vector4.mul = ObjectUtils.warnOnce('Vector4.mul is deprecated. Use Vector4.prototype.mul instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -776,14 +773,13 @@ define([
 		target.data[3] = ldata[3] * rdata[3];
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.div = function (lhs, rhs, target) {
-		console.warn('Vector4.div is deprecated. Use Vector4.prototype.div instead.');
+	Vector4.div = ObjectUtils.warnOnce('Vector4.div is deprecated. Use Vector4.prototype.div instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -805,14 +801,13 @@ define([
 		target.data[3] = ldata[3] / rdata[3];
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.dot = function (lhs, rhs) {
-		console.warn('Vector4.dot is deprecated. Use Vector4.prototype.dot instead.');
+	Vector4.dot = ObjectUtils.warnOnce('Vector4.dot is deprecated. Use Vector4.prototype.dot instead.', function (lhs, rhs) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -828,28 +823,26 @@ define([
 			ldata[1] * rdata[1] +
 			ldata[2] * rdata[2] +
 			ldata[3] * rdata[3];
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.addVector = function (vector) {
-		console.warn('Vector4.prototype.addVector is deprecated. Use .add instead.');
+	Vector4.prototype.addVector = ObjectUtils.warnOnce('Vector4.prototype.addVector is deprecated. Use .add instead.', function (vector) {
 		this.data[0] += vector.data[0];
 		this.data[1] += vector.data[1];
 		this.data[2] += vector.data[2];
 		this.data[3] += vector.data[3];
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.dotVector = function (rhs) {
-		console.warn('Vector4.prototype.dotVector is deprecated. Use .dot instead.');
+	Vector4.prototype.dotVector = ObjectUtils.warnOnce('Vector4.prototype.dotVector is deprecated. Use .dot instead.', function (rhs) {
 		var ldata = this.data;
 		var rdata = rhs.data;
 
@@ -857,63 +850,59 @@ define([
 			ldata[1] * rdata[1] +
 			ldata[2] * rdata[2] +
 			ldata[3] * rdata[3];
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.mulVector = function (vector) {
-		console.warn('Vector4.prototype.mulVector is deprecated. Use .mul instead.');
+	Vector4.prototype.mulVector = ObjectUtils.warnOnce('Vector4.prototype.mulVector is deprecated. Use .mul instead.', function (vector) {
 		this.data[0] *= vector.data[0];
 		this.data[1] *= vector.data[1];
 		this.data[2] *= vector.data[2];
 		this.data[3] *= vector.data[3];
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.setArray = function (array) {
-		console.warn('Vector4.prototype.setArray is deprecated.');
+	Vector4.prototype.setArray = ObjectUtils.warnOnce('Vector4.prototype.setArray is deprecated.', function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 		this.data[2] = array[2];
 		this.data[3] = array[3];
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.setVector = function (vector) {
-		console.warn('Vector4.prototype.setVector is deprecated. Use .set instead.');
+	Vector4.prototype.setVector = ObjectUtils.warnOnce('Vector4.prototype.setVector is deprecated. Use .set instead.', function (vector) {
 		this.data[0] = vector.data[0];
 		this.data[1] = vector.data[1];
 		this.data[2] = vector.data[2];
 		this.data[3] = vector.data[3];
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector4.prototype.subVector = function (vector) {
-		console.warn('Vector4.prototype.subVector is deprecated. Use .sub instead.');
+	Vector4.prototype.subVector = ObjectUtils.warnOnce('Vector4.prototype.subVector is deprecated. Use .sub instead.', function (vector) {
 		this.data[0] -= vector.data[0];
 		this.data[1] -= vector.data[1];
 		this.data[2] -= vector.data[2];
 		this.data[3] -= vector.data[3];
 
 		return this;
-	};
+	});
 
 	// SHIM END
 

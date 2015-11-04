@@ -1,8 +1,10 @@
 define([
+	'goo/util/ObjectUtils',
 	'goo/math/MathUtils',
 	'goo/math/Vector',
 	'goo/math/Vector4'
 ], function (
+	ObjectUtils,
 	MathUtils,
 	Vector,
 	Vector4
@@ -714,10 +716,9 @@ define([
 
 	// SHIM START
 	Object.defineProperty(Vector3.prototype, 'data', {
-		get: function () {
+		get: ObjectUtils.warnOnce('The .data property of Vector3 was removed. Please use the .x, .y and .z properties instead.', function () {
 			var data = [];
 			var that = this;
-			console.warn('The .data property of Vector3 was removed. Please use the .x, .y and .z properties instead.');
 			Object.defineProperties(data, {
 				'0': {
 					get: function () {
@@ -745,24 +746,22 @@ define([
 				}
 			});
 			return data;
-		}
+		})
 	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.setVector = function (rhs) {
-		console.warn('The setVector method of Vector3 is deprecated. Please use the set method instead.');
+	Vector3.prototype.setVector = ObjectUtils.warnOnce('The setVector method of Vector3 is deprecated. Please use the set method instead.', function (rhs) {
 		return this.set(rhs);
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.add = function (lhs, rhs, target) {
-		console.warn('Vector3.add is deprecated. Use Vector3.prototype.add instead.');
+	Vector3.add = ObjectUtils.warnOnce('Vector3.add is deprecated. Use Vector3.prototype.add instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -783,14 +782,13 @@ define([
 		target.data[2] = ldata[2] + rdata[2];
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.cross = function (lhs, rhs, target) {
-		console.warn('Vector3.cross is deprecated. Use Vector3.prototype.cross instead.');
+	Vector3.cross = ObjectUtils.warnOnce('Vector3.cross is deprecated. Use Vector3.prototype.cross instead.', function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
 		}
@@ -807,35 +805,32 @@ define([
 		target.data[2] = z;
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.distance = function (lhs, rhs) {
-		console.warn('Vector3.distance is deprecated. Use Vector3.prototype.distance instead.');
+	Vector3.distance = ObjectUtils.warnOnce('Vector3.distance is deprecated. Use Vector3.prototype.distance instead.', function (lhs, rhs) {
 		return Math.sqrt(Vector3.distanceSquared(lhs, rhs));
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.distanceSquared = function (lhs, rhs) {
-		console.warn('Vector3.distanceSquared is deprecated. Use Vector3.prototype.distanceSquared instead.');
+	Vector3.distanceSquared = ObjectUtils.warnOnce('Vector3.distanceSquared is deprecated. Use Vector3.prototype.distanceSquared instead.', function (lhs, rhs) {
 		var x = lhs.x - rhs.x,
 			y = lhs.y - rhs.y,
 			z = lhs.z - rhs.z;
 		return x * x + y * y + z * z;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.div = function (lhs, rhs, target) {
-		console.warn('Vector3.div is deprecated. Use Vector3.prototype.div instead.');
+	Vector3.div = ObjectUtils.warnOnce('Vector3.div is deprecated. Use Vector3.prototype.div instead.', function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
 		}
@@ -863,14 +858,13 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.dot = function (lhs, rhs) {
-		console.warn('Vector3.dot is deprecated. Use Vector3.prototype.dot instead.');
+	Vector3.dot = ObjectUtils.warnOnce('Vector3.dot is deprecated. Use Vector3.prototype.dot instead.', function (lhs, rhs) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -885,14 +879,13 @@ define([
 		return ldata[0] * rdata[0] +
 			ldata[1] * rdata[1] +
 			ldata[2] * rdata[2];
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.mul = function (lhs, rhs, target) {
-		console.warn('Vector3.mul is deprecated. Use Vector3.prototype.mul instead.');
+	Vector3.mul = ObjectUtils.warnOnce('Vector3.mul is deprecated. Use Vector3.prototype.mul instead.', function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
 		}
@@ -919,93 +912,86 @@ define([
 		}
 
 		return target;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.addVector = function (vector) {
-		console.warn('Vector3.prototype.addVector is deprecated. Use Vector3.prototype.add instead.');
+	Vector3.prototype.addVector = ObjectUtils.warnOnce('Vector3.prototype.addVector is deprecated. Use Vector3.prototype.add instead.', function (vector) {
 		this.x += vector.x;
 		this.y += vector.y;
 		this.z += vector.z;
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.mulVector = function (vec3) {
-		console.warn('Vector3.prototype.mulVector is deprecated. Use .mul instead.');
+	Vector3.prototype.mulVector = ObjectUtils.warnOnce('Vector3.prototype.mulVector is deprecated. Use .mul instead.', function (vec3) {
 		this.x *= vec3.x;
 		this.y *= vec3.y;
 		this.z *= vec3.z;
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.dotVector = function (rhs) {
-		console.warn('Vector3.prototype.dotVector is deprecated. Use .dot instead.');
+	Vector3.prototype.dotVector = ObjectUtils.warnOnce('Vector3.prototype.dotVector is deprecated. Use .dot instead.', function (rhs) {
 		var ldata = this.data;
 		var rdata = rhs.data;
 
 		return ldata[0] * rdata[0] +
 			ldata[1] * rdata[1] +
 			ldata[2] * rdata[2];
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.invert = function () {
-		console.warn('Vector3.prototype.invert is deprecated. Use .negate instead.');
+	Vector3.prototype.invert = ObjectUtils.warnOnce('Vector3.prototype.invert is deprecated. Use .negate instead.', function () {
 		this.x = 0.0 - this.x;
 		this.y = 0.0 - this.y;
 		this.z = 0.0 - this.z;
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.setArray = function (array) {
-		console.warn('Vector3.prototype.setArray is deprecated.');
+	Vector3.prototype.setArray = ObjectUtils.warnOnce('Vector3.prototype.setArray is deprecated.', function (array) {
 		this.x = array[0];
 		this.y = array[1];
 		this.z = array[2];
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.prototype.subVector = function (vector) {
-		console.warn('Vector3.prototype.subVector is deprecated. Use .sub instead.');
+	Vector3.prototype.subVector = ObjectUtils.warnOnce('Vector3.prototype.subVector is deprecated. Use .sub instead.', function (vector) {
 		this.x -= vector.x;
 		this.y -= vector.y;
 		this.z -= vector.z;
 
 		return this;
-	};
+	});
 
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Vector3.sub = function (lhs, rhs, target) {
-		console.warn('Vector3.sub is deprecated. Use Vector3.prototype.sub instead.');
+	Vector3.sub = ObjectUtils.warnOnce('Vector3.sub is deprecated. Use Vector3.prototype.sub instead.', function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -1026,7 +1012,7 @@ define([
 		target.data[2] = ldata[2] - rdata[2];
 
 		return target;
-	};
+	});
 	// SHIM END
 
 	// #ifdef DEBUG
