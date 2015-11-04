@@ -1,9 +1,11 @@
 define([
 	'goo/math/MathUtils',
-	'goo/math/Matrix'
+	'goo/math/Matrix',
+	'goo/util/ObjectUtils'
 ], function (
 	MathUtils,
-	Matrix
+	Matrix,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -701,391 +703,415 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix4.add = function (lhs, rhs, target) {
-		console.warn('Matrix4.add is deprecated, use Matrix4.prototype.add instead');
-		if (!target) {
-			target = new Matrix4();
-		}
+	Matrix4.add = ObjectUtils.warnOnce(
+		'Matrix4.add is deprecated, use Matrix4.prototype.add instead',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
 
-		if (rhs instanceof Matrix4) {
-			target.e00 = lhs.e00 + rhs.e00;
-			target.e10 = lhs.e10 + rhs.e10;
-			target.e20 = lhs.e20 + rhs.e20;
-			target.e30 = lhs.e30 + rhs.e30;
-			target.e01 = lhs.e01 + rhs.e01;
-			target.e11 = lhs.e11 + rhs.e11;
-			target.e21 = lhs.e21 + rhs.e21;
-			target.e31 = lhs.e31 + rhs.e31;
-			target.e02 = lhs.e02 + rhs.e02;
-			target.e12 = lhs.e12 + rhs.e12;
-			target.e22 = lhs.e22 + rhs.e22;
-			target.e32 = lhs.e32 + rhs.e32;
-			target.e03 = lhs.e03 + rhs.e03;
-			target.e13 = lhs.e13 + rhs.e13;
-			target.e23 = lhs.e23 + rhs.e23;
-			target.e33 = lhs.e33 + rhs.e33;
-		} else {
-			target.e00 = lhs.e00 + rhs;
-			target.e10 = lhs.e10 + rhs;
-			target.e20 = lhs.e20 + rhs;
-			target.e30 = lhs.e30 + rhs;
-			target.e01 = lhs.e01 + rhs;
-			target.e11 = lhs.e11 + rhs;
-			target.e21 = lhs.e21 + rhs;
-			target.e31 = lhs.e31 + rhs;
-			target.e02 = lhs.e02 + rhs;
-			target.e12 = lhs.e12 + rhs;
-			target.e22 = lhs.e22 + rhs;
-			target.e32 = lhs.e32 + rhs;
-			target.e03 = lhs.e03 + rhs;
-			target.e13 = lhs.e13 + rhs;
-			target.e23 = lhs.e23 + rhs;
-			target.e33 = lhs.e33 + rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.sub = function (lhs, rhs, target) {
-		console.warn('Matrix4.sub is deprecated');
-		if (!target) {
-			target = new Matrix4();
-		}
-
-		if (rhs instanceof Matrix4) {
-			target.e00 = lhs.e00 - rhs.e00;
-			target.e10 = lhs.e10 - rhs.e10;
-			target.e20 = lhs.e20 - rhs.e20;
-			target.e30 = lhs.e30 - rhs.e30;
-			target.e01 = lhs.e01 - rhs.e01;
-			target.e11 = lhs.e11 - rhs.e11;
-			target.e21 = lhs.e21 - rhs.e21;
-			target.e31 = lhs.e31 - rhs.e31;
-			target.e02 = lhs.e02 - rhs.e02;
-			target.e12 = lhs.e12 - rhs.e12;
-			target.e22 = lhs.e22 - rhs.e22;
-			target.e32 = lhs.e32 - rhs.e32;
-			target.e03 = lhs.e03 - rhs.e03;
-			target.e13 = lhs.e13 - rhs.e13;
-			target.e23 = lhs.e23 - rhs.e23;
-			target.e33 = lhs.e33 - rhs.e33;
-		} else {
-			target.e00 = lhs.e00 - rhs;
-			target.e10 = lhs.e10 - rhs;
-			target.e20 = lhs.e20 - rhs;
-			target.e30 = lhs.e30 - rhs;
-			target.e01 = lhs.e01 - rhs;
-			target.e11 = lhs.e11 - rhs;
-			target.e21 = lhs.e21 - rhs;
-			target.e31 = lhs.e31 - rhs;
-			target.e02 = lhs.e02 - rhs;
-			target.e12 = lhs.e12 - rhs;
-			target.e22 = lhs.e22 - rhs;
-			target.e32 = lhs.e32 - rhs;
-			target.e03 = lhs.e03 - rhs;
-			target.e13 = lhs.e13 - rhs;
-			target.e23 = lhs.e23 - rhs;
-			target.e33 = lhs.e33 - rhs;
-		}
-
-		return target;
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.mul = function (lhs, rhs, target) {
-		console.warn('Matrix4.mul is deprecated, use Matrix4.prototype.mul instead');
-		if (!target) {
-			target = new Matrix4();
-		}
-
-		if (rhs instanceof Matrix4) {
-			target.e00 = lhs.e00 * rhs.e00;
-			target.e10 = lhs.e10 * rhs.e10;
-			target.e20 = lhs.e20 * rhs.e20;
-			target.e30 = lhs.e30 * rhs.e30;
-			target.e01 = lhs.e01 * rhs.e01;
-			target.e11 = lhs.e11 * rhs.e11;
-			target.e21 = lhs.e21 * rhs.e21;
-			target.e31 = lhs.e31 * rhs.e31;
-			target.e02 = lhs.e02 * rhs.e02;
-			target.e12 = lhs.e12 * rhs.e12;
-			target.e22 = lhs.e22 * rhs.e22;
-			target.e32 = lhs.e32 * rhs.e32;
-			target.e03 = lhs.e03 * rhs.e03;
-			target.e13 = lhs.e13 * rhs.e13;
-			target.e23 = lhs.e23 * rhs.e23;
-			target.e33 = lhs.e33 * rhs.e33;
-		} else {
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e30 = lhs.e30 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e31 = lhs.e31 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-			target.e32 = lhs.e32 * rhs;
-			target.e03 = lhs.e03 * rhs;
-			target.e13 = lhs.e13 * rhs;
-			target.e23 = lhs.e23 * rhs;
-			target.e33 = lhs.e33 * rhs;
-		}
-
-		return target;
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.div = function (lhs, rhs, target) {
-		console.warn('Matrix4.div is deprecated');
-		if (!target) {
-			target = new Matrix4();
-		}
-
-		if (rhs instanceof Matrix4) {
-			target.e00 = lhs.e00 / rhs.e00;
-			target.e10 = lhs.e10 / rhs.e10;
-			target.e20 = lhs.e20 / rhs.e20;
-			target.e30 = lhs.e30 / rhs.e30;
-			target.e01 = lhs.e01 / rhs.e01;
-			target.e11 = lhs.e11 / rhs.e11;
-			target.e21 = lhs.e21 / rhs.e21;
-			target.e31 = lhs.e31 / rhs.e31;
-			target.e02 = lhs.e02 / rhs.e02;
-			target.e12 = lhs.e12 / rhs.e12;
-			target.e22 = lhs.e22 / rhs.e22;
-			target.e32 = lhs.e32 / rhs.e32;
-			target.e03 = lhs.e03 / rhs.e03;
-			target.e13 = lhs.e13 / rhs.e13;
-			target.e23 = lhs.e23 / rhs.e23;
-			target.e33 = lhs.e33 / rhs.e33;
-		} else {
-			rhs = 1.0 / rhs;
-
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e30 = lhs.e30 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e31 = lhs.e31 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-			target.e32 = lhs.e32 * rhs;
-			target.e03 = lhs.e03 * rhs;
-			target.e13 = lhs.e13 * rhs;
-			target.e23 = lhs.e23 * rhs;
-			target.e33 = lhs.e33 * rhs;
-
-		}
-
-		return target;
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.prototype.div = function (rhs) {
-		console.warn('Matrix4.prototype.div is deprecated');
-		return Matrix4.div(this, rhs, this);
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.combine = function (lhs, rhs, target) {
-		console.warn('Matrix4.combine is deprecated, use Matrix4.prototype.mul instead');
-		if (!target) {
-			target = new Matrix4();
-		}
-
-		var s1d = lhs.data;
-		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
-			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
-			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
-			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
-		var s2d = rhs.data;
-		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
-			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
-			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
-			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
-
-		var rd = target.data;
-		rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
-		rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
-		rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
-		rd[12] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
-
-		rd[1] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
-		rd[5] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
-		rd[9] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
-		rd[13] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
-
-		rd[2] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
-		rd[6] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
-		rd[10] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
-		rd[14] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
-
-		rd[3] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
-		rd[7] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
-		rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
-		rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
-
-		return target;
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.prototype.combine = function (rhs) {
-		console.warn('Matrix4.prototype.combine is deprecated, use Matrix4.prototype.mul instead');
-		return Matrix4.combine(this, rhs, this);
-	};
-	
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Matrix4.transpose = function (source, target) {
-		console.warn('Matrix4.transpose is deprecated, use Matrix4.prototype.transpose instead');
-		if (!target) {
-			target = new Matrix4();
-		}
-
-		var s = source.data;
-		var t = target.data;
-
-		if (target === source) {
-			var e01 = s[4];
-			var e02 = s[8];
-			var e03 = s[12];
-			var e12 = s[9];
-			var e13 = s[13];
-			var e23 = s[14];
-
-			t[4] = s[1];
-			t[8] = s[2];
-			t[12] = s[3];
-			t[9] = s[6];
-			t[13] = s[7];
-			t[14] = s[11];
-
-			t[1] = e01;
-			t[2] = e02;
-			t[3] = e03;
-			t[6] = e12;
-			t[7] = e13;
-			t[11] = e23;
+			if (rhs instanceof Matrix4) {
+				target.e00 = lhs.e00 + rhs.e00;
+				target.e10 = lhs.e10 + rhs.e10;
+				target.e20 = lhs.e20 + rhs.e20;
+				target.e30 = lhs.e30 + rhs.e30;
+				target.e01 = lhs.e01 + rhs.e01;
+				target.e11 = lhs.e11 + rhs.e11;
+				target.e21 = lhs.e21 + rhs.e21;
+				target.e31 = lhs.e31 + rhs.e31;
+				target.e02 = lhs.e02 + rhs.e02;
+				target.e12 = lhs.e12 + rhs.e12;
+				target.e22 = lhs.e22 + rhs.e22;
+				target.e32 = lhs.e32 + rhs.e32;
+				target.e03 = lhs.e03 + rhs.e03;
+				target.e13 = lhs.e13 + rhs.e13;
+				target.e23 = lhs.e23 + rhs.e23;
+				target.e33 = lhs.e33 + rhs.e33;
+			} else {
+				target.e00 = lhs.e00 + rhs;
+				target.e10 = lhs.e10 + rhs;
+				target.e20 = lhs.e20 + rhs;
+				target.e30 = lhs.e30 + rhs;
+				target.e01 = lhs.e01 + rhs;
+				target.e11 = lhs.e11 + rhs;
+				target.e21 = lhs.e21 + rhs;
+				target.e31 = lhs.e31 + rhs;
+				target.e02 = lhs.e02 + rhs;
+				target.e12 = lhs.e12 + rhs;
+				target.e22 = lhs.e22 + rhs;
+				target.e32 = lhs.e32 + rhs;
+				target.e03 = lhs.e03 + rhs;
+				target.e13 = lhs.e13 + rhs;
+				target.e23 = lhs.e23 + rhs;
+				target.e33 = lhs.e33 + rhs;
+			}
 
 			return target;
 		}
+	);
 
-		t[0] = s[0];
-		t[1] = s[4];
-		t[2] = s[8];
-		t[3] = s[12];
-		t[4] = s[1];
-		t[5] = s[5];
-		t[6] = s[9];
-		t[7] = s[13];
-		t[8] = s[2];
-		t[9] = s[6];
-		t[10] = s[10];
-		t[11] = s[14];
-		t[12] = s[3];
-		t[13] = s[7];
-		t[14] = s[11];
-		t[15] = s[15];
-
-		return target;
-	};
-	
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix4.prototype.applyPre = function (rhs) {
-		console.warn('Matrix4.prototype.applyPre is deprecated, use Vector4.prototype.applyPre instead');
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
+	Matrix4.sub = ObjectUtils.warnOnce(
+		'Matrix4.sub is deprecated',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
 
-		var s = this.data;
-		rhs.x = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
-		rhs.y = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
-		rhs.z = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
-		rhs.w = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
+			if (rhs instanceof Matrix4) {
+				target.e00 = lhs.e00 - rhs.e00;
+				target.e10 = lhs.e10 - rhs.e10;
+				target.e20 = lhs.e20 - rhs.e20;
+				target.e30 = lhs.e30 - rhs.e30;
+				target.e01 = lhs.e01 - rhs.e01;
+				target.e11 = lhs.e11 - rhs.e11;
+				target.e21 = lhs.e21 - rhs.e21;
+				target.e31 = lhs.e31 - rhs.e31;
+				target.e02 = lhs.e02 - rhs.e02;
+				target.e12 = lhs.e12 - rhs.e12;
+				target.e22 = lhs.e22 - rhs.e22;
+				target.e32 = lhs.e32 - rhs.e32;
+				target.e03 = lhs.e03 - rhs.e03;
+				target.e13 = lhs.e13 - rhs.e13;
+				target.e23 = lhs.e23 - rhs.e23;
+				target.e33 = lhs.e33 - rhs.e33;
+			} else {
+				target.e00 = lhs.e00 - rhs;
+				target.e10 = lhs.e10 - rhs;
+				target.e20 = lhs.e20 - rhs;
+				target.e30 = lhs.e30 - rhs;
+				target.e01 = lhs.e01 - rhs;
+				target.e11 = lhs.e11 - rhs;
+				target.e21 = lhs.e21 - rhs;
+				target.e31 = lhs.e31 - rhs;
+				target.e02 = lhs.e02 - rhs;
+				target.e12 = lhs.e12 - rhs;
+				target.e22 = lhs.e22 - rhs;
+				target.e32 = lhs.e32 - rhs;
+				target.e03 = lhs.e03 - rhs;
+				target.e13 = lhs.e13 - rhs;
+				target.e23 = lhs.e23 - rhs;
+				target.e33 = lhs.e33 - rhs;
+			}
 
-		return rhs;
-	};
-	
+			return target;
+		}
+	);
+
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix4.prototype.applyPost = function (rhs) {
-		console.warn('Matrix4.prototype.applyPost is deprecated, use Vector4.prototype.applyPost instead');
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
+	Matrix4.mul = ObjectUtils.warnOnce(
+		'Matrix4.mul is deprecated, use Matrix4.prototype.mul instead',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
 
-		var s = this.data;
-		rhs.x = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
-		rhs.y = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
-		rhs.z = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
-		rhs.w = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
+			if (rhs instanceof Matrix4) {
+				target.e00 = lhs.e00 * rhs.e00;
+				target.e10 = lhs.e10 * rhs.e10;
+				target.e20 = lhs.e20 * rhs.e20;
+				target.e30 = lhs.e30 * rhs.e30;
+				target.e01 = lhs.e01 * rhs.e01;
+				target.e11 = lhs.e11 * rhs.e11;
+				target.e21 = lhs.e21 * rhs.e21;
+				target.e31 = lhs.e31 * rhs.e31;
+				target.e02 = lhs.e02 * rhs.e02;
+				target.e12 = lhs.e12 * rhs.e12;
+				target.e22 = lhs.e22 * rhs.e22;
+				target.e32 = lhs.e32 * rhs.e32;
+				target.e03 = lhs.e03 * rhs.e03;
+				target.e13 = lhs.e13 * rhs.e13;
+				target.e23 = lhs.e23 * rhs.e23;
+				target.e33 = lhs.e33 * rhs.e33;
+			} else {
+				target.e00 = lhs.e00 * rhs;
+				target.e10 = lhs.e10 * rhs;
+				target.e20 = lhs.e20 * rhs;
+				target.e30 = lhs.e30 * rhs;
+				target.e01 = lhs.e01 * rhs;
+				target.e11 = lhs.e11 * rhs;
+				target.e21 = lhs.e21 * rhs;
+				target.e31 = lhs.e31 * rhs;
+				target.e02 = lhs.e02 * rhs;
+				target.e12 = lhs.e12 * rhs;
+				target.e22 = lhs.e22 * rhs;
+				target.e32 = lhs.e32 * rhs;
+				target.e03 = lhs.e03 * rhs;
+				target.e13 = lhs.e13 * rhs;
+				target.e23 = lhs.e23 * rhs;
+				target.e33 = lhs.e33 * rhs;
+			}
 
-		return rhs;
-	};
-	
+			return target;
+		}
+	);
+
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix4.prototype.applyPostPoint = function (rhs) {
-		console.warn('Matrix4.prototype.applyPostPoint is deprecated, use Vector4.prototype.applyPostPoint instead');
-		return rhs.applyPostPoint(this);
-	};
-	
+	Matrix4.div = ObjectUtils.warnOnce(
+		'Matrix4.div is deprecated',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
+
+			if (rhs instanceof Matrix4) {
+				target.e00 = lhs.e00 / rhs.e00;
+				target.e10 = lhs.e10 / rhs.e10;
+				target.e20 = lhs.e20 / rhs.e20;
+				target.e30 = lhs.e30 / rhs.e30;
+				target.e01 = lhs.e01 / rhs.e01;
+				target.e11 = lhs.e11 / rhs.e11;
+				target.e21 = lhs.e21 / rhs.e21;
+				target.e31 = lhs.e31 / rhs.e31;
+				target.e02 = lhs.e02 / rhs.e02;
+				target.e12 = lhs.e12 / rhs.e12;
+				target.e22 = lhs.e22 / rhs.e22;
+				target.e32 = lhs.e32 / rhs.e32;
+				target.e03 = lhs.e03 / rhs.e03;
+				target.e13 = lhs.e13 / rhs.e13;
+				target.e23 = lhs.e23 / rhs.e23;
+				target.e33 = lhs.e33 / rhs.e33;
+			} else {
+				rhs = 1.0 / rhs;
+
+				target.e00 = lhs.e00 * rhs;
+				target.e10 = lhs.e10 * rhs;
+				target.e20 = lhs.e20 * rhs;
+				target.e30 = lhs.e30 * rhs;
+				target.e01 = lhs.e01 * rhs;
+				target.e11 = lhs.e11 * rhs;
+				target.e21 = lhs.e21 * rhs;
+				target.e31 = lhs.e31 * rhs;
+				target.e02 = lhs.e02 * rhs;
+				target.e12 = lhs.e12 * rhs;
+				target.e22 = lhs.e22 * rhs;
+				target.e32 = lhs.e32 * rhs;
+				target.e03 = lhs.e03 * rhs;
+				target.e13 = lhs.e13 * rhs;
+				target.e23 = lhs.e23 * rhs;
+				target.e33 = lhs.e33 * rhs;
+
+			}
+
+			return target;
+		}
+	);
+
 	/**
 	 * @hidden
 	 * @deprecated
 	 */
-	Matrix4.prototype.applyPostVector = function (rhs) {
-		console.warn('Matrix4.prototype.applyPostVector is deprecated, use Vector4.prototype.applyPostVector instead');
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+	Matrix4.prototype.div = ObjectUtils.warnOnce(
+		'Matrix4.prototype.div is deprecated',
+		function (rhs) {
+			return Matrix4.div(this, rhs, this);
+		}
+	);
 
-		var d = this.data;
-		rhs.x = d[0] * x + d[4] * y + d[8] * z;
-		rhs.y = d[1] * x + d[5] * y + d[9] * z;
-		rhs.z = d[2] * x + d[6] * y + d[10] * z;
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.combine = ObjectUtils.warnOnce(
+		'Matrix4.combine is deprecated, use Matrix4.prototype.mul instead',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
 
-		return rhs;
-	};
+			var s1d = lhs.data;
+			var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
+				m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
+				m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
+				m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
+			var s2d = rhs.data;
+			var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
+				n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
+				n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
+				n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
+
+			var rd = target.data;
+			rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
+			rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
+			rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
+			rd[12] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
+
+			rd[1] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
+			rd[5] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
+			rd[9] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
+			rd[13] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
+
+			rd[2] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
+			rd[6] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
+			rd[10] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
+			rd[14] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
+
+			rd[3] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
+			rd[7] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
+			rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
+			rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.prototype.combine = ObjectUtils.warnOnce(
+		'Matrix4.prototype.combine is deprecated, use Matrix4.prototype.mul instead',
+		function (rhs) {
+			return Matrix4.combine(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.transpose = ObjectUtils.warnOnce(
+		'Matrix4.transpose is deprecated, use Matrix4.prototype.transpose instead',
+		function (source, target) {
+			if (!target) {
+				target = new Matrix4();
+			}
+
+			var s = source.data;
+			var t = target.data;
+
+			if (target === source) {
+				var e01 = s[4];
+				var e02 = s[8];
+				var e03 = s[12];
+				var e12 = s[9];
+				var e13 = s[13];
+				var e23 = s[14];
+
+				t[4] = s[1];
+				t[8] = s[2];
+				t[12] = s[3];
+				t[9] = s[6];
+				t[13] = s[7];
+				t[14] = s[11];
+
+				t[1] = e01;
+				t[2] = e02;
+				t[3] = e03;
+				t[6] = e12;
+				t[7] = e13;
+				t[11] = e23;
+
+				return target;
+			}
+
+			t[0] = s[0];
+			t[1] = s[4];
+			t[2] = s[8];
+			t[3] = s[12];
+			t[4] = s[1];
+			t[5] = s[5];
+			t[6] = s[9];
+			t[7] = s[13];
+			t[8] = s[2];
+			t[9] = s[6];
+			t[10] = s[10];
+			t[11] = s[14];
+			t[12] = s[3];
+			t[13] = s[7];
+			t[14] = s[11];
+			t[15] = s[15];
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.prototype.applyPre = ObjectUtils.warnOnce(
+		'Matrix4.prototype.applyPre is deprecated, use Vector4.prototype.applyPre instead',
+		function (rhs) {
+			var x = rhs.x;
+			var y = rhs.y;
+			var z = rhs.z;
+			var w = rhs.w;
+
+			var s = this.data;
+			rhs.x = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
+			rhs.y = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
+			rhs.z = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
+			rhs.w = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
+
+			return rhs;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.prototype.applyPost = ObjectUtils.warnOnce(
+		'Matrix4.prototype.applyPost is deprecated, use Vector4.prototype.applyPost instead',
+		function (rhs) {
+			var x = rhs.x;
+			var y = rhs.y;
+			var z = rhs.z;
+			var w = rhs.w;
+
+			var s = this.data;
+			rhs.x = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
+			rhs.y = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
+			rhs.z = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
+			rhs.w = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
+
+			return rhs;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.prototype.applyPostPoint = ObjectUtils.warnOnce(
+		'Matrix4.prototype.applyPostPoint is deprecated, use Vector4.prototype.applyPostPoint instead',
+		function (rhs) {
+			return rhs.applyPostPoint(this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Matrix4.prototype.applyPostVector = ObjectUtils.warnOnce(
+		'Matrix4.prototype.applyPostVector is deprecated, use Vector4.prototype.applyPostVector instead',
+		function (rhs) {
+			var x = rhs.x;
+			var y = rhs.y;
+			var z = rhs.z;
+
+			var d = this.data;
+			rhs.x = d[0] * x + d[4] * y + d[8] * z;
+			rhs.y = d[1] * x + d[5] * y + d[9] * z;
+			rhs.z = d[2] * x + d[6] * y + d[10] * z;
+
+			return rhs;
+		}
+	);
 
 	// SHIMS END
-	
+
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix4.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
