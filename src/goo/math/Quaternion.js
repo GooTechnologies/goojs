@@ -87,7 +87,7 @@ define([
 	};
 
 	Quaternion.prototype.set = function (rhs) {
-		if(rhs instanceof Quaternion){
+		if (rhs instanceof Quaternion) {
 			this.x = rhs.x;
 			this.y = rhs.y;
 			this.z = rhs.z;
@@ -468,7 +468,7 @@ define([
 	 * var q = new Quaternion(); // q == (0, 0, 0, 0)
 	 * q.setDirect(2, 4, 6, 8); // q == (2, 4, 6, 8)
 	 */
-	 Quaternion.prototype.setDirect = function (x, y, z, w) {
+	Quaternion.prototype.setDirect = function (x, y, z, w) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -548,9 +548,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.div = ObjectUtils.warnOnce(
-	 	'Quaternion.div is deprecated',
-	 	function (lhs, rhs, target) {
+	Quaternion.div = ObjectUtils.warnOnce(
+		'Quaternion.div is deprecated',
+		function (lhs, rhs, target) {
 			if (!target) {
 				target = new Quaternion();
 			}
@@ -570,9 +570,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.mul = ObjectUtils.warnOnce(
-	 	'Quaternion.mul is deprecated.',
-	 	function(a, b, out) {
+	Quaternion.mul = Quaternion.mul2 = ObjectUtils.warnOnce(
+		'Quaternion.mul is deprecated.',
+		function (a, b, out) {
 			var ax = a.x, ay = a.y, az = a.z, aw = a.w,
 				bx = b.x, by = b.y, bz = b.z, bw = b.w;
 
@@ -588,9 +588,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.sub = ObjectUtils.warnOnce(
-	 	'Quaternion.sub is deprecated.',
-	 	function (lhs, rhs, target) {
+	Quaternion.sub = ObjectUtils.warnOnce(
+		'Quaternion.sub is deprecated.',
+		function (lhs, rhs, target) {
 			if (!target) {
 				target = new Quaternion();
 			}
@@ -608,9 +608,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.add = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.add is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.add = ObjectUtils.warnOnce(
+		'Quaternion.prototype.add is deprecated.',
+		function (rhs) {
 			return Quaternion.add(this, rhs, this);
 		}
 	);
@@ -619,9 +619,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.div = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.div is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.div = ObjectUtils.warnOnce(
+		'Quaternion.prototype.div is deprecated.',
+		function (rhs) {
 			return Quaternion.div(this, rhs, this);
 		}
 	);
@@ -630,9 +630,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.magnitude = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.magnitude is deprecated.',
-	 	function () {
+	Quaternion.prototype.magnitude = ObjectUtils.warnOnce(
+		'Quaternion.prototype.magnitude is deprecated.',
+		function () {
 			var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 			if (magnitudeSQ === 1.0) {
 				return 1.0;
@@ -645,9 +645,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.magnitudeSquared = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.magnitudeSquared is deprecated.',
-	 	function () {
+	Quaternion.prototype.magnitudeSquared = ObjectUtils.warnOnce(
+		'Quaternion.prototype.magnitudeSquared is deprecated.',
+		function () {
 			return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 		}
 	);
@@ -720,9 +720,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.scalarSub = ObjectUtils.warnOnce(
-	 	'Quaternion.scalarSub is deprecated.',
-	 	function (lhs, rhs, target) {
+	Quaternion.scalarSub = ObjectUtils.warnOnce(
+		'Quaternion.scalarSub is deprecated.',
+		function (lhs, rhs, target) {
 			if (!target) {
 				target = new Quaternion();
 			}
@@ -740,9 +740,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.setArray = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.setArray is deprecated.',
-	 	function (array) {
+	Quaternion.prototype.setArray = ObjectUtils.warnOnce(
+		'Quaternion.prototype.setArray is deprecated.',
+		function (array) {
 			this.x = array[0];
 			this.y = array[1];
 			this.z = array[2];
@@ -756,9 +756,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.setVector = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.setVector is deprecated.',
-	 	function (quat) {
+	Quaternion.prototype.setVector = ObjectUtils.warnOnce(
+		'Quaternion.prototype.setVector is deprecated.',
+		function (quat) {
 			this.x = quat.x;
 			this.y = quat.y;
 			this.z = quat.z;
@@ -772,9 +772,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.sub = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.sub is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.sub = ObjectUtils.warnOnce(
+		'Quaternion.prototype.sub is deprecated.',
+		function (rhs) {
 			return Quaternion.sub(this, rhs, this);
 		}
 	);
@@ -783,9 +783,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.scalarAdd = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.scalarAdd is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.scalarAdd = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarAdd is deprecated.',
+		function (rhs) {
 			return Quaternion.scalarAdd(this, rhs, this);
 		}
 	);
@@ -794,9 +794,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.scalarSub = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.scalarSub is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.scalarSub = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarSub is deprecated.',
+		function (rhs) {
 			return Quaternion.scalarSub(this, rhs, this);
 		}
 	);
@@ -805,9 +805,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.scalarMul = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.scalarMul is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.scalarMul = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarMul is deprecated.',
+		function (rhs) {
 			return Quaternion.scalarMul(this, rhs, this);
 		}
 	);
@@ -816,9 +816,9 @@ define([
 	 * @hidden
 	 * @deprecated
 	 */
-	 Quaternion.prototype.scalarDiv = ObjectUtils.warnOnce(
-	 	'Quaternion.prototype.scalarDiv is deprecated.',
-	 	function (rhs) {
+	Quaternion.prototype.scalarDiv = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarDiv is deprecated.',
+		function (rhs) {
 			return Quaternion.scalarDiv(this, rhs, this);
 		}
 	);
