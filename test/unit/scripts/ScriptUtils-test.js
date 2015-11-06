@@ -63,8 +63,14 @@ define([
 				'c': '',
 				'd': [0, 0, 0],
 				'e': false,
-				'f': null,
-				'g': null
+				'f': {
+					textureRef: null,
+					enabled: true
+				},
+				'g': {
+					entityRef: null,
+					enabled: true
+				}
 			};
 
 			expect(parametersValues).toEqual(expected);
