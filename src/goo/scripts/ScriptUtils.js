@@ -16,8 +16,31 @@ define([
 		'vec3': [0, 0, 0],
 		'vec4': [0, 0, 0, 0],
 		'boolean': false,
-		'texture': null,
-		'entity': null
+		
+		'animation': {
+			animationRef: null,
+			enabled: true
+		},
+		'camera': {
+			cameraRef: null,
+			enabled: true
+		},
+		'entity': {
+			entityRef: null,
+			enabled: true
+		},
+		'image': {
+			imageRef: null,
+			enabled: true
+		},
+		'sound': {
+			soundRef: null,
+			enabled: true
+		},
+		'texture': {
+			textureRef: null,
+			enabled: true
+		}
 	};
 
 
@@ -49,8 +72,12 @@ define([
 			'vec2': isVec(2),
 			'vec3': isVec(3),
 			'vec4': isVec(4),
-			'texture': isRef('texture'),
-			'entity': isRef('entity')
+			'animation': isRef('animation'),
+			'camera': isRef('camera'),
+			'entity': isRef('entity'),
+			'image': isRef('image'),
+			'sound': isRef('sound'),
+			'texture': isRef('texture')
 		};
 	})();
 
