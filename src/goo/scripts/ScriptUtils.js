@@ -37,7 +37,6 @@ define([
 		var isRef = function (refType) {
 			return function (data) {
 				return data &&
-					(typeof data.enabled === 'boolean') &&
 					(typeof data[refType + 'Ref'] === 'string');
 			};
 		};
