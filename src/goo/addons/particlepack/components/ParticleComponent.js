@@ -10,8 +10,8 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/Shader',
 	'goo/math/Transform',
-	'../Particle',
-	'../LinearCurve'
+	'goo/addons/particlepack/Particle',
+	'goo/addons/particlepack/LinearCurve'
 ], function (
 	Vector3,
 	Vector,
@@ -164,6 +164,15 @@ define([
 
 		this.emissionRate = options.emissionRate || 10;
 		this.startLifeTime = options.startLifeTime || 5;
+
+		var material = this.material = new Material(particleShader);
+		material.renderQueue = 3010;
+		material.uniforms.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
+
+		if (this.texture) {
+			material.setTexture('PARTICLE_TEXTURE', this.texture);
+		}
+
 	}
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
@@ -186,6 +195,14 @@ define([
 			},
 			set: function (value) {
 				this.material.blendState.enabled = value;
+			}
+		},
+		alphakill: {
+			get: function () {
+				return this.material.uniforms.alphakill;
+			},
+			set: function (value) {
+				this.material.uniforms.alphakill = value;
 			}
 		},
 		depthWrite: {
@@ -258,23 +275,8 @@ define([
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
 
-		var material = this.material = new Material(particleShader);
-//		material.uniforms.alphakill = this.alphakill;
-//		material.blendState.blending = this.blending;
-//		material.depthState.write = false;
-		material.renderQueue = 3010;
-
-		if (this.texture) {
-			material.setTexture('PARTICLE_TEXTURE', this.texture);
-		}
-		/*
-		this.blending = options.blending || 'AdditiveBlending';
-		this.depthWrite = !!options.depthWrite;
-		this.depthTest = !!options.depthTest;
-		*/
-
 		var entity = this.entity = this._entity._world.createEntity(meshData);
-		entity.set(new MeshRendererComponent(material));
+		entity.set(new MeshRendererComponent(this.material));
 		entity.name = 'ParticleSystem';
 		entity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		entity.addToWorld();

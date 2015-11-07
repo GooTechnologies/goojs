@@ -1,9 +1,7 @@
 define([
-	'goo/math/Vector3',
-	'./Curve'
+	'goo/math/Vector3'
 ], function (
-	Vector3,
-	Curve
+	Vector3
 ) {
 	'use strict';
 

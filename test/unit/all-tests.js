@@ -126,6 +126,8 @@ define([
 	'test/particles/ParticleUtils-test',
 	'test/addons/linerenderpack/LineRenderer-test',
 	'test/addons/linerenderpack/LineRenderSystem-test',
+	'test/addons/particlepack/Curve-test',
+	'test/addons/particlepack/CurveSet-test',
 	'test/addons/physicspack/systems/PhysicsSystem-test',
 	'test/addons/physicspack/systems/PhysicsDebugRenderSystem-test',
 	'test/addons/physicspack/components/RigidBodyComponent-test',
