@@ -47,11 +47,11 @@ define([
 			for (var i = 0; i < segments.length - 1; i++) {
 				var a = segments[i];
 				var b = segments[i + 1];
-				if (a.timeOffset >= t && b.timeOffset < t) {
+				if (a.timeOffset <= t && b.timeOffset > t) {
 					return this.segments[i].getValueAt(t);
 				}
 			}
-			return 0;
+			return this.segments[segments.length - 1].getValueAt(t);
 		}
 	};
 

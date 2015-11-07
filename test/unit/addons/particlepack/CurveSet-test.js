@@ -1,8 +1,10 @@
 define([
 	'goo/addons/particlepack/Curve',
+	'goo/addons/particlepack/LinearCurve',
 	'goo/addons/particlepack/CurveSet'
 ], function (
 	Curve,
+	LinearCurve,
 	CurveSet
 ) {
 	'use strict';
@@ -20,6 +22,14 @@ define([
 			var curve = new Curve();
 			set.addSegment(curve);
 			expect(set.getValueAt(0.5)).toBe(0);
+		});
+
+		it('can get a value from multiple curve types', function () {
+			var set = new CurveSet();
+			set.addSegment(new Curve({ timeOffset: 0 }));
+			set.addSegment(new LinearCurve({ timeOffset: 0.5, k: 1, m: 0 }));
+			expect(set.getValueAt(0)).toBe(0);
+			expect(set.getValueAt(1)).toBe(0.5);
 		});
 
 		it('can be converted to GLSL', function () {

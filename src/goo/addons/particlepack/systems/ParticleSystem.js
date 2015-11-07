@@ -19,26 +19,30 @@ define([
 	 * @private
 	 * @param {array} entities
 	 */
-	ParticleSystem.prototype.process = function (/*entities*/) {};
+	ParticleSystem.prototype.process = function (entities) {
+		for (var i = 0; i < entities.length; i++) {
+			entities[i].particleComponent.process();
+		}
+	};
 
 	/**
 	 * @private
 	 * @param  {Entity} entity
 	 */
-	ParticleSystem.prototype.inserted = function (entity) {};
+	ParticleSystem.prototype.inserted = function (/*entity*/) {};
 
 	/**
 	 * @private
 	 * @param  {Entity} entity
 	 */
-	ParticleSystem.prototype.deleted = function (entity) {};
+	ParticleSystem.prototype.deleted = function (/*entity*/) {};
 
 	/**
 	 * @private
 	 * @param  {Entity} entity
 	 * @param  {Component} component
 	 */
-	ParticleSystem.prototype.removedComponent = function (entity, component) {};
+	ParticleSystem.prototype.removedComponent = function (/*entity, component*/) {};
 
 	return ParticleSystem;
 });

@@ -29,18 +29,28 @@ require([
 ) {
 	'use strict';
 
-	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
-
 	var goo = V.initGoo();
 	var world = goo.world;
 
 	world.setSystem(new ParticleSystem());
 
-	world.createEntity([0,0,0], new ParticleComponent()).addToWorld();
-
+	var entity = world.createEntity([0, 0, 0], new ParticleComponent({
+		lifeTime: 3,
+		loop: false,
+		gravity: new Vector3(0, 0, 0),
+		maxParticles: 500,
+		duration: 2,
+		shapeType: 'cone',
+		coneAngle: 0,
+		blending: 'AdditiveBlending',
+		depthWrite: false,
+		emitterRadius: 0,
+		startSpeed: 7
+	})).addToWorld();
+	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
+		entity.particleComponent.texture = texture;
+	});
 	V.addLights();
-
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
-
 	V.process();
 });

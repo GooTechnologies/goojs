@@ -33,7 +33,7 @@ define([
 
 	var particleShader = {
 		defines: {
-			START_SCALE: '1.0'
+			START_SCALE: '2.0'
 		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
@@ -49,7 +49,6 @@ define([
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-			particleMap: 'PARTICLE_MAP',
 			particleTexture: 'PARTICLE_TEXTURE',
 			cameraPosition: Shader.CAMERA,
 			time: Shader.TIME,
@@ -96,12 +95,14 @@ define([
 
 				'float rotation = vertexData.y;',
 
-				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
-
 				'float duration = timeInfo.y;',
 				'float lifeTime = timeInfo.z;',
 				'float timeOffset = timeInfo.w;',
 				'float t = time + timeOffset;',
+
+				// TODO: make dependent on time and tiling
+				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
+
 				'#ifdef LOOP',
 				't = mod(t, duration);',
 				'#endif',
@@ -113,7 +114,7 @@ define([
 				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration);',
 
 				'#ifndef LOOP', // Hide particle if it's not alive
-				'offset *= step(lifeTime, t) * step(-lifeTime, -t);',
+				'offset *= step(0.0, t) * step(-duration, -t);',
 				'#endif',
 
 				'vec4 pos = vec4(getPosition(t, startPos, startDir, gravity),0);',
@@ -122,7 +123,6 @@ define([
 			'}'
 		].join('\n'),
 		fshader: [
-			'uniform sampler2D particleMap;',
 			'uniform sampler2D particleTexture;',
 			'uniform float alphakill;',
 
@@ -145,42 +145,43 @@ define([
 	/**
 	 */
 	function ParticleComponent(options) {
-		Component.apply(this, arguments);
-
 		options = options || {};
-
-		this.gravity = new Vector3();
-		this.startColor = new Vector4(1, 1, 1, 1);
-
-		this.shapeType = 'sphere';
-
+		Component.apply(this, arguments);
 		this.type = ParticleComponent.type;
 
-		this.textureTilesX = 1;
-		this.textureTilesY = 1;
+		this.material = new Material(particleShader);
+		this.material.cullState.enabled = false;
 
-		this.particles = [];
-		this.duration = 10;
-
-		this.emitterRadius = 1;
-		this.shapeRadius = 1;
-		this.coneAngle = 10;
-
-		this.localSpace = true;
-		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
-
-		this.emissionRate = options.emissionRate || 10;
-		this.startLifeTime = options.startLifeTime || 5;
-
-		var material = this.material = new Material(particleShader);
-		material.renderQueue = 3010;
-		material.uniforms.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
-		this.loop = options.loop !== undefined ? options.loop : true;
-
-		if (this.texture) {
-			material.setTexture('PARTICLE_TEXTURE', this.texture);
+		/**
+		 * @type {Vector3}
+		 */
+		this.gravity = new Vector3();
+		if (options.gravity) {
+			this.gravity.copy(options.gravity);
 		}
 
+		this.startColor = new Vector4(1, 1, 1, 1);
+		this.shapeType = 'sphere';
+		this.textureTilesX = 1;
+		this.textureTilesY = 1;
+		this.particles = [];
+		this.duration = options.duration !== undefined ? options.duration : 10;
+		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
+		this.shapeRadius = 1;
+		this.coneAngle = 10;
+		this.localSpace = true;
+		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
+		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 1000;
+		this.emissionRate = options.emissionRate || 10;
+		this.startLifeTime = options.startLifeTime || 5;
+		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
+		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
+		this.loop = options.loop !== undefined ? options.loop : true;
+		this.blending = options.blending !== undefined ? options.blending : true;
+		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
+		if (options.texture) {
+			this.texture = options.texture;
+		}
 	}
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
@@ -211,10 +212,10 @@ define([
 		},
 		depthTest: {
 			get: function () {
-				return this.material.blendState.enabled;
+				return this.material.depthState.enabled;
 			},
 			set: function (value) {
-				this.material.blendState.enabled = value;
+				this.material.depthState.enabled = value;
 			}
 		},
 		alphakill: {
@@ -225,20 +226,28 @@ define([
 				this.material.uniforms.alphakill = value;
 			}
 		},
-		depthWrite: {
+		texture: {
 			get: function () {
-				return this.material.blendState.write;
+				return this.material.getTexture('PARTICLE_TEXTURE');
 			},
 			set: function (value) {
-				this.material.blendState.write = value;
+				this.material.setTexture('PARTICLE_TEXTURE', value);
+			}
+		},
+		depthWrite: {
+			get: function () {
+				return this.material.depthState.write;
+			},
+			set: function (value) {
+				this.material.depthState.write = value;
 			}
 		},
 		renderQueue: {
 			get: function () {
-				return this.material.blendState.write;
+				return this.material.renderQueue;
 			},
 			set: function (value) {
-				this.material.blendState.write = value;
+				this.material.renderQueue = value;
 			}
 		},
 		startSpeed: {
@@ -262,7 +271,7 @@ define([
 		},
 		maxParticles: {
 			get: function () {
-				return this.meshData ? this.meshData.vertexCount / 4 : 1000;
+				return this.meshData ? this.meshData.vertexCount / 4 : this._maxParticles;
 			},
 			set: function (value) {
 				if (value * 4 !== this.meshData.vertexCount) {
@@ -305,6 +314,7 @@ define([
 
 		this.updateVertexData();
 	};
+
 	ParticleComponent.prototype.updateUniforms = function () {
 		var uniforms = this.material.uniforms;
 
@@ -312,7 +322,7 @@ define([
 		tmpGravity.copy(this.gravity);
 		var invRot = this.entity.transformComponent.worldTransform.rotation.clone().invert(); // todo optimize
 		tmpGravity.applyPost(invRot);
-		uniforms.gravity = uniforms.gravity||[];
+		uniforms.gravity = uniforms.gravity || [];
 		uniforms.gravity[0] = tmpGravity.x;
 		uniforms.gravity[1] = tmpGravity.y;
 		uniforms.gravity[2] = tmpGravity.z;
@@ -404,7 +414,7 @@ define([
 				timeInfo[16 * i + j * 4 + 0] = rand; // random
 				timeInfo[16 * i + j * 4 + 1] = this.duration; // timescale
 				timeInfo[16 * i + j * 4 + 2] = 5; // lifetime
-				timeInfo[16 * i + j * 4 + 3] = this.duration * i / maxParticles; // timeOffset
+				timeInfo[16 * i + j * 4 + 3] = -this.duration * i / maxParticles; // timeOffset
 			}
 		}
 
@@ -437,9 +447,9 @@ define([
 					r * Math.sin(phi) * Math.sin(theta)
 				);
 				particle.localStartDirection.setDirect(
-					r * Math.cos(phi) * Math.sin(theta),
-					r * Math.cos(theta),
-					r * Math.sin(phi) * Math.sin(theta)
+					Math.cos(phi) * Math.sin(theta),
+					Math.cos(theta),
+					Math.sin(phi) * Math.sin(theta)
 				).normalize().scale(this.startSpeed);
 
 			} else if (this.shapeType === 'cone') {
@@ -471,7 +481,7 @@ define([
 		meshData.setVertexDataUpdated();
 	};
 
-	ParticleComponent.prototype.update = function () {
+	ParticleComponent.prototype.process = function () {
 		this.updateUniforms();
 	};
 
@@ -495,6 +505,22 @@ define([
 	 */
 	ParticleComponent.prototype.clone = function () {
 		return new ParticleComponent({
+			gravity: this.gravity,
+			startColor: this.startColor,
+			shapeType: this.shapeType,
+			textureTilesX: this.textureTilesX,
+			textureTilesY: this.textureTilesY,
+			particles: this.particles,
+			duration: this.duration,
+			emitterRadius: this.emitterRadius,
+			shapeRadius: this.shapeRadius,
+			coneAngle: this.coneAngle,
+			localSpace: this.localSpace,
+			emissionRate: this.emissionRate,
+			startLifeTime: this.startLifeTime,
+			renderQueue: this.renderQueue,
+			alphakill: this.alphakill,
+			loop: this.loop
 		});
 	};
 
