@@ -51,69 +51,114 @@ define([
 			// Load the scripts that are associated with each script instance
 			// saved in the script component. For engine scripts we just have
 			// to create them.
-			var promises = [];
-			_.forEach(config.scripts, function (scriptInstance) {
-				var ref = scriptInstance.scriptRef;
-				var isEngineScript = ref.indexOf(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX) === 0;
-				var promise = null;
-
-				if (isEngineScript) {
-					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
-					promise = _createEngineScript(scriptName);
-				} else {
-					promise = that._load(scriptInstance.scriptRef, { reload: true });
-				}
-
-				promise = promise.then(function (script) {
-					scriptInstance.options = scriptInstance.options || {};
-					if (script.parameters) {
-						_.defaults(scriptInstance.options, script.parameters);
-					}
-
-					if (script.externals && script.externals.parameters) {
-						ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
-					}
-
-					// We need to duplicate the script so we can have multiple
-					// similar scripts with different parameters.
-					var newScript = Object.create(script);
-					newScript.parameters = {};
-					newScript.enabled = false;
-
-					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options)
-					.then(function () {
-						return newScript;
-					});
-				});
-
-				promises.push(promise);
-			}, null, 'sortValue');
-
-			return RSVP.all(promises).then(function (scripts) {
+			return RSVP.all(_.map(config.scripts, function (instanceConfig) {
+				return that._updateScriptInstance(instanceConfig, options);
+			}, null, 'sortValue'))
+			.then(function (scripts) {
 				component.scripts = scripts;
 				return component;
 			});
 		});
 	};
 
+	ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
+		var that = this;
+
+		return this._createOrLoadScript(handler, instanceConfig)
+		.then(function (script) {
+			var newParameters = instanceConfig.options || {};
+			if (script.parameters) {
+				_.defaults(newParameters, script.parameters);
+			}
+
+			if (script.externals && script.externals.parameters) {
+				ScriptUtils.fillDefaultValues(newParameters, script.externals.parameters);
+			}
+
+			// We need to duplicate the script so we can have multiple
+			// similar scripts with different parameters.
+			// TODO: Check if script exists in the component and just update it
+			// instead of creating a new one.
+			var newScript = Object.create(script);
+			newScript.parameters = {};
+			newScript.enabled = false;
+
+			return that._setParameters(
+				newScript.parameters,
+				newParameters,
+				script.externals,
+				options
+			)
+			.then(_.constant(newScript));
+		});
+	}
+
+	ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
+		var ref = instanceConfig.scriptRef;
+		var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX
+		var isEngineScript = ref.indexOf(prefix) === 0;
+
+		if (isEngineScript) {
+			return this._createEngineScript(ref.slice(prefix.length));
+		} else {
+			return this._load(instanceConfig.scriptRef, { reload: true });
+		}
+	}
+
 	/**
-	 * Sets the parameters of a script instance
+	 * Creates a new instance of one of the default scripts provided by the
+	 * engine.
+	 *
+	 * @param {Object} scriptName
+	 *		The name of the script which is to be created.
+	 *
+	 * @returns {RSVP.Promise}
+	 *		A promise which is resolved with the new script.
+	 *
 	 * @private
-	 * @param parameters The parameters of the new script instance to fill out
-	 * @param config Script values from the json config
+	 */
+	ScriptComponentHandler.prototype._createEngineScript = function (scriptName) {
+		var script = Scripts.create(scriptName);
+		if (!script) {
+			throw new Error('Unrecognized script name');
+		}
+
+		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
+		script.enabled = false;
+
+		SystemBus.emit('goo.scriptExternals', {
+			id: script.id,
+			externals: script.externals
+		});
+
+		return PromiseUtils.resolve(script);
+	}
+
+	/**
+	 * Sets the parameters of a script instance.
+	 *
+	 * @param {object} parameters
+	 *        The parameters of the new script instance which are to be filled
+	 *        out according to the json config and the script externals.
+	 * @param {object}
+	 *        The json config Script values from the json config
 	 * @param externals Parameter definitions as defined in a script's external.parameters object
 	 * @param options Dynamic loader options
 	 * @returns {*}
+	 *
+	 * @private
 	 */
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
+		var that = this;
+
 		// is externals ever falsy?
 		if (!externals || !externals.parameters) {
 			return PromiseUtils.resolve();
 		}
 
 		var promises = externals.parameters.map(function (external) {
-			return this._setParameter(parameters, config[external.key], external, options);
-		}, this);
+			return that._setParameter(parameters, config[external.key], external, options);
+		});
 
 		parameters.enabled = config.enabled !== false;
 
@@ -122,6 +167,7 @@ define([
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
+		var type = external.type;
 
 		if (!ScriptUtils.typeValidators[external.type](config)) {
 			if (typeof external.default === 'undefined') {
@@ -133,57 +179,25 @@ define([
 			return PromiseUtils.resolve();
 		}
 
-		if (external.type === 'texture') {
-			if (!config || !config.textureRef || config.enabled === false) {
-				parameters[key] = null;
-				return PromiseUtils.resolve();
-			} else {
-				return this._load(config.textureRef, options).then(function (texture) {
-					parameters[key] = texture;
-				});
-			}
-		} else if (external.type === 'entity') {
-			if (!config || !config.entityRef || config.enabled === false) {
-				parameters[key] = null;
-				return PromiseUtils.resolve();
-			} else {
-				// return
-				this._load(config.entityRef, options).then(function (entity) {
-					parameters[key] = entity;
-				});
-
-				return PromiseUtils.resolve();
-			}
+		if (type === 'texture' || type === 'entity') {
+			this._setRefParameter(type + 'Ref', parameters, config, external, options);
 		} else {
+			// Revert to default if value has a bad type.
 			parameters[key] = _.clone(config);
-			// revert to default if value of bad type
 			return PromiseUtils.resolve();
 		}
 	};
 
-	/**
-	 * Creates a new script engine.
-	 *
-	 * @param {Object} scriptName
-	 *		The name of the script which is to be created.
-	 *
-	 * @returns {Promise}
-	 *		A promise which is resolved with the new script.
-	 * @private
-	 */
-	function _createEngineScript(scriptName) {
-		var script = Scripts.create(scriptName);
-		if (!script) { throw new Error('Unrecognized script name'); }
+	ScriptComponentHandler.prototype._setRefParameter = function (refKey, parameters, config, external, options) {
+		if (!config || !config[refKey] || config.enabled === false) {
+			parameters[external.key] = null;
+			return PromiseUtils.resolve();
+		}
 
-		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
-		script.enabled = false;
-
-		SystemBus.emit('goo.scriptExternals', {
-			id: script.id,
-			externals: script.externals
+		return this._load(config[refKey], options)
+		.then(function (obj) {
+			parameters[external.key] = obj;
 		});
-
-		return PromiseUtils.resolve(script);
 	}
 
 	return ScriptComponentHandler;

@@ -102,6 +102,28 @@ define(function () {
 	};
 
 	/**
+	 * Creates an array of values by running each element in collection through
+	 * iteratee. The iteratee is bound to context and invoked with three
+	 * arguments: (value, index|key, collection).
+	 *
+	 * @param {Array|Object|string} collection
+	 * @param {Function} iteratee
+	 * @param {*} context
+	 * @param {string} sortProp
+	 *
+	 * @return {Array}
+	 */
+	ObjectUtils.map = function (collection, iteratee, context, sortProp) {
+		var result = [];
+
+		ObjectUtils.forEach(collection, function (value, key) {
+			result.push(iteratee.call(context, value, key, collection));
+		}, context, sortProp);
+
+		return result;
+	};
+
+	/**
 	 * Performs a deep clone. Can handle primitive types, arrays, generic objects, typed arrays and html nodes. Functions are shared. Does not handle circular references - also does not preserve original constructors/prototypes.
 	 * @param {*} object Object to clone
 	 * @returns {*}
@@ -175,6 +197,14 @@ define(function () {
 
 			return fun.apply(this, arguments);
 		};
+	};
+
+	ObjectUtils.constant = function (value) {
+		return function () { return value; };
+	};
+
+	ObjectUtils.property = function (propName) {
+		return function (obj) { return obj[propName]; };
 	};
 
 	return ObjectUtils;
