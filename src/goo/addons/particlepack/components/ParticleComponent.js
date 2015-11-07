@@ -98,17 +98,24 @@ define([
 
 				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
 
-				'float rand = timeInfo.x;',
 				'float duration = timeInfo.y;',
 				'float lifeTime = timeInfo.z;',
 				'float timeOffset = timeInfo.w;',
-				'float t = mod(time + timeOffset, duration);',
+				'float t = time + timeOffset;',
+				'#ifdef LOOP',
+				't = mod(t, duration);',
+				'#endif',
 
 				'rotation = getAngle(t);',
 				'float c = cos(rotation);',
 				'float s = sin(rotation);',
 				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration) * (1.0 - step(lifeTime, mod(time - timeOffset, duration)));',
+				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration);',
+
+				'#ifndef LOOP', // Hide particle if it's not alive
+				'offset *= step(lifeTime, t) * step(-lifeTime, -t);',
+				'#endif',
+
 				'vec4 pos = vec4(getPosition(t, startPos, startDir, gravity),0);',
 				'mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
 				'gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
@@ -168,6 +175,7 @@ define([
 		var material = this.material = new Material(particleShader);
 		material.renderQueue = 3010;
 		material.uniforms.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
+		this.loop = options.loop !== undefined ? options.loop : true;
 
 		if (this.texture) {
 			material.setTexture('PARTICLE_TEXTURE', this.texture);
@@ -181,6 +189,18 @@ define([
 	ParticleComponent.type = 'ParticleComponent';
 
 	Object.defineProperties(ParticleComponent.prototype, {
+		loop: {
+			get: function () {
+				return this.material.shader.hasDefine('LOOP');
+			},
+			set: function (value) {
+				if (value) {
+					this.material.shader.setDefine('LOOP', true);
+				} else {
+					this.material.shader.removeDefine('LOOP');
+				}
+			}
+		},
 		blending: {
 			get: function () {
 				return this.material.blendState.blending;
