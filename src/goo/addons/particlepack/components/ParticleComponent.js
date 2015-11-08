@@ -99,13 +99,14 @@ define([
 				'float lifeTime = timeInfo.z;',
 				'float timeOffset = timeInfo.w;',
 				'float t = time + timeOffset;',
-
-				// TODO: make dependent on time and tiling
-				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
+				'float tNoMod = time + timeOffset;',
 
 				'#ifdef LOOP',
 				't = mod(t, duration);',
 				'#endif',
+
+				// TODO: make dependent on time and tiling
+				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
 
 				'rotation = getAngle(t);',
 				'float c = cos(rotation);',
@@ -113,9 +114,7 @@ define([
 				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration);',
 
-				'#ifndef LOOP', // Hide particle if it's not alive
-				'offset *= step(0.0, t) * step(-duration, -t);',
-				'#endif',
+				'offset *= step(0.0, tNoMod) * step(0.0, t) * step(-lifeTime, -t);',
 
 				'vec4 pos = vec4(getPosition(t, startPos, startDir, gravity),0);',
 				'mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
@@ -177,6 +176,7 @@ define([
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
+		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this.blending = options.blending !== undefined ? options.blending : true;
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
 		if (options.texture) {
@@ -407,14 +407,21 @@ define([
 
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
-
 		for (i = 0; i < maxParticles; i++) {
 			var rand = Math.random();
+			var timeOffset = i / this.emissionRate;
+			var timeScale = this.duration;
+			if (timeOffset > this.duration) {
+				timeScale = 0;
+			}
+			if (!this.preWarm) {
+				timeOffset -= this.duration;
+			}
 			for (j = 0; j < 4; j++) {
 				timeInfo[16 * i + j * 4 + 0] = rand; // random
-				timeInfo[16 * i + j * 4 + 1] = this.duration; // timescale
-				timeInfo[16 * i + j * 4 + 2] = 5; // lifetime
-				timeInfo[16 * i + j * 4 + 3] = -this.duration * i / maxParticles; // timeOffset
+				timeInfo[16 * i + j * 4 + 1] = timeScale; // timescale
+				timeInfo[16 * i + j * 4 + 2] = Math.min(this.startLifeTime, this.duration); // lifetime
+				timeInfo[16 * i + j * 4 + 3] = timeOffset;//-this.duration * i / maxParticles + (this.preWarm ? this.duration : 0); // timeOffset
 			}
 		}
 

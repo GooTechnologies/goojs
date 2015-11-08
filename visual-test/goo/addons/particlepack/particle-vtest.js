@@ -34,20 +34,24 @@ require([
 
 	world.setSystem(new ParticleSystem());
 
-	var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-		lifeTime: 3,
-		loop: false,
-		gravity: new Vector3(0, 0, 0),
-		maxParticles: 500,
-		duration: 2,
-		shapeType: 'cone',
-		coneAngle: 0,
-		blending: 'AdditiveBlending',
-		depthWrite: false,
-		emitterRadius: 0,
-		startSpeed: 7
-	})).addToWorld();
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
+
+		var entity = world.createEntity([0, 0, 0], new ParticleComponent({
+			lifeTime: 3,
+			loop: false,
+			preWarm: true,
+			gravity: new Vector3(0, 0, 0),
+			maxParticles: 500,
+			duration: 2,
+			shapeType: 'cone',
+			coneAngle: 0,
+			blending: 'AdditiveBlending',
+			depthWrite: false,
+			emitterRadius: 0,
+			emissionRate: 10,
+			startSpeed: 7
+		})).addToWorld();
+
 		entity.particleComponent.texture = texture;
 	});
 	V.addLights();
