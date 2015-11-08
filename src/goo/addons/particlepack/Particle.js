@@ -21,7 +21,7 @@ define([
 		if (looping) {
 			// Move the timeOffset so the time window is on the same loop
 			var movedTimeOffset = this.timeOffset % duration;
-			if (movedTimeOffset < 0) {
+			if (movedTimeOffset <= 0) {
 				movedTimeOffset += duration;
 			}
 			t0 = t0 % duration;
@@ -29,7 +29,7 @@ define([
 			if (t1 < t0) {
 				t1 += duration;
 			}
-			return movedTimeOffset > t0 && movedTimeOffset < t1;
+			return movedTimeOffset >= t0 && movedTimeOffset < t1;
 		}
 
 		return false;

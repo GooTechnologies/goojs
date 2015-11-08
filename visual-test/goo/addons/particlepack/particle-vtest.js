@@ -49,7 +49,7 @@ require([
 			blending: 'AdditiveBlending',
 			depthWrite: false,
 			emitterRadius: 0,
-			emissionRate: 3,
+			emissionRate: 10,
 			startSpeed: 0,
 			textureTilesX: 1,
 			textureTilesY: 1,

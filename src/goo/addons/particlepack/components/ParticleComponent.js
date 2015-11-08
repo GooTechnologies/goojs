@@ -83,7 +83,7 @@ define([
 			'}',
 
 			'float getScale(float t){',
-			'    return START_SCALE;', // (1.0 - t) *
+			'    return (1.0 - t) *START_SCALE;',
 			'}',
 
 			'float getAngle(float t){',
@@ -440,6 +440,7 @@ define([
 
 			if (particle.timeOffset > this.duration) {
 				particle.timeScale = 0;
+				particle.timeOffset = -9999;
 				particle.active = false;
 			} else {
 				particle.active = true;
