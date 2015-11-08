@@ -83,7 +83,7 @@ define([
 			'}',
 
 			'float getScale(float t){',
-			'    return (1.0 - t) * START_SCALE;',
+			'    return START_SCALE;', // (1.0 - t) *
 			'}',
 
 			'float getAngle(float t){',
@@ -164,17 +164,17 @@ define([
 		}
 
 		this.startColor = new Vector4(1, 1, 1, 1);
-		this.shapeType = 'sphere';
 		this.particles = [];
+		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 10;
 		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
-		this.shapeRadius = 1;
-		this.coneAngle = 10;
-		this.localSpace = true;
+		this.shapeRadius = options.shapeRadius !== undefined ? options.shapeRadius : 1;
+		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
+		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 1000;
-		this.emissionRate = options.emissionRate || 10;
-		this.startLifeTime = options.startLifeTime || 5;
+		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
+		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime : 5;
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
@@ -212,6 +212,26 @@ define([
 			},
 			set: function (value) {
 				this.material.blendState.blending = value;
+			}
+		},
+		localSpace: {
+			get: function () {
+				if (!this.entity) {
+					return this._localSpace;
+				}
+				return !!this.entity.transformComponent.parent;
+			},
+			set: function (value) {
+				if (!this.entity) {
+					this._localSpace = value;
+					return;
+				}
+
+				if (!value && this.entity.transformComponent.parent) {
+					this.entity.transformComponent.parent.detachChild(this.entity.transformComponent);
+				} else if (value && !this.entity.transformComponent.parent) {
+					this.entity.transformComponent.parent.attachChild(this.entity.transformComponent);
+				}
 			}
 		},
 		depthTest: {
@@ -328,8 +348,9 @@ define([
 		entity.name = 'ParticleSystem';
 		entity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		entity.addToWorld();
-
-		this._entity.transformComponent.attachChild(entity.transformComponent, false);
+		if (this._localSpace) {
+			this._entity.transformComponent.attachChild(entity.transformComponent, false);
+		}
 
 		this.updateVertexData();
 	};
@@ -413,20 +434,25 @@ define([
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		for (i = 0; i < maxParticles; i++) {
-			var rand = Math.random();
-			var timeOffset = i / this.emissionRate;
-			var timeScale = this.duration;
-			if (timeOffset > this.duration) {
-				timeScale = 0;
+			var particle = this.particles[i];
+			particle.timeOffset = i / this.emissionRate;
+			particle.timeScale = this.duration;
+
+			if (particle.timeOffset > this.duration) {
+				particle.timeScale = 0;
+				particle.active = false;
+			} else {
+				particle.active = true;
 			}
 			if (!this.preWarm) {
-				timeOffset -= this.duration;
+				particle.timeOffset -= this.duration;
 			}
+
 			for (j = 0; j < 4; j++) {
-				timeInfo[16 * i + j * 4 + 0] = rand; // random
-				timeInfo[16 * i + j * 4 + 1] = timeScale; // timescale
+				timeInfo[16 * i + j * 4 + 0] = 0; // unset
+				timeInfo[16 * i + j * 4 + 1] = particle.timeScale; // timescale
 				timeInfo[16 * i + j * 4 + 2] = Math.min(this.startLifeTime, this.duration); // lifetime
-				timeInfo[16 * i + j * 4 + 3] = timeOffset;//-this.duration * i / maxParticles + (this.preWarm ? this.duration : 0); // timeOffset
+				timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;//-this.duration * i / maxParticles + (this.preWarm ? this.duration : 0); // timeOffset
 			}
 		}
 
@@ -493,12 +519,47 @@ define([
 		meshData.setVertexDataUpdated();
 	};
 
-	ParticleComponent.prototype.process = function () {
+	ParticleComponent.prototype.process = function (tpf) {
 		this.updateUniforms();
+
+		// Get all particles emitted during last frame and set their positions
+		if (!this.localSpace) {
+			var particles = this.particles;
+			var t0 = this._entity._world.time - tpf;
+			var t1 = this._entity._world.time;
+			var looping = this.loop;
+			var dirty = false;
+			var meshData = this.meshData;
+			var startPos = meshData.getAttributeBuffer('START_POS');
+			var startDir = meshData.getAttributeBuffer('START_DIR');
+			for (var i = 0; i < particles.length; i++) {
+				var particle = particles[i];
+				var didEmit = particle.didEmitBetween(t0, t1, looping, this.duration);
+				if (didEmit) {
+					particle.localStartPosition.copy(this._entity.transformComponent.worldTransform.translation);
+					console.log(i, particle.localStartPosition.y)
+					for (var j = 0; j < 4; j++) {
+						startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
+						startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
+						startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
+						startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
+						startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
+						startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
+					}
+
+					dirty = true;
+				}
+			}
+			if (dirty) {
+				meshData.setVertexDataUpdated();
+			}
+		}
 	};
 
 	ParticleComponent.prototype.destroy = function () {
-		this._entity.detachChild(this.entity);
+		if (this.entity.parent) {
+			this._entity.detachChild(this.entity);
+		}
 		this.entity.removeFromWorld();
 	};
 

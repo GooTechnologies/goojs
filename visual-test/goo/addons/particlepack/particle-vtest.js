@@ -33,26 +33,33 @@ require([
 	var world = goo.world;
 
 	world.setSystem(new ParticleSystem());
+	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 1), new Material(ShaderLib.uber)).addToWorld();
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 
 		var entity = world.createEntity([0, 0, 0], new ParticleComponent({
 			lifeTime: 3,
-			loop: false,
+			loop: true,
 			preWarm: false,
 			gravity: new Vector3(0, 0, 0),
 			maxParticles: 500,
 			duration: 2,
-			shapeType: 'cone',
+			shapeType: 'sphere',
 			coneAngle: 0,
 			blending: 'AdditiveBlending',
 			depthWrite: false,
 			emitterRadius: 0,
-			emissionRate: 10,
-			startSpeed: 7,
+			emissionRate: 3,
+			startSpeed: 0,
 			textureTilesX: 1,
-			textureTilesY: 1
-		})).addToWorld();
+			textureTilesY: 1,
+			localSpace: false
+		}), function (entity) {
+			var x = 10 * Math.cos(world.time * 1);
+			var y = 10 * Math.sin(world.time * 1);
+			entity.setTranslation(0, y, x);
+			sphereEntity.setTranslation(0, y, x);
+		}).addToWorld();
 
 		entity.particleComponent.texture = texture;
 	});

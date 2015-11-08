@@ -19,9 +19,9 @@ define([
 	 * @private
 	 * @param {array} entities
 	 */
-	ParticleSystem.prototype.process = function (entities) {
+	ParticleSystem.prototype.process = function (entities, tpf) {
 		for (var i = 0; i < entities.length; i++) {
-			entities[i].particleComponent.process();
+			entities[i].particleComponent.process(tpf);
 		}
 	};
 
