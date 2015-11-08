@@ -42,9 +42,9 @@ define([
 			startPos: 'START_POS',
 			startDir: 'START_DIR',
 			vertexOffset: 'OFFSET',
-			textureTile: 'TILE'
 		},
 		uniforms: {
+			textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
@@ -60,11 +60,11 @@ define([
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexData;',
 			'attribute vec2 vertexOffset;',
-			'attribute vec4 textureTile;',
 			'attribute vec4 timeInfo;',
 			'attribute vec3 startPos;',
 			'attribute vec3 startDir;',
 
+			'uniform vec4 textureTileInfo;',
 			'uniform mat4 viewMatrix;',
 			'uniform mat4 projectionMatrix;',
 			'uniform mat4 viewProjectionMatrix;',
@@ -105,8 +105,10 @@ define([
 				't = mod(t, duration);',
 				'#endif',
 
-				// TODO: make dependent on time and tiling
-				'coords = (vertexOffset * 0.5 + 0.5) * textureTile.zw + textureTile.xy;',
+				'float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * t / lifeTime, textureTileInfo.x));',
+				'float tileY = floor(mod(textureTileInfo.y * t / lifeTime, textureTileInfo.y));',
+				'vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
+				'coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
 
 				'rotation = getAngle(t);',
 				'float c = cos(rotation);',
@@ -114,6 +116,7 @@ define([
 				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration);',
 
+				// Particle should show if t > 0 and within life span
 				'offset *= step(0.0, tNoMod) * step(0.0, t) * step(-lifeTime, -t);',
 
 				'vec4 pos = vec4(getPosition(t, startPos, startDir, gravity),0);',
@@ -150,6 +153,7 @@ define([
 
 		this.material = new Material(particleShader);
 		this.material.cullState.enabled = false;
+		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
 		/**
 		 * @type {Vector3}
@@ -161,8 +165,6 @@ define([
 
 		this.startColor = new Vector4(1, 1, 1, 1);
 		this.shapeType = 'sphere';
-		this.textureTilesX = 1;
-		this.textureTilesY = 1;
 		this.particles = [];
 		this.duration = options.duration !== undefined ? options.duration : 10;
 		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
@@ -179,6 +181,8 @@ define([
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this.blending = options.blending !== undefined ? options.blending : true;
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
+		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
+		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
@@ -232,6 +236,22 @@ define([
 			},
 			set: function (value) {
 				this.material.setTexture('PARTICLE_TEXTURE', value);
+			}
+		},
+		textureTilesX: {
+			get: function () {
+				return this.material.uniforms.textureTileInfo[0];
+			},
+			set: function (value) {
+				this.material.uniforms.textureTileInfo[0] = value;
+			}
+		},
+		textureTilesY: {
+			get: function () {
+				return this.material.uniforms.textureTileInfo[1];
+			},
+			set: function (value) {
+				this.material.uniforms.textureTileInfo[1] = value;
 			}
 		},
 		depthWrite: {
@@ -296,7 +316,6 @@ define([
 		]);
 		attributeMap.DATA = MeshData.createAttribute(2, 'Float');
 		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
-		attributeMap.TILE = MeshData.createAttribute(4, 'Float');
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
 		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
@@ -350,13 +369,9 @@ define([
 		var maxParticles = this.maxParticles;
 		var i, j;
 
-		var scaleX = 1 / this.textureTilesX;
-		var scaleY = 1 / this.textureTilesY;
-
 		var offset = meshData.getAttributeBuffer('OFFSET');
 		var pos = meshData.getAttributeBuffer('POSITION');
 
-		var tile = meshData.getAttributeBuffer('TILE');
 		var indices = meshData.getIndexBuffer();
 		for (i = 0; i < maxParticles; i++) {
 			offset[8 * i + 0] = -1;
@@ -370,16 +385,6 @@ define([
 
 			offset[8 * i + 6] = 1;
 			offset[8 * i + 7] = -1;
-
-			var offsetX = Math.floor(this.textureTilesX * Math.random()) / this.textureTilesX;
-			var offsetY = Math.floor(this.textureTilesY * Math.random()) / this.textureTilesY;
-
-			for (j = 0; j < 4; j++) {
-				tile[(16 * i + 0) + 4 * j] = offsetX;
-				tile[(16 * i + 1) + 4 * j] = offsetY;
-				tile[(16 * i + 2) + 4 * j] = scaleX;
-				tile[(16 * i + 3) + 4 * j] = scaleY;
-			}
 
 			indices[6 * i + 0] = 4 * i + 0;
 			indices[6 * i + 1] = 4 * i + 3;
