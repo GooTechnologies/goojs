@@ -48,9 +48,6 @@ define([
 		.then(function (component) {
 			if (!component) { return; }
 
-			// Load the scripts that are associated with each script instance
-			// saved in the script component. For engine scripts we just have
-			// to create them.
 			return RSVP.all(_.map(config.scripts, function (instanceConfig) {
 				return that._updateScriptInstance(instanceConfig, options);
 			}, null, 'sortValue'))
@@ -93,6 +90,20 @@ define([
 		});
 	}
 
+	/**
+	 * Depending on the reference specified in the script instance, creates an
+	 * engine script or loads the referenced script.
+	 *
+	 * @param {object} instanceConfig
+	 *        JSON configuration of the script instance. Should contain the
+	 *        "scriptRef" property which refers to the script which is to be
+	 *        loaded.
+	 *
+	 * @return {Promise}
+	 *         A promise which is resolved with the referenced script.
+	 *
+	 * @private
+	 */
 	ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
 		var ref = instanceConfig.scriptRef;
 		var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX
@@ -101,7 +112,7 @@ define([
 		if (isEngineScript) {
 			return this._createEngineScript(ref.slice(prefix.length));
 		} else {
-			return this._load(instanceConfig.scriptRef, { reload: true });
+			return this._load(ref, { reload: true });
 		}
 	}
 
@@ -135,16 +146,21 @@ define([
 	}
 
 	/**
-	 * Sets the parameters of a script instance.
+	 * Sets the parameters of a script instance from the json configuration.
 	 *
 	 * @param {object} parameters
-	 *        The parameters of the new script instance which are to be filled
+	 *        Parameters of the new script instance which are to be filled
 	 *        out according to the json config and the script externals.
 	 * @param {object}
-	 *        The json config Script values from the json config
-	 * @param externals Parameter definitions as defined in a script's external.parameters object
-	 * @param options Dynamic loader options
-	 * @returns {*}
+	 *        json configuration from which the parameter values are to be
+	 *        extracted.
+	 * @param {object} externals
+	 *        Parameter descriptor as defined in a script's external.parameters
+	 *        object.
+	 * @param options
+	 *        DynamicLoader options.
+	 *
+	 * @returns {Promise}
 	 *
 	 * @private
 	 */
@@ -165,40 +181,60 @@ define([
 		return RSVP.all(promises);
 	};
 
+	/**
+	 * Sets a script parameter from the json configuration.
+	 *
+	 * @param {object} parameters
+	 *        Script parameters object on which the parameter is to be set.
+	 * @param {object} config
+	 *        JSON configuration from which the parameter values are to be
+	 *        extracted.
+	 * @param {object} external
+	 *        Parameter descriptor (type, key, etc).
+	 * @param {object} options
+	 *        DynamicLoader options.
+	 *
+	 * @returns {Promise}
+	 *          A promise which is resolved when the parameter has been set.
+	 *
+	 * @private
+	 */
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
 		var type = external.type;
 
-		if (!ScriptUtils.typeValidators[external.type](config)) {
+		function getInvalidParam() {
 			if (typeof external.default === 'undefined') {
-				parameters[key] = _.deepClone(ScriptUtils.defaultsByType[external.type]);
+				return _.deepClone(ScriptUtils.defaultsByType[type]);
 			} else {
-				parameters[key] = _.deepClone(external.default);
+				return _.deepClone(external.default);
+			}
+		}
+
+		function setRefParam() {
+			if (!config || !config[type] || config.enabled === false) {
+				parameters[key] = null;
+				return PromiseUtils.resolve();
 			}
 
+			return this._load(config[type], options).then(function (obj) {
+				parameters[key] = obj;
+			});
+		}
+
+		if (!ScriptUtils.typeValidators[external.type](config)) {
+			parameters[key] = getInvalidParam();
 			return PromiseUtils.resolve();
 		}
 
 		if (type === 'texture' || type === 'entity') {
-			this._setRefParameter(type + 'Ref', parameters, config, external, options);
+			return setRefParam();
 		} else {
 			// Revert to default if value has a bad type.
 			parameters[key] = _.clone(config);
 			return PromiseUtils.resolve();
 		}
 	};
-
-	ScriptComponentHandler.prototype._setRefParameter = function (refKey, parameters, config, external, options) {
-		if (!config || !config[refKey] || config.enabled === false) {
-			parameters[external.key] = null;
-			return PromiseUtils.resolve();
-		}
-
-		return this._load(config[refKey], options)
-		.then(function (obj) {
-			parameters[external.key] = obj;
-		});
-	}
 
 	return ScriptComponentHandler;
 });
