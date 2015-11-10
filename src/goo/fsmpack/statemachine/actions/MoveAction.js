@@ -51,7 +51,7 @@ define([
 		var transform = entity.transformComponent.transform;
 		this.forward = Vector3.fromArray(this.translation);
 		var orientation = transform.rotation;
-		orientation.applyPost(this.forward);
+		this.forward.applyPost(orientation);
 	};
 
 	MoveAction.prototype._run = function (fsm) {
@@ -63,7 +63,7 @@ define([
 			if (this.relative) {
 				var forward = Vector3.fromArray(this.translation);
 				var orientation = transform.rotation;
-				orientation.applyPost(forward);
+				forward.applyPost(orientation);
 
 				if (this.everyFrame) {
 					forward.scale(fsm.getTpf() * 10);
