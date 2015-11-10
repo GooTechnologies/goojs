@@ -61,7 +61,7 @@ define([
 	ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
 		var that = this;
 
-		return this._createOrLoadScript(handler, instanceConfig)
+		return this._createOrLoadScript(instanceConfig)
 		.then(function (script) {
 			var newParameters = instanceConfig.options || {};
 			if (script.parameters) {
@@ -200,39 +200,41 @@ define([
 	 * @private
 	 */
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
+		var that = this;
 		var key = external.key;
 		var type = external.type;
 
+		function setParam(value) {
+			parameters[key] = value;
+			return PromiseUtils.resolve();
+		}
+
 		function getInvalidParam() {
-			if (typeof external.default === 'undefined') {
-				return _.deepClone(ScriptUtils.defaultsByType[type]);
+			if (external.default === undefined) {
+				return _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[type]);
 			} else {
 				return _.deepClone(external.default);
 			}
 		}
 
 		function setRefParam() {
-			if (!config || !config[type] || config.enabled === false) {
-				parameters[key] = null;
-				return PromiseUtils.resolve();
+			if (!config || config.enabled === false) {
+				return setParam(null);
 			}
 
-			return this._load(config[type], options).then(function (obj) {
-				parameters[key] = obj;
-			});
+			// Get wrapped ref (i.e. entityRef) and if none exists it is because
+			// we got a direct ref.
+			var ref = config[type + 'Ref'] || config;
+
+			return that._load(ref, options).then(setParam);
 		}
 
-		if (!ScriptUtils.typeValidators[external.type](config)) {
-			parameters[key] = getInvalidParam();
-			return PromiseUtils.resolve();
-		}
-
-		if (type === 'texture' || type === 'entity') {
+		if (!ScriptUtils.TYPE_VALIDATORS[type](config)) {
+			return setParam(getInvalidParam())
+		} else if (ScriptUtils.isRefType(type)) {
 			return setRefParam();
 		} else {
-			// Revert to default if value has a bad type.
-			parameters[key] = _.clone(config);
-			return PromiseUtils.resolve();
+			return setParam(_.clone(config));
 		}
 	};
 
