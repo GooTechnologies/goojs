@@ -315,7 +315,7 @@ define(function () {
 	 * @return {string}
 	 */
 	ObjectUtils.getExtension = function (value) {
-		if (_.isString(value)) {
+		if (ObjectUtils.isString(value)) {
 			var dotIndex = value.lastIndexOf('.');
 			if (dotIndex >= -1) {
 				return value.substr(dotIndex + 1).toLowerCase();
