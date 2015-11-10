@@ -504,7 +504,6 @@ define([
 		'vec4',
 		'boolean',
 		'texture',
-		'image',
 		'sound',
 		'camera',
 		'entity',
