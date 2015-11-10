@@ -161,6 +161,14 @@ define([
 			});
 		});
 
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setArray([55, 66]);
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
 		describe('set', function () {
 			it('can set a vector', function () {
 				var vector = new Vector2(11, 22);
@@ -168,7 +176,6 @@ define([
 				expect(vector).toBeCloseToVector(new Vector2(55, 66));
 			});
 		});
-
 
 		describe('addDirect', function () {
 			it('can add to a vector', function () {
@@ -266,6 +273,12 @@ define([
 
 				expect(clone).toBeCloseToVector(original);
 				expect(clone).not.toBe(original);
+			});
+		});
+
+		describe('toArray', function () {
+			it('converts to array', function () {
+				expect(Vector2.fromArray([1, 2]).toArray()).toEqual([1, 2]);
 			});
 		});
 
@@ -448,14 +461,6 @@ define([
 				it('can set a vector', function () {
 					var vector = new Vector2(11, 22);
 					vector.setDirect(55, 66);
-					expect(vector).toBeCloseToVector(new Vector2(55, 66));
-				});
-			});
-
-			describe('setArray', function () {
-				it('can set a vector', function () {
-					var vector = new Vector2(11, 22);
-					vector.setArray([55, 66]);
 					expect(vector).toBeCloseToVector(new Vector2(55, 66));
 				});
 			});

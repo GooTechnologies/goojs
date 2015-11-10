@@ -546,6 +546,25 @@ define([
 		}
 	};
 
+	/**
+	 * Sets the vector content from an array of numbers.
+	 * @param {Array<number>} array
+	 */
+	Vector2.prototype.setArray = function (array) {
+		this.x = array[0];
+		this.y = array[1];
+
+		return this;
+	};
+
+	/**
+	 * Returns the components of the vector in array form
+	 * @returns {Array<number>}
+	 */
+	Vector2.prototype.toArray = function () {
+		return [this.x, this.y];
+	};
+
 	// #ifdef DEBUG
 	Vector.addReturnChecks(Vector2.prototype, [
 		'dot', 'dotDirect',
@@ -740,17 +759,6 @@ define([
 	Vector2.prototype.mulVector = ObjectUtils.warnOnce('Vector2.prototype.mulVector is deprecated.', function (vector) {
 		this.data[0] *= vector.data[0];
 		this.data[1] *= vector.data[1];
-
-		return this;
-	});
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Vector2.prototype.setArray = ObjectUtils.warnOnce('Vector2.prototype.setArray is deprecated.', function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
 
 		return this;
 	});
