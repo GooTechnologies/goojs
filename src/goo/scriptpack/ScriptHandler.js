@@ -691,7 +691,7 @@ define([
 
 			// create cares about this, in order to build the control panel for the script
 			if (parameter.default === null || parameter.default === undefined) {
-				parameter.default = ScriptUtils.defaultsByType[parameter.type];
+				parameter.default = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
 			}
 
 			outScript.externals.parameters.push(parameter);
