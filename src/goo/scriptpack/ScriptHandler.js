@@ -112,6 +112,10 @@ define([
 
 		// get a script factory in string form
 		var scriptFactoryStr = [
+			'//# sourceURL=gooCustomScripts/' + encodeURIComponent(config.name) + '.js',
+			'',
+			'// ' + config.name,
+			'',
 			'// <![CDATA[',
 			"window._gooScriptFactories['" + config.id + "'] = function () {",
 			config.body,
