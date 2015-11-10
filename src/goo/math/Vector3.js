@@ -714,6 +714,18 @@ define([
 		}
 	};
 
+	/**
+	 * Sets the vector content from an array of numbers.
+	 * @param {Array<number>} array
+	 */
+	Vector3.prototype.setArray = function (array) {
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+		
+		return this;
+	};
+
 	// SHIM START
 	Object.defineProperty(Vector3.prototype, 'data', {
 		get: ObjectUtils.warnOnce('The .data property of Vector3 was removed. Please use the .x, .y and .z properties instead.', function () {
@@ -959,18 +971,6 @@ define([
 		this.x = 0.0 - this.x;
 		this.y = 0.0 - this.y;
 		this.z = 0.0 - this.z;
-
-		return this;
-	});
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Vector3.prototype.setArray = ObjectUtils.warnOnce('Vector3.prototype.setArray is deprecated.', function (array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
 
 		return this;
 	});
