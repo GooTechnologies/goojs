@@ -1,3 +1,16 @@
+v0.15.14 --- 2015-11-10
+
+### Additions
+
+  + Added Vector2.prototype.toArray
+  + Added Vector4.prototype.toArray
+
+### Fixes
+
+  * Undeprecated Vector2.prototype.setArray
+  * Undeprecated Vector3.prototype.setArray
+  * Undeprecated Vector4.prototype.setArray
+
 v0.15.13 --- 2015-10-28
 ----------------------
 
