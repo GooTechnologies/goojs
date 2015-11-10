@@ -1,3 +1,9 @@
+v0.15.15 --- 2015-11-10
+
+### Fixes
+
+  * Fixed a critical bug in ObjectUtils
+
 v0.15.14 --- 2015-11-10
 
 ### Additions
