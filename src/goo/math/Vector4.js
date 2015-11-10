@@ -636,6 +636,26 @@ define([
 		}
 	};
 
+	/**
+	 * Sets the vector content from an array of numbers.
+	 * @param {Array<number>} array
+	 */
+	Vector4.prototype.setArray = function (array) {
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+		this.w = array[3];
+		return this;
+	};
+
+	/**
+	 * Returns the components of the vector in array form
+	 * @returns {Array<number>}
+	 */
+	Vector4.prototype.toArray = function () {
+		return [this.x, this.y, this.z, this.w];
+	};
+
 	// #ifdef DEBUG
 	Vector.addReturnChecks(Vector4.prototype, [
 		'dot', 'dotDirect',
@@ -865,19 +885,6 @@ define([
 		this.data[1] *= vector.data[1];
 		this.data[2] *= vector.data[2];
 		this.data[3] *= vector.data[3];
-
-		return this;
-	});
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Vector4.prototype.setArray = ObjectUtils.warnOnce('Vector4.prototype.setArray is deprecated.', function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
-		this.data[3] = array[3];
 
 		return this;
 	});
