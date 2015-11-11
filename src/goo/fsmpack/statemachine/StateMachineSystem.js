@@ -18,7 +18,6 @@ define([
 		this.engine = engine;
 		this.resetRequest = false;
 		this.passive = false;
-		this.entered = true;
 		this.paused = false;
 
 		/**
@@ -59,12 +58,13 @@ define([
 
 		this.time += tpf;
 
-		if (this.entered) {
-			this.entered = false;
-			for (var i = 0; i < entities.length; i++) {
-				component = entities[i].stateMachineComponent;
+		// Enter unentered components
+		for (var i = 0; i < entities.length; i++) {
+			component = entities[i].stateMachineComponent;
+			if (!component.entered) {
 				component.init();
 				component.doEnter();
+				component.entered = true;
 			}
 		}
 
@@ -90,7 +90,12 @@ define([
 	StateMachineSystem.prototype.play = function () {
 		this.passive = false;
 		if (!this.paused) {
-			this.entered = true;
+			// Un-enter entered components
+			var entities = this._activeEntities;
+			for (var i = 0; i < entities.length; i++) {
+				var component = entities[i].stateMachineComponent;
+				component.entered = false;
+			}
 		}
 		this.paused = false;
 	};

@@ -23,6 +23,7 @@ define([
 		this.vars = {};
 		this.system = null;
 		this.time = 0;
+		this.entered = false;
 
 		this.active = true;
 	}
