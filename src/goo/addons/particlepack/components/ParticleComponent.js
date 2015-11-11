@@ -33,7 +33,7 @@ define([
 
 	var particleShader = {
 		defines: {
-			START_SCALE: '2.0'
+			START_SCALE: '1.0'
 		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
@@ -51,7 +51,7 @@ define([
 			worldMatrix: Shader.WORLD_MATRIX,
 			particleTexture: 'PARTICLE_TEXTURE',
 			cameraPosition: Shader.CAMERA,
-			time: Shader.TIME,
+			time: 0.0,
 			gravity: [0, 0, 0],
 			uColor: [1, 1, 1, 1],
 			alphakill: 0
@@ -83,7 +83,7 @@ define([
 			'}',
 
 			'float getScale(float t){',
-			'    return (1.0 - t) *START_SCALE;',
+			'    return (1.0 - t) * START_SCALE;',
 			'}',
 
 			'float getAngle(float t){',
@@ -95,14 +95,14 @@ define([
 
 				'float rotation = vertexData.y;',
 
-				'float duration = timeInfo.y;',
-				'float lifeTime = timeInfo.z;',
+				'float lifeTime = timeInfo.x;',
+				//'float timeScale = timeInfo.y;',
 				'float timeOffset = timeInfo.w;',
 				'float t = time + timeOffset;',
 				'float tNoMod = time + timeOffset;',
 
 				'#ifdef LOOP',
-				't = mod(t, duration);',
+				't = mod(t, lifeTime);',
 				'#endif',
 
 				'float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * t / lifeTime, textureTileInfo.x));',
@@ -114,7 +114,7 @@ define([
 				'float c = cos(rotation);',
 				'float s = sin(rotation);',
 				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / duration);',
+				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / lifeTime);',
 
 				// Particle should show if t > 0 and within life span
 				'offset *= step(0.0, tNoMod) * step(0.0, t) * step(-lifeTime, -t);',
@@ -155,6 +155,8 @@ define([
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
+		this.time = 0;
+
 		/**
 		 * @type {Vector3}
 		 */
@@ -186,6 +188,8 @@ define([
 		if (options.texture) {
 			this.texture = options.texture;
 		}
+
+		this.nextEmitParticle = 0;
 	}
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
@@ -374,6 +378,8 @@ define([
 		uniforms.uColor[1] = d.y;
 		uniforms.uColor[2] = d.z;
 		uniforms.uColor[3] = d.w;
+
+		uniforms.time = this.time;
 	};
 
 	ParticleComponent.prototype.updateParticles = function () {
@@ -437,8 +443,8 @@ define([
 			var particle = this.particles[i];
 			particle.timeOffset = i / this.emissionRate;
 			particle.timeScale = this.duration;
-
-			if (particle.timeOffset > this.duration) {
+			particle.lifeTime = this.duration;
+			if (particle.timeOffset >= this.duration) {
 				particle.timeScale = 0;
 				particle.timeOffset = -9999;
 				particle.active = false;
@@ -450,9 +456,9 @@ define([
 			}
 
 			for (j = 0; j < 4; j++) {
-				timeInfo[16 * i + j * 4 + 0] = 0; // unset
-				timeInfo[16 * i + j * 4 + 1] = particle.timeScale; // timescale
-				timeInfo[16 * i + j * 4 + 2] = Math.min(this.startLifeTime, this.duration); // lifetime
+				timeInfo[16 * i + j * 4 + 0] = particle.lifeTime;
+				timeInfo[16 * i + j * 4 + 1] = particle.timeScale;
+				timeInfo[16 * i + j * 4 + 2] = particle.lifeTime;//Math.min(this.startLifeTime, this.duration); // lifetime
 				timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;//-this.duration * i / maxParticles + (this.preWarm ? this.duration : 0); // timeOffset
 			}
 		}
@@ -520,11 +526,53 @@ define([
 		meshData.setVertexDataUpdated();
 	};
 
+	ParticleComponent.prototype.emitOne = function (position, direction) {
+
+		var meshData = this.meshData;
+		var startPos = meshData.getAttributeBuffer('START_POS');
+		var startDir = meshData.getAttributeBuffer('START_DIR');
+		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
+
+		// Get the last emitted particle
+		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
+		var particle = this.particles[i];
+		particle.timeOffset = this.time; // Emitting NOW
+		particle.localStartPosition.copy(position);
+		particle.localStartDirection.copy(direction);
+		particle.active = true;
+
+		for (var j = 0; j < 4; j++) {
+			timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;
+
+			startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
+			startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
+			startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
+
+			startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
+			startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
+			startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
+		}
+
+		meshData.setVertexDataUpdated();
+	};
+
 	ParticleComponent.prototype.process = function (tpf) {
+		this.lastTime = this.time;
+		this.time += tpf;
 		this.updateUniforms();
 
+		// Emit according to emit rate
+		if (!this.localSpace) {
+			var numToEmit = tpf * this.emissionRate;
+			for(var i=0; i<numToEmit; i++){
+				this.emitOne(this._entity.transformComponent.worldTransform.translation, Vector3.ZERO);
+			}
+		}
+
+		/*
 		// Get all particles emitted during last frame and set their positions
 		if (!this.localSpace) {
+
 			var particles = this.particles;
 			var t0 = this._entity._world.time - tpf;
 			var t1 = this._entity._world.time;
@@ -533,16 +581,24 @@ define([
 			var meshData = this.meshData;
 			var startPos = meshData.getAttributeBuffer('START_POS');
 			var startDir = meshData.getAttributeBuffer('START_DIR');
+			var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 			for (var i = 0; i < particles.length; i++) {
 				var particle = particles[i];
-				var didEmit = particle.didEmitBetween(t0, t1, looping, this.duration);
+				var timeForEmit = particle.active;
 				if (didEmit) {
+					
 					particle.localStartPosition.copy(this._entity.transformComponent.worldTransform.translation);
-					console.log(i, particle.localStartPosition.y)
+					
+					particle.timeOffset = t1; // Emitting NOW
+
 					for (var j = 0; j < 4; j++) {
+	
+						timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;
+
 						startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
 						startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
 						startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
+
 						startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
 						startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
 						startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
@@ -555,6 +611,7 @@ define([
 				meshData.setVertexDataUpdated();
 			}
 		}
+		*/
 	};
 
 	ParticleComponent.prototype.destroy = function () {

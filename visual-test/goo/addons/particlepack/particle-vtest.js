@@ -38,12 +38,12 @@ require([
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 
 		var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-			lifeTime: 3,
-			loop: true,
-			preWarm: false,
+			lifeTime: 1,
+			loop: false,
+			preWarm: true,
 			gravity: new Vector3(0, 0, 0),
-			maxParticles: 500,
-			duration: 2,
+			maxParticles: 100,
+			duration: 1,
 			shapeType: 'sphere',
 			coneAngle: 0,
 			blending: 'AdditiveBlending',
