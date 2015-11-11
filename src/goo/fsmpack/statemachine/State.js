@@ -33,7 +33,7 @@ define([
 				return this._fsm;
 			}.bind(this),
 			getOwnerEntity: function () {
-				return this._fsm.entity;
+				return this._fsm && this._fsm.entity;
 			}.bind(this),
 			send: function (channels/*, data*/) {
 				if (channels) {

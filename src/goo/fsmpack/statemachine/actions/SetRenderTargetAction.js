@@ -72,7 +72,7 @@ define([
 	SetRenderTargetAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity) {
-			if (this.oldMaterials) {
+			if (this.oldMaterials && entity.meshRendererComponent) {
 				entity.meshRendererComponent.materials = this.oldMaterials;
 			}
 			entity.clearComponent('portalComponent');

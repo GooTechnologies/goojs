@@ -30,6 +30,7 @@ define([
 	/* global CANNON */
 	var tmpQuat = new Quaternion();
 	var tmpCannonVec;
+	var tmpCannonVec2;
 
 	/**
 	 * Adds rigid body dynamics the entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they are added as collision shapes to the rigid body.
@@ -121,6 +122,7 @@ define([
 
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
+			tmpCannonVec2 = new CANNON.Vec3();
 		}
 
 		/**

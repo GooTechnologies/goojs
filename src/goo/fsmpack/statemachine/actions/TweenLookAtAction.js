@@ -89,7 +89,7 @@ define([
 
 		var initialLookAt = new Vector3(0, 0, 1);
 		var orientation = transform.rotation;
-		orientation.applyPost(initialLookAt);
+		initialLookAt.applyPost(orientation);
 		initialLookAt.scale(distance);
 
 		var fakeFrom = { x: initialLookAt.x, y: initialLookAt.y, z: initialLookAt.z };
