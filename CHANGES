@@ -1,3 +1,9 @@
+v0.15.16 --- 2015-11-11
+
+### Fixes
+
+  * Fixed a bug in resolving entities in loaders
+
 v0.15.15 --- 2015-11-10
 
 ### Fixes
