@@ -45,13 +45,15 @@ define([
 
 	SetClearColorAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		var goo = entity._world.gooRunner;
-		goo.renderer.setClearColor(
-			this._oldClearColor[0],
-			this._oldClearColor[1],
-			this._oldClearColor[2],
-			this._oldClearColor[3]
-		);
+		if (entity) {
+			var goo = entity._world.gooRunner;
+			goo.renderer.setClearColor(
+				this._oldClearColor[0],
+				this._oldClearColor[1],
+				this._oldClearColor[2],
+				this._oldClearColor[3]
+			);
+		}
 	};
 
 	return SetClearColorAction;
