@@ -231,6 +231,12 @@ define([
 
 		if (!ScriptUtils.TYPE_VALIDATORS[type](config)) {
 			return setParam(getInvalidParam())
+		} else if (type === 'entity') {
+			// For entities, because they can depend on themselves, we don't
+			// wait for the load to be completed. It will eventually resolve
+			// and the parameter will be set.
+			setRefParam();
+			return Promise.resolve();
 		} else if (ScriptUtils.isRefType(type)) {
 			return setRefParam();
 		} else {
