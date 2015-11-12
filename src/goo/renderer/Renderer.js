@@ -1665,6 +1665,14 @@ define([
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
 		var ddsExt = Capabilities.CompressedTextureS3TC;
+
+		if (!ddsExt) {
+			texture.image = undefined;
+			texture.needsUpdate = true;
+			console.warn('Tried to load unsupported compressed texture.');
+			return;
+		}
+
 		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		if (texture.format === 'PrecompressedDXT1') {
 			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
