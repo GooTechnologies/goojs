@@ -902,7 +902,7 @@ define([
 		}
 		if (!camera) {
 			return;
-		} else if (Renderer.mainCamera === null) {
+		} else if (Renderer.mainCamera === null && !renderTarget) {
 			Renderer.mainCamera = camera;
 		}
 
@@ -1545,7 +1545,7 @@ define([
 
 				var texIndex = textureSlot.index instanceof Array ? textureSlot.index[j] : textureSlot.index;
 
-				if (texture === null ||
+				if (texture === null || texture instanceof RenderTarget && texture.glTexture === null ||
 					texture instanceof RenderTarget === false && (texture.image === undefined ||
 						texture.checkDataReady() === false)) {
 					if (textureSlot.format === 'sampler2D') {
@@ -2089,8 +2089,9 @@ define([
 				renderTarget.stencilBuffer = true;
 			}
 
-
-			renderTarget.glTexture = this.context.createTexture();
+			if (renderTarget.glTexture === null) {
+				renderTarget.glTexture = this.context.createTexture();
+			}
 
 			// Setup texture, create render and frame buffers
 			var isTargetPowerOfTwo = MathUtils.isPowerOfTwo(renderTarget.width) && MathUtils.isPowerOfTwo(renderTarget.height);
