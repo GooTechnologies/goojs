@@ -12,6 +12,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/addons/particlepack/Particle',
+	'goo/renderer/Renderer',
 	'goo/addons/particlepack/LinearCurve'
 ], function (
 	Matrix3,
@@ -27,6 +28,7 @@ define([
 	Shader,
 	Transform,
 	Particle,
+	Renderer,
 	LinearCurve
 ) {
 	'use strict';
@@ -187,20 +189,24 @@ define([
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this.blending = options.blending !== undefined ? options.blending : true;
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
+		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.startSize = options.startSize !== undefined ? options.startSize : 1;
+		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
 
 		this.nextEmitParticle = 0;
 	}
-
 	ParticleComponent.prototype = Object.create(Component.prototype);
 	ParticleComponent.prototype.constructor = ParticleComponent;
 
 	ParticleComponent.type = 'ParticleComponent';
+
+	ParticleComponent.SORT_NONE = 1;
+	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
 		loop: {
@@ -337,7 +343,7 @@ define([
 	ParticleComponent.prototype.init = function () {
 		var maxParticles = this.maxParticles;
 		for (var i = 0; i < maxParticles; i++) {
-			this.particles.push(new Particle());
+			this.particles.push(new Particle(this));
 		}
 
 		var attributeMap = MeshData.defaultMap([
@@ -576,26 +582,83 @@ define([
 		meshData.setAttributeDataUpdated('TIME_INFO');
 	};
 
-	var pos = new Vector3();
-	var dir = new Vector3();
+	var tmpWorldPos = new Vector3();
+	ParticleComponent.prototype.sortParticles = function () {
+		if (this.sortMode === ParticleComponent.SORT_NONE) {
+			return;
+		}
+
+		var particles = this.particles;
+
+		// Update sort values
+		for (var i = 0; i < particles.length; i++) {
+			var particle = particles[i];
+			particle.sortValue = -particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
+		}
+
+		// Insertion sort in-place
+		var a = particles;
+		for (var i = 1, l = a.length; i < l; i++) {
+			var v = a[i];
+			for (var j = i - 1; j >= 0; j--) {
+				if (a[j].sortValue <= v.sortValue) {
+					break;
+				}
+				a[j + 1] = a[j];
+			}
+			a[j + 1] = v;
+		}
+
+		// Update buffers
+		var meshData = this.meshData;
+		var startPos = meshData.getAttributeBuffer('START_POS');
+		var startDir = meshData.getAttributeBuffer('START_DIR');
+		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
+		for (var i = 0; i < particles.length; i++) {
+			var particle = particles[i];
+			var emitTime = particle.emitTime;
+			var pos = particle.startPosition;
+			var dir = particle.startDirection;
+
+			for (var j = 0; j < 4; j++) {
+				timeInfo[16 * i + j * 4 + 3] = emitTime;
+
+				startPos[4 * 3 * i + j * 3 + 0] = pos.x;
+				startPos[4 * 3 * i + j * 3 + 1] = pos.y;
+				startPos[4 * 3 * i + j * 3 + 2] = pos.z;
+
+				startDir[4 * 3 * i + j * 3 + 0] = dir.x;
+				startDir[4 * 3 * i + j * 3 + 1] = dir.y;
+				startDir[4 * 3 * i + j * 3 + 2] = dir.z;
+			}
+		}
+		meshData.setAttributeDataUpdated('START_POS');
+		meshData.setAttributeDataUpdated('START_DIR');
+		meshData.setAttributeDataUpdated('TIME_INFO');
+	};
+
+	var tmpPos = new Vector3();
+	var tmpDir = new Vector3();
 	ParticleComponent.prototype.process = function (tpf) {
 		this.lastTime = this.time;
 		this.time += tpf;
 		this.updateUniforms();
+
+		this.sortParticles();
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
 			var numToEmit = Math.floor(this.time * this.emissionRate) - Math.floor(this.lastTime * this.emissionRate);
 			for (var i = 0; i < numToEmit; i++) {
 				// get pos and direction from the shape
-				this._generateLocalPositionAndDirection(pos, dir);
+				this._generateLocalPositionAndDirection(tmpPos, tmpDir);
 
 				// Transform to world space
-				pos.applyPostPoint(this._entity.transformComponent.worldTransform.matrix);
-				dir.applyPost(this._entity.transformComponent.worldTransform.rotation);
+				tmpPos.applyPostPoint(this._entity.transformComponent.worldTransform.matrix);
+				tmpDir.applyPost(this._entity.transformComponent.worldTransform.rotation);
 
 				// Emit
-				this.emitOne(pos, dir);
+				this.emitOne(tmpPos, tmpDir);
 			}
 		}
 	};

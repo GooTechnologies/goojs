@@ -47,17 +47,18 @@ require([
 				duration: 1,
 				shapeType: 'cube',
 				coneAngle: 0,
-				blending: 'AdditiveBlending',
-				depthWrite: false,
+				blending: 'TransparencyBlending',
+				//depthWrite: false,
 				emitterRadius: 2,
-				emissionRate: 1000,
+				emissionRate: 500,
 				startSpeed: 10,
 				textureTilesX: 1,
 				textureTilesY: 1,
-				localSpace: false
+				localSpace: false,
+				sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
-				var angle = world.time * 2 * Math.PI / 2;
-				var x = 2 * Math.cos(world.time * 2);
+				var angle = world.time * 2 * Math.PI / 2 * 0;
+				var x = 0 * Math.cos(world.time * 2);
 				var y = 0 * Math.sin(world.time * 2);
 				entity.setTranslation(0, y, x);
 				entity.setRotation(angle, 0, 0);
