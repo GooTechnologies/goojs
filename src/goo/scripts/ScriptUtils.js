@@ -1,14 +1,14 @@
 define([
 	'goo/util/ObjectUtils'
 ], function (
-	ObjectUtils
+	_
 ) {
 	'use strict';
 
 	function ScriptUtils() {}
 
 
-	ScriptUtils.defaultsByType = {
+	ScriptUtils.DEFAULTS_BY_TYPE = {
 		'float': 0,
 		'int': 0,
 		'string': '',
@@ -16,59 +16,58 @@ define([
 		'vec3': [0, 0, 0],
 		'vec4': [0, 0, 0, 0],
 		'boolean': false,
-		
-		'animation': {
-			animationRef: null,
-			enabled: true
-		},
-		'camera': {
-			cameraRef: null,
-			enabled: true
-		},
-		'entity': {
-			entityRef: null,
-			enabled: true
-		},
-		'image': {
-			imageRef: null,
-			enabled: true
-		},
-		'sound': {
-			soundRef: null,
-			enabled: true
-		},
-		'texture': {
-			textureRef: null,
-			enabled: true
-		}
+		'animation': null,
+		'camera': null,
+		'entity': null,
+		'image': null,
+		'sound': null,
+		'texture': null
 	};
 
+	ScriptUtils.REF_TYPES = [
+		'animation',
+		'camera',
+		'entity',
+		'image',
+		'sound',
+		'texture'
+	];
 
-	ScriptUtils.typeValidators = (function () {
-		var typeOf = function (type) {
-			return function (data) {
-				return typeof data === type;
-			};
-		};
+	ScriptUtils.isRefType = function (type) {
+		return _.contains(ScriptUtils.REF_TYPES, type);
+	};
 
+	ScriptUtils.TYPE_VALIDATORS = (function () {
 		var isVec = function (length) {
 			return function (data) {
-				return data instanceof Array && data.length === length;
+				return Array.isArray(data) && data.length === length;
 			};
 		};
 
-		var isRef = function (refType) {
+		var isRef = function (type) {
+			function isDirectRef(data) {
+				return _.isString(data) && _.getExtension(data) === type;
+			}
+
+			// Checks for references passed like:
+			// {
+			//     entityRef: string
+			//     enabled: boolean
+			// }
+			function isWrappedRef(data) {
+				return data && isDirectRef(data[type + 'Ref']);
+			}
+
 			return function (data) {
-				return data &&
-					(typeof data[refType + 'Ref'] === 'string');
+				return isDirectRef(data) || isWrappedRef(data);
 			};
 		};
 
 		return {
-			'float': typeOf('number'),
-			'string': typeOf('string'),
-			'boolean': typeOf('boolean'),
-			'int': function (data) { return typeOf('number')(data) && data % 1 === 0; },
+			'float': _.isNumber,
+			'string': _.isString,
+			'boolean': _.isBoolean,
+			'int': _.isInteger,
 			'vec2': isVec(2),
 			'vec3': isVec(3),
 			'vec4': isVec(4),
@@ -80,7 +79,6 @@ define([
 			'texture': isRef('texture')
 		};
 	})();
-
 
 	/**
 	 * Fill a passed parameters object with defaults from spec
@@ -98,12 +96,12 @@ define([
 			}
 
 			if (spec.default === null || spec.default === undefined) {
-				spec.default = ObjectUtils.deepClone(ScriptUtils.defaultsByType[spec.type]);
+				spec.default = _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[spec.type]);
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = ObjectUtils.clone(spec.default);
+				parameters[spec.key] = _.clone(spec.default);
 			}
 		});
 
@@ -146,7 +144,6 @@ define([
 			return str.charCodeAt(0);
 		}
 	};
-
 
 	ScriptUtils._keys = {
 		'Backspace': 8,

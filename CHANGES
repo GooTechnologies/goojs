@@ -1,3 +1,39 @@
+v0.15.17 --- 2015-11-14
+
+### Fixes
+
+  * Fixed cleanup methods in lots of state machine actions to check if entity exists
+  * handle unsupported DDS textures, makes mobile browsers not crash
+  * Added missing packs from dom3d visual test
+  * Fixing issues with Rendertargets used before being rendered to
+  * Added test for simplepartitioner
+  * Force joint count to be int
+
+v0.15.16 --- 2015-11-11
+
+### Fixes
+
+  * Fixed a bug in resolving entities in loaders
+
+v0.15.15 --- 2015-11-10
+
+### Fixes
+
+  * Fixed a critical bug in ObjectUtils
+
+v0.15.14 --- 2015-11-10
+
+### Additions
+
+  + Added Vector2.prototype.toArray
+  + Added Vector4.prototype.toArray
+
+### Fixes
+
+  * Undeprecated Vector2.prototype.setArray
+  * Undeprecated Vector3.prototype.setArray
+  * Undeprecated Vector4.prototype.setArray
+
 v0.15.13 --- 2015-10-28
 ----------------------
 

@@ -99,7 +99,9 @@ define([
 		if (this._untouched) { return; }
 
 		var entity = fsm.getOwnerEntity();
-		entity.clearComponent('LightComponent');
+		if (entity) {
+			entity.clearComponent('LightComponent');
+		}
 	};
 
 	return AddLightAction;

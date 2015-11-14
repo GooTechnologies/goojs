@@ -44,7 +44,9 @@ define([
 
 	TagAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.clearComponent('ProximityComponent');
+		if (entity) {
+			entity.clearComponent('ProximityComponent');
+		}
 	};
 
 	return TagAction;

@@ -46,12 +46,12 @@ define([
 			it('returns an error object if the type is missing or bad', function () {
 				expect(validateParameter({
 					key: 'asd'
-				})).toEqual({ message: 'Property "type" must be one of: string, int, float, vec2, vec3, vec4, boolean, texture, image, sound, camera, entity, animation' });
+				})).toEqual({ message: 'Property "type" must be one of: string, int, float, vec2, vec3, vec4, boolean, texture, sound, camera, entity, animation' });
 
 				expect(validateParameter({
 					key: 'asd',
 					type: 'unicorn'
-				})).toEqual({ message: 'Property "type" must be one of: string, int, float, vec2, vec3, vec4, boolean, texture, image, sound, camera, entity, animation' });
+				})).toEqual({ message: 'Property "type" must be one of: string, int, float, vec2, vec3, vec4, boolean, texture, sound, camera, entity, animation' });
 			});
 		});
 	});

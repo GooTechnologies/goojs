@@ -94,13 +94,13 @@ define([
 		var camera = new Camera();
 
 		var orbitCamOptions = {
-			domElement        : V.goo.renderer.domElement,
-			lookAtDistance    : null,
-			spherical         : spherical,
-			lookAtPoint       : lookAt,
-			releaseVelocity   : true,
+			domElement: V.goo.renderer.domElement,
+			lookAtDistance: null,
+			spherical: spherical,
+			lookAtPoint: lookAt,
+			releaseVelocity: true,
 			interpolationSpeed: 7,
-			dragButton        : dragButton || 'Any'
+			dragButton: dragButton || 'Any'
 		};
 
 		if (!V.deterministic) {
@@ -326,17 +326,25 @@ define([
 		function loop() {
 			framesRemaining--;
 			if (framesRemaining > 0) {
-				updateCallback();
-				requestAnimationFrame(loop);
-			} else {
-				if (endCallback) {
-					endCallback();
+				if (updateCallback) {
+					updateCallback();
 				}
+				requestAnimationFrame(loop);
+			} else if (endCallback) {
+				endCallback();
 			}
 		}
 
 		loop();
 	}
+
+	/**
+	 * Do a delayed callback
+	 * @param  {number} nFrames Number of frames to delay endcallback with
+	 * @param  {function} updateCallback Callback to call every frame
+	 * @param  {function} endCallback Callback to call after nFrames frames
+	 */
+	V.delay = delay;
 
 	/**
 	 * Required in 'deterministic' mode.

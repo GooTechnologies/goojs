@@ -45,20 +45,14 @@ require([
 	function noiseIt(mesh) {
 		// altering the vertex positions
 		mesh.applyFunction(MeshData.POSITION, function (vertex) {
-			vertex.scale(0.95 + Math.random() * 0.1);
-			return [
-				vertex.x,
-				vertex.y,
-				vertex.z
-			];
+			return vertex.scale(0.95 + Math.random() * 0.1);
 		});
 
 		// altering the texture coordinates
 		mesh.applyFunction(MeshData.TEXCOORD0, function (vertex) {
-			return [
-				vertex.x + Math.random() * 0.08,
-				vertex.y + Math.random() * 0.08
-			];
+			vertex.x += Math.random() * 0.08;
+			vertex.y += Math.random() * 0.08;
+			return vertex;
 		});
 	}
 

@@ -71,13 +71,14 @@ define([
 
 	SetRenderTargetAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (this.oldMaterials) {
-			entity.meshRendererComponent.materials = this.oldMaterials;
+		if (entity) {
+			if (this.oldMaterials && entity.meshRendererComponent) {
+				entity.meshRendererComponent.materials = this.oldMaterials;
+			}
+			entity.clearComponent('portalComponent');
 		}
 
 		this.oldMaterials = null;
-
-		entity.clearComponent('portalComponent');
 
 		// would remove the entire system, but the engine does not support that
 	};

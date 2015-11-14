@@ -128,6 +128,13 @@ define([
 			});
 		});
 
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setArray([55, 66, 77]);
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
 
 		describe('add', function () {
 			it('can add to a vector', function () {
@@ -372,6 +379,12 @@ define([
 			});
 		});
 
+		describe('toArray', function () {
+			it('converts to array', function () {
+				expect(Vector3.fromArray([1, 2, 3]).toArray()).toEqual([1, 2, 3]);
+			});
+		});
+
 		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 			describe('.data', function () {
 				it('has working getters', function () {
@@ -587,14 +600,6 @@ define([
 				it('can set a vector', function () {
 					var vector = new Vector3(11, 22, 33);
 					vector.setDirect(55, 66, 77);
-					expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
-				});
-			});
-
-			describe('setArray', function () {
-				it('can set a vector', function () {
-					var vector = new Vector3(11, 22, 33);
-					vector.setArray([55, 66, 77]);
 					expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
 				});
 			});

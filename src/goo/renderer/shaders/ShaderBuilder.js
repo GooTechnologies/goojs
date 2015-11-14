@@ -799,7 +799,7 @@ define([
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				var maxUniforms = Math.max(Capabilities.maxVertexUniformVectors / 4 - 10, 0); // Just estimate available
+				var maxUniforms = Math.floor(Math.max(Capabilities.maxVertexUniformVectors / 4 - 10, 0)); // Just estimate available
 				shader.setDefine('JOINT_COUNT', Math.min(shaderInfo.meshData.paletteMap.length * 3, maxUniforms));
 			} else {
 				shader.removeDefine('JOINT_COUNT');

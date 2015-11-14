@@ -153,11 +153,18 @@ define([
 			});
 		});
 
-
 		describe('setDirect', function () {
 			it('can set a vector', function () {
 				var vector = new Vector4(11, 22, 33, 44);
 				vector.setDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setArray([55, 66, 77, 88]);
 				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
 			});
 		});
@@ -268,6 +275,12 @@ define([
 
 				expect(clone).toBeCloseToVector(original);
 				expect(clone).not.toBe(original);
+			});
+		});
+
+		describe('toArray', function () {
+			it('converts to array', function () {
+				expect(Vector4.fromArray([1, 2, 3, 4]).toArray()).toEqual([1, 2, 3, 4]);
 			});
 		});
 
@@ -430,14 +443,6 @@ define([
 				it('can set a vector', function () {
 					var vector = new Vector4(11, 22, 33, 44);
 					vector.setDirect(55, 66, 77, 88);
-					expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-				});
-			});
-
-			describe('setArray', function () {
-				it('can set a vector', function () {
-					var vector = new Vector4(11, 22, 33, 44);
-					vector.setArray([55, 66, 77, 88]);
 					expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
 				});
 			});
