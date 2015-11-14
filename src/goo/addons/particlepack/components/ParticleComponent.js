@@ -1,4 +1,5 @@
 define([
+	'goo/math/Matrix3',
 	'goo/math/Vector3',
 	'goo/math/Vector',
 	'goo/math/Vector4',
@@ -13,6 +14,7 @@ define([
 	'goo/addons/particlepack/Particle',
 	'goo/addons/particlepack/LinearCurve'
 ], function (
+	Matrix3,
 	Vector3,
 	Vector,
 	Vector4,
@@ -362,12 +364,13 @@ define([
 		this.updateVertexData();
 	};
 
+	var invRot = new Matrix3();
 	ParticleComponent.prototype.updateUniforms = function () {
 		var uniforms = this.material.uniforms;
 
 		// Gravity in local space
 		tmpGravity.copy(this.gravity);
-		var invRot = this.entity.transformComponent.worldTransform.rotation.clone().invert(); // todo optimize
+		invRot.copy(this.entity.transformComponent.worldTransform.rotation).invert();
 		tmpGravity.applyPost(invRot);
 		uniforms.gravity = uniforms.gravity || [];
 		uniforms.gravity[0] = tmpGravity.x;
@@ -440,16 +443,19 @@ define([
 			pos[12 * i + 11] = 0;
 		}
 
+		meshData.setAttributeDataUpdated('OFFSET');
+		meshData.setAttributeDataUpdated('POSITION');
+
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
 			particle.timeScale = 1;
-			particle.lifeTime = this.duration;
+			particle.lifeTime = this.startLifeTime;
 
 			if (this.localSpace) {
 				particle.emitTime = this.preWarm ? -i / this.emissionRate : i / this.emissionRate;
-				if (particle.emitTime >= this.time + this.duration) {
+				if (particle.emitTime >= this.time + this.startLifeTime) {
 					particle.timeScale = 0;
 					particle.emitTime = -9999;
 					particle.active = false;
@@ -468,6 +474,7 @@ define([
 				timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
 			}
 		}
+		meshData.setAttributeDataUpdated('TIME_INFO');
 
 		// Start position
 		var startPos = meshData.getAttributeBuffer('START_POS');
@@ -475,65 +482,70 @@ define([
 
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
+			var pos = particle.startPosition;
+			var dir = particle.startDirection;
 
-			// Default
-			particle.localStartDirection.setDirect(0, this.startSpeed, 0);
-
-			if (this.shapeType === 'cube') {
-
-				particle.localStartPosition.setDirect(
-					Math.random() - 0.5,
-					Math.random() - 0.5,
-					Math.random() - 0.5
-				);
-
-			} else if (this.shapeType === 'sphere') {
-
-				var theta = Math.acos(2 * Math.random() - 1);
-				var phi = 2 * Math.PI * Math.random();
-				var r = this.emitterRadius;
-				particle.localStartPosition.setDirect(
-					r * Math.cos(phi) * Math.sin(theta),
-					r * Math.cos(theta),
-					r * Math.sin(phi) * Math.sin(theta)
-				);
-				particle.localStartDirection.setDirect(
-					Math.cos(phi) * Math.sin(theta),
-					Math.cos(theta),
-					Math.sin(phi) * Math.sin(theta)
-				).normalize().scale(this.startSpeed);
-
-			} else if (this.shapeType === 'cone') {
-
-				var theta = Math.PI / 2 + Math.random() * (this.coneAngle * Math.PI / 360);
-				var phi = 2 * Math.PI * Math.random();
-				var y = Math.random();
-				var rad = this.shapeRadius * Math.random() * y;
-				particle.localStartPosition.setDirect(
-					rad * Math.cos(phi),
-					y,
-					rad * Math.sin(phi)
-				);
-				particle.localStartDirection.copy(particle.localStartPosition).normalize().scale(this.startSpeed);
-				particle.localStartPosition.y -= 0.5;
-			}
+			this._generateLocalPositionAndDirection(pos, dir);
 
 			for (j = 0; j < 4; j++) {
-				startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
-				startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
-				startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
+				startPos[4 * 3 * i + j * 3 + 0] = pos.x;
+				startPos[4 * 3 * i + j * 3 + 1] = pos.y;
+				startPos[4 * 3 * i + j * 3 + 2] = pos.z;
 
-				startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
-				startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
-				startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
+				startDir[4 * 3 * i + j * 3 + 0] = dir.x;
+				startDir[4 * 3 * i + j * 3 + 1] = dir.y;
+				startDir[4 * 3 * i + j * 3 + 2] = dir.z;
 			}
 		}
+		meshData.setAttributeDataUpdated('START_POS');
+		meshData.setAttributeDataUpdated('START_DIR');
+	};
 
-		meshData.setVertexDataUpdated();
+	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction) {
+		// Default
+		direction.setDirect(0, this.startSpeed, 0);
+
+		if (this.shapeType === 'cube') {
+
+			position.setDirect(
+				Math.random() - 0.5,
+				Math.random() - 0.5,
+				Math.random() - 0.5
+			);
+
+		} else if (this.shapeType === 'sphere') {
+
+			var theta = Math.acos(2 * Math.random() - 1);
+			var phi = 2 * Math.PI * Math.random();
+			var r = this.emitterRadius;
+			position.setDirect(
+				r * Math.cos(phi) * Math.sin(theta),
+				r * Math.cos(theta),
+				r * Math.sin(phi) * Math.sin(theta)
+			);
+			direction.setDirect(
+				Math.cos(phi) * Math.sin(theta),
+				Math.cos(theta),
+				Math.sin(phi) * Math.sin(theta)
+			).normalize().scale(this.startSpeed);
+
+		} else if (this.shapeType === 'cone') {
+
+			var phi = 2 * Math.PI * Math.random();
+			var y = Math.random();
+			var rad = this.shapeRadius * Math.random() * y;
+			position.setDirect(
+				rad * Math.cos(phi),
+				y,
+				rad * Math.sin(phi)
+			);
+			direction.copy(position).normalize().scale(this.startSpeed);
+			position.y -= 0.5;
+
+		}
 	};
 
 	ParticleComponent.prototype.emitOne = function (position, direction) {
-
 		var meshData = this.meshData;
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
@@ -543,25 +555,29 @@ define([
 		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.particles[i];
 		particle.emitTime = this.time; // Emitting NOW
-		particle.localStartPosition.copy(position);
-		particle.localStartDirection.copy(direction);
+		particle.startPosition.copy(position);
+		particle.startDirection.copy(direction);
 		particle.active = true;
 
 		for (var j = 0; j < 4; j++) {
 			timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
 
-			startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
-			startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
-			startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
+			startPos[4 * 3 * i + j * 3 + 0] = particle.startPosition.x;
+			startPos[4 * 3 * i + j * 3 + 1] = particle.startPosition.y;
+			startPos[4 * 3 * i + j * 3 + 2] = particle.startPosition.z;
 
-			startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
-			startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
-			startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
+			startDir[4 * 3 * i + j * 3 + 0] = particle.startDirection.x;
+			startDir[4 * 3 * i + j * 3 + 1] = particle.startDirection.y;
+			startDir[4 * 3 * i + j * 3 + 2] = particle.startDirection.z;
 		}
 
-		meshData.setVertexDataUpdated();
+		meshData.setAttributeDataUpdated('START_POS');
+		meshData.setAttributeDataUpdated('START_DIR');
+		meshData.setAttributeDataUpdated('TIME_INFO');
 	};
 
+	var pos = new Vector3();
+	var dir = new Vector3();
 	ParticleComponent.prototype.process = function (tpf) {
 		this.lastTime = this.time;
 		this.time += tpf;
@@ -571,53 +587,17 @@ define([
 		if (!this.localSpace) {
 			var numToEmit = Math.floor(this.time * this.emissionRate) - Math.floor(this.lastTime * this.emissionRate);
 			for (var i = 0; i < numToEmit; i++) {
-				this.emitOne(this._entity.transformComponent.worldTransform.translation, Vector3.ZERO);
+				// get pos and direction from the shape
+				this._generateLocalPositionAndDirection(pos, dir);
+
+				// Transform to world space
+				pos.applyPostPoint(this._entity.transformComponent.worldTransform.matrix);
+				dir.applyPost(this._entity.transformComponent.worldTransform.rotation);
+
+				// Emit
+				this.emitOne(pos, dir);
 			}
 		}
-
-		/*
-		// Get all particles emitted during last frame and set their positions
-		if (!this.localSpace) {
-
-			var particles = this.particles;
-			var t0 = this._entity._world.time - tpf;
-			var t1 = this._entity._world.time;
-			var looping = this.loop;
-			var dirty = false;
-			var meshData = this.meshData;
-			var startPos = meshData.getAttributeBuffer('START_POS');
-			var startDir = meshData.getAttributeBuffer('START_DIR');
-			var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
-			for (var i = 0; i < particles.length; i++) {
-				var particle = particles[i];
-				var timeForEmit = particle.active;
-				if (didEmit) {
-
-					particle.localStartPosition.copy(this._entity.transformComponent.worldTransform.translation);
-
-					particle.emitTime = t1; // Emitting NOW
-
-					for (var j = 0; j < 4; j++) {
-
-						timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
-
-						startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
-						startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
-						startPos[4 * 3 * i + j * 3 + 2] = particle.localStartPosition.z;
-
-						startDir[4 * 3 * i + j * 3 + 0] = particle.localStartDirection.x;
-						startDir[4 * 3 * i + j * 3 + 1] = particle.localStartDirection.y;
-						startDir[4 * 3 * i + j * 3 + 2] = particle.localStartDirection.z;
-					}
-
-					dirty = true;
-				}
-			}
-			if (dirty) {
-				meshData.setVertexDataUpdated();
-			}
-		}
-		*/
 	};
 
 	ParticleComponent.prototype.destroy = function () {

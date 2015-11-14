@@ -33,33 +33,36 @@ require([
 	var world = goo.world;
 
 	world.setSystem(new ParticleSystem());
-	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 1), new Material(ShaderLib.uber)).addToWorld();
+	var sphereEntity = world.createEntity([0, 0, 0], new Box(2, 2, 2), new Material(ShaderLib.uber)).addToWorld();
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 		setTimeout(function () {
 			var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-				startSize: 3,
-				lifeTime: 1,
+				startSize: 1,
+				startLifeTime: 1,
 				loop: false,
 				preWarm: true,
-				gravity: new Vector3(0, -20, 0),
-				maxParticles: 500,
+				gravity: new Vector3(0, 0, 0),
+				maxParticles: 3000,
 				duration: 1,
-				shapeType: 'sphere',
+				shapeType: 'cube',
 				coneAngle: 0,
 				blending: 'AdditiveBlending',
 				depthWrite: false,
-				emitterRadius: 0,
-				emissionRate: 10,
-				startSpeed: 20,
+				emitterRadius: 2,
+				emissionRate: 1000,
+				startSpeed: 10,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false
 			}), function (entity) {
-				var x = 10 * Math.cos(world.time * 1);
-				var y = 10 * Math.sin(world.time * 1);
+				var angle = world.time * 2 * Math.PI / 2;
+				var x = 2 * Math.cos(world.time * 2);
+				var y = 0 * Math.sin(world.time * 2);
 				entity.setTranslation(0, y, x);
+				entity.setRotation(angle, 0, 0);
 				sphereEntity.setTranslation(0, y, x);
+				sphereEntity.setRotation(angle, 0, 0);
 			}).addToWorld();
 
 			entity.particleComponent.texture = texture;
