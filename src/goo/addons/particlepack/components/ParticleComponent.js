@@ -83,7 +83,7 @@ define([
 			'}',
 
 			'float getScale(float t){',
-			'    return (1.0 - t) * START_SCALE;',
+			'    return clamp(1.0 - t, 0.0, 1.0) * START_SCALE;',
 			'}',
 
 			'float getAngle(float t){',
@@ -96,30 +96,32 @@ define([
 				'float rotation = vertexData.y;',
 
 				'float lifeTime = timeInfo.x;',
-				//'float timeScale = timeInfo.y;',
-				'float timeOffset = timeInfo.w;',
-				'float t = time + timeOffset;',
-				'float tNoMod = time + timeOffset;',
+				'float timeScale = timeInfo.y;',
+				'float emitTime = timeInfo.w;',
+				'float age = time * timeScale - emitTime;',
+				'float ageNoMod = time * timeScale - emitTime;',
 
 				'#ifdef LOOP',
-				't = mod(t, lifeTime);',
+				'age = mod(age, lifeTime);',
 				'#endif',
 
-				'float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * t / lifeTime, textureTileInfo.x));',
-				'float tileY = floor(mod(textureTileInfo.y * t / lifeTime, textureTileInfo.y));',
+				'float unitAge = age / lifeTime;',
+
+				'float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
+				'float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
 				'vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
 
-				'rotation = getAngle(t);',
+				'rotation = getAngle(age);',
 				'float c = cos(rotation);',
 				'float s = sin(rotation);',
 				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(t / lifeTime);',
+				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge);',
 
-				// Particle should show if t > 0 and within life span
-				'offset *= step(0.0, tNoMod) * step(0.0, t) * step(-lifeTime, -t);',
+				// Particle should show if lifeTime >= age > 0 and within life span
+				'offset *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
 
-				'vec4 pos = vec4(getPosition(t, startPos, startDir, gravity),0);',
+				'vec4 pos = vec4(getPosition(age, startPos, startDir, gravity),0);',
 				'mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
 				'gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
 			'}'
@@ -185,6 +187,7 @@ define([
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
+		this.startSize = options.startSize !== undefined ? options.startSize : 1;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
@@ -441,25 +444,28 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
-			particle.timeOffset = i / this.emissionRate;
-			particle.timeScale = this.duration;
+			particle.timeScale = 1;
 			particle.lifeTime = this.duration;
-			if (particle.timeOffset >= this.duration) {
-				particle.timeScale = 0;
-				particle.timeOffset = -9999;
-				particle.active = false;
+
+			if (this.localSpace) {
+				particle.emitTime = this.preWarm ? -i / this.emissionRate : i / this.emissionRate;
+				if (particle.emitTime >= this.time + this.duration) {
+					particle.timeScale = 0;
+					particle.emitTime = -9999;
+					particle.active = false;
+				} else {
+					particle.active = true;
+				}
 			} else {
 				particle.active = true;
-			}
-			if (!this.preWarm) {
-				particle.timeOffset -= this.duration;
+				particle.emitTime = -particle.lifeTime;
 			}
 
 			for (j = 0; j < 4; j++) {
 				timeInfo[16 * i + j * 4 + 0] = particle.lifeTime;
 				timeInfo[16 * i + j * 4 + 1] = particle.timeScale;
-				timeInfo[16 * i + j * 4 + 2] = particle.lifeTime;//Math.min(this.startLifeTime, this.duration); // lifetime
-				timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;//-this.duration * i / maxParticles + (this.preWarm ? this.duration : 0); // timeOffset
+				timeInfo[16 * i + j * 4 + 2] = particle.lifeTime;
+				timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
 			}
 		}
 
@@ -536,13 +542,13 @@ define([
 		// Get the last emitted particle
 		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.particles[i];
-		particle.timeOffset = this.time; // Emitting NOW
+		particle.emitTime = this.time; // Emitting NOW
 		particle.localStartPosition.copy(position);
 		particle.localStartDirection.copy(direction);
 		particle.active = true;
 
 		for (var j = 0; j < 4; j++) {
-			timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;
+			timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
 
 			startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
 			startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
@@ -563,8 +569,8 @@ define([
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
-			var numToEmit = tpf * this.emissionRate;
-			for(var i=0; i<numToEmit; i++){
+			var numToEmit = Math.floor(this.time * this.emissionRate) - Math.floor(this.lastTime * this.emissionRate);
+			for (var i = 0; i < numToEmit; i++) {
 				this.emitOne(this._entity.transformComponent.worldTransform.translation, Vector3.ZERO);
 			}
 		}
@@ -586,14 +592,14 @@ define([
 				var particle = particles[i];
 				var timeForEmit = particle.active;
 				if (didEmit) {
-					
+
 					particle.localStartPosition.copy(this._entity.transformComponent.worldTransform.translation);
-					
-					particle.timeOffset = t1; // Emitting NOW
+
+					particle.emitTime = t1; // Emitting NOW
 
 					for (var j = 0; j < 4; j++) {
-	
-						timeInfo[16 * i + j * 4 + 3] = particle.timeOffset;
+
+						timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
 
 						startPos[4 * 3 * i + j * 3 + 0] = particle.localStartPosition.x;
 						startPos[4 * 3 * i + j * 3 + 1] = particle.localStartPosition.y;
