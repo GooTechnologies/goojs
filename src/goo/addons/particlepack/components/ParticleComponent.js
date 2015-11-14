@@ -12,8 +12,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/addons/particlepack/Particle',
-	'goo/renderer/Renderer',
-	'goo/addons/particlepack/LinearCurve'
+	'goo/renderer/Renderer'
 ], function (
 	Matrix3,
 	Vector3,
@@ -28,8 +27,7 @@ define([
 	Shader,
 	Transform,
 	Particle,
-	Renderer,
-	LinearCurve
+	Renderer
 ) {
 	'use strict';
 
@@ -45,7 +43,7 @@ define([
 			timeInfo: 'TIME_INFO',
 			startPos: 'START_POS',
 			startDir: 'START_DIR',
-			vertexOffset: 'OFFSET',
+			vertexOffset: 'OFFSET'
 		},
 		uniforms: {
 			textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
@@ -95,39 +93,39 @@ define([
 			'}',
 
 			'void main(void) {',
-				'color = uColor;',
+			'    color = uColor;',
 
-				'float rotation = vertexData.y;',
+			'    float rotation = vertexData.y;',
 
-				'float lifeTime = timeInfo.x;',
-				'float timeScale = timeInfo.y;',
-				'float emitTime = timeInfo.w;',
-				'float age = time * timeScale - emitTime;',
-				'float ageNoMod = time * timeScale - emitTime;',
+			'    float lifeTime = timeInfo.x;',
+			'    float timeScale = timeInfo.y;',
+			'    float emitTime = timeInfo.w;',
+			'    float age = time * timeScale - emitTime;',
+			'    float ageNoMod = time * timeScale - emitTime;',
 
-				'#ifdef LOOP',
-				'age = mod(age, lifeTime);',
-				'#endif',
+			'    #ifdef LOOP',
+			'    age = mod(age, lifeTime);',
+			'    #endif',
 
-				'float unitAge = age / lifeTime;',
+			'    float unitAge = age / lifeTime;',
 
-				'float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
-				'float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
-				'vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
-				'coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
+			'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
+			'    float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
+			'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
+			'    coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
 
-				'rotation = getAngle(age);',
-				'float c = cos(rotation);',
-				'float s = sin(rotation);',
-				'mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-				'vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge);',
+			'    rotation = getAngle(age);',
+			'    float c = cos(rotation);',
+			'    float s = sin(rotation);',
+			'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
+			'    vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge);',
 
-				// Particle should show if lifeTime >= age > 0 and within life span
-				'offset *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
+			// Particle should show if lifeTime >= age > 0 and within life span
+			'    offset *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
 
-				'vec4 pos = vec4(getPosition(age, startPos, startDir, gravity),0);',
-				'mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
-				'gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
+			'    vec4 pos = vec4(getPosition(age, startPos, startDir, gravity),0);',
+			'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
+			'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -137,11 +135,10 @@ define([
 			'varying vec4 color;',
 			'varying vec2 coords;',
 
-			'void main(void)',
-			'{',
-				'vec4 col = color * texture2D(particleTexture, coords);',
-				'if (col.a <= alphakill) discard;',
-				'gl_FragColor = col;',
+			'void main(void){',
+			'    vec4 col = color * texture2D(particleTexture, coords);',
+			'    if (col.a <= alphakill) discard;',
+			'    gl_FragColor = col;',
 			'}'
 		].join('\n')
 	};
@@ -512,15 +509,12 @@ define([
 		direction.setDirect(0, this.startSpeed, 0);
 
 		if (this.shapeType === 'cube') {
-
 			position.setDirect(
 				Math.random() - 0.5,
 				Math.random() - 0.5,
 				Math.random() - 0.5
 			);
-
 		} else if (this.shapeType === 'sphere') {
-
 			var theta = Math.acos(2 * Math.random() - 1);
 			var phi = 2 * Math.PI * Math.random();
 			var r = this.emitterRadius;
@@ -534,9 +528,7 @@ define([
 				Math.cos(theta),
 				Math.sin(phi) * Math.sin(theta)
 			).normalize().scale(this.startSpeed);
-
 		} else if (this.shapeType === 'cone') {
-
 			var phi = 2 * Math.PI * Math.random();
 			var y = Math.random();
 			var rad = this.shapeRadius * Math.random() * y;
@@ -547,7 +539,6 @@ define([
 			);
 			direction.copy(position).normalize().scale(this.startSpeed);
 			position.y -= 0.5;
-
 		}
 	};
 
