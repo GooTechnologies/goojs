@@ -1,3 +1,14 @@
+v0.15.17 --- 2015-11-14
+
+### Fixes
+
+  * Fixed cleanup methods in lots of state machine actions to check if entity exists
+  * handle unsupported DDS textures, makes mobile browsers not crash
+  * Added missing packs from dom3d visual test
+  * Fixing issues with Rendertargets used before being rendered to
+  * Added test for simplepartitioner
+  * Force joint count to be int
+
 v0.15.16 --- 2015-11-11
 
 ### Fixes
