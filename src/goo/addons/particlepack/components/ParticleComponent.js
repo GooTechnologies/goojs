@@ -42,7 +42,7 @@ define([
 			timeInfo: 'TIME_INFO',
 			startPos: 'START_POS',
 			startDir: 'START_DIR',
-			vertexOffset: 'OFFSET'
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
 			textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
@@ -59,7 +59,7 @@ define([
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexOffset;',
+			'attribute vec2 vertexUV0;',
 			'attribute vec4 timeInfo;',
 			'attribute vec3 startPos;',
 			'attribute vec3 startDir;',
@@ -108,7 +108,7 @@ define([
 			'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
 			'    float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
 			'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
-			'    coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
+			'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
 
 			'    float rotation = getAngle(age);',
 			'    float c = cos(rotation);',
@@ -344,9 +344,9 @@ define([
 		}
 
 		var attributeMap = MeshData.defaultMap([
-			MeshData.POSITION
+			MeshData.POSITION,
+			MeshData.TEXCOORD0
 		]);
-		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
 		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
@@ -393,12 +393,13 @@ define([
 	ParticleComponent.prototype.updateParticles = function () {
 		var particles = this.particles;
 		var unsortedParticles = this.unsortedParticles;
-		while (particles.length < this.maxParticles) {
+		var maxParticles = this.maxParticles;
+		while (particles.length < maxParticles) {
 			var particle = new Particle(this);
 			particles.push(particle);
 			unsortedParticles.push(particle);
 		}
-		while (particles.length > this.maxParticles) {
+		while (particles.length > maxParticles) {
 			var particle = particles.pop();
 			unsortedParticles.splice(unsortedParticles.indexOf(particle), 1);
 		}
@@ -409,22 +410,22 @@ define([
 		var maxParticles = this.maxParticles;
 		var i, j;
 
-		var offset = meshData.getAttributeBuffer('OFFSET');
-		var pos = meshData.getAttributeBuffer('POSITION');
+		var offset = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
+		var pos = meshData.getAttributeBuffer(MeshData.POSITION);
 
 		var indices = meshData.getIndexBuffer();
 		for (i = 0; i < maxParticles; i++) {
-			offset[8 * i + 0] = -1;
-			offset[8 * i + 1] = -1;
+			offset[8 * i + 0] = 0;
+			offset[8 * i + 1] = 0;
 
-			offset[8 * i + 2] = -1;
+			offset[8 * i + 2] = 0;
 			offset[8 * i + 3] = 1;
 
 			offset[8 * i + 4] = 1;
 			offset[8 * i + 5] = 1;
 
 			offset[8 * i + 6] = 1;
-			offset[8 * i + 7] = -1;
+			offset[8 * i + 7] = 0;
 
 			indices[6 * i + 0] = 4 * i + 0;
 			indices[6 * i + 1] = 4 * i + 3;
@@ -450,8 +451,8 @@ define([
 			pos[12 * i + 11] = 0;
 		}
 
-		meshData.setAttributeDataUpdated('OFFSET');
-		meshData.setAttributeDataUpdated('POSITION');
+		meshData.setAttributeDataUpdated(MeshData.TEXCOORD0);
+		meshData.setAttributeDataUpdated(MeshData.POSITION);
 
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
