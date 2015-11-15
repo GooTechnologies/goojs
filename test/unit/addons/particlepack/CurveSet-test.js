@@ -24,6 +24,13 @@ define([
 			expect(set.getValueAt(0.5)).toBe(0);
 		});
 
+		it('can get an integral value', function () {
+			var set = new CurveSet();
+			var curve = new LinearCurve({ timeOffset: 0, k: 1, m: 0 });
+			set.addSegment(curve);
+			expect(set.getIntegralValueAt(0.5)).toBe(0.125);
+		});
+
 		it('can get a value from multiple curve types', function () {
 			var set = new CurveSet();
 			set.addSegment(new Curve({ timeOffset: 0 }));

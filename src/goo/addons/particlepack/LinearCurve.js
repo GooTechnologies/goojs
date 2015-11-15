@@ -20,8 +20,21 @@ define([
 		return '(' + this.numberToGLSL(this.k) + '*' + timeVariableName + '+' + this.numberToGLSL(this.m) + ')';
 	};
 
+	LinearCurve.prototype.integralToGLSL = function (timeVariableName) {
+		var k = this.numberToGLSL(this.k);
+		var m = this.numberToGLSL(this.m);
+		return '(' + k + '*pow(' + timeVariableName + ',2.0)*0.5+' + m + '*' + timeVariableName + ')';
+	};
+
 	LinearCurve.prototype.getValueAt = function (t) {
 		return this.k * (t - this.timeOffset) + this.m;
+	};
+
+	LinearCurve.prototype.getIntegralValueAt = function (t) {
+		var x = (t - this.timeOffset);
+		var k = this.k;
+		var m = this.m;
+		return 0.5 * k * x * x + m * x;
 	};
 
 	return LinearCurve;

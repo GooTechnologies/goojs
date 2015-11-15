@@ -39,7 +39,6 @@ define([
 		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
-			vertexData: 'DATA',
 			timeInfo: 'TIME_INFO',
 			startPos: 'START_POS',
 			startDir: 'START_DIR',
@@ -60,7 +59,6 @@ define([
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexData;',
 			'attribute vec2 vertexOffset;',
 			'attribute vec4 timeInfo;',
 			'attribute vec3 startPos;',
@@ -95,8 +93,6 @@ define([
 			'void main(void) {',
 			'    color = uColor;',
 
-			'    float rotation = vertexData.y;',
-
 			'    float lifeTime = timeInfo.x;',
 			'    float timeScale = timeInfo.y;',
 			'    float emitTime = timeInfo.w;',
@@ -114,11 +110,11 @@ define([
 			'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 			'    coords = (vertexOffset * 0.5 + 0.5) / textureTileInfo.xy + texOffset;',
 
-			'    rotation = getAngle(age);',
+			'    float rotation = getAngle(age);',
 			'    float c = cos(rotation);',
 			'    float s = sin(rotation);',
 			'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-			'    vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge);',
+			'    vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge) * timeScale;',
 
 			// Particle should show if lifeTime >= age > 0 and within life span
 			'    offset *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
@@ -170,9 +166,11 @@ define([
 
 		this.startColor = new Vector4(1, 1, 1, 1);
 		this.particles = [];
+		this.unsortedParticles = []; // Same as particles but unsorted
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 10;
 		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
+		this.emitterExtents = options.emitterExtents !== undefined ? options.emitterExtents.clone() : new Vector3(1, 1, 1);
 		this.shapeRadius = options.shapeRadius !== undefined ? options.shapeRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
@@ -340,13 +338,14 @@ define([
 	ParticleComponent.prototype.init = function () {
 		var maxParticles = this.maxParticles;
 		for (var i = 0; i < maxParticles; i++) {
-			this.particles.push(new Particle(this));
+			var particle = new Particle(this);
+			this.particles.push(particle);
+			this.unsortedParticles.push(particle);
 		}
 
 		var attributeMap = MeshData.defaultMap([
 			MeshData.POSITION
 		]);
-		attributeMap.DATA = MeshData.createAttribute(2, 'Float');
 		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
@@ -392,11 +391,16 @@ define([
 	};
 
 	ParticleComponent.prototype.updateParticles = function () {
-		while (this.particles.length < this.maxParticles) {
-			this.particles.push(new Particle());
+		var particles = this.particles;
+		var unsortedParticles = this.unsortedParticles;
+		while (particles.length < this.maxParticles) {
+			var particle = new Particle(this);
+			particles.push(particle);
+			unsortedParticles.push(particle);
 		}
-		while (this.particles.length > this.maxParticles) {
-			this.particles.pop();
+		while (particles.length > this.maxParticles) {
+			var particle = particles.pop();
+			unsortedParticles.splice(unsortedParticles.indexOf(particle), 1);
 		}
 	};
 
@@ -550,7 +554,7 @@ define([
 
 		// Get the last emitted particle
 		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
-		var particle = this.particles[i];
+		var particle = this.unsortedParticles[i];
 		particle.emitTime = this.time; // Emitting NOW
 		particle.startPosition.copy(position);
 		particle.startDirection.copy(direction);

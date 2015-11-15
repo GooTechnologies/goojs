@@ -11,6 +11,8 @@ require([
 	'goo/math/Vector3',
 	'goo/addons/particlepack/components/ParticleComponent',
 	'goo/addons/particlepack/systems/ParticleSystem',
+	'goo/addons/particlepack/CurveSet',
+	'goo/addons/particlepack/LinearCurve',
 	'lib/V'
 ], function (
 	Material,
@@ -25,6 +27,8 @@ require([
 	Vector3,
 	ParticleComponent,
 	ParticleSystem,
+	CurveSet,
+	LinearCurve,
 	V
 ) {
 	'use strict';
@@ -33,37 +37,51 @@ require([
 	var world = goo.world;
 
 	world.setSystem(new ParticleSystem());
-	var sphereEntity = world.createEntity([0, 0, 0], new Box(2, 2, 2), new Material(ShaderLib.uber)).addToWorld();
+	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 2), new Material(ShaderLib.uber)).addToWorld();
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 		setTimeout(function () {
+			var max = 100;
+
+			var debugs = [];
+			for (var i = 0; i < max; i++) {
+				debugs.push(world.createEntity([0, 0, 0], new Sphere(10, 10, 0.1), new Material(ShaderLib.uber)).addToWorld());
+			}
+
 			var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-				startSize: 1,
+				startSize: 2,
 				startLifeTime: 1,
-				loop: false,
-				preWarm: true,
-				gravity: new Vector3(0, 0, 0),
-				maxParticles: 3000,
+				loop: true,
+				preWarm: false,
+				gravity: new Vector3(0, -10, 0),
+				maxParticles: max,
 				duration: 1,
-				shapeType: 'cube',
+				shapeType: 'sphere',
 				coneAngle: 0,
-				blending: 'TransparencyBlending',
-				//depthWrite: false,
+				blending: 'AdditiveBlending',
+				depthWrite: false,
 				emitterRadius: 2,
-				emissionRate: 500,
-				startSpeed: 10,
+				emissionRate: 100,
+				startSpeed: 1,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false,
-				sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
+				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 				var angle = world.time * 2 * Math.PI / 2 * 0;
-				var x = 0 * Math.cos(world.time * 2);
-				var y = 0 * Math.sin(world.time * 2);
+				var x = 10 * Math.cos(world.time * 2);
+				var y = 0 * Math.sin(world.time * 2) * 0;
 				entity.setTranslation(0, y, x);
 				entity.setRotation(angle, 0, 0);
 				sphereEntity.setTranslation(0, y, x);
 				sphereEntity.setRotation(angle, 0, 0);
+
+				debugs.forEach(function (ent, i) {
+					entity.particleComponent.particles[i].getWorldPosition(ent.transformComponent.transform.translation);
+					ent.transformComponent.transform.update();
+					ent.transformComponent.setUpdated();
+				});
+
 			}).addToWorld();
 
 			entity.particleComponent.texture = texture;

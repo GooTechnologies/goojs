@@ -30,15 +30,17 @@ define([
 		toGLSL: function (timeVariableName) {
 			var segments = this.segments;
 			var glsl = [];
-			for (var i = 0; i < segments.length - 1; i++) {
+			for (var i = 0; i < segments.length; i++) {
+				var a = segments[i];
+				var t0 = numberToGLSL(a.timeOffset);
+				var t1 = "1.0";
+				if (i < segments.length - 1) {
+					t1 = numberToGLSL(segments[i + 1].timeOffset);
+				}
 				glsl.push(
-					'step(' + numberToGLSL(segments[i].timeOffset) + ',' + timeVariableName + ')*step(-' + numberToGLSL(segments[i + 1].timeOffset) + ',-' + timeVariableName + ')*' + segments[i].toGLSL(timeVariableName)
+					'step(' + t0 + ',' + timeVariableName + ')*step(-' + t1 + ',-' + timeVariableName + ')*' + a.toGLSL(timeVariableName)
 				);
 			}
-			var lastSegment = segments[segments.length - 1];
-			glsl.push(
-				'step(' + lastSegment.timeOffset + ',' + timeVariableName + ')*step(-1.0,-' + timeVariableName + ')*' + lastSegment.toGLSL(timeVariableName)
-			);
 			return glsl.join('+');
 		},
 		getValueAt: function (t) {
@@ -52,6 +54,25 @@ define([
 				}
 			}
 			return this.segments[segments.length - 1].getValueAt(t);
+		},
+		getIntegralValueAt: function (t) {
+			// Add all integral values until the last segment
+			var segments = this.segments;
+			var value = 0;
+			for (var i = 0; i < segments.length; i++) {
+				var a = segments[i];
+				var t1 = 1;
+				if (i < segments.length - 1) {
+					t1 = segments[i + 1].timeOffset;
+				}
+				if (a.timeOffset <= t && t1 > t) {
+					value += this.segments[i].getIntegralValueAt(t);
+					break;
+				} else if (a.timeOffset <= t) {
+					value += this.segments[i].getIntegralValueAt(t1);
+				}
+			}
+			return value;
 		}
 	};
 
