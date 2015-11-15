@@ -45,5 +45,11 @@ define([
 			set.addSegment(new Curve({ timeOffset: 0.5 }));
 			expect(set.toGLSL('t')).toBe('step(0.0,t)*step(-0.5,-t)*0.0+step(0.5,t)*step(-1.0,-t)*0.0');
 		});
+
+		it('can have its integral converted to GLSL', function () {
+			var set = new CurveSet();
+			set.addSegment(new LinearCurve({ timeOffset: 0, k: 1, m: 0 }));
+			expect(set.integralToGLSL('t')).toBe('(1.0*clamp(t,0.0,1.0)*clamp(t,0.0,1.0)*0.5+0.0*clamp(t,0.0,1.0))');
+		});
 	});
 });

@@ -43,5 +43,13 @@ define([
 			});
 			expect(curve.toGLSL('t')).toBe('(1.0*t+0.0)');
 		});
+
+		it('can have its integral converted to GLSL', function () {
+			var curve = new LinearCurve({
+				k: 1,
+				m: 0
+			});
+			expect(curve.integralToGLSL('t')).toBe('(1.0*t*t*0.5+0.0*t)');
+		});
 	});
 });

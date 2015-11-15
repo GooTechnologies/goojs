@@ -43,6 +43,22 @@ define([
 			}
 			return glsl.join('+');
 		},
+		integralToGLSL: function (timeVariableName) {
+			var segments = this.segments;
+			var glsl = [];
+			for (var i = 0; i < segments.length; i++) {
+				var a = segments[i];
+				var t0 = numberToGLSL(a.timeOffset);
+				var t1 = "1.0";
+				if (i < segments.length - 1) {
+					t1 = numberToGLSL(segments[i + 1].timeOffset);
+				}
+				glsl.push(
+					a.integralToGLSL('clamp(' + timeVariableName + ',' + t0 + ',' + t1 + ')')
+				);
+			}
+			return glsl.join('+');
+		},
 		getValueAt: function (t) {
 			// Find the matching segment
 			var segments = this.segments;
@@ -68,7 +84,7 @@ define([
 				if (a.timeOffset <= t && t1 > t) {
 					value += this.segments[i].getIntegralValueAt(t);
 					break;
-				} else if (a.timeOffset <= t) {
+				} else {
 					value += this.segments[i].getIntegralValueAt(t1);
 				}
 			}

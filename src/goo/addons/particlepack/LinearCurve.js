@@ -23,7 +23,7 @@ define([
 	LinearCurve.prototype.integralToGLSL = function (timeVariableName) {
 		var k = this.numberToGLSL(this.k);
 		var m = this.numberToGLSL(this.m);
-		return '(' + k + '*pow(' + timeVariableName + ',2.0)*0.5+' + m + '*' + timeVariableName + ')';
+		return '(' + k + '*' + timeVariableName + '*' + timeVariableName + '*0.5+' + m + '*' + timeVariableName + ')';
 	};
 
 	LinearCurve.prototype.getValueAt = function (t) {
