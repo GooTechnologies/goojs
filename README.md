@@ -1,6 +1,6 @@
 # Goo Engine
 
-Goo Engine is an open-source blaha blaha
+Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 ## Project examples
 
@@ -42,7 +42,7 @@ And then open http://localhost:8000/test/test.html
 
 ## Goo Create Platform
 
-[Goo Create](http://goocreate.com/) is the blaha
+[Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
 
 ## Style checks
 
