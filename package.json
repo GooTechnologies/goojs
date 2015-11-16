@@ -1,13 +1,13 @@
 {
   "name": "gooengine",
-  "version": "0.0.0",
+  "version": "0.15.17",
   "author": "Goo Technologies AB <info@gootechnologies.com>",
   "description": "Goo Engine - the WebGL graphics engine",
-  "homepage": "http://www.gooengine.com/",
+  "homepage": "http://goocreate.com/",
   "licenses": [
     {
-      "type": "Proprietary",
-      "url": "http://www.gooengine.com/"
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
     }
   ],
   "dependencies": {
