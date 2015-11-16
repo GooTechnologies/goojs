@@ -3,7 +3,6 @@
 Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 ## Project examples
-
 <p>
 <a href="http://goocreate.com/showcase/case/mountains-of-mouthness/"><img src="http://labs.gooengine.com/github-images/mountains.jpg"/></a>
 <a href="http://goocreate.com/showcase/case/suissemania/"><img src="http://labs.gooengine.com/github-images/suissemania.jpg"/></a>
@@ -14,6 +13,7 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 <a href="http://goocreate.com/showcase/case/mazda/"><img src="http://labs.gooengine.com/github-images/mazda.jpg"/></a>
 <br>
 </p>
+[See more showcases](http://goocreate.com/)
 
 ## How to build
 
