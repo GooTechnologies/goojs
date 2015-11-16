@@ -36,14 +36,16 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 [Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
 
-## How to unittest
+## How to run unit tests and visual tests
 
-To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
+Start a web server, e.g. using:
 
     npm install st -g
     st --port 8000
 
-And then open http://localhost:8000/test/test.html
+And then open:
+* Unit tests: http://localhost:8000/test/test.html
+* Visual tests: http://localhost:8000/visual-test/
 
 ## Style checks
 
