@@ -58,8 +58,12 @@ This makes Git check whether all added and modified files pass the style check b
 
 GooJS uses a custom documentation compiler, *modoc*; see `tools/modoc/README.md` for more details.
 
-## Building variants
+## Building details
 
 + Minified and mangled: `grunt minify`
 + Minified: `grunt minify-no-mangle`
 + Concatenated: `grunt minify-dev`
+
+## License
+
+The Goo Engine is released under the [MIT](http://opensource.org/licenses/MIT) license.
