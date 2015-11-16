@@ -21,15 +21,6 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
     npm install -g grunt-cli
     grunt minify
 
-## How to unittest
-
-To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
-
-    npm install st -g
-    st --port 8000
-
-And then open http://localhost:8000/test/test.html
-
 ## Documentation
 
 * [Learn pages](http://goocreate.com/learn/?_ga=1.198797160.658665154.1444903216)
@@ -43,6 +34,15 @@ And then open http://localhost:8000/test/test.html
 ## Goo Create Platform
 
 [Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
+
+## How to unittest
+
+To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
+
+    npm install st -g
+    st --port 8000
+
+And then open http://localhost:8000/test/test.html
 
 ## Style checks
 
