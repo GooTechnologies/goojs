@@ -1,3 +1,10 @@
+v0.15.18 --- 2015-11-17
+
+### Fixes
+
+  * Fixed too tight limit on the joint count
+  * Updated package.json
+
 v0.15.17 --- 2015-11-14
 
 ### Fixes
