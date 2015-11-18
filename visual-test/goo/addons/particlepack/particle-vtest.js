@@ -39,33 +39,35 @@ require([
 	world.setSystem(new ParticleSystem());
 	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 2), new Material(ShaderLib.uber)).addToWorld();
 
-	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
+	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
 		setTimeout(function () {
-			var max = 100;
+			var max = 1000;
 
-			var debugs = [];
-			for (var i = 0; i < max; i++) {
-				debugs.push(world.createEntity([0, 0, 0], new Sphere(10, 10, 0.1), new Material(ShaderLib.uber)).addToWorld());
-			}
+			// var debugs = [];
+			// for (var i = 0; i < max; i++) {
+			// 	debugs.push(world.createEntity([0, 0, 0], new Sphere(10, 10, 0.1), new Material(ShaderLib.uber)).addToWorld());
+			// }
 
 			var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-				startSize: 2,
+				billboard: false,
+				startSize: 1,
 				startLifeTime: 1,
-				loop: true,
+				loop: false,
 				preWarm: false,
 				gravity: new Vector3(0, -10, 0),
 				maxParticles: max,
 				duration: 1,
 				shapeType: 'sphere',
 				coneAngle: 0,
-				blending: 'AdditiveBlending',
-				depthWrite: false,
-				emitterRadius: 2,
-				emissionRate: 100,
+				//blending: 'AdditiveBlending',
+				//depthWrite: false,
+				emitterRadius: 1,
+				emissionRate: 400,
 				startSpeed: 1,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false,
+				mesh: new Box(1, 1, 1, 1/2, 1/2),
 				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 				var angle = world.time * 2 * Math.PI / 2 * 0;
@@ -76,11 +78,11 @@ require([
 				sphereEntity.setTranslation(0, y, x);
 				sphereEntity.setRotation(angle, 0, 0);
 
-				debugs.forEach(function (ent, i) {
-					entity.particleComponent.particles[i].getWorldPosition(ent.transformComponent.transform.translation);
-					ent.transformComponent.transform.update();
-					ent.transformComponent.setUpdated();
-				});
+				// debugs.forEach(function (ent, i) {
+				// 	entity.particleComponent.particles[i].getWorldPosition(ent.transformComponent.transform.translation);
+				// 	ent.transformComponent.transform.update();
+				// 	ent.transformComponent.setUpdated();
+				// });
 
 			}).addToWorld();
 

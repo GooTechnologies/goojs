@@ -12,7 +12,8 @@ define([
 	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/addons/particlepack/Particle',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/shapes/Quad'
 ], function (
 	Matrix3,
 	Vector3,
@@ -27,7 +28,8 @@ define([
 	Shader,
 	Transform,
 	Particle,
-	Renderer
+	Renderer,
+	Quad
 ) {
 	'use strict';
 
@@ -94,10 +96,10 @@ define([
 			'    color = uColor;',
 
 			'    float lifeTime = timeInfo.x;',
-			'    float timeScale = timeInfo.y;',
+			'    float active = timeInfo.y;',
 			'    float emitTime = timeInfo.w;',
-			'    float age = time * timeScale - emitTime;',
-			'    float ageNoMod = time * timeScale - emitTime;',
+			'    float age = time * active - emitTime;',
+			'    float ageNoMod = time * active - emitTime;',
 
 			'    #ifdef LOOP',
 			'    age = mod(age, lifeTime);',
@@ -114,14 +116,16 @@ define([
 			'    float c = cos(rotation);',
 			'    float s = sin(rotation);',
 			'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-			'    vec2 offset = ((spinMatrix * vertexPosition.xyz)).xy * getScale(unitAge) * timeScale;',
-
 			// Particle should show if lifeTime >= age > 0 and within life span
-			'    offset *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-
-			'    vec4 pos = vec4(getPosition(age, startPos, startDir, gravity),0);',
-			'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),pos);',
+			'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
+			'    vec3 position = getPosition(age, startPos, startDir, gravity);',
+			'    #ifdef BILLBOARD',
+			'    vec2 offset = ((spinMatrix * vertexPosition)).xy * getScale(unitAge) * active;',
+			'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
 			'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
+			'    #else',
+			'    gl_Position = viewProjectionMatrix * worldMatrix * vec4(getScale(unitAge) * active * vertexPosition + position, 1.0);',
+			'    #endif',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -189,6 +193,8 @@ define([
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.startSize = options.startSize !== undefined ? options.startSize : 1;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
+		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
+		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
@@ -204,6 +210,19 @@ define([
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
+		billboard: {
+			get: function () {
+				return this.material.shader.hasDefine('BILLBOARD');
+			},
+			set: function (value) {
+				var shader = this.material.shader;
+				if (value) {
+					shader.setDefine('BILLBOARD', true);
+				} else {
+					shader.removeDefine('BILLBOARD');
+				}
+			}
+		},
 		loop: {
 			get: function () {
 				return this.material.shader.hasDefine('LOOP');
@@ -321,12 +340,12 @@ define([
 		},
 		maxParticles: {
 			get: function () {
-				return this.meshData ? this.meshData.vertexCount / 4 : this._maxParticles;
+				return this.meshData ? this.meshData.vertexCount / this.mesh.vertexCount : this._maxParticles;
 			},
 			set: function (value) {
-				if (value * 4 !== this.meshData.vertexCount) {
-					this.meshData.vertexCount = value * 4;
-					this.meshData.indexCount = value * 6;
+				if (value * this.mesh.vertexCount !== this.meshData.vertexCount) {
+					this.meshData.vertexCount = value * this.mesh.vertexCount;
+					this.meshData.indexCount = value * this.mesh.indexCount;
 					this.meshData.rebuildData();
 					this.updateParticles();
 					this.updateVertexData();
@@ -350,7 +369,7 @@ define([
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
 		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
-		var meshData = new MeshData(attributeMap, maxParticles * 4, maxParticles * 6);
+		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
 
@@ -412,43 +431,58 @@ define([
 
 		var offset = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
 		var pos = meshData.getAttributeBuffer(MeshData.POSITION);
-
 		var indices = meshData.getIndexBuffer();
+
+		var mesh = this.mesh;
+		var meshIndices = mesh.getIndexBuffer();
+		var meshPos = mesh.getAttributeBuffer(MeshData.POSITION);
+		var meshUV = mesh.getAttributeBuffer(MeshData.TEXCOORD0);
+		var meshVertexCount = mesh.vertexCount;
 		for (i = 0; i < maxParticles; i++) {
-			offset[8 * i + 0] = 0;
-			offset[8 * i + 1] = 0;
+			for (var j = 0; j < meshUV.length; j++) {
+				offset[i * meshUV.length + j] = meshUV[j];
+			}
+			for (var j = 0; j < meshPos.length; j++) {
+				pos[i * meshPos.length + j] = meshPos[j];
+			}
+			for (var j = 0; j < meshIndices.length; j++) {
+				indices[i * meshIndices.length + j] = meshIndices[j] + i * meshVertexCount;
+			}
 
-			offset[8 * i + 2] = 0;
-			offset[8 * i + 3] = 1;
+			// offset[8 * i + 0] = 0;
+			// offset[8 * i + 1] = 0;
 
-			offset[8 * i + 4] = 1;
-			offset[8 * i + 5] = 1;
+			// offset[8 * i + 2] = 0;
+			// offset[8 * i + 3] = 1;
 
-			offset[8 * i + 6] = 1;
-			offset[8 * i + 7] = 0;
+			// offset[8 * i + 4] = 1;
+			// offset[8 * i + 5] = 1;
 
-			indices[6 * i + 0] = 4 * i + 0;
-			indices[6 * i + 1] = 4 * i + 3;
-			indices[6 * i + 2] = 4 * i + 1;
-			indices[6 * i + 3] = 4 * i + 1;
-			indices[6 * i + 4] = 4 * i + 3;
-			indices[6 * i + 5] = 4 * i + 2;
+			// offset[8 * i + 6] = 1;
+			// offset[8 * i + 7] = 0;
 
-			pos[12 * i + 0] = -0.5;
-			pos[12 * i + 1] = -0.5;
-			pos[12 * i + 2] = 0;
+			// indices[6 * i + 0] = 4 * i + 0;
+			// indices[6 * i + 1] = 4 * i + 3;
+			// indices[6 * i + 2] = 4 * i + 1;
+			// indices[6 * i + 3] = 4 * i + 1;
+			// indices[6 * i + 4] = 4 * i + 3;
+			// indices[6 * i + 5] = 4 * i + 2;
 
-			pos[12 * i + 3] = -0.5;
-			pos[12 * i + 4] = 0.5;
-			pos[12 * i + 5] = 0;
+			// pos[12 * i + 0] = -0.5;
+			// pos[12 * i + 1] = -0.5;
+			// pos[12 * i + 2] = 0;
 
-			pos[12 * i + 6] = 0.5;
-			pos[12 * i + 7] = 0.5;
-			pos[12 * i + 8] = 0;
+			// pos[12 * i + 3] = -0.5;
+			// pos[12 * i + 4] = 0.5;
+			// pos[12 * i + 5] = 0;
 
-			pos[12 * i + 9] = 0.5;
-			pos[12 * i + 10] = -0.5;
-			pos[12 * i + 11] = 0;
+			// pos[12 * i + 6] = 0.5;
+			// pos[12 * i + 7] = 0.5;
+			// pos[12 * i + 8] = 0;
+
+			// pos[12 * i + 9] = 0.5;
+			// pos[12 * i + 10] = -0.5;
+			// pos[12 * i + 11] = 0;
 		}
 
 		meshData.setAttributeDataUpdated(MeshData.TEXCOORD0);
@@ -458,13 +492,13 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
-			particle.timeScale = 1;
+			particle.active = 1;
 			particle.lifeTime = this.startLifeTime;
 
 			if (this.localSpace) {
 				particle.emitTime = this.preWarm ? -i / this.emissionRate : i / this.emissionRate;
 				if (particle.emitTime >= this.time + this.startLifeTime) {
-					particle.timeScale = 0;
+					particle.active = 0;
 					particle.emitTime = -9999;
 					particle.active = false;
 				} else {
@@ -475,11 +509,11 @@ define([
 				particle.emitTime = -particle.lifeTime;
 			}
 
-			for (j = 0; j < 4; j++) {
-				timeInfo[16 * i + j * 4 + 0] = particle.lifeTime;
-				timeInfo[16 * i + j * 4 + 1] = particle.timeScale;
-				timeInfo[16 * i + j * 4 + 2] = particle.lifeTime;
-				timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
+			for (j = 0; j < meshVertexCount; j++) {
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = particle.lifeTime;
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 			}
 		}
 		meshData.setAttributeDataUpdated('TIME_INFO');
@@ -495,14 +529,14 @@ define([
 
 			this._generateLocalPositionAndDirection(pos, dir);
 
-			for (j = 0; j < 4; j++) {
-				startPos[4 * 3 * i + j * 3 + 0] = pos.x;
-				startPos[4 * 3 * i + j * 3 + 1] = pos.y;
-				startPos[4 * 3 * i + j * 3 + 2] = pos.z;
+			for (j = 0; j < meshVertexCount; j++) {
+				startPos[meshVertexCount * 3 * i + j * 3 + 0] = pos.x;
+				startPos[meshVertexCount * 3 * i + j * 3 + 1] = pos.y;
+				startPos[meshVertexCount * 3 * i + j * 3 + 2] = pos.z;
 
-				startDir[4 * 3 * i + j * 3 + 0] = dir.x;
-				startDir[4 * 3 * i + j * 3 + 1] = dir.y;
-				startDir[4 * 3 * i + j * 3 + 2] = dir.z;
+				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
+				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
+				startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
 			}
 		}
 		meshData.setAttributeDataUpdated('START_POS');
@@ -561,16 +595,18 @@ define([
 		particle.startDirection.copy(direction);
 		particle.active = true;
 
-		for (var j = 0; j < 4; j++) {
-			timeInfo[16 * i + j * 4 + 3] = particle.emitTime;
+		var meshVertexCount = this.mesh.vertexCount;
 
-			startPos[4 * 3 * i + j * 3 + 0] = particle.startPosition.x;
-			startPos[4 * 3 * i + j * 3 + 1] = particle.startPosition.y;
-			startPos[4 * 3 * i + j * 3 + 2] = particle.startPosition.z;
+		for (var j = 0; j < meshVertexCount; j++) {
+			timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
-			startDir[4 * 3 * i + j * 3 + 0] = particle.startDirection.x;
-			startDir[4 * 3 * i + j * 3 + 1] = particle.startDirection.y;
-			startDir[4 * 3 * i + j * 3 + 2] = particle.startDirection.z;
+			startPos[meshVertexCount * 3 * i + j * 3 + 0] = particle.startPosition.x;
+			startPos[meshVertexCount * 3 * i + j * 3 + 1] = particle.startPosition.y;
+			startPos[meshVertexCount * 3 * i + j * 3 + 2] = particle.startPosition.z;
+
+			startDir[meshVertexCount * 3 * i + j * 3 + 0] = particle.startDirection.x;
+			startDir[meshVertexCount * 3 * i + j * 3 + 1] = particle.startDirection.y;
+			startDir[meshVertexCount * 3 * i + j * 3 + 2] = particle.startDirection.z;
 		}
 
 		meshData.setAttributeDataUpdated('START_POS');
@@ -615,17 +651,17 @@ define([
 			var emitTime = particle.emitTime;
 			var pos = particle.startPosition;
 			var dir = particle.startDirection;
+			var meshVertexCount = this.mesh.meshVertexCount;
+			for (var j = 0; j < meshVertexCount; j++) {
+				timeInfo[meshVertexCount * 4  * i + j * 4 + 3] = emitTime;
 
-			for (var j = 0; j < 4; j++) {
-				timeInfo[16 * i + j * 4 + 3] = emitTime;
+				startPos[meshVertexCount * 3 * i + j * 3 + 0] = pos.x;
+				startPos[meshVertexCount * 3 * i + j * 3 + 1] = pos.y;
+				startPos[meshVertexCount * 3 * i + j * 3 + 2] = pos.z;
 
-				startPos[4 * 3 * i + j * 3 + 0] = pos.x;
-				startPos[4 * 3 * i + j * 3 + 1] = pos.y;
-				startPos[4 * 3 * i + j * 3 + 2] = pos.z;
-
-				startDir[4 * 3 * i + j * 3 + 0] = dir.x;
-				startDir[4 * 3 * i + j * 3 + 1] = dir.y;
-				startDir[4 * 3 * i + j * 3 + 2] = dir.z;
+				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
+				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
+				startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
 			}
 		}
 		meshData.setAttributeDataUpdated('START_POS');
