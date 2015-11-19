@@ -799,8 +799,9 @@ define([
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				var maxUniforms = Math.floor(Math.max(Capabilities.maxVertexUniformVectors - 10, 0)); // Just estimate available
-				shader.setDefine('JOINT_COUNT', Math.min(shaderInfo.meshData.paletteMap.length * 3, maxUniforms));
+				// var maxUniforms = Math.floor(Math.max(Capabilities.maxVertexUniformVectors - 10, 0)); // Just estimate available
+				// shader.setDefine('JOINT_COUNT', Math.min(shaderInfo.meshData.paletteMap.length * 3, maxUniforms));
+				shader.setDefine('JOINT_COUNT', shaderInfo.meshData.paletteMap.length * 3);
 			} else {
 				shader.removeDefine('JOINT_COUNT');
 			}
