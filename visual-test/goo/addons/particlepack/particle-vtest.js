@@ -70,6 +70,7 @@ require([
 				mesh: new Box(1, 1, 1, 1/2, 1/2),
 				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
+
 				var angle = world.time * 2 * Math.PI / 2 * 0;
 				var x = 10 * Math.cos(world.time * 2);
 				var y = 0 * Math.sin(world.time * 2) * 0;
@@ -85,6 +86,11 @@ require([
 				// });
 
 			}).addToWorld();
+
+			setTimeout(function(){
+				entity.clearComponent('ParticleComponent');
+				entity.clearComponent('ScriptComponent');
+			}, 2000);
 
 			entity.particleComponent.texture = texture;
 		}, 500);

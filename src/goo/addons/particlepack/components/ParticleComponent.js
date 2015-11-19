@@ -154,6 +154,9 @@ define([
 		Component.apply(this, arguments);
 		this.type = ParticleComponent.type;
 
+		this._system = null;
+		this._entity = null;
+
 		this.material = new Material(particleShader);
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
@@ -354,37 +357,6 @@ define([
 		}
 	});
 
-	ParticleComponent.prototype.init = function () {
-		var maxParticles = this.maxParticles;
-		for (var i = 0; i < maxParticles; i++) {
-			var particle = new Particle(this);
-			this.particles.push(particle);
-			this.unsortedParticles.push(particle);
-		}
-
-		var attributeMap = MeshData.defaultMap([
-			MeshData.POSITION,
-			MeshData.TEXCOORD0
-		]);
-		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
-		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
-		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
-		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
-		meshData.vertexData.setDataUsage('DynamicDraw');
-		this.meshData = meshData;
-
-		var entity = this.entity = this._entity._world.createEntity(meshData);
-		entity.set(new MeshRendererComponent(this.material));
-		entity.name = 'ParticleSystem';
-		entity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
-		entity.addToWorld();
-		if (this._localSpace) {
-			this._entity.transformComponent.attachChild(entity.transformComponent, false);
-		}
-
-		this.updateVertexData();
-	};
-
 	var invRot = new Matrix3();
 	ParticleComponent.prototype.updateUniforms = function () {
 		var uniforms = this.material.uniforms;
@@ -448,41 +420,6 @@ define([
 			for (var j = 0; j < meshIndices.length; j++) {
 				indices[i * meshIndices.length + j] = meshIndices[j] + i * meshVertexCount;
 			}
-
-			// offset[8 * i + 0] = 0;
-			// offset[8 * i + 1] = 0;
-
-			// offset[8 * i + 2] = 0;
-			// offset[8 * i + 3] = 1;
-
-			// offset[8 * i + 4] = 1;
-			// offset[8 * i + 5] = 1;
-
-			// offset[8 * i + 6] = 1;
-			// offset[8 * i + 7] = 0;
-
-			// indices[6 * i + 0] = 4 * i + 0;
-			// indices[6 * i + 1] = 4 * i + 3;
-			// indices[6 * i + 2] = 4 * i + 1;
-			// indices[6 * i + 3] = 4 * i + 1;
-			// indices[6 * i + 4] = 4 * i + 3;
-			// indices[6 * i + 5] = 4 * i + 2;
-
-			// pos[12 * i + 0] = -0.5;
-			// pos[12 * i + 1] = -0.5;
-			// pos[12 * i + 2] = 0;
-
-			// pos[12 * i + 3] = -0.5;
-			// pos[12 * i + 4] = 0.5;
-			// pos[12 * i + 5] = 0;
-
-			// pos[12 * i + 6] = 0.5;
-			// pos[12 * i + 7] = 0.5;
-			// pos[12 * i + 8] = 0;
-
-			// pos[12 * i + 9] = 0.5;
-			// pos[12 * i + 10] = -0.5;
-			// pos[12 * i + 11] = 0;
 		}
 
 		meshData.setAttributeDataUpdated(MeshData.TEXCOORD0);
@@ -709,7 +646,48 @@ define([
 	ParticleComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
-		this.init();
+		
+		var maxParticles = this.maxParticles;
+		for (var i = 0; i < maxParticles; i++) {
+			var particle = new Particle(this);
+			this.particles.push(particle);
+			this.unsortedParticles.push(particle);
+		}
+
+		var attributeMap = MeshData.defaultMap([
+			MeshData.POSITION,
+			MeshData.TEXCOORD0
+		]);
+		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
+		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
+		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
+		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
+		meshData.vertexData.setDataUsage('DynamicDraw');
+		this.meshData = meshData;
+
+		var meshEntity = this.entity = this._entity._world.createEntity(meshData);
+		meshEntity.set(new MeshRendererComponent(this.material));
+		meshEntity.name = 'ParticleSystem';
+		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
+		meshEntity.addToWorld();
+		if (this._localSpace) {
+			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
+		}
+
+		this.updateVertexData();
+	};
+
+	/**
+	 * @private
+	 * @param entity
+	 */
+	ParticleComponent.prototype.detached = function (entity) {
+		this.entity.clearComponent('MeshDataComponent');
+		this._entity = undefined;
+		this._system = undefined;
+		this.unsortedParticles.length = this.particles.length = 0;
+		this.entity.removeFromWorld();
+		this.entity = null;
 	};
 
 	/**
