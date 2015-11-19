@@ -23,9 +23,9 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 ## Documentation
 
-* [Learn pages](http://goocreate.com/learn/?_ga=1.198797160.658665154.1444903216)
+* [Learn pages](http://learn.goocreate.com/)
 * [API Reference](http://code.gooengine.com/latest/docs/)
-* [Support forum](https://answers.goocreate.com/index.html)
+* [Forum](http://forum.goocreate.com/)
 * [Hello world codepen](http://codepen.io/rherlitz/pen/yKruG)
 
 ## Releases
