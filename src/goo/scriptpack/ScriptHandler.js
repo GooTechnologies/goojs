@@ -110,9 +110,10 @@ define([
 			window._gooScriptFactories = {};
 		}
 
+
 		// get a script factory in string form
 		var scriptFactoryStr = [
-			'//# sourceURL=gooCustomScripts/' + encodeURIComponent(config.name) + '.js',
+			'//# sourceURL=goo://goo-custom-scripts/' + encodeURIComponent(config.name.replace(' ', '_')) + '.js',
 			'',
 			'// ' + config.name,
 			'',

@@ -285,7 +285,7 @@ define([
 		}
 	};
 
-	System.prototype.cleanup = function () {
+	Dom3dSystem.prototype.cleanup = function () {
 		System.prototype.cleanup.apply(this, arguments);
 
 		if (this.rootDom.parentNode !== null) {
