@@ -54,7 +54,7 @@ define([
 			worldMatrix: Shader.WORLD_MATRIX,
 			particleTexture: 'PARTICLE_TEXTURE',
 			cameraPosition: Shader.CAMERA,
-			time: 0.0,
+			time: 0,
 			gravity: [0, 0, 0],
 			uColor: [1, 1, 1, 1],
 			alphakill: 0
@@ -433,17 +433,27 @@ define([
 			particle.lifeTime = this.startLifeTime;
 
 			if (this.localSpace) {
-				particle.emitTime = this.preWarm ? -i / this.emissionRate : i / this.emissionRate;
+
+				if(this.preWarm){
+					// Already emitted, negative time
+					particle.emitTime = -i / this.emissionRate;
+				} else {
+					// Emit in the future, positive time
+					particle.emitTime = i / this.emissionRate;
+				}
+
+				/*
 				if (particle.emitTime >= this.time + this.startLifeTime) {
 					particle.active = 0;
-					particle.emitTime = -9999;
-					particle.active = false;
 				} else {
-					particle.active = true;
+					particle.active = 1;
 				}
+				*/
+
 			} else {
-				particle.active = true;
-				particle.emitTime = -particle.lifeTime;
+				// Set all particles to be active but already dead - ready to be re-emitted at any point
+				particle.active = 1;
+				particle.emitTime = -2 * particle.lifeTime;
 			}
 
 			for (j = 0; j < meshVertexCount; j++) {
@@ -611,6 +621,9 @@ define([
 	ParticleComponent.prototype.process = function (tpf) {
 		this.lastTime = this.time;
 		this.time += tpf;
+		if (this.loop && this.time > this.duration) {
+			this.time %= this.duration;
+		}
 		this.updateUniforms();
 
 		this.sortParticles();
