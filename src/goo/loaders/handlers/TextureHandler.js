@@ -236,7 +236,7 @@ define([
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
 			texture.offset.setDirect(config.offset[0], config.offset[1]);
-			texture.repeat.setDirect(config.repeat[0], config.repeat[0]);
+			texture.repeat.setDirect(config.repeat[0], config.repeat[1]);
 			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
