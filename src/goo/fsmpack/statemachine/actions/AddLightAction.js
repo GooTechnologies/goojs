@@ -1,8 +1,8 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var LightComponent = require('goo/entities/components/LightComponent');
-var PointLight = require('goo/renderer/light/PointLight');
-var DirectionalLight = require('goo/renderer/light/DirectionalLight');
-var SpotLight = require('goo/renderer/light/SpotLight');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var LightComponent = require('../../../entities/components/LightComponent');
+var PointLight = require('../../../renderer/light/PointLight');
+var DirectionalLight = require('../../../renderer/light/DirectionalLight');
+var SpotLight = require('../../../renderer/light/SpotLight');
 
 	'use strict';
 

@@ -1,6 +1,6 @@
-var Component = require('goo/entities/components/Component');
-var TextureGrid = require('goo/shapes/TextureGrid');
-var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var Component = require('../../entities/components/Component');
+var TextureGrid = require('../../shapes/TextureGrid');
+var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 
 	'use strict';
 

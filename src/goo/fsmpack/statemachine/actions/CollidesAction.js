@@ -1,6 +1,6 @@
-var EntitySelection = require('goo/entities/EntitySelection');
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var ProximitySystem = require('goo/fsmpack/proximity/ProximitySystem');
+var EntitySelection = require('../../../entities/EntitySelection');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 
 	'use strict';
 

@@ -1,5 +1,5 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var PromiseUtil = require('goo/util/PromiseUtil');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var PromiseUtil = require('../../../util/PromiseUtil');
 
 	'use strict';
 

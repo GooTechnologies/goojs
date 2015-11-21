@@ -1,7 +1,7 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var StateMachineComponent = require('goo/fsmpack/statemachine/StateMachineComponent');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ComponentHandler = require('../loaders/handlers/ComponentHandler');
+var StateMachineComponent = require('../fsmpack/statemachine/StateMachineComponent');
+var rsvp = require('../util/rsvp');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

@@ -1,6 +1,6 @@
-var Capabilities = require('goo/renderer/Capabilities');
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
+var Capabilities = require('../../renderer/Capabilities');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
 
 	'use strict';
 

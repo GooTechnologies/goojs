@@ -1,6 +1,6 @@
-var Transform = require('goo/math/Transform');
-var Joint = require('goo/animationpack/Joint');
-var Matrix4 = require('goo/math/Matrix4');
+var Transform = require('../math/Transform');
+var Joint = require('../animationpack/Joint');
+var Matrix4 = require('../math/Matrix4');
 
 	'use strict';
 

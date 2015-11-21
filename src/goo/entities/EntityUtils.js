@@ -1,6 +1,6 @@
-var Scripts = require('goo/scripts/Scripts');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Scripts = require('../scripts/Scripts');
+var BoundingBox = require('../renderer/bounds/BoundingBox');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

@@ -1,14 +1,14 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var SimplePartitioner = require('goo/renderer/SimplePartitioner');
-var MeshData = require('goo/renderer/MeshData');
-var Material = require('goo/renderer/Material');
-var Shader = require('goo/renderer/Shader');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var Transform = require('goo/math/Transform');
-var MathUtils = require('goo/math/MathUtils');
-var Grid = require('goo/shapes/Grid');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
+var SimplePartitioner = require('../../renderer/SimplePartitioner');
+var MeshData = require('../../renderer/MeshData');
+var Material = require('../../renderer/Material');
+var Shader = require('../../renderer/Shader');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var ObjectUtils = require('../../util/ObjectUtils');
+var Transform = require('../../math/Transform');
+var MathUtils = require('../../math/MathUtils');
+var Grid = require('../../shapes/Grid');
 
 	'use strict';
 

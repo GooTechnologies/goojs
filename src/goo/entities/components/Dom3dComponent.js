@@ -1,7 +1,7 @@
-var Component = require('goo/entities/components/Component');
-var Quad = require('goo/shapes/Quad');
-var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
-var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var Component = require('../../entities/components/Component');
+var Quad = require('../../shapes/Quad');
+var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
+var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 
 	'use strict';
 

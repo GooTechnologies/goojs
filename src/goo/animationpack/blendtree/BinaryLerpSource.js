@@ -1,5 +1,5 @@
-var MathUtils = require('goo/math/MathUtils');
-var TransformData = require('goo/animationpack/clip/TransformData');
+var MathUtils = require('../../math/MathUtils');
+var TransformData = require('../../animationpack/clip/TransformData');
 
 	'use strict';
 

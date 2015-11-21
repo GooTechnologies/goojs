@@ -1,4 +1,4 @@
-var FadeTransitionState = require('goo/animationpack/state/FadeTransitionState');
+var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
 
 	'use strict';
 

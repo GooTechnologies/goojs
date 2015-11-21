@@ -1,10 +1,10 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var AnimationClip = require('goo/animationpack/clip/AnimationClip');
-var JointChannel = require('goo/animationpack/clip/JointChannel');
-var TransformChannel = require('goo/animationpack/clip/TransformChannel');
-var InterpolatedFloatChannel = require('goo/animationpack/clip/InterpolatedFloatChannel');
-var TriggerChannel = require('goo/animationpack/clip/TriggerChannel');
-var ArrayUtils = require('goo/util/ArrayUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var AnimationClip = require('../../animationpack/clip/AnimationClip');
+var JointChannel = require('../../animationpack/clip/JointChannel');
+var TransformChannel = require('../../animationpack/clip/TransformChannel');
+var InterpolatedFloatChannel = require('../../animationpack/clip/InterpolatedFloatChannel');
+var TriggerChannel = require('../../animationpack/clip/TriggerChannel');
+var ArrayUtils = require('../../util/ArrayUtils');
 
 	'use strict';
 

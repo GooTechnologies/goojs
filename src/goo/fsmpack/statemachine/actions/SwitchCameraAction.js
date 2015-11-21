@@ -1,6 +1,6 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var SystemBus = require('goo/entities/SystemBus');
-var Renderer = require('goo/renderer/Renderer');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var SystemBus = require('../../../entities/SystemBus');
+var Renderer = require('../../../renderer/Renderer');
 
 	'use strict';
 

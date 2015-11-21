@@ -1,5 +1,5 @@
-var Manager = require('goo/entities/managers/Manager');
-var EntitySelection = require('goo/entities/EntitySelection');
+var Manager = require('../../entities/managers/Manager');
+var EntitySelection = require('../../entities/EntitySelection');
 
 	'use strict';
 

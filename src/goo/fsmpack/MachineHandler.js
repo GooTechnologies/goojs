@@ -1,9 +1,9 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var State = require('goo/fsmpack/statemachine/State');
-var Machine = require('goo/fsmpack/statemachine/Machine');
-var Actions = require('goo/fsmpack/statemachine/actions/Actions');
-var rsvp = require('goo/util/rsvp');
+var ConfigHandler = require('../loaders/handlers/ConfigHandler');
+var ObjectUtils = require('../util/ObjectUtils');
+var State = require('../fsmpack/statemachine/State');
+var Machine = require('../fsmpack/statemachine/Machine');
+var Actions = require('../fsmpack/statemachine/actions/Actions');
+var rsvp = require('../util/rsvp');
 
 	'use strict';
 

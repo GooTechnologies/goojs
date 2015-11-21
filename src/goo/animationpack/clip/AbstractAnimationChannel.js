@@ -1,4 +1,4 @@
-var MathUtils = require('goo/math/MathUtils');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

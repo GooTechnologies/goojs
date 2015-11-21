@@ -1,7 +1,7 @@
-var Transform = require('goo/math/Transform');
-var Vector3 = require('goo/math/Vector3');
-var Component = require('goo/entities/components/Component');
-var EntitySelection = require('goo/entities/EntitySelection');
+var Transform = require('../../math/Transform');
+var Vector3 = require('../../math/Vector3');
+var Component = require('../../entities/components/Component');
+var EntitySelection = require('../../entities/EntitySelection');
 
 	'use strict';
 

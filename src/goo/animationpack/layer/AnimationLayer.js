@@ -1,9 +1,9 @@
-var FadeTransitionState = require('goo/animationpack/state/FadeTransitionState');
-var SyncFadeTransitionState = require('goo/animationpack/state/SyncFadeTransitionState');
-var FrozenTransitionState = require('goo/animationpack/state/FrozenTransitionState');
-var SteadyState = require('goo/animationpack/state/SteadyState');
-var LayerLerpBlender = require('goo/animationpack/layer/LayerLerpBlender');
-	'goo/entities/World', //! AT: this should not existvar MathUtils = require('goo/math/MathUtils');
+var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
+var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
+var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
+var SteadyState = require('../../animationpack/state/SteadyState');
+var LayerLerpBlender = require('../../animationpack/layer/LayerLerpBlender');
+	'goo/entities/World', //! AT: this should not existvar MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

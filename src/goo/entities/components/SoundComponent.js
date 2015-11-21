@@ -1,7 +1,7 @@
-var Component = require('goo/entities/components/Component');
-var AudioContext = require('goo/sound/AudioContext');
-var Vector3 = require('goo/math/Vector3');
-var MathUtils = require('goo/math/MathUtils');
+var Component = require('../../entities/components/Component');
+var AudioContext = require('../../sound/AudioContext');
+var Vector3 = require('../../math/Vector3');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

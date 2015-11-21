@@ -1,4 +1,4 @@
-var AbstractTransitionState = require('goo/animationpack/state/AbstractTransitionState');
+var AbstractTransitionState = require('../../animationpack/state/AbstractTransitionState');
 
 	'use strict';
 

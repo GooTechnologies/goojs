@@ -1,9 +1,9 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var Joint = require('goo/animationpack/Joint');
-var Skeleton = require('goo/animationpack/Skeleton');
-var SkeletonPose = require('goo/animationpack/SkeletonPose');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var Joint = require('../../animationpack/Joint');
+var Skeleton = require('../../animationpack/Skeleton');
+var SkeletonPose = require('../../animationpack/SkeletonPose');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

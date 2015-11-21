@@ -1,5 +1,5 @@
-var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
-var MathUtils = require('goo/math/MathUtils');
+var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

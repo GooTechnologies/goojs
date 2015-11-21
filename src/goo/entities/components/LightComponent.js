@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var Light = require('goo/renderer/light/Light');
+var Component = require('../../entities/components/Component');
+var Light = require('../../renderer/light/Light');
 
 	'use strict';
 

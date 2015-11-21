@@ -1,5 +1,5 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var MathUtils = require('goo/math/MathUtils');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var MathUtils = require('../../../math/MathUtils');
 
 	'use strict';
 

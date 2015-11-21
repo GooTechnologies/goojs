@@ -1,6 +1,6 @@
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var Component = require('goo/entities/components/Component');
-var MeshData = require('goo/renderer/MeshData');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
+var Component = require('../../entities/components/Component');
+var MeshData = require('../../renderer/MeshData');
 
 	'use strict';
 

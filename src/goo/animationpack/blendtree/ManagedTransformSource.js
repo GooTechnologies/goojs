@@ -1,9 +1,9 @@
-var JointChannel = require('goo/animationpack/clip/JointChannel');
-var JointData = require('goo/animationpack/clip/JointData');
-var JointChannel = require('goo/animationpack/clip/JointChannel');
-var JointData = require('goo/animationpack/clip/JointData');
-var Vector3 = require('goo/math/Vector3');
-var Quaternion = require('goo/math/Quaternion');
+var JointChannel = require('../../animationpack/clip/JointChannel');
+var JointData = require('../../animationpack/clip/JointData');
+var JointChannel = require('../../animationpack/clip/JointChannel');
+var JointData = require('../../animationpack/clip/JointData');
+var Vector3 = require('../../math/Vector3');
+var Quaternion = require('../../math/Quaternion');
 
 	'use strict';
 

@@ -1,12 +1,12 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var SteadyState = require('goo/animationpack/state/SteadyState');
-var ClipSource = require('goo/animationpack/blendtree/ClipSource');
-var ManagedTransformSource = require('goo/animationpack/blendtree/ManagedTransformSource');
-var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
-var FrozenClipSource = require('goo/animationpack/blendtree/FrozenClipSource');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var SteadyState = require('../../animationpack/state/SteadyState');
+var ClipSource = require('../../animationpack/blendtree/ClipSource');
+var ManagedTransformSource = require('../../animationpack/blendtree/ManagedTransformSource');
+var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
+var FrozenClipSource = require('../../animationpack/blendtree/FrozenClipSource');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

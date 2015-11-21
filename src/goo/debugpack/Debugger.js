@@ -1,5 +1,5 @@
-var MarkerComponent = require('goo/debugpack/components/MarkerComponent');
-var MarkerSystem = require('goo/debugpack/systems/MarkerSystem');
+var MarkerComponent = require('./components/MarkerComponent');
+var MarkerSystem = require('./systems/MarkerSystem');
 
 	'use strict';
 

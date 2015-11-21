@@ -1,6 +1,5 @@
 var ObjectUtils = require('./ObjectUtils');
 
-
 /**
  * Object-related utilities
  * @target-class ObjectUtil ObjectUtil constructor

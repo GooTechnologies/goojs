@@ -1,5 +1,5 @@
-var MathUtils = require('goo/math/MathUtils');
-var AnimationClipInstance = require('goo/animationpack/clip/AnimationClipInstance');
+var MathUtils = require('../../math/MathUtils');
+var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInstance');
 
 	'use strict';
 

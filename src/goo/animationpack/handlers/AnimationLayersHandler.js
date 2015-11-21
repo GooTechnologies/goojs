@@ -1,10 +1,10 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var AnimationLayer = require('goo/animationpack/layer/AnimationLayer');
-var FadeTransitionState = require('goo/animationpack/state/FadeTransitionState');
-var SyncFadeTransitionState = require('goo/animationpack/state/SyncFadeTransitionState');
-var FrozenTransitionState = require('goo/animationpack/state/FrozenTransitionState');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var AnimationLayer = require('../../animationpack/layer/AnimationLayer');
+var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
+var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
+var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
+var rsvp = require('../../util/rsvp');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

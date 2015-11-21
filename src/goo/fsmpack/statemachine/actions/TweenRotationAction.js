@@ -1,8 +1,8 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var Quaternion = require('goo/math/Quaternion');
-var Matrix3 = require('goo/math/Matrix3');
-var MathUtils = require('goo/math/MathUtils');
-var TWEEN = require('goo/util/TWEEN');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Quaternion = require('../../../math/Quaternion');
+var Matrix3 = require('../../../math/Matrix3');
+var MathUtils = require('../../../math/MathUtils');
+var TWEEN = require('../../../util/TWEEN');
 
 	'use strict';
 

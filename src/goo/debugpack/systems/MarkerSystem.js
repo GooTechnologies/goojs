@@ -1,9 +1,9 @@
-var System = require('goo/entities/systems/System');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var MarkerComponent = require('goo/debugpack/components/MarkerComponent');
-var Renderer = require('goo/renderer/Renderer');
-var Transform = require('goo/math/Transform');
+var System = require('../../entities/systems/System');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var MarkerComponent = require('../../debugpack/components/MarkerComponent');
+var Renderer = require('../../renderer/Renderer');
+var Transform = require('../../math/Transform');
 
 	'use strict';
 

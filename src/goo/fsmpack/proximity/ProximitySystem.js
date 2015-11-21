@@ -1,6 +1,6 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var StringUtils = require('goo/util/StringUtils');
+var System = require('../entities/systems/System');
+var SystemBus = require('../entities/SystemBus');
+var StringUtils = require('../util/StringUtils');
 
 	'use strict';
 

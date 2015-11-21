@@ -1,9 +1,9 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var SimplePartitioner = require('goo/renderer/SimplePartitioner');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
+var SimplePartitioner = require('../../renderer/SimplePartitioner');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

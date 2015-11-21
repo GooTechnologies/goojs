@@ -1,4 +1,4 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	'use strict';
 

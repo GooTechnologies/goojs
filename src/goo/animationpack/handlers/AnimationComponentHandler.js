@@ -1,6 +1,6 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var AnimationComponent = require('goo/animationpack/components/AnimationComponent');
-var rsvp = require('goo/util/rsvp');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var AnimationComponent = require('../../animationpack/components/AnimationComponent');
+var rsvp = require('../../util/rsvp');
 
 	'use strict';
 

@@ -1,4 +1,3 @@
-define(function () {
 	'use strict';
 
 	/**

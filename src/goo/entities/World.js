@@ -1,10 +1,10 @@
-var Entity = require('goo/entities/Entity');
-var EntityManager = require('goo/entities/managers/EntityManager');
-var TransformComponent = require('goo/entities/components/TransformComponent');
-var Manager = require('goo/entities/managers/Manager');
-var System = require('goo/entities/systems/System');
-var Component = require('goo/entities/components/Component');
-var EntitySelection = require('goo/entities/EntitySelection');
+var Entity = require('./Entity');
+var EntityManager = require('./managers/EntityManager');
+var TransformComponent = require('./components/TransformComponent');
+var Manager = require('./managers/Manager');
+var System = require('./systems/System');
+var Component = require('./components/Component');
+var EntitySelection = require('./EntitySelection');
 
 	'use strict';
 

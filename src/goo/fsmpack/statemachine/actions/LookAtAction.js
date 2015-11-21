@@ -1,5 +1,5 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var Vector3 = require('goo/math/Vector3');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Vector3 = require('../../../math/Vector3');
 
 	'use strict';
 

@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var StringUtils = require('goo/util/StringUtils');
+var Component = require('../entities/components/Component');
+var StringUtils = require('../util/StringUtils');
 
 	'use strict';
 

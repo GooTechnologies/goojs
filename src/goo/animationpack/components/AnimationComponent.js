@@ -1,8 +1,8 @@
-var Component = require('goo/entities/components/Component');
-	'goo/entities/World', //! AT: this should not existvar AnimationLayer = require('goo/animationpack/layer/AnimationLayer');
-var JointData = require('goo/animationpack/clip/JointData');
-var TransformData = require('goo/animationpack/clip/TransformData');
-var TriggerData = require('goo/animationpack/clip/TriggerData');
+var Component = require('../../entities/components/Component');
+	'goo/entities/World', //! AT: this should not existvar AnimationLayer = require('../../animationpack/layer/AnimationLayer');
+var JointData = require('../../animationpack/clip/JointData');
+var TransformData = require('../../animationpack/clip/TransformData');
+var TriggerData = require('../../animationpack/clip/TriggerData');
 
 	'use strict';
 

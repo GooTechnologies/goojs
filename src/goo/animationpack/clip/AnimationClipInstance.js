@@ -1,4 +1,4 @@
-var World = require('goo/entities/World');
+var World = require('../../entities/World');
 
 	'use strict';
 

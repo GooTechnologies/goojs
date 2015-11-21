@@ -1,4 +1,4 @@
-var TransformData = require('goo/animationpack/clip/TransformData');
+var TransformData = require('../../animationpack/clip/TransformData');
 
 	'use strict';
 

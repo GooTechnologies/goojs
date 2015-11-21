@@ -1,8 +1,8 @@
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var MeshData = require('goo/renderer/MeshData');
-var Transform = require('goo/math/Transform');
+var BoundingBox = require('../renderer/bounds/BoundingBox');
+var BoundingSphere = require('../renderer/bounds/BoundingSphere');
+var MeshBuilder = require('../util/MeshBuilder');
+var MeshData = require('../renderer/MeshData');
+var Transform = require('../math/Transform');
 
 	'use strict';
 

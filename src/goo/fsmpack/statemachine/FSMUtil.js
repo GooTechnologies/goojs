@@ -1,3 +1,3 @@
-var FsmUtils = require('goo/util/FsmUtils');
+var FsmUtils = require('../../util/FsmUtils');
 
 	module.exports = FsmUtils;

@@ -1,6 +1,6 @@
-var Component = require('goo/entities/components/Component');
-var ArrayUtils = require('goo/util/ArrayUtils');
-var SystemBus = require('goo/entities/SystemBus');
+var Component = require('../../entities/components/Component');
+var ArrayUtils = require('../../util/ArrayUtils');
+var SystemBus = require('../../entities/SystemBus');
 
 	'use strict';
 

@@ -1,9 +1,9 @@
-var MeshData = require('goo/renderer/MeshData');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var Transform = require('goo/math/Transform');
-var Vector3 = require('goo/math/Vector3');
-var Box = require('goo/shapes/Box');
-var Cylinder = require('goo/shapes/Cylinder');
+var MeshData = require('../../renderer/MeshData');
+var MeshBuilder = require('../../util/MeshBuilder');
+var Transform = require('../../math/Transform');
+var Vector3 = require('../../math/Vector3');
+var Box = require('../../shapes/Box');
+var Cylinder = require('../../shapes/Cylinder');
 
 	'use strict';
 

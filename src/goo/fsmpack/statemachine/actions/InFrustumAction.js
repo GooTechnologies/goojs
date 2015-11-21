@@ -1,6 +1,6 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var Camera = require('goo/renderer/Camera');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Camera = require('../../../renderer/Camera');
+var BoundingSphere = require('../../../renderer/bounds/BoundingSphere');
 
 	'use strict';
 

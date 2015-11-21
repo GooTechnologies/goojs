@@ -1,6 +1,6 @@
-var System = require('goo/entities/systems/System');
-var TWEEN = require('goo/util/TWEEN');
-var Actions = require('goo/fsmpack/statemachine/actions/Actions');
+var System = require('../../entities/systems/System');
+var TWEEN = require('../../util/TWEEN');
+var Actions = require('../../fsmpack/statemachine/actions/Actions');
 
 	'use strict';
 

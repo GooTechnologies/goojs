@@ -1,5 +1,5 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var TWEEN = require('goo/util/TWEEN');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var TWEEN = require('../../../util/TWEEN');
 
 	'use strict';
 

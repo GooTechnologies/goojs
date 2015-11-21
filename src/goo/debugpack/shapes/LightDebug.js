@@ -1,10 +1,10 @@
-var MeshData = require('goo/renderer/MeshData');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var Transform = require('goo/math/Transform');
-var Sphere = require('goo/shapes/Sphere');
-var PointLight = require('goo/renderer/light/PointLight');
-var DirectionalLight = require('goo/renderer/light/DirectionalLight');
-var SpotLight = require('goo/renderer/light/SpotLight');
+var MeshData = require('../../renderer/MeshData');
+var MeshBuilder = require('../../util/MeshBuilder');
+var Transform = require('../../math/Transform');
+var Sphere = require('../../shapes/Sphere');
+var PointLight = require('../../renderer/light/PointLight');
+var DirectionalLight = require('../../renderer/light/DirectionalLight');
+var SpotLight = require('../../renderer/light/SpotLight');
 
 	'use strict';
 

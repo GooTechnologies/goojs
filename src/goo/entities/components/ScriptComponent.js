@@ -1,7 +1,7 @@
-var Component = require('goo/entities/components/Component');
-var SystemBus = require('goo/entities/SystemBus');
-var Scripts = require('goo/scripts/Scripts');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Component = require('../../entities/components/Component');
+var SystemBus = require('../../entities/SystemBus');
+var Scripts = require('../../scripts/Scripts');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

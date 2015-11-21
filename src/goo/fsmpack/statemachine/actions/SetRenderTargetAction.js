@@ -1,11 +1,11 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var PortalComponent = require('goo/entities/components/PortalComponent');
-var PortalSystem = require('goo/entities/systems/PortalSystem');
-var Vector3 = require('goo/math/Vector3');
-var CameraComponent = require('goo/entities/components/CameraComponent');
-var Camera = require('goo/renderer/Camera');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var PortalComponent = require('../../../entities/components/PortalComponent');
+var PortalSystem = require('../../../entities/systems/PortalSystem');
+var Vector3 = require('../../../math/Vector3');
+var CameraComponent = require('../../../entities/components/CameraComponent');
+var Camera = require('../../../renderer/Camera');
+var Material = require('../../../renderer/Material');
+var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 
 	'use strict';
 

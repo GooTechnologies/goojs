@@ -1,7 +1,7 @@
-var Component = require('goo/entities/components/Component');
-var Vector3 = require('goo/math/Vector3');
-var Camera = require('goo/renderer/Camera');
-var SystemBus = require('goo/entities/SystemBus');
+var Component = require('../../entities/components/Component');
+var Vector3 = require('../../math/Vector3');
+var Camera = require('../../renderer/Camera');
+var SystemBus = require('../../entities/SystemBus');
 
 	'use strict';
 

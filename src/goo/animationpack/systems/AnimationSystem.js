@@ -1,5 +1,5 @@
-var System = require('goo/entities/systems/System');
-var World = require('goo/entities/World');
+var System = require('../../entities/systems/System');
+var World = require('../../entities/World');
 
 	'use strict';
 

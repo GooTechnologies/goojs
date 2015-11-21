@@ -1,6 +1,6 @@
-var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
-var TransformData = require('goo/animationpack/clip/TransformData');
-var Quaternion = require('goo/math/Quaternion');
+var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
+var TransformData = require('../../animationpack/clip/TransformData');
+var Quaternion = require('../../math/Quaternion');
 
 	'use strict';
 

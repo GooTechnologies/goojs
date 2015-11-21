@@ -1,8 +1,8 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ParticleLib = require('goo/particles/ParticleLib');
-var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Material = require('../../../renderer/Material');
+var ShaderLib = require('../../../renderer/shaders/ShaderLib');
+var ParticleLib = require('../../../particles/ParticleLib');
+var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 
 	'use strict';
 

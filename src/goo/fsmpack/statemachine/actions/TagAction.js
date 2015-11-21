@@ -1,5 +1,5 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var ProximityComponent = require('goo/fsmpack/proximity/ProximityComponent');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent');
 
 	'use strict';
 

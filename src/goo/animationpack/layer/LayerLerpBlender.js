@@ -1,4 +1,4 @@
-var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
+var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
 
 	'use strict';
 

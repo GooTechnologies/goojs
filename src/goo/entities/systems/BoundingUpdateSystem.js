@@ -1,5 +1,5 @@
-var System = require('goo/entities/systems/System');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var System = require('../../entities/systems/System');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
 
 	'use strict';
 

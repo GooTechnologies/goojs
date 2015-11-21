@@ -1,7 +1,7 @@
-var Component = require('goo/entities/components/Component');
-var Particle = require('goo/particles/Particle');
-var ParticleEmitter = require('goo/particles/ParticleEmitter');
-var MeshData = require('goo/renderer/MeshData');
+var Component = require('../../entities/components/Component');
+var Particle = require('../../particles/Particle');
+var ParticleEmitter = require('../../particles/ParticleEmitter');
+var MeshData = require('../../renderer/MeshData');
 
 	'use strict';
 

@@ -1,5 +1,5 @@
-var TransformChannel = require('goo/animationpack/clip/TransformChannel');
-var JointData = require('goo/animationpack/clip/JointData');
+var TransformChannel = require('../../animationpack/clip/TransformChannel');
+var JointData = require('../../animationpack/clip/JointData');
 
 	'use strict';
 

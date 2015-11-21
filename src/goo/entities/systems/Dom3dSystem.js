@@ -1,13 +1,13 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var Renderer = require('goo/renderer/Renderer');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var Quad = require('goo/shapes/Quad');
-var Matrix4x4 = require('goo/math/Matrix4x4');
-var Vector3 = require('goo/math/Vector3');
-var Ray = require('goo/math/Ray');
-var MathUtils = require('goo/math/MathUtils');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
+var Renderer = require('../../renderer/Renderer');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var Quad = require('../../shapes/Quad');
+var Matrix4x4 = require('../../math/Matrix4x4');
+var Vector3 = require('../../math/Vector3');
+var Ray = require('../../math/Ray');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

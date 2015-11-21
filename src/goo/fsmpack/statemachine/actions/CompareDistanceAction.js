@@ -1,6 +1,6 @@
-var Action = require('goo/fsmpack/statemachine/actions/Action');
-var Vector3 = require('goo/math/Vector3');
-var Renderer = require('goo/renderer/Renderer');
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Vector3 = require('../../../math/Vector3');
+var Renderer = require('../../../renderer/Renderer');
 
 	'use strict';
 

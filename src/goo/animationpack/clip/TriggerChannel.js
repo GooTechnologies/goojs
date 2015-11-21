@@ -1,5 +1,5 @@
-var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
-var TriggerData = require('goo/animationpack/clip/TriggerData');
+var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
+var TriggerData = require('../../animationpack/clip/TriggerData');
 
 	'use strict';
 

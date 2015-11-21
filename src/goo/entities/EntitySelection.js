@@ -1,4 +1,4 @@
-var Selection = require('goo/entities/Selection');
+var Selection = require('./Selection');
 
 	'use strict';
 

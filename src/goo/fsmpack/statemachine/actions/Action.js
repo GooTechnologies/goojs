@@ -1,4 +1,4 @@
-var FsmUtils = require('goo/fsmpack/statemachine/FsmUtils');
+var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 	'use strict';
 

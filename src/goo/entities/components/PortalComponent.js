@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var Component = require('../../entities/components/Component');
+var RenderTarget = require('../../renderer/pass/RenderTarget');
 
 	'use strict';
 

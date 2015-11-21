@@ -1,4 +1,4 @@
-var ArrayUtils = require('goo/util/ArrayUtils');
+var ArrayUtils = require('../../util/ArrayUtils');
 
 	'use strict';
 

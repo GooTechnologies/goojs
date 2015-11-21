@@ -1,8 +1,8 @@
-var System = require('goo/entities/systems/System');
-var Renderer = require('goo/renderer/Renderer');
-var Matrix4 = require('goo/math/Matrix4');
-var MathUtils = require('goo/math/MathUtils');
-var Vector3 = require('goo/math/Vector3');
+var System = require('../../entities/systems/System');
+var Renderer = require('../../renderer/Renderer');
+var Matrix4 = require('../../math/Matrix4');
+var MathUtils = require('../../math/MathUtils');
+var Vector3 = require('../../math/Vector3');
 
 	'use strict';
 

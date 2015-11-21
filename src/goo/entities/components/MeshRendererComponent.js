@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var Material = require('goo/renderer/Material');
+var Component = require('../../entities/components/Component');
+var Material = require('../../renderer/Material');
 
 	'use strict';
 

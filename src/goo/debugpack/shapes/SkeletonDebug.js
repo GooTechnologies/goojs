@@ -1,8 +1,8 @@
-var Box = require('goo/shapes/Box');
-var Transform = require('goo/math/Transform');
-var Joint = require('goo/animationpack/Joint');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var MeshData = require('goo/renderer/MeshData');
+var Box = require('../../shapes/Box');
+var Transform = require('../../math/Transform');
+var Joint = require('../../animationpack/Joint');
+var MeshBuilder = require('../../util/MeshBuilder');
+var MeshData = require('../../renderer/MeshData');
 
 	'use strict';
 	function SkeletonDebug() {}

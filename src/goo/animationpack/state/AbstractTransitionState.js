@@ -1,6 +1,6 @@
-var AbstractState = require('goo/animationpack/state/AbstractState');
-var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
-var MathUtils = require('goo/math/MathUtils');
+var AbstractState = require('../../animationpack/state/AbstractState');
+var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 
