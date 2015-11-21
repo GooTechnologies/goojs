@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/ShaderCall',
-	'goo/math/Matrix3',
-	'goo/math/Matrix4',
-	'goo/entities/World',
-	'goo/renderer/RenderQueue',
-	'goo/util/ObjectUtils',
-	'goo/entities/SystemBus'
-], function (
-	ShaderCall,
-	Matrix3,
-	Matrix4,
-	World,
-	RenderQueue,
-	ObjectUtils,
-	SystemBus
-) {
+var ShaderCall = require('goo/renderer/ShaderCall');
+var Matrix3 = require('goo/math/Matrix3');
+var Matrix4 = require('goo/math/Matrix4');
+var World = require('goo/entities/World');
+var RenderQueue = require('goo/renderer/RenderQueue');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/* global WebGLRenderingContext */
@@ -862,5 +853,4 @@ define([
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);
 
-	return Shader;
-});
+	module.exports = Shader;

@@ -1,21 +1,11 @@
-define([
-	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
-	'goo/addons/physicspack/RaycastResult',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/entities/EntityUtils',
-	'goo/math/Transform'
-],
-function (
-	AbstractPhysicsSystem,
-	RaycastResult,
-	RigidBodyComponent,
-	Vector3,
-	Quaternion,
-	EntityUtils,
-	Transform
-) {
+var AbstractPhysicsSystem = require('goo/addons/physicspack/systems/AbstractPhysicsSystem');
+var RaycastResult = require('goo/addons/physicspack/RaycastResult');
+var RigidBodyComponent = require('goo/addons/physicspack/components/RigidBodyComponent');
+var Vector3 = require('goo/math/Vector3');
+var Quaternion = require('goo/math/Quaternion');
+var EntityUtils = require('goo/entities/EntityUtils');
+var Transform = require('goo/math/Transform');
+
 	'use strict';
 
 	/* global CANNON */
@@ -627,5 +617,4 @@ function (
 		}
 	};
 
-	return PhysicsSystem;
-});
+	module.exports = PhysicsSystem;

@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils'
-], function (
-	ConfigHandler,
-	Material,
-	MeshData,
-	Shader,
-	ShaderBuilder,
-	RSVP,
-	PromiseUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var Material = require('goo/renderer/Material');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -110,5 +101,4 @@ define([
 		}.bind(this));
 	};
 
-	return ShaderHandler;
-});
+	module.exports = ShaderHandler;

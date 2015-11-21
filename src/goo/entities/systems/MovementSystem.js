@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	//! AT: unused; should be removed
@@ -45,5 +42,4 @@ define([
 		}
 	};
 
-	return MovementSystem;
-});
+	module.exports = MovementSystem;

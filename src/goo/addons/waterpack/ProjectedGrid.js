@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/math/Matrix4',
-	'goo/renderer/Camera',
-	'goo/math/MathUtils'
-], function (
-	MeshData,
-	Vector2,
-	Vector3,
-	Vector4,
-	Matrix4,
-	Camera,
-	MathUtils
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Vector2 = require('goo/math/Vector2');
+var Vector3 = require('goo/math/Vector3');
+var Vector4 = require('goo/math/Vector4');
+var Matrix4 = require('goo/math/Matrix4');
+var Camera = require('goo/renderer/Camera');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -346,5 +337,4 @@ define([
 		return this;
 	};
 
-	return ProjectedGrid;
-});
+	module.exports = ProjectedGrid;

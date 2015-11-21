@@ -1,12 +1,7 @@
-define([
-	'goo/shapes/Quad',
-	'goo/renderer/Camera',
-	'goo/math/Vector3'
-], function (
-	Quad,
-	Camera,
-	Vector3
-) {
+var Quad = require('goo/shapes/Quad');
+var Camera = require('goo/renderer/Camera');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -25,5 +20,4 @@ define([
 
 	FullscreenUtils.quad = new Quad(2, 2);
 
-	return FullscreenUtils;
-});
+	module.exports = FullscreenUtils;

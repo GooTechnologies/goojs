@@ -1,8 +1,5 @@
-define([
-	'goo/math/MathUtils'
-], function (
-	MathUtils
-) {
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -98,5 +95,4 @@ define([
 		}
 	};
 
-	return AbstractAnimationChannel;
-});
+	module.exports = AbstractAnimationChannel;

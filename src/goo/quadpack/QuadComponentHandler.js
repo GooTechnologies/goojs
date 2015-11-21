@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils',
-	'goo/quadpack/QuadComponent'
-], function (
-	ComponentHandler,
-	RSVP,
-	PromiseUtils,
-	_,
-	QuadComponent
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var QuadComponent = require('goo/quadpack/QuadComponent');
+
 	'use strict';
 
 	/**
@@ -85,5 +78,4 @@ define([
 		});
 	};
 
-	return QuadComponentHandler;
-});
+	module.exports = QuadComponentHandler;

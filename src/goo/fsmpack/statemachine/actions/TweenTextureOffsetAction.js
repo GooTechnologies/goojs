@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/TWEEN'
-], function (
-	Action,
-	TWEEN
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
@@ -111,5 +107,4 @@ define([
 		}
 	};
 
-	return TweenTextureOffsetAction;
-});
+	module.exports = TweenTextureOffsetAction;

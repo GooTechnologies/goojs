@@ -1,16 +1,9 @@
-define([
-	'goo/math/Vector3',
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer',
-	'goo/entities/SystemBus'
-], function (
-	Vector3,
-	Scripts,
-	ScriptUtils,
-	Renderer,
-	SystemBus
-) {
+var Vector3 = require('goo/math/Vector3');
+var Scripts = require('goo/scripts/Scripts');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var Renderer = require('goo/renderer/Renderer');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -214,5 +207,4 @@ define([
 		}]
 	};
 
-	return ButtonScript;
-});
+	module.exports = ButtonScript;

@@ -712,5 +712,4 @@ define(function () {
 
 	window.TWEEN = TWEEN; // ask Martin, Ray
 
-	return TWEEN;
-});
+	module.exports = TWEEN;

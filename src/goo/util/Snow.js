@@ -1,22 +1,12 @@
-define([
-	'goo/entities/SystemBus',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/TextureCreator',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils',
-	'goo/renderer/Renderer',
-	'goo/math/Vector3'
-], function (
-	SystemBus,
-	Material,
-	ShaderLib,
-	TextureCreator,
-	ParticleLib,
-	ParticleSystemUtils,
-	Renderer,
-	Vector3
-) {
+var SystemBus = require('goo/entities/SystemBus');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var ParticleLib = require('goo/particles/ParticleLib');
+var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
+var Renderer = require('goo/renderer/Renderer');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -107,5 +97,4 @@ define([
 		this.particleCloudEntity.removeFromWorld();
 	};
 
-	return Snow;
-});
+	module.exports = Snow;

@@ -1,16 +1,9 @@
-define([
-	'goo/shapes/Box',
-	'goo/math/Transform',
-	'goo/animationpack/Joint',
-	'goo/util/MeshBuilder',
-	'goo/renderer/MeshData'
-], function (
-	Box,
-	Transform,
-	Joint,
-	MeshBuilder,
-	MeshData
-) {
+var Box = require('goo/shapes/Box');
+var Transform = require('goo/math/Transform');
+var Joint = require('goo/animationpack/Joint');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 	function SkeletonDebug() {}
 	var calcTrans = new Transform();
@@ -99,5 +92,4 @@ define([
 		meshData.weightsPerVertex = 4;
 	};
 
-	return SkeletonDebug;
-});
+	module.exports = SkeletonDebug;

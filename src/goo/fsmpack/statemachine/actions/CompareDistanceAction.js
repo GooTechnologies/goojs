@@ -1,12 +1,7 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3',
-	'goo/renderer/Renderer'
-], function (
-	Action,
-	Vector3,
-	Renderer
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Vector3 = require('goo/math/Vector3');
+var Renderer = require('goo/renderer/Renderer');
+
 	'use strict';
 
 	function CompareDistanceAction(/*id, settings*/) {
@@ -103,5 +98,4 @@ define([
 		}
 	};
 
-	return CompareDistanceAction;
-});
+	module.exports = CompareDistanceAction;

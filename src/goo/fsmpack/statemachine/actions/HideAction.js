@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function HideAction(/*id, settings*/) {
@@ -25,5 +22,4 @@ define([
 		entity.hide();
 	};
 
-	return HideAction;
-});
+	module.exports = HideAction;

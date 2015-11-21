@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function PauseAnimationAction(/*id, settings*/) {
@@ -39,5 +36,4 @@ define([
 		}
 	};
 
-	return PauseAnimationAction;
-});
+	module.exports = PauseAnimationAction;

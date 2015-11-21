@@ -1,20 +1,11 @@
-define([
-	'goo/entities/EntityUtils',
-	'goo/entities/Entity',
-	'goo/util/MeshBuilder',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere'
-], function (
-	EntityUtils,
-	Entity,
-	MeshBuilder,
-	Transform,
-	Vector3,
-	BoundingBox,
-	BoundingSphere
-) {
+var EntityUtils = require('goo/entities/EntityUtils');
+var Entity = require('goo/entities/Entity');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Transform = require('goo/math/Transform');
+var Vector3 = require('goo/math/Vector3');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+
 	'use strict';
 
 	/**
@@ -247,5 +238,4 @@ define([
 		};
 	}
 
-	return EntityCombiner;
-});
+	module.exports = EntityCombiner;

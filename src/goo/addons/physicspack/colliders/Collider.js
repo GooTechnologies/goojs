@@ -23,5 +23,4 @@ function () {
 	 */
 	Collider.prototype.transform = function (/*transform, targetCollider*/) {};
 
-	return Collider;
-});
+	module.exports = Collider;

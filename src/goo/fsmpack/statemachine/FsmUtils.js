@@ -194,5 +194,4 @@ define(function () {
 		}
 	};
 
-	return FsmUtils;
-});
+	module.exports = FsmUtils;

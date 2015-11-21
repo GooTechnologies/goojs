@@ -1,10 +1,6 @@
-define([
-	'goo/util/ObjectUtils',
-	'goo/math/MathUtils'
-], function (
-	ObjectUtils,
-	MathUtils
-	) {
+var ObjectUtils = require('../util/ObjectUtils');
+var MathUtils = require('./MathUtils');
+
 	'use strict';
 
 	/**
@@ -523,5 +519,4 @@ define([
 	});
 	// SHIM END
 
-	return Vector;
-});
+	module.exports = Vector;

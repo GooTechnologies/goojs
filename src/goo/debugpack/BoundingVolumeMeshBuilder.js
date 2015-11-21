@@ -1,16 +1,9 @@
-define([
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/util/MeshBuilder',
-	'goo/renderer/MeshData',
-	'goo/math/Transform'
-], function (
-	BoundingBox,
-	BoundingSphere,
-	MeshBuilder,
-	MeshData,
-	Transform
-) {
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var MeshData = require('goo/renderer/MeshData');
+var Transform = require('goo/math/Transform');
+
 	'use strict';
 
 	/**
@@ -128,5 +121,4 @@ define([
 		}
 	};
 
-	return BoundingVolumeMeshBuilder;
-});
+	module.exports = BoundingVolumeMeshBuilder;

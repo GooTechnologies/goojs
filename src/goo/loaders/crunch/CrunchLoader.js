@@ -21,16 +21,10 @@
  *    distribution.
  */
 
-/*jshint bitwise: false */
-define([
-	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/Capabilities'
-], function (
-	DdsLoader,
-	DdsUtils,
-	Capabilities
-) {
+/*jshint bitwise: false */var DdsLoader = require('goo/loaders/dds/DdsLoader');
+var DdsUtils = require('goo/loaders/dds/DdsUtils');
+var Capabilities = require('goo/renderer/Capabilities');
+
 	'use strict';
 
 	/**
@@ -239,5 +233,4 @@ define([
 		return 'CrunchLoader';
 	};
 
-	return CrunchLoader;
-});
+	module.exports = CrunchLoader;

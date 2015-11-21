@@ -1,22 +1,12 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/components/PortalComponent',
-	'goo/entities/systems/PortalSystem',
-	'goo/math/Vector3',
-	'goo/entities/components/CameraComponent',
-	'goo/renderer/Camera',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
-], function (
-	Action,
-	PortalComponent,
-	PortalSystem,
-	Vector3,
-	CameraComponent,
-	Camera,
-	Material,
-	ShaderLib
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var PortalComponent = require('goo/entities/components/PortalComponent');
+var PortalSystem = require('goo/entities/systems/PortalSystem');
+var Vector3 = require('goo/math/Vector3');
+var CameraComponent = require('goo/entities/components/CameraComponent');
+var Camera = require('goo/renderer/Camera');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+
 	'use strict';
 
 	function SetRenderTargetAction(/*id, settings*/) {
@@ -83,5 +73,4 @@ define([
 		// would remove the entire system, but the engine does not support that
 	};
 
-	return SetRenderTargetAction;
-});
+	module.exports = SetRenderTargetAction;

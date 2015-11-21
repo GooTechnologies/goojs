@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/util/rsvp',
-	'goo/util/StringUtils',
-	'goo/util/PromiseUtils'
-], function (
-	ConfigHandler,
-	ComponentHandler,
-	RSVP,
-	StringUtils,
-	PromiseUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var rsvp = require('goo/util/rsvp');
+var StringUtils = require('goo/util/StringUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -190,5 +183,4 @@ define([
 		return this._componentHandlers[type];
 	};
 
-	return EntityHandler;
-});
+	module.exports = EntityHandler;

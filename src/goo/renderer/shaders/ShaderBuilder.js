@@ -1,22 +1,12 @@
-define([
-	'goo/renderer/Capabilities',
-	'goo/renderer/MeshData',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/renderer/Texture',
-	'goo/math/MathUtils',
-	'goo/util/TangentGenerator'
-], function (
-	Capabilities,
-	MeshData,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	Texture,
-	MathUtils,
-	TangentGenerator
-) {
+var Capabilities = require('goo/renderer/Capabilities');
+var MeshData = require('goo/renderer/MeshData');
+var PointLight = require('goo/renderer/light/PointLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+var Texture = require('goo/renderer/Texture');
+var MathUtils = require('goo/math/MathUtils');
+var TangentGenerator = require('goo/util/TangentGenerator');
+
 	'use strict';
 
 	/**
@@ -891,5 +881,4 @@ define([
 			'#endif'
 		].join('\n')
 	};
-	return ShaderBuilder;
-});
+	module.exports = ShaderBuilder;

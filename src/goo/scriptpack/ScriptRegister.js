@@ -1,16 +1,15 @@
-define([
-	'goo/scripts/Scripts',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/scriptpack/OrbitNPanControlScript',
-	'goo/scriptpack/FlyControlScript',
-	'goo/scriptpack/AxisAlignedCamControlScript',
-	'goo/scriptpack/PanCamScript',
-	'goo/scriptpack/MouseLookControlScript',
-	'goo/scriptpack/WasdControlScript',
-	'goo/scriptpack/ButtonScript',
-	'goo/scriptpack/PickAndRotateScript',
-	'goo/scriptpack/LensFlareScript'
-], function (Scripts) {
+var Scripts = require('goo/scripts/Scripts');
+var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
+var OrbitNPanControlScript = require('goo/scriptpack/OrbitNPanControlScript');
+var FlyControlScript = require('goo/scriptpack/FlyControlScript');
+var AxisAlignedCamControlScript = require('goo/scriptpack/AxisAlignedCamControlScript');
+var PanCamScript = require('goo/scriptpack/PanCamScript');
+var MouseLookControlScript = require('goo/scriptpack/MouseLookControlScript');
+var WasdControlScript = require('goo/scriptpack/WasdControlScript');
+var ButtonScript = require('goo/scriptpack/ButtonScript');
+var PickAndRotateScript = require('goo/scriptpack/PickAndRotateScript');
+var LensFlareScript = require('goo/scriptpack/LensFlareScript');
+
 	'use strict';
 
 	for (var i = 1; i < arguments.length; i++) {

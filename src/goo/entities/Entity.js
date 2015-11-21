@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/util/StringUtils'
-], function (
-	Component,
-	StringUtils
-) {
+var Component = require('goo/entities/components/Component');
+var StringUtils = require('goo/util/StringUtils');
+
 	'use strict';
 
 	/**
@@ -329,5 +325,4 @@ define([
 
 	Entity.entityCount = 0;
 
-	return Entity;
-});
+	module.exports = Entity;

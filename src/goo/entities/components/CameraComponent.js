@@ -1,14 +1,8 @@
-define([
-	'goo/entities/components/Component',
-	'goo/math/Vector3',
-	'goo/renderer/Camera',
-	'goo/entities/SystemBus'
-], function (
-	Component,
-	Vector3,
-	Camera,
-	SystemBus
-) {
+var Component = require('goo/entities/components/Component');
+var Vector3 = require('goo/math/Vector3');
+var Camera = require('goo/renderer/Camera');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -139,5 +133,4 @@ define([
 		}
 	};
 
-	return CameraComponent;
-});
+	module.exports = CameraComponent;

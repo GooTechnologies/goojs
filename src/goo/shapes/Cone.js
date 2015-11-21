@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/util/ObjectUtils'
-], function (
-	MeshData,
-	_
-) {
+var MeshData = require('goo/renderer/MeshData');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -113,5 +109,4 @@ define([
 		return new Cone(options);
 	};
 
-	return Cone;
-});
+	module.exports = Cone;

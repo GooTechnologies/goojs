@@ -94,5 +94,4 @@ function (
 		return this;
 	};
 
-	return Pool;
-});
+	module.exports = Pool;

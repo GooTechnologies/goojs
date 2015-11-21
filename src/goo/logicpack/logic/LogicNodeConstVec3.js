@@ -1,10 +1,9 @@
 define(
-	[
-		'goo/logic/LogicLayer',
-		'goo/logic/LogicNode',
-		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+	[var LogicLayer = require('goo/logic/LogicLayer');
+var LogicNode = require('goo/logic/LogicNode');
+var LogicNodes = require('goo/logic/LogicNodes');
+var LogicInterface = require('goo/logic/LogicInterface');
+var Vector3 = require('goo/math/Vector3');
 	],
 
 	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {

@@ -1,14 +1,8 @@
-define([
-	'goo/scripts/Scripts',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/util/GameUtils'
-], function (
-	Scripts,
-	Vector3,
-	MathUtils,
-	GameUtils
-) {
+var Scripts = require('goo/scripts/Scripts');
+var Vector3 = require('goo/math/Vector3');
+var MathUtils = require('goo/math/MathUtils');
+var GameUtils = require('goo/util/GameUtils');
+
 	'use strict';
 
 	function MouseLookControlScript() {
@@ -218,5 +212,4 @@ define([
 		]
 	};
 
-	return MouseLookControlScript;
-});
+	module.exports = MouseLookControlScript;

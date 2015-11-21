@@ -237,5 +237,4 @@ define(function () {
 		};
 	};
 
-	return StringUtils;
-});
+	module.exports = StringUtils;

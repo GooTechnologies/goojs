@@ -1,40 +1,21 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/SimplePartitioner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/math/Matrix3',
-	'goo/math/Matrix4',
-	'goo/math/Vector2',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/util/gizmopack/Gizmo',
-	'goo/util/gizmopack/TranslationGizmo',
-	'goo/util/gizmopack/GlobalTranslationGizmo',
-	'goo/util/gizmopack/RotationGizmo',
-	'goo/util/gizmopack/GlobalRotationGizmo',
-	'goo/util/gizmopack/ScaleGizmo'
-], function (
-	System,
-	SystemBus,
-	SimplePartitioner,
-	Material,
-	ShaderLib,
-	ShaderFragment,
-	Matrix3,
-	Matrix4,
-	Vector2,
-	MeshData,
-	Shader,
-	Gizmo,
-	TranslationGizmo,
-	GlobalTranslationGizmo,
-	RotationGizmo,
-	GlobalRotationGizmo,
-	ScaleGizmo
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var SimplePartitioner = require('goo/renderer/SimplePartitioner');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var Matrix3 = require('goo/math/Matrix3');
+var Matrix4 = require('goo/math/Matrix4');
+var Vector2 = require('goo/math/Vector2');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var Gizmo = require('goo/util/gizmopack/Gizmo');
+var TranslationGizmo = require('goo/util/gizmopack/TranslationGizmo');
+var GlobalTranslationGizmo = require('goo/util/gizmopack/GlobalTranslationGizmo');
+var RotationGizmo = require('goo/util/gizmopack/RotationGizmo');
+var GlobalRotationGizmo = require('goo/util/gizmopack/GlobalRotationGizmo');
+var ScaleGizmo = require('goo/util/gizmopack/ScaleGizmo');
+
 	'use strict';
 
 	/**
@@ -381,5 +362,4 @@ define([
 		].join('\n')
 	};
 
-	return GizmoRenderSystem;
-});
+	module.exports = GizmoRenderSystem;

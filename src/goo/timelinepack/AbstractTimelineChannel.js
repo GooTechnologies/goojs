@@ -50,5 +50,4 @@ define([], function () {
 		return this;
 	};
 
-	return AbstractTimelineChannel;
-});
+	module.exports = AbstractTimelineChannel;

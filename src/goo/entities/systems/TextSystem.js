@@ -1,12 +1,7 @@
-define([
-	'goo/entities/systems/System',
-	'goo/shapes/TextureGrid',
-	'goo/entities/components/MeshDataComponent'
-], function (
-	System,
-	TextureGrid,
-	MeshDataComponent
-) {
+var System = require('goo/entities/systems/System');
+var TextureGrid = require('goo/shapes/TextureGrid');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+
 	'use strict';
 
 	/**
@@ -39,5 +34,4 @@ define([
 		}
 	};
 
-	return TextSystem;
-});
+	module.exports = TextSystem;

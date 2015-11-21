@@ -1,20 +1,10 @@
-define([
-	'goo/animationpack/state/FadeTransitionState',
-	'goo/animationpack/state/SyncFadeTransitionState',
-	'goo/animationpack/state/FrozenTransitionState',
-	'goo/animationpack/state/SteadyState',
-	'goo/animationpack/layer/LayerLerpBlender',
-	'goo/entities/World', //! AT: this should not exist
-	'goo/math/MathUtils'
-], function (
-	FadeTransitionState,
-	SyncFadeTransitionState,
-	FrozenTransitionState,
-	SteadyState,
-	LayerLerpBlender,
-	World,
-	MathUtils
-) {
+var FadeTransitionState = require('goo/animationpack/state/FadeTransitionState');
+var SyncFadeTransitionState = require('goo/animationpack/state/SyncFadeTransitionState');
+var FrozenTransitionState = require('goo/animationpack/state/FrozenTransitionState');
+var SteadyState = require('goo/animationpack/state/SteadyState');
+var LayerLerpBlender = require('goo/animationpack/layer/LayerLerpBlender');
+	'goo/entities/World', //! AT: this should not existvar MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -347,5 +337,4 @@ define([
 		return cloned;
 	};
 
-	return AnimationLayer;
-});
+	module.exports = AnimationLayer;

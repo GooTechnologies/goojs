@@ -358,5 +358,4 @@ define([], function () {
 		}
 	}
 
-	return Selection;
-});
+	module.exports = Selection;

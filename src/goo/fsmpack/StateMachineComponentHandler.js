@@ -1,14 +1,8 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/fsmpack/statemachine/StateMachineComponent',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils'
-], function (
-	ComponentHandler,
-	StateMachineComponent,
-	RSVP,
-	_
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var StateMachineComponent = require('goo/fsmpack/statemachine/StateMachineComponent');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -90,5 +84,4 @@ define([
 		});
 	};
 
-	return StateMachineComponentHandler;
-});
+	module.exports = StateMachineComponentHandler;

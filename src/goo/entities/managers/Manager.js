@@ -23,5 +23,4 @@ define(
 		}
 	};
 
-	return Manager;
-});
+	module.exports = Manager;

@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/util/ObjectUtils'
-], function (
-	MeshData,
-	Vector3,
-	MathUtils,
-	_
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Vector3 = require('goo/math/Vector3');
+var MathUtils = require('goo/math/MathUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -180,5 +174,4 @@ define([
 		return new Torus(options);
 	};
 
-	return Torus;
-});
+	module.exports = Torus;

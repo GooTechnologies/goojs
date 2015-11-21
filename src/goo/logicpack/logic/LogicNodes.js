@@ -1,6 +1,3 @@
-define(
-
-	function () {
 		'use strict';
 
 		// REVIEW: description needs updating

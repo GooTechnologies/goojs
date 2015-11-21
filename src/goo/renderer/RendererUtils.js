@@ -1,11 +1,6 @@
-/* jshint bitwise: false */
-define([
-	'goo/util/ObjectUtils',
-	'goo/math/MathUtils'
-], function (
-	ObjectUtils,
-	MathUtils
-) {
+/* jshint bitwise: false */var ObjectUtils = require('goo/util/ObjectUtils');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -558,5 +553,4 @@ define([
 		return glBlendParam;
 	};
 
-	return RendererUtils;
-});
+	module.exports = RendererUtils;

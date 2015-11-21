@@ -1,16 +1,9 @@
-define([
-	'goo/entities/components/Component',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/math/Transform',
-	'goo/entities/SystemBus'
-], function (
-	Component,
-	Vector3,
-	Quaternion,
-	Transform,
-	SystemBus
-) {
+var Component = require('goo/entities/components/Component');
+var Vector3 = require('goo/math/Vector3');
+var Quaternion = require('goo/math/Quaternion');
+var Transform = require('goo/math/Transform');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	var tmpQuat = new Quaternion();
@@ -158,5 +151,4 @@ define([
 		this._system = null;
 	};
 
-	return AbstractRigidBodyComponent;
-});
+	module.exports = AbstractRigidBodyComponent;

@@ -1,10 +1,6 @@
-define([
-	'goo/scripts/ScriptUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ScriptUtils,
-	ObjectUtils
-) {
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	// the collection of scripts
@@ -81,5 +77,4 @@ define([
 		return scripts;
 	};
 
-	return Scripts;
-});
+	module.exports = Scripts;

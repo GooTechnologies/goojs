@@ -1,14 +1,8 @@
-define([
-	'goo/math/Matrix4',
-	'goo/math/Vector4',
-	'goo/math/Vector2',
-	'goo/renderer/scanline/OccludeeTriangleData'
-], function (
-	Matrix4,
-	Vector4,
-	Vector2,
-	OccludeeTriangleData
-) {
+var Matrix4 = require('goo/math/Matrix4');
+var Vector4 = require('goo/math/Vector4');
+var Vector2 = require('goo/math/Vector2');
+var OccludeeTriangleData = require('goo/renderer/scanline/OccludeeTriangleData');
+
 	'use strict';
 
 	// Cohen-Sutherland area constants.
@@ -520,5 +514,4 @@ define([
 		}
 	};
 
-	return BoundingBoxOcclusionChecker;
-});
+	module.exports = BoundingBoxOcclusionChecker;

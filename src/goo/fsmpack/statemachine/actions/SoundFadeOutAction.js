@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function SoundFadeOutAction(/*id, settings*/) {
@@ -50,5 +47,4 @@ define([
 		// if howler's fade out method is not behaving nice then we can switch to tweening the volume 'manually'
 	};
 
-	return SoundFadeOutAction;
-});
+	module.exports = SoundFadeOutAction;

@@ -1,60 +1,27 @@
-define([
-	'goo/entities/World',
-	'goo/renderer/Renderer',
-	'goo/entities/systems/TransformSystem',
-	'goo/entities/systems/RenderSystem',
-	'goo/entities/systems/BoundingUpdateSystem',
-	'goo/entities/systems/ScriptSystem',
-	'goo/entities/systems/LightingSystem',
-	'goo/entities/systems/CameraSystem',
-	'goo/entities/systems/ParticlesSystem',
-	'goo/util/Stats',
+var World = require('goo/entities/World');
+var Renderer = require('goo/renderer/Renderer');
+var TransformSystem = require('goo/entities/systems/TransformSystem');
+var RenderSystem = require('goo/entities/systems/RenderSystem');
+var BoundingUpdateSystem = require('goo/entities/systems/BoundingUpdateSystem');
+var ScriptSystem = require('goo/entities/systems/ScriptSystem');
+var LightingSystem = require('goo/entities/systems/LightingSystem');
+var CameraSystem = require('goo/entities/systems/CameraSystem');
+var ParticlesSystem = require('goo/entities/systems/ParticlesSystem');
+var Stats = require('goo/util/Stats');
+var AudioContext = require('goo/sound/AudioContext');
+var SoundSystem = require('goo/entities/systems/SoundSystem');
+var TransformComponent = require('goo/entities/components/TransformComponent');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var CameraComponent = require('goo/entities/components/CameraComponent');
+var LightComponent = require('goo/entities/components/LightComponent');
+var ScriptComponent = require('goo/entities/components/ScriptComponent');
+var SoundComponent = require('goo/entities/components/SoundComponent');
+var GameUtils = require('goo/util/GameUtils');
+var Logo = require('goo/util/Logo');
+var SystemBus = require('goo/entities/SystemBus');
+var Material = require('goo/renderer/Material');
 
-	'goo/sound/AudioContext',
-	'goo/entities/systems/SoundSystem',
-
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/entities/components/SoundComponent',
-
-	'goo/util/GameUtils',
-	'goo/util/Logo',
-
-	'goo/entities/SystemBus',
-	'goo/renderer/Material'
-], function (
-	World,
-	Renderer,
-	TransformSystem,
-	RenderSystem,
-	BoundingUpdateSystem,
-	ScriptSystem,
-	LightingSystem,
-	CameraSystem,
-	ParticlesSystem,
-	Stats,
-
-	AudioContext,
-	SoundSystem,
-
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	CameraComponent,
-	LightComponent,
-	ScriptComponent,
-	SoundComponent,
-
-	GameUtils,
-	Logo,
-
-	SystemBus,
-	Material
-) {
 	'use strict';
 
 	/**
@@ -883,5 +850,4 @@ define([
 		this._events = null;
 	};
 
-	return GooRunner;
-});
+	module.exports = GooRunner;

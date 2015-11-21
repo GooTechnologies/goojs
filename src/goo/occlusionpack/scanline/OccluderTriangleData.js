@@ -106,5 +106,4 @@ define([
 		this.indexCount = writeIndex;
 	};
 
-	return OccluderTriangleData;
-});
+	module.exports = OccluderTriangleData;

@@ -59,5 +59,4 @@ define([
 		}]
 	};
 
-	return RotationScript;
-});
+	module.exports = RotationScript;

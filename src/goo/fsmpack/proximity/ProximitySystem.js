@@ -1,12 +1,7 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/util/StringUtils'
-], function (
-	System,
-	SystemBus,
-	StringUtils
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var StringUtils = require('goo/util/StringUtils');
+
 	'use strict';
 
 	/**
@@ -84,5 +79,4 @@ define([
 		*/
 	};
 
-	return ProximitySystem;
-});
+	module.exports = ProximitySystem;

@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/state/AbstractTransitionState'
-], function (
-	AbstractTransitionState
-) {
+var AbstractTransitionState = require('goo/animationpack/state/AbstractTransitionState');
+
 	'use strict';
 
 	/**
@@ -64,5 +61,4 @@ define([
 		}
 	};
 
-	return FadeTransitionState;
-});
+	module.exports = FadeTransitionState;

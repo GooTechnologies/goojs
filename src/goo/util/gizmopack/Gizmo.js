@@ -1,30 +1,16 @@
-define([
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Material',
-	'goo/renderer/Renderer',
-	'goo/math/Transform',
-	'goo/math/Matrix4',
-	'goo/math/Plane',
-	'goo/math/Ray',
-	'goo/math/Vector3',
-	'goo/renderer/Camera',
-	'goo/math/MathUtils'
-], function (
-	ShaderBuilder,
-	MeshData,
-	Shader,
-	Material,
-	Renderer,
-	Transform,
-	Matrix4,
-	Plane,
-	Ray,
-	Vector3,
-	Camera,
-	MathUtils
-) {
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var Material = require('goo/renderer/Material');
+var Renderer = require('goo/renderer/Renderer');
+var Transform = require('goo/math/Transform');
+var Matrix4 = require('goo/math/Matrix4');
+var Plane = require('goo/math/Plane');
+var Ray = require('goo/math/Ray');
+var Vector3 = require('goo/math/Vector3');
+var Camera = require('goo/renderer/Camera');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -310,5 +296,4 @@ define([
 		].join('\n')
 	};
 
-	return Gizmo;
-});
+	module.exports = Gizmo;

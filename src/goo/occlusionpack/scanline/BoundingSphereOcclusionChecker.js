@@ -1,10 +1,6 @@
-define([
-	'goo/math/Matrix4',
-	'goo/math/Vector4'
-], function (
-	Matrix4,
-	Vector4
-) {
+var Matrix4 = require('goo/math/Matrix4');
+var Vector4 = require('goo/math/Vector4');
+
 	'use strict';
 
 	var tempVec = new Vector4(0, 0, 0, 1);
@@ -484,5 +480,4 @@ define([
 		return coordinate.x >= 0 && coordinate.x <= this._clipX && coordinate.y <= this._clipY && coordinate.y >= 0;
 	};
 
-	return BoundingSphereOcclusionChecker;
-});
+	module.exports = BoundingSphereOcclusionChecker;

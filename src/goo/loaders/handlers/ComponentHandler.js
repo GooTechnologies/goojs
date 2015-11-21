@@ -1,8 +1,5 @@
-define([
-	'goo/util/PromiseUtils'
-], function (
-	PromiseUtils
-) {
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -111,5 +108,4 @@ define([
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 
-	return ComponentHandler;
-});
+	module.exports = ComponentHandler;

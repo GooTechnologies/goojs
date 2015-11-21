@@ -1,12 +1,7 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/renderer/Camera',
-	'goo/renderer/bounds/BoundingSphere'
-], function (
-	Action,
-	Camera,
-	BoundingSphere
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Camera = require('goo/renderer/Camera');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+
 	'use strict';
 
 	function InFrustumAction(/*id, settings*/) {
@@ -79,5 +74,4 @@ define([
 		}
 	};
 
-	return InFrustumAction;
-});
+	module.exports = InFrustumAction;

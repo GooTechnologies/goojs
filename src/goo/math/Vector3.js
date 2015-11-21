@@ -1,14 +1,8 @@
-define([
-	'goo/util/ObjectUtils',
-	'goo/math/MathUtils',
-	'goo/math/Vector',
-	'goo/math/Vector4'
-], function (
-	ObjectUtils,
-	MathUtils,
-	Vector,
-	Vector4
-) {
+var ObjectUtils = require('../util/ObjectUtils');
+var MathUtils = require('./MathUtils');
+var Vector = require('./Vector');
+var Vector4 = require('./Vector4');
+
 	'use strict';
 
 	/**
@@ -722,7 +716,7 @@ define([
 		this.x = array[0];
 		this.y = array[1];
 		this.z = array[2];
-		
+
 		return this;
 	};
 
@@ -1023,5 +1017,4 @@ define([
 	]);
 	// #endif
 
-	return Vector3;
-});
+	module.exports = Vector3;

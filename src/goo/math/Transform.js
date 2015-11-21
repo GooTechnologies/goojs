@@ -1,14 +1,8 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Matrix3',
-	'goo/math/Matrix4',
-	'goo/math/MathUtils'
-], function (
-	Vector3,
-	Matrix3,
-	Matrix4,
-	MathUtils
-) {
+var Vector3 = require('./Vector3');
+var Matrix3 = require('./Matrix3');
+var Matrix4 = require('./Matrix4');
+var MathUtils = require('./MathUtils');
+
 	'use strict';
 
 	/**
@@ -328,5 +322,4 @@ define([
 		return clone;
 	};
 
-	return Transform;
-});
+	module.exports = Transform;

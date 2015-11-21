@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/state/AbstractState'
-], function (
-	AbstractState
-) {
+var AbstractState = require('goo/animationpack/state/AbstractState');
+
 	'use strict';
 
 	/**
@@ -78,5 +75,4 @@ define([
 		return cloned;
 	};
 
-	return SteadyState;
-});
+	module.exports = SteadyState;

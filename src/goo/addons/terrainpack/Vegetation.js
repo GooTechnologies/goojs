@@ -1,44 +1,23 @@
-define([
-	'goo/entities/components/MeshDataComponent',
-	'goo/renderer/Material',
-	'goo/renderer/Camera',
-	'goo/math/MathUtils',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/Texture',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/light/DirectionalLight',
-	'goo/util/CanvasUtils',
-	'goo/util/Ajax',
-	'goo/util/MeshBuilder',
-	'goo/noise/Noise',
-	'goo/noise/ValueNoise',
-	'goo/addons/terrainpack/TerrainSurface',
-	'goo/shapes/Quad',
-	'goo/renderer/shaders/ShaderBuilder'
-], function (
-	MeshDataComponent,
-	Material,
-	Camera,
-	MathUtils,
-	Vector3,
-	Transform,
-	TextureCreator,
-	Texture,
-	MeshData,
-	Shader,
-	DirectionalLight,
-	CanvasUtils,
-	Ajax,
-	MeshBuilder,
-	Noise,
-	ValueNoise,
-	TerrainSurface,
-	Quad,
-	ShaderBuilder
-) {
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var Material = require('goo/renderer/Material');
+var Camera = require('goo/renderer/Camera');
+var MathUtils = require('goo/math/MathUtils');
+var Vector3 = require('goo/math/Vector3');
+var Transform = require('goo/math/Transform');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var Texture = require('goo/renderer/Texture');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var CanvasUtils = require('goo/util/CanvasUtils');
+var Ajax = require('goo/util/Ajax');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Noise = require('goo/noise/Noise');
+var ValueNoise = require('goo/noise/ValueNoise');
+var TerrainSurface = require('goo/addons/terrainpack/TerrainSurface');
+var Quad = require('goo/shapes/Quad');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+
 	'use strict';
 
 	function Vegetation() {
@@ -445,5 +424,4 @@ define([
 		}
 	};
 
-	return Vegetation;
-});
+	module.exports = Vegetation;

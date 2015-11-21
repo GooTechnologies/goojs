@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/blendtree/BinaryLerpSource'
-], function (
-	BinaryLerpSource
-) {
+var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
+
 	'use strict';
 
 	/**
@@ -27,5 +24,4 @@ define([
 		return BinaryLerpSource.combineSourceData(sourceAData, sourceBData, this._blendWeight);
 	};
 
-	return LayerLerpBlender;
-});
+	module.exports = LayerLerpBlender;

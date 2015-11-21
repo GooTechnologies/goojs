@@ -1,11 +1,7 @@
-define([
-	'goo/entities/systems/System',
-	'goo/util/TWEEN',
-	'goo/fsmpack/statemachine/actions/Actions'
-], function (
-	System,
-	TWEEN
-) {
+var System = require('goo/entities/systems/System');
+var TWEEN = require('goo/util/TWEEN');
+var Actions = require('goo/fsmpack/statemachine/actions/Actions');
+
 	'use strict';
 
 	/**
@@ -117,5 +113,4 @@ define([
 		this.paused = false;
 	};
 
-	return StateMachineSystem;
-});
+	module.exports = StateMachineSystem;

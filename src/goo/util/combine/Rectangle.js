@@ -16,5 +16,4 @@ define(function () {
 		this.h = h;
 	}
 
-	return Rectangle;
-});
+	module.exports = Rectangle;

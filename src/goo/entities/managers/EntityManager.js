@@ -1,10 +1,6 @@
-define([
-	'goo/entities/managers/Manager',
-	'goo/entities/EntitySelection'
-], function (
-	Manager,
-	EntitySelection
-) {
+var Manager = require('goo/entities/managers/Manager');
+var EntitySelection = require('goo/entities/EntitySelection');
+
 	'use strict';
 
 	/**
@@ -163,5 +159,4 @@ define([
 		this._entityCount = 0;
 	};
 
-	return EntityManager;
-});
+	module.exports = EntityManager;

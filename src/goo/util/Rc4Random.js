@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -49,5 +46,4 @@ function () {
 		};
 	}
 
-	return Rc4Random;
-});
+	module.exports = Rc4Random;

@@ -1,8 +1,5 @@
-define([
-	'goo/util/ArrayUtils'
-], function (
-	ArrayUtils
-) {
+var ArrayUtils = require('goo/util/ArrayUtils');
+
 	'use strict';
 
 	function State(uuid) {
@@ -232,5 +229,4 @@ define([
 		ArrayUtils.remove(this._machines, machine);
 	};
 
-	return State;
-});
+	module.exports = State;

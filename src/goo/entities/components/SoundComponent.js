@@ -1,14 +1,8 @@
-define([
-	'goo/entities/components/Component',
-	'goo/sound/AudioContext',
-	'goo/math/Vector3',
-	'goo/math/MathUtils'
-], function (
-	Component,
-	AudioContext,
-	Vector3,
-	MathUtils
-) {
+var Component = require('goo/entities/components/Component');
+var AudioContext = require('goo/sound/AudioContext');
+var Vector3 = require('goo/math/Vector3');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	//! AT: every method here is prefixed with a check for AudioContext. Is it really needed? can it just be refactored away?
@@ -163,5 +157,4 @@ define([
 		this._pannerNode.setOrientation(this._orientation.x, this._orientation.y, this._orientation.z);
 	};
 
-	return SoundComponent;
-});
+	module.exports = SoundComponent;

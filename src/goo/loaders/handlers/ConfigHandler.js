@@ -1,10 +1,6 @@
-define([
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils'
-], function (
-	RSVP,
-	PromiseUtils
-) {
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -170,5 +166,4 @@ define([
 		return ConfigHandler.handlerClasses[type] = klass;
 	};
 
-	return ConfigHandler;
-});
+	module.exports = ConfigHandler;

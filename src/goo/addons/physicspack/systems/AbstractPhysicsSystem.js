@@ -1,11 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus'
-],
-function (
-	System,
-	SystemBus
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -131,5 +126,4 @@ function (
 	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
 	AbstractPhysicsSystem.prototype._colliderDeletedComponent = function (/*entity*/) {};
 
-	return AbstractPhysicsSystem;
-});
+	module.exports = AbstractPhysicsSystem;

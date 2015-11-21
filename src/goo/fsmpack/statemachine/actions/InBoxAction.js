@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function InBoxAction(/*id, settings*/) {
@@ -94,5 +91,4 @@ define([
 		}
 	};
 
-	return InBoxAction;
-});
+	module.exports = InBoxAction;

@@ -1,10 +1,6 @@
-define([
-	'goo/timelinepack/AbstractTimelineChannel',
-	'goo/math/MathUtils'
-], function (
-	AbstractTimelineChannel,
-	MathUtils
-	) {
+var AbstractTimelineChannel = require('goo/timelinepack/AbstractTimelineChannel');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	function ValueChannel(id, options) {
@@ -124,5 +120,4 @@ define([
 		return func;
 	};
 
-	return ValueChannel;
-});
+	module.exports = ValueChannel;

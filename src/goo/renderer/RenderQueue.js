@@ -123,5 +123,4 @@ define(['goo/math/Vector3'], function (Vector3) {
 	 */
 	RenderQueue.OVERLAY = 3000;
 
-	return RenderQueue;
-});
+	module.exports = RenderQueue;

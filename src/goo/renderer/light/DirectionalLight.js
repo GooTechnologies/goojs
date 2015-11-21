@@ -1,10 +1,6 @@
-define([
-	'goo/math/Vector3',
-	'goo/renderer/light/Light'
-], function (
-	Vector3,
-	Light
-) {
+var Vector3 = require('goo/math/Vector3');
+var Light = require('goo/renderer/light/Light');
+
 	'use strict';
 
 	/**
@@ -56,5 +52,4 @@ define([
 		return clone;
 	};
 
-	return DirectionalLight;
-});
+	module.exports = DirectionalLight;

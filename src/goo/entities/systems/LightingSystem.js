@@ -1,12 +1,7 @@
-define([
-	'goo/renderer/Capabilities',
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus'
-], function (
-	Capabilities,
-	System,
-	SystemBus
-) {
+var Capabilities = require('goo/renderer/Capabilities');
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -81,5 +76,4 @@ define([
 		});
 	};
 
-	return LightingSystem;
-});
+	module.exports = LightingSystem;

@@ -1,54 +1,28 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/Camera',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/Texture',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/light/DirectionalLight',
-	'goo/util/CanvasUtils',
-	'goo/util/Ajax',
-	'goo/util/MeshBuilder',
-	'goo/noise/Noise',
-	'goo/noise/ValueNoise',
-	'goo/addons/terrainpack/TerrainSurface',
-	'goo/loaders/DynamicLoader',
-	'goo/entities/EntityUtils',
-	'goo/util/combine/EntityCombiner',
-	'goo/util/TangentGenerator',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/math/MathUtils',
-	'goo/util/rsvp'
-], function (
-	Material,
-	Camera,
-	Vector3,
-	Transform,
-	TextureCreator,
-	Texture,
-	MeshData,
-	Shader,
-	DirectionalLight,
-	CanvasUtils,
-	Ajax,
-	MeshBuilder,
-	Noise,
-	ValueNoise,
-	TerrainSurface,
-	DynamicLoader,
-	EntityUtils,
-	EntityCombiner,
-	TangentGenerator,
-	MeshDataComponent,
-	ScriptComponent,
-	ShaderBuilder,
-	MathUtils,
-	RSVP
-) {
+var Material = require('goo/renderer/Material');
+var Camera = require('goo/renderer/Camera');
+var Vector3 = require('goo/math/Vector3');
+var Transform = require('goo/math/Transform');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var Texture = require('goo/renderer/Texture');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var CanvasUtils = require('goo/util/CanvasUtils');
+var Ajax = require('goo/util/Ajax');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Noise = require('goo/noise/Noise');
+var ValueNoise = require('goo/noise/ValueNoise');
+var TerrainSurface = require('goo/addons/terrainpack/TerrainSurface');
+var DynamicLoader = require('goo/loaders/DynamicLoader');
+var EntityUtils = require('goo/entities/EntityUtils');
+var EntityCombiner = require('goo/util/combine/EntityCombiner');
+var TangentGenerator = require('goo/util/TangentGenerator');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var ScriptComponent = require('goo/entities/components/ScriptComponent');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var MathUtils = require('goo/math/MathUtils');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	function Forrest() {
@@ -500,5 +474,4 @@ define([
 		}
 	};
 
-	return Forrest;
-});
+	module.exports = Forrest;

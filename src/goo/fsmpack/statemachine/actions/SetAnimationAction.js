@@ -37,5 +37,4 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		}
 	};
 
-	return SetAnimationAction;
-});
+	module.exports = SetAnimationAction;

@@ -1,8 +1,5 @@
-define([
-	'goo/entities/World'
-], function (
-	World
-) {
+var World = require('goo/entities/World');
+
 	'use strict';
 
 	/**
@@ -67,5 +64,4 @@ define([
 		return cloned;
 	};
 
-	return AnimationClipInstance;
-});
+	module.exports = AnimationClipInstance;

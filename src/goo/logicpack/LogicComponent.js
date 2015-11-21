@@ -1,14 +1,8 @@
-define([
-	'goo/logic/LogicInterface',
-	'goo/logic/LogicLayer',
-	'goo/logic/LogicNodes',
-	'goo/entities/components/Component'
-], function (
-	LogicInterface,
-	LogicLayer,
-	LogicNodes,
-	Component
-) {
+var LogicInterface = require('goo/logic/LogicInterface');
+var LogicLayer = require('goo/logic/LogicLayer');
+var LogicNodes = require('goo/logic/LogicNodes');
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -61,5 +55,4 @@ define([
 		}
 	};
 
-	return LogicComponent;
-});
+	module.exports = LogicComponent;

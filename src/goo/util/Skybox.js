@@ -1,20 +1,11 @@
-define([
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData',
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/TextureCreator',
-	'goo/math/Transform'
-], function (
-	Box,
-	Sphere,
-	MeshData,
-	Material,
-	Shader,
-	TextureCreator,
-	Transform
-) {
+var Box = require('goo/shapes/Box');
+var Sphere = require('goo/shapes/Sphere');
+var MeshData = require('goo/renderer/MeshData');
+var Material = require('goo/renderer/Material');
+var Shader = require('goo/renderer/Shader');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var Transform = require('goo/math/Transform');
+
 	'use strict';
 
 	/**
@@ -170,5 +161,4 @@ define([
 		].join('\n')
 	};
 
-	return Skybox;
-});
+	module.exports = Skybox;

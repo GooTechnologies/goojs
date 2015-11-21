@@ -1,24 +1,12 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/ScriptComponent',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils',
-	'goo/util/PromiseUtils',
-	'goo/entities/SystemBus',
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var ScriptComponent = require('goo/entities/components/ScriptComponent');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var SystemBus = require('goo/entities/SystemBus');
+var Scripts = require('goo/scripts/Scripts');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
 
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils'
-], function (
-	ComponentHandler,
-	ScriptComponent,
-	RSVP,
-	_,
-	PromiseUtils,
-	SystemBus,
-
-	Scripts,
-	ScriptUtils
-) {
 	'use strict';
 
 	/**
@@ -244,5 +232,4 @@ define([
 		}
 	};
 
-	return ScriptComponentHandler;
-});
+	module.exports = ScriptComponentHandler;

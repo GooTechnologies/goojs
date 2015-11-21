@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	/**
@@ -73,5 +70,4 @@ define([
 		}
 	};
 
-	return PortalSystem;
-});
+	module.exports = PortalSystem;

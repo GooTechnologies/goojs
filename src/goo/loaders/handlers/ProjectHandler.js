@@ -1,8 +1,5 @@
-define([
-	'goo/loaders/handlers/ConfigHandler'
-], function (
-	ConfigHandler
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+
 	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
@@ -80,5 +77,4 @@ define([
 		});
 	};
 
-	return ProjectHandler;
-});
+	module.exports = ProjectHandler;

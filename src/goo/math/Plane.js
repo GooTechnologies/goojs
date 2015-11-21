@@ -1,8 +1,5 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
+var Vector3 = require('./Vector3');
+
 	'use strict';
 
 	/**
@@ -119,5 +116,4 @@ define([
 		return new Plane(this.normal.clone(), this.constant);
 	};
 
-	return Plane;
-});
+	module.exports = Plane;

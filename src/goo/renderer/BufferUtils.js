@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/Capabilities'
-], function (
-	Capabilities
-) {
+var Capabilities = require('goo/renderer/Capabilities');
+
 	'use strict';
 
 	/**
@@ -55,5 +52,4 @@ define([
 		return new source.constructor(source);
 	};
 
-	return BufferUtils;
-});
+	module.exports = BufferUtils;

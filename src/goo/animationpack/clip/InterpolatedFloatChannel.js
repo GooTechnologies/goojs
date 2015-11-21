@@ -1,10 +1,6 @@
-define([
-	'goo/animationpack/clip/AbstractAnimationChannel',
-	'goo/math/MathUtils'
-], function (
-	AbstractAnimationChannel,
-	MathUtils
-) {
+var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -52,5 +48,4 @@ define([
 		return rVal;
 	};
 
-	return InterpolatedFloatChannel;
-});
+	module.exports = InterpolatedFloatChannel;

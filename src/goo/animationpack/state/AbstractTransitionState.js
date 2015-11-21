@@ -1,12 +1,7 @@
-define([
-	'goo/animationpack/state/AbstractState',
-	'goo/animationpack/blendtree/BinaryLerpSource',
-	'goo/math/MathUtils'
-], function (
-	AbstractState,
-	BinaryLerpSource,
-	MathUtils
-) {
+var AbstractState = require('goo/animationpack/state/AbstractState');
+var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -142,5 +137,4 @@ define([
 		}
 	};
 
-	return AbstractTransitionState;
-});
+	module.exports = AbstractTransitionState;

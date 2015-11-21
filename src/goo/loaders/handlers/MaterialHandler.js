@@ -1,18 +1,10 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/RenderQueue',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils'
-], function (
-	ConfigHandler,
-	Material,
-	ShaderLib,
-	RenderQueue,
-	RSVP,
-	ObjectUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var RenderQueue = require('goo/renderer/RenderQueue');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -181,5 +173,4 @@ define([
 		});
 	};
 
-	return MaterialHandler;
-});
+	module.exports = MaterialHandler;

@@ -51,5 +51,4 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector
 		return tData;
 	};
 
-	return TransformData;
-});
+	module.exports = TransformData;

@@ -1,22 +1,12 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/timelinepack/TimelineComponent',
-	'goo/timelinepack/ValueChannel',
-	'goo/timelinepack/EventChannel',
-	'goo/util/ArrayUtils',
-	'goo/entities/SystemBus',
-	'goo/util/ObjectUtils',
-	'goo/util/TWEEN'
-], function (
-	ComponentHandler,
-	TimelineComponent,
-	ValueChannel,
-	EventChannel,
-	ArrayUtils,
-	SystemBus,
-	ObjectUtils,
-	TWEEN
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var TimelineComponent = require('goo/timelinepack/TimelineComponent');
+var ValueChannel = require('goo/timelinepack/ValueChannel');
+var EventChannel = require('goo/timelinepack/EventChannel');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var SystemBus = require('goo/entities/SystemBus');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	/**
@@ -212,5 +202,4 @@ define([
 		});
 	};
 
-	return TimelineComponentHandler;
-});
+	module.exports = TimelineComponentHandler;

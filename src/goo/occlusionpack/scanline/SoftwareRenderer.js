@@ -1,26 +1,14 @@
-define([
-	'goo/math/Vector4',
-	'goo/math/Matrix4',
-	'goo/renderer/scanline/Edge',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/scanline/EdgeData',
-	'goo/renderer/scanline/BoundingBoxOcclusionChecker',
-	'goo/renderer/scanline/BoundingSphereOcclusionChecker',
-	'goo/renderer/scanline/OccluderTriangleData',
-	'goo/renderer/scanline/EdgeMap'
-], function (
-	Vector4,
-	Matrix4,
-	Edge,
-	BoundingSphere,
-	BoundingBox,
-	EdgeData,
-	BoundingBoxOcclusionChecker,
-	BoundingSphereOcclusionChecker,
-	OccluderTriangleData,
-	EdgeMap
-) {
+var Vector4 = require('goo/math/Vector4');
+var Matrix4 = require('goo/math/Matrix4');
+var Edge = require('goo/renderer/scanline/Edge');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var EdgeData = require('goo/renderer/scanline/EdgeData');
+var BoundingBoxOcclusionChecker = require('goo/renderer/scanline/BoundingBoxOcclusionChecker');
+var BoundingSphereOcclusionChecker = require('goo/renderer/scanline/BoundingSphereOcclusionChecker');
+var OccluderTriangleData = require('goo/renderer/scanline/OccluderTriangleData');
+var EdgeMap = require('goo/renderer/scanline/EdgeMap');
+
 	'use strict';
 
 	// Variables used during creation of triangle data and rendering
@@ -1558,5 +1546,4 @@ define([
 		}
 	};
 
-	return SoftwareRenderer;
-});
+	module.exports = SoftwareRenderer;

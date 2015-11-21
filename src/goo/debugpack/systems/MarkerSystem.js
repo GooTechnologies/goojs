@@ -1,18 +1,10 @@
-define([
-	'goo/entities/systems/System',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/debugpack/components/MarkerComponent',
-	'goo/renderer/Renderer',
-	'goo/math/Transform'
-], function (
-	System,
-	Material,
-	ShaderLib,
-	MarkerComponent,
-	Renderer,
-	Transform
-) {
+var System = require('goo/entities/systems/System');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var MarkerComponent = require('goo/debugpack/components/MarkerComponent');
+var Renderer = require('goo/renderer/Renderer');
+var Transform = require('goo/math/Transform');
+
 	'use strict';
 
 	/**
@@ -60,5 +52,4 @@ define([
 		this.entities = entities;
 	};
 
-	return MarkerSystem;
-});
+	module.exports = MarkerSystem;

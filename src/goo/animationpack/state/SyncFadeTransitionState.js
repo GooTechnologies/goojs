@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/state/FadeTransitionState'
-], function (
-	FadeTransitionState
-) {
+var FadeTransitionState = require('goo/animationpack/state/FadeTransitionState');
+
 	'use strict';
 
 	/**
@@ -29,5 +26,4 @@ define([
 		this._sourceState.shiftClipTime(shiftTime);
 	};
 
-	return SyncFadeTransitionState;
-});
+	module.exports = SyncFadeTransitionState;

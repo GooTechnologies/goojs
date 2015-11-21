@@ -1,22 +1,12 @@
-define([
-	'goo/entities/components/Component',
-	'goo/math/Quaternion',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Quad',
-	'goo/util/ObjectUtils'
-], function (
-	Component,
-	Quaternion,
-	Vector3,
-	Transform,
-	Box,
-	Sphere,
-	Quad,
-	_
-) {
+var Component = require('goo/entities/components/Component');
+var Quaternion = require('goo/math/Quaternion');
+var Vector3 = require('goo/math/Vector3');
+var Transform = require('goo/math/Transform');
+var Box = require('goo/shapes/Box');
+var Sphere = require('goo/shapes/Sphere');
+var Quad = require('goo/shapes/Quad');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/* global CANNON */
@@ -185,5 +175,4 @@ define([
 		}
 	};
 
-	return CannonRigidbodyComponent;
-});
+	module.exports = CannonRigidbodyComponent;

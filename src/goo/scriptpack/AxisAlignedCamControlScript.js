@@ -1,12 +1,7 @@
-define([
-	'goo/math/Vector3',
-	'goo/scripts/ScriptUtils',
-	'goo/math/MathUtils'
-], function (
-	Vector3,
-	ScriptUtils,
-	MathUtils
-) {
+var Vector3 = require('goo/math/Vector3');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -101,5 +96,4 @@ define([
 		}]
 	};
 
-	return AxisAlignedCamControlScript;
-});
+	module.exports = AxisAlignedCamControlScript;

@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	/**
@@ -132,5 +129,4 @@ define([
 
 	ParticlesSystem.prototype.stop = ParticlesSystem.prototype.pause;
 
-	return ParticlesSystem;
-});
+	module.exports = ParticlesSystem;

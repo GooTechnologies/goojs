@@ -1,8 +1,5 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	var calcVec = new Vector3();
@@ -315,7 +312,6 @@ define([
 		this.applyGroundContact(entity, transform);
 	};
 
-	return GroundBoundMovementScript;
-});
+	module.exports = GroundBoundMovementScript;
 
 

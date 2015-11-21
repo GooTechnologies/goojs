@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/Shader',
-	'goo/util/ObjectUtils'
-], function (
-	Shader,
-	_
-) {
+var Shader = require('goo/renderer/Shader');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -347,5 +343,4 @@ define([
 		this.uniforms = {};
 	};
 
-	return Material;
-});
+	module.exports = Material;

@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/shaders/ShaderBuilder'
-], function (
-	MeshData,
-	Shader,
-	ShaderFragment,
-	ShaderBuilder
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+
 	'use strict';
 
 	/**
@@ -1155,5 +1149,4 @@ define([
 		].join('\n')
 	};
 
-	return ShaderLib;
-});
+	module.exports = ShaderLib;

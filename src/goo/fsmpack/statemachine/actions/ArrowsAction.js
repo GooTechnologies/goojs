@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function ArrowsAction(/*id, settings*/) {
@@ -78,5 +75,4 @@ define([
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	return ArrowsAction;
-});
+	module.exports = ArrowsAction;

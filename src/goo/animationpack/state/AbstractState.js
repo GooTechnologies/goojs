@@ -24,5 +24,4 @@ define([
 		this._globalStartTime += shiftTime;
 	};
 
-	return AbstractState;
-});
+	module.exports = AbstractState;

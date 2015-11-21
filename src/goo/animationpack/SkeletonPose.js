@@ -1,12 +1,7 @@
-define([
-	'goo/math/Transform',
-	'goo/animationpack/Joint',
-	'goo/math/Matrix4'
-], function (
-	Transform,
-	Joint,
-	Matrix4
-) {
+var Transform = require('goo/math/Transform');
+var Joint = require('goo/animationpack/Joint');
+var Matrix4 = require('goo/math/Matrix4');
+
 	'use strict';
 
 	/**
@@ -108,5 +103,4 @@ define([
 		return new SkeletonPose(this._skeleton);
 	};
 
-	return SkeletonPose;
-});
+	module.exports = SkeletonPose;

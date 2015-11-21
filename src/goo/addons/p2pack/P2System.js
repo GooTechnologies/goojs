@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	var p2 = window.p2;
@@ -110,5 +107,4 @@ define([
 		}
 	};
 
-	return P2System;
-});
+	module.exports = P2System;

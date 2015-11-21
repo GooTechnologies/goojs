@@ -1,11 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/addons/physicspack/colliders/Collider'
-],
-function (
-	Component,
-	Collider
-) {
+var Component = require('goo/entities/components/Component');
+var Collider = require('goo/addons/physicspack/colliders/Collider');
+
 	'use strict';
 
 	/**
@@ -126,5 +121,4 @@ function (
 
 	AbstractColliderComponent.prototype.api = {};
 
-	return AbstractColliderComponent;
-});
+	module.exports = AbstractColliderComponent;

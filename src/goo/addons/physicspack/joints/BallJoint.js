@@ -1,10 +1,6 @@
-define([
-	'goo/addons/physicspack/joints/PhysicsJoint',
-	'goo/math/Vector3'
-], function (
-	PhysicsJoint,
-	Vector3
-) {
+var PhysicsJoint = require('goo/addons/physicspack/joints/PhysicsJoint');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -41,5 +37,4 @@ define([
 	BallJoint.prototype = Object.create(PhysicsJoint.prototype);
 	BallJoint.prototype.constructor = BallJoint;
 
-	return BallJoint;
-});
+	module.exports = BallJoint;

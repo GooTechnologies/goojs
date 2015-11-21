@@ -1,16 +1,9 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Shader',
-	'goo/math/Transform'
-], function (
-	Material,
-	MeshData,
-	ShaderLib,
-	Shader,
-	Transform
-) {
+var Material = require('goo/renderer/Material');
+var MeshData = require('goo/renderer/MeshData');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Shader = require('goo/renderer/Shader');
+var Transform = require('goo/math/Transform');
+
 	'use strict';
 
 	/**
@@ -150,5 +143,4 @@ define([
 		this._numRenderingLines++;
 	};
 
-	return LineRenderer;
-});
+	module.exports = LineRenderer;

@@ -1,10 +1,7 @@
-define([
-	'goo/entities/components/Component',
-	'goo/shapes/TextureGrid',
-	'goo/entities/components/MeshDataComponent'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+var TextureGrid = require('goo/shapes/TextureGrid');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+
 	'use strict';
 
 	/**
@@ -41,5 +38,4 @@ define([
 		return this;
 	};
 
-	return TextComponent;
-});
+	module.exports = TextComponent;

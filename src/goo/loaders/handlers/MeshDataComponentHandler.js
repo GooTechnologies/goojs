@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/MeshDataComponent',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ShapeCreatorMemoized',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils',
-	'goo/util/StringUtils'
-], function (
-	ComponentHandler,
-	MeshDataComponent,
-	BoundingBox,
-	ShapeCreatorMemoized,
-	RSVP,
-	_,
-	StringUtils
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var StringUtils = require('goo/util/StringUtils');
+
 	'use strict';
 
 	/**
@@ -120,5 +111,4 @@ define([
 		});
 	};
 
-	return MeshDataComponentHandler;
-});
+	module.exports = MeshDataComponentHandler;

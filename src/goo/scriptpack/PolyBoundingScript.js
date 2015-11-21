@@ -87,5 +87,4 @@ define([], function () {
 		}
 	};
 
-	return PolyBoundingScript;
-});
+	module.exports = PolyBoundingScript;

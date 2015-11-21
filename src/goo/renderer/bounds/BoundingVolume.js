@@ -1,8 +1,5 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -41,5 +38,4 @@ define([
 	BoundingVolume.Inside = 1;
 	BoundingVolume.Intersects = 2;
 
-	return BoundingVolume;
-});
+	module.exports = BoundingVolume;

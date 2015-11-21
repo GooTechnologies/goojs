@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/light/Light'
-], function (
-	Light
-) {
+var Light = require('goo/renderer/light/Light');
+
 	'use strict';
 
 	/**
@@ -51,5 +48,4 @@ define([
 		return clone;
 	};
 
-	return PointLight;
-});
+	module.exports = PointLight;

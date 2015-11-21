@@ -22,5 +22,4 @@ define([], function () {
 		this.restitution = settings.restitution !== undefined ? settings.restitution : 0;
 	}
 
-	return PhysicsMaterial;
-});
+	module.exports = PhysicsMaterial;

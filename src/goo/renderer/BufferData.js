@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/BufferUtils'
-], function (
-	BufferUtils
-) {
+var BufferUtils = require('goo/renderer/BufferUtils');
+
 	'use strict';
 
 	/**
@@ -90,5 +87,4 @@ define([
 		return clone;
 	};
 
-	return BufferData;
-});
+	module.exports = BufferData;

@@ -1,34 +1,17 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/rsvp',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/scriptpack/OrbitNPanControlScript',
-	'goo/scriptpack/FlyControlScript',
-	'goo/scriptpack/WasdControlScript',
-	'goo/scriptpack/BasicControlScript',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils',
-	'goo/util/ArrayUtils',
-	'goo/entities/SystemBus',
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var rsvp = require('goo/util/rsvp');
+var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
+var OrbitNPanControlScript = require('goo/scriptpack/OrbitNPanControlScript');
+var FlyControlScript = require('goo/scriptpack/FlyControlScript');
+var WasdControlScript = require('goo/scriptpack/WasdControlScript');
+var BasicControlScript = require('goo/scriptpack/BasicControlScript');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var SystemBus = require('goo/entities/SystemBus');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var Scripts = require('goo/scripts/Scripts');
 
-	'goo/scripts/ScriptUtils',
-	'goo/scripts/Scripts'
-], function (
-	ConfigHandler,
-	RSVP,
-	OrbitCamControlScript,
-	OrbitNPanControlScript,
-	FlyControlScript,
-	WasdControlScript,
-	BasicControlScript,
-	PromiseUtils,
-	_,
-	ArrayUtils,
-	SystemBus,
-
-	ScriptUtils,
-	Scripts
-) {
 	'use strict';
 
 	var DEPENDENCY_LOAD_TIMEOUT = 6000;
@@ -742,5 +725,4 @@ define([
 
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
 
-	return ScriptHandler;
-});
+	module.exports = ScriptHandler;

@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -34,5 +31,4 @@ function () {
 		this._currentIndex = index;
 	};
 
-	return TriggerData;
-});
+	module.exports = TriggerData;

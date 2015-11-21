@@ -1,9 +1,5 @@
-/*jshint bitwise: false */
-define([
-	'goo/noise/Noise'
-], function (
-	Noise
-) {
+/*jshint bitwise: false */var Noise = require('goo/noise/Noise');
+
 	'use strict';
 
 	/**
@@ -160,5 +156,4 @@ define([
 		return result;
 	};
 
-	return ValueNoise;
-});
+	module.exports = ValueNoise;

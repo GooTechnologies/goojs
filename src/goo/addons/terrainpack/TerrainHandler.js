@@ -1,26 +1,14 @@
-define([
-	'goo/addons/terrainpack/Terrain',
-	'goo/addons/terrainpack/Vegetation',
-	'goo/addons/terrainpack/Forrest',
-	'goo/math/Vector3',
-	'goo/util/Ajax',
-	'goo/math/Transform',
-	'goo/math/MathUtils',
-	'goo/renderer/Texture',
-	'goo/renderer/TextureCreator',
-	'goo/util/rsvp'
-], function (
-	Terrain,
-	Vegetation,
-	Forrest,
-	Vector3,
-	Ajax,
-	Transform,
-	MathUtils,
-	Texture,
-	TextureCreator,
-	RSVP
-) {
+var Terrain = require('goo/addons/terrainpack/Terrain');
+var Vegetation = require('goo/addons/terrainpack/Vegetation');
+var Forrest = require('goo/addons/terrainpack/Forrest');
+var Vector3 = require('goo/math/Vector3');
+var Ajax = require('goo/util/Ajax');
+var Transform = require('goo/math/Transform');
+var MathUtils = require('goo/math/MathUtils');
+var Texture = require('goo/renderer/Texture');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
@@ -498,5 +486,4 @@ define([
 		}
 	};
 
-	return TerrainHandler;
-});
+	module.exports = TerrainHandler;

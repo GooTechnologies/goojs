@@ -1,12 +1,7 @@
-define([
-	'goo/animationpack/clip/AbstractAnimationChannel',
-	'goo/animationpack/clip/TransformData',
-	'goo/math/Quaternion'
-], function (
-	AbstractAnimationChannel,
-	TransformData,
-	Quaternion
-) {
+var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
+var TransformData = require('goo/animationpack/clip/TransformData');
+var Quaternion = require('goo/math/Quaternion');
+
 	'use strict';
 
 	/**
@@ -126,5 +121,4 @@ define([
 		return rVal;
 	};
 
-	return TransformChannel;
-});
+	module.exports = TransformChannel;

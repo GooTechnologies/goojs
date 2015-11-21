@@ -1,11 +1,6 @@
-/*jshint bitwise: false */
-define([
-	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/Capabilities'
-], function (
-	DdsUtils,
-	Capabilities
-) {
+/*jshint bitwise: false */var DdsUtils = require('goo/loaders/dds/DdsUtils');
+var Capabilities = require('goo/renderer/Capabilities');
+
 	'use strict';
 
 	function DdsPixelFormat() {
@@ -514,5 +509,4 @@ define([
 		return 'DdsLoader';
 	};
 
-	return DdsLoader;
-});
+	module.exports = DdsLoader;

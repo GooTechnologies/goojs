@@ -1,10 +1,6 @@
-define([
-	'goo/math/MathUtils',
-	'goo/animationpack/clip/AnimationClipInstance'
-], function (
-	MathUtils,
-	AnimationClipInstance
-) {
+var MathUtils = require('goo/math/MathUtils');
+var AnimationClipInstance = require('goo/animationpack/clip/AnimationClipInstance');
+
 	'use strict';
 
 	/**
@@ -182,5 +178,4 @@ define([
 		return cloned;
 	};
 
-	return ClipSource;
-});
+	module.exports = ClipSource;

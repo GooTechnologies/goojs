@@ -1,13 +1,12 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/Pass',
-	'goo/passpack/BlurPass'
+define([var Material = require('goo/renderer/Material');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var RenderPass = require('goo/renderer/pass/RenderPass');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var Pass = require('goo/renderer/pass/Pass');
+var BlurPass = require('goo/passpack/BlurPass');
 ],
 
 
@@ -158,5 +157,4 @@ function (
 		].join('\n')
 	};
 
-	return DepthPass;
-});
+	module.exports = DepthPass;

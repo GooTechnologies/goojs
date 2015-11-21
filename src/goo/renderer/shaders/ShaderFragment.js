@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -272,5 +269,4 @@ function () {
 		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)'
 	].join('\n');
 
-	return ShaderFragment;
-});
+	module.exports = ShaderFragment;

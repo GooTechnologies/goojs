@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/math/MathUtils'
-], function (
-	MeshData,
-	MathUtils
-) {
+var MeshData = require('goo/renderer/MeshData');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -213,5 +209,4 @@ define([
 		return new Surface(verts, xCount);
 	};
 
-	return Surface;
-});
+	module.exports = Surface;

@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/renderer/Capabilities',
-	'goo/math/Vector3',
-	'goo/entities/EntityUtils'
-], function (
-	MeshData,
-	Capabilities,
-	Vector3,
-	EntityUtils
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Capabilities = require('goo/renderer/Capabilities');
+var Vector3 = require('goo/math/Vector3');
+var EntityUtils = require('goo/entities/EntityUtils');
+
 	'use strict';
 
 	/**
@@ -241,5 +235,4 @@ define([
 		this.indexModes = [];
 	};
 
-	return MeshBuilder;
-});
+	module.exports = MeshBuilder;

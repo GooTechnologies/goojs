@@ -1,10 +1,6 @@
-define([
-	'goo/scriptpack/HeightMapBoundingScript',
-    'goo/math/Vector3'
-], function (
-	HeightMapBoundingScript,
-	Vector3
-) {
+var HeightMapBoundingScript = require('goo/scriptpack/HeightMapBoundingScript');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	var calcVec1 = new Vector3();
@@ -167,6 +163,5 @@ define([
 		return calcVec1;
 	};
 
-	return WorldFittedTerrainScript;
-});
+	module.exports = WorldFittedTerrainScript;
 

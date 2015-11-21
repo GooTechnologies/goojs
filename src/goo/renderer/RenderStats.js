@@ -17,5 +17,4 @@ define([], function () {
 			'<br/>Indices: ' + this.indices;
 	};
 
-	return RenderStats;
-});
+	module.exports = RenderStats;

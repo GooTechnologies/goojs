@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
-], function (
-	Action,
-	FsmUtils
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var FsmUtils = require('goo/fsmpack/statemachine/FsmUtils');
+
 	'use strict';
 
 	function AddPositionAction(/*id, settings*/) {
@@ -80,5 +76,4 @@ define([
 		}
 	};
 
-	return AddPositionAction;
-});
+	module.exports = AddPositionAction;

@@ -137,5 +137,4 @@ define(function () {
 		};
 	};
 
-	return ParticleLib;
-});
+	module.exports = ParticleLib;

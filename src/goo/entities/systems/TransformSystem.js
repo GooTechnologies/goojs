@@ -1,6 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (System) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	// has to stay here because it's used by traverseFunc below
@@ -56,5 +55,4 @@ define([
 		}
 	}
 
-	return TransformSystem;
-});
+	module.exports = TransformSystem;

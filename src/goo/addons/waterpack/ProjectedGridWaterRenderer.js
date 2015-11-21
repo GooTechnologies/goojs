@@ -1,32 +1,17 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Camera',
-	'goo/math/Plane',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/renderer/Material',
-	'goo/renderer/Texture',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderFragment'
-], function (
-	MeshData,
-	Shader,
-	Camera,
-	Plane,
-	RenderTarget,
-	FullscreenPass,
-	Vector3,
-	Vector4,
-	Material,
-	Texture,
-	TextureCreator,
-	ShaderLib,
-	ShaderFragment
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var Camera = require('goo/renderer/Camera');
+var Plane = require('goo/math/Plane');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var Vector3 = require('goo/math/Vector3');
+var Vector4 = require('goo/math/Vector4');
+var Material = require('goo/renderer/Material');
+var Texture = require('goo/renderer/Texture');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+
 	'use strict';
 
 	/**
@@ -536,5 +521,4 @@ define([
 		].join('\n')
 	};
 
-	return ProjectedGridWaterRenderer;
-});
+	module.exports = ProjectedGridWaterRenderer;

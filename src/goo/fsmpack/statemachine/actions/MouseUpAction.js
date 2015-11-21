@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function MouseUpAction(/*id, settings*/) {
@@ -76,5 +73,4 @@ define([
 		document.removeEventListener('touchend', this.touchEventListener);
 	};
 
-	return MouseUpAction;
-});
+	module.exports = MouseUpAction;

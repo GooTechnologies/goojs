@@ -1,24 +1,13 @@
-define([
-	'goo/util/gizmopack/Gizmo',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/math/Vector3',
-	'goo/math/Matrix3',
-	'goo/math/Transform',
-	'goo/renderer/Renderer',
-	'goo/math/Ray',
-	'goo/math/MathUtils'
-], function (
-	Gizmo,
-	Sphere,
-	Torus,
-	Vector3,
-	Matrix3,
-	Transform,
-	Renderer,
-	Ray,
-	MathUtils
-) {
+var Gizmo = require('goo/util/gizmopack/Gizmo');
+var Sphere = require('goo/shapes/Sphere');
+var Torus = require('goo/shapes/Torus');
+var Vector3 = require('goo/math/Vector3');
+var Matrix3 = require('goo/math/Matrix3');
+var Transform = require('goo/math/Transform');
+var Renderer = require('goo/renderer/Renderer');
+var Ray = require('goo/math/Ray');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -232,5 +221,4 @@ define([
 		};
 	}
 
-	return RotationGizmo;
-});
+	module.exports = RotationGizmo;

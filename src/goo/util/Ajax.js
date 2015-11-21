@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/TextureHandler',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils',
-	'goo/util/StringUtils',
-	'goo/util/rsvp'
-], function (
-	TextureHandler,
-	PromiseUtils,
-	_,
-	StringUtils,
-	RSVP
-) {
+var TextureHandler = require('goo/loaders/handlers/TextureHandler');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var StringUtils = require('goo/util/StringUtils');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -356,5 +349,4 @@ define([
 			.concat(Object.keys(Ajax.types.binary))
 	);
 
-	return Ajax;
-});
+	module.exports = Ajax;

@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/SystemBus'
-], function (
-	Action,
-	SystemBus
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	function TransitionOnMessageAction(/*id, settings*/) {
@@ -55,5 +51,4 @@ define([
 		SystemBus.removeListener(this.channel, this.eventListener);
 	};
 
-	return TransitionOnMessageAction;
-});
+	module.exports = TransitionOnMessageAction;

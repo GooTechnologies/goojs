@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus'
-], function (
-	System,
-	SystemBus
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -70,5 +66,4 @@ define([
 		});
 	};
 
-	return ColliderSystem;
-});
+	module.exports = ColliderSystem;

@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -50,5 +47,4 @@ define([
 		this.rightStickFunction = stickFunction;
 	};
 
-	return GamepadComponent;
-});
+	module.exports = GamepadComponent;

@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/MeshData'
-], function (
-	MeshData
-) {
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	function MeshRendererDebug() {
@@ -53,5 +50,4 @@ define([
 		return meshData;
 	}
 
-	return MeshRendererDebug;
-});
+	module.exports = MeshRendererDebug;

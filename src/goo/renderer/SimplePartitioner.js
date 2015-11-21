@@ -44,5 +44,4 @@ define(['goo/renderer/Camera'],
 		renderList.length = index;
 	};
 
-	return SimplePartitioner;
-});
+	module.exports = SimplePartitioner;

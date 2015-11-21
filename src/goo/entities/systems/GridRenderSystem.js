@@ -1,28 +1,15 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/SimplePartitioner',
-	'goo/renderer/MeshData',
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/util/ObjectUtils',
-	'goo/math/Transform',
-	'goo/math/MathUtils',
-	'goo/shapes/Grid'
-], function (
-	System,
-	SystemBus,
-	SimplePartitioner,
-	MeshData,
-	Material,
-	Shader,
-	ShaderLib,
-	ObjectUtils,
-	Transform,
-	MathUtils,
-	Grid
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var SimplePartitioner = require('goo/renderer/SimplePartitioner');
+var MeshData = require('goo/renderer/MeshData');
+var Material = require('goo/renderer/Material');
+var Shader = require('goo/renderer/Shader');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var Transform = require('goo/math/Transform');
+var MathUtils = require('goo/math/MathUtils');
+var Grid = require('goo/shapes/Grid');
+
 	'use strict';
 
 	/**
@@ -237,5 +224,4 @@ define([
 		].join('\n')
 	};
 
-	return GridRenderSystem;
-});
+	module.exports = GridRenderSystem;

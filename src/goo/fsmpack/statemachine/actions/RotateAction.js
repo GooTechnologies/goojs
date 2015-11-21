@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/MathUtils'
-], function (
-	Action,
-	MathUtils
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	function RotateAction(/*id, settings*/) {
@@ -75,5 +71,4 @@ define([
 		entity.transformComponent.setUpdated();
 	};
 
-	return RotateAction;
-});
+	module.exports = RotateAction;

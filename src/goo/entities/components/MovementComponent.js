@@ -1,6 +1,5 @@
-define([
-	'goo/math/Vector3',
-	'goo/entities/components/Component'
+define([var Vector3 = require('goo/math/Vector3');
+var Component = require('goo/entities/components/Component');
 ],
 
 		function (

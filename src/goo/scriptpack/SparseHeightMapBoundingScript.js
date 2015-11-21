@@ -37,5 +37,4 @@ define([], function () {
 		translation.y -= diff * 0.1;
 	};
 
-	return SparseHeightMapBoundingScript;
-});
+	module.exports = SparseHeightMapBoundingScript;

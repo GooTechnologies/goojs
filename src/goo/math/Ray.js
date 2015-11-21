@@ -1,10 +1,6 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/MathUtils'
-], function (
-	Vector3,
-	MathUtils
-) {
+var Vector3 = require('./Vector3');
+var MathUtils = require('./MathUtils');
+
 	'use strict';
 
 	/**
@@ -189,5 +185,4 @@ define([
 		return new Ray(this.origin.clone(), this.direction.clone());
 	};
 
-	return Ray;
-});
+	module.exports = Ray;

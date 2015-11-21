@@ -1,8 +1,5 @@
-define([
-	'goo/logic/LogicInterface'
-], function (
-	LogicInterface
-) {
+var LogicInterface = require('goo/logic/LogicInterface');
+
 	'use strict';
 
 	/**
@@ -372,5 +369,4 @@ define([
 		this.addConnectionByName(sourceInst, sourcePort, destInst.name, destPort);
 	};
 
-	return LogicLayer;
-});
+	module.exports = LogicLayer;

@@ -1,16 +1,9 @@
-define([
-	'goo/math/Vector2',
-	'goo/math/Transform',
-	'goo/util/MeshBuilder',
-	'goo/geometrypack/FilledPolygon',
-	'goo/geometrypack/PolyLine'
-], function (
-	Vector2,
-	Transform,
-	MeshBuilder,
-	FilledPolygon,
-	PolyLine
-) {
+var Vector2 = require('goo/math/Vector2');
+var Transform = require('goo/math/Transform');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var FilledPolygon = require('goo/geometrypack/FilledPolygon');
+var PolyLine = require('goo/geometrypack/PolyLine');
+
 	'use strict';
 
 	/**

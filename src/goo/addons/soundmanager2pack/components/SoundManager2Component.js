@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -29,5 +26,4 @@ define([
 		this.sounds[soundName].soundObject.play();
 	};
 
-	return SoundManager2Component;
-});
+	module.exports = SoundManager2Component;

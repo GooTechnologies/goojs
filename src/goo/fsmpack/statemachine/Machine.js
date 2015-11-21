@@ -128,5 +128,4 @@ define([], function (
 		this.initialState = initialState;
 	};
 
-	return Machine;
-});
+	module.exports = Machine;

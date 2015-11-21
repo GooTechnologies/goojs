@@ -82,5 +82,4 @@ define(function () {
 		return this.floatData[7];
 	};
 
-	return EdgeData;
-});
+	module.exports = EdgeData;

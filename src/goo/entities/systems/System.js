@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -138,5 +135,4 @@ function () {
 		this._activeEntities = [];
 	};
 
-	return System;
-});
+	module.exports = System;

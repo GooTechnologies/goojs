@@ -1,10 +1,6 @@
-define([
-	'goo/math/MathUtils',
-	'goo/animationpack/clip/TransformData'
-], function (
-	MathUtils,
-	TransformData
-) {
+var MathUtils = require('goo/math/MathUtils');
+var TransformData = require('goo/animationpack/clip/TransformData');
+
 	'use strict';
 
 	/**
@@ -171,5 +167,4 @@ define([
 		);
 	};
 
-	return BinaryLerpSource;
-});
+	module.exports = BinaryLerpSource;

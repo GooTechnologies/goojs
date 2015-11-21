@@ -1,14 +1,8 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/addons/linerenderpack/LineRenderer',
-	'goo/math/Vector3'
-], function (
-	System,
-	SystemBus,
-	LineRenderer,
-	Vector3
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var LineRenderer = require('goo/addons/linerenderpack/LineRenderer');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -173,5 +167,4 @@ define([
 		this.world.gooRunner.renderer.clearShaderCache();
 	};
 
-	return LineRenderSystem;
-});
+	module.exports = LineRenderSystem;

@@ -1,8 +1,5 @@
-define([
-    'goo/renderer/scanline/Edge'
-], function (
-    Edge
-) {
+var Edge = require('goo/renderer/scanline/Edge');
+
 	'use strict';
 
 	/**
@@ -68,5 +65,4 @@ define([
 	};
 	/*jshint bitwise: true*/
 
-	return EdgeMap;
-});
+	module.exports = EdgeMap;

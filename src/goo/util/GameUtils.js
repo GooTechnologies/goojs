@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -406,5 +403,4 @@ function () {
 		}
 	};
 
-	return GameUtils;
-});
+	module.exports = GameUtils;

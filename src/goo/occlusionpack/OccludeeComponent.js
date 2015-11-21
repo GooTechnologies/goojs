@@ -1,12 +1,7 @@
-define([
-	'goo/entities/components/Component',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere'
-], function (
-	Component,
-	BoundingBox,
-	BoundingSphere
-) {
+var Component = require('goo/entities/components/Component');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+
 	'use strict';
 
 	/**
@@ -53,5 +48,4 @@ define([
 
 	OccludeeComponent.prototype = Object.create(Component.prototype);
 
-	return OccludeeComponent;
-});
+	module.exports = OccludeeComponent;

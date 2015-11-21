@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/proximity/ProximityComponent'
-], function (
-	Action,
-	ProximityComponent
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var ProximityComponent = require('goo/fsmpack/proximity/ProximityComponent');
+
 	'use strict';
 
 	function TagAction(/*id, settings*/) {
@@ -49,5 +45,4 @@ define([
 		}
 	};
 
-	return TagAction;
-});
+	module.exports = TagAction;

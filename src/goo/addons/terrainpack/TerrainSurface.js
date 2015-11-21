@@ -1,5 +1,4 @@
-define([
-	'goo/renderer/MeshData',
+define([var MeshData = require('goo/renderer/MeshData');
 	'goo/math/MathUtils'],
 
 		function (

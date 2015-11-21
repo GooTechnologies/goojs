@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/Renderer',
-	'goo/renderer/RendererRecord'
-], function (
-	Renderer,
-	RendererRecord
-) {
+var Renderer = require('goo/renderer/Renderer');
+var RendererRecord = require('goo/renderer/RendererRecord');
+
 	'use strict';
 
 	Renderer.prototype.invalidateBuffer = function (buffer) {

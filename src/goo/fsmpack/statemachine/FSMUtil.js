@@ -1,5 +1,3 @@
-define([
-	'goo/util/FsmUtils'
-], function (FsmUtils) {
-	return FsmUtils;
-});
+var FsmUtils = require('goo/util/FsmUtils');
+
+	module.exports = FsmUtils;

@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/FsmUtils'
-], function (
-	FsmUtils
-) {
+var FsmUtils = require('goo/fsmpack/statemachine/FsmUtils');
+
 	'use strict';
 
 	/**
@@ -56,5 +53,4 @@ define([
 	Action.prototype.exit = function (/*fsm*/) {
 	};
 
-	return Action;
-});
+	module.exports = Action;

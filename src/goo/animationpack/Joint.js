@@ -15,5 +15,4 @@ define(['goo/math/Transform'], function (Transform) {
 
 	Joint.NO_PARENT = -32768;
 
-	return Joint;
-});
+	module.exports = Joint;

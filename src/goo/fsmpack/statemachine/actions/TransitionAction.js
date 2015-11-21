@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function TransitionAction(/*id, settings*/) {
@@ -29,5 +26,4 @@ define([
 		fsm.send(this.transitions.transition);
 	};
 
-	return TransitionAction;
-});
+	module.exports = TransitionAction;

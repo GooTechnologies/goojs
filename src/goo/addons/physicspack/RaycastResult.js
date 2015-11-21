@@ -1,9 +1,5 @@
-define([
-	'goo/math/Vector3'
-],
-function (
-	Vector3
-) {
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -44,5 +40,4 @@ function (
 		this.distance = -1;
 	};
 
-	return RaycastResult;
-});
+	module.exports = RaycastResult;

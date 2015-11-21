@@ -1,10 +1,6 @@
-define([
-	'goo/math/Matrix3',
-	'goo/util/ObjectUtils'
-], function (
-	Matrix3,
-	ObjectUtils
-) {
+var Matrix3 = require('./Matrix3');
+var ObjectUtils = require('../util/ObjectUtils');
+
 	'use strict';
 
 	var Matrix3x3 = ObjectUtils.warnOnce(
@@ -20,5 +16,4 @@ define([
 		Matrix3x3[x] = Matrix3[x];
 	}
 
-	return Matrix3x3;
-});
+	module.exports = Matrix3x3;

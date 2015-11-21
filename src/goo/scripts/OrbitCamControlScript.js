@@ -1,16 +1,9 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Vector2',
-	'goo/math/MathUtils',
-	'goo/renderer/Camera',
-	'goo/entities/SystemBus'
-], function (
-	Vector3,
-	Vector2,
-	MathUtils,
-	Camera,
-	SystemBus
-) {
+var Vector3 = require('goo/math/Vector3');
+var Vector2 = require('goo/math/Vector2');
+var MathUtils = require('goo/math/MathUtils');
+var Camera = require('goo/renderer/Camera');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	var ZOOM_DISTANCE_FACTOR = 0.035;
@@ -516,5 +509,4 @@ define([
 		}]
 	};
 
-	return OrbitCamControlScript;
-});
+	module.exports = OrbitCamControlScript;

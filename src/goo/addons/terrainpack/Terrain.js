@@ -1,46 +1,24 @@
-define([
-	'goo/entities/EntityUtils',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/MathUtils',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Texture',
-	'goo/renderer/Renderer',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/FullscreenUtils',
-	'goo/renderer/light/DirectionalLight',
-	'goo/shapes/Quad'
-], function (
-	EntityUtils,
-	MeshDataComponent,
-	MeshRendererComponent,
-	MathUtils,
-	Transform,
-	Vector3,
-	MeshData,
-	Material,
-	Shader,
-	ShaderBuilder,
-	ShaderLib,
-	ShaderFragment,
-	TextureCreator,
-	RenderTarget,
-	Texture,
-	Renderer,
-	FullscreenPass,
-	FullscreenUtils,
-	DirectionalLight,
-	Quad
-) {
+var EntityUtils = require('goo/entities/EntityUtils');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var MathUtils = require('goo/math/MathUtils');
+var Transform = require('goo/math/Transform');
+var Vector3 = require('goo/math/Vector3');
+var MeshData = require('goo/renderer/MeshData');
+var Material = require('goo/renderer/Material');
+var Shader = require('goo/renderer/Shader');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var Texture = require('goo/renderer/Texture');
+var Renderer = require('goo/renderer/Renderer');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var Quad = require('goo/shapes/Quad');
+
 	'use strict';
 
 	var Ammo = window.Ammo; // make jslint happy
@@ -1380,5 +1358,4 @@ define([
 		].join('\n')
 	};
 
-	return Terrain;
-});
+	module.exports = Terrain;

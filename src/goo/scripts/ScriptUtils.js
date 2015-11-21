@@ -1,8 +1,5 @@
-define([
-	'goo/util/ObjectUtils'
-], function (
-	_
-) {
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	function ScriptUtils() {}
@@ -276,5 +273,4 @@ define([
 		return ScriptUtils._keyInverse[code];
 	};
 
-	return ScriptUtils;
-});
+	module.exports = ScriptUtils;

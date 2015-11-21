@@ -1,20 +1,11 @@
-define([
-	'goo/entities/Entity',
-	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/managers/Manager',
-	'goo/entities/systems/System',
-	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
-], function (
-	Entity,
-	EntityManager,
-	TransformComponent,
-	Manager,
-	System,
-	Component,
-	EntitySelection
-) {
+var Entity = require('goo/entities/Entity');
+var EntityManager = require('goo/entities/managers/EntityManager');
+var TransformComponent = require('goo/entities/components/TransformComponent');
+var Manager = require('goo/entities/managers/Manager');
+var System = require('goo/entities/systems/System');
+var Component = require('goo/entities/components/Component');
+var EntitySelection = require('goo/entities/EntitySelection');
+
 	'use strict';
 
 	/**
@@ -500,5 +491,4 @@ define([
 		this.gooRunner = null;
 	};
 
-	return World;
-});
+	module.exports = World;

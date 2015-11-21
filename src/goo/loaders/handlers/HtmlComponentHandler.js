@@ -1,14 +1,8 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/HtmlComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils'
-], function (
-	ComponentHandler,
-	HtmlComponent,
-	RSVP,
-	PromiseUtils
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var HtmlComponent = require('goo/entities/components/HtmlComponent');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -179,5 +173,4 @@ define([
 		}
 	};
 
-	return HtmlComponentHandler;
-});
+	module.exports = HtmlComponentHandler;

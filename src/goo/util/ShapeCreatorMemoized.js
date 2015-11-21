@@ -1,22 +1,12 @@
-define([
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Torus',
-	'goo/shapes/Disk',
-	'goo/shapes/Cone',
-	'goo/util/ObjectUtil'
-], function (
-	Box,
-	Quad,
-	Sphere,
-	Cylinder,
-	Torus,
-	Disk,
-	Cone,
-	ObjectUtil
-) {
+var Box = require('goo/shapes/Box');
+var Quad = require('goo/shapes/Quad');
+var Sphere = require('goo/shapes/Sphere');
+var Cylinder = require('goo/shapes/Cylinder');
+var Torus = require('goo/shapes/Torus');
+var Disk = require('goo/shapes/Disk');
+var Cone = require('goo/shapes/Cone');
+var ObjectUtil = require('goo/util/ObjectUtil');
+
 	'use strict';
 
 	/**
@@ -210,5 +200,4 @@ define([
 		}
 	};
 
-	return ShapeCreatorMemoized;
-});
+	module.exports = ShapeCreatorMemoized;

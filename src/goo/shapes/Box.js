@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/util/ObjectUtils'
-], function (
-	MeshData,
-	ObjectUtils
-) {
+var MeshData = require('goo/renderer/MeshData');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -208,5 +204,4 @@ define([
 		Unfolded: 'Unfolded'
 	};
 
-	return Box;
-});
+	module.exports = Box;

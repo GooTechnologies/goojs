@@ -1,18 +1,10 @@
-define([
-	'goo/math/Vector3',
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer',
-	'goo/entities/SystemBus',
-	'goo/renderer/Camera'
-], function (
-	Vector3,
-	Scripts,
-	ScriptUtils,
-	Renderer,
-	SystemBus,
-	Camera
-) {
+var Vector3 = require('goo/math/Vector3');
+var Scripts = require('goo/scripts/Scripts');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var Renderer = require('goo/renderer/Renderer');
+var SystemBus = require('goo/entities/SystemBus');
+var Camera = require('goo/renderer/Camera');
+
 	'use strict';
 
 	function PanCamScript() {
@@ -263,5 +255,4 @@ define([
 		}*/]
 	};
 
-	return PanCamScript;
-});
+	module.exports = PanCamScript;

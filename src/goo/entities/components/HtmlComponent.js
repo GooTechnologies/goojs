@@ -1,9 +1,5 @@
-define([
-	'goo/entities/components/Component'
-],
-function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -41,5 +37,4 @@ function (
 	HtmlComponent.prototype = Object.create(Component.prototype);
 	HtmlComponent.prototype.constructor = HtmlComponent;
 
-	return HtmlComponent;
-});
+	module.exports = HtmlComponent;

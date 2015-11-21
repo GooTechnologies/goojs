@@ -1,6 +1,3 @@
-define(
-
-	function () {
 	'use strict';
 
 	/**
@@ -150,5 +147,4 @@ define(
 		};
 	}
 
-	return Stats;
-});
+	module.exports = Stats;

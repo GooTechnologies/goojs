@@ -1,26 +1,14 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/Renderer',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Quad',
-	'goo/math/Matrix4x4',
-	'goo/math/Vector3',
-	'goo/math/Ray',
-	'goo/math/MathUtils'
-], function (
-	System,
-	SystemBus,
-	Renderer,
-	Material,
-	ShaderLib,
-	Quad,
-	Matrix4x4,
-	Vector3,
-	Ray,
-	MathUtils
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var Renderer = require('goo/renderer/Renderer');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Quad = require('goo/shapes/Quad');
+var Matrix4x4 = require('goo/math/Matrix4x4');
+var Vector3 = require('goo/math/Vector3');
+var Ray = require('goo/math/Ray');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -293,5 +281,4 @@ define([
 		}
 	};
 
-	return Dom3dSystem;
-});
+	module.exports = Dom3dSystem;

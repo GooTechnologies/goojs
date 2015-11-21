@@ -1,12 +1,7 @@
-define([
-	'goo/renderer/bounds/BoundingBox',
-	'goo/entities/components/Component',
-	'goo/renderer/MeshData'
-], function (
-	BoundingBox,
-	Component,
-	MeshData
-) {
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var Component = require('goo/entities/components/Component');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -108,5 +103,4 @@ define([
 		}
 	};
 
-	return MeshDataComponent;
-});
+	module.exports = MeshDataComponent;

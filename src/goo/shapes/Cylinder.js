@@ -1,12 +1,7 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/math/Vector3',
-	'goo/util/ObjectUtils'
-], function (
-	MeshData,
-	Vector3,
-	_
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Vector3 = require('goo/math/Vector3');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -167,5 +162,4 @@ define([
 		return new Cylinder(options);
 	};
 
-	return Cylinder;
-});
+	module.exports = Cylinder;

@@ -1,10 +1,6 @@
-define([
-	'goo/animationpack/clip/AbstractAnimationChannel',
-	'goo/animationpack/clip/TriggerData'
-], function (
-	AbstractAnimationChannel,
-	TriggerData
-) {
+var AbstractAnimationChannel = require('goo/animationpack/clip/AbstractAnimationChannel');
+var TriggerData = require('goo/animationpack/clip/TriggerData');
+
 	'use strict';
 
 	/**
@@ -58,5 +54,4 @@ define([
 		}
 	};
 
-	return TriggerChannel;
-});
+	module.exports = TriggerChannel;

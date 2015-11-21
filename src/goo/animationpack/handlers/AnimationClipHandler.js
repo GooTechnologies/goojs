@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/animationpack/clip/AnimationClip',
-	'goo/animationpack/clip/JointChannel',
-	'goo/animationpack/clip/TransformChannel',
-	'goo/animationpack/clip/InterpolatedFloatChannel',
-	'goo/animationpack/clip/TriggerChannel',
-	'goo/util/ArrayUtils'
-], function (
-	ConfigHandler,
-	AnimationClip,
-	JointChannel,
-	TransformChannel,
-	InterpolatedFloatChannel,
-	TriggerChannel,
-	ArrayUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var AnimationClip = require('goo/animationpack/clip/AnimationClip');
+var JointChannel = require('goo/animationpack/clip/JointChannel');
+var TransformChannel = require('goo/animationpack/clip/TransformChannel');
+var InterpolatedFloatChannel = require('goo/animationpack/clip/InterpolatedFloatChannel');
+var TriggerChannel = require('goo/animationpack/clip/TriggerChannel');
+var ArrayUtils = require('goo/util/ArrayUtils');
+
 	'use strict';
 
 	/**
@@ -141,5 +132,4 @@ define([
 		return clip;
 	};
 
-	return AnimationClipHandler;
-});
+	module.exports = AnimationClipHandler;

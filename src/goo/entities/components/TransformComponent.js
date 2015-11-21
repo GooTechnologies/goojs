@@ -1,14 +1,8 @@
-define([
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
-], function (
-	Transform,
-	Vector3,
-	Component,
-	EntitySelection
-) {
+var Transform = require('goo/math/Transform');
+var Vector3 = require('goo/math/Vector3');
+var Component = require('goo/entities/components/Component');
+var EntitySelection = require('goo/entities/EntitySelection');
+
 	'use strict';
 
 	/**
@@ -701,5 +695,4 @@ define([
 		}
 	};
 
-	return TransformComponent;
-});
+	module.exports = TransformComponent;

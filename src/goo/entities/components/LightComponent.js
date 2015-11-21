@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/renderer/light/Light'
-], function (
-	Component,
-	Light
-) {
+var Component = require('goo/entities/components/Component');
+var Light = require('goo/renderer/light/Light');
+
 	'use strict';
 
 	/**
@@ -69,5 +65,4 @@ define([
 		}
 	};
 
-	return LightComponent;
-});
+	module.exports = LightComponent;

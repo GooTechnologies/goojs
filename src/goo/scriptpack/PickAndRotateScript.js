@@ -158,5 +158,4 @@ define([], function () {
 		}]
 	};
 
-	return PickAndRotateScript;
-});
+	module.exports = PickAndRotateScript;

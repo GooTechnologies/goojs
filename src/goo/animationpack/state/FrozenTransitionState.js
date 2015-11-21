@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/state/AbstractTransitionState'
-], function (
-	AbstractTransitionState
-) {
+var AbstractTransitionState = require('goo/animationpack/state/AbstractTransitionState');
+
 	'use strict';
 
 	/**
@@ -54,5 +51,4 @@ define([
 		this._targetState.shiftClipTime(shiftTime);
 	};
 
-	return FrozenTransitionState;
-});
+	module.exports = FrozenTransitionState;

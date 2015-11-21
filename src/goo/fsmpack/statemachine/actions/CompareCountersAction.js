@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function CompareCountersAction(/*id, settings*/) {
@@ -63,5 +60,4 @@ define([
 		}
 	};
 
-	return CompareCountersAction;
-});
+	module.exports = CompareCountersAction;

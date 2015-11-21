@@ -24,5 +24,4 @@ function () {
 		this.collideConnected = settings.collideConnected !== undefined ? settings.collideConnected : false;
 	}
 
-	return PhysicsJoint;
-});
+	module.exports = PhysicsJoint;

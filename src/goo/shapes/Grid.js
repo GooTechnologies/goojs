@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/util/ObjectUtils'
-], function (
-	MeshData,
-	_
-) {
+var MeshData = require('goo/renderer/MeshData');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -100,5 +96,4 @@ define([
 	};
 
 
-	return Grid;
-});
+	module.exports = Grid;

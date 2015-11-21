@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/TWEEN'
-], function (
-	Action,
-	TWEEN
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	function TweenLightColorAction(/*id, settings*/) {
@@ -103,5 +99,4 @@ define([
 		}
 	};
 
-	return TweenLightColorAction;
-});
+	module.exports = TweenLightColorAction;

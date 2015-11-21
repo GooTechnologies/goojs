@@ -1,12 +1,7 @@
-define([
-	'goo/entities/EntitySelection',
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/proximity/ProximitySystem'
-], function (
-	EntitySelection,
-	Action,
-	ProximitySystem
-) {
+var EntitySelection = require('goo/entities/EntitySelection');
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var ProximitySystem = require('goo/fsmpack/proximity/ProximitySystem');
+
 	'use strict';
 
 	function CollidesAction(/*id, settings*/) {
@@ -91,5 +86,4 @@ define([
 		fsm.send(collides ? this.transitions.collides : this.transitions.notCollides);
 	};
 
-	return CollidesAction;
-});
+	module.exports = CollidesAction;

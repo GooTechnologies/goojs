@@ -1,16 +1,9 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/components/LightComponent',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
-], function (
-	Action,
-	LightComponent,
-	PointLight,
-	DirectionalLight,
-	SpotLight
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var LightComponent = require('goo/entities/components/LightComponent');
+var PointLight = require('goo/renderer/light/PointLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+
 	'use strict';
 
 	function AddLightAction(/*id, settings*/) {
@@ -104,5 +97,4 @@ define([
 		}
 	};
 
-	return AddLightAction;
-});
+	module.exports = AddLightAction;

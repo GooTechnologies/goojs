@@ -206,5 +206,4 @@ define(function () {
 		this.trie = { name: '', listeners: [], children: new Map() };
 	};
 
-	return Bus;
-});
+	module.exports = Bus;

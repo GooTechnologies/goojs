@@ -1,18 +1,10 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/CameraComponent',
-	'goo/renderer/Camera',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ComponentHandler,
-	CameraComponent,
-	Camera,
-	RSVP,
-	pu,
-	_
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var CameraComponent = require('goo/entities/components/CameraComponent');
+var Camera = require('goo/renderer/Camera');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -94,5 +86,4 @@ define([
 		});
 	};
 
-	return CameraComponentHandler;
-});
+	module.exports = CameraComponentHandler;

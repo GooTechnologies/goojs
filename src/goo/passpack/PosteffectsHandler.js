@@ -1,26 +1,14 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ArrayUtils',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/passpack/PassLib'
-], function (
-	ConfigHandler,
-	ArrayUtils,
-	RSVP,
-	PromiseUtils,
-	ObjectUtils,
-	Composer,
-	RenderPass,
-	FullscreenPass,
-	ShaderLib,
-	PassLib
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var Composer = require('goo/renderer/pass/Composer');
+var RenderPass = require('goo/renderer/pass/RenderPass');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var PassLib = require('goo/passpack/PassLib');
+
 	'use strict';
 
 	/**
@@ -189,5 +177,4 @@ define([
 		});
 	};
 
-	return PosteffectsHandler;
-});
+	module.exports = PosteffectsHandler;

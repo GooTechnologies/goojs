@@ -1,12 +1,7 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/animationpack/components/AnimationComponent',
-	'goo/util/rsvp'
-], function (
-	ComponentHandler,
-	AnimationComponent,
-	RSVP
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var AnimationComponent = require('goo/animationpack/components/AnimationComponent');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -73,5 +68,4 @@ define([
 		});
 	};
 
-	return AnimationComponentHandler;
-});
+	module.exports = AnimationComponentHandler;

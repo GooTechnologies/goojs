@@ -1,22 +1,12 @@
-define([
-	'goo/entities/components/Component',
-	'goo/quadpack/DoubleQuad',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Material',
-	'goo/util/ObjectUtils',
-	'goo/renderer/Texture'
-], function (
-	Component,
-	DoubleQuad,
-	MeshDataComponent,
-	MeshRendererComponent,
-	ShaderLib,
-	Material,
-	_,
-	Texture
-) {
+var Component = require('goo/entities/components/Component');
+var DoubleQuad = require('goo/quadpack/DoubleQuad');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Material = require('goo/renderer/Material');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var Texture = require('goo/renderer/Texture');
+
 	'use strict';
 
 	/**
@@ -189,6 +179,5 @@ define([
 		}
 	};
 
-	return QuadComponent;
-});
+	module.exports = QuadComponent;
 

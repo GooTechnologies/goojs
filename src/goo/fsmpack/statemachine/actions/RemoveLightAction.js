@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function RemoveLightAction(/*id, settings*/) {
@@ -27,5 +24,4 @@ define([
 		}
 	};
 
-	return RemoveLightAction;
-});
+	module.exports = RemoveLightAction;

@@ -1,12 +1,7 @@
-define([
-	'goo/entities/components/Component',
-	'goo/entities/components/MeshDataComponent',
-	'goo/geometrypack/text/TextMeshGenerator'
-], function (
-	Component,
-	MeshDataComponent,
-	TextMeshGenerator
-) {
+var Component = require('goo/entities/components/Component');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+var TextMeshGenerator = require('goo/geometrypack/text/TextMeshGenerator');
+
 	'use strict';
 
 	/**
@@ -68,5 +63,4 @@ define([
 		return this;
 	};
 
-	return TextComponent;
-});
+	module.exports = TextComponent;

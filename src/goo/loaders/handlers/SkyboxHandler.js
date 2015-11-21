@@ -1,22 +1,12 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/handlers/EnvironmentHandler',
-	'goo/renderer/Texture',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Skybox',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/entities/SystemBus'
-], function (
-	ConfigHandler,
-	EnvironmentHandler,
-	Texture,
-	ShaderBuilder,
-	Skybox,
-	RSVP,
-	PromiseUtils,
-	SystemBus
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var EnvironmentHandler = require('goo/loaders/handlers/EnvironmentHandler');
+var Texture = require('goo/renderer/Texture');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var Skybox = require('goo/util/Skybox');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	function SkyboxHandler() {
@@ -226,5 +216,4 @@ define([
 		ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;
 	};
 
-	return SkyboxHandler;
-});
+	module.exports = SkyboxHandler;

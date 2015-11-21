@@ -1,8 +1,5 @@
-define([
-	'goo/entities/Selection'
-], function (
-	Selection
-) {
+var Selection = require('goo/entities/Selection');
+
 	'use strict';
 
 	/**
@@ -251,5 +248,4 @@ define([
 		}
 	}
 
-	return EntitySelection;
-});
+	module.exports = EntitySelection;

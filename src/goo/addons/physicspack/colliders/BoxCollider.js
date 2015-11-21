@@ -1,11 +1,6 @@
-define([
-	'goo/math/Vector3',
-	'goo/addons/physicspack/colliders/Collider'
-],
-function (
-	Vector3,
-	Collider
-) {
+var Vector3 = require('goo/math/Vector3');
+var Collider = require('goo/addons/physicspack/colliders/Collider');
+
 	'use strict';
 
 	/**
@@ -46,5 +41,4 @@ function (
 		});
 	};
 
-	return BoxCollider;
-});
+	module.exports = BoxCollider;

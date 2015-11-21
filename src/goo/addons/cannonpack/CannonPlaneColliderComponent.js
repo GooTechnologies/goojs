@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/* global CANNON */
@@ -26,5 +23,4 @@ define([
 	CannonPlaneColliderComponent.prototype = Object.create(Component.prototype);
 	CannonPlaneColliderComponent.constructor = CannonPlaneColliderComponent;
 
-	return CannonPlaneColliderComponent;
-});
+	module.exports = CannonPlaneColliderComponent;

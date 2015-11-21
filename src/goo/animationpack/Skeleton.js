@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/Joint'
-], function (
-	Joint
-) {
+var Joint = require('goo/animationpack/Joint');
+
 	'use strict';
 
 	/**
@@ -35,5 +32,4 @@ define([
 		return new Skeleton(name, joints);
 	};
 
-	return Skeleton;
-});
+	module.exports = Skeleton;

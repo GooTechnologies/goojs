@@ -1,24 +1,13 @@
-define([
-	'goo/addons/physicspack/components/AbstractColliderComponent',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/MeshCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/Collider',
-	'goo/math/Vector3',
-	'goo/math/Quaternion'
-], function (
-	AbstractColliderComponent,
-	BoxCollider,
-	SphereCollider,
-	MeshCollider,
-	PlaneCollider,
-	CylinderCollider,
-	Collider,
-	Vector3,
-	Quaternion
-) {
+var AbstractColliderComponent = require('goo/addons/physicspack/components/AbstractColliderComponent');
+var BoxCollider = require('goo/addons/physicspack/colliders/BoxCollider');
+var SphereCollider = require('goo/addons/physicspack/colliders/SphereCollider');
+var MeshCollider = require('goo/addons/physicspack/colliders/MeshCollider');
+var PlaneCollider = require('goo/addons/physicspack/colliders/PlaneCollider');
+var CylinderCollider = require('goo/addons/physicspack/colliders/CylinderCollider');
+var Collider = require('goo/addons/physicspack/colliders/Collider');
+var Vector3 = require('goo/math/Vector3');
+var Quaternion = require('goo/math/Quaternion');
+
 	'use strict';
 
 	var tmpQuat = new Quaternion();
@@ -181,5 +170,4 @@ define([
 		}
 	};
 
-	return ColliderComponent;
-});
+	module.exports = ColliderComponent;

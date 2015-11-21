@@ -1,18 +1,10 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/animationpack/Joint',
-	'goo/animationpack/Skeleton',
-	'goo/animationpack/SkeletonPose',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ConfigHandler,
-	Joint,
-	Skeleton,
-	SkeletonPose,
-	PromiseUtils,
-	_
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var Joint = require('goo/animationpack/Joint');
+var Skeleton = require('goo/animationpack/Skeleton');
+var SkeletonPose = require('goo/animationpack/SkeletonPose');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -63,5 +55,4 @@ define([
 		return PromiseUtils.resolve(this._objects.get(ref));
 	};
 
-	return SkeletonHandler;
-});
+	module.exports = SkeletonHandler;

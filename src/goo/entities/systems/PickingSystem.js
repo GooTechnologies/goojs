@@ -88,5 +88,4 @@ define(['goo/entities/systems/System'], function (System) {
 		this.onPick(pickList);
 	};
 
-	return PickingSystem;
-});
+	module.exports = PickingSystem;

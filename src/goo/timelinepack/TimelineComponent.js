@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -93,5 +90,4 @@ define([
 		return retVal;
 	};
 
-	return TimelineComponent;
-});
+	module.exports = TimelineComponent;

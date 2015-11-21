@@ -308,5 +308,4 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 		}
 	};
 
-	return BasicControlScript;
-});
+	module.exports = BasicControlScript;

@@ -1,47 +1,24 @@
-/*jshint bitwise: false*/
-define([
-	'goo/renderer/Capabilities',
-	'goo/renderer/RendererRecord',
-	'goo/renderer/RendererUtils',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/pass/RenderTarget',
-	'goo/math/Vector4',
-	'goo/entities/Entity',
-	'goo/renderer/Texture',
-	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/Material',
-	'goo/math/Transform',
-	'goo/renderer/RenderQueue',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shadow/ShadowHandler',
-	'goo/renderer/RenderStats',
-	'goo/entities/SystemBus',
-	'goo/renderer/TaskScheduler',
-	'goo/renderer/RenderInfo',
-	'goo/math/MathUtils'
-], function (
-	Capabilities,
-	RendererRecord,
-	RendererUtils,
-	TextureCreator,
-	RenderTarget,
-	Vector4,
-	Entity,
-	Texture,
-	DdsLoader,
-	DdsUtils,
-	Material,
-	Transform,
-	RenderQueue,
-	ShaderLib,
-	ShadowHandler,
-	RenderStats,
-	SystemBus,
-	TaskScheduler,
-	RenderInfo,
-	MathUtils
-) {
+/*jshint bitwise: false*/var Capabilities = require('goo/renderer/Capabilities');
+var RendererRecord = require('goo/renderer/RendererRecord');
+var RendererUtils = require('goo/renderer/RendererUtils');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var Vector4 = require('goo/math/Vector4');
+var Entity = require('goo/entities/Entity');
+var Texture = require('goo/renderer/Texture');
+var DdsLoader = require('goo/loaders/dds/DdsLoader');
+var DdsUtils = require('goo/loaders/dds/DdsUtils');
+var Material = require('goo/renderer/Material');
+var Transform = require('goo/math/Transform');
+var RenderQueue = require('goo/renderer/RenderQueue');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShadowHandler = require('goo/renderer/shadow/ShadowHandler');
+var RenderStats = require('goo/renderer/RenderStats');
+var SystemBus = require('goo/entities/SystemBus');
+var TaskScheduler = require('goo/renderer/TaskScheduler');
+var RenderInfo = require('goo/renderer/RenderInfo');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	var STUB_METHOD = function () {};
@@ -2200,5 +2177,4 @@ define([
 		shader.destroy();
 	};
 
-	return Renderer;
-});
+	module.exports = Renderer;

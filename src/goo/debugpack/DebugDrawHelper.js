@@ -1,44 +1,21 @@
-define([
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/animationpack/SkeletonPose',
+var LightComponent = require('goo/entities/components/LightComponent');
+var CameraComponent = require('goo/entities/components/CameraComponent');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var SkeletonPose = require('goo/animationpack/SkeletonPose');
+var PointLight = require('goo/renderer/light/PointLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+var LightDebug = require('goo/debugpack/shapes/LightDebug');
+var CameraDebug = require('goo/debugpack/shapes/CameraDebug');
+var MeshRendererDebug = require('goo/debugpack/shapes/MeshRendererDebug');
+var SkeletonDebug = require('goo/debugpack/shapes/SkeletonDebug');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
+var Transform = require('goo/math/Transform');
+var Camera = require('goo/renderer/Camera');
+var Renderer = require('goo/renderer/Renderer');
 
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-
-	'goo/debugpack/shapes/LightDebug',
-	'goo/debugpack/shapes/CameraDebug',
-	'goo/debugpack/shapes/MeshRendererDebug',
-	'goo/debugpack/shapes/SkeletonDebug',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/math/Transform',
-	'goo/renderer/Camera',
-	'goo/renderer/Renderer'
-], function (
-	LightComponent,
-	CameraComponent,
-	MeshRendererComponent,
-	SkeletonPose,
-
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-
-	LightDebug,
-	CameraDebug,
-	MeshRendererDebug,
-	SkeletonDebug,
-	Material,
-	ShaderLib,
-	ShaderBuilder,
-	Transform,
-	Camera,
-	Renderer
-) {
 	'use strict';
 	var DebugDrawHelper = {};
 
@@ -187,5 +164,4 @@ define([
 		// transform.update();
 	};
 
-	return DebugDrawHelper;
-});
+	module.exports = DebugDrawHelper;

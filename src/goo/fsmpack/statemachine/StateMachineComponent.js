@@ -1,12 +1,7 @@
-define([
-	'goo/entities/components/Component',
-	'goo/util/ArrayUtils',
-	'goo/entities/SystemBus'
-], function (
-	Component,
-	ArrayUtils,
-	SystemBus
-) {
+var Component = require('goo/entities/components/Component');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -149,5 +144,4 @@ define([
 		SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.play');
 	};
 
-	return StateMachineComponent;
-});
+	module.exports = StateMachineComponent;

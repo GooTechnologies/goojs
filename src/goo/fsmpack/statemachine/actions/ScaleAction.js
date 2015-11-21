@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function ScaleAction(/*id, settings*/) {
@@ -74,5 +71,4 @@ define([
 		entity.transformComponent.setUpdated();
 	};
 
-	return ScaleAction;
-});
+	module.exports = ScaleAction;

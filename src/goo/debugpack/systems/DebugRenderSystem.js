@@ -1,18 +1,10 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/SimplePartitioner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/debugpack/DebugDrawHelper'
-], function (
-	System,
-	SystemBus,
-	SimplePartitioner,
-	Material,
-	ShaderLib,
-	DebugDrawHelper
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var SimplePartitioner = require('goo/renderer/SimplePartitioner');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var DebugDrawHelper = require('goo/debugpack/DebugDrawHelper');
+
 	'use strict';
 
 	/**
@@ -184,5 +176,4 @@ define([
 		SystemBus.removeListener('goo.setLights', this.lightsListener);
 	};
 
-	return DebugRenderSystem;
-});
+	module.exports = DebugRenderSystem;

@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/geometrypack/Surface',
-	'goo/math/Matrix3',
-	'goo/math/Vector3'
-], function (
-	MeshData,
-	Surface,
-	Matrix3,
-	Vector3
-) {
+var MeshData = require('goo/renderer/MeshData');
+var Surface = require('goo/geometrypack/Surface');
+var Matrix3 = require('goo/math/Matrix3');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -334,5 +328,4 @@ define([
 		}
 	};
 
-	return PolyLine;
-});
+	module.exports = PolyLine;

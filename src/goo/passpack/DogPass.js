@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtils',
-	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtils',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/passpack/ShaderLibExtra',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	FullscreenUtils,
-	RenderTarget,
-	ObjectUtils,
-	ShaderLib,
-	ShaderLibExtra,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ShaderLibExtra = require('goo/passpack/ShaderLibExtra');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	/**
@@ -194,5 +185,4 @@ define([
 		renderer.invalidateRenderTarget(this.gaussian2);
 	};
 
-	return DogPass;
-});
+	module.exports = DogPass;

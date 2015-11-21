@@ -1,12 +1,7 @@
-define([
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Vector3'
-], function (
-	BoundingBox,
-	BoundingSphere,
-	Vector3
-) {
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -211,5 +206,4 @@ define([
 		return result;
 	};
 
-	return BoundingTree;
-});
+	module.exports = BoundingTree;

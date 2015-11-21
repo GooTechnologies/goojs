@@ -325,5 +325,4 @@ define(function () {
 		return '';
 	};
 
-	return ObjectUtils;
-});
+	module.exports = ObjectUtils;

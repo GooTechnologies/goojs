@@ -1,10 +1,6 @@
-define([
-	'goo/math/Vector2',
-	'goo/util/ObjectUtil'
-], function (
-	Vector2,
-	ObjectUtil
-) {
+var Vector2 = require('goo/math/Vector2');
+var ObjectUtil = require('goo/util/ObjectUtil');
+
 	'use strict';
 
 	/**
@@ -109,5 +105,4 @@ define([
 		}
 	};
 
-	return RenderTarget;
-});
+	module.exports = RenderTarget;

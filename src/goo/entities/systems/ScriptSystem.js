@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus'
-], function (
-	System,
-	SystemBus
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -114,5 +110,4 @@ define([
 		System.prototype.clear.call(this);
 	};
 
-	return ScriptSystem;
-});
+	module.exports = ScriptSystem;

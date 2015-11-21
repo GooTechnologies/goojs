@@ -1,14 +1,8 @@
-define([
-	'goo/entities/components/Component',
-	'goo/particles/Particle',
-	'goo/particles/ParticleEmitter',
-	'goo/renderer/MeshData'
-], function (
-	Component,
-	Particle,
-	ParticleEmitter,
-	MeshData
-) {
+var Component = require('goo/entities/components/Component');
+var Particle = require('goo/particles/Particle');
+var ParticleEmitter = require('goo/particles/ParticleEmitter');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -96,5 +90,4 @@ define([
 		this.generateMeshData();
 	};
 
-	return ParticleComponent;
-});
+	module.exports = ParticleComponent;

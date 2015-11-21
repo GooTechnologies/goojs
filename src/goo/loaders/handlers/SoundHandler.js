@@ -1,18 +1,10 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/sound/AudioContext',
-	'goo/sound/Sound',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ConfigHandler,
-	AudioContext,
-	Sound,
-	RSVP,
-	PromiseUtils,
-	_
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var AudioContext = require('goo/sound/AudioContext');
+var Sound = require('goo/sound/Sound');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 	/**
 	 * Handler for loading sounds into engine
@@ -136,5 +128,4 @@ define([
 		});
 	};
 
-	return SoundHandler;
-});
+	module.exports = SoundHandler;

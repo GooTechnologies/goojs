@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -42,5 +39,4 @@ define([
 		proximitySystem.remove(entity, this.tag);
 	};
 
-	return ProximityComponent;
-});
+	module.exports = ProximityComponent;

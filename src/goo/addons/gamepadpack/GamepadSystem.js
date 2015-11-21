@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/addons/gamepadpack/GamepadData'
-], function (
-	System,
-	GamepadData
-) {
+var System = require('goo/entities/systems/System');
+var GamepadData = require('goo/addons/gamepadpack/GamepadData');
+
 	'use strict';
 
 	/**
@@ -152,5 +148,4 @@ define([
 		this.resetGamepadData();
 	};
 
-	return GamepadSystem;
-});
+	module.exports = GamepadSystem;

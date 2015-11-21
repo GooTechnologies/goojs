@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/MeshData'
-], function (
-	MeshData
-) {
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -86,5 +83,4 @@ define([
 		return new SimpleBox(options);
 	};
 
-	return SimpleBox;
-});
+	module.exports = SimpleBox;

@@ -1,9 +1,5 @@
-define([
-	'goo/addons/physicspack/colliders/Collider'
-],
-function (
-	Collider
-) {
+var Collider = require('goo/addons/physicspack/colliders/Collider');
+
 	'use strict';
 
 	/**
@@ -47,5 +43,4 @@ function (
 		});
 	};
 
-	return SphereCollider;
-});
+	module.exports = SphereCollider;

@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/World'
-], function (
-	System,
-	World
-) {
+var System = require('goo/entities/systems/System');
+var World = require('goo/entities/World');
+
 	'use strict';
 
 	/**
@@ -52,5 +48,4 @@ define([
 		}
 	};
 
-	return AnimationSystem;
-});
+	module.exports = AnimationSystem;

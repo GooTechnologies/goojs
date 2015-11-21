@@ -1,8 +1,5 @@
-define([
-	'goo/renderer/MeshData'
-], function (
-	MeshData
-) {
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -92,5 +89,4 @@ define([
 		return this;
 	};
 
-	return DoubleQuad;
-});
+	module.exports = DoubleQuad;

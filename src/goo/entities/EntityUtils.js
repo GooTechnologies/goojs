@@ -1,12 +1,7 @@
-define([
-	'goo/scripts/Scripts',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ObjectUtils'
-], function (
-	Scripts,
-	BoundingBox,
-	_
-) {
+var Scripts = require('goo/scripts/Scripts');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -195,5 +190,4 @@ define([
 		return mergedWorldBound;
 	};
 
-	return EntityUtils;
-});
+	module.exports = EntityUtils;

@@ -1,10 +1,6 @@
-define([
-	'goo/debugpack/components/MarkerComponent',
-	'goo/debugpack/systems/MarkerSystem'
-], function (
-	MarkerComponent,
-	MarkerSystem
-) {
+var MarkerComponent = require('goo/debugpack/components/MarkerComponent');
+var MarkerSystem = require('goo/debugpack/systems/MarkerSystem');
+
 	'use strict';
 
 	//! AT: unused; should be removed
@@ -282,5 +278,4 @@ define([
 		elem.value = entityStr;
 	}
 
-	return Debugger;
-});
+	module.exports = Debugger;

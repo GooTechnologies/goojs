@@ -1,14 +1,8 @@
-define([
-	'goo/scripts/Scripts',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/scriptpack/PanCamScript',
-	'goo/util/ObjectUtils'
-], function (
-	Scripts,
-	OrbitCamControlScript,
-	PanCamControlScript,
-	_
-) {
+var Scripts = require('goo/scripts/Scripts');
+var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
+var PanCamScript = require('goo/scriptpack/PanCamScript');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	function OrbitNPan() {
@@ -71,5 +65,4 @@ define([
 		parameters:	params
 	};
 
-	return OrbitNPan;
-});
+	module.exports = OrbitNPan;

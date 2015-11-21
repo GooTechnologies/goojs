@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/SoundHandler',
-	'goo/sound/AudioContext',
-	'goo/util/Ajax',
-	'goo/util/StringUtils',
-	'goo/util/PromiseUtils'
-], function (
-	SoundHandler,
-	AudioContext,
-	Ajax,
-	StringUtils,
-	PromiseUtils
-) {
+var SoundHandler = require('goo/loaders/handlers/SoundHandler');
+var AudioContext = require('goo/sound/AudioContext');
+var Ajax = require('goo/util/Ajax');
+var StringUtils = require('goo/util/StringUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -63,5 +56,4 @@ define([
 		return this.soundHandler.update(id, settings, {});
 	};
 
-	return SoundCreator;
-});
+	module.exports = SoundCreator;

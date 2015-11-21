@@ -1,28 +1,15 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/passpack/BlurPass',
-	'goo/renderer/RendererUtils',
-	'goo/util/Skybox',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	RenderTarget,
-	MeshData,
-	Shader,
-	ShaderFragment,
-	RenderPass,
-	FullscreenPass,
-	BlurPass,
-	RendererUtils,
-	Skybox,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var RenderPass = require('goo/renderer/pass/RenderPass');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var BlurPass = require('goo/passpack/BlurPass');
+var RendererUtils = require('goo/renderer/RendererUtils');
+var Skybox = require('goo/util/Skybox');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	/**
@@ -181,5 +168,4 @@ define([
 		'}'
 	};
 
-	return DofPass;
-});
+	module.exports = DofPass;

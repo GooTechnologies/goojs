@@ -1,14 +1,8 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/Dom3dComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils'
-], function (
-	ComponentHandler,
-	Dom3dComponent,
-	RSVP,
-	PromiseUtils
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var Dom3dComponent = require('goo/entities/components/Dom3dComponent');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -153,5 +147,4 @@ define([
 		component.destroy(this.world.gooRunner.renderer.context);
 	};
 
-	return Dom3dComponentHandler;
-});
+	module.exports = Dom3dComponentHandler;

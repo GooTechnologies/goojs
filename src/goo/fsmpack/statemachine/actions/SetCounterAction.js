@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function SetCounterAction(/*id, settings*/) {
@@ -40,5 +37,4 @@ define([
 		fsm.getFsm().removeVariable(this.name);
 	};
 
-	return SetCounterAction;
-});
+	module.exports = SetCounterAction;

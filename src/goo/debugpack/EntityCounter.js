@@ -76,5 +76,4 @@ define([],
 		return document.getElementById('_entitycountertex');
 	}
 
-	return EntityCounter;
-});
+	module.exports = EntityCounter;

@@ -1,14 +1,8 @@
-define([
-	'goo/sound/AudioContext',
-	'goo/math/MathUtils',
-	'goo/util/PromiseUtil',
-	'goo/util/rsvp'
-], function (
-	AudioContext,
-	MathUtils,
-	PromiseUtil,
-	RSVP
-) {
+var AudioContext = require('goo/sound/AudioContext');
+var MathUtils = require('goo/math/MathUtils');
+var PromiseUtil = require('goo/util/PromiseUtil');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -279,5 +273,4 @@ define([
 		this._streamSource.connect(this._outNode);
 	};
 
-	return Sound;
-});
+	module.exports = Sound;

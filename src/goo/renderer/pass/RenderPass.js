@@ -1,12 +1,7 @@
-define([
-	'goo/renderer/Renderer',
-	'goo/renderer/pass/Pass',
-	'goo/math/Vector4'
-], function (
-	Renderer,
-	Pass,
-	Vector4
-) {
+var Renderer = require('goo/renderer/Renderer');
+var Pass = require('goo/renderer/pass/Pass');
+var Vector4 = require('goo/math/Vector4');
+
 	'use strict';
 
 	/**
@@ -62,5 +57,4 @@ define([
 		}
 	};
 
-	return RenderPass;
-});
+	module.exports = RenderPass;

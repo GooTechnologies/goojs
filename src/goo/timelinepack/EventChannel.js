@@ -1,8 +1,5 @@
-define([
-	'goo/timelinepack/AbstractTimelineChannel'
-], function (
-	AbstractTimelineChannel
-	) {
+var AbstractTimelineChannel = require('goo/timelinepack/AbstractTimelineChannel');
+
 	'use strict';
 
 	function EventChannel(id) {
@@ -88,5 +85,4 @@ define([
 		return this;
 	};
 
-	return EventChannel;
-});
+	module.exports = EventChannel;

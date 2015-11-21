@@ -1,14 +1,8 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/renderer/bounds/BoundingVolume',
-	'goo/renderer/MeshData'
-], function (
-	Vector3,
-	MathUtils,
-	BoundingVolume,
-	MeshData
-) {
+var Vector3 = require('goo/math/Vector3');
+var MathUtils = require('goo/math/MathUtils');
+var BoundingVolume = require('goo/renderer/bounds/BoundingVolume');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -364,5 +358,4 @@ define([
 		return new BoundingSphere(this.center, this.radius);
 	};
 
-	return BoundingSphere;
-});
+	module.exports = BoundingSphere;

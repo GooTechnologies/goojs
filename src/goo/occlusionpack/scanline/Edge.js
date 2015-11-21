@@ -81,5 +81,4 @@ define([
 		this.y1 = Math.round(this.y1);
 	};
 
-	return Edge;
-});
+	module.exports = Edge;

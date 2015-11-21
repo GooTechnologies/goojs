@@ -1,18 +1,9 @@
-define([
-	'goo/entities/components/Component',
-	'goo/entities/World', //! AT: this should not exist
-	'goo/animationpack/layer/AnimationLayer',
-	'goo/animationpack/clip/JointData',
-	'goo/animationpack/clip/TransformData',
-	'goo/animationpack/clip/TriggerData'
-], function (
-	Component,
-	World,
-	AnimationLayer,
-	JointData,
-	TransformData,
-	TriggerData
-) {
+var Component = require('goo/entities/components/Component');
+	'goo/entities/World', //! AT: this should not existvar AnimationLayer = require('goo/animationpack/layer/AnimationLayer');
+var JointData = require('goo/animationpack/clip/JointData');
+var TransformData = require('goo/animationpack/clip/TransformData');
+var TriggerData = require('goo/animationpack/clip/TriggerData');
+
 	'use strict';
 
 	/**
@@ -257,5 +248,4 @@ define([
 		return cloned;
 	};
 
-	return AnimationComponent;
-});
+	module.exports = AnimationComponent;

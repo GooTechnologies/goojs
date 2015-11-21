@@ -1,11 +1,10 @@
 define(
-	[
-		'goo/logic/LogicLayer',
-		'goo/logic/LogicNode',
-		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/entities/components/MeshRendererComponent',
-		'goo/math/Vector3'
+	[var LogicLayer = require('goo/logic/LogicLayer');
+var LogicNode = require('goo/logic/LogicNode');
+var LogicNodes = require('goo/logic/LogicNodes');
+var LogicInterface = require('goo/logic/LogicInterface');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var Vector3 = require('goo/math/Vector3');
 	],
 
 	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {

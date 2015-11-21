@@ -1,18 +1,10 @@
-define([
-	'goo/animationpack/clip/JointChannel',
-	'goo/animationpack/clip/JointData',
-	'goo/animationpack/clip/JointChannel',
-	'goo/animationpack/clip/JointData',
-	'goo/math/Vector3',
-	'goo/math/Quaternion'
-], function (
-	JointChannel,
-	JointData,
-	TransformChannel,
-	TransformData,
-	Vector3,
-	Quaternion
-) {
+var JointChannel = require('goo/animationpack/clip/JointChannel');
+var JointData = require('goo/animationpack/clip/JointData');
+var JointChannel = require('goo/animationpack/clip/JointChannel');
+var JointData = require('goo/animationpack/clip/JointData');
+var Vector3 = require('goo/math/Vector3');
+var Quaternion = require('goo/math/Quaternion');
+
 	'use strict';
 
 	/**
@@ -186,5 +178,4 @@ define([
 		return new ManagedTransformSource(this._sourceName, clonedData);
 	};
 
-	return ManagedTransformSource;
-});
+	module.exports = ManagedTransformSource;

@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 	/**
 	 * Get logo svg in different formats
@@ -117,5 +114,4 @@ function () {
 		return str;
 	};
 
-	return Logo;
-});
+	module.exports = Logo;

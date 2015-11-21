@@ -1,24 +1,13 @@
-define([
-	'goo/util/gizmopack/Gizmo',
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
-	'goo/shapes/Box',
-	'goo/math/Transform',
-	'goo/renderer/Renderer',
-	'goo/math/Vector3',
-	'goo/math/Ray',
-	'goo/math/MathUtils'
-], function (
-	Gizmo,
-	MeshData,
-	MeshBuilder,
-	Box,
-	Transform,
-	Renderer,
-	Vector3,
-	Ray,
-	MathUtils
-) {
+var Gizmo = require('goo/util/gizmopack/Gizmo');
+var MeshData = require('goo/renderer/MeshData');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Box = require('goo/shapes/Box');
+var Transform = require('goo/math/Transform');
+var Renderer = require('goo/renderer/Renderer');
+var Vector3 = require('goo/math/Vector3');
+var Ray = require('goo/math/Ray');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -169,5 +158,4 @@ define([
 		return mergedMeshData;
 	}
 
-	return ScaleGizmo;
-});
+	module.exports = ScaleGizmo;

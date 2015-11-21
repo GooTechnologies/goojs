@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/Texture',
-	'goo/math/MathUtils',
-	'goo/loaders/handlers/TextureHandler',
-	'goo/util/Ajax',
-	'goo/util/StringUtils',
-	'goo/util/PromiseUtils',
-	'goo/util/rsvp'
-], function (
-	Texture,
-	MathUtils,
-	TextureHandler,
-	Ajax,
-	StringUtils,
-	PromiseUtils,
-	RSVP
-) {
+var Texture = require('goo/renderer/Texture');
+var MathUtils = require('goo/math/MathUtils');
+var TextureHandler = require('goo/loaders/handlers/TextureHandler');
+var Ajax = require('goo/util/Ajax');
+var StringUtils = require('goo/util/StringUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	//! AT: shouldn't this stay in util?
@@ -226,5 +217,4 @@ define([
 	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
 
-	return TextureCreator;
-});
+	module.exports = TextureCreator;

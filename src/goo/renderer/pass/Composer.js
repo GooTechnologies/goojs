@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/SystemBus'
-], function (
-	RenderTarget,
-	FullscreenPass,
-	ShaderLib,
-	SystemBus
-) {
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	/**
@@ -151,5 +145,4 @@ define([
 		}
 	};
 
-	return Composer;
-});
+	module.exports = Composer;

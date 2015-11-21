@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/MeshData',
-	'goo/renderer/BufferUtils',
-	'goo/util/PromiseUtils',
-	'goo/util/ArrayUtils'
-], function (
-	ConfigHandler,
-	MeshData,
-	BufferUtils,
-	PromiseUtils,
-	ArrayUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var MeshData = require('goo/renderer/MeshData');
+var BufferUtils = require('goo/renderer/BufferUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ArrayUtils = require('goo/util/ArrayUtils');
+
 	'use strict';
 
 	var WEIGHTS_PER_VERT = 4;
@@ -186,6 +179,4 @@ define([
 		return meshData;
 	};
 
-	return MeshDataHandler;
-
-});
+	module.exports = MeshDataHandler;

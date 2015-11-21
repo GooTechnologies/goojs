@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 	/* global Box2D */
 
@@ -165,5 +162,4 @@ define([
 		}
 	};
 
-	return Box2DSystem;
-});
+	module.exports = Box2DSystem;

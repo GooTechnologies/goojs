@@ -1,28 +1,15 @@
-define([
-	'goo/renderer/Capabilities',
-	'goo/math/Vector3',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Camera',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/RenderTarget',
-	'goo/math/Vector4',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
-], function (
-	Capabilities,
-	Vector3,
-	FullscreenPass,
-	Camera,
-	Material,
-	ShaderLib,
-	RenderTarget,
-	Vector4,
-	PointLight,
-	DirectionalLight,
-	SpotLight
-) {
+var Capabilities = require('goo/renderer/Capabilities');
+var Vector3 = require('goo/math/Vector3');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var Camera = require('goo/renderer/Camera');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var Vector4 = require('goo/math/Vector4');
+var PointLight = require('goo/renderer/light/PointLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+
 	'use strict';
 
 	/**
@@ -229,5 +216,4 @@ define([
 		renderer.invalidateShader(this.blurfilter);
 	};
 
-	return ShadowHandler;
-});
+	module.exports = ShadowHandler;

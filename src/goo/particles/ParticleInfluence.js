@@ -36,5 +36,4 @@ define(function () {
 		this.enabled = settings.enabled !== undefined ? settings.enabled === true : true;
 	}
 
-	return ParticleInfluence;
-});
+	module.exports = ParticleInfluence;

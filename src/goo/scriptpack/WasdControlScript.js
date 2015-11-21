@@ -1,12 +1,7 @@
-define([
-	'goo/math/Vector3',
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils'
-], function (
-	Vector3,
-	Scripts,
-	ScriptUtils
-) {
+var Vector3 = require('goo/math/Vector3');
+var Scripts = require('goo/scripts/Scripts');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+
 	'use strict';
 
 	function WasdControlScript() {
@@ -204,5 +199,4 @@ define([
 		}]
 	};
 
-	return WasdControlScript;
-});
+	module.exports = WasdControlScript;

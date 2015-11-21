@@ -46,5 +46,4 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		}
 	};
 
-	return SetLightRangeAction;
-});
+	module.exports = SetLightRangeAction;

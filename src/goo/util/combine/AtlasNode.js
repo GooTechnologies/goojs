@@ -1,8 +1,5 @@
-define([
-	'goo/util/combine/Rectangle'
-], function (
-	Rectangle
-) {
+var Rectangle = require('goo/util/combine/Rectangle');
+
 	'use strict';
 
 	/**
@@ -84,5 +81,4 @@ define([
 		}
 	};
 
-	return AtlasNode;
-});
+	module.exports = AtlasNode;

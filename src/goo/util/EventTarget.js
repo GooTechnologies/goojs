@@ -91,5 +91,4 @@ define(function () {
 		return this._listenerMap.has(type);
 	};
 
-	return EventTarget;
-});
+	module.exports = EventTarget;

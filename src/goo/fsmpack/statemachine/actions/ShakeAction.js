@@ -1,12 +1,7 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3',
-	'goo/util/TWEEN'
-], function (
-	Action,
-	Vector3,
-	TWEEN
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Vector3 = require('goo/math/Vector3');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	function ShakeAction(/*id, settings*/) {
@@ -114,5 +109,4 @@ define([
 		}.bind(this)).start(time);
 	};
 
-	return ShakeAction;
-});
+	module.exports = ShakeAction;

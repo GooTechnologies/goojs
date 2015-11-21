@@ -1,14 +1,8 @@
-define([
-	'goo/entities/components/Component',
-	'goo/entities/SystemBus',
-	'goo/scripts/Scripts',
-	'goo/util/ObjectUtils'
-], function (
-	Component,
-	SystemBus,
-	Scripts,
-	_
-) {
+var Component = require('goo/entities/components/Component');
+var SystemBus = require('goo/entities/SystemBus');
+var Scripts = require('goo/scripts/Scripts');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -226,5 +220,4 @@ define([
 		}
 	};
 
-	return ScriptComponent;
-});
+	module.exports = ScriptComponent;

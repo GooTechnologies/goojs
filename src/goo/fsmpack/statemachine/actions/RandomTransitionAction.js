@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function RandomTransitionAction(/*id, settings*/) {
@@ -46,5 +43,4 @@ define([
 		}
 	};
 
-	return RandomTransitionAction;
-});
+	module.exports = RandomTransitionAction;

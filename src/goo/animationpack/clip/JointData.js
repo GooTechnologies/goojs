@@ -1,8 +1,5 @@
-define([
-	'goo/animationpack/clip/TransformData'
-], function (
-	TransformData
-) {
+var TransformData = require('goo/animationpack/clip/TransformData');
+
 	'use strict';
 
 	/**
@@ -48,5 +45,4 @@ define([
 		return new JointData(this);
 	};
 
-	return JointData;
-});
+	module.exports = JointData;

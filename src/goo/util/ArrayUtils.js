@@ -117,5 +117,4 @@ define(function () {
 		return array;
 	};
 
-	return ArrayUtils;
-});
+	module.exports = ArrayUtils;

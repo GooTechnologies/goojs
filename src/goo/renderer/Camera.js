@@ -1,26 +1,14 @@
-define([
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/math/Matrix4',
-	'goo/math/Plane',
-	'goo/math/MathUtils',
-	'goo/math/Ray',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/renderer/bounds/BoundingVolume'
-], function (
-	Vector2,
-	Vector3,
-	Vector4,
-	Matrix4,
-	Plane,
-	MathUtils,
-	Ray,
-	BoundingBox,
-	BoundingSphere,
-	BoundingVolume
-) {
+var Vector2 = require('goo/math/Vector2');
+var Vector3 = require('goo/math/Vector3');
+var Vector4 = require('goo/math/Vector4');
+var Matrix4 = require('goo/math/Matrix4');
+var Plane = require('goo/math/Plane');
+var MathUtils = require('goo/math/MathUtils');
+var Ray = require('goo/math/Ray');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var BoundingVolume = require('goo/renderer/bounds/BoundingVolume');
+
 	'use strict';
 
 	/**
@@ -948,5 +936,4 @@ define([
 		return clone;
 	};
 
-	return Camera;
-});
+	module.exports = Camera;

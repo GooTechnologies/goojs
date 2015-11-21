@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/SimplePartitioner',
-	'goo/renderer/scanline/SoftwareRenderer'
-], function (
-	SimplePartitioner,
-	SoftwareRenderer
-) {
+var SimplePartitioner = require('goo/renderer/SimplePartitioner');
+var SoftwareRenderer = require('goo/renderer/scanline/SoftwareRenderer');
+
 	'use strict';
 
 	/**
@@ -109,5 +105,4 @@ define([
 		}
 	};
 
-	return OcclusionPartitioner;
-});
+	module.exports = OcclusionPartitioner;

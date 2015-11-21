@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -53,5 +50,4 @@ function () {
 		this.currentBuffer[target].valid = false;
 	};
 
-	return RendererRecord;
-});
+	module.exports = RendererRecord;

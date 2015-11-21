@@ -1,24 +1,13 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/animationpack/state/SteadyState',
-	'goo/animationpack/blendtree/ClipSource',
-	'goo/animationpack/blendtree/ManagedTransformSource',
-	'goo/animationpack/blendtree/BinaryLerpSource',
-	'goo/animationpack/blendtree/FrozenClipSource',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ConfigHandler,
-	SteadyState,
-	ClipSource,
-	ManagedTransformSource,
-	BinaryLerpSource,
-	FrozenClipSource,
-	RSVP,
-	PromiseUtils,
-	_
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var SteadyState = require('goo/animationpack/state/SteadyState');
+var ClipSource = require('goo/animationpack/blendtree/ClipSource');
+var ManagedTransformSource = require('goo/animationpack/blendtree/ManagedTransformSource');
+var BinaryLerpSource = require('goo/animationpack/blendtree/BinaryLerpSource');
+var FrozenClipSource = require('goo/animationpack/blendtree/FrozenClipSource');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -150,5 +139,4 @@ define([
 		}
 	};
 
-	return AnimationStateHandler;
-});
+	module.exports = AnimationStateHandler;

@@ -1,19 +1,11 @@
 /*jshint bitwise: false*/
-define([
-	'goo/math/Vector',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/math/Matrix3',
-	'goo/math/MathUtils',
-	'goo/util/ObjectUtils'
-], function (
-	Vector,
-	Vector3,
-	Vector4,
-	Matrix3,
-	MathUtils,
-	ObjectUtils
-) {
+var Vector = require('./Vector');
+var Vector3 = require('./Vector3');
+var Vector4 = require('./Vector4');
+var Matrix3 = require('./Matrix3');
+var MathUtils = require('./MathUtils');
+var ObjectUtils = require('../util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -825,5 +817,4 @@ define([
 
 	// SHIM END
 
-	return Quaternion;
-});
+	module.exports = Quaternion;

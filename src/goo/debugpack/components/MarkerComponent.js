@@ -1,5 +1,4 @@
-define([
-	'goo/entities/components/Component',
+define([var Component = require('goo/entities/components/Component');
 	'goo/debugpack/BoundingVolumeMeshBuilder'], function (
 	Component,
 	BoundingVolumeMeshBuilder) {
@@ -23,5 +22,4 @@ define([
 	MarkerComponent.prototype = Object.create(Component.prototype);
 	MarkerComponent.prototype.constructor = MarkerComponent;
 
-	return MarkerComponent;
-});
+	module.exports = MarkerComponent;

@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/renderer/bounds/BoundingBox'
-], function (
-	System,
-	BoundingBox
-) {
+var System = require('goo/entities/systems/System');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+
 	'use strict';
 
 	/**
@@ -75,5 +71,4 @@ define([
 		}
 	};
 
-	return BoundingUpdateSystem;
-});
+	module.exports = BoundingUpdateSystem;

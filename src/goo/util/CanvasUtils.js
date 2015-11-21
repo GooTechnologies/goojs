@@ -1,10 +1,6 @@
-define([
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	PromiseUtils,
-	ObjectUtils
-) {
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	// TODO: make promise based instead of sending callbacks
@@ -187,5 +183,4 @@ define([
 		});
 	};
 
-	return CanvasUtils;
-});
+	module.exports = CanvasUtils;

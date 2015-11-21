@@ -1,12 +1,7 @@
-define([
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData'
-], function (
-	Vector2,
-	Vector3,
-	MeshData
-) {
+var Vector2 = require('goo/math/Vector2');
+var Vector3 = require('goo/math/Vector3');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -142,5 +137,4 @@ define([
 		return tangentBuffer;
 	};
 
-	return TangentGenerator;
-});
+	module.exports = TangentGenerator;

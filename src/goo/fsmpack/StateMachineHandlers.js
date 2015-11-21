@@ -1,4 +1,3 @@
-define([
-	'goo/fsmpack/StateMachineComponentHandler',
-	'goo/fsmpack/MachineHandler'
+define([var StateMachineComponentHandler = require('goo/fsmpack/StateMachineComponentHandler');
+var MachineHandler = require('goo/fsmpack/MachineHandler');
 ], function () {});

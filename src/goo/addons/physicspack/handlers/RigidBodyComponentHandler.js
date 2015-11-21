@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ShapeCreatorMemoized',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils',
-	'goo/math/Vector3'
-], function (
-	ComponentHandler,
-	RigidBodyComponent,
-	BoundingBox,
-	ShapeCreatorMemoized,
-	RSVP,
-	_,
-	Vector3
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var RigidBodyComponent = require('goo/addons/physicspack/components/RigidBodyComponent');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -87,5 +78,4 @@ define([
 		});
 	};
 
-	return RigidBodyComponentHandler;
-});
+	module.exports = RigidBodyComponentHandler;

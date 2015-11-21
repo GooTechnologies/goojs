@@ -158,5 +158,4 @@ define(function () {
 		return caps.join('\n');
 	};
 
-	return Capabilities;
-});
+	module.exports = Capabilities;

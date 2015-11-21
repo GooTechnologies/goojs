@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 	/*global Ammo */
 
@@ -67,5 +64,4 @@ define([
 		}
 	};
 
-	return AmmoSystem;
-});
+	module.exports = AmmoSystem;

@@ -1,12 +1,7 @@
-define([
-	'goo/util/gizmopack/Gizmo',
-	'goo/math/Vector3',
-	'goo/util/gizmopack/TranslationGizmo'
-], function (
-	Gizmo,
-	Vector3,
-	TranslationGizmo
-) {
+var Gizmo = require('goo/util/gizmopack/Gizmo');
+var Vector3 = require('goo/math/Vector3');
+var TranslationGizmo = require('goo/util/gizmopack/TranslationGizmo');
+
 	'use strict';
 
 	/**
@@ -44,5 +39,4 @@ define([
 
 	GlobalTranslationGizmo.prototype.compileRenderables = TranslationGizmo.prototype.compileRenderables;
 
-	return GlobalTranslationGizmo;
-});
+	module.exports = GlobalTranslationGizmo;

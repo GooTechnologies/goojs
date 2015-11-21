@@ -1,22 +1,12 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/FullscreenUtils',
-	'goo/renderer/MeshData',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	Shader,
-	ShaderLib,
-	FullscreenUtils,
-	MeshData,
-	RenderTarget,
-	FullscreenPass,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var Shader = require('goo/renderer/Shader');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
+var MeshData = require('goo/renderer/MeshData');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	function MotionBlurPass() {
@@ -136,5 +126,4 @@ define([
 		].join('\n')
 	};
 
-	return MotionBlurPass;
-});
+	module.exports = MotionBlurPass;

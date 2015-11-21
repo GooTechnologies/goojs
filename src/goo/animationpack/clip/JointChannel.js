@@ -1,10 +1,6 @@
-define([
-	'goo/animationpack/clip/TransformChannel',
-	'goo/animationpack/clip/JointData'
-], function (
-	TransformChannel,
-	JointData
-) {
+var TransformChannel = require('goo/animationpack/clip/TransformChannel');
+var JointData = require('goo/animationpack/clip/JointData');
+
 	'use strict';
 
 	/**
@@ -64,5 +60,4 @@ define([
 		return rVal;
 	};
 
-	return JointChannel;
-});
+	module.exports = JointChannel;

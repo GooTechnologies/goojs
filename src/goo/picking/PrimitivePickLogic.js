@@ -1,8 +1,5 @@
-define([
-	'goo/picking/BoundingTree'
-], function (
-	BoundingTree
-) {
+var BoundingTree = require('goo/picking/BoundingTree');
+
 	'use strict';
 
 	/**
@@ -46,5 +43,4 @@ define([
 		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
 	};
 
-	return PrimitivePickLogic;
-});
+	module.exports = PrimitivePickLogic;

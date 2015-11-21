@@ -1,16 +1,9 @@
-define([
-	'goo/util/ObjectUtils',
-	'goo/math/MathUtils',
-	'goo/math/Vector',
-	'goo/math/Vector3',
-	'goo/math/Vector4'
-], function (
-	ObjectUtils,
-	MathUtils,
-	Vector,
-	Vector3,
-	Vector4
-) {
+var ObjectUtils = require('../util/ObjectUtils');
+var MathUtils = require('./MathUtils');
+var Vector = require('./Vector');
+var Vector3 = require('./Vector3');
+var Vector4 = require('./Vector4');
+
 	'use strict';
 
 	/**
@@ -780,5 +773,4 @@ define([
 
 	// SHIM END
 
-	return Vector2;
-});
+	module.exports = Vector2;

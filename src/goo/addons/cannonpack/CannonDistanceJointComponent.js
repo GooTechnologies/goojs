@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/util/ObjectUtils'
-], function (
-	Component,
-	_
-) {
+var Component = require('goo/entities/components/Component');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/* global CANNON */
@@ -43,5 +39,4 @@ define([
 		return this.cannonConstraint;
 	};
 
-	return CannonDistanceJointComponent;
-});
+	module.exports = CannonDistanceJointComponent;

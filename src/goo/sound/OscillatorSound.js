@@ -1,10 +1,6 @@
-define([
-	'goo/sound/AudioContext',
-	'goo/math/MathUtils'
-], function (
-	AudioContext,
-	MathUtils
-) {
+var AudioContext = require('goo/sound/AudioContext');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	function OscillatorSound() {
@@ -82,5 +78,4 @@ define([
 		'custom'
 	];
 
-	return OscillatorSound;
-});
+	module.exports = OscillatorSound;

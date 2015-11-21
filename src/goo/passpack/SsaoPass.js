@@ -1,28 +1,15 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtils',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/passpack/BlurPass',
-	'goo/passpack/ShaderLibExtra',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	RenderTarget,
-	ObjectUtils,
-	MeshData,
-	Shader,
-	ShaderFragment,
-	RenderPass,
-	FullscreenPass,
-	BlurPass,
-	ShaderLibExtra,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var MeshData = require('goo/renderer/MeshData');
+var Shader = require('goo/renderer/Shader');
+var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var RenderPass = require('goo/renderer/pass/RenderPass');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var BlurPass = require('goo/passpack/BlurPass');
+var ShaderLibExtra = require('goo/passpack/ShaderLibExtra');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	/**
@@ -120,5 +107,4 @@ define([
 		].join('\n')
 	};
 
-	return SsaoPass;
-});
+	module.exports = SsaoPass;

@@ -1,16 +1,9 @@
-define([
-	'goo/math/Vector3',
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer',
-	'goo/math/Plane'
-], function (
-	Vector3,
-	Scripts,
-	ScriptUtils,
-	Renderer,
-	Plane
-) {
+var Vector3 = require('goo/math/Vector3');
+var Scripts = require('goo/scripts/Scripts');
+var ScriptUtils = require('goo/scripts/ScriptUtils');
+var Renderer = require('goo/renderer/Renderer');
+var Plane = require('goo/math/Plane');
+
 	'use strict';
 
 	var CANNON = window.CANNON;
@@ -256,5 +249,4 @@ define([
 		}]
 	};
 
-	return CannonPickScript;
-});
+	module.exports = CannonPickScript;

@@ -1,18 +1,10 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/ObjectUtils',
-	'goo/fsmpack/statemachine/State',
-	'goo/fsmpack/statemachine/Machine',
-	'goo/fsmpack/statemachine/actions/Actions',
-	'goo/util/rsvp'
-], function (
-	ConfigHandler,
-	_,
-	State,
-	Machine,
-	Actions,
-	RSVP
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var State = require('goo/fsmpack/statemachine/State');
+var Machine = require('goo/fsmpack/statemachine/Machine');
+var Actions = require('goo/fsmpack/statemachine/actions/Actions');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -174,5 +166,4 @@ define([
 	};
 
 
-	return MachineHandler;
-});
+	module.exports = MachineHandler;

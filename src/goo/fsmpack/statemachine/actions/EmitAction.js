@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/SystemBus'
-], function (
-	Action,
-	SystemBus
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	function EmitAction(/*id, settings*/) {
@@ -33,5 +29,4 @@ define([
 		SystemBus.emit(this.channel, this.data);
 	};
 
-	return EmitAction;
-});
+	module.exports = EmitAction;

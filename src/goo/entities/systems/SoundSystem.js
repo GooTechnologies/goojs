@@ -1,20 +1,11 @@
-define([
-	'goo/entities/systems/System',
-	'goo/sound/AudioContext',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/entities/SystemBus',
-	'goo/util/ObjectUtils',
-	'goo/math/Matrix4'
-], function (
-	System,
-	AudioContext,
-	Vector3,
-	MathUtils,
-	SystemBus,
-	_,
-	Matrix4
-) {
+var System = require('goo/entities/systems/System');
+var AudioContext = require('goo/sound/AudioContext');
+var Vector3 = require('goo/math/Vector3');
+var MathUtils = require('goo/math/MathUtils');
+var SystemBus = require('goo/entities/SystemBus');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var Matrix4 = require('goo/math/Matrix4');
+
 	'use strict';
 	/**
 	 * System responsible for sound.
@@ -259,5 +250,4 @@ define([
 		}
 	};
 
-	return SoundSystem;
-});
+	module.exports = SoundSystem;

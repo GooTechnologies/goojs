@@ -1,10 +1,6 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/geometrypack/PolyLine'
-], function (
-	MeshData,
-	PolyLine
-) {
+var MeshData = require('goo/renderer/MeshData');
+var PolyLine = require('goo/geometrypack/PolyLine');
+
 	'use strict';
 
 	/**
@@ -27,5 +23,4 @@ define([
 
 	RegularPolygon.prototype = Object.create(PolyLine.prototype);
 
-	return RegularPolygon;
-});
+	module.exports = RegularPolygon;

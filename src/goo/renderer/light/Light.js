@@ -1,8 +1,5 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -132,5 +129,4 @@ define([
 		return this;
 	};
 
-	return Light;
-});
+	module.exports = Light;

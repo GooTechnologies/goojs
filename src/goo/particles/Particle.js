@@ -1,16 +1,9 @@
-define([
-	'goo/particles/ParticleUtils',
-	'goo/math/Vector',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/renderer/MeshData'
-], function (
-	ParticleUtils,
-	Vector,
-	Vector3,
-	Vector4,
-	MeshData
-) {
+var ParticleUtils = require('goo/particles/ParticleUtils');
+var Vector = require('goo/math/Vector');
+var Vector3 = require('goo/math/Vector3');
+var Vector4 = require('goo/math/Vector4');
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	var calcVec = new Vector3();
@@ -191,5 +184,4 @@ define([
 		vertexBuffer.set(pointA, this.index * 12 + 9);
 	};
 
-	return Particle;
-});
+	module.exports = Particle;

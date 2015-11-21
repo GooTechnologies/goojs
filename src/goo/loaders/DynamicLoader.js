@@ -1,40 +1,29 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/util/Ajax',
-	'goo/util/rsvp',
-	'goo/util/StringUtils',
-	'goo/util/PromiseUtils',
-	'goo/util/ArrayUtils',
-	'goo/util/ShapeCreatorMemoized',
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var Ajax = require('goo/util/Ajax');
+var rsvp = require('goo/util/rsvp');
+var StringUtils = require('goo/util/StringUtils');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
+var CameraComponentHandler = require('goo/loaders/handlers/CameraComponentHandler');
+var EntityHandler = require('goo/loaders/handlers/EntityHandler');
+var LightComponentHandler = require('goo/loaders/handlers/LightComponentHandler');
+var MaterialHandler = require('goo/loaders/handlers/MaterialHandler');
+var MeshDataComponentHandler = require('goo/loaders/handlers/MeshDataComponentHandler');
+var MeshDataHandler = require('goo/loaders/handlers/MeshDataHandler');
+var MeshRendererComponentHandler = require('goo/loaders/handlers/MeshRendererComponentHandler');
+var SceneHandler = require('goo/loaders/handlers/SceneHandler');
+var ShaderHandler = require('goo/loaders/handlers/ShaderHandler');
+var TextureHandler = require('goo/loaders/handlers/TextureHandler');
+var TransformComponentHandler = require('goo/loaders/handlers/TransformComponentHandler');
+var ProjectHandler = require('goo/loaders/handlers/ProjectHandler');
+var SoundComponentHandler = require('goo/loaders/handlers/SoundComponentHandler');
+var SoundHandler = require('goo/loaders/handlers/SoundHandler');
+var EnvironmentHandler = require('goo/loaders/handlers/EnvironmentHandler');
+var SkyboxHandler = require('goo/loaders/handlers/SkyboxHandler');
+var HtmlComponentHandler = require('goo/loaders/handlers/HtmlComponentHandler');
 
-	'goo/loaders/handlers/CameraComponentHandler',
-	'goo/loaders/handlers/EntityHandler',
-	'goo/loaders/handlers/LightComponentHandler',
-	'goo/loaders/handlers/MaterialHandler',
-	'goo/loaders/handlers/MeshDataComponentHandler',
-	'goo/loaders/handlers/MeshDataHandler',
-	'goo/loaders/handlers/MeshRendererComponentHandler',
-	'goo/loaders/handlers/SceneHandler',
-	'goo/loaders/handlers/ShaderHandler',
-	'goo/loaders/handlers/TextureHandler',
-	'goo/loaders/handlers/TransformComponentHandler',
-	'goo/loaders/handlers/ProjectHandler',
-	'goo/loaders/handlers/SoundComponentHandler',
-	'goo/loaders/handlers/SoundHandler',
-	'goo/loaders/handlers/EnvironmentHandler',
-	'goo/loaders/handlers/SkyboxHandler',
-	'goo/loaders/handlers/HtmlComponentHandler'
-], function (
-	ConfigHandler,
-	ComponentHandler,
-	Ajax,
-	RSVP,
-	StringUtils,
-	PromiseUtils,
-	ArrayUtils,
-	ShapeCreatorMemoized
-) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
 
@@ -405,5 +394,4 @@ define([
 		return type && Ajax.types[group] && Ajax.types[group][type];
 	};
 
-	return DynamicLoader;
-});
+	module.exports = DynamicLoader;

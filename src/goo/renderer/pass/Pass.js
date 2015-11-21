@@ -14,5 +14,4 @@ define([], function () {
 
 	Pass.prototype.invalidateHandles = function (/* renderer */) {};
 
-	return Pass;
-});
+	module.exports = Pass;

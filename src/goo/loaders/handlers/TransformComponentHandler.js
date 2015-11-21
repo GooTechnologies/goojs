@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/TransformComponent',
-	'goo/math/MathUtils',
-	'goo/util/ObjectUtils',
-	'goo/util/rsvp'
-], function (
-	ComponentHandler,
-	TransformComponent,
-	MathUtils,
-	_,
-	RSVP
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var TransformComponent = require('goo/entities/components/TransformComponent');
+var MathUtils = require('goo/math/MathUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -154,5 +147,4 @@ define([
 		});
 	};
 
-	return TransformComponentHandler;
-});
+	module.exports = TransformComponentHandler;

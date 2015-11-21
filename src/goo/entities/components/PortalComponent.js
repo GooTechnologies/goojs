@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/renderer/pass/RenderTarget'
-], function (
-	Component,
-	RenderTarget
-) {
+var Component = require('goo/entities/components/Component');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+
 	'use strict';
 
 	/**
@@ -68,5 +64,4 @@ define([
 		this.doUpdate = true;
 	};
 
-	return PortalComponent;
-});
+	module.exports = PortalComponent;

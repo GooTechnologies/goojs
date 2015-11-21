@@ -1,10 +1,6 @@
-define([
-	'goo/math/Matrix4',
-	'goo/util/ObjectUtils'
-], function (
-	Matrix4,
-	ObjectUtils
-) {
+var Matrix4 = require('./Matrix4');
+var ObjectUtils = require('../util/ObjectUtils');
+
 	'use strict';
 
 	var Matrix4x4 = ObjectUtils.warnOnce(
@@ -20,5 +16,4 @@ define([
 		Matrix4x4[x] = Matrix4[x];
 	}
 
-	return Matrix4x4;
-});
+	module.exports = Matrix4x4;

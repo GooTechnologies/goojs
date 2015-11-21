@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/util/ObjectUtil'
-], function (
-	Component,
-	ObjectUtil
-) {
+var Component = require('goo/entities/components/Component');
+var ObjectUtil = require('goo/util/ObjectUtil');
+
 	'use strict';
 
 	/**
@@ -58,5 +54,4 @@ define([
 	P2Component.prototype = Object.create(Component.prototype);
 	P2Component.prototype.constructor = P2Component;
 
-	return P2Component;
-});
+	module.exports = P2Component;

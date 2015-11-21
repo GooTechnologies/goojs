@@ -1,49 +1,25 @@
-define([
-	'goo/entities/EntitySelection',
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsCylinderDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsSphereDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsBoxDebugShape',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/MeshCollider',
-	'goo/math/Quaternion',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/addons/physicspack/util/Pool'
-],
-function (
-	EntitySelection,
-	System,
-	SystemBus,
-	Sphere,
-	Box,
-	Cylinder,
-	PhysicsPlaneDebugShape,
-	PhysicsCylinderDebugShape,
-	PhysicsSphereDebugShape,
-	PhysicsBoxDebugShape,
-	SphereCollider,
-	BoxCollider,
-	CylinderCollider,
-	PlaneCollider,
-	MeshCollider,
-	Quaternion,
-	Vector3,
-	Transform,
-	Material,
-	ShaderLib,
-	Pool
-) {
+var EntitySelection = require('goo/entities/EntitySelection');
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var Sphere = require('goo/shapes/Sphere');
+var Box = require('goo/shapes/Box');
+var Cylinder = require('goo/shapes/Cylinder');
+var PhysicsPlaneDebugShape = require('goo/addons/physicspack/shapes/PhysicsPlaneDebugShape');
+var PhysicsCylinderDebugShape = require('goo/addons/physicspack/shapes/PhysicsCylinderDebugShape');
+var PhysicsSphereDebugShape = require('goo/addons/physicspack/shapes/PhysicsSphereDebugShape');
+var PhysicsBoxDebugShape = require('goo/addons/physicspack/shapes/PhysicsBoxDebugShape');
+var SphereCollider = require('goo/addons/physicspack/colliders/SphereCollider');
+var BoxCollider = require('goo/addons/physicspack/colliders/BoxCollider');
+var CylinderCollider = require('goo/addons/physicspack/colliders/CylinderCollider');
+var PlaneCollider = require('goo/addons/physicspack/colliders/PlaneCollider');
+var MeshCollider = require('goo/addons/physicspack/colliders/MeshCollider');
+var Quaternion = require('goo/math/Quaternion');
+var Vector3 = require('goo/math/Vector3');
+var Transform = require('goo/math/Transform');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Pool = require('goo/addons/physicspack/util/Pool');
+
 	'use strict';
 
 	/**
@@ -216,5 +192,4 @@ function (
 		this.clear();
 	};
 
-	return PhysicsDebugRenderSystem;
-});
+	module.exports = PhysicsDebugRenderSystem;

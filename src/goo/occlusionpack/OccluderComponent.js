@@ -1,8 +1,5 @@
-define([
-	'goo/entities/components/Component'
-], function (
-	Component
-) {
+var Component = require('goo/entities/components/Component');
+
 	'use strict';
 
 	/**
@@ -22,5 +19,4 @@ define([
 
 	OccluderComponent.prototype = Object.create(Component.prototype);
 
-	return OccluderComponent;
-});
+	module.exports = OccluderComponent;

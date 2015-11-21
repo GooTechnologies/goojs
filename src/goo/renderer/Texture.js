@@ -1,12 +1,7 @@
-define([
-	'goo/math/Vector2',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	Vector2,
-	PromiseUtils,
-	ObjectUtils
-) {
+var Vector2 = require('goo/math/Vector2');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -283,5 +278,4 @@ define([
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
 
-	return Texture;
-});
+	module.exports = Texture;

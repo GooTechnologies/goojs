@@ -1,32 +1,32 @@
-define(['goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/LogicComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/logic/LogicNodeEntityProxy',
-	'goo/logic/LogicNodeTransformComponent',
-	'goo/logic/LogicNodeMeshRendererComponent',
-	'goo/logic/LogicNodeLightComponent',
-	'goo/logic/LogicNodeDebug',
-	'goo/logic/LogicNodeRandom',
-	'goo/logic/LogicNodeTime',
-	'goo/logic/LogicNodeSine',
-	'goo/logic/LogicNodeVec3',
-	'goo/logic/LogicNodeMultiply',
-	'goo/logic/LogicNodeWASD',
-	'goo/logic/LogicNodeWASD2',
-	'goo/logic/LogicNodeMouse',
-	'goo/logic/LogicNodeAdd',
-	'goo/logic/LogicNodeSub',
-	'goo/logic/LogicNodeFloat',
-	'goo/logic/LogicNodeApplyMatrix',
-	'goo/logic/LogicNodeConstVec3',
-	'goo/logic/LogicNodeVec3Add',
-	'goo/logic/LogicNodeRotationMatrix',
-	'goo/logic/LogicNodeMultiplyFloat',
-	'goo/logic/LogicNodeMax',
-	'goo/logic/LogicNodeInt',
-	'goo/logic/LogicNodeInput',
-	'goo/logic/LogicNodeOutput'
+define([var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var LogicComponent = require('goo/entities/components/LogicComponent');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var LogicNodeEntityProxy = require('goo/logic/LogicNodeEntityProxy');
+var LogicNodeTransformComponent = require('goo/logic/LogicNodeTransformComponent');
+var LogicNodeMeshRendererComponent = require('goo/logic/LogicNodeMeshRendererComponent');
+var LogicNodeLightComponent = require('goo/logic/LogicNodeLightComponent');
+var LogicNodeDebug = require('goo/logic/LogicNodeDebug');
+var LogicNodeRandom = require('goo/logic/LogicNodeRandom');
+var LogicNodeTime = require('goo/logic/LogicNodeTime');
+var LogicNodeSine = require('goo/logic/LogicNodeSine');
+var LogicNodeVec3 = require('goo/logic/LogicNodeVec3');
+var LogicNodeMultiply = require('goo/logic/LogicNodeMultiply');
+var LogicNodeWASD = require('goo/logic/LogicNodeWASD');
+var LogicNodeWASD2 = require('goo/logic/LogicNodeWASD2');
+var LogicNodeMouse = require('goo/logic/LogicNodeMouse');
+var LogicNodeAdd = require('goo/logic/LogicNodeAdd');
+var LogicNodeSub = require('goo/logic/LogicNodeSub');
+var LogicNodeFloat = require('goo/logic/LogicNodeFloat');
+var LogicNodeApplyMatrix = require('goo/logic/LogicNodeApplyMatrix');
+var LogicNodeConstVec3 = require('goo/logic/LogicNodeConstVec3');
+var LogicNodeVec3Add = require('goo/logic/LogicNodeVec3Add');
+var LogicNodeRotationMatrix = require('goo/logic/LogicNodeRotationMatrix');
+var LogicNodeMultiplyFloat = require('goo/logic/LogicNodeMultiplyFloat');
+var LogicNodeMax = require('goo/logic/LogicNodeMax');
+var LogicNodeInt = require('goo/logic/LogicNodeInt');
+var LogicNodeInput = require('goo/logic/LogicNodeInput');
+var LogicNodeOutput = require('goo/logic/LogicNodeOutput');
 
 ], function (
 	ComponentHandler,
@@ -60,5 +60,4 @@ define(['goo/loaders/handlers/ComponentHandler',
 		return PromiseUtils.resolve(component);
 	};
 
-	return LogicComponentHandler;
-});
+	module.exports = LogicComponentHandler;

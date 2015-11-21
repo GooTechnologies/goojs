@@ -1,12 +1,7 @@
-define([
-	'goo/scripts/Scripts',
-	'goo/scriptpack/WasdControlScript',
-	'goo/scriptpack/MouseLookControlScript'
-], function (
-	Scripts,
-	WasdControlScript,
-	MouseLookControlScript
-) {
+var Scripts = require('goo/scripts/Scripts');
+var WasdControlScript = require('goo/scriptpack/WasdControlScript');
+var MouseLookControlScript = require('goo/scriptpack/MouseLookControlScript');
+
 	'use strict';
 
 	function FlyControlScript() {
@@ -46,5 +41,4 @@ define([
 		parameters: params
 	};
 
-	return FlyControlScript;
-});
+	module.exports = FlyControlScript;

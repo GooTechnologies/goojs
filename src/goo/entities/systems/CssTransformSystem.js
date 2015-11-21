@@ -1,16 +1,9 @@
-define([
-	'goo/entities/systems/System',
-	'goo/renderer/Renderer',
-	'goo/math/Matrix4',
-	'goo/math/MathUtils',
-	'goo/math/Vector3'
-], function (
-	System,
-	Renderer,
-	Matrix4,
-	MathUtils,
-	Vector3
-) {
+var System = require('goo/entities/systems/System');
+var Renderer = require('goo/renderer/Renderer');
+var Matrix4 = require('goo/math/Matrix4');
+var MathUtils = require('goo/math/MathUtils');
+var Vector3 = require('goo/math/Vector3');
+
 	'use strict';
 
 	/**
@@ -122,5 +115,4 @@ define([
 		}
 	};
 
-	return CssTransformSystem;
-});
+	module.exports = CssTransformSystem;

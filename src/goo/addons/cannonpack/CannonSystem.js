@@ -1,20 +1,11 @@
-define([
-	'goo/entities/systems/System',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Quaternion',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/util/ObjectUtils'
-], function (
-	System,
-	BoundingBox,
-	BoundingSphere,
-	Quaternion,
-	Transform,
-	Vector3,
-	_
-) {
+var System = require('goo/entities/systems/System');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var Quaternion = require('goo/math/Quaternion');
+var Transform = require('goo/math/Transform');
+var Vector3 = require('goo/math/Vector3');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/* global CANNON, performance */
@@ -196,5 +187,4 @@ define([
 		}
 	};
 
-	return CannonSystem;
-});
+	module.exports = CannonSystem;

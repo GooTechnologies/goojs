@@ -1,8 +1,5 @@
-define([
-	'goo/util/rsvp'
-], function (
-	RSVP
-) {
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -158,5 +155,4 @@ define([
 		return promise;
 	};
 
-	return PromiseUtils;
-});
+	module.exports = PromiseUtils;

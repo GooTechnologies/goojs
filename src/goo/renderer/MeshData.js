@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/BufferData',
-	'goo/renderer/RendererUtils',
-	'goo/renderer/BufferUtils',
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/util/ObjectUtils'
-], function (
-	BufferData,
-	RendererUtils,
-	BufferUtils,
-	Vector2,
-	Vector3,
-	Vector4,
-	ObjectUtils
-) {
+var BufferData = require('goo/renderer/BufferData');
+var RendererUtils = require('goo/renderer/RendererUtils');
+var BufferUtils = require('goo/renderer/BufferUtils');
+var Vector2 = require('goo/math/Vector2');
+var Vector3 = require('goo/math/Vector3');
+var Vector4 = require('goo/math/Vector4');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	//! AT: why this?
@@ -924,5 +915,4 @@ define([
 		}
 	};
 
-	return MeshData;
-});
+	module.exports = MeshData;

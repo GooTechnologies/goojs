@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -372,5 +369,4 @@ function () {
 		this.context.uniformMatrix4fv(this.location, transpose, matrix.data);
 	};
 
-	return ShaderCall;
-});
+	module.exports = ShaderCall;

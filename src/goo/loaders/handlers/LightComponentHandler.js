@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/LightComponent',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/SpotLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/math/Vector3',
-	'goo/util/ObjectUtils'
-], function (
-	ComponentHandler,
-	LightComponent,
-	PointLight,
-	SpotLight,
-	DirectionalLight,
-	Vector3,
-	ObjectUtils
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var LightComponent = require('goo/entities/components/LightComponent');
+var PointLight = require('goo/renderer/light/PointLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var Vector3 = require('goo/math/Vector3');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -158,5 +149,4 @@ define([
 		});
 	};
 
-	return LightComponentHandler;
-});
+	module.exports = LightComponentHandler;

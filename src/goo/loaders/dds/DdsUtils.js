@@ -1,9 +1,5 @@
-/*jshint bitwise: false */
-define([
-	'goo/renderer/Capabilities'
-], function (
-	Capabilities
-) {
+/*jshint bitwise: false */var Capabilities = require('goo/renderer/Capabilities');
+
 	'use strict';
 
 	function DdsUtils() {}
@@ -247,5 +243,4 @@ define([
 		return result;
 	};
 
-	return DdsUtils;
-});
+	module.exports = DdsUtils;

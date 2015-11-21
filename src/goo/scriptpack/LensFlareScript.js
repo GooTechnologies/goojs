@@ -1,18 +1,10 @@
-define([
-	'goo/math/Vector3',
-	'goo/util/ParticleSystemUtils',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Quad',
-	'goo/renderer/bounds/BoundingSphere'
-], function (
-	Vector3,
-	ParticleSystemUtils,
-	Material,
-	ShaderLib,
-	Quad,
-	BoundingSphere
-) {
+var Vector3 = require('goo/math/Vector3');
+var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Quad = require('goo/shapes/Quad');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+
 	'use strict';
 
 	/**
@@ -334,5 +326,4 @@ define([
 		this.quad.transformComponent.updateWorldTransform();
 	};
 
-	return LensFlareScript;
-});
+	module.exports = LensFlareScript;

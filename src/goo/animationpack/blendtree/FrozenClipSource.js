@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -60,5 +57,4 @@ function () {
 		return cloned;
 	};
 
-	return FrozenClipSource;
-});
+	module.exports = FrozenClipSource;

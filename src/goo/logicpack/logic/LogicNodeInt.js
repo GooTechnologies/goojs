@@ -1,14 +1,8 @@
-define([
-	'goo/logic/LogicLayer',
-	'goo/logic/LogicNode',
-	'goo/logic/LogicNodes',
-	'goo/logic/LogicInterface'
-], function (
-	LogicLayer,
-	LogicNode,
-	LogicNodes,
-	LogicInterface
-) {
+var LogicLayer = require('goo/logic/LogicLayer');
+var LogicNode = require('goo/logic/LogicNode');
+var LogicNodes = require('goo/logic/LogicNodes');
+var LogicInterface = require('goo/logic/LogicInterface');
+
 	'use strict';
 
 	/**
@@ -69,5 +63,4 @@ define([
 		label: 'Value'
 	});
 
-	return LogicNodeInt;
-});
+	module.exports = LogicNodeInt;

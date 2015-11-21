@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function RemoveAction(/*id, settings*/) {
@@ -31,5 +28,4 @@ define([
 		entity.removeFromWorld(this.recursive);
 	};
 
-	return RemoveAction;
-});
+	module.exports = RemoveAction;

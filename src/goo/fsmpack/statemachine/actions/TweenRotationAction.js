@@ -1,16 +1,9 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Quaternion',
-	'goo/math/Matrix3',
-	'goo/math/MathUtils',
-	'goo/util/TWEEN'
-], function (
-	Action,
-	Quaternion,
-	Matrix3,
-	MathUtils,
-	TWEEN
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Quaternion = require('goo/math/Quaternion');
+var Matrix3 = require('goo/math/Matrix3');
+var MathUtils = require('goo/math/MathUtils');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	function TweenRotationAction(/*id, settings*/) {
@@ -113,5 +106,4 @@ define([
 		}.bind(this)).start(time);
 	};
 
-	return TweenRotationAction;
-});
+	module.exports = TweenRotationAction;

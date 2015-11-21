@@ -1,12 +1,7 @@
-define([
-	'goo/particles/ParticleUtils',
-	'goo/renderer/Renderer',
-	'goo/util/ObjectUtil'
-], function (
-	ParticleUtils,
-	Renderer,
-	ObjectUtil
-) {
+var ParticleUtils = require('goo/particles/ParticleUtils');
+var Renderer = require('goo/renderer/Renderer');
+var ObjectUtil = require('goo/util/ObjectUtil');
+
 	'use strict';
 
 	/**
@@ -71,5 +66,4 @@ define([
 		return this.minLifetime + (this.maxLifetime - this.minLifetime) * Math.random();
 	};
 
-	return ParticleEmitter;
-});
+	module.exports = ParticleEmitter;

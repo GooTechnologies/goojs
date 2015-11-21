@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function MouseMoveAction(/*id, settings*/) {
@@ -64,5 +61,4 @@ define([
 		document.removeEventListener('touchmove', this.touchEventListener);
 	};
 
-	return MouseMoveAction;
-});
+	module.exports = MouseMoveAction;

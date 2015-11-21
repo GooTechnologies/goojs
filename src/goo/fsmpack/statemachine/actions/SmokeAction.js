@@ -1,18 +1,10 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/TextureCreator',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
-], function (
-	Action,
-	Material,
-	ShaderLib,
-	TextureCreator,
-	ParticleLib,
-	ParticleSystemUtils
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var TextureCreator = require('goo/renderer/TextureCreator');
+var ParticleLib = require('goo/particles/ParticleLib');
+var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
+
 	'use strict';
 
 	function SmokeAction(/*id, settings*/) {
@@ -86,5 +78,4 @@ define([
 		}
 	};
 
-	return SmokeAction;
-});
+	module.exports = SmokeAction;

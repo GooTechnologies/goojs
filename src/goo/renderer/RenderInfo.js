@@ -1,10 +1,6 @@
-define([
-	'goo/entities/Entity',
-	'goo/math/Transform'
-], function (
-	Entity,
-	Transform
-) {
+var Entity = require('goo/entities/Entity');
+var Transform = require('goo/math/Transform');
+
 
 	'use strict';
 
@@ -67,5 +63,4 @@ define([
 		this.renderable = renderable;
 	};
 
-	return RenderInfo;
-});
+	module.exports = RenderInfo;

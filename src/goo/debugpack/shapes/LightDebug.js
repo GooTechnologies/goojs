@@ -1,20 +1,11 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
-	'goo/math/Transform',
-	'goo/shapes/Sphere',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
-], function (
-	MeshData,
-	MeshBuilder,
-	Transform,
-	Sphere,
-	PointLight,
-	DirectionalLight,
-	SpotLight
-) {
+var MeshData = require('goo/renderer/MeshData');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Transform = require('goo/math/Transform');
+var Sphere = require('goo/shapes/Sphere');
+var PointLight = require('goo/renderer/light/PointLight');
+var DirectionalLight = require('goo/renderer/light/DirectionalLight');
+var SpotLight = require('goo/renderer/light/SpotLight');
+
 	'use strict';
 
 	function LightDebug() {
@@ -197,5 +188,4 @@ define([
 		return meshDatas[0];
 	}
 
-	return LightDebug;
-});
+	module.exports = LightDebug;

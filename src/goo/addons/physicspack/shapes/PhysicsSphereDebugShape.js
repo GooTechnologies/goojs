@@ -1,9 +1,5 @@
-define([
-	'goo/renderer/MeshData'
-],
-function (
-	MeshData
-) {
+var MeshData = require('goo/renderer/MeshData');
+
 	'use strict';
 
 	/**
@@ -61,5 +57,4 @@ function (
 		return this;
 	};
 
-	return PhysicsSphereDebugShape;
-});
+	module.exports = PhysicsSphereDebugShape;

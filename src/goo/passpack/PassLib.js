@@ -1,20 +1,11 @@
-define([
-	'goo/passpack/ShaderLibExtra',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/passpack/BloomPass',
-	'goo/passpack/BlurPass',
-	'goo/passpack/DogPass',
-	'goo/passpack/MotionBlurPass',
-	'goo/util/ObjectUtils'
-], function (
-	ShaderLibExtra,
-	FullscreenPass,
-	BloomPass,
-	BlurPass,
-	DogPass,
-	MotionBlurPass,
-	ObjectUtils
-) {
+var ShaderLibExtra = require('goo/passpack/ShaderLibExtra');
+var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
+var BloomPass = require('goo/passpack/BloomPass');
+var BlurPass = require('goo/passpack/BlurPass');
+var DogPass = require('goo/passpack/DogPass');
+var MotionBlurPass = require('goo/passpack/MotionBlurPass');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	function Bloom(id) {

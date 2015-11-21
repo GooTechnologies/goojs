@@ -1,6 +1,3 @@
-define(
-
-function () {
 	'use strict';
 
 	/**
@@ -88,5 +85,4 @@ function () {
 			+ this._channels.map(function (channel) { return channel._channelName; });
 	};
 
-	return AnimationClip;
-});
+	module.exports = AnimationClip;

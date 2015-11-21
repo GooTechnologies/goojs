@@ -1,16 +1,9 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/entities/SystemBus',
-	'goo/util/ArrayUtils',
-	'goo/util/ObjectUtils',
-	'goo/util/rsvp'
-], function (
-	ConfigHandler,
-	SystemBus,
-	ArrayUtils,
-	_,
-	RSVP
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var SystemBus = require('goo/entities/SystemBus');
+var ArrayUtils = require('goo/util/ArrayUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var rsvp = require('goo/util/rsvp');
+
 	'use strict';
 
 	/**
@@ -174,5 +167,4 @@ define([
 		return this._load(config.environmentRef, options);
 	};
 
-	return SceneHandler;
-});
+	module.exports = SceneHandler;

@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/SystemBus'
-], function (
-	Action,
-	SystemBus
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var SystemBus = require('goo/entities/SystemBus');
+
 	'use strict';
 
 	function TriggerEnterAction(/*id, settings*/) {
@@ -59,5 +55,4 @@ define([
 		}
 	};
 
-	return TriggerEnterAction;
-});
+	module.exports = TriggerEnterAction;

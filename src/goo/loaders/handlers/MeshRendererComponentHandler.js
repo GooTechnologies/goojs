@@ -1,20 +1,11 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/util/ObjectUtils'
-], function (
-	ComponentHandler,
-	MeshRendererComponent,
-	Material,
-	ShaderLib,
-	RSVP,
-	pu,
-	_
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -103,5 +94,4 @@ define([
 		});
 	};
 
-	return MeshRendererComponentHandler;
-});
+	module.exports = MeshRendererComponentHandler;

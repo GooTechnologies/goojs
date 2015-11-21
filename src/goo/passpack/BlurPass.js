@@ -1,18 +1,10 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtils',
-	'goo/renderer/pass/RenderTarget',
-	'goo/util/ObjectUtils',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	FullscreenUtils,
-	RenderTarget,
-	ObjectUtils,
-	ShaderLib,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
+var RenderTarget = require('goo/renderer/pass/RenderTarget');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	/**
@@ -128,5 +120,4 @@ define([
 		}
 	};
 
-	return BlurPass;
-});
+	module.exports = BlurPass;

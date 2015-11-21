@@ -1,12 +1,7 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3',
-	'goo/util/TWEEN'
-], function (
-	Action,
-	Vector3,
-	TWEEN
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var Vector3 = require('goo/math/Vector3');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	function TweenMoveAction(/*id, settings*/) {
@@ -152,5 +147,4 @@ define([
 		}
 	};
 
-	return TweenMoveAction;
-});
+	module.exports = TweenMoveAction;

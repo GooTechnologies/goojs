@@ -1,14 +1,8 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtils',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	FullscreenUtils,
-	ShaderLib,
-	Pass
-) {
+var Material = require('goo/renderer/Material');
+var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var Pass = require('goo/renderer/pass/Pass');
+
 	'use strict';
 
 	/**
@@ -56,5 +50,4 @@ define([
 		renderer.invalidateMeshData(this.renderable.meshData);
 	};
 
-	return FullscreenPass;
-});
+	module.exports = FullscreenPass;

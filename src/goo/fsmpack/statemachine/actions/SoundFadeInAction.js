@@ -1,10 +1,6 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/PromiseUtil'
-], function (
-	Action,
-	PromiseUtil
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var PromiseUtil = require('goo/util/PromiseUtil');
+
 	'use strict';
 
 	function SoundFadeInAction(/*id, settings*/) {
@@ -72,5 +68,4 @@ define([
 		}.bind(this));
 	};
 
-	return SoundFadeInAction;
-});
+	module.exports = SoundFadeInAction;

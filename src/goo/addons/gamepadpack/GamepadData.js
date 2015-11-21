@@ -1,10 +1,6 @@
-define([
-	'goo/math/Vector2',
-	'goo/math/MathUtils'
-], function (
-	Vector2,
-	MathUtils
-) {
+var Vector2 = require('goo/math/Vector2');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -92,5 +88,4 @@ define([
 		return Math.max(Math.abs(x), Math.abs(y));
 	};
 
-	return GamepadData;
-});
+	module.exports = GamepadData;

@@ -1,15 +1,8 @@
-define([
-	'goo/entities/components/Component',
-	'goo/shapes/Quad',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/MeshDataComponent'
-],
-function (
-	Component,
-	Quad,
-	MeshRendererComponent,
-	MeshDataComponent
-) {
+var Component = require('goo/entities/components/Component');
+var Quad = require('goo/shapes/Quad');
+var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
+var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
+
 	'use strict';
 
 	/**
@@ -101,5 +94,4 @@ function (
 		this.meshData.destroy(context);
 	};
 
-	return Dom3dComponent;
-});
+	module.exports = Dom3dComponent;

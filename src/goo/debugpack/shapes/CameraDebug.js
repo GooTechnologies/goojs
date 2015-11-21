@@ -1,18 +1,10 @@
-define([
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder'
-], function (
-	MeshData,
-	MeshBuilder,
-	Transform,
-	Vector3,
-	Box,
-	Cylinder
-) {
+var MeshData = require('goo/renderer/MeshData');
+var MeshBuilder = require('goo/util/MeshBuilder');
+var Transform = require('goo/math/Transform');
+var Vector3 = require('goo/math/Vector3');
+var Box = require('goo/shapes/Box');
+var Cylinder = require('goo/shapes/Cylinder');
+
 	'use strict';
 
 	function CameraDebug() {
@@ -167,5 +159,4 @@ define([
 		return meshDatas[0];
 	};
 
-	return CameraDebug;
-});
+	module.exports = CameraDebug;

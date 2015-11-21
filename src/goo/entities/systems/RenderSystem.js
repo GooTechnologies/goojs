@@ -1,18 +1,10 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/SimplePartitioner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/util/ObjectUtils'
-], function (
-	System,
-	SystemBus,
-	SimplePartitioner,
-	Material,
-	ShaderLib,
-	ObjectUtils
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var SimplePartitioner = require('goo/renderer/SimplePartitioner');
+var Material = require('goo/renderer/Material');
+var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var ObjectUtils = require('goo/util/ObjectUtils');
+
 	'use strict';
 
 	/**
@@ -215,5 +207,4 @@ define([
 		renderer.rendererRecord = null; // might hold on to stuff
 	};
 
-	return RenderSystem;
-});
+	module.exports = RenderSystem;

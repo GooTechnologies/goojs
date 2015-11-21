@@ -1,32 +1,17 @@
-define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/Texture',
-	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/crunch/CrunchLoader',
-	'goo/loaders/tga/TgaLoader',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtils',
-	'goo/renderer/RendererUtils',
-	'goo/util/ObjectUtils',
-	'goo/util/CanvasUtils',
-	'goo/util/StringUtils',
-	'goo/entities/SystemBus',
-	'goo/math/MathUtils'
-], function (
-	ConfigHandler,
-	Texture,
-	DdsLoader,
-	CrunchLoader,
-	TgaLoader,
-	RSVP,
-	PromiseUtils,
-	RendererUtils,
-	_,
-	CanvasUtils,
-	StringUtils,
-	SystemBus,
-	MathUtils
-) {
+var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var Texture = require('goo/renderer/Texture');
+var DdsLoader = require('goo/loaders/dds/DdsLoader');
+var CrunchLoader = require('goo/loaders/crunch/CrunchLoader');
+var TgaLoader = require('goo/loaders/tga/TgaLoader');
+var rsvp = require('goo/util/rsvp');
+var PromiseUtils = require('goo/util/PromiseUtils');
+var RendererUtils = require('goo/renderer/RendererUtils');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var CanvasUtils = require('goo/util/CanvasUtils');
+var StringUtils = require('goo/util/StringUtils');
+var SystemBus = require('goo/entities/SystemBus');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
@@ -286,5 +271,4 @@ define([
 		});
 	};
 
-	return TextureHandler;
-});
+	module.exports = TextureHandler;

@@ -1,9 +1,8 @@
-define([
-		'goo/entities/systems/System',
-		'goo/entities/SystemBus',
-		'goo/renderer/Renderer',
-		'goo/logic/LogicLayer',
-		'goo/logic/LogicInterface'
+define([var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var Renderer = require('goo/renderer/Renderer');
+var LogicLayer = require('goo/logic/LogicLayer');
+var LogicInterface = require('goo/logic/LogicInterface');
 	],
 
 	function (

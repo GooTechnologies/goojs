@@ -1,14 +1,8 @@
-define([
-	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingVolume',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/MathUtils'
-], function (
-	Vector3,
-	BoundingVolume,
-	BoundingSphere,
-	MathUtils
-) {
+var Vector3 = require('goo/math/Vector3');
+var BoundingVolume = require('goo/renderer/bounds/BoundingVolume');
+var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var MathUtils = require('goo/math/MathUtils');
+
 	'use strict';
 
 	/**
@@ -595,5 +589,4 @@ define([
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 
-	return BoundingBox;
-});
+	module.exports = BoundingBox;

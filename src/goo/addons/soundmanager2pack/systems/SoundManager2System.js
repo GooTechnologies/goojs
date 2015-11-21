@@ -1,8 +1,5 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
+var System = require('goo/entities/systems/System');
+
 	'use strict';
 
 	/**
@@ -61,5 +58,4 @@ define([
 		}*/
 	};
 
-	return SoundManager2System;
-});
+	module.exports = SoundManager2System;

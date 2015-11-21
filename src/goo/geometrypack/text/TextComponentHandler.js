@@ -1,12 +1,7 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/geometrypack/text/TextComponent',
-	'goo/util/PromiseUtils'
-], function (
-	ComponentHandler,
-	TextComponent,
-	PromiseUtils
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var TextComponent = require('goo/geometrypack/text/TextComponent');
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	/**
@@ -91,5 +86,4 @@ define([
 		});
 	};
 
-	return TextComponentHandler;
-});
+	module.exports = TextComponentHandler;

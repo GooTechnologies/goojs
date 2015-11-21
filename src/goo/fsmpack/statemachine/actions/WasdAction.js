@@ -1,8 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+
 	'use strict';
 
 	function WasdAction(/*id, settings*/) {
@@ -79,5 +76,4 @@ define([
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	return WasdAction;
-});
+	module.exports = WasdAction;

@@ -1,10 +1,6 @@
-define([
-	'goo/entities/systems/System',
-	'goo/util/TWEEN'
-], function (
-	System,
-	TWEEN
-) {
+var System = require('goo/entities/systems/System');
+var TWEEN = require('goo/util/TWEEN');
+
 	'use strict';
 
 	/**
@@ -74,5 +70,4 @@ define([
 		this.paused = false;
 	};
 
-	return TimelineSystem;
-});
+	module.exports = TimelineSystem;

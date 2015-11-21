@@ -1,28 +1,15 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/util/ShapeCreatorMemoized',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/PhysicsMaterial'
-], function (
-	ComponentHandler,
-	ColliderComponent,
-	BoundingBox,
-	ShapeCreatorMemoized,
-	RSVP,
-	_,
-	SphereCollider,
-	BoxCollider,
-	PlaneCollider,
-	CylinderCollider,
-	PhysicsMaterial
-) {
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var ColliderComponent = require('goo/addons/physicspack/components/ColliderComponent');
+var BoundingBox = require('goo/renderer/bounds/BoundingBox');
+var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
+var rsvp = require('goo/util/rsvp');
+var ObjectUtils = require('goo/util/ObjectUtils');
+var SphereCollider = require('goo/addons/physicspack/colliders/SphereCollider');
+var BoxCollider = require('goo/addons/physicspack/colliders/BoxCollider');
+var PlaneCollider = require('goo/addons/physicspack/colliders/PlaneCollider');
+var CylinderCollider = require('goo/addons/physicspack/colliders/CylinderCollider');
+var PhysicsMaterial = require('goo/addons/physicspack/PhysicsMaterial');
+
 	'use strict';
 
 	/**
@@ -115,5 +102,4 @@ define([
 		});
 	};
 
-	return ColliderComponentHandler;
-});
+	module.exports = ColliderComponentHandler;

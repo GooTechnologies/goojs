@@ -524,5 +524,4 @@ define([
 		return "TgaLoader";
 	};
 
-	return TgaLoader;
-});
+	module.exports = TgaLoader;

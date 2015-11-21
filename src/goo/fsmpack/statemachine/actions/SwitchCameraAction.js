@@ -1,12 +1,7 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/SystemBus',
-	'goo/renderer/Renderer'
-], function (
-	Action,
-	SystemBus,
-	Renderer
-) {
+var Action = require('goo/fsmpack/statemachine/actions/Action');
+var SystemBus = require('goo/entities/SystemBus');
+var Renderer = require('goo/renderer/Renderer');
+
 	'use strict';
 
 	function SwitchCameraAction(/*id, settings*/) {
@@ -49,5 +44,4 @@ define([
 	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
 	};
 
-	return SwitchCameraAction;
-});
+	module.exports = SwitchCameraAction;

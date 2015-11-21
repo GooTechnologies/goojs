@@ -1,8 +1,5 @@
-define([
-	'goo/util/PromiseUtils'
-], function (
-	PromiseUtils
-	) {
+var PromiseUtils = require('goo/util/PromiseUtils');
+
 	'use strict';
 
 	(function performanceShim() {
@@ -48,5 +45,4 @@ define([
 		});
 	};
 
-	return TaskScheduler;
-});
+	module.exports = TaskScheduler;

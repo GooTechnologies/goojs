@@ -1,12 +1,7 @@
-define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/Renderer'
-], function (
-	System,
-	SystemBus,
-	Renderer
-) {
+var System = require('goo/entities/systems/System');
+var SystemBus = require('goo/entities/SystemBus');
+var Renderer = require('goo/renderer/Renderer');
+
 	'use strict';
 
 	/**
@@ -62,5 +57,4 @@ define([
 		}
 	};
 
-	return CameraSystem;
-});
+	module.exports = CameraSystem;

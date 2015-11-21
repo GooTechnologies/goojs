@@ -64,5 +64,4 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		}
 	};
 
-	return Component;
-});
+	module.exports = Component;

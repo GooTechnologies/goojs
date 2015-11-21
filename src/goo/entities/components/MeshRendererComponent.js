@@ -1,10 +1,6 @@
-define([
-	'goo/entities/components/Component',
-	'goo/renderer/Material'
-], function (
-	Component,
-	Material
-) {
+var Component = require('goo/entities/components/Component');
+var Material = require('goo/renderer/Material');
+
 	'use strict';
 
 	/**
@@ -170,5 +166,4 @@ define([
 		}
 	};
 
-	return MeshRendererComponent;
-});
+	module.exports = MeshRendererComponent;
