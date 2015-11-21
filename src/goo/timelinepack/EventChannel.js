@@ -1,4 +1,4 @@
-var AbstractTimelineChannel = require('goo/timelinepack/AbstractTimelineChannel');
+var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
 
 	'use strict';
 

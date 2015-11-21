@@ -1,5 +1,5 @@
-var HeightMapBoundingScript = require('goo/scriptpack/HeightMapBoundingScript');
-var Vector3 = require('goo/math/Vector3');
+var HeightMapBoundingScript = require('../scriptpack/HeightMapBoundingScript');
+var Vector3 = require('../math/Vector3');
 
 	'use strict';
 

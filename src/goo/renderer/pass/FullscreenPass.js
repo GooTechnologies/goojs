@@ -1,7 +1,7 @@
-var Material = require('goo/renderer/Material');
-var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var Pass = require('goo/renderer/pass/Pass');
+var Material = require('../../renderer/Material');
+var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var Pass = require('../../renderer/pass/Pass');
 
 	'use strict';
 

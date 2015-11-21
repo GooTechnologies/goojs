@@ -1,10 +1,10 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

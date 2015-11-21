@@ -1,12 +1,10 @@
-define(
-	[var LogicLayer = require('goo/logic/LogicLayer');
-var LogicNode = require('goo/logic/LogicNode');
-var LogicNodes = require('goo/logic/LogicNodes');
-var LogicInterface = require('goo/logic/LogicInterface');
-var TransformComponent = require('goo/entities/components/TransformComponent');
-var Vector3 = require('goo/math/Vector3');
-var Matrix3 = require('goo/math/Matrix3');
-	],
+var LogicLayer = require('../../logic/LogicLayer');
+var LogicNode = require('../../logic/LogicNode');
+var LogicNodes = require('../../logic/LogicNodes');
+var LogicInterface = require('../../logic/LogicInterface');
+var TransformComponent = require('../../entities/components/TransformComponent');
+var Vector3 = require('../../math/Vector3');
+var Matrix3 = require('../../math/Matrix3')
 
 	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3) {
 		'use strict';

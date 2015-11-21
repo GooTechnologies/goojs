@@ -1,10 +1,10 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var LightComponent = require('goo/entities/components/LightComponent');
-var PointLight = require('goo/renderer/light/PointLight');
-var SpotLight = require('goo/renderer/light/SpotLight');
-var DirectionalLight = require('goo/renderer/light/DirectionalLight');
-var Vector3 = require('goo/math/Vector3');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var LightComponent = require('../../entities/components/LightComponent');
+var PointLight = require('../../renderer/light/PointLight');
+var SpotLight = require('../../renderer/light/SpotLight');
+var DirectionalLight = require('../../renderer/light/DirectionalLight');
+var Vector3 = require('../../math/Vector3');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

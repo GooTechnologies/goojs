@@ -1,7 +1,7 @@
-var MeshData = require('goo/renderer/MeshData');
-var Surface = require('goo/geometrypack/Surface');
-var Matrix3 = require('goo/math/Matrix3');
-var Vector3 = require('goo/math/Vector3');
+var MeshData = require('../renderer/MeshData');
+var Surface = require('../geometrypack/Surface');
+var Matrix3 = require('../math/Matrix3');
+var Vector3 = require('../math/Vector3');
 
 	'use strict';
 

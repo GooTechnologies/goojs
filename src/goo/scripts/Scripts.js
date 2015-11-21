@@ -1,5 +1,5 @@
-var ScriptUtils = require('goo/scripts/ScriptUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ScriptUtils = require('../scripts/ScriptUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

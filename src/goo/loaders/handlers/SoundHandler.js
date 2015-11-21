@@ -1,9 +1,9 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var AudioContext = require('goo/sound/AudioContext');
-var Sound = require('goo/sound/Sound');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var AudioContext = require('../../sound/AudioContext');
+var Sound = require('../../sound/Sound');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 	/**

@@ -1,6 +1,6 @@
-var Scripts = require('goo/scripts/Scripts');
-var WasdControlScript = require('goo/scriptpack/WasdControlScript');
-var MouseLookControlScript = require('goo/scriptpack/MouseLookControlScript');
+var Scripts = require('../scripts/Scripts');
+var WasdControlScript = require('../scriptpack/WasdControlScript');
+var MouseLookControlScript = require('../scriptpack/MouseLookControlScript');
 
 	'use strict';
 

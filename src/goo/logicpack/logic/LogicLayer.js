@@ -1,4 +1,4 @@
-var LogicInterface = require('goo/logic/LogicInterface');
+var LogicInterface = require('../../logic/LogicInterface');
 
 	'use strict';
 

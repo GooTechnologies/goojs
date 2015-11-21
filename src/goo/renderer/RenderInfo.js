@@ -1,5 +1,5 @@
-var Entity = require('goo/entities/Entity');
-var Transform = require('goo/math/Transform');
+var Entity = require('../entities/Entity');
+var Transform = require('../math/Transform');
 
 
 	'use strict';

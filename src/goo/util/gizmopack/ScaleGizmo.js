@@ -1,12 +1,12 @@
-var Gizmo = require('goo/util/gizmopack/Gizmo');
-var MeshData = require('goo/renderer/MeshData');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var Box = require('goo/shapes/Box');
-var Transform = require('goo/math/Transform');
-var Renderer = require('goo/renderer/Renderer');
-var Vector3 = require('goo/math/Vector3');
-var Ray = require('goo/math/Ray');
-var MathUtils = require('goo/math/MathUtils');
+var Gizmo = require('../../util/gizmopack/Gizmo');
+var MeshData = require('../../renderer/MeshData');
+var MeshBuilder = require('../../util/MeshBuilder');
+var Box = require('../../shapes/Box');
+var Transform = require('../../math/Transform');
+var Renderer = require('../../renderer/Renderer');
+var Vector3 = require('../../math/Vector3');
+var Ray = require('../../math/Ray');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

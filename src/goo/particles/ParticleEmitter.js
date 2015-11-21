@@ -1,6 +1,6 @@
-var ParticleUtils = require('goo/particles/ParticleUtils');
-var Renderer = require('goo/renderer/Renderer');
-var ObjectUtil = require('goo/util/ObjectUtil');
+var ParticleUtils = require('../particles/ParticleUtils');
+var Renderer = require('../renderer/Renderer');
+var ObjectUtil = require('../util/ObjectUtil');
 
 	'use strict';
 

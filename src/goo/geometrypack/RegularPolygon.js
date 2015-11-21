@@ -1,5 +1,5 @@
-var MeshData = require('goo/renderer/MeshData');
-var PolyLine = require('goo/geometrypack/PolyLine');
+var MeshData = require('../renderer/MeshData');
+var PolyLine = require('../geometrypack/PolyLine');
 
 	'use strict';
 

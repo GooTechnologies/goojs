@@ -1,4 +1,4 @@
-var BoundingTree = require('goo/picking/BoundingTree');
+var BoundingTree = require('../picking/BoundingTree');
 
 	'use strict';
 

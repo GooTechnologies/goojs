@@ -1,3 +1,3 @@
-define([var ScriptHandler = require('goo/scriptpack/ScriptHandler');
-var ScriptComponentHandler = require('goo/scriptpack/ScriptComponentHandler');
+define([var ScriptHandler = require('../scriptpack/ScriptHandler');
+var ScriptComponentHandler = require('../scriptpack/ScriptComponentHandler');
 ], function () {});

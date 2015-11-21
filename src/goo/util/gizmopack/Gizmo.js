@@ -1,15 +1,15 @@
-var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var Material = require('goo/renderer/Material');
-var Renderer = require('goo/renderer/Renderer');
-var Transform = require('goo/math/Transform');
-var Matrix4 = require('goo/math/Matrix4');
-var Plane = require('goo/math/Plane');
-var Ray = require('goo/math/Ray');
-var Vector3 = require('goo/math/Vector3');
-var Camera = require('goo/renderer/Camera');
-var MathUtils = require('goo/math/MathUtils');
+var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+var MeshData = require('../../renderer/MeshData');
+var Shader = require('../../renderer/Shader');
+var Material = require('../../renderer/Material');
+var Renderer = require('../../renderer/Renderer');
+var Transform = require('../../math/Transform');
+var Matrix4 = require('../../math/Matrix4');
+var Plane = require('../../math/Plane');
+var Ray = require('../../math/Ray');
+var Vector3 = require('../../math/Vector3');
+var Camera = require('../../renderer/Camera');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

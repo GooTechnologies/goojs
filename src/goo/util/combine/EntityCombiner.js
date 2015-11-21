@@ -1,10 +1,10 @@
-var EntityUtils = require('goo/entities/EntityUtils');
-var Entity = require('goo/entities/Entity');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var Transform = require('goo/math/Transform');
-var Vector3 = require('goo/math/Vector3');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var EntityUtils = require('../../entities/EntityUtils');
+var Entity = require('../../entities/Entity');
+var MeshBuilder = require('../../util/MeshBuilder');
+var Transform = require('../../math/Transform');
+var Vector3 = require('../../math/Vector3');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
+var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 
 	'use strict';
 

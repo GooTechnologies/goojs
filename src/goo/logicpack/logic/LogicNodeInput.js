@@ -1,9 +1,7 @@
-define(
-	[var LogicLayer = require('goo/logic/LogicLayer');
-var LogicNode = require('goo/logic/LogicNode');
-var LogicNodes = require('goo/logic/LogicNodes');
-var LogicInterface = require('goo/logic/LogicInterface');
-	],
+var LogicLayer = require('../../logic/LogicLayer');
+var LogicNode = require('../../logic/LogicNode');
+var LogicNodes = require('../../logic/LogicNodes');
+var LogicInterface = require('../../logic/LogicInterface')
 
 	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';

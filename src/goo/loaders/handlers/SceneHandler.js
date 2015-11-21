@@ -1,8 +1,8 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var SystemBus = require('goo/entities/SystemBus');
-var ArrayUtils = require('goo/util/ArrayUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var rsvp = require('goo/util/rsvp');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var SystemBus = require('../../entities/SystemBus');
+var ArrayUtils = require('../../util/ArrayUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
+var rsvp = require('../../util/rsvp');
 
 	'use strict';
 

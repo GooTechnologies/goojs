@@ -1,4 +1,4 @@
-var Vector3 = require('goo/math/Vector3');
+var Vector3 = require('../math/Vector3');
 
 	'use strict';
 

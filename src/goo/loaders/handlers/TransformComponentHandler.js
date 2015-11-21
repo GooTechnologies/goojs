@@ -1,8 +1,8 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var TransformComponent = require('goo/entities/components/TransformComponent');
-var MathUtils = require('goo/math/MathUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var rsvp = require('goo/util/rsvp');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var TransformComponent = require('../../entities/components/TransformComponent');
+var MathUtils = require('../../math/MathUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
+var rsvp = require('../../util/rsvp');
 
 	'use strict';
 

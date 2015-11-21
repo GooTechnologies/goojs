@@ -1,8 +1,8 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var MeshData = require('goo/renderer/MeshData');
-var BufferUtils = require('goo/renderer/BufferUtils');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ArrayUtils = require('goo/util/ArrayUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var MeshData = require('../../renderer/MeshData');
+var BufferUtils = require('../../renderer/BufferUtils');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ArrayUtils = require('../../util/ArrayUtils');
 
 	'use strict';
 

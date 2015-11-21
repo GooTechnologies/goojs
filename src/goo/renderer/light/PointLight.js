@@ -1,4 +1,4 @@
-var Light = require('goo/renderer/light/Light');
+var Light = require('../../renderer/light/Light');
 
 	'use strict';
 

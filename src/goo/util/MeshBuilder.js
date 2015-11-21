@@ -1,7 +1,7 @@
-var MeshData = require('goo/renderer/MeshData');
-var Capabilities = require('goo/renderer/Capabilities');
-var Vector3 = require('goo/math/Vector3');
-var EntityUtils = require('goo/entities/EntityUtils');
+var MeshData = require('../renderer/MeshData');
+var Capabilities = require('../renderer/Capabilities');
+var Vector3 = require('../math/Vector3');
+var EntityUtils = require('../entities/EntityUtils');
 
 	'use strict';
 

@@ -1,6 +1,6 @@
-var Renderer = require('goo/renderer/Renderer');
-var Pass = require('goo/renderer/pass/Pass');
-var Vector4 = require('goo/math/Vector4');
+var Renderer = require('../../renderer/Renderer');
+var Pass = require('../../renderer/pass/Pass');
+var Vector4 = require('../../math/Vector4');
 
 	'use strict';
 

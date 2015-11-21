@@ -1,5 +1,5 @@
-var AbstractTimelineChannel = require('goo/timelinepack/AbstractTimelineChannel');
-var MathUtils = require('goo/math/MathUtils');
+var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
+var MathUtils = require('../math/MathUtils');
 
 	'use strict';
 

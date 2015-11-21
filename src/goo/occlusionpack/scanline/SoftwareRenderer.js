@@ -1,13 +1,13 @@
-var Vector4 = require('goo/math/Vector4');
-var Matrix4 = require('goo/math/Matrix4');
-var Edge = require('goo/renderer/scanline/Edge');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var EdgeData = require('goo/renderer/scanline/EdgeData');
-var BoundingBoxOcclusionChecker = require('goo/renderer/scanline/BoundingBoxOcclusionChecker');
-var BoundingSphereOcclusionChecker = require('goo/renderer/scanline/BoundingSphereOcclusionChecker');
-var OccluderTriangleData = require('goo/renderer/scanline/OccluderTriangleData');
-var EdgeMap = require('goo/renderer/scanline/EdgeMap');
+var Vector4 = require('../../math/Vector4');
+var Matrix4 = require('../../math/Matrix4');
+var Edge = require('../../renderer/scanline/Edge');
+var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
+var EdgeData = require('../../renderer/scanline/EdgeData');
+var BoundingBoxOcclusionChecker = require('../../renderer/scanline/BoundingBoxOcclusionChecker');
+var BoundingSphereOcclusionChecker = require('../../renderer/scanline/BoundingSphereOcclusionChecker');
+var OccluderTriangleData = require('../../renderer/scanline/OccluderTriangleData');
+var EdgeMap = require('../../renderer/scanline/EdgeMap');
 
 	'use strict';
 

@@ -1,9 +1,9 @@
-var Vector3 = require('goo/math/Vector3');
-var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var Quad = require('goo/shapes/Quad');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
+var Vector3 = require('../math/Vector3');
+var ParticleSystemUtils = require('../util/ParticleSystemUtils');
+var Material = require('../renderer/Material');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
+var Quad = require('../shapes/Quad');
+var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 
 	'use strict';
 

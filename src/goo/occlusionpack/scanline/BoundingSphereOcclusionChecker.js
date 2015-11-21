@@ -1,5 +1,5 @@
-var Matrix4 = require('goo/math/Matrix4');
-var Vector4 = require('goo/math/Vector4');
+var Matrix4 = require('../../math/Matrix4');
+var Vector4 = require('../../math/Vector4');
 
 	'use strict';
 

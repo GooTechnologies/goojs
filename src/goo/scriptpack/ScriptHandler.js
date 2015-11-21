@@ -1,16 +1,16 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var rsvp = require('goo/util/rsvp');
-var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
-var OrbitNPanControlScript = require('goo/scriptpack/OrbitNPanControlScript');
-var FlyControlScript = require('goo/scriptpack/FlyControlScript');
-var WasdControlScript = require('goo/scriptpack/WasdControlScript');
-var BasicControlScript = require('goo/scriptpack/BasicControlScript');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var ArrayUtils = require('goo/util/ArrayUtils');
-var SystemBus = require('goo/entities/SystemBus');
-var ScriptUtils = require('goo/scripts/ScriptUtils');
-var Scripts = require('goo/scripts/Scripts');
+var ConfigHandler = require('../loaders/handlers/ConfigHandler');
+var rsvp = require('../util/rsvp');
+var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
+var OrbitNPanControlScript = require('../scriptpack/OrbitNPanControlScript');
+var FlyControlScript = require('../scriptpack/FlyControlScript');
+var WasdControlScript = require('../scriptpack/WasdControlScript');
+var BasicControlScript = require('../scriptpack/BasicControlScript');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
+var ArrayUtils = require('../util/ArrayUtils');
+var SystemBus = require('../entities/SystemBus');
+var ScriptUtils = require('../scripts/ScriptUtils');
+var Scripts = require('../scripts/Scripts');
 
 	'use strict';
 

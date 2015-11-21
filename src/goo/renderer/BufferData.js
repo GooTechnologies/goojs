@@ -1,4 +1,4 @@
-var BufferUtils = require('goo/renderer/BufferUtils');
+var BufferUtils = require('../renderer/BufferUtils');
 
 	'use strict';
 

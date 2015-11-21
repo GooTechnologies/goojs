@@ -1,13 +1,13 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var ArrayUtils = require('goo/util/ArrayUtils');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var Composer = require('goo/renderer/pass/Composer');
-var RenderPass = require('goo/renderer/pass/RenderPass');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var PassLib = require('goo/passpack/PassLib');
+var ConfigHandler = require('../loaders/handlers/ConfigHandler');
+var ArrayUtils = require('../util/ArrayUtils');
+var rsvp = require('../util/rsvp');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
+var Composer = require('../renderer/pass/Composer');
+var RenderPass = require('../renderer/pass/RenderPass');
+var FullscreenPass = require('../renderer/pass/FullscreenPass');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
+var PassLib = require('../passpack/PassLib');
 
 	'use strict';
 

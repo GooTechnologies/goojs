@@ -1,11 +1,11 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var ScriptComponent = require('goo/entities/components/ScriptComponent');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var SystemBus = require('goo/entities/SystemBus');
-var Scripts = require('goo/scripts/Scripts');
-var ScriptUtils = require('goo/scripts/ScriptUtils');
+var ComponentHandler = require('../loaders/handlers/ComponentHandler');
+var ScriptComponent = require('../entities/components/ScriptComponent');
+var rsvp = require('../util/rsvp');
+var ObjectUtils = require('../util/ObjectUtils');
+var PromiseUtils = require('../util/PromiseUtils');
+var SystemBus = require('../entities/SystemBus');
+var Scripts = require('../scripts/Scripts');
+var ScriptUtils = require('../scripts/ScriptUtils');
 
 	'use strict';
 

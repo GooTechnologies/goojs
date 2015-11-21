@@ -1,10 +1,10 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var Material = require('goo/renderer/Material');
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var Material = require('../../renderer/Material');
+var MeshData = require('../../renderer/MeshData');
+var Shader = require('../../renderer/Shader');
+var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
 
 	'use strict';
 

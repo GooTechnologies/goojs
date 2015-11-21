@@ -1,11 +1,9 @@
-define(
-	[var LogicLayer = require('goo/logic/LogicLayer');
-var LogicNode = require('goo/logic/LogicNode');
-var LogicNodes = require('goo/logic/LogicNodes');
-var LogicInterface = require('goo/logic/LogicInterface');
-var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
-var Vector3 = require('goo/math/Vector3');
-	],
+var LogicLayer = require('../../logic/LogicLayer');
+var LogicNode = require('../../logic/LogicNode');
+var LogicNodes = require('../../logic/LogicNodes');
+var LogicInterface = require('../../logic/LogicInterface');
+var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
+var Vector3 = require('../../math/Vector3')
 
 	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
 		'use strict';

@@ -1,8 +1,8 @@
-var ParticleUtils = require('goo/particles/ParticleUtils');
-var Vector = require('goo/math/Vector');
-var Vector3 = require('goo/math/Vector3');
-var Vector4 = require('goo/math/Vector4');
-var MeshData = require('goo/renderer/MeshData');
+var ParticleUtils = require('../particles/ParticleUtils');
+var Vector = require('../math/Vector');
+var Vector3 = require('../math/Vector3');
+var Vector4 = require('../math/Vector4');
+var MeshData = require('../renderer/MeshData');
 
 	'use strict';
 

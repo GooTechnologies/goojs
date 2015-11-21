@@ -1,7 +1,7 @@
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var SystemBus = require('goo/entities/SystemBus');
+var RenderTarget = require('../../renderer/pass/RenderTarget');
+var FullscreenPass = require('../../renderer/pass/FullscreenPass');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var SystemBus = require('../../entities/SystemBus');
 
 	'use strict';
 

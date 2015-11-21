@@ -1,10 +1,10 @@
-var Texture = require('goo/renderer/Texture');
-var MathUtils = require('goo/math/MathUtils');
-var TextureHandler = require('goo/loaders/handlers/TextureHandler');
-var Ajax = require('goo/util/Ajax');
-var StringUtils = require('goo/util/StringUtils');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var rsvp = require('goo/util/rsvp');
+var Texture = require('../renderer/Texture');
+var MathUtils = require('../math/MathUtils');
+var TextureHandler = require('../loaders/handlers/TextureHandler');
+var Ajax = require('../util/Ajax');
+var StringUtils = require('../util/StringUtils');
+var PromiseUtils = require('../util/PromiseUtils');
+var rsvp = require('../util/rsvp');
 
 	'use strict';
 

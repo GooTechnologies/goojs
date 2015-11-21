@@ -1,6 +1,6 @@
-var Gizmo = require('goo/util/gizmopack/Gizmo');
-var Vector3 = require('goo/math/Vector3');
-var TranslationGizmo = require('goo/util/gizmopack/TranslationGizmo');
+var Gizmo = require('../../util/gizmopack/Gizmo');
+var Vector3 = require('../../math/Vector3');
+var TranslationGizmo = require('../../util/gizmopack/TranslationGizmo');
 
 	'use strict';
 

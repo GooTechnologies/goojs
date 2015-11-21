@@ -1,12 +1,12 @@
-var Gizmo = require('goo/util/gizmopack/Gizmo');
-var Sphere = require('goo/shapes/Sphere');
-var Torus = require('goo/shapes/Torus');
-var Vector3 = require('goo/math/Vector3');
-var Matrix3 = require('goo/math/Matrix3');
-var Transform = require('goo/math/Transform');
-var Renderer = require('goo/renderer/Renderer');
-var Ray = require('goo/math/Ray');
-var MathUtils = require('goo/math/MathUtils');
+var Gizmo = require('../../util/gizmopack/Gizmo');
+var Sphere = require('../../shapes/Sphere');
+var Torus = require('../../shapes/Torus');
+var Vector3 = require('../../math/Vector3');
+var Matrix3 = require('../../math/Matrix3');
+var Transform = require('../../math/Transform');
+var Renderer = require('../../renderer/Renderer');
+var Ray = require('../../math/Ray');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

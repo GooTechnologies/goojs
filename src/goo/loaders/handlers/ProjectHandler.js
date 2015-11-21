@@ -1,4 +1,4 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 
 	'use strict';
 

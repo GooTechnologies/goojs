@@ -1,7 +1,7 @@
-var Matrix4 = require('goo/math/Matrix4');
-var Vector4 = require('goo/math/Vector4');
-var Vector2 = require('goo/math/Vector2');
-var OccludeeTriangleData = require('goo/renderer/scanline/OccludeeTriangleData');
+var Matrix4 = require('../../math/Matrix4');
+var Vector4 = require('../../math/Vector4');
+var Vector2 = require('../../math/Vector2');
+var OccludeeTriangleData = require('../../renderer/scanline/OccludeeTriangleData');
 
 	'use strict';
 

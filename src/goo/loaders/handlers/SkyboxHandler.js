@@ -1,11 +1,11 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var EnvironmentHandler = require('goo/loaders/handlers/EnvironmentHandler');
-var Texture = require('goo/renderer/Texture');
-var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
-var Skybox = require('goo/util/Skybox');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var SystemBus = require('goo/entities/SystemBus');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var EnvironmentHandler = require('../../loaders/handlers/EnvironmentHandler');
+var Texture = require('../../renderer/Texture');
+var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+var Skybox = require('../../util/Skybox');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var SystemBus = require('../../entities/SystemBus');
 
 	'use strict';
 

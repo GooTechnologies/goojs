@@ -1,11 +1,11 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var TimelineComponent = require('goo/timelinepack/TimelineComponent');
-var ValueChannel = require('goo/timelinepack/ValueChannel');
-var EventChannel = require('goo/timelinepack/EventChannel');
-var ArrayUtils = require('goo/util/ArrayUtils');
-var SystemBus = require('goo/entities/SystemBus');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var TWEEN = require('goo/util/TWEEN');
+var ComponentHandler = require('../loaders/handlers/ComponentHandler');
+var TimelineComponent = require('../timelinepack/TimelineComponent');
+var ValueChannel = require('../timelinepack/ValueChannel');
+var EventChannel = require('../timelinepack/EventChannel');
+var ArrayUtils = require('../util/ArrayUtils');
+var SystemBus = require('../entities/SystemBus');
+var ObjectUtils = require('../util/ObjectUtils');
+var TWEEN = require('../util/TWEEN');
 
 	'use strict';
 

@@ -1,10 +1,10 @@
-var Material = require('goo/renderer/Material');
-var FullscreenUtils = require('goo/renderer/pass/FullscreenUtils');
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ShaderLibExtra = require('goo/passpack/ShaderLibExtra');
-var Pass = require('goo/renderer/pass/Pass');
+var Material = require('../renderer/Material');
+var FullscreenUtils = require('../renderer/pass/FullscreenUtils');
+var RenderTarget = require('../renderer/pass/RenderTarget');
+var ObjectUtils = require('../util/ObjectUtils');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
+var ShaderLibExtra = require('../passpack/ShaderLibExtra');
+var Pass = require('../renderer/pass/Pass');
 
 	'use strict';
 

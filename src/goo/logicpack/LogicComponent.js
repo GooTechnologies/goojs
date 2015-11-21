@@ -1,58 +1,58 @@
-var LogicInterface = require('goo/logic/LogicInterface');
-var LogicLayer = require('goo/logic/LogicLayer');
-var LogicNodes = require('goo/logic/LogicNodes');
-var Component = require('goo/entities/components/Component');
+var LogicInterface = require('./logic/LogicInterface');
+var LogicLayer = require('./logic/LogicLayer');
+var LogicNodes = require('./logic/LogicNodes');
+var Component = require('../../entities/components/Component');
 
-	'use strict';
+'use strict';
 
-	/**
-	 * A component that embeds a LogicLayer and processes it every frame.
-	 * @private
-	 */
-	function LogicComponent(entity) {
-		Component.call(this);
+/**
+ * A component that embeds a LogicLayer and processes it every frame.
+ * @private
+ */
+function LogicComponent(entity) {
+	Component.call(this);
 
-		this.type = 'LogicComponent';
-		this.parent = null;
-		this.logicInstance = null;
+	this.type = 'LogicComponent';
+	this.parent = null;
+	this.logicInstance = null;
 
-		// these used to be global but aren't any longer.
-		this.logicLayer = null;
-		this.nodes = {};
+	// these used to be global but aren't any longer.
+	this.logicLayer = null;
+	this.nodes = {};
 
-		this._entity = entity;
+	this._entity = entity;
+}
+
+LogicComponent.prototype = Object.create(Component.prototype);
+
+LogicComponent.prototype.configure = function (conf) {
+	// cleanup.
+	for (var x in this.nodes) {
+		if (this.nodes[x].onSystemStopped !== undefined) {
+			this.nodes[x].onSystemStopped(false);
+		}
 	}
 
-	LogicComponent.prototype = Object.create(Component.prototype);
+	this.logicLayer = new LogicLayer(this._entity);
 
-	LogicComponent.prototype.configure = function (conf) {
-		// cleanup.
-		for (var x in this.nodes) {
-			if (this.nodes[x].onSystemStopped !== undefined) {
-				this.nodes[x].onSystemStopped(false);
-			}
-		}
+	this.nodes = {};
 
-		this.logicLayer = new LogicLayer(this._entity);
+	for (var k in conf.logicNodes) {
+		var ln = conf.logicNodes[k];
+		var Fn = LogicNodes.getClass(ln.type);
+		var obj = new Fn();
 
-		this.nodes = {};
+		obj.configure(ln);
+		obj.addToLogicLayer(this.logicLayer, ln.id);
 
-		for (var k in conf.logicNodes) {
-			var ln = conf.logicNodes[k];
-			var Fn = LogicNodes.getClass(ln.type);
-			var obj = new Fn();
+		this.nodes[k] = obj;
+	}
+};
 
-			obj.configure(ln);
-			obj.addToLogicLayer(this.logicLayer, ln.id);
+LogicComponent.prototype.process = function (tpf) {
+	if (this.logicLayer !== null) {
+		this.logicLayer.process(tpf);
+	}
+};
 
-			this.nodes[k] = obj;
-		}
-	};
-
-	LogicComponent.prototype.process = function (tpf) {
-		if (this.logicLayer !== null) {
-			this.logicLayer.process(tpf);
-		}
-	};
-
-	module.exports = LogicComponent;
+module.exports = LogicComponent;

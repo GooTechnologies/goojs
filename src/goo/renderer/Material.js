@@ -1,5 +1,5 @@
-var Shader = require('goo/renderer/Shader');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Shader = require('../renderer/Shader');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

@@ -1,5 +1,5 @@
-var Vector3 = require('goo/math/Vector3');
-var Light = require('goo/renderer/light/Light');
+var Vector3 = require('../../math/Vector3');
+var Light = require('../../renderer/light/Light');
 
 	'use strict';
 

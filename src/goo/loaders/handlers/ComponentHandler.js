@@ -1,4 +1,4 @@
-var PromiseUtils = require('goo/util/PromiseUtils');
+var PromiseUtils = require('../../util/PromiseUtils');
 
 	'use strict';
 

@@ -1,4 +1,4 @@
-/*jshint bitwise: false */var Capabilities = require('goo/renderer/Capabilities');
+/*jshint bitwise: false */var Capabilities = require('../../renderer/Capabilities');
 
 	'use strict';
 

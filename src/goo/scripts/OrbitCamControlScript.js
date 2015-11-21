@@ -1,8 +1,8 @@
-var Vector3 = require('goo/math/Vector3');
-var Vector2 = require('goo/math/Vector2');
-var MathUtils = require('goo/math/MathUtils');
-var Camera = require('goo/renderer/Camera');
-var SystemBus = require('goo/entities/SystemBus');
+var Vector3 = require('../math/Vector3');
+var Vector2 = require('../math/Vector2');
+var MathUtils = require('../math/MathUtils');
+var Camera = require('../renderer/Camera');
+var SystemBus = require('../entities/SystemBus');
 
 	'use strict';
 

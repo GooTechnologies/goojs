@@ -1,11 +1,11 @@
-var SystemBus = require('goo/entities/SystemBus');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var TextureCreator = require('goo/renderer/TextureCreator');
-var ParticleLib = require('goo/particles/ParticleLib');
-var ParticleSystemUtils = require('goo/util/ParticleSystemUtils');
-var Renderer = require('goo/renderer/Renderer');
-var Vector3 = require('goo/math/Vector3');
+var SystemBus = require('../entities/SystemBus');
+var Material = require('../renderer/Material');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
+var TextureCreator = require('../renderer/TextureCreator');
+var ParticleLib = require('../particles/ParticleLib');
+var ParticleSystemUtils = require('../util/ParticleSystemUtils');
+var Renderer = require('../renderer/Renderer');
+var Vector3 = require('../math/Vector3');
 
 	'use strict';
 

@@ -1,7 +1,7 @@
-var Scripts = require('goo/scripts/Scripts');
-var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
-var PanCamScript = require('goo/scriptpack/PanCamScript');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Scripts = require('../scripts/Scripts');
+var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
+var PanCamScript = require('../scriptpack/PanCamScript');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

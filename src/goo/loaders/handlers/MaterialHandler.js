@@ -1,9 +1,9 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var RenderQueue = require('goo/renderer/RenderQueue');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var RenderQueue = require('../../renderer/RenderQueue');
+var rsvp = require('../../util/rsvp');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

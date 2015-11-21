@@ -1,5 +1,5 @@
-var System = require('goo/entities/systems/System');
-var TWEEN = require('goo/util/TWEEN');
+var System = require('../entities/systems/System');
+var TWEEN = require('../util/TWEEN');
 
 	'use strict';
 

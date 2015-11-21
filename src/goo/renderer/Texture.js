@@ -1,6 +1,6 @@
-var Vector2 = require('goo/math/Vector2');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Vector2 = require('../math/Vector2');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

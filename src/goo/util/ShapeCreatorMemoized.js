@@ -1,11 +1,11 @@
-var Box = require('goo/shapes/Box');
-var Quad = require('goo/shapes/Quad');
-var Sphere = require('goo/shapes/Sphere');
-var Cylinder = require('goo/shapes/Cylinder');
-var Torus = require('goo/shapes/Torus');
-var Disk = require('goo/shapes/Disk');
-var Cone = require('goo/shapes/Cone');
-var ObjectUtil = require('goo/util/ObjectUtil');
+var Box = require('../shapes/Box');
+var Quad = require('../shapes/Quad');
+var Sphere = require('../shapes/Sphere');
+var Cylinder = require('../shapes/Cylinder');
+var Torus = require('../shapes/Torus');
+var Disk = require('../shapes/Disk');
+var Cone = require('../shapes/Cone');
+var ObjectUtil = require('../util/ObjectUtil');
 
 	'use strict';
 

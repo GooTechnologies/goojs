@@ -1,7 +1,7 @@
-var Vector3 = require('goo/math/Vector3');
-var BoundingVolume = require('goo/renderer/bounds/BoundingVolume');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
-var MathUtils = require('goo/math/MathUtils');
+var Vector3 = require('../../math/Vector3');
+var BoundingVolume = require('../../renderer/bounds/BoundingVolume');
+var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

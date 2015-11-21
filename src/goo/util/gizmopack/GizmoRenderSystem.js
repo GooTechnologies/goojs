@@ -1,20 +1,20 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var SimplePartitioner = require('goo/renderer/SimplePartitioner');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
-var Matrix3 = require('goo/math/Matrix3');
-var Matrix4 = require('goo/math/Matrix4');
-var Vector2 = require('goo/math/Vector2');
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var Gizmo = require('goo/util/gizmopack/Gizmo');
-var TranslationGizmo = require('goo/util/gizmopack/TranslationGizmo');
-var GlobalTranslationGizmo = require('goo/util/gizmopack/GlobalTranslationGizmo');
-var RotationGizmo = require('goo/util/gizmopack/RotationGizmo');
-var GlobalRotationGizmo = require('goo/util/gizmopack/GlobalRotationGizmo');
-var ScaleGizmo = require('goo/util/gizmopack/ScaleGizmo');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
+var SimplePartitioner = require('../../renderer/SimplePartitioner');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
+var Matrix3 = require('../../math/Matrix3');
+var Matrix4 = require('../../math/Matrix4');
+var Vector2 = require('../../math/Vector2');
+var MeshData = require('../../renderer/MeshData');
+var Shader = require('../../renderer/Shader');
+var Gizmo = require('../../util/gizmopack/Gizmo');
+var TranslationGizmo = require('../../util/gizmopack/TranslationGizmo');
+var GlobalTranslationGizmo = require('../../util/gizmopack/GlobalTranslationGizmo');
+var RotationGizmo = require('../../util/gizmopack/RotationGizmo');
+var GlobalRotationGizmo = require('../../util/gizmopack/GlobalRotationGizmo');
+var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
 
 	'use strict';
 

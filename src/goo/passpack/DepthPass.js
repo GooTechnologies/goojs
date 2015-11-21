@@ -1,12 +1,12 @@
-define([var Material = require('goo/renderer/Material');
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
-var RenderPass = require('goo/renderer/pass/RenderPass');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var Pass = require('goo/renderer/pass/Pass');
-var BlurPass = require('goo/passpack/BlurPass');
+define([var Material = require('../renderer/Material');
+var RenderTarget = require('../renderer/pass/RenderTarget');
+var MeshData = require('../renderer/MeshData');
+var Shader = require('../renderer/Shader');
+var ShaderFragment = require('../renderer/shaders/ShaderFragment');
+var RenderPass = require('../renderer/pass/RenderPass');
+var FullscreenPass = require('../renderer/pass/FullscreenPass');
+var Pass = require('../renderer/pass/Pass');
+var BlurPass = require('../passpack/BlurPass');
 ],
 
 

@@ -1,6 +1,6 @@
-var Component = require('goo/entities/components/Component');
-var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
-var TextMeshGenerator = require('goo/geometrypack/text/TextMeshGenerator');
+var Component = require('../../entities/components/Component');
+var MeshDataComponent = require('../../entities/components/MeshDataComponent');
+var TextMeshGenerator = require('../../geometrypack/text/TextMeshGenerator');
 
 	'use strict';
 

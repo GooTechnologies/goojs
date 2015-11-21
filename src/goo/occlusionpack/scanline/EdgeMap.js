@@ -1,4 +1,4 @@
-var Edge = require('goo/renderer/scanline/Edge');
+var Edge = require('../../renderer/scanline/Edge');
 
 	'use strict';
 

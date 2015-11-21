@@ -1,4 +1,4 @@
-var rsvp = require('goo/util/rsvp');
+var rsvp = require('../util/rsvp');
 
 	'use strict';
 

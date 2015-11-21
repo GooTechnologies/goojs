@@ -1,10 +1,10 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var StringUtils = require('goo/util/StringUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var MeshDataComponent = require('../../entities/components/MeshDataComponent');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
+var ShapeCreatorMemoized = require('../../util/ShapeCreatorMemoized');
+var rsvp = require('../../util/rsvp');
+var ObjectUtils = require('../../util/ObjectUtils');
+var StringUtils = require('../../util/StringUtils');
 
 	'use strict';
 

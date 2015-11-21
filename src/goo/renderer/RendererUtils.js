@@ -1,5 +1,5 @@
-/* jshint bitwise: false */var ObjectUtils = require('goo/util/ObjectUtils');
-var MathUtils = require('goo/math/MathUtils');
+/* jshint bitwise: false */var ObjectUtils = require('../util/ObjectUtils');
+var MathUtils = require('../math/MathUtils');
 
 	'use strict';
 

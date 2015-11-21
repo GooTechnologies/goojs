@@ -1,16 +1,16 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var Texture = require('goo/renderer/Texture');
-var DdsLoader = require('goo/loaders/dds/DdsLoader');
-var CrunchLoader = require('goo/loaders/crunch/CrunchLoader');
-var TgaLoader = require('goo/loaders/tga/TgaLoader');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var RendererUtils = require('goo/renderer/RendererUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var CanvasUtils = require('goo/util/CanvasUtils');
-var StringUtils = require('goo/util/StringUtils');
-var SystemBus = require('goo/entities/SystemBus');
-var MathUtils = require('goo/math/MathUtils');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var Texture = require('../../renderer/Texture');
+var DdsLoader = require('../../loaders/dds/DdsLoader');
+var CrunchLoader = require('../../loaders/crunch/CrunchLoader');
+var TgaLoader = require('../../loaders/tga/TgaLoader');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var RendererUtils = require('../../renderer/RendererUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
+var CanvasUtils = require('../../util/CanvasUtils');
+var StringUtils = require('../../util/StringUtils');
+var SystemBus = require('../../entities/SystemBus');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

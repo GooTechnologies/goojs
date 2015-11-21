@@ -1,8 +1,8 @@
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
-var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
+var MeshData = require('../renderer/MeshData');
+var Shader = require('../renderer/Shader');
+var ShaderFragment = require('../renderer/shaders/ShaderFragment');
+var ShaderBuilder = require('../renderer/shaders/ShaderBuilder');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
 	'goo/entities/World' //! AT: this should not exist - why would shaders care about importing the world?!
 
 	'use strict';

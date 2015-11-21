@@ -1,8 +1,8 @@
-var ConfigHandler = require('goo/loaders/handlers/ConfigHandler');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var SystemBus = require('goo/entities/SystemBus');
-var ShaderBuilder = require('goo/renderer/shaders/ShaderBuilder');
-	'goo/util/Snow', // TODO Should move!var rsvp = require('goo/util/rsvp');
+var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+var ObjectUtils = require('../../util/ObjectUtils');
+var SystemBus = require('../../entities/SystemBus');
+var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+	'goo/util/Snow', // TODO Should move!var rsvp = require('../../util/rsvp');
 
 	'use strict';
 

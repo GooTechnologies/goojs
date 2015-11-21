@@ -1,14 +1,14 @@
-var Capabilities = require('goo/renderer/Capabilities');
-var Vector3 = require('goo/math/Vector3');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var Camera = require('goo/renderer/Camera');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
-var Vector4 = require('goo/math/Vector4');
-var PointLight = require('goo/renderer/light/PointLight');
-var DirectionalLight = require('goo/renderer/light/DirectionalLight');
-var SpotLight = require('goo/renderer/light/SpotLight');
+var Capabilities = require('../../renderer/Capabilities');
+var Vector3 = require('../../math/Vector3');
+var FullscreenPass = require('../../renderer/pass/FullscreenPass');
+var Camera = require('../../renderer/Camera');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var RenderTarget = require('../../renderer/pass/RenderTarget');
+var Vector4 = require('../../math/Vector4');
+var PointLight = require('../../renderer/light/PointLight');
+var DirectionalLight = require('../../renderer/light/DirectionalLight');
+var SpotLight = require('../../renderer/light/SpotLight');
 
 	'use strict';
 

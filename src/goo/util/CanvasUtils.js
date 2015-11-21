@@ -1,5 +1,5 @@
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

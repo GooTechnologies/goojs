@@ -21,9 +21,9 @@
  *    distribution.
  */
 
-/*jshint bitwise: false */var DdsLoader = require('goo/loaders/dds/DdsLoader');
-var DdsUtils = require('goo/loaders/dds/DdsUtils');
-var Capabilities = require('goo/renderer/Capabilities');
+/*jshint bitwise: false */var DdsLoader = require('../../loaders/dds/DdsLoader');
+var DdsUtils = require('../../loaders/dds/DdsUtils');
+var Capabilities = require('../../renderer/Capabilities');
 
 	'use strict';
 

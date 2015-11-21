@@ -1,8 +1,8 @@
-var Vector3 = require('goo/math/Vector3');
-var Scripts = require('goo/scripts/Scripts');
-var ScriptUtils = require('goo/scripts/ScriptUtils');
-var Renderer = require('goo/renderer/Renderer');
-var Plane = require('goo/math/Plane');
+var Vector3 = require('../math/Vector3');
+var Scripts = require('../scripts/Scripts');
+var ScriptUtils = require('../scripts/ScriptUtils');
+var Renderer = require('../renderer/Renderer');
+var Plane = require('../math/Plane');
 
 	'use strict';
 

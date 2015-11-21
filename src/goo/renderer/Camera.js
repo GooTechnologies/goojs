@@ -1,13 +1,13 @@
-var Vector2 = require('goo/math/Vector2');
-var Vector3 = require('goo/math/Vector3');
-var Vector4 = require('goo/math/Vector4');
-var Matrix4 = require('goo/math/Matrix4');
-var Plane = require('goo/math/Plane');
-var MathUtils = require('goo/math/MathUtils');
-var Ray = require('goo/math/Ray');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
-var BoundingVolume = require('goo/renderer/bounds/BoundingVolume');
+var Vector2 = require('../math/Vector2');
+var Vector3 = require('../math/Vector3');
+var Vector4 = require('../math/Vector4');
+var Matrix4 = require('../math/Matrix4');
+var Plane = require('../math/Plane');
+var MathUtils = require('../math/MathUtils');
+var Ray = require('../math/Ray');
+var BoundingBox = require('../renderer/bounds/BoundingBox');
+var BoundingSphere = require('../renderer/bounds/BoundingSphere');
+var BoundingVolume = require('../renderer/bounds/BoundingVolume');
 
 	'use strict';
 

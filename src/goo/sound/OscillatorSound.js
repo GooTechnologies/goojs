@@ -1,5 +1,5 @@
-var AudioContext = require('goo/sound/AudioContext');
-var MathUtils = require('goo/math/MathUtils');
+var AudioContext = require('../sound/AudioContext');
+var MathUtils = require('../math/MathUtils');
 
 	'use strict';
 

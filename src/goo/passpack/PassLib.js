@@ -1,10 +1,10 @@
-var ShaderLibExtra = require('goo/passpack/ShaderLibExtra');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var BloomPass = require('goo/passpack/BloomPass');
-var BlurPass = require('goo/passpack/BlurPass');
-var DogPass = require('goo/passpack/DogPass');
-var MotionBlurPass = require('goo/passpack/MotionBlurPass');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ShaderLibExtra = require('../passpack/ShaderLibExtra');
+var FullscreenPass = require('../renderer/pass/FullscreenPass');
+var BloomPass = require('../passpack/BloomPass');
+var BlurPass = require('../passpack/BlurPass');
+var DogPass = require('../passpack/DogPass');
+var MotionBlurPass = require('../passpack/MotionBlurPass');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 

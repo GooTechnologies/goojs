@@ -1,11 +1,11 @@
-var Capabilities = require('goo/renderer/Capabilities');
-var MeshData = require('goo/renderer/MeshData');
-var PointLight = require('goo/renderer/light/PointLight');
-var DirectionalLight = require('goo/renderer/light/DirectionalLight');
-var SpotLight = require('goo/renderer/light/SpotLight');
-var Texture = require('goo/renderer/Texture');
-var MathUtils = require('goo/math/MathUtils');
-var TangentGenerator = require('goo/util/TangentGenerator');
+var Capabilities = require('../../renderer/Capabilities');
+var MeshData = require('../../renderer/MeshData');
+var PointLight = require('../../renderer/light/PointLight');
+var DirectionalLight = require('../../renderer/light/DirectionalLight');
+var SpotLight = require('../../renderer/light/SpotLight');
+var Texture = require('../../renderer/Texture');
+var MathUtils = require('../../math/MathUtils');
+var TangentGenerator = require('../../util/TangentGenerator');
 
 	'use strict';
 

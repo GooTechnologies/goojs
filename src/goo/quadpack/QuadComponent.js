@@ -1,11 +1,11 @@
-var Component = require('goo/entities/components/Component');
-var DoubleQuad = require('goo/quadpack/DoubleQuad');
-var MeshDataComponent = require('goo/entities/components/MeshDataComponent');
-var MeshRendererComponent = require('goo/entities/components/MeshRendererComponent');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var Material = require('goo/renderer/Material');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var Texture = require('goo/renderer/Texture');
+var Component = require('../entities/components/Component');
+var DoubleQuad = require('../quadpack/DoubleQuad');
+var MeshDataComponent = require('../entities/components/MeshDataComponent');
+var MeshRendererComponent = require('../entities/components/MeshRendererComponent');
+var ShaderLib = require('../renderer/shaders/ShaderLib');
+var Material = require('../renderer/Material');
+var ObjectUtils = require('../util/ObjectUtils');
+var Texture = require('../renderer/Texture');
 
 	'use strict';
 

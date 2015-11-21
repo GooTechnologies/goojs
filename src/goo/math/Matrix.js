@@ -1,5 +1,5 @@
 var MathUtils = require('./MathUtils');
-var ObjectUtils = require('../util/util/ObjectUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 /**
  * Matrix with RxC components.

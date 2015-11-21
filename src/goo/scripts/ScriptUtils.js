@@ -1,4 +1,4 @@
-var ObjectUtils = require('goo/util/ObjectUtils');
+var _ = require('../util/ObjectUtils');
 
 	'use strict';
 

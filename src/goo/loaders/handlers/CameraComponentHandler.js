@@ -1,9 +1,9 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var CameraComponent = require('goo/entities/components/CameraComponent');
-var Camera = require('goo/renderer/Camera');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var CameraComponent = require('../../entities/components/CameraComponent');
+var Camera = require('../../renderer/Camera');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

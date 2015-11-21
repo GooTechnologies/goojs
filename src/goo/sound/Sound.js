@@ -1,7 +1,7 @@
-var AudioContext = require('goo/sound/AudioContext');
-var MathUtils = require('goo/math/MathUtils');
-var PromiseUtil = require('goo/util/PromiseUtil');
-var rsvp = require('goo/util/rsvp');
+var AudioContext = require('../sound/AudioContext');
+var MathUtils = require('../math/MathUtils');
+var PromiseUtil = require('../util/PromiseUtil');
+var rsvp = require('../util/rsvp');
 
 	'use strict';
 

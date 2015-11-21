@@ -1,6 +1,6 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var TextComponent = require('goo/geometrypack/text/TextComponent');
-var PromiseUtils = require('goo/util/PromiseUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var TextComponent = require('../../geometrypack/text/TextComponent');
+var PromiseUtils = require('../../util/PromiseUtils');
 
 	'use strict';
 

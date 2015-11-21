@@ -1,6 +1,6 @@
-var Quad = require('goo/shapes/Quad');
-var Camera = require('goo/renderer/Camera');
-var Vector3 = require('goo/math/Vector3');
+var Quad = require('../../shapes/Quad');
+var Camera = require('../../renderer/Camera');
+var Vector3 = require('../../math/Vector3');
 
 	'use strict';
 

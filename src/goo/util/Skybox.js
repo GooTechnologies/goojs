@@ -1,10 +1,10 @@
-var Box = require('goo/shapes/Box');
-var Sphere = require('goo/shapes/Sphere');
-var MeshData = require('goo/renderer/MeshData');
-var Material = require('goo/renderer/Material');
-var Shader = require('goo/renderer/Shader');
-var TextureCreator = require('goo/renderer/TextureCreator');
-var Transform = require('goo/math/Transform');
+var Box = require('../shapes/Box');
+var Sphere = require('../shapes/Sphere');
+var MeshData = require('../renderer/MeshData');
+var Material = require('../renderer/Material');
+var Shader = require('../renderer/Shader');
+var TextureCreator = require('../renderer/TextureCreator');
+var Transform = require('../math/Transform');
 
 	'use strict';
 

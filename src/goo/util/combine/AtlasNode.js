@@ -1,4 +1,4 @@
-var Rectangle = require('goo/util/combine/Rectangle');
+var Rectangle = require('../../util/combine/Rectangle');
 
 	'use strict';
 

@@ -1,4 +1,4 @@
-define([var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
+var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
 var LogicComponent = require('goo/entities/components/LogicComponent');
 var rsvp = require('goo/util/rsvp');
 var PromiseUtils = require('goo/util/PromiseUtils');
@@ -28,36 +28,30 @@ var LogicNodeInt = require('goo/logic/LogicNodeInt');
 var LogicNodeInput = require('goo/logic/LogicNodeInput');
 var LogicNodeOutput = require('goo/logic/LogicNodeOutput');
 
-], function (
-	ComponentHandler,
-	LogicComponent,
-	RSVP,
-	PromiseUtils
-) {
-	'use strict';
+'use strict';
 
-	/**
-	* 	* @private
-	*/
-	function LogicComponentHandler() {
-		ComponentHandler.apply(this, arguments);
-	}
+/**
+* 	* @private
+*/
+function LogicComponentHandler() {
+	ComponentHandler.apply(this, arguments);
+}
 
-	LogicComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	LogicComponentHandler.prototype.constructor = LogicComponentHandler;
-	ComponentHandler._registerClass('logic', LogicComponentHandler);
+LogicComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+LogicComponentHandler.prototype.constructor = LogicComponentHandler;
+ComponentHandler._registerClass('logic', LogicComponentHandler);
 
-	LogicComponentHandler.prototype._create = function (entity, config) {
-		var c = new LogicComponent(entity);
-		c.configure(config);
-		entity.setComponent(c);
-		return c;
-	};
+LogicComponentHandler.prototype._create = function (entity, config) {
+	var c = new LogicComponent(entity);
+	c.configure(config);
+	entity.setComponent(c);
+	return c;
+};
 
-	LogicComponentHandler.prototype.update = function (entity, config) {
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		component.configure(config);
-		return PromiseUtils.resolve(component);
-	};
+LogicComponentHandler.prototype.update = function (entity, config) {
+	var component = ComponentHandler.prototype.update.call(this, entity, config);
+	component.configure(config);
+	return PromiseUtils.resolve(component);
+};
 
-	module.exports = LogicComponentHandler;
+module.exports = LogicComponentHandler;

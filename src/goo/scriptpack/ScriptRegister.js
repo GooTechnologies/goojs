@@ -1,14 +1,14 @@
-var Scripts = require('goo/scripts/Scripts');
-var OrbitCamControlScript = require('goo/scripts/OrbitCamControlScript');
-var OrbitNPanControlScript = require('goo/scriptpack/OrbitNPanControlScript');
-var FlyControlScript = require('goo/scriptpack/FlyControlScript');
-var AxisAlignedCamControlScript = require('goo/scriptpack/AxisAlignedCamControlScript');
-var PanCamScript = require('goo/scriptpack/PanCamScript');
-var MouseLookControlScript = require('goo/scriptpack/MouseLookControlScript');
-var WasdControlScript = require('goo/scriptpack/WasdControlScript');
-var ButtonScript = require('goo/scriptpack/ButtonScript');
-var PickAndRotateScript = require('goo/scriptpack/PickAndRotateScript');
-var LensFlareScript = require('goo/scriptpack/LensFlareScript');
+var Scripts = require('../scripts/Scripts');
+var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
+var OrbitNPanControlScript = require('../scriptpack/OrbitNPanControlScript');
+var FlyControlScript = require('../scriptpack/FlyControlScript');
+var AxisAlignedCamControlScript = require('../scriptpack/AxisAlignedCamControlScript');
+var PanCamScript = require('../scriptpack/PanCamScript');
+var MouseLookControlScript = require('../scriptpack/MouseLookControlScript');
+var WasdControlScript = require('../scriptpack/WasdControlScript');
+var ButtonScript = require('../scriptpack/ButtonScript');
+var PickAndRotateScript = require('../scriptpack/PickAndRotateScript');
+var LensFlareScript = require('../scriptpack/LensFlareScript');
 
 	'use strict';
 

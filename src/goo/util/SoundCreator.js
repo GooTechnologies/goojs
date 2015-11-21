@@ -1,8 +1,8 @@
-var SoundHandler = require('goo/loaders/handlers/SoundHandler');
-var AudioContext = require('goo/sound/AudioContext');
-var Ajax = require('goo/util/Ajax');
-var StringUtils = require('goo/util/StringUtils');
-var PromiseUtils = require('goo/util/PromiseUtils');
+var SoundHandler = require('../loaders/handlers/SoundHandler');
+var AudioContext = require('../sound/AudioContext');
+var Ajax = require('../util/Ajax');
+var StringUtils = require('../util/StringUtils');
+var PromiseUtils = require('../util/PromiseUtils');
 
 	'use strict';
 

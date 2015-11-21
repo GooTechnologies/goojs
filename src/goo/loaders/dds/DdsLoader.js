@@ -1,5 +1,5 @@
-/*jshint bitwise: false */var DdsUtils = require('goo/loaders/dds/DdsUtils');
-var Capabilities = require('goo/renderer/Capabilities');
+/*jshint bitwise: false */var DdsUtils = require('../../loaders/dds/DdsUtils');
+var Capabilities = require('../../renderer/Capabilities');
 
 	'use strict';
 

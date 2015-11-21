@@ -1,7 +1,7 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var Dom3dComponent = require('goo/entities/components/Dom3dComponent');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var Dom3dComponent = require('../../entities/components/Dom3dComponent');
+var rsvp = require('../../util/rsvp');
+var PromiseUtils = require('../../util/PromiseUtils');
 
 	'use strict';
 

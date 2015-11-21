@@ -1,8 +1,8 @@
-var Vector2 = require('goo/math/Vector2');
-var Transform = require('goo/math/Transform');
-var MeshBuilder = require('goo/util/MeshBuilder');
-var FilledPolygon = require('goo/geometrypack/FilledPolygon');
-var PolyLine = require('goo/geometrypack/PolyLine');
+var Vector2 = require('../../math/Vector2');
+var Transform = require('../../math/Transform');
+var MeshBuilder = require('../../util/MeshBuilder');
+var FilledPolygon = require('../../geometrypack/FilledPolygon');
+var PolyLine = require('../../geometrypack/PolyLine');
 
 	'use strict';
 

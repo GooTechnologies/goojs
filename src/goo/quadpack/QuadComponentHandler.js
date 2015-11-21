@@ -1,8 +1,8 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var rsvp = require('goo/util/rsvp');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var QuadComponent = require('goo/quadpack/QuadComponent');
+var ComponentHandler = require('../loaders/handlers/ComponentHandler');
+var rsvp = require('../util/rsvp');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
+var QuadComponent = require('../quadpack/QuadComponent');
 
 	'use strict';
 

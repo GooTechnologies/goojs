@@ -1,8 +1,8 @@
-var TextureHandler = require('goo/loaders/handlers/TextureHandler');
-var PromiseUtils = require('goo/util/PromiseUtils');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var StringUtils = require('goo/util/StringUtils');
-var rsvp = require('goo/util/rsvp');
+var TextureHandler = require('../loaders/handlers/TextureHandler');
+var PromiseUtils = require('../util/PromiseUtils');
+var ObjectUtils = require('../util/ObjectUtils');
+var StringUtils = require('../util/StringUtils');
+var rsvp = require('../util/rsvp');
 
 	'use strict';
 

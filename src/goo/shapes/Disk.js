@@ -1,5 +1,5 @@
-var MeshData = require('goo/renderer/MeshData');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var MeshData = require('../renderer/MeshData');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 
