@@ -1,4 +1,4 @@
-var System = require('goo/entities/systems/System');
+var System = require('../../../entities/systems/System');
 
 	'use strict';
 

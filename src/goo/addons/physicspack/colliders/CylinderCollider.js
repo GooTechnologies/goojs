@@ -1,4 +1,4 @@
-var Collider = require('goo/addons/physicspack/colliders/Collider');
+var Collider = require('../../../addons/physicspack/colliders/Collider');
 
 	'use strict';
 

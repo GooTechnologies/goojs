@@ -1,16 +1,16 @@
-var MeshData = require('goo/renderer/MeshData');
-var Shader = require('goo/renderer/Shader');
-var Camera = require('goo/renderer/Camera');
-var Plane = require('goo/math/Plane');
-var RenderTarget = require('goo/renderer/pass/RenderTarget');
-var FullscreenPass = require('goo/renderer/pass/FullscreenPass');
-var Vector3 = require('goo/math/Vector3');
-var Vector4 = require('goo/math/Vector4');
-var Material = require('goo/renderer/Material');
-var Texture = require('goo/renderer/Texture');
-var TextureCreator = require('goo/renderer/TextureCreator');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var ShaderFragment = require('goo/renderer/shaders/ShaderFragment');
+var MeshData = require('../../renderer/MeshData');
+var Shader = require('../../renderer/Shader');
+var Camera = require('../../renderer/Camera');
+var Plane = require('../../math/Plane');
+var RenderTarget = require('../../renderer/pass/RenderTarget');
+var FullscreenPass = require('../../renderer/pass/FullscreenPass');
+var Vector3 = require('../../math/Vector3');
+var Vector4 = require('../../math/Vector4');
+var Material = require('../../renderer/Material');
+var Texture = require('../../renderer/Texture');
+var TextureCreator = require('../../renderer/TextureCreator');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 
 	'use strict';
 

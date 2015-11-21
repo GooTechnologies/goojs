@@ -1,10 +1,10 @@
-var AbstractPhysicsSystem = require('goo/addons/physicspack/systems/AbstractPhysicsSystem');
-var RaycastResult = require('goo/addons/physicspack/RaycastResult');
-var RigidBodyComponent = require('goo/addons/physicspack/components/RigidBodyComponent');
-var Vector3 = require('goo/math/Vector3');
-var Quaternion = require('goo/math/Quaternion');
-var EntityUtils = require('goo/entities/EntityUtils');
-var Transform = require('goo/math/Transform');
+var AbstractPhysicsSystem = require('../../../addons/physicspack/systems/AbstractPhysicsSystem');
+var RaycastResult = require('../../../addons/physicspack/RaycastResult');
+var RigidBodyComponent = require('../../../addons/physicspack/components/RigidBodyComponent');
+var Vector3 = require('../../../math/Vector3');
+var Quaternion = require('../../../math/Quaternion');
+var EntityUtils = require('../../../entities/EntityUtils');
+var Transform = require('../../../math/Transform');
 
 	'use strict';
 

@@ -1,5 +1,5 @@
-var Vector3 = require('goo/math/Vector3');
-var Collider = require('goo/addons/physicspack/colliders/Collider');
+var Vector3 = require('../../../math/Vector3');
+var Collider = require('../../../addons/physicspack/colliders/Collider');
 
 	'use strict';
 

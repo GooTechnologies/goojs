@@ -1,8 +1,8 @@
-var Material = require('goo/renderer/Material');
-var MeshData = require('goo/renderer/MeshData');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var Shader = require('goo/renderer/Shader');
-var Transform = require('goo/math/Transform');
+var Material = require('../../renderer/Material');
+var MeshData = require('../../renderer/MeshData');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var Shader = require('../../renderer/Shader');
+var Transform = require('../../math/Transform');
 
 	'use strict';
 

@@ -1,13 +1,13 @@
-var Terrain = require('goo/addons/terrainpack/Terrain');
-var Vegetation = require('goo/addons/terrainpack/Vegetation');
-var Forrest = require('goo/addons/terrainpack/Forrest');
-var Vector3 = require('goo/math/Vector3');
-var Ajax = require('goo/util/Ajax');
-var Transform = require('goo/math/Transform');
-var MathUtils = require('goo/math/MathUtils');
-var Texture = require('goo/renderer/Texture');
-var TextureCreator = require('goo/renderer/TextureCreator');
-var rsvp = require('goo/util/rsvp');
+var Terrain = require('../../addons/terrainpack/Terrain');
+var Vegetation = require('../../addons/terrainpack/Vegetation');
+var Forrest = require('../../addons/terrainpack/Forrest');
+var Vector3 = require('../../math/Vector3');
+var Ajax = require('../../util/Ajax');
+var Transform = require('../../math/Transform');
+var MathUtils = require('../../math/MathUtils');
+var Texture = require('../../renderer/Texture');
+var TextureCreator = require('../../renderer/TextureCreator');
+var rsvp = require('../../util/rsvp');
 
 	'use strict';
 

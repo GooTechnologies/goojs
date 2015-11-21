@@ -1,8 +1,8 @@
-var Component = require('goo/entities/components/Component');
-var Vector3 = require('goo/math/Vector3');
-var Quaternion = require('goo/math/Quaternion');
-var Transform = require('goo/math/Transform');
-var SystemBus = require('goo/entities/SystemBus');
+var Component = require('../../../entities/components/Component');
+var Vector3 = require('../../../math/Vector3');
+var Quaternion = require('../../../math/Quaternion');
+var Transform = require('../../../math/Transform');
+var SystemBus = require('../../../entities/SystemBus');
 
 	'use strict';
 

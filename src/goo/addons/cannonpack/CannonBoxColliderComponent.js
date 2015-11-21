@@ -1,6 +1,6 @@
-var Component = require('goo/entities/components/Component');
-var Box = require('goo/shapes/Box');
-var Vector3 = require('goo/math/Vector3');
+var Component = require('../../entities/components/Component');
+var Box = require('../../shapes/Box');
+var Vector3 = require('../../math/Vector3');
 
 	'use strict';
 

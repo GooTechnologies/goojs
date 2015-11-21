@@ -1,10 +1,10 @@
-var ComponentHandler = require('goo/loaders/handlers/ComponentHandler');
-var RigidBodyComponent = require('goo/addons/physicspack/components/RigidBodyComponent');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var ShapeCreatorMemoized = require('goo/util/ShapeCreatorMemoized');
-var rsvp = require('goo/util/rsvp');
-var ObjectUtils = require('goo/util/ObjectUtils');
-var Vector3 = require('goo/math/Vector3');
+var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
+var RigidBodyComponent = require('../../../addons/physicspack/components/RigidBodyComponent');
+var BoundingBox = require('../../../renderer/bounds/BoundingBox');
+var ShapeCreatorMemoized = require('../../../util/ShapeCreatorMemoized');
+var rsvp = require('../../../util/rsvp');
+var ObjectUtils = require('../../../util/ObjectUtils');
+var Vector3 = require('../../../math/Vector3');
 
 	'use strict';
 

@@ -1,4 +1,4 @@
-var Component = require('goo/entities/components/Component');
+var Component = require('../../../entities/components/Component');
 
 	'use strict';
 

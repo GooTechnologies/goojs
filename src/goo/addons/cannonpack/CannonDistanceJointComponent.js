@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Component = require('../../entities/components/Component');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

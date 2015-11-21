@@ -1,5 +1,5 @@
-var Component = require('goo/entities/components/Component');
-var Collider = require('goo/addons/physicspack/colliders/Collider');
+var Component = require('../../../entities/components/Component');
+var Collider = require('../../../addons/physicspack/colliders/Collider');
 
 	'use strict';
 

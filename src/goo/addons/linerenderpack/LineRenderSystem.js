@@ -1,7 +1,7 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var LineRenderer = require('goo/addons/linerenderpack/LineRenderer');
-var Vector3 = require('goo/math/Vector3');
+var System = require('../../entities/systems/System');
+var SystemBus = require('../../entities/SystemBus');
+var LineRenderer = require('../../addons/linerenderpack/LineRenderer');
+var Vector3 = require('../../math/Vector3');
 
 	'use strict';
 

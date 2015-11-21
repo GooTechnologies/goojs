@@ -1,5 +1,5 @@
-var PhysicsJoint = require('goo/addons/physicspack/joints/PhysicsJoint');
-var Vector3 = require('goo/math/Vector3');
+var PhysicsJoint = require('../../../addons/physicspack/joints/PhysicsJoint');
+var Vector3 = require('../../../math/Vector3');
 
 	'use strict';
 

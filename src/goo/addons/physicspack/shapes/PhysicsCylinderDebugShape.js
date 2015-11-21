@@ -1,4 +1,4 @@
-var MeshData = require('goo/renderer/MeshData');
+var MeshData = require('../../../renderer/MeshData');
 
 	'use strict';
 

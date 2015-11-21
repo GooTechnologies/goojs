@@ -1,15 +1,15 @@
-var EntityUtils = require('goo/entities/EntityUtils');
-var Component = require('goo/entities/components/Component');
-var Quaternion = require('goo/math/Quaternion');
-var calculateTriangleMeshShape = require('goo/addons/ammopack/calculateTriangleMeshShape');
-var Box = require('goo/shapes/Box');
-var Quad = require('goo/shapes/Quad');
-var Sphere = require('goo/shapes/Sphere');
-var Material = require('goo/renderer/Material');
-var ShaderLib = require('goo/renderer/shaders/ShaderLib');
-var BoundingBox = require('goo/renderer/bounds/BoundingBox');
-var BoundingSphere = require('goo/renderer/bounds/BoundingSphere');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var EntityUtils = require('../../entities/EntityUtils');
+var Component = require('../../entities/components/Component');
+var Quaternion = require('../../math/Quaternion');
+var calculateTriangleMeshShape = require('../../addons/ammopack/calculateTriangleMeshShape');
+var Box = require('../../shapes/Box');
+var Quad = require('../../shapes/Quad');
+var Sphere = require('../../shapes/Sphere');
+var Material = require('../../renderer/Material');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var BoundingBox = require('../../renderer/bounds/BoundingBox');
+var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

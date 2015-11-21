@@ -1,11 +1,11 @@
-var Component = require('goo/entities/components/Component');
-var Quaternion = require('goo/math/Quaternion');
-var Vector3 = require('goo/math/Vector3');
-var Transform = require('goo/math/Transform');
-var Box = require('goo/shapes/Box');
-var Sphere = require('goo/shapes/Sphere');
-var Quad = require('goo/shapes/Quad');
-var ObjectUtils = require('goo/util/ObjectUtils');
+var Component = require('../../entities/components/Component');
+var Quaternion = require('../../math/Quaternion');
+var Vector3 = require('../../math/Vector3');
+var Transform = require('../../math/Transform');
+var Box = require('../../shapes/Box');
+var Sphere = require('../../shapes/Sphere');
+var Quad = require('../../shapes/Quad');
+var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
 

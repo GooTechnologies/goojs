@@ -1,12 +1,12 @@
-var AbstractColliderComponent = require('goo/addons/physicspack/components/AbstractColliderComponent');
-var BoxCollider = require('goo/addons/physicspack/colliders/BoxCollider');
-var SphereCollider = require('goo/addons/physicspack/colliders/SphereCollider');
-var MeshCollider = require('goo/addons/physicspack/colliders/MeshCollider');
-var PlaneCollider = require('goo/addons/physicspack/colliders/PlaneCollider');
-var CylinderCollider = require('goo/addons/physicspack/colliders/CylinderCollider');
-var Collider = require('goo/addons/physicspack/colliders/Collider');
-var Vector3 = require('goo/math/Vector3');
-var Quaternion = require('goo/math/Quaternion');
+var AbstractColliderComponent = require('../../../addons/physicspack/components/AbstractColliderComponent');
+var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
+var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
+var MeshCollider = require('../../../addons/physicspack/colliders/MeshCollider');
+var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider');
+var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
+var Collider = require('../../../addons/physicspack/colliders/Collider');
+var Vector3 = require('../../../math/Vector3');
+var Quaternion = require('../../../math/Quaternion');
 
 	'use strict';
 

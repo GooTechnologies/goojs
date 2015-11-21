@@ -1,5 +1,5 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
+var System = require('../../../entities/systems/System');
+var SystemBus = require('../../../entities/SystemBus');
 
 	'use strict';
 

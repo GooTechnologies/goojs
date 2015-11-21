@@ -1,10 +1,10 @@
-var MeshData = require('goo/renderer/MeshData');
-var Vector2 = require('goo/math/Vector2');
-var Vector3 = require('goo/math/Vector3');
-var Vector4 = require('goo/math/Vector4');
-var Matrix4 = require('goo/math/Matrix4');
-var Camera = require('goo/renderer/Camera');
-var MathUtils = require('goo/math/MathUtils');
+var MeshData = require('../../renderer/MeshData');
+var Vector2 = require('../../math/Vector2');
+var Vector3 = require('../../math/Vector3');
+var Vector4 = require('../../math/Vector4');
+var Matrix4 = require('../../math/Matrix4');
+var Camera = require('../../renderer/Camera');
+var MathUtils = require('../../math/MathUtils');
 
 	'use strict';
 

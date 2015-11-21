@@ -1,5 +1,5 @@
-var System = require('goo/entities/systems/System');
-var GamepadData = require('goo/addons/gamepadpack/GamepadData');
+var System = require('../../entities/systems/System');
+var GamepadData = require('../../addons/gamepadpack/GamepadData');
 
 	'use strict';
 
