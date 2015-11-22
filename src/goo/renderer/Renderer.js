@@ -1,4 +1,5 @@
-/*jshint bitwise: false*/var Capabilities = require('../renderer/Capabilities');
+/*jshint bitwise: false*/
+var Capabilities = require('../renderer/Capabilities');
 var RendererRecord = require('../renderer/RendererRecord');
 var RendererUtils = require('../renderer/RendererUtils');
 var TextureCreator = require('../renderer/TextureCreator');

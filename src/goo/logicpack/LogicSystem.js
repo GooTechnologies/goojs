@@ -1,10 +1,8 @@
-var System = require('goo/entities/systems/System');
-var SystemBus = require('goo/entities/SystemBus');
-var Renderer = require('goo/renderer/Renderer');
-var LogicLayer = require('goo/logic/LogicLayer');
-var LogicInterface = require('goo/logic/LogicInterface');
-
-'use strict';
+var System = require('../entities/systems/System');
+var SystemBus = require('../entities/SystemBus');
+var Renderer = require('../renderer/Renderer');
+var LogicLayer = require('./logic/LogicLayer');
+var LogicInterface = require('./logic/LogicInterface');
 
 // REVIEW: this description seems inaccurate
 /**

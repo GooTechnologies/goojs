@@ -1,7 +1,5 @@
 var SimplePartitioner = require('../renderer/SimplePartitioner');
-var SoftwareRenderer = require('../renderer/scanline/SoftwareRenderer');
-
-'use strict';
+var SoftwareRenderer = require('./scanline/SoftwareRenderer');
 
 /**
  * Processes all entities with meshrenderer components.

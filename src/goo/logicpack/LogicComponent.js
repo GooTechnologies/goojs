@@ -1,9 +1,7 @@
 var LogicInterface = require('./logic/LogicInterface');
 var LogicLayer = require('./logic/LogicLayer');
 var LogicNodes = require('./logic/LogicNodes');
-var Component = require('../../entities/components/Component');
-
-'use strict';
+var Component = require('../entities/components/Component');
 
 /**
  * A component that embeds a LogicLayer and processes it every frame.

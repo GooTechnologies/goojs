@@ -1,42 +1,40 @@
-var Component = require('../entities/components/Component');
+var Component = require('../../entities/components/Component');
 
-	'use strict';
+/**
+ * @private
+ */
+function ProximityComponent(tag) {
+	Component.apply(this, arguments);
 
-	/**
-	 * @private
-	 */
-	function ProximityComponent(tag) {
-		Component.apply(this, arguments);
+	this.type = 'ProximityComponent';
 
-		this.type = 'ProximityComponent';
+	Object.defineProperty(this, 'tag', {
+		value: tag || 'red',
+		writable: false
+	});
+}
 
-		Object.defineProperty(this, 'tag', {
-			value: tag || 'red',
-			writable: false
-		});
-	}
+ProximityComponent.prototype = Object.create(Component.prototype);
+ProximityComponent.prototype.constructor = ProximityComponent;
 
-	ProximityComponent.prototype = Object.create(Component.prototype);
-	ProximityComponent.prototype.constructor = ProximityComponent;
+ProximityComponent.prototype.attached = function (entity) {
+	var world = entity._world;
+	if (!world) { return; }
 
-	ProximityComponent.prototype.attached = function (entity) {
-		var world = entity._world;
-		if (!world) { return; }
+	var proximitySystem = world.getSystem('ProximitySystem');
+	if (!proximitySystem) { return; }
 
-		var proximitySystem = world.getSystem('ProximitySystem');
-		if (!proximitySystem) { return; }
+	proximitySystem.add(entity, this.tag);
+};
 
-		proximitySystem.add(entity, this.tag);
-	};
+ProximityComponent.prototype.detached = function (entity) {
+	var world = entity._world;
+	if (!world) { return; }
 
-	ProximityComponent.prototype.detached = function (entity) {
-		var world = entity._world;
-		if (!world) { return; }
+	var proximitySystem = world.getSystem('ProximitySystem');
+	if (!proximitySystem) { return; }
 
-		var proximitySystem = world.getSystem('ProximitySystem');
-		if (!proximitySystem) { return; }
+	proximitySystem.remove(entity, this.tag);
+};
 
-		proximitySystem.remove(entity, this.tag);
-	};
-
-	module.exports = ProximityComponent;
+module.exports = ProximityComponent;

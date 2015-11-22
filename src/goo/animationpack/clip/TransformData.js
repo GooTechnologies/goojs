@@ -1,4 +1,6 @@
-define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector3) {
+var Quaternion = require('../../math/Quaternion');
+var Vector3 = require('../../math/Vector3');
+
 	'use strict';
 
 	/**

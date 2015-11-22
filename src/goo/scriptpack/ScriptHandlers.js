@@ -1,3 +1,2 @@
-define([var ScriptHandler = require('../scriptpack/ScriptHandler');
-var ScriptComponentHandler = require('../scriptpack/ScriptComponentHandler');
-], function () {});
+var ScriptHandler = require('./ScriptHandler');
+var ScriptComponentHandler = require('./ScriptComponentHandler');

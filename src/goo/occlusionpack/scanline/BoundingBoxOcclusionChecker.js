@@ -1,7 +1,7 @@
 var Matrix4 = require('../../math/Matrix4');
 var Vector4 = require('../../math/Vector4');
 var Vector2 = require('../../math/Vector2');
-var OccludeeTriangleData = require('../../renderer/scanline/OccludeeTriangleData');
+var OccludeeTriangleData = require('./OccludeeTriangleData');
 
 	'use strict';
 

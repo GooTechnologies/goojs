@@ -21,8 +21,6 @@ var Quad = require('../../shapes/Quad');
 
 	'use strict';
 
-	var Ammo = window.Ammo; // make jslint happy
-
 	/**
 	 * A terrain
 	 */

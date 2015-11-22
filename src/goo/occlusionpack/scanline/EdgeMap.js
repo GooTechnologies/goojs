@@ -1,4 +1,4 @@
-var Edge = require('../../renderer/scanline/Edge');
+var Edge = require('./Edge');
 
 	'use strict';
 
