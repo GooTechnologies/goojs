@@ -3,6 +3,7 @@
 
 var path = require('path');
 var _ = require('underscore');
+var webpack = require("webpack");
 
 module.exports = function (grunt) {
 	var packs = {
@@ -71,6 +72,41 @@ module.exports = function (grunt) {
 	// ---
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+
+		webpack: {
+			packsAndCore: {
+				entry: {
+					goo: ['./src/goo'],
+					animationpack: ['./src/goo/animationpack'],
+					fsmpack: ['./src/goo/fsmpack'],
+					geometrypack: ['./src/goo/geometrypack'],
+					quadpack: ['./src/goo/quadpack'],
+					timelinepack: ['./src/goo/timelinepack'],
+					debugpack: ['./src/goo/debugpack'],
+					scriptpack: ['./src/goo/scriptpack']/*,
+					p2pack: ['./src/goo/addons/p2pack'],
+					box2dpack: ['./src/goo/addons/box2dpack'],
+					terrainpack: ['./src/goo/addons/terrainpack'],
+					ammopack: ['./src/goo/addons/ammopack'],
+					cannonpack: ['./src/goo/addons/cannonpack'],
+					waterpack: ['./src/goo/addons/waterpack'],
+					linerenderpack: ['./src/goo/addons/linerenderpack'],
+					animationpack: ['./src/goo/animationpack'],
+					soundmanager2pack: ['./src/goo/addons/soundmanager2pack'],
+					gamepadpack: ['./src/goo/addons/gamepadpack'],
+					passpack: ['./src/goo/passpack'],
+					gizmopack: ['./src/goo/util/gizmopack'],
+					physicspack: ['./src/goo/addons/physicspack]'*/
+				},
+				output: {
+					filename: "build/[name].js"
+				},
+				plugins: [
+					new webpack.optimize.CommonsChunkPlugin('goo', 'build/goo.js')
+				]
+			}
+		},
+
 		// is this task ever called?
 		clean: {
 			build: {
@@ -175,6 +211,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-keepalive');
 	grunt.loadNpmTasks('grunt-eslint');
+	grunt.loadNpmTasks('grunt-webpack');
 
 	grunt.loadTasks('tools/grunt_tasks');
 

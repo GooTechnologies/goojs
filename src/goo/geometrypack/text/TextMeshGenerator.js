@@ -440,6 +440,6 @@ function meshesForText(text, font, options) {
 	return meshBuilder.build();
 }
 
-return {
+module.exports = {
 	meshesForText: meshesForText
 };
