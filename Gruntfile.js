@@ -1,75 +1,32 @@
-// jshint node:true
-'use strict';
-
 var path = require('path');
 var _ = require('underscore');
-var webpack = require("webpack");
+var webpack = require('webpack');
+var fs = require('fs');
+
+var packs = {
+	fsmpack: 'goo/fsmpack',
+	geometrypack: 'goo/geometrypack',
+	quadpack: 'goo/quadpack',
+	timelinepack: 'goo/timelinepack',
+	debugpack: 'goo/debugpack',
+	scriptpack: 'goo/scriptpack',
+	p2pack: 'goo/addons/p2pack',
+	box2dpack: 'goo/addons/box2dpack',
+	terrainpack: 'goo/addons/terrainpack',
+	ammopack: 'goo/addons/ammopack',
+	cannonpack: 'goo/addons/cannonpack',
+	waterpack: 'goo/addons/waterpack',
+	linerenderpack: 'goo/addons/linerenderpack',
+	animationpack: 'goo/animationpack',
+	soundmanager2pack: 'goo/addons/soundmanager2pack',
+	gamepadpack: 'goo/addons/gamepadpack',
+	passpack: 'goo/passpack',
+	gizmopack: 'goo/util/gizmopack',
+	physicspack: 'goo/addons/physicspack'
+};
 
 module.exports = function (grunt) {
-	var packs = {
-		fsmpack: 'goo/fsmpack',
-		geometrypack: 'goo/geometrypack',
-		quadpack: 'goo/quadpack',
-		timelinepack: 'goo/timelinepack',
-		debugpack: 'goo/debugpack',
-		scriptpack: 'goo/scriptpack',
-		p2pack: 'goo/addons/p2pack',
-		box2dpack: 'goo/addons/box2dpack',
-		terrainpack: 'goo/addons/terrainpack',
-		ammopack: 'goo/addons/ammopack',
-		cannonpack: 'goo/addons/cannonpack',
-		waterpack: 'goo/addons/waterpack',
-		linerenderpack: 'goo/addons/linerenderpack',
-		animationpack: 'goo/animationpack',
-		soundmanager2pack: 'goo/addons/soundmanager2pack',
-		gamepadpack: 'goo/addons/gamepadpack',
-		passpack: 'goo/passpack',
-		gizmopack: 'goo/util/gizmopack',
-		physicspack: 'goo/addons/physicspack'
-	};
 
-	function getPacksConfig(packs) {
-		return Object.keys(packs).reduce(function (config, packName) {
-			config[packName] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: 'full'
-			};
-
-			config[packName + '-no-mangle'] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: 'light'
-			};
-
-			config[packName + '-dev'] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: null,
-				rootPath: 'src'
-			};
-
-			return config;
-		}, {});
-	}
-
-	// ---
-	function getWatchConfig() {
-		return Object.keys(packs).reduce(function (config, packName) {
-			config[packName] = {
-				files: ['src/' + packs[packName] + '/**/*.js'],
-				tasks: ['minify-pack:' + packName + '-dev']
-			};
-			return config;
-		}, {
-			engine: {
-				files: ['src/**/*.js', '!src/**/*pack/**/*.js'],
-				tasks: ['minify-main:dev', 'uglify:build', 'wrap']
-			}
-		});
-	}
-
-	// ---
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
@@ -83,7 +40,7 @@ module.exports = function (grunt) {
 					quadpack: ['./src/goo/quadpack'],
 					timelinepack: ['./src/goo/timelinepack'],
 					debugpack: ['./src/goo/debugpack'],
-					scriptpack: ['./src/goo/scriptpack']/*,
+					scriptpack: ['./src/goo/scriptpack'],
 					p2pack: ['./src/goo/addons/p2pack'],
 					box2dpack: ['./src/goo/addons/box2dpack'],
 					terrainpack: ['./src/goo/addons/terrainpack'],
@@ -91,12 +48,11 @@ module.exports = function (grunt) {
 					cannonpack: ['./src/goo/addons/cannonpack'],
 					waterpack: ['./src/goo/addons/waterpack'],
 					linerenderpack: ['./src/goo/addons/linerenderpack'],
-					animationpack: ['./src/goo/animationpack'],
 					soundmanager2pack: ['./src/goo/addons/soundmanager2pack'],
+					physicspack: ['./src/goo/addons/physicspack'],
 					gamepadpack: ['./src/goo/addons/gamepadpack'],
 					passpack: ['./src/goo/passpack'],
-					gizmopack: ['./src/goo/util/gizmopack'],
-					physicspack: ['./src/goo/addons/physicspack]'*/
+					gizmopack: ['./src/goo/util/gizmopack']
 				},
 				output: {
 					filename: "build/[name].js"
@@ -125,7 +81,30 @@ module.exports = function (grunt) {
 				'out-doc/'
 			]
 		},
-		'minify-pack': getPacksConfig(packs),
+
+		'minify-pack': Object.keys(packs).reduce(function (config, packName) {
+			config[packName] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'full'
+			};
+
+			config[packName + '-no-mangle'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'light'
+			};
+
+			config[packName + '-dev'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: null,
+				rootPath: 'src'
+			};
+
+			return config;
+		}, {}),
+
 		'preprocess': {
 			build: {
 				defines: {
@@ -138,6 +117,7 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+
 		'generate-toc': {
 			'visual-test': {
 				path: 'visual-test',
@@ -148,11 +128,7 @@ module.exports = function (grunt) {
 				title: 'Examples'
 			}
 		},
-		'build-custom': {
-			myBundle: {
-				outFile: 'bundle.js'
-			}
-		},
+
 		karma: {
 			unit: {
 				configFile: 'test/unit/karma.conf.js',
@@ -163,6 +139,7 @@ module.exports = function (grunt) {
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}
 		},
+
 		shell: {
 			jsdoc: {
 				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
@@ -183,6 +160,7 @@ module.exports = function (grunt) {
 				command: 'node node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
 			}
 		},
+
 		jshint: {
 			all: ['src'],
 			options: {
@@ -190,7 +168,20 @@ module.exports = function (grunt) {
 				force: true // Do not fail the task
 			}
 		},
-		watch: getWatchConfig(packs),
+
+		watch: Object.keys(packs).reduce(function (config, packName) {
+			config[packName] = {
+				files: ['src/' + packs[packName] + '/**/*.js'],
+				tasks: ['minify-pack:' + packName + '-dev']
+			};
+			return config;
+		}, {
+			engine: {
+				files: ['src/**/*.js', '!src/**/*pack/**/*.js'],
+				tasks: ['minify-main:dev', 'uglify:build', 'wrap']
+			}
+		}),
+
 		eslint: {
 			options: {
 				configFile: '.eslintrc'
@@ -224,6 +215,11 @@ module.exports = function (grunt) {
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 
 	grunt.registerTask('fast-watch', ['manual-watch', 'keepalive']);
+
+	grunt.registerTask('init-git', function () {
+		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
+		fs.chmodSync('.git/hooks/pre-commit', '777');
+	});
 
 	var buildPackTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName;
