@@ -1,5 +1,4 @@
 module.exports = {
-	index: require('./index'),
 	LogicInterface: require('./logic/LogicInterface'),
 	LogicLayer: require('./logic/LogicLayer'),
 	LogicNode: require('./logic/LogicNode'),
