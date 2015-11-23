@@ -1,3 +1,11 @@
+v0.15.19 --- 2015-11-23
+
+### Fixes
+
+  * Use bounds check manually for lens flare script
+  * Fix bug in Dom3dSystem cleanup method
+  * Fix for texture repeat V in TextureHandler
+
 v0.15.18 --- 2015-11-17
 
 ### Fixes
