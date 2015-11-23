@@ -249,20 +249,23 @@ define([
 		localSpace: {
 			get: function () {
 				if (!this.entity) {
+					// Didn't initialize yet
 					return this._localSpace;
 				}
-				return !!this.entity.transformComponent.parent;
+				return !!(this.entity.transformComponent.parent && this.entity.transformComponent.parent.entity.name !== 'root');
 			},
 			set: function (value) {
 				if (!this.entity) {
+					// Didn't initialize yet
 					this._localSpace = value;
 					return;
 				}
-
-				if (!value && this.entity.transformComponent.parent) {
-					this.entity.transformComponent.parent.detachChild(this.entity.transformComponent);
-				} else if (value && !this.entity.transformComponent.parent) {
-					this.entity.transformComponent.parent.attachChild(this.entity.transformComponent);
+				var entity = this.entity;
+				var hasParent = this.localSpace;
+				if (!value && hasParent) {
+					entity.transformComponent.parent.detachChild(entity.transformComponent);
+				} else if (value && !hasParent) {
+					entity.transformComponent.parent.attachChild(this.entity.transformComponent);
 				}
 			}
 		},
@@ -684,6 +687,7 @@ define([
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		meshEntity.addToWorld();
 		if (this._localSpace) {
+			console.log('attaching child')
 			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
 		}
 
