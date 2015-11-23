@@ -37,4 +37,4 @@ LogicNodeFloat.logicInterface.addConfigEntry({
 	label: 'Value'
 });
 
-return LogicNodeFloat;
+module.exports = LogicNodeFloat;

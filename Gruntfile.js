@@ -52,7 +52,8 @@ module.exports = function (grunt) {
 					physicspack: ['./src/goo/addons/physicspack'],
 					gamepadpack: ['./src/goo/addons/gamepadpack'],
 					passpack: ['./src/goo/passpack'],
-					gizmopack: ['./src/goo/util/gizmopack']
+					gizmopack: ['./src/goo/util/gizmopack'],
+					logicpack: ['./src/goo/logicpack']
 				},
 				output: {
 					filename: "build/[name].js"
