@@ -79,7 +79,7 @@ define([
 				'attribute vec3 vertexPosition;',
 				'attribute vec2 vertexUV0;',
 				'attribute vec4 timeInfo;',
-				'attribute vec3 startPos;',
+				'attribute vec4 startPos;',
 				'attribute vec3 startDir;',
 
 				'uniform vec4 textureTileInfo;',
@@ -127,6 +127,7 @@ define([
 				'    float emitTime = timeInfo.w;',
 				'    float age = time * active - emitTime;',
 				'    float ageNoMod = time * active - emitTime;',
+				'    float startAngle = startPos.w;',
 
 				'    #ifdef LOOP',
 				'    age = mod(age, lifeTime);',
@@ -139,13 +140,13 @@ define([
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
 
-				'    float rotation = getAngle(age);',
+				'    float rotation = getAngle(age) + startAngle;',
 				'    float c = cos(rotation);',
 				'    float s = sin(rotation);',
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos, startDir, gravity);',
+				'    vec3 position = getPosition(age, startPos.xyz, startDir, gravity);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -529,9 +530,10 @@ define([
 			this._generateLocalPositionAndDirection(pos, dir);
 
 			for (j = 0; j < meshVertexCount; j++) {
-				startPos[meshVertexCount * 3 * i + j * 3 + 0] = pos.x;
-				startPos[meshVertexCount * 3 * i + j * 3 + 1] = pos.y;
-				startPos[meshVertexCount * 3 * i + j * 3 + 2] = pos.z;
+				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
+				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
+				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
+				startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
 
 				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
 				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
@@ -599,9 +601,10 @@ define([
 		for (var j = 0; j < meshVertexCount; j++) {
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
-			startPos[meshVertexCount * 3 * i + j * 3 + 0] = particle.startPosition.x;
-			startPos[meshVertexCount * 3 * i + j * 3 + 1] = particle.startPosition.y;
-			startPos[meshVertexCount * 3 * i + j * 3 + 2] = particle.startPosition.z;
+			startPos[meshVertexCount * 4 * i + j * 4 + 0] = particle.startPosition.x;
+			startPos[meshVertexCount * 4 * i + j * 4 + 1] = particle.startPosition.y;
+			startPos[meshVertexCount * 4 * i + j * 4 + 2] = particle.startPosition.z;
+			startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
 
 			startDir[meshVertexCount * 3 * i + j * 3 + 0] = particle.startDirection.x;
 			startDir[meshVertexCount * 3 * i + j * 3 + 1] = particle.startDirection.y;
@@ -654,9 +657,10 @@ define([
 			for (var j = 0; j < meshVertexCount; j++) {
 				timeInfo[meshVertexCount * 4  * i + j * 4 + 3] = emitTime;
 
-				startPos[meshVertexCount * 3 * i + j * 3 + 0] = pos.x;
-				startPos[meshVertexCount * 3 * i + j * 3 + 1] = pos.y;
-				startPos[meshVertexCount * 3 * i + j * 3 + 2] = pos.z;
+				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
+				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
+				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
+				startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
 
 				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
 				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
@@ -724,7 +728,7 @@ define([
 			MeshData.TEXCOORD0
 		]);
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
-		attributeMap.START_POS = MeshData.createAttribute(3, 'Float');
+		attributeMap.START_POS = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
 		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
