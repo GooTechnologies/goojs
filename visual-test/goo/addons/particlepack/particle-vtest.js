@@ -49,7 +49,7 @@ require([
 			// }
 
 			var entity = world.createEntity([0, 0, 0], new ParticleComponent({
-				billboard: false,
+				billboard: true,
 				startSize: 1,
 				startLifeTime: 1,
 				loop: false,
@@ -62,12 +62,20 @@ require([
 				//blending: 'AdditiveBlending',
 				//depthWrite: false,
 				emitterRadius: 1,
-				emissionRate: 400,
+				emissionRate: 3,
 				startSpeed: 1,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false,
-				mesh: new Box(1, 1, 1, 1/2, 1/2),
+				//mesh: new Box(1, 1, 1, 1/2, 1/2),
+				// sizeCurve: new CurveSet([
+				// 	new LinearCurve({ k: 2, m: 0 }),
+				// 	new LinearCurve({ k: -2, m: 2, timeOffset: 0.5 })
+				// ]),
+				rotationSpeedCurve: new CurveSet([
+					new LinearCurve({ k: 0, m: 0 })
+				]),
+				startAngle: Math.PI / 4
 				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
@@ -87,10 +95,10 @@ require([
 
 			}).addToWorld();
 
-			setTimeout(function(){
-				entity.clearComponent('ParticleComponent');
-				entity.clearComponent('ScriptComponent');
-			}, 2000);
+			// setTimeout(function(){
+			// 	entity.clearComponent('ParticleComponent');
+			// 	entity.clearComponent('ScriptComponent');
+			// }, 2000);
 
 			entity.particleComponent.texture = texture;
 		}, 500);

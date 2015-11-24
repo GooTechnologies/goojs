@@ -51,7 +51,9 @@ define([
 
 		this.material = new Material({
 			defines: {
-				START_SCALE: '1.0'
+				START_SCALE: '1.0',
+				SIZE_CURVE_CODE: '1.0',
+				ROTATION_CURVE_CODE: '1.0'
 			},
 			attributes: {
 				vertexPosition: MeshData.POSITION,
@@ -99,11 +101,11 @@ define([
 				'}',
 
 				'float getScale(float t){',
-				'    return clamp(1.0 - t, 0.0, 1.0) * START_SCALE;',
+				'    return clamp(SIZE_CURVE_CODE, 0.0, 1.0) * START_SCALE;',
 				'}',
 
 				'float getAngle(float t){',
-				'    return t;',
+				'    return ROTATION_CURVE_CODE;',
 				'}',
 
 				'mat4 rotationMatrix(vec3 axis, float angle){',
@@ -212,6 +214,9 @@ define([
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
+		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
+		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
+		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
@@ -237,6 +242,34 @@ define([
 					shader.setDefine('BILLBOARD', true);
 				} else {
 					shader.removeDefine('BILLBOARD');
+				}
+			}
+		},
+		sizeCurve: {
+			get: function () {
+				return this._sizeCurve;
+			},
+			set: function (value) {
+				this._sizeCurve = value;
+				var shader = this.material.shader;
+				if (value) {
+					shader.setDefine('SIZE_CURVE_CODE', numberToGLSL(this.startSize) + '*' + value.toGLSL('t'));
+				} else {
+					shader.setDefine('SIZE_CURVE_CODE', numberToGLSL(this.startSize));
+				}
+			}
+		},
+		rotationSpeedCurve: {
+			get: function () {
+				return this._rotationSpeedCurve;
+			},
+			set: function (value) {
+				this._rotationSpeedCurve = value;
+				var shader = this.material.shader;
+				if (value) {
+					shader.setDefine('ROTATION_CURVE_CODE', numberToGLSL(this.startAngle) + '+' + value.integralToGLSL('t'));
+				} else {
+					shader.setDefine('ROTATION_CURVE_CODE', numberToGLSL(this.startAngle));
 				}
 			}
 		},

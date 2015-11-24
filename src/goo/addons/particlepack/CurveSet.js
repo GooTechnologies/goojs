@@ -7,11 +7,11 @@ define([
 		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
 	}
 
-	function CurveSet() {
+	function CurveSet(segments) {
 		/**
 		 * @type {Array<Curve>}
 		 */
-		this.segments = [];
+		this.segments = segments ? segments.slice(0) : [];
 	}
 
 	CurveSet.prototype = {
