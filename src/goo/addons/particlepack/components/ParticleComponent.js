@@ -35,114 +35,6 @@ define([
 
 	var tmpGravity = new Vector3();
 
-	var particleShader = {
-		defines: {
-			START_SCALE: '1.0'
-		},
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			timeInfo: 'TIME_INFO',
-			startPos: 'START_POS',
-			startDir: 'START_DIR',
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			particleTexture: 'PARTICLE_TEXTURE',
-			cameraPosition: Shader.CAMERA,
-			time: 0,
-			gravity: [0, 0, 0],
-			uColor: [1, 1, 1, 1],
-			alphakill: 0
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-			'attribute vec4 timeInfo;',
-			'attribute vec3 startPos;',
-			'attribute vec3 startDir;',
-
-			'uniform vec4 textureTileInfo;',
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-			'uniform vec3 cameraPosition;',
-			'uniform float time;',
-			'uniform vec3 gravity;',
-
-			'uniform vec4 uColor;',
-			'varying vec4 color;',
-
-			'varying vec2 coords;',
-
-			'vec3 getPosition(float t, vec3 pos, vec3 dir, vec3 g){',
-			'    return pos + dir * t + 0.5 * t * t * g;',
-			'}',
-
-			'float getScale(float t){',
-			'    return clamp(1.0 - t, 0.0, 1.0) * START_SCALE;',
-			'}',
-
-			'float getAngle(float t){',
-			'    return t;',
-			'}',
-
-			'void main(void) {',
-			'    color = uColor;',
-
-			'    float lifeTime = timeInfo.x;',
-			'    float active = timeInfo.y;',
-			'    float emitTime = timeInfo.w;',
-			'    float age = time * active - emitTime;',
-			'    float ageNoMod = time * active - emitTime;',
-
-			'    #ifdef LOOP',
-			'    age = mod(age, lifeTime);',
-			'    #endif',
-
-			'    float unitAge = age / lifeTime;',
-
-			'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
-			'    float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
-			'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
-			'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
-
-			'    float rotation = getAngle(age);',
-			'    float c = cos(rotation);',
-			'    float s = sin(rotation);',
-			'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-			// Particle should show if lifeTime >= age > 0 and within life span
-			'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-			'    vec3 position = getPosition(age, startPos, startDir, gravity);',
-			'    #ifdef BILLBOARD',
-			'    vec2 offset = ((spinMatrix * vertexPosition)).xy * getScale(unitAge) * active;',
-			'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
-			'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
-			'    #else',
-			'    gl_Position = viewProjectionMatrix * worldMatrix * vec4(getScale(unitAge) * active * vertexPosition + position, 1.0);',
-			'    #endif',
-			'}'
-		].join('\n'),
-		fshader: [
-			'uniform sampler2D particleTexture;',
-			'uniform float alphakill;',
-
-			'varying vec4 color;',
-			'varying vec2 coords;',
-
-			'void main(void){',
-			'    vec4 col = color * texture2D(particleTexture, coords);',
-			'    if (col.a <= alphakill) discard;',
-			'    gl_FragColor = col;',
-			'}'
-		].join('\n')
-	};
-
 	function numberToGLSL(n) {
 		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
 	}
@@ -157,7 +49,129 @@ define([
 		this._system = null;
 		this._entity = null;
 
-		this.material = new Material(particleShader);
+		this.material = new Material({
+			defines: {
+				START_SCALE: '1.0'
+			},
+			attributes: {
+				vertexPosition: MeshData.POSITION,
+				timeInfo: 'TIME_INFO',
+				startPos: 'START_POS',
+				startDir: 'START_DIR',
+				vertexUV0: MeshData.TEXCOORD0
+			},
+			uniforms: {
+				textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
+				viewMatrix: Shader.VIEW_MATRIX,
+				projectionMatrix: Shader.PROJECTION_MATRIX,
+				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+				worldMatrix: Shader.WORLD_MATRIX,
+				particleTexture: 'PARTICLE_TEXTURE',
+				cameraPosition: Shader.CAMERA,
+				time: 0,
+				gravity: [0, 0, 0],
+				uColor: [1, 1, 1, 1],
+				alphakill: 0
+			},
+			vshader: [
+				'attribute vec3 vertexPosition;',
+				'attribute vec2 vertexUV0;',
+				'attribute vec4 timeInfo;',
+				'attribute vec3 startPos;',
+				'attribute vec3 startDir;',
+
+				'uniform vec4 textureTileInfo;',
+				'uniform mat4 viewMatrix;',
+				'uniform mat4 projectionMatrix;',
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+				'uniform vec3 cameraPosition;',
+				'uniform float time;',
+				'uniform vec3 gravity;',
+
+				'uniform vec4 uColor;',
+				'varying vec4 color;',
+
+				'varying vec2 coords;',
+
+				'vec3 getPosition(float t, vec3 pos, vec3 dir, vec3 g){',
+				'    return pos + dir * t + 0.5 * t * t * g;',
+				'}',
+
+				'float getScale(float t){',
+				'    return clamp(1.0 - t, 0.0, 1.0) * START_SCALE;',
+				'}',
+
+				'float getAngle(float t){',
+				'    return t;',
+				'}',
+
+				'mat4 rotationMatrix(vec3 axis, float angle){',
+				'    axis = normalize(axis);',
+				'    float s = sin(angle);',
+				'    float c = cos(angle);',
+				'    float oc = 1.0 - c;',
+				'    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,',
+				'    oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,',
+				'    oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,',
+				'    0.0,                                0.0,                                0.0,                                1.0);',
+				'}',
+
+				'void main(void) {',
+				'    color = uColor;',
+
+				'    float lifeTime = timeInfo.x;',
+				'    float active = timeInfo.y;',
+				'    float emitTime = timeInfo.w;',
+				'    float age = time * active - emitTime;',
+				'    float ageNoMod = time * active - emitTime;',
+
+				'    #ifdef LOOP',
+				'    age = mod(age, lifeTime);',
+				'    #endif',
+
+				'    float unitAge = age / lifeTime;',
+
+				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
+				'    float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
+				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
+				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
+
+				'    float rotation = getAngle(age);',
+				'    float c = cos(rotation);',
+				'    float s = sin(rotation);',
+				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
+				// Particle should show if lifeTime >= age > 0 and within life span
+				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
+				'    vec3 position = getPosition(age, startPos, startDir, gravity);',
+				'    #ifdef BILLBOARD',
+				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * getScale(unitAge) * active;',
+				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
+				'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
+				'    #else',
+				'    mat4 rot = rotationMatrix(normalize(vec3(sin(emitTime*5.0),cos(emitTime*1234.0),sin(emitTime))),rotation);',
+				'    gl_Position = viewProjectionMatrix * worldMatrix * (rot * vec4(getScale(unitAge) * active * vertexPosition, 1.0) + vec4(position,0.0));',
+				'    #endif',
+				'}'
+			].join('\n'),
+			fshader: [
+				'uniform sampler2D particleTexture;',
+				'uniform float alphakill;',
+
+				'varying vec4 color;',
+				'varying vec2 coords;',
+
+				'void main(void){',
+				'#ifdef PARTICLE_TEXTURE',
+				'    vec4 col = color * texture2D(particleTexture, coords);',
+				'#else',
+				'    vec4 col = color;',
+				'#endif',
+				'    if (col.a <= alphakill) discard;',
+				'    gl_FragColor = col;',
+				'}'
+			].join('\n')
+		});
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
@@ -291,6 +305,12 @@ define([
 			},
 			set: function (value) {
 				this.material.setTexture('PARTICLE_TEXTURE', value);
+				var shader = this.material.shader;
+				if (value) {
+					shader.setDefine('PARTICLE_TEXTURE', true);
+				} else {
+					shader.removeDefine('PARTICLE_TEXTURE');
+				}
 			}
 		},
 		textureTilesX: {
@@ -445,13 +465,9 @@ define([
 					particle.emitTime = i / this.emissionRate;
 				}
 
-				/*
-				if (particle.emitTime >= this.time + this.startLifeTime) {
-					particle.active = 0;
-				} else {
-					particle.active = 1;
+				if (this.loop) {
+					particle.active = i < this.duration * this.emissionRate ? 0 : 1;
 				}
-				*/
 
 			} else {
 				// Set all particles to be active but already dead - ready to be re-emitted at any point
@@ -662,7 +678,7 @@ define([
 	ParticleComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
-		
+
 		var maxParticles = this.maxParticles;
 		for (var i = 0; i < maxParticles; i++) {
 			var particle = new Particle(this);
