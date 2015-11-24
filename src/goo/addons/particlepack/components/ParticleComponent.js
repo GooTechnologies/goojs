@@ -44,6 +44,37 @@ define([
 	}
 
 	/**
+	 * @class
+	 * @constructor
+	 * @param {Object} [options]
+	 * @param {number} [options.alphakill=0]
+	 * @param {number} [options.billboard=true]
+	 * @param {number} [options.blending='NoBlending']
+	 * @param {number} [options.coneAngle]
+	 * @param {number} [options.depthTest=true]
+	 * @param {number} [options.depthWrite=true]
+	 * @param {number} [options.duration=5]
+	 * @param {number} [options.emissionRate=10]
+	 * @param {number} [options.emitterExtents]
+	 * @param {number} [options.emitterRadius=1]
+	 * @param {number} [options.localSpace=true]
+	 * @param {number} [options.loop=true]
+	 * @param {number} [options.maxParticles=100]
+	 * @param {MeshData} [options.mesh]
+	 * @param {number} [options.preWarm=true]
+	 * @param {number} [options.renderQueue=3010]
+	 * @param {number} [options.rotationSpeedCurve]
+	 * @param {number} [options.shapeRadius=1]
+	 * @param {number} [options.shapeType='sphere']
+	 * @param {number} [options.sizeCurve]
+	 * @param {number} [options.sortMode]
+	 * @param {number} [options.startAngle=0]
+	 * @param {number} [options.startLifeTime=5]
+	 * @param {number} [options.startSize=1]
+	 * @param {number} [options.startSpeed=0]
+	 * @param {number} [options.texture]
+	 * @param {number} [options.textureTilesX=1]
+	 * @param {number} [options.textureTilesY=1]
 	 */
 	function ParticleComponent(options) {
 		options = options || {};
@@ -196,21 +227,21 @@ define([
 		this.particles = [];
 		this.unsortedParticles = []; // Same as particles but unsorted
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
-		this.duration = options.duration !== undefined ? options.duration : 10;
+		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
 		this.emitterExtents = options.emitterExtents !== undefined ? options.emitterExtents.clone() : new Vector3(1, 1, 1);
 		this.shapeRadius = options.shapeRadius !== undefined ? options.shapeRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
-		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 1000;
+		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
 		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
 		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime : 5;
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
-		this.blending = options.blending !== undefined ? options.blending : true;
+		this.blending = options.blending !== undefined ? options.blending : 'NoBlending';
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
 		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
@@ -233,10 +264,24 @@ define([
 
 	ParticleComponent.type = 'ParticleComponent';
 
+	/**
+	 * Don't sort particles.
+	 * @type {number}
+	 */
 	ParticleComponent.SORT_NONE = 1;
+
+	/**
+	 * Sort by camera distance.
+	 * @type {number}
+	 */
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
+
+		/**
+		 * @target-class ParticleComponent billboard member
+		 * @type {boolean}
+		 */
 		billboard: {
 			get: function () {
 				return this.material.shader.hasDefine('BILLBOARD');
@@ -250,6 +295,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent sizeCurve member
+		 * @type {Curve}
+		 */
 		sizeCurve: {
 			get: function () {
 				return this._sizeCurve;
@@ -264,6 +314,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent rotationSpeedCurve member
+		 * @type {Curve}
+		 */
 		rotationSpeedCurve: {
 			get: function () {
 				return this._rotationSpeedCurve;
@@ -278,6 +333,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent loop member
+		 * @type {boolean}
+		 */
 		loop: {
 			get: function () {
 				return this.material.shader.hasDefine('LOOP');
@@ -290,6 +350,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent blending member
+		 * @type {string}
+		 */
 		blending: {
 			get: function () {
 				return this.material.blendState.blending;
@@ -298,6 +363,11 @@ define([
 				this.material.blendState.blending = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent localSpace member
+		 * @type {boolean}
+		 */
 		localSpace: {
 			get: function () {
 				if (!this.entity) {
@@ -321,6 +391,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent depthTest member
+		 * @type {boolean}
+		 */
 		depthTest: {
 			get: function () {
 				return this.material.depthState.enabled;
@@ -329,6 +404,11 @@ define([
 				this.material.depthState.enabled = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent alphakill member
+		 * @type {number}
+		 */
 		alphakill: {
 			get: function () {
 				return this.material.uniforms.alphakill;
@@ -337,6 +417,11 @@ define([
 				this.material.uniforms.alphakill = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent texture member
+		 * @type {Texture|null}
+		 */
 		texture: {
 			get: function () {
 				return this.material.getTexture('PARTICLE_TEXTURE');
@@ -351,6 +436,11 @@ define([
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent textureTilesX member
+		 * @type {number}
+		 */
 		textureTilesX: {
 			get: function () {
 				return this.material.uniforms.textureTileInfo[0];
@@ -359,6 +449,11 @@ define([
 				this.material.uniforms.textureTileInfo[0] = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent textureTilesY member
+		 * @type {number}
+		 */
 		textureTilesY: {
 			get: function () {
 				return this.material.uniforms.textureTileInfo[1];
@@ -367,6 +462,11 @@ define([
 				this.material.uniforms.textureTileInfo[1] = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent depthWrite member
+		 * @type {boolean}
+		 */
 		depthWrite: {
 			get: function () {
 				return this.material.depthState.write;
@@ -375,6 +475,11 @@ define([
 				this.material.depthState.write = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent renderQueue member
+		 * @type {number}
+		 */
 		renderQueue: {
 			get: function () {
 				return this.material.renderQueue;
@@ -383,6 +488,11 @@ define([
 				this.material.renderQueue = value;
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent startSpeed member
+		 * @type {number}
+		 */
 		startSpeed: {
 			get: function () {
 				return this._startSpeed;
@@ -390,10 +500,15 @@ define([
 			set: function (value) {
 				if (this._startSpeed !== value) {
 					this._startSpeed = value;
-					this.updateVertexData();
+					this._updateVertexData();
 				}
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent startSize member
+		 * @type {number}
+		 */
 		startSize: {
 			get: function () {
 				return Number(this.material.shader.defines.START_SCALE);
@@ -402,6 +517,11 @@ define([
 				this.material.shader.setDefine('START_SCALE', numberToGLSL(value));
 			}
 		},
+
+		/**
+		 * @target-class ParticleComponent maxParticles member
+		 * @type {number}
+		 */
 		maxParticles: {
 			get: function () {
 				return this.meshData ? this.meshData.vertexCount / this.mesh.vertexCount : this._maxParticles;
@@ -411,15 +531,19 @@ define([
 					this.meshData.vertexCount = value * this.mesh.vertexCount;
 					this.meshData.indexCount = value * this.mesh.indexCount;
 					this.meshData.rebuildData();
-					this.updateParticles();
-					this.updateVertexData();
+					this._updateParticles();
+					this._updateVertexData();
 				}
 			}
 		}
 	});
 
 	var invRot = new Matrix3();
-	ParticleComponent.prototype.updateUniforms = function () {
+
+	/**
+	 * @private
+	 */
+	ParticleComponent.prototype._updateUniforms = function () {
 		var uniforms = this.material.uniforms;
 
 		// Gravity in local space
@@ -442,7 +566,10 @@ define([
 		uniforms.time = this.time;
 	};
 
-	ParticleComponent.prototype.updateParticles = function () {
+	/**
+	 * @private
+	 */
+	ParticleComponent.prototype._updateParticles = function () {
 		var particles = this.particles;
 		var unsortedParticles = this.unsortedParticles;
 		var maxParticles = this.maxParticles;
@@ -457,7 +584,10 @@ define([
 		}
 	};
 
-	ParticleComponent.prototype.updateVertexData = function () {
+	/**
+	 * @private
+	 */
+	ParticleComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
 		var i, j;
@@ -548,6 +678,9 @@ define([
 		meshData.setAttributeDataUpdated('START_DIR');
 	};
 
+	/**
+	 * @private
+	 */
 	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction) {
 		// Default
 		direction.setDirect(0, this.startSpeed, 0);
@@ -586,6 +719,11 @@ define([
 		}
 	};
 
+	/**
+	 * Emit a particle.
+	 * @param {Vector3} position
+	 * @param {Vector3} direction
+	 */
 	ParticleComponent.prototype.emitOne = function (position, direction) {
 		var meshData = this.meshData;
 		var startPos = meshData.getAttributeBuffer('START_POS');
@@ -621,7 +759,11 @@ define([
 	};
 
 	var tmpWorldPos = new Vector3();
-	ParticleComponent.prototype.sortParticles = function () {
+
+	/**
+	 * @private
+	 */
+	ParticleComponent.prototype._sortParticles = function () {
 		if (this.sortMode === ParticleComponent.SORT_NONE) {
 			return;
 		}
@@ -684,9 +826,9 @@ define([
 		if (this.loop && this.time > this.duration) {
 			this.time %= this.duration;
 		}
-		this.updateUniforms();
+		this._updateUniforms();
 
-		this.sortParticles();
+		this._sortParticles();
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
@@ -739,7 +881,7 @@ define([
 		if (this._localSpace) {
 			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
 		}
-		this.updateVertexData();
+		this._updateVertexData();
 	};
 
 	/**
