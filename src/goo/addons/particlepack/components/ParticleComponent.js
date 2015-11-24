@@ -215,7 +215,7 @@ define([
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
-		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
+		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0; // TODO should be per particle
 		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
 		if (options.texture) {
 			this.texture = options.texture;
