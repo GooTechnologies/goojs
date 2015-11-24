@@ -57,6 +57,7 @@ define([
 	 * @param {number} [options.emissionRate=10]
 	 * @param {number} [options.emitterExtents]
 	 * @param {number} [options.emitterRadius=1]
+	 * @param {Vector3} [options.gravity]
 	 * @param {number} [options.localSpace=true]
 	 * @param {number} [options.loop=true]
 	 * @param {number} [options.maxParticles=100]
@@ -327,9 +328,9 @@ define([
 				this._rotationSpeedCurve = value;
 				var shader = this.material.shader;
 				if (value) {
-					shader.setDefine('ROTATION_CURVE_CODE', numberToGLSL(this.startAngle) + '+' + value.integralToGLSL('t'));
+					shader.setDefine('ROTATION_CURVE_CODE', value.integralToGLSL('t'));
 				} else {
-					shader.setDefine('ROTATION_CURVE_CODE', numberToGLSL(this.startAngle));
+					shader.setDefine('ROTATION_CURVE_CODE', '0.0');
 				}
 			}
 		},
@@ -370,24 +371,24 @@ define([
 		 */
 		localSpace: {
 			get: function () {
-				if (!this.entity) {
+				if (!this.meshEntity) {
 					// Didn't initialize yet
 					return this._localSpace;
 				}
-				return hasParent(this.entity);
+				return hasParent(this.meshEntity);
 			},
 			set: function (value) {
-				if (!this.entity) {
+				if (!this.meshEntity) {
 					// Didn't initialize yet
 					this._localSpace = value;
 					return;
 				}
-				var entity = this.entity;
+				var entity = this.meshEntity;
 				var hasParent = this.localSpace;
 				if (!value && hasParent) {
 					entity.transformComponent.parent.detachChild(entity.transformComponent);
 				} else if (value && !hasParent) {
-					entity.transformComponent.parent.attachChild(this.entity.transformComponent);
+					entity.transformComponent.parent.attachChild(this.meshEntity.transformComponent);
 				}
 			}
 		},
@@ -548,7 +549,7 @@ define([
 
 		// Gravity in local space
 		tmpGravity.copy(this.gravity);
-		invRot.copy(this.entity.transformComponent.worldTransform.rotation).invert();
+		invRot.copy(this.meshEntity.transformComponent.worldTransform.rotation).invert();
 		tmpGravity.applyPost(invRot);
 		uniforms.gravity = uniforms.gravity || [];
 		uniforms.gravity[0] = tmpGravity.x;
@@ -662,12 +663,13 @@ define([
 			var dir = particle.startDirection;
 
 			this._generateLocalPositionAndDirection(pos, dir);
+			particle.startAngle = this._generateStartAngle();
 
 			for (j = 0; j < meshVertexCount; j++) {
 				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
 				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
 				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
-				startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
+				startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
 				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
 				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
@@ -676,6 +678,11 @@ define([
 		}
 		meshData.setAttributeDataUpdated('START_POS');
 		meshData.setAttributeDataUpdated('START_DIR');
+	};
+
+	// TODO do something about randomness
+	ParticleComponent.prototype._generateStartAngle = function () {
+		return this.startAngle;
 	};
 
 	/**
@@ -737,6 +744,7 @@ define([
 		particle.startPosition.copy(position);
 		particle.startDirection.copy(direction);
 		particle.active = true;
+		particle.startAngle = this._generateStartAngle();
 
 		var meshVertexCount = this.mesh.vertexCount;
 
@@ -746,7 +754,7 @@ define([
 			startPos[meshVertexCount * 4 * i + j * 4 + 0] = particle.startPosition.x;
 			startPos[meshVertexCount * 4 * i + j * 4 + 1] = particle.startPosition.y;
 			startPos[meshVertexCount * 4 * i + j * 4 + 2] = particle.startPosition.z;
-			startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
+			startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
 			startDir[meshVertexCount * 3 * i + j * 3 + 0] = particle.startDirection.x;
 			startDir[meshVertexCount * 3 * i + j * 3 + 1] = particle.startDirection.y;
@@ -806,7 +814,7 @@ define([
 				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
 				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
 				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
-				startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0; // start angle
+				startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
 				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
 				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
@@ -873,7 +881,7 @@ define([
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
 
-		var meshEntity = this.entity = this._entity._world.createEntity(meshData);
+		var meshEntity = this.meshEntity = this._entity._world.createEntity(meshData);
 		meshEntity.set(new MeshRendererComponent(this.material));
 		meshEntity.name = 'ParticleSystem';
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
@@ -889,13 +897,13 @@ define([
 	 * @param entity
 	 */
 	ParticleComponent.prototype.detached = function (/*entity*/) {
-		this.entity.clearComponent('MeshDataComponent');
+		this.meshEntity.clearComponent('MeshDataComponent');
 		this.unsortedParticles.length = this.particles.length = 0;
-		if (hasParent(this.entity)) {
-			this._entity.detachChild(this.entity);
+		if (hasParent(this.meshEntity)) {
+			this._entity.detachChild(this.meshEntity);
 		}
-		this.entity.removeFromWorld();
-		this._entity = this._system = this.entity = null;
+		this.meshEntity.removeFromWorld();
+		this._entity = this._system = this.meshEntity = null;
 	};
 
 	/**

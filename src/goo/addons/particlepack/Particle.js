@@ -13,6 +13,7 @@ define([
 		this.active = true;
 		this.startPosition = new Vector3();
 		this.startDirection = new Vector3();
+		this.startAngle = 0;
 		this.sortValue = 0;
 	}
 
