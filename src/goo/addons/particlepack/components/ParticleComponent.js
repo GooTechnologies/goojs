@@ -39,6 +39,10 @@ define([
 		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
 	}
 
+	function hasParent(entity) {
+		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
+	}
+
 	/**
 	 */
 	function ParticleComponent(options) {
@@ -300,7 +304,7 @@ define([
 					// Didn't initialize yet
 					return this._localSpace;
 				}
-				return !!(this.entity.transformComponent.parent && this.entity.transformComponent.parent.entity.name !== 'root');
+				return hasParent(this.entity);
 			},
 			set: function (value) {
 				if (!this.entity) {
@@ -701,13 +705,6 @@ define([
 		}
 	};
 
-	ParticleComponent.prototype.destroy = function () {
-		if (this.entity.parent) {
-			this._entity.detachChild(this.entity);
-		}
-		this.entity.removeFromWorld();
-	};
-
 	/**
 	 * @private
 	 * @param entity
@@ -740,10 +737,8 @@ define([
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		meshEntity.addToWorld();
 		if (this._localSpace) {
-			console.log('attaching child')
 			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
 		}
-
 		this.updateVertexData();
 	};
 
@@ -751,17 +746,18 @@ define([
 	 * @private
 	 * @param entity
 	 */
-	ParticleComponent.prototype.detached = function (entity) {
+	ParticleComponent.prototype.detached = function (/*entity*/) {
 		this.entity.clearComponent('MeshDataComponent');
-		this._entity = undefined;
-		this._system = undefined;
 		this.unsortedParticles.length = this.particles.length = 0;
+		if (hasParent(this.entity)) {
+			this._entity.detachChild(this.entity);
+		}
 		this.entity.removeFromWorld();
-		this.entity = null;
+		this._entity = this._system = this.entity = null;
 	};
 
 	/**
-	 * @returns RigidBodyComponent
+	 * @returns ParticleComponent
 	 */
 	ParticleComponent.prototype.clone = function () {
 		return new ParticleComponent({
