@@ -66,6 +66,7 @@ define([
 	 * @param {number} [options.renderQueue=3010]
 	 * @param {number} [options.rotationSpeedCurve]
 	 * @param {number} [options.coneRadius=1]
+	 * @param {number} [options.seed]
 	 * @param {number} [options.shapeType='sphere']
 	 * @param {number} [options.sizeCurve]
 	 * @param {number} [options.sortMode]
@@ -76,6 +77,7 @@ define([
 	 * @param {number} [options.texture]
 	 * @param {number} [options.textureTilesX=1]
 	 * @param {number} [options.textureTilesY=1]
+	 * @param {number} [options.textureAnimationSpeed=1]
 	 */
 	function ParticleComponent(options) {
 		options = options || {};
@@ -175,8 +177,9 @@ define([
 
 				'    float unitAge = age / lifeTime;',
 
-				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge, textureTileInfo.x));',
-				'    float tileY = floor(mod(textureTileInfo.y * unitAge, textureTileInfo.y));',
+				'    float textureAnimationSpeed = textureTileInfo.z;',
+				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
+				'    float tileY = floor(mod(textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.y));',
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
 
@@ -229,6 +232,7 @@ define([
 			this.gravity.copy(options.gravity);
 		}
 
+		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
 		this.startColor = new Vector4(1, 1, 1, 1);
 		this.particles = [];
 		this.unsortedParticles = []; // Same as particles but unsorted
@@ -259,6 +263,7 @@ define([
 		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
 		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0; // TODO should be per particle
 		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
+		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
 		if (options.texture) {
 			this.texture = options.texture;
 		}
@@ -283,6 +288,19 @@ define([
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
+
+		/**
+		 * @target-class ParticleComponent textureAnimationSpeed member
+		 * @type {number}
+		 */
+		textureAnimationSpeed: {
+			get: function () {
+				return this.material.uniforms.textureTileInfo[2];
+			},
+			set: function (value) {
+				this.material.uniforms.textureTileInfo[2] = value;
+			}
+		},
 
 		/**
 		 * @target-class ParticleComponent paused member
@@ -570,6 +588,15 @@ define([
 		}
 	});
 
+	/**
+	 * @private
+	 */
+	ParticleComponent.prototype._random = function () {
+		var a = 214013, c = 2531011, m = 32768;
+		this.seed = (this.seed * a + c) % m;
+		return this.seed / m;
+	};
+
 	var invRot = new Matrix3();
 
 	/**
@@ -728,13 +755,13 @@ define([
 
 		if (this.shapeType === 'box') {
 			position.setDirect(
-				Math.random() - 0.5,
-				Math.random() - 0.5,
-				Math.random() - 0.5
+				this._random() - 0.5,
+				this._random() - 0.5,
+				this._random() - 0.5
 			).mul(this.boxExtents);
 		} else if (this.shapeType === 'sphere') {
-			var theta = Math.acos(2 * Math.random() - 1);
-			var phi = 2 * Math.PI * Math.random();
+			var theta = Math.acos(2 * this._random() - 1);
+			var phi = 2 * Math.PI * this._random();
 			var r = this.sphereRadius;
 			position.setDirect(
 				r * Math.cos(phi) * Math.sin(theta),
@@ -747,9 +774,9 @@ define([
 				Math.sin(phi) * Math.sin(theta)
 			).normalize().scale(this.startSpeed);
 		} else if (this.shapeType === 'cone') {
-			var phi = 2 * Math.PI * Math.random();
-			var y = Math.random();
-			var rad = this.coneRadius * Math.random() * y;
+			var phi = 2 * Math.PI * this._random();
+			var y = this._random();
+			var rad = this.coneRadius * this._random() * y;
 			position.setDirect(
 				rad * Math.cos(phi),
 				y,
@@ -802,6 +829,9 @@ define([
 		meshData.setAttributeDataUpdated('TIME_INFO');
 	};
 
+	/**
+	 * @private
+	 */
 	ParticleComponent.prototype._updateBounds = function () {
 		if(this.localSpace){
 			return;
