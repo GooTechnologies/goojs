@@ -107,7 +107,7 @@ define([
 				particleTexture: 'PARTICLE_TEXTURE',
 				cameraPosition: Shader.CAMERA,
 				time: 0,
-				duration: this._duration,
+				duration: 5,
 				gravity: [0, 0, 0],
 				uColor: [1, 1, 1, 1],
 				alphakill: 0
@@ -149,11 +149,14 @@ define([
 				'    axis = normalize(axis);',
 				'    float s = sin(angle);',
 				'    float c = cos(angle);',
+				'    float x = axis.x;',
+				'    float y = axis.y;',
+				'    float z = axis.z;',
 				'    float oc = 1.0 - c;',
-				'    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,',
-				'    oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,',
-				'    oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,',
-				'    0.0,                                0.0,                                0.0,                                1.0);',
+				'    return mat4(oc * x * x + c, oc * x * y - z * s,  oc * z * x + y * s,  0.0,',
+				'    oc * x * y + z * s, oc * y * y + c, oc * y * z - x * s, 0.0,',
+				'    oc * z * x - y * s, oc * y * z + x * s,  oc * z * z + c, 0.0,',
+				'    0.0, 0.0, 0.0, 1.0);',
 				'}',
 
 				'void main(void) {',
@@ -177,7 +180,7 @@ define([
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
 
-				'    float rotation = getAngle(age) + startAngle;',
+				'    float rotation = getAngle(unitAge) + startAngle;',
 				'    float c = cos(rotation);',
 				'    float s = sin(rotation);',
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
@@ -300,15 +303,10 @@ define([
 		 */
 		duration: {
 			get: function () {
-
-				return this.meshEntity ? this.meshEntity.meshRendererComponent.materials[0].uniforms.duration : this._duration;
+				return this.material.uniforms.duration;
 			},
 			set: function (value) {
-				if (this.meshEntity) {
-					this.meshEntity.meshRendererComponent.materials[0].uniforms.duration = value;
-				} else {
-					this._duration = value;
-				}
+				this.material.uniforms.duration = value;
 			}
 		},
 
@@ -650,6 +648,10 @@ define([
 		meshData.setAttributeDataUpdated(MeshData.TEXCOORD0);
 		meshData.setAttributeDataUpdated(MeshData.POSITION);
 
+		if (!this.localSpace) {
+			this.loop = false;
+		}
+
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		for (i = 0; i < maxParticles; i++) {
@@ -668,12 +670,11 @@ define([
 				}
 
 				if (this.loop) {
-					particle.active = i < this.duration * this.emissionRate ? 0 : 1;
+					particle.active = i < this.duration * this.emissionRate ? 1 : 0;
 				}
 
 			} else {
 				// Set all particles to be active but already dead - ready to be re-emitted at any point
-				particle.active = 1;
 				particle.emitTime = -2 * particle.lifeTime;
 			}
 

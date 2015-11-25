@@ -62,11 +62,11 @@ require([
 				//blending: 'AdditiveBlending',
 				//depthWrite: false,
 				emitterRadius: 1,
-				emissionRate: 1,
+				emissionRate: 10,
 				startSpeed: 8,
 				textureTilesX: 1,
 				textureTilesY: 1,
-				localSpace: false,
+				localSpace: true,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
 				// sizeCurve: new CurveSet([
 				// 	new LinearCurve({ k: 2, m: 0 }),
@@ -79,13 +79,13 @@ require([
 				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
-				// var angle = world.time * 2 * Math.PI / 2 * 0;
-				// var x = 10 * Math.cos(world.time * 2);
-				// var y = 0 * Math.sin(world.time * 2) * 0;
-				// entity.setTranslation(0, y, x);
-				// entity.setRotation(angle, 0, 0);
-				// sphereEntity.setTranslation(0, y, x);
-				// sphereEntity.setRotation(angle, 0, 0);
+				var angle = world.time * 2 * Math.PI / 2 * 0;
+				var x = 10 * Math.cos(world.time * 2);
+				var y = 0 * Math.sin(world.time * 2) * 0;
+				entity.setTranslation(0, y, x);
+				entity.setRotation(angle, 0, 0);
+				sphereEntity.setTranslation(0, y, x);
+				sphereEntity.setRotation(angle, 0, 0);
 
 				// debugs.forEach(function (ent, i) {
 				// 	entity.particleComponent.particles[i].getWorldPosition(ent.transformComponent.transform.translation);
