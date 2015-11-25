@@ -37,7 +37,7 @@ require([
 	var world = goo.world;
 
 	world.setSystem(new ParticleSystem());
-	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 2), new Material(ShaderLib.uber)).addToWorld();
+	var sphereEntity = world.createEntity([0, 0, 0], new Sphere(10, 10, 1), new Material(ShaderLib.uber)).addToWorld();
 
 	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {
 		setTimeout(function () {
@@ -52,18 +52,18 @@ require([
 				billboard: true,
 				startSize: 1,
 				startLifeTime: 1,
-				loop: false,
-				preWarm: false,
-				gravity: new Vector3(0, -10, 0),
+				loop: true,
+				preWarm: true,
+				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
-				duration: 1,
+				duration: 5,
 				shapeType: 'sphere',
 				coneAngle: 0,
 				//blending: 'AdditiveBlending',
 				//depthWrite: false,
 				emitterRadius: 1,
-				emissionRate: 3,
-				startSpeed: 1,
+				emissionRate: 1,
+				startSpeed: 8,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false,
@@ -79,13 +79,13 @@ require([
 				//sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
-				var angle = world.time * 2 * Math.PI / 2 * 0;
-				var x = 10 * Math.cos(world.time * 2);
-				var y = 0 * Math.sin(world.time * 2) * 0;
-				entity.setTranslation(0, y, x);
-				entity.setRotation(angle, 0, 0);
-				sphereEntity.setTranslation(0, y, x);
-				sphereEntity.setRotation(angle, 0, 0);
+				// var angle = world.time * 2 * Math.PI / 2 * 0;
+				// var x = 10 * Math.cos(world.time * 2);
+				// var y = 0 * Math.sin(world.time * 2) * 0;
+				// entity.setTranslation(0, y, x);
+				// entity.setRotation(angle, 0, 0);
+				// sphereEntity.setTranslation(0, y, x);
+				// sphereEntity.setRotation(angle, 0, 0);
 
 				// debugs.forEach(function (ent, i) {
 				// 	entity.particleComponent.particles[i].getWorldPosition(ent.transformComponent.transform.translation);

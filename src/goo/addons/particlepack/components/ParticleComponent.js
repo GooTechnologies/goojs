@@ -55,8 +55,8 @@ define([
 	 * @param {number} [options.depthWrite=true]
 	 * @param {number} [options.duration=5]
 	 * @param {number} [options.emissionRate=10]
-	 * @param {number} [options.emitterExtents]
-	 * @param {number} [options.emitterRadius=1]
+	 * @param {number} [options.boxExtents]
+	 * @param {number} [options.sphereRadius=1]
 	 * @param {Vector3} [options.gravity]
 	 * @param {number} [options.localSpace=true]
 	 * @param {number} [options.loop=true]
@@ -65,7 +65,7 @@ define([
 	 * @param {number} [options.preWarm=true]
 	 * @param {number} [options.renderQueue=3010]
 	 * @param {number} [options.rotationSpeedCurve]
-	 * @param {number} [options.shapeRadius=1]
+	 * @param {number} [options.coneRadius=1]
 	 * @param {number} [options.shapeType='sphere']
 	 * @param {number} [options.sizeCurve]
 	 * @param {number} [options.sortMode]
@@ -107,6 +107,7 @@ define([
 				particleTexture: 'PARTICLE_TEXTURE',
 				cameraPosition: Shader.CAMERA,
 				time: 0,
+				duration: this._duration,
 				gravity: [0, 0, 0],
 				uColor: [1, 1, 1, 1],
 				alphakill: 0
@@ -125,11 +126,11 @@ define([
 				'uniform mat4 worldMatrix;',
 				'uniform vec3 cameraPosition;',
 				'uniform float time;',
+				'uniform float duration;',
 				'uniform vec3 gravity;',
-
 				'uniform vec4 uColor;',
-				'varying vec4 color;',
 
+				'varying vec4 color;',
 				'varying vec2 coords;',
 
 				'vec3 getPosition(float t, vec3 pos, vec3 dir, vec3 g){',
@@ -166,7 +167,7 @@ define([
 				'    float startAngle = startPos.w;',
 
 				'    #ifdef LOOP',
-				'    age = mod(age, lifeTime);',
+				'    age = mod(age, duration);',
 				'    #endif',
 
 				'    float unitAge = age / lifeTime;',
@@ -215,6 +216,7 @@ define([
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
 		this.time = 0;
+		this._paused = false;
 
 		/**
 		 * @type {Vector3}
@@ -229,9 +231,9 @@ define([
 		this.unsortedParticles = []; // Same as particles but unsorted
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 5;
-		this.emitterRadius = options.emitterRadius !== undefined ? options.emitterRadius : 1;
-		this.emitterExtents = options.emitterExtents !== undefined ? options.emitterExtents.clone() : new Vector3(1, 1, 1);
-		this.shapeRadius = options.shapeRadius !== undefined ? options.shapeRadius : 1;
+		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
+		this.boxExtents = options.boxExtents !== undefined ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
@@ -278,6 +280,37 @@ define([
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
+
+		/**
+		 * @target-class ParticleComponent paused member
+		 * @type {boolean}
+		 */
+		paused: {
+			get: function () {
+				return this._paused;
+			},
+			set: function (value) {
+				this._paused = value;
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent duration member
+		 * @type {number}
+		 */
+		duration: {
+			get: function () {
+
+				return this.meshEntity ? this.meshEntity.meshRendererComponent.materials[0].uniforms.duration : this._duration;
+			},
+			set: function (value) {
+				if (this.meshEntity) {
+					this.meshEntity.meshRendererComponent.materials[0].uniforms.duration = value;
+				} else {
+					this._duration = value;
+				}
+			}
+		},
 
 		/**
 		 * @target-class ParticleComponent billboard member
@@ -692,16 +725,16 @@ define([
 		// Default
 		direction.setDirect(0, this.startSpeed, 0);
 
-		if (this.shapeType === 'cube') {
+		if (this.shapeType === 'box') {
 			position.setDirect(
 				Math.random() - 0.5,
 				Math.random() - 0.5,
 				Math.random() - 0.5
-			);
+			).mul(this.boxExtents);
 		} else if (this.shapeType === 'sphere') {
 			var theta = Math.acos(2 * Math.random() - 1);
 			var phi = 2 * Math.PI * Math.random();
-			var r = this.emitterRadius;
+			var r = this.sphereRadius;
 			position.setDirect(
 				r * Math.cos(phi) * Math.sin(theta),
 				r * Math.cos(theta),
@@ -715,7 +748,7 @@ define([
 		} else if (this.shapeType === 'cone') {
 			var phi = 2 * Math.PI * Math.random();
 			var y = Math.random();
-			var rad = this.shapeRadius * Math.random() * y;
+			var rad = this.coneRadius * Math.random() * y;
 			position.setDirect(
 				rad * Math.cos(phi),
 				y,
@@ -723,6 +756,8 @@ define([
 			);
 			direction.copy(position).normalize().scale(this.startSpeed);
 			position.y -= 0.5;
+		} else {
+			throw new Error('Shape type not recognized: ' + this.shapeType);
 		}
 	};
 
@@ -766,6 +801,15 @@ define([
 		meshData.setAttributeDataUpdated('TIME_INFO');
 	};
 
+	ParticleComponent.prototype._updateBounds = function () {
+		if(this.localSpace){
+			return;
+		}
+		var bounds = this.meshEntity.meshRendererComponent.worldBound;
+		bounds.center.copy(this._entity.transformComponent.worldTransform.translation);
+		bounds.xExtent = bounds.yExtent = bounds.zExtent = 0;
+	};
+	
 	var tmpWorldPos = new Vector3();
 
 	/**
@@ -829,14 +873,16 @@ define([
 	var tmpPos = new Vector3();
 	var tmpDir = new Vector3();
 	ParticleComponent.prototype.process = function (tpf) {
+		if(this.paused) return;
+
 		this.lastTime = this.time;
 		this.time += tpf;
-		if (this.loop && this.time > this.duration) {
+		if (this.loop && this.time > this.duration) { // TODO: should this be done in shader only?
 			this.time %= this.duration;
 		}
 		this._updateUniforms();
-
 		this._sortParticles();
+		this._updateBounds();
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
@@ -880,7 +926,6 @@ define([
 		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
-
 		var meshEntity = this.meshEntity = this._entity._world.createEntity(meshData);
 		meshEntity.set(new MeshRendererComponent(this.material));
 		meshEntity.name = 'ParticleSystem';
@@ -918,8 +963,8 @@ define([
 			textureTilesY: this.textureTilesY,
 			particles: this.particles,
 			duration: this.duration,
-			emitterRadius: this.emitterRadius,
-			shapeRadius: this.shapeRadius,
+			sphereRadius: this.sphereRadius,
+			coneRadius: this.coneRadius,
 			coneAngle: this.coneAngle,
 			localSpace: this.localSpace,
 			emissionRate: this.emissionRate,
