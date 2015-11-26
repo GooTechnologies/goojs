@@ -91,7 +91,8 @@ define([
 			defines: {
 				START_SCALE: '1.0',
 				SIZE_CURVE_CODE: '1.0',
-				ROTATION_CURVE_CODE: '1.0'
+				ROTATION_CURVE_CODE: '1.0',
+				COLOR_CURVE_CODE: 'vec4(1.0)'
 			},
 			attributes: {
 				vertexPosition: MeshData.POSITION,
@@ -147,6 +148,10 @@ define([
 				'    return ROTATION_CURVE_CODE;',
 				'}',
 
+				'vec4 getColor(float t){',
+				'    return COLOR_CURVE_CODE;',
+				'}',
+
 				'mat4 rotationMatrix(vec3 axis, float angle){',
 				'    axis = normalize(axis);',
 				'    float s = sin(angle);',
@@ -162,7 +167,6 @@ define([
 				'}',
 
 				'void main(void) {',
-				'    color = uColor;',
 
 				'    float lifeTime = timeInfo.x;',
 				'    float active = timeInfo.y;',
@@ -176,6 +180,8 @@ define([
 				'    #endif',
 
 				'    float unitAge = age / lifeTime;',
+
+				'    color = uColor * getColor(unitAge);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;',
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
@@ -232,10 +238,12 @@ define([
 			this.gravity.copy(options.gravity);
 		}
 
-		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
-		this.startColor = new Vector4(1, 1, 1, 1);
 		this.particles = [];
 		this.unsortedParticles = []; // Same as particles but unsorted
+
+		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
+		this.startColor = options.startColor !== undefined ? options.startColor : new Vector4(1, 1, 1, 1);
+		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve : null;
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
@@ -261,7 +269,7 @@ define([
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
-		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0; // TODO should be per particle
+		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
 		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
 		if (options.texture) {
@@ -380,6 +388,26 @@ define([
 					shader.setDefine('ROTATION_CURVE_CODE', value.integralToGLSL('t'));
 				} else {
 					shader.setDefine('ROTATION_CURVE_CODE', '0.0');
+				}
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent colorCurve member
+		 * @type {Vector4Curve}
+		 */
+		colorCurve: {
+			get: function () {
+				return this._colorCurve;
+			},
+			set: function (value) {
+				this._colorCurve = value;
+				var shader = this.material.shader;
+				if (value) {
+					console.log(value.toGLSL('t'))
+					shader.setDefine('COLOR_CURVE_CODE', value.toGLSL('t'));
+				} else {
+					shader.setDefine('COLOR_CURVE_CODE', 'vec4(1.0)');
 				}
 			}
 		},
@@ -806,7 +834,7 @@ define([
 		particle.emitTime = this.time; // Emitting NOW
 		particle.startPosition.copy(position);
 		particle.startDirection.copy(direction);
-		particle.active = true;
+		particle.active = 1;
 		particle.startAngle = this._generateStartAngle();
 
 		var meshVertexCount = this.mesh.vertexCount;
@@ -850,7 +878,6 @@ define([
 		if (this.sortMode === ParticleComponent.SORT_NONE) {
 			return;
 		}
-
 		var particles = this.particles;
 
 		// Update sort values
@@ -884,7 +911,8 @@ define([
 			var dir = particle.startDirection;
 			var meshVertexCount = this.mesh.meshVertexCount;
 			for (var j = 0; j < meshVertexCount; j++) {
-				timeInfo[meshVertexCount * 4  * i + j * 4 + 3] = emitTime;
+				// Todo optimzie index calculations
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = emitTime;
 
 				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
 				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;

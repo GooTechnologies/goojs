@@ -10,7 +10,7 @@ define([
 		this.lifeTime = 1;
 		this.timeScale = 0;
 		this.emitTime = 0;
-		this.active = true;
+		this.active = 1;
 		this.startPosition = new Vector3();
 		this.startDirection = new Vector3();
 		this.startAngle = 0;
@@ -20,13 +20,14 @@ define([
 	var dirDelta = new Vector3();
 	var gravityDelta = new Vector3();
 	Particle.prototype.getWorldPosition = function (store) {
+		if(!this.active) return;
 		var component = this.component;
 
 		// pos + dir * t + 0.5 * t * t * g
 		var age = component.time - this.emitTime;
 
 		if (component.loop) {
-			age = age % this.lifeTime;
+			age = age % this.component.duration;
 		}
 
 		dirDelta.copy(this.startDirection).scale(age);
@@ -35,8 +36,8 @@ define([
 
 		if (component.localSpace) {
 			// Transform to world space
-			store.applyPost(this.component.entity.transformComponent.worldTransform.rotation);
-			store.add(this.component.entity.transformComponent.worldTransform.translation);
+			store.applyPost(this.component._entity.transformComponent.worldTransform.rotation);
+			store.add(this.component._entity.transformComponent.worldTransform.translation);
 		}
 
 		return store;
