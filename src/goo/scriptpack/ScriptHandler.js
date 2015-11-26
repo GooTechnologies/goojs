@@ -82,6 +82,7 @@ define([
 		delete this._bodyCache[ref];
 	};
 
+	var updateId = 1; // Ugly hack to prevent devtools from not updating its scripts
 
 	/**
 	 * Update a user-defined script (not a script available in the engine).
@@ -110,9 +111,10 @@ define([
 			window._gooScriptFactories = {};
 		}
 
+
 		// get a script factory in string form
 		var scriptFactoryStr = [
-			'//# sourceURL=gooCustomScripts/' + encodeURIComponent(config.name) + '.js',
+			'//# sourceURL=goo://goo-custom-scripts/' + encodeURIComponent(config.name.replace(' ', '_')) + '.js?v=' + (updateId++),
 			'',
 			'// ' + config.name,
 			'',
