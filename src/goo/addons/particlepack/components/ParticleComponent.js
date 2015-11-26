@@ -883,7 +883,7 @@ define([
 		// Update sort values
 		for (var i = 0; i < particles.length; i++) {
 			var particle = particles[i];
-			particle.sortValue = particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
+			particle.sortValue = -particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
 		}
 
 		// Insertion sort in-place
@@ -934,14 +934,14 @@ define([
 		// Update index buffer
 		var mesh = this.mesh;
 		var meshIndices = mesh.getIndexBuffer();
-		var meshVertexCount = mesh.vertexCount;
 		var indices = meshData.getIndexBuffer();
+		meshData.getIndexData().setDataNeedsRefresh();
+		var meshVertexCount = mesh.vertexCount;
 		for (var i = 0; i < particles.length; i++) {
 			for (var j = 0; j < meshIndices.length; j++) {
-				//indices[particles[i].index * meshIndices.length + j] = meshIndices[j] + particles[i].index * meshVertexCount;
+				indices[i * meshIndices.length + j] = meshIndices[j] + particles[i].index * meshVertexCount;
 			}
 		}
-		//meshData.rebuildIndexData();
 	};
 
 	var tmpPos = new Vector3();

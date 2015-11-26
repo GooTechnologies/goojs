@@ -45,7 +45,7 @@ require([
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 		setTimeout(function () {
-			var max = 2;
+			var max = 2000;
 
 			// var debugs = [];
 			// for (var i = 0; i < max; i++) {
@@ -63,7 +63,7 @@ require([
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
 				duration: 1,
-				shapeType: 'box',
+				shapeType: 'sphere',
 				coneAngle: 0,
 				blending: 'TransparencyBlending',
 				renderQueue: RenderQueue.TRANSPARENT,
@@ -76,19 +76,19 @@ require([
 				textureTilesY: 1,
 				localSpace: true,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
-				// sizeCurve: new CurveSet([
-				// 	new LinearCurve({ k: 2, m: 0 }),
-				// 	new LinearCurve({ k: -2, m: 2, timeOffset: 0.5 })
-				// ]),
+				sizeCurve: new CurveSet([
+					new LinearCurve({ k: 1, m: 0 }),
+					new LinearCurve({ k: -1, m: 1, timeOffset: 0.5 })
+				]),
 				rotationSpeedCurve: new CurveSet([
 					new LinearCurve({ k: 0, m: 0 })
 				]),
 				colorCurve: new CurveSet([
 					new Vector4Curve({
-						// x: new LinearCurve({ k: 1, m: 0 }),
-						// y: new LinearCurve({ k: 1, m: 0 }),
-						// z: new LinearCurve({ k: 0, m: 1 }),
-						// w: new LinearCurve({ k: -1, m: 1 })
+						x: new LinearCurve({ k: 0, m: 1 }),
+						y: new LinearCurve({ k: -1, m: 1 }),
+						z: new LinearCurve({ k: -2, m: 1 }),
+						w: new LinearCurve({ k: -1, m: 1 })
 					})
 				]),
 				startAngle: Math.PI / 4,
@@ -121,5 +121,6 @@ require([
 	});
 	V.addLights();
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
+	V.goo.renderer.setClearColor(0, 0, 0, 1);
 	V.process();
 });
