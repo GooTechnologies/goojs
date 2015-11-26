@@ -1,3 +1,11 @@
+v0.15.20 --- 2015-11-26
+
+### Fixes
+
+  * Added touch support for button script
+  * Scripts will now update correctly in chrome devtools
+  * Handle the case where sigma < 0 in the convolution shader
+
 v0.15.19 --- 2015-11-23
 
 ### Fixes
