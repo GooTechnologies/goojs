@@ -219,7 +219,7 @@ define([
 				'#else',
 				'    vec4 col = color;',
 				'#endif',
-				'    if (col.a <= alphakill) discard;',
+				'    if (col.a < alphakill) discard;',
 				'    gl_FragColor = col;',
 				'}'
 			].join('\n')
@@ -404,7 +404,6 @@ define([
 				this._colorCurve = value;
 				var shader = this.material.shader;
 				if (value) {
-					console.log(value.toGLSL('t'))
 					shader.setDefine('COLOR_CURVE_CODE', value.toGLSL('t'));
 				} else {
 					shader.setDefine('COLOR_CURVE_CODE', 'vec4(1.0)');
@@ -662,6 +661,7 @@ define([
 		var maxParticles = this.maxParticles;
 		while (particles.length < maxParticles) {
 			var particle = new Particle(this);
+			particle.index = particles.length;
 			particles.push(particle);
 			unsortedParticles.push(particle);
 		}
@@ -883,7 +883,7 @@ define([
 		// Update sort values
 		for (var i = 0; i < particles.length; i++) {
 			var particle = particles[i];
-			particle.sortValue = -particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
+			particle.sortValue = particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
 		}
 
 		// Insertion sort in-place
@@ -904,29 +904,44 @@ define([
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
-		for (var i = 0; i < particles.length; i++) {
-			var particle = particles[i];
-			var emitTime = particle.emitTime;
-			var pos = particle.startPosition;
-			var dir = particle.startDirection;
-			var meshVertexCount = this.mesh.meshVertexCount;
-			for (var j = 0; j < meshVertexCount; j++) {
-				// Todo optimzie index calculations
-				timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = emitTime;
+		// for (var i = 0; i < particles.length; i++) {
+		// 	var particle = particles[i];
+		// 	var emitTime = particle.emitTime;
+		// 	var pos = particle.startPosition;
+		// 	var dir = particle.startDirection;
+		// 	var meshVertexCount = this.mesh.meshVertexCount;
+		// 	for (var j = 0; j < meshVertexCount; j++) {
+		// 		// Todo optimzie index calculations
+		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
+		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
+		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = particle.lifeTime;
+		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
-				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
-				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
-				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
-				startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
+		// 		startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
+		// 		startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
+		// 		startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
+		// 		startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
-				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
-				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
-				startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
-			}
-		}
+		// 		startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
+		// 		startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
+		// 		startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
+		// 	}
+		// }
 		meshData.setAttributeDataUpdated('START_POS');
 		meshData.setAttributeDataUpdated('START_DIR');
 		meshData.setAttributeDataUpdated('TIME_INFO');
+
+		// Update index buffer
+		var mesh = this.mesh;
+		var meshIndices = mesh.getIndexBuffer();
+		var meshVertexCount = mesh.vertexCount;
+		var indices = meshData.getIndexBuffer();
+		for (var i = 0; i < particles.length; i++) {
+			for (var j = 0; j < meshIndices.length; j++) {
+				//indices[particles[i].index * meshIndices.length + j] = meshIndices[j] + particles[i].index * meshVertexCount;
+			}
+		}
+		//meshData.rebuildIndexData();
 	};
 
 	var tmpPos = new Vector3();
@@ -971,6 +986,7 @@ define([
 		var maxParticles = this.maxParticles;
 		for (var i = 0; i < maxParticles; i++) {
 			var particle = new Particle(this);
+			particle.index = i;
 			this.particles.push(particle);
 			this.unsortedParticles.push(particle);
 		}

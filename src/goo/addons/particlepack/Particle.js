@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	function Particle(particleComponent) {
+		this.index = 0;
 		this.component = particleComponent;
 		this.lifeTime = 1;
 		this.timeScale = 0;
@@ -20,7 +21,7 @@ define([
 	var dirDelta = new Vector3();
 	var gravityDelta = new Vector3();
 	Particle.prototype.getWorldPosition = function (store) {
-		if(!this.active) return;
+		if(!this.active) return store;
 		var component = this.component;
 
 		// pos + dir * t + 0.5 * t * t * g
