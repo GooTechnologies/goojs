@@ -35,9 +35,9 @@ function MeshDataComponent(meshData) {
 	 */
 	this.currentPose = null; // SkeletonPose
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 MeshDataComponent.type = 'MeshDataComponent';

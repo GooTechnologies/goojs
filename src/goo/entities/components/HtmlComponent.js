@@ -27,9 +27,9 @@ var Component = require('../../entities/components/Component');
 		 */
 		this.useTransformComponent = true;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	HtmlComponent.type = 'HtmlComponent';

@@ -42,9 +42,9 @@ var ObjectUtils = require('../util/ObjectUtils');
 			}
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Matrix3._tempX = new Vector3();
@@ -1065,13 +1065,13 @@ var ObjectUtils = require('../util/ObjectUtils');
 	);
 	// SHIM END
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Matrix.addPostChecks(Matrix3.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant',
 		'fromAngles', 'rotateX', 'rotateY', 'rotateZ', 'fromAngleNormalAxis', 'lookAt',
 		'copyQuaternion', 'copy'
 	]);
-	// #endif
+	// @endif
 
 	module.exports = Matrix3;

@@ -36,9 +36,9 @@ var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
 		this.meshRendererComponent = new MeshRendererComponent();
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Dom3dComponent.type = 'Dom3dComponent';

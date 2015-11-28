@@ -2,6 +2,8 @@ var path = require('path');
 var _ = require('underscore');
 var webpack = require('webpack');
 var fs = require('fs');
+var toc = require('./tools/table-of-contents');
+var buildWatch = require('./tools/build-watch.js');
 
 var packs = {
 	fsmpack: 'goo/fsmpack',
@@ -64,12 +66,62 @@ module.exports = function (grunt) {
 			}
 		},
 
-		// is this task ever called?
+		preprocess: {
+			build : {
+				cwd: 'build',
+				src: '**.js',
+				dest: 'build/minified',
+				expand: true,
+				options: {
+					context : {
+						DEBUG: false
+					}
+				}
+			},
+		},
+
+		wrap: {
+			build: {
+				src: 'build/*.js',
+				dest: '', // Same as the infile
+				options: {
+					wrapper: [
+						'/* Goo Engine ' + (grunt.option('goo-version') || 'UNOFFICIAL') + '\n' +
+						' * Copyright 2015 Goo Technologies AB\n' +
+						' */\n',
+						''
+					]
+				}
+			},
+			minified: {
+				src: 'build/minified/*.js',
+				dest: '', // Same as the infile
+				options: {
+					wrapper: [
+						'/* Goo Engine ' + (grunt.option('goo-version') || 'UNOFFICIAL') + '\n' +
+						' * Copyright 2015 Goo Technologies AB\n' +
+						' */\n',
+						''
+					]
+				}
+			}
+		},
+
+		uglify: {
+			build: {
+				files: [{
+					expand: true,
+					cwd: 'build/minified',
+					src: '**/*.js',
+					dest: 'build/minified'
+				}]
+			}
+		},
+
 		clean: {
 			build: {
 				src: [
-					'out/',
-					'src/goo.js'
+					'build/'
 				]
 			},
 			toc: {
@@ -83,43 +135,7 @@ module.exports = function (grunt) {
 			]
 		},
 
-		'minify-pack': Object.keys(packs).reduce(function (config, packName) {
-			config[packName] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: 'full'
-			};
-
-			config[packName + '-no-mangle'] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: 'light'
-			};
-
-			config[packName + '-dev'] = {
-				packPath: packs[packName],
-				packName: packName,
-				minifyLevel: null,
-				rootPath: 'src'
-			};
-
-			return config;
-		}, {}),
-
-		'preprocess': {
-			build: {
-				defines: {
-					DEBUG: false
-				}
-			},
-			dev: {
-				defines: {
-					DEBUG: true
-				}
-			}
-		},
-
-		'generate-toc': {
+		'table-of-contents': {
 			'visual-test': {
 				path: 'visual-test',
 				title: 'Visual tests'
@@ -170,6 +186,7 @@ module.exports = function (grunt) {
 			}
 		},
 
+		// Watch the packs individually and build them
 		watch: Object.keys(packs).reduce(function (config, packName) {
 			config[packName] = {
 				files: ['src/' + packs[packName] + '/**/*.js'],
@@ -194,7 +211,6 @@ module.exports = function (grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-karma');
@@ -204,8 +220,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-keepalive');
 	grunt.loadNpmTasks('grunt-eslint');
 	grunt.loadNpmTasks('grunt-webpack');
-
-	grunt.loadTasks('tools/grunt_tasks');
+	grunt.loadNpmTasks('grunt-preprocess');
 
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
 	grunt.registerTask('tern',		 ['shell:tern']);
@@ -222,45 +237,17 @@ module.exports = function (grunt) {
 		fs.chmodSync('.git/hooks/pre-commit', '777');
 	});
 
-	var buildPackTasks = _.map(packs, function (packPath, packName) {
-		return 'minify-pack:' + packName;
+	grunt.registerMultiTask('table-of-contents', 'Generates the Table of contents for a directory', function () {
+		toc.run(
+			this.data.path,
+			this.data.title
+		);
 	});
 
-	var buildPackNoMangleTasks = _.map(packs, function (packPath, packName) {
-		return 'minify-pack:' + packName + '-no-mangle';
+	grunt.registerTask('manual-watch', function () {
+		buildWatch.run();
 	});
 
-	var buildPackDevTasks = _.map(packs, function (packPath, packName) {
-		return 'minify-pack:' + packName + '-dev';
-	});
-
-	grunt.registerTask('minify', [
-		'preprocess:build',
-		'minify-main:build',
-		'uglify:build',
-		'wrap'
-	].concat(buildPackTasks));
-
-	grunt.registerTask('minify-no-mangle', [
-		'preprocess:build',
-		'minify-main:no-mangle',
-		'uglify:build',
-		'wrap'
-	].concat(buildPackNoMangleTasks));
-
-	grunt.registerTask('minify-dev', [
-		'preprocess:build',
-		'minify-main:dev',
-		'uglify:build',
-		'wrap'
-	].concat(buildPackDevTasks));
-
-	// skip the preprocess and minify only the engine
-	grunt.registerTask('minify-engine-dev', [
-		'minify-main:dev',
-		'uglify:build',
-		'wrap'
-	]);
-
-	grunt.registerTask('default', ['minify']);
+	grunt.registerTask('default', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents']);
+	grunt.registerTask('dev', ['webpack', 'wrap']);
 };

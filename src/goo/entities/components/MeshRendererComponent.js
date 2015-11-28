@@ -59,9 +59,9 @@ var Material = require('../../renderer/Material');
 
 		this._renderDistance = 0;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	MeshRendererComponent.type = 'MeshRendererComponent';

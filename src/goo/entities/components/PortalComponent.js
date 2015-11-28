@@ -47,9 +47,9 @@ var RenderTarget = require('../../renderer/pass/RenderTarget');
 			this.secondaryTarget = new RenderTarget(height, height / aspect);
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	PortalComponent.type = 'PortalComponent';

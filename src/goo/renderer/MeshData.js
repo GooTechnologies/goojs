@@ -46,9 +46,9 @@ function MeshData(attributeMap, vertexCount, indexCount) {
 	this.rebuildData(this.vertexCount, this.indexCount);
 
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 MeshData.MESH = 0;

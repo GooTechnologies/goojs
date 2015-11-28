@@ -16,11 +16,11 @@ var Vector4 = require('./Vector4');
 	 * var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)
 	 */
 	function Vector3(x, y, z) {
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		this._x = 0;
 		this._y = 0;
 		this._z = 0;
-		// #endif
+		// @endif
 
 		if (arguments.length === 0) {
 			// Nothing given
@@ -44,18 +44,18 @@ var Vector4 = require('./Vector4');
 			this.z = z;
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector3.prototype.constructor = Vector3;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.setupAliases(Vector3.prototype, [['x'], ['y'], ['z']]);
 	Vector.setupIndices(Vector3.prototype, 3);
-	// #endif
+	// @endif
 
 	Vector.setupAliases(Vector3.prototype, [['u', 'r'], ['v', 'g'], ['w', 'b']]);
 
@@ -1009,12 +1009,12 @@ var Vector4 = require('./Vector4');
 	});
 	// SHIM END
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.addReturnChecks(Vector3.prototype, [
 		'dot', 'dotDirect',
 		'length', 'lengthSquared',
 		'distance', 'distanceSquared'
 	]);
-	// #endif
+	// @endif
 
 	module.exports = Vector3;

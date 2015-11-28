@@ -42,9 +42,9 @@ var SystemBus = require('../../entities/SystemBus');
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	CameraComponent.type = 'CameraComponent';

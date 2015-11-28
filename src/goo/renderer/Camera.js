@@ -96,9 +96,9 @@ var BoundingVolume = require('../renderer/bounds/BoundingVolume');
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	var newDirection = new Vector3(); // tmp

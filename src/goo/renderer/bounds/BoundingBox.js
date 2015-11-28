@@ -20,9 +20,9 @@ var MathUtils = require('../../math/MathUtils');
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	var tmpVec1 = new Vector3();

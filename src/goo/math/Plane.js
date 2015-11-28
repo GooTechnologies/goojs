@@ -13,9 +13,9 @@ var Vector3 = require('./Vector3');
 		this.normal = normal ? normal.clone() : Vector3.UNIT_Y.clone();
 		this.constant = isNaN(constant) ? 0 : constant;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	// TODO: add Object.freeze? - Object.freeze is still too slow unfortunately

@@ -17,9 +17,9 @@ var Light = require('../../renderer/light/Light');
 		 */
 		this.range = 1000;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);

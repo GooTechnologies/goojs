@@ -20,12 +20,12 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @param {number} w
 	 */
 	function Quaternion(x, y, z, w) {
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		this._x = 0;
 		this._y = 0;
 		this._z = 0;
 		this._w = 1;
-		// #endif
+		// @endif
 
 		if (arguments.length === 0) {
 			// Nothing given
@@ -52,14 +52,14 @@ var ObjectUtils = require('../util/ObjectUtils');
 			this.w = w;
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
-	// #endif
+	// @endif
 
 	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
 	Quaternion.prototype.dot = Vector4.prototype.dot;
@@ -441,13 +441,13 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return this.x * q.x + this.y * q.y + this.z * q.z + this.w * q.w;
 	};
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.addReturnChecks(Quaternion.prototype, [
 		'dot', 'dotDirect',
 		'length', 'lengthSquared',
 		'distance', 'distanceSquared'
 	]);
-	// #endif
+	// @endif
 
 	/**
 	 * Sets the vector's values from 4 numeric arguments

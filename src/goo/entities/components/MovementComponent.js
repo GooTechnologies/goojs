@@ -16,9 +16,9 @@ function MovementComponent() {
 	this.velocity = new Vector3();
 	this.rotationVelocity = new Vector3();
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 MovementComponent.type = 'MovementComponent';

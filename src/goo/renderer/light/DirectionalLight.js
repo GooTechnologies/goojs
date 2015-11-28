@@ -19,9 +19,9 @@ var Light = require('../../renderer/light/Light');
 		 */
 		this.direction = new Vector3();
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	DirectionalLight.prototype = Object.create(Light.prototype);

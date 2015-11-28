@@ -128,9 +128,9 @@ function Shader(name, shaderDefinition) {
 	this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 	this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 // Shader.id = 0;

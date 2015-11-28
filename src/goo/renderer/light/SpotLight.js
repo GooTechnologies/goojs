@@ -44,9 +44,9 @@ var Light = require('../../renderer/light/Light');
 		/** @type {number} */
 		this.exponent = 16.0;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);

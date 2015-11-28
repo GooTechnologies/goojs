@@ -115,9 +115,9 @@ var ObjectUtils = require('../util/ObjectUtils');
 
 		this.textureRecord = {};
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	/**

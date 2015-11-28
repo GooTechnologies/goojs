@@ -11,9 +11,9 @@ var Transform = require('../math/Transform');
 	function RenderInfo() {
 		this.reset();
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	/**

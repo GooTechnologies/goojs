@@ -16,10 +16,10 @@ var Vector4 = require('./Vector4');
 	 * var v2 = new Vector2(1, 2); // v2 == (1, 2)
 	 */
 	function Vector2(x, y) {
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		this._x = 0;
 		this._y = 0;
-		// #endif
+		// @endif
 
 		if (arguments.length === 0) {
 			// Nothing given
@@ -40,18 +40,18 @@ var Vector4 = require('./Vector4');
 			this.y = y;
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Vector2.prototype = Object.create(Vector.prototype);
 	Vector2.prototype.constructor = Vector2;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.setupAliases(Vector2.prototype, [['x'], ['y']]);
 	Vector.setupIndices(Vector2.prototype, 2);
-	// #endif
+	// @endif
 
 	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
 
@@ -558,13 +558,13 @@ var Vector4 = require('./Vector4');
 		return [this.x, this.y];
 	};
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.addReturnChecks(Vector2.prototype, [
 		'dot', 'dotDirect',
 		'length', 'lengthSquared',
 		'distance', 'distanceSquared'
 	]);
-	// #endif
+	// @endif
 
 	// SHIM START
 	Object.defineProperty(Vector2.prototype, 'data', {

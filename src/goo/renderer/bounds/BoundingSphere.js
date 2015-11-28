@@ -16,9 +16,9 @@ var MeshData = require('../../renderer/MeshData');
 		BoundingVolume.call(this, center);
 		this.radius = radius !== undefined ? radius : 1;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	var tmpVec = new Vector3();

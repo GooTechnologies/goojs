@@ -16,12 +16,12 @@ var Vector = require('./Vector');
  * var v2 = new Vector4(1, 2, 3, 4); // v2 == (1, 2, 3, 4)
  */
 function Vector4(x, y, z, w) {
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	this._x = 0;
 	this._y = 0;
 	this._z = 0;
 	this._w = 0;
-	// #endif
+	// @endif
 
 	if (arguments.length === 0) {
 		// Nothing given
@@ -48,18 +48,18 @@ function Vector4(x, y, z, w) {
 		this.w = w;
 	}
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 Vector4.prototype = Object.create(Vector.prototype);
 Vector4.prototype.constructor = Vector4;
 
-// #ifdef DEBUG
+// @ifdef DEBUG
 Vector.setupAliases(Vector4.prototype, [['x'], ['y'], ['z'], ['w']]);
 Vector.setupIndices(Vector4.prototype, 4);
-// #endif
+// @endif
 
 Vector.setupAliases(Vector4.prototype, [['r'], ['g'], ['b'], ['a']]);
 
@@ -651,13 +651,13 @@ Vector4.prototype.toArray = function () {
 	return [this.x, this.y, this.z, this.w];
 };
 
-// #ifdef DEBUG
+// @ifdef DEBUG
 Vector.addReturnChecks(Vector4.prototype, [
 	'dot', 'dotDirect',
 	'length', 'lengthSquared',
 	'distance', 'distanceSquared'
 ]);
-// #endif
+// @endif
 
 // SHIM START
 Object.defineProperty(Vector4.prototype, 'data', {

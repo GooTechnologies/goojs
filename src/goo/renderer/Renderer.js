@@ -167,9 +167,9 @@ var MathUtils = require('../math/MathUtils');
 
 		this._definesIndices = [];
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	/**

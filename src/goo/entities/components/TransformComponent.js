@@ -44,9 +44,9 @@ var EntitySelection = require('../../entities/EntitySelection');
 		this._dirty = true;
 		this._updated = false;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	TransformComponent.type = 'TransformComponent';

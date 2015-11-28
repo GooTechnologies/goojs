@@ -37,9 +37,9 @@ var rsvp = require('../util/rsvp');
 
 		this._paused = false;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	/**

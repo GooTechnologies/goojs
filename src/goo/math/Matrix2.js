@@ -27,9 +27,9 @@ var ObjectUtils = require('../util/ObjectUtils');
 			}
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Matrix2.prototype = Object.create(Matrix.prototype);
@@ -321,13 +321,13 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return new Matrix2().copy(this);
 	};
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Matrix.addPostChecks(Matrix2.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant',
 		'copy'
 	]);
-	// #endif
+	// @endif
 
 	// SHIM START
 	/**

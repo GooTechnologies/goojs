@@ -38,9 +38,9 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			this.scripts = [];
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	ScriptComponent.type = 'ScriptComponent';

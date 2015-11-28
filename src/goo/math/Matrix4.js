@@ -29,9 +29,9 @@ var ObjectUtils = require('../util/ObjectUtils');
 			}
 		}
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	Matrix4.prototype = Object.create(Matrix.prototype);
@@ -1119,12 +1119,12 @@ var ObjectUtils = require('../util/ObjectUtils');
 
 	// SHIMS END
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Matrix.addPostChecks(Matrix4.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant',
 		'copy'
 	]);
-	// #endif
+	// @endif
 
 	module.exports = Matrix4;

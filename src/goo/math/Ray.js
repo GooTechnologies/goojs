@@ -10,9 +10,9 @@ var MathUtils = require('./MathUtils');
 		this.origin = origin ? origin.clone() : new Vector3();
 		this.direction = direction ? direction.clone() : Vector3.UNIT_Z.clone();
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	var tmpVec1 = new Vector3();

@@ -53,9 +53,9 @@ var MeshData = require('../../renderer/MeshData');
 
 		this.enabled = true;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	ParticleComponent.type = 'ParticleComponent';

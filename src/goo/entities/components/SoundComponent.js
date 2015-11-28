@@ -38,9 +38,9 @@ var MathUtils = require('../../math/MathUtils');
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	SoundComponent.type = 'SoundComponent';

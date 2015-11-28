@@ -11,7 +11,6 @@
     }
   ],
   "dependencies": {
-    "requirejs": ">=2.1.2"
   },
   "devDependencies": {
     "async": "~0.9.0",
@@ -30,12 +29,12 @@
     "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-jshint": "~0.11.2",
-    "grunt-contrib-requirejs": "~0.4.4",
     "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-eslint": "^17.2.0",
     "grunt-karma": "0.10.1",
     "grunt-keepalive": "0.0.1",
+    "grunt-preprocess": "^5.0.1",
     "grunt-shell": "^1.1.2",
     "grunt-webpack": "^1.0.11",
     "grunt-wrap": "~0.3.0",

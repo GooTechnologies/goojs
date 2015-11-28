@@ -142,9 +142,9 @@ var ObjectUtils = require('../util/ObjectUtils');
 		this.fullOverride = false;
 		this.errorOnce = false;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	/**

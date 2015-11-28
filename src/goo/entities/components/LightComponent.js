@@ -25,9 +25,9 @@ var Light = require('../../renderer/light/Light');
 		 */
 		this.hidden = false;
 
-		// #ifdef DEBUG
+		// @ifdef DEBUG
 		Object.seal(this);
-		// #endif
+		// @endif
 	}
 
 	LightComponent.type = 'LightComponent';

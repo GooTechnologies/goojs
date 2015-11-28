@@ -16,9 +16,9 @@ var MathUtils = require('./MathUtils');
 	}
 
 	var COMPONENT_NAMES = ['x', 'y', 'z', 'w'];
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	var COMPONENT_NAMES = ['_x', '_y', '_z', '_w'];
-	// #endif
+	// @endif
 
 	/**
 	 * Binds aliases to the different vector components.
@@ -38,18 +38,18 @@ var MathUtils = require('./MathUtils');
 					set: function (value) {
 						this[componentName] = value;
 
-						// #ifdef DEBUG
+						// @ifdef DEBUG
 						if (isNaN(this[componentName])) {
 							throw new Error('Tried setting NaN to vector component ' + alias);
 						}
-						// #endif
+						// @endif
 					}
 				});
 			});
 		});
 	};
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Vector.setupIndices = function (prototype, count) {
 		var raise = function () {
 			throw new Error('Vector component access through indices is not supported anymore');
@@ -90,7 +90,7 @@ var MathUtils = require('./MathUtils');
 	Vector.addReturnChecks = function (object, methodNames) {
 		methodNames.forEach(Vector.addReturnCheck.bind(null, object));
 	};
-	// #endif
+	// @endif
 
 	// SHIM START
 	Object.defineProperty(Vector.prototype, 'data', {
