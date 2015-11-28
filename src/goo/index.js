@@ -176,3 +176,7 @@ module.exports = {
 	TangentGenerator: require('./util/TangentGenerator'),
 	TWEEN: require('./util/TWEEN')
 };
+
+if (typeof(window) !== 'undefined') {
+	window.goo = module.exports;
+}

@@ -58,7 +58,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	ScriptComponent.prototype.setup = function (entity) {
 		var systemContext = entity._world.getSystem('ScriptSystem').context;
 		var componentContext = Object.create(systemContext);
-		_.extend(componentContext, {
+		ObjectUtils.extend(componentContext, {
 			entity: entity,
 			entityData: {}
 		});
