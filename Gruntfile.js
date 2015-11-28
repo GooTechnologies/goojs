@@ -1,31 +1,8 @@
 var path = require('path');
-var _ = require('underscore');
 var webpack = require('webpack');
 var fs = require('fs');
 var toc = require('./tools/table-of-contents');
 var buildWatch = require('./tools/build-watch.js');
-
-var packs = {
-	fsmpack: 'goo/fsmpack',
-	geometrypack: 'goo/geometrypack',
-	quadpack: 'goo/quadpack',
-	timelinepack: 'goo/timelinepack',
-	debugpack: 'goo/debugpack',
-	scriptpack: 'goo/scriptpack',
-	p2pack: 'goo/addons/p2pack',
-	box2dpack: 'goo/addons/box2dpack',
-	terrainpack: 'goo/addons/terrainpack',
-	ammopack: 'goo/addons/ammopack',
-	cannonpack: 'goo/addons/cannonpack',
-	waterpack: 'goo/addons/waterpack',
-	linerenderpack: 'goo/addons/linerenderpack',
-	animationpack: 'goo/animationpack',
-	soundmanager2pack: 'goo/addons/soundmanager2pack',
-	gamepadpack: 'goo/addons/gamepadpack',
-	passpack: 'goo/passpack',
-	gizmopack: 'goo/util/gizmopack',
-	physicspack: 'goo/addons/physicspack'
-};
 
 module.exports = function (grunt) {
 
@@ -70,7 +47,7 @@ module.exports = function (grunt) {
 			build : {
 				cwd: 'build',
 				src: '**.js',
-				dest: 'build/minified',
+				dest: 'build',
 				expand: true,
 				options: {
 					context : {
@@ -92,18 +69,6 @@ module.exports = function (grunt) {
 						''
 					]
 				}
-			},
-			minified: {
-				src: 'build/minified/*.js',
-				dest: '', // Same as the infile
-				options: {
-					wrapper: [
-						'/* Goo Engine ' + (grunt.option('goo-version') || 'UNOFFICIAL') + '\n' +
-						' * Copyright 2015 Goo Technologies AB\n' +
-						' */\n',
-						''
-					]
-				}
 			}
 		},
 
@@ -111,10 +76,31 @@ module.exports = function (grunt) {
 			build: {
 				files: [{
 					expand: true,
-					cwd: 'build/minified',
+					cwd: 'build',
 					src: '**/*.js',
-					dest: 'build/minified'
+					dest: 'build'
 				}]
+			}
+		},
+
+		copy: {
+			lib: {
+				files: [{
+					expand: true,
+					cwd: 'build',
+					src: '*.js',
+					dest: 'lib/'
+				}]
+			}
+		},
+
+		watch: {
+			dev: {
+				files: ['src/**/*.js'],
+				tasks: ['dev'],
+				options: {
+					spawn: false
+				}
 			}
 		},
 
@@ -186,20 +172,6 @@ module.exports = function (grunt) {
 			}
 		},
 
-		// Watch the packs individually and build them
-		watch: Object.keys(packs).reduce(function (config, packName) {
-			config[packName] = {
-				files: ['src/' + packs[packName] + '/**/*.js'],
-				tasks: ['minify-pack:' + packName + '-dev']
-			};
-			return config;
-		}, {
-			engine: {
-				files: ['src/**/*.js', '!src/**/*pack/**/*.js'],
-				tasks: ['minify-main:dev', 'uglify:build', 'wrap']
-			}
-		}),
-
 		eslint: {
 			options: {
 				configFile: '.eslintrc'
@@ -221,6 +193,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-eslint');
 	grunt.loadNpmTasks('grunt-webpack');
 	grunt.loadNpmTasks('grunt-preprocess');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
 	grunt.registerTask('tern',		 ['shell:tern']);
@@ -248,6 +221,6 @@ module.exports = function (grunt) {
 		buildWatch.run();
 	});
 
-	grunt.registerTask('default', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents']);
-	grunt.registerTask('dev', ['webpack', 'wrap']);
+	grunt.registerTask('default', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents', 'copy']);
+	grunt.registerTask('dev', ['webpack', 'copy']);
 };
