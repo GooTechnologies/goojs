@@ -1,14 +1,3 @@
-define([
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/util/Pool'
-], function (
-	Transform,
-	Vector3,
-	Pool
-) {
-	'use strict';
-
 	function createPool() {
 		return new Pool({
 			create: function () { return new Vector3(); },
@@ -66,4 +55,3 @@ define([
 			expect(pool._objects.length).toEqual(0);
 		});
 	});
-});

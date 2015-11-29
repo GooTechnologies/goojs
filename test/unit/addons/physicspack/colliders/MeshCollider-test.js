@@ -1,16 +1,3 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/addons/physicspack/colliders/MeshCollider',
-	'goo/shapes/Sphere'
-], function (
-	Vector3,
-	Transform,
-	MeshCollider,
-	Sphere
-) {
-	'use strict';
-
 	describe('MeshCollider', function () {
 		it('can clone', function () {
 			var collider = new MeshCollider({
@@ -32,4 +19,3 @@ define([
 			expect(collider.scale).toEqual(new Vector3(2, 6, 12));
 		});
 	});
-});

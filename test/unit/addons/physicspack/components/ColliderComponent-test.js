@@ -1,28 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/PhysicsMaterial',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/entities/systems/TransformSystem',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/RaycastResult',
-	'goo/addons/physicspack/colliders/SphereCollider'
-], function (
-	World,
-	PhysicsMaterial,
-	PhysicsSystem,
-	ColliderSystem,
-	TransformSystem,
-	Vector3,
-	RigidBodyComponent,
-	ColliderComponent,
-	RaycastResult,
-	SphereCollider
-) {
-	'use strict';
-
 	/* global CANNON */
 
 	describe('ColliderComponent', function () {
@@ -83,4 +58,3 @@ define([
 			expect(colliderComponent.cannonBody).toBeFalsy();
 		});
 	});
-});

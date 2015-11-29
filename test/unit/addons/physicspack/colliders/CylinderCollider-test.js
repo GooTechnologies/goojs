@@ -1,14 +1,3 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/addons/physicspack/colliders/CylinderCollider'
-], function (
-	Vector3,
-	Transform,
-	CylinderCollider
-) {
-	'use strict';
-
 	describe('CylinderCollider', function () {
 		it('can clone', function () {
 			var collider = new CylinderCollider({
@@ -31,4 +20,3 @@ define([
 			expect(collider.height).toEqual(9);
 		});
 	});
-});

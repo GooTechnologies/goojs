@@ -1,32 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/PhysicsMaterial',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/joints/BallJoint',
-	'goo/addons/physicspack/joints/HingeJoint',
-	'goo/entities/SystemBus'
-], function (
-	World,
-	PhysicsSystem,
-	PhysicsMaterial,
-	Vector3,
-	Quaternion,
-	RigidBodyComponent,
-	ColliderComponent,
-	SphereCollider,
-	BoxCollider,
-	BallJoint,
-	HingeJoint,
-	SystemBus
-) {
-	'use strict';
-
 	/* global CANNON */
 
 	describe('RigidBodyComponent', function () {
@@ -255,4 +226,3 @@ define([
 			subEntity.removeFromWorld();
 		});
 	});
-});

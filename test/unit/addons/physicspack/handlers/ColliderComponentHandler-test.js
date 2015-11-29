@@ -1,30 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/handlers/ColliderComponentHandler',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/colliders/Collider',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/math/Vector3',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	ColliderComponentHandler,
-	ColliderComponent,
-	Collider,
-	SphereCollider,
-	BoxCollider,
-	PlaneCollider,
-	CylinderCollider,
-	Vector3,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('ColliderComponentHandler', function () {
 		var loader;
 
@@ -114,4 +87,3 @@ define([
 			});
 		});
 	});
-});

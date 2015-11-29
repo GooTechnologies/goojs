@@ -1,34 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/MeshCollider',
-
-	'goo/renderer/MeshData',
-	'goo/shapes/Sphere'
-], function (
-	World,
-	PhysicsDebugRenderSystem,
-	PhysicsSystem,
-	ColliderSystem,
-
-	SphereCollider,
-	BoxCollider,
-	CylinderCollider,
-	PlaneCollider,
-	MeshCollider,
-
-	MeshData,
-	Sphere
-) {
-	'use strict';
-
 	describe('PhysicsDebugRenderSystem', function () {
 		var world, system;
 
@@ -72,4 +41,3 @@ define([
 			expect(system.getMeshData(meshCollider)).toEqual(jasmine.any(MeshData));
 		});
 	});
-});

@@ -1,4 +1,4 @@
-(function(){
+(function () {
 	describe('Shader', function () {
 		describe('DefineKey', function () {
 			var shader;

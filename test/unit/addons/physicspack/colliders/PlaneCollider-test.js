@@ -1,14 +1,3 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/addons/physicspack/colliders/PlaneCollider'
-], function (
-	Vector3,
-	Transform,
-	PlaneCollider
-) {
-	'use strict';
-
 	describe('PlaneCollider', function () {
 		it('can clone', function () {
 			var collider = new PlaneCollider();
@@ -24,4 +13,3 @@ define([
 			expect(collider).toEqual(collider2);
 		});
 	});
-});

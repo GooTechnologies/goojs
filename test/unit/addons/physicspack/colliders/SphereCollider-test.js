@@ -1,14 +1,3 @@
-define([
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/addons/physicspack/colliders/SphereCollider'
-], function (
-	Vector3,
-	Transform,
-	SphereCollider
-) {
-	'use strict';
-
 	describe('SphereCollider', function () {
 		it('can clone', function () {
 			var collider = new SphereCollider({
@@ -28,4 +17,3 @@ define([
 			expect(collider.radius).toEqual(6);
 		});
 	});
-});

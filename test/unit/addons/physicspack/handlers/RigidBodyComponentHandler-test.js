@@ -1,20 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/handlers/RigidBodyComponentHandler',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/math/Vector3'
-], function (
-	World,
-	RigidBodyComponent,
-	RigidBodyComponentHandler,
-	DynamicLoader,
-	Configs,
-	Vector3
-) {
-	'use strict';
-
 	describe('RigidBodyComponentHandler', function () {
 		var loader;
 
@@ -52,4 +35,3 @@ define([
 			});
 		});
 	});
-});

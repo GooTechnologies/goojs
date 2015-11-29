@@ -1,26 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/RaycastResult',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/entities/SystemBus',
-	'test/CustomMatchers'
-], function (
-	World,
-	PhysicsSystem,
-	Vector3,
-	RigidBodyComponent,
-	ColliderComponent,
-	RaycastResult,
-	SphereCollider,
-	SystemBus,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('PhysicsSystem', function () {
 		var world, system;
 
@@ -385,4 +362,3 @@ define([
 			world.process();
 		});
 	});
-});
