@@ -1,3 +1,4 @@
+(function(){
 	describe('Shader', function () {
 		describe('DefineKey', function () {
 			var shader;
@@ -287,7 +288,7 @@
 		});
 	});
 
-	var createContext = function () {
+	function createContext () {
 		/* jshint unused:false */
 		return {
 			createShader: function (type) { return {}; },
@@ -329,7 +330,7 @@
 			uniformMatrix3fv: function (location, transpose, data) {},
 			uniformMatrix4fv: function (location, transpose, data) {},
 		};
-	};
+	}
 
 	var miniShaderDefinition = {
 		attributes : {
@@ -360,3 +361,4 @@
 		'}'
 		].join('\n')
 	};
+})();
