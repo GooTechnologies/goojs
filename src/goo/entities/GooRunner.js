@@ -311,8 +311,6 @@ var Material = require('../renderer/Material');
 			return;
 		}
 
-		tpf = Math.max(Math.min(tpf, 0.5), 0.0001); //! AT: MathUtils.clamp
-
 		// Smooth out the tpf
 		tpfSmoothingArray[tpfIndex] = tpf;
 		tpfIndex = (tpfIndex + 1) % this.tpfSmoothingCount;
@@ -321,11 +319,12 @@ var Material = require('../renderer/Material');
 			avg += tpfSmoothingArray[i];
 		}
 		avg /= tpfSmoothingArray.length;
-		this.world.tpf = avg;
+		this.world.smoothedTpf = avg;
 
+		this.world.tpf = tpf;
 		this.world.time += this.world.tpf;
-		World.time = this.world.time;
-		World.tpf = this.world.tpf;
+		World.time = this.world.time; // get rid of this
+		World.tpf = this.world.tpf; // get rid of this
 		this.start = time;
 
 		// execute callbacks

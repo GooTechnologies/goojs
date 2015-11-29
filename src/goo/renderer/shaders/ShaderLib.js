@@ -782,6 +782,10 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		'}'
 		].join('\n'),
 		buildKernel: function (sigma) {
+			// Ensure no negative values are used; otherwise we get an invalid
+			// kernel size.
+			sigma = Math.abs(sigma);
+
 			// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
 			function gauss(x, sigma) {
 				return Math.exp(-(x * x) / (2.0 * sigma * sigma));
