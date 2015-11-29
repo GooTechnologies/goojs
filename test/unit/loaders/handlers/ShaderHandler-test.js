@@ -1,19 +1,6 @@
-define([
-	'goo/renderer/Shader',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/entities/GooRunner'
-], function (
-	Shader,
-	DynamicLoader,
-	Configs,
-	GooRunner
-) {
-	'use strict';
-
 	describe('ShaderHandler', function () {
 		var gooRunner, loader;
-		
+
 		beforeEach(function () {
 			gooRunner = new GooRunner({
 				logo: false,
@@ -57,4 +44,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,12 +1,3 @@
-define([
-	'goo/math/Vector2',
-	'test/CustomMatchers'
-], function (
-	Vector2,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Vector2', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -322,7 +313,7 @@ define([
 					expect(Vector2.add(b, [1, 2])).toBeCloseToVector(new Vector2(2, 4));
 					expect(Vector2.add([1, 2], b)).toBeCloseToVector(new Vector2(2, 4));
 				});
-			});		
+			});
 
 			describe('sub', function () {
 				it('can perform subtraction', function () {
@@ -525,4 +516,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,20 +1,3 @@
-define([
-	'goo/renderer/Camera',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Vector3',
-	'goo/entities/Entity',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/SimplePartitioner'
-], function (
-	Camera,
-	BoundingSphere,
-	Vector3,
-	Entity,
-	MeshRendererComponent,
-	SimplePartitioner
-	) {
-	'use strict';
-
 	describe('SimplePartitioner', function () {
 		var partitioner, camera;
 
@@ -75,5 +58,3 @@ define([
 			});
 		});
 	});
-});
-

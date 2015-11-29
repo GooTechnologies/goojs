@@ -1,16 +1,3 @@
-define([
-	'goo/math/Matrix3',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'test/CustomMatchers'
-], function (
-	Matrix3,
-	Vector3,
-	Quaternion,
-	CustomMatchers
-	) {
-	'use strict';
-
 	describe('Matrix3', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -312,4 +299,3 @@ define([
 			});
 		});
 	});
-});

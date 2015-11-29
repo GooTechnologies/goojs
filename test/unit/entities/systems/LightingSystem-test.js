@@ -1,18 +1,3 @@
-define([
-	'goo/entities/Entity',
-	'goo/entities/World',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/systems/LightingSystem'
-], function (
-	Entity,
-	World,
-	TransformComponent,
-	LightComponent,
-	LightingSystem
-) {
-	'use strict';
-
 	describe('LightingSystem', function () {
 		describe('inserted', function () {
 			it('will update a light\'s transform', function () {
@@ -64,4 +49,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,18 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/CameraComponent',
-	'goo/renderer/Camera',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	CameraComponent,
-	Camera,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-	
 	describe('CameraComponentHandler', function () {
 		var loader;
 
@@ -50,4 +35,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,16 +1,3 @@
-define([
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/math/Transform',
-	'goo/renderer/MeshData'
-], function (
-	Box,
-	Quad,
-	Transform,
-	MeshData
-) {
-	'use strict';
-
 	describe('MeshData', function () {
 		it('getNormalsMeshData: number of vertices and indices', function () {
 			var box = new Box();
@@ -117,4 +104,3 @@ define([
 			expect(getAttributeBuffer(MeshData.JOINTIDS)).toBeUndefined();
 		});
 	});
-});

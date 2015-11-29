@@ -1,16 +1,3 @@
-define([
-	'goo/entities/GooRunner',
-	'goo/loaders/DynamicLoader',
-	'goo/passpack/PosteffectsHandler',
-	'test/loaders/Configs'
-], function (
-	GooRunner,
-	DynamicLoader,
-	PosteffectsHandler,
-	Configs
-) {
-	'use strict';
-
 	describe('PosteffectsHandler', function () {
 		var gooRunner, loader;
 
@@ -71,4 +58,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,19 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/quadpack/QuadComponent',
-	'goo/quadpack/QuadComponentHandler'
-], function (
-	World,
-	Material,
-	DynamicLoader,
-	Configs,
-	QuadComponent
-) {
-	'use strict';
-
 	describe('QuadComponentHandler', function () {
 		var loader;
 
@@ -50,4 +34,3 @@ define([
 			});
 		});
 	});
-});

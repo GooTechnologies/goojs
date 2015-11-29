@@ -1,18 +1,3 @@
-define([
-	'goo/renderer/Camera',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	Camera,
-	BoundingSphere,
-	BoundingBox,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Camera', function () {
 		var camera;
 
@@ -154,4 +139,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,46 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/systems/System',
-	'goo/entities/components/Component',
-	'goo/shapes/Box',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/entities/systems/ScriptSystem',
-	'goo/entities/Entity',
-	'goo/entities/systems/TransformSystem',
-	'goo/entities/managers/Manager',
-	'goo/entities/EntitySelection'
-], function (
-	World,
-	System,
-	Component,
-	Box,
-	Material,
-	ShaderLib,
-	Camera,
-	PointLight,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	CameraComponent,
-	LightComponent,
-	ScriptComponent,
-	ScriptSystem,
-	Entity,
-	TransformSystem,
-	Manager,
-	EntitySelection
-) {
-	'use strict';
-
 	describe('World with Systems', function () {
 		var world;
 
@@ -469,4 +426,3 @@ define([
 			expect(selection.toArray()).toEqual([entity1, entity3]);
 		});
 	});
-});

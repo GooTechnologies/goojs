@@ -1,18 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/Material',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	MeshRendererComponent,
-	Material,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-	
 	describe('MeshRendererComponentHandler', function () {
 		var loader;
 
@@ -58,4 +43,3 @@ define([
 			});
 		});
 	});
-});

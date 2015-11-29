@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Cone'
-], function (
-	Cone
-) {
-	'use strict';
-
 	describe('Cone', function () {
 		var a = new Cone(8, 1, 1);
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(48);
 		});
 	});
-});

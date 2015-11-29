@@ -1,20 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/entities/components/TransformComponent',
-	'test/CustomMatchers',
-	'goo/math/Vector3'
-], function (
-	World,
-	DynamicLoader,
-	Configs,
-	TransformComponent,
-	CustomMatchers,
-	Vector3
-) {
-	'use strict';
-
 	describe('TransformComponentHandler', function () {
 		var loader;
 
@@ -135,4 +118,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,14 +1,3 @@
-define([
-	'goo/math/Vector',
-	'goo/math/Matrix',
-	'test/CustomMatchers'
-], function (
-	Vector,
-	Matrix,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Vector', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -174,4 +163,3 @@ define([
 			expect(a.toString()).toEqual('[1, 2]');
 		});
 	});
-});

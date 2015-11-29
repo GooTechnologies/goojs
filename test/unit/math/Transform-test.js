@@ -1,14 +1,3 @@
-define([
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	Transform,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	/**
 	 * Checks whether Transform.invert works on a test vector.
 	 */
@@ -225,4 +214,3 @@ define([
 			});
 		});
 	});
-});

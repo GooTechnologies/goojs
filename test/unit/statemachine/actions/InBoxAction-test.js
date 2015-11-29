@@ -1,12 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/InBoxAction',
-	'goo/math/Vector3'
-], function (
-	InBoxAction,
-	Vector3
-) {
-	'use strict';
-
 	describe('InBoxAction', function () {
 		describe('Check pos against boxes', function () {
 			var inBoxAction;
@@ -96,4 +87,3 @@ define([
 			});
 		});
 	});
-});

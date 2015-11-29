@@ -1,12 +1,3 @@
-define([
-	'goo/renderer/Renderer',
-	'goo/renderer/RendererRecord'
-], function (
-	Renderer,
-	RendererRecord
-) {
-	'use strict';
-	
 	describe('Renderer', function () {
 		describe('findOrCacheMaterialShader', function () {
 			var renderer;
@@ -67,4 +58,3 @@ define([
 			});
 		});
 	});
-});

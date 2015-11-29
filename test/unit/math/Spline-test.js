@@ -1,18 +1,3 @@
-define([
-	'goo/math/splines/Spline',
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'test/CustomMatchers'
-], function (
-	Spline,
-	Vector2,
-	Vector3,
-	Vector4,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Spline', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -119,4 +104,3 @@ define([
 			});
 		});
 	});
-});

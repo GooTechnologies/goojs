@@ -1,10 +1,3 @@
-define([
-	'goo/util/Ajax'
-], function (
-	Ajax
-) {
-	'use strict';
-
 	var TestResponses = {
 		'good-url': {
 			readyState: 4,
@@ -97,4 +90,3 @@ define([
 			spyOn(a, 'reject').and.callThrough();
 		});
 	});
-});

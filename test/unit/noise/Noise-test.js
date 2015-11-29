@@ -1,9 +1,3 @@
-define([
-	'goo/noise/Noise',
-	'goo/noise/ValueNoise'
-], function (Noise, ValueNoise) {
-	'use strict';
-
 	describe('Noise.fractal2d', function () {
 		it('Contains correctly generated values', function () {
 			var N = 2;
@@ -19,4 +13,3 @@ define([
 			}
 		});
 	});
-});

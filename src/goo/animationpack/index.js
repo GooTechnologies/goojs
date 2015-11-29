@@ -33,3 +33,9 @@ module.exports = {
 	SyncFadeTransitionState: require('./state/SyncFadeTransitionState'),
 	AnimationSystem: require('./systems/AnimationSystem')
 };
+
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

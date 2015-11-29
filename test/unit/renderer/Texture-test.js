@@ -1,12 +1,3 @@
-define([
-	'goo/renderer/Texture',
-	'test/CustomMatchers'
-], function (
-	Texture,
-	CustomMatchers
-	) {
-	'use strict';
-
 	describe('Texture', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -46,4 +37,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,10 +1,3 @@
-define([
-	'goo/util/EventTarget'
-], function (
-	EventTarget
-) {
-	'use strict';
-
 	function Test() {
 		EventTarget.apply(this, arguments);
 	}
@@ -155,4 +148,3 @@ define([
 			expect(test._listenerMap.get('send').length).toEqual(3);
 		});
 	});
-});

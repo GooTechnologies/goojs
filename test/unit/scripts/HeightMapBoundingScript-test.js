@@ -1,10 +1,3 @@
-define([
-	'goo/scriptpack/HeightMapBoundingScript'
-], function (
-	HeightMapBoundingScript
-) {
-	'use strict';
-
 	describe('Build a basic heightmap and check basic points', function () {
 		var heightMatrix = [[0, 0, 0, 0], [0, 0.5, 0.5, 0], [0.5, 1, 1, 0.5], [1, 1, 1, 1]];
 		var heightMapScript = new HeightMapBoundingScript(heightMatrix);
@@ -38,4 +31,3 @@ define([
 			expect(height).toEqual(0);
 		});
 	});
-});

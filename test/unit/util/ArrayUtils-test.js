@@ -1,10 +1,3 @@
-define([
-	'goo/util/ArrayUtils'
-], function (
-	ArrayUtils
-) {
-	'use strict';
-
 	describe('ArrayUtils', function () {
 		describe('fromKeys', function () {
 			it('returns an empty array for an empty collection', function () {
@@ -68,4 +61,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Cylinder'
-], function (
-	Cylinder
-) {
-	'use strict';
-
 	describe('Cylinder', function () {
 		var a = new Cylinder();
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(8 * 6 * 2);
 		});
 	});
-});

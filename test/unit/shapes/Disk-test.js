@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Disk'
-], function (
-	Disk
-) {
-	'use strict';
-
 	describe('Disk', function () {
 		var a = new Disk(8, 1);
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(8 * 3);
 		});
 	});
-});

@@ -1,16 +1,3 @@
-define([
-	'goo/math/Quaternion',
-	'goo/math/Matrix3',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	Quaternion,
-	Matrix3,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Quaternion', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -222,7 +209,7 @@ define([
 			});
 		});
 
-		
+
 		describe('NaN checks (only in dev)', function () {
 			it('throws an exception when trying to set a quaternion component to NaN', function () {
 				var quaternion1 = new Quaternion();
@@ -253,7 +240,7 @@ define([
 					.toThrow(new Error('Vector method lengthSquared returned NaN'));
 			});
 		});
-		
+
 		describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 
 			it('can add two quaternions',function () {
@@ -481,4 +468,3 @@ define([
 
 		});
 	});
-});

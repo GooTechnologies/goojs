@@ -1,10 +1,3 @@
-define([
-	'goo/timelinepack/EventChannel'
-], function (
-	EventChannel
-	) {
-	'use strict';
-
 	describe('EventChannel', function () {
 		var channel;
 		beforeEach(function () {
@@ -192,4 +185,3 @@ define([
 			});
 		});
 	});
-});

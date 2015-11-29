@@ -1,10 +1,4 @@
-define([
-	'goo/util/ObjectUtil'
-], function (
-	_
-) {
-	'use strict';
-	return {
+MaterialConfig = {
 		material: function () {
 			var material = this.gooObject('material', 'Dummy');
 			_.extend(material, {
@@ -104,4 +98,3 @@ define([
 			return ref;
 		}
 	};
-});

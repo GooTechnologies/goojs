@@ -1,10 +1,3 @@
-define([
-	'goo/entities/Bus'
-], function (
-	Bus
-) {
-	'use strict';
-
 	describe('Bus', function () {
 		var bus;
 
@@ -366,4 +359,3 @@ define([
 			});
 		});
 	});
-});

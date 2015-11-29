@@ -12,9 +12,3 @@ require.config({
 	},
 	waitSeconds: 5
 });
-
-require(['lib/jasmine-2.3.4/boot'], function () {
-	require(['test/CustomMatchers', 'test/all-tests'], function () {
-		window.onload();
-	});
-});

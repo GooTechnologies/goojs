@@ -1,16 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/Entity',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	Entity,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('ProjectHandler', function () {
 		var loader;
 
@@ -47,4 +34,3 @@ define([
 			});
 		});
 	});
-});

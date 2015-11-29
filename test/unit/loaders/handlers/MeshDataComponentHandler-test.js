@@ -1,20 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/MeshDataComponent',
-	'goo/renderer/MeshData',
-	'goo/animationpack/SkeletonPose',
-	'goo/loaders/DynamicLoader',
-	'../Configs'
-], function (
-	World,
-	MeshDataComponent,
-	MeshData,
-	SkeletonPose,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('MeshDataComponentHandler', function () {
 		var loader;
 
@@ -48,4 +31,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,12 +1,3 @@
-define([
-	'goo/math/Matrix2',
-	'test/CustomMatchers'
-], function (
-	Matrix2,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Matrix2', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -244,4 +235,3 @@ define([
 			});
 		});
 	});
-});

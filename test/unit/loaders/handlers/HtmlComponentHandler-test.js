@@ -1,16 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/HtmlComponent',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	HtmlComponent,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('HtmlComponentHandler', function () {
 		var loader;
 
@@ -63,4 +50,3 @@ define([
 			});
 		});
 	});
-});

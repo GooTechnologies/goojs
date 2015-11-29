@@ -1,12 +1,3 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
-], function (
-	Material,
-	ShaderLib
-	) {
-	'use strict';
-
 	describe('Material', function () {
 		describe('constructor', function () {
 			it('constructs a material given no parameters', function () {
@@ -48,4 +39,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Quad'
-], function (
-	Quad
-) {
-	'use strict';
-
 	describe('Quad', function () {
 		var a = new Quad();
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(6);
 		});
 	});
-});

@@ -1,20 +1,3 @@
-define([
-	'goo/renderer/light/Light',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/SpotLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	Light,
-	PointLight,
-	SpotLight,
-	DirectionalLight,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Light', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -35,4 +18,3 @@ define([
 			expect(light.color).not.toBe(color);
 		});
 	});
-});

@@ -1,14 +1,3 @@
-define([
-	'goo/entities/systems/TransformSystem',
-	'goo/entities/World',
-	'goo/math/Vector3',
-], function (
-	TransformSystem,
-	World,
-	Vector3
-) {
-	'use strict';
-
 	describe('TransformSystem', function () {
 		var world;
 
@@ -102,4 +91,3 @@ define([
 			expect(entityE.transformComponent.worldTransform.translation).toEqual(new Vector3(2, 4, 6));
 		});
 	});
-});

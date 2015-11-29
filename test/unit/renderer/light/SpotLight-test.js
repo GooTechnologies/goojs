@@ -1,14 +1,3 @@
-define([
-	'goo/renderer/light/SpotLight',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	SpotLight,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('SpotLight', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -41,4 +30,3 @@ define([
 			});
 		});
 	});
-});

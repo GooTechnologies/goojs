@@ -12,3 +12,8 @@ module.exports = {
 	DebugRenderSystem: require('./systems/DebugRenderSystem'),
 	MarkerSystem: require('./systems/MarkerSystem')
 };
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

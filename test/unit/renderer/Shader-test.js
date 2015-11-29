@@ -1,30 +1,3 @@
-define([
-	'goo/renderer/Shader',
-	'goo/renderer/ShaderCall',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/renderer/Camera',
-	'goo/renderer/RendererRecord',
-	'goo/renderer/Texture',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/light/DirectionalLight',
-	'goo/util/ObjectUtils',
-	'goo/shapes/Box'
-], function (
-	Shader,
-	ShaderCall,
-	Material,
-	MeshData,
-	Camera,
-	RendererRecord,
-	Texture,
-	ShaderLib,
-	DirectionalLight,
-	ObjectUtils,
-	Box
-) {
-	'use strict';
-
 	describe('Shader', function () {
 		describe('DefineKey', function () {
 			var shader;
@@ -387,4 +360,3 @@ define([
 		'}'
 		].join('\n')
 	};
-});

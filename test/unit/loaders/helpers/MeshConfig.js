@@ -1,10 +1,4 @@
-define([
-	'goo/util/ObjectUtil'
-], function (
-	_
-) {
-	'use strict';
-	return {
+MeshConfig = {
 		mesh: function () {
 			var config = this.gooObject('mesh', 'Dummy');
 			var samples = 3;
@@ -33,4 +27,3 @@ define([
 			return config;
 		}
 	};
-});

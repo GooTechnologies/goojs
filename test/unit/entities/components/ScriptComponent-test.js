@@ -1,14 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/systems/ScriptSystem',
-	'goo/entities/components/ScriptComponent'
-], function (
-	World,
-	ScriptSystem,
-	ScriptComponent
-	) {
-	'use strict';
-
 	describe('ScriptComponent', function () {
 		var world;
 
@@ -62,4 +51,3 @@ define([
 			expect(b).toEqual(234);
 		});
 	});
-});

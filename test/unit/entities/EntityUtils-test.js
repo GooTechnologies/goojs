@@ -1,34 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/Entity',
-	'goo/entities/EntityUtils',
-	'goo/shapes/Box',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/renderer/light/PointLight',
-
-	'goo/entities/systems/TransformSystem',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/MeshDataComponent'
-], function (
-	World,
-	Entity,
-	EntityUtils,
-	Box,
-	Material,
-	ShaderLib,
-	Camera,
-	PointLight,
-
-	TransformSystem,
-	TransformComponent,
-	MeshRendererComponent,
-	MeshDataComponent
-) {
-	'use strict';
-
 	describe('EntityUtils', function () {
 		var world;
 		var meshData = new Box();
@@ -75,4 +44,3 @@ define([
 			expect(bb.zExtent).toBe(10.5);
 		});
 	});
-});

@@ -8,3 +8,8 @@ module.exports = {
 	CannonSystem: require('./CannonSystem'),
 	CannonTerrainColliderComponent: require('./CannonTerrainColliderComponent')
 };
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

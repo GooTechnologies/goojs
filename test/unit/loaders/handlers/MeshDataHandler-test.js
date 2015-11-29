@@ -1,16 +1,3 @@
-define([
-	'goo/entities/GooRunner',
-	'goo/renderer/MeshData',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	GooRunner,
-	MeshData,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('MeshDataHandler', function () {
 		var gooRunner, loader;
 
@@ -64,4 +51,3 @@ define([
 			});
 		});
 	});
-});

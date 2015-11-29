@@ -1,12 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/managers/EntityManager'
-], function (
-	World,
-	EntityManager
-) {
-	'use strict';
-
 	describe('EntityManager', function () {
 		var world;
 		var entityManager;
@@ -256,4 +247,3 @@ define([
 			});
 		});
 	});
-});

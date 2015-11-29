@@ -1,16 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/Entity',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	Entity,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('SceneHandler', function () {
 		var loader;
 
@@ -39,4 +26,3 @@ define([
 			});
 		});
 	});
-});

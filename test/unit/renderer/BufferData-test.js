@@ -1,12 +1,3 @@
-define([
-	'goo/renderer/BufferData',
-	'test/CustomMatchers'
-], function (
-	BufferData,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('BufferData', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -31,4 +22,3 @@ define([
 			});
 		});
 	});
-});

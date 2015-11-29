@@ -1,10 +1,3 @@
-define([
-	'goo/renderer/TextureCreator'
-], function (
-	TextureCreator
-) {
-	'use strict';
-
 	describe('TextureCreator', function () {
 		var textureCreator;
 		var callbacks;
@@ -69,4 +62,3 @@ define([
 			});
 		});
 	});
-});

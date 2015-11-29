@@ -1,32 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/systems/TransformSystem',
-	'goo/math/Matrix3',
-	'goo/math/Vector3',
-	'goo/entities/Entity',
-	'goo/math/Transform',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/HtmlComponent',
-	'goo/entities/EntitySelection',
-	'test/CustomMatchers'
-], function (
-	World,
-	TransformComponent,
-	TransformSystem,
-	Matrix3,
-	Vector3,
-	Entity,
-	Transform,
-	MeshRendererComponent,
-	LightComponent,
-	HtmlComponent,
-	EntitySelection,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('TransformComponent', function () {
 		var world;
 
@@ -591,4 +562,3 @@ define([
 			// same goes for entities attached after the parent was hidden
 		})();
 	});
-});

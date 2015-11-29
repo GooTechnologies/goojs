@@ -1,10 +1,3 @@
-define([
-	'goo/entities/Selection'
-], function (
-	Selection
-) {
-	'use strict';
-
 	describe('Selection', function () {
 		function someObject() {
 			return {};
@@ -330,4 +323,3 @@ define([
 			});
 		});
 	});
-});

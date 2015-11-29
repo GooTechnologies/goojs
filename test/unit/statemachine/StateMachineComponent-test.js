@@ -1,14 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/StateMachineComponent',
-	'goo/fsmpack/statemachine/Machine',
-	'goo/fsmpack/statemachine/State'
-], function (
-	StateMachineComponent,
-	Machine,
-	State
-) {
-	'use strict';
-
 	describe('StateMachineComponent', function () {
 		var stateMachineComponent;
 		beforeEach(function () {
@@ -488,4 +477,3 @@ define([
 			expect(gotData[6]).toBe(789);
 		});
 	});
-});

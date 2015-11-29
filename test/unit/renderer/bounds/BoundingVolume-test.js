@@ -1,14 +1,3 @@
-define([
-	'goo/renderer/bounds/BoundingVolume',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	BoundingVolume,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('BoundingVolume', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -24,4 +13,3 @@ define([
 			});
 		});
 	});
-});

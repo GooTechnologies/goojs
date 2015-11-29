@@ -1,14 +1,3 @@
-define([
-	'goo/entities/EntitySelection',
-	'goo/entities/World',
-	'goo/entities/components/TransformComponent'
-], function (
-	EntitySelection,
-	World,
-	TransformComponent
-) {
-	'use strict';
-
 	describe('EntitySelection', function () {
 		function someEntity() {
 			return world.createEntity();
@@ -250,4 +239,3 @@ define([
 			});
 		});
 	});
-});

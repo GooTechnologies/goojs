@@ -1,12 +1,3 @@
-define([
-	'goo/scriptpack/WorldFittedTerrainScript',
-	'goo/math/Vector3'
-], function (
-	WorldFittedTerrainScript,
-	Vector3
-) {
-	'use strict';
-
 	xdescribe('WorldFittedTerrainScript', function () {
 		describe('Uses default dimensions', function () {
 			var terrainScript;
@@ -136,4 +127,3 @@ define([
 			});
 		});
 	});
-});

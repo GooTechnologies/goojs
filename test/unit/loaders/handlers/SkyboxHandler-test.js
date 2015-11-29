@@ -1,38 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/Entity',
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Texture',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/loaders/DynamicLoader',
-	'goo/loaders/handlers/EnvironmentHandler',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/systems/RenderSystem',
-	'test/loaders/Configs'
-], function (
-	World,
-	Entity,
-	Material,
-	Shader,
-	ShaderLib,
-	Texture,
-	Box,
-	Sphere,
-	DynamicLoader,
-	EnvironmentHandler,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	RenderSystem,
-	Configs
-) {
-	'use strict';
-
 	describe('SkyboxHandler', function () {
 		var loader, world;
 		beforeEach(function () {
@@ -108,4 +73,3 @@ define([
 			});
 		});
 	});
-});

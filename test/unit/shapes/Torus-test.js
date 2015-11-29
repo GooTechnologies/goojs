@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Torus'
-], function (
-	Torus
-) {
-	'use strict';
-
 	describe('Torus', function () {
 		var a = new Torus(8, 4);
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(192);
 		});
 	});
-});

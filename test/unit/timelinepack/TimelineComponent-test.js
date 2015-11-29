@@ -1,10 +1,3 @@
-define([
-	'goo/timelinepack/TimelineComponent'
-], function (
-	TimelineComponent
-	) {
-	'use strict';
-
 	describe('TimelineComponent', function () {
 		var timelineComponent;
 		beforeEach(function () {
@@ -116,4 +109,3 @@ define([
 			});
 		});
 	});
-});

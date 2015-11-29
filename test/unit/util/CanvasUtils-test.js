@@ -1,10 +1,3 @@
-define([
-	'goo/util/CanvasUtils'
-], function (
-	CanvasUtils
-) {
-	'use strict';
-
 	describe('CanvasUtils', function () {
 		describe('Rendering an SVG to canvas', function () {
 			var renderSize = 300;
@@ -38,4 +31,3 @@ define([
 			});
 		});
 	});
-});

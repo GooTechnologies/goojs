@@ -1,14 +1,3 @@
-define([
-	'goo/math/MathUtils',
-	'goo/math/Vector3',
-	'goo/math/Vector2'
-], function (
-	MathUtils,
-	Vector3,
-	Vector2
-) {
-	'use strict';
-
 	describe('MathUtils', function () {
 		it('can convert to radians from degrees', function () {
 			expect(MathUtils.radFromDeg(90)).toEqual(Math.PI * 0.5);
@@ -167,4 +156,3 @@ define([
 			expect(a).toBe(0);
 		});
 	});
-});

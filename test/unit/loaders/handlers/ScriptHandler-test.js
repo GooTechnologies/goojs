@@ -1,10 +1,3 @@
-define([
-	'goo/scriptpack/ScriptHandler'
-], function (
-	ScriptHandler
-) {
-	'use strict';
-
 	describe('ScriptHandler', function () {
 		describe('validateParameter', function () {
 			var validateParameter = ScriptHandler.validateParameter;
@@ -55,4 +48,3 @@ define([
 			});
 		});
 	});
-});

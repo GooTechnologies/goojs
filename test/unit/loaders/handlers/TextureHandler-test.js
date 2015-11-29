@@ -1,16 +1,3 @@
-define([
-	'goo/entities/GooRunner',
-	'goo/renderer/Texture',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	GooRunner,
-	Texture,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('TextureHandler', function () {
 		var gooRunner, loader;
 
@@ -64,4 +51,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,20 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/timelinepack/TimelineComponent',
-	'goo/timelinepack/TimelineComponentHandler'
-], function (
-	World,
-	Material,
-	DynamicLoader,
-	Configs,
-	TimelineComponent,
-	TimelineComponentHandler
-	) {
-	'use strict';
-
 	describe('TimelineComponentHandler', function () {
 		var loader;
 
@@ -43,4 +26,3 @@ define([
 			});
 		});
 	});
-});

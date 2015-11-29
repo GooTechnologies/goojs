@@ -1,16 +1,3 @@
-define([
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	BoundingBox,
-	BoundingSphere,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('BoundingSphere', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -103,4 +90,3 @@ define([
 			});
 		});
 	});
-});

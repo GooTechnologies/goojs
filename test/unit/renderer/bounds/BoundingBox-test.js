@@ -1,20 +1,3 @@
-define([
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/renderer/MeshData',
-	'test/CustomMatchers'
-], function (
-	BoundingBox,
-	BoundingSphere,
-	Vector3,
-	Box,
-	MeshData,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('BoundingBox', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -52,7 +35,7 @@ define([
 
 				return meshData;
 			}
-			
+
 			it('computes the center of the bounding box from verts (of default box)', function () {
 				var boundingBox1 = new BoundingBox();
 
@@ -188,4 +171,3 @@ define([
 			});
 		});
 	});
-});

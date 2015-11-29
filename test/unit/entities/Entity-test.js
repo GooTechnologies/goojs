@@ -1,40 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/Entity',
-	'goo/entities/components/Component',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/entities/systems/ScriptSystem',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/renderer/light/PointLight'
-], function (
-	World,
-	Entity,
-	Component,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	CameraComponent,
-	LightComponent,
-	ScriptComponent,
-	ScriptSystem,
-	Box,
-	Vector3,
-	Material,
-	ShaderLib,
-	Camera,
-	PointLight
-) {
-	'use strict';
-
 	describe('Entity', function () {
 		var world;
 
@@ -457,4 +420,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,12 +1,3 @@
-define([
-	'goo/util/ObjectUtils',
-	'test/CustomMatchers'
-], function (
-	ObjectUtils,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('ObjectUtils', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -189,4 +180,3 @@ define([
 			});
 		});
 	});
-});

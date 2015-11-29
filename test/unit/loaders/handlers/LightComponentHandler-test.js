@@ -1,22 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/entities/components/LightComponent',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/renderer/light/PointLight',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	LightComponent,
-	DirectionalLight,
-	SpotLight,
-	PointLight,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('LightComponentHandler', function () {
 		var loader;
 
@@ -58,4 +39,3 @@ define([
 			});
 		});
 	});
-});

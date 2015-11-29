@@ -1,20 +1,3 @@
-define([
-	'goo/timelinepack/ValueChannel',
-	'goo/entities/Entity',
-	'goo/entities/components/TransformComponent',
-	'goo/math/Matrix3',
-	'goo/math/MathUtils',
-	'test/CustomMatchers'
-], function (
-	ValueChannel,
-	Entity,
-	TransformComponent,
-	Matrix3,
-	MathUtils,
-	CustomMatchers
-	) {
-	'use strict';
-
 	describe('ValueChannel', function () {
 		var channel;
 		beforeEach(function () {
@@ -162,4 +145,3 @@ define([
 			});
 		});
 	});
-});

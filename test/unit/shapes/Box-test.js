@@ -1,10 +1,3 @@
-define([
-	'goo/shapes/Box'
-], function (
-	Box
-) {
-	'use strict';
-
 	describe('Box', function () {
 		var a = new Box();
 
@@ -13,4 +6,3 @@ define([
 			expect(a.indexCount).toEqual(36);
 		});
 	});
-});

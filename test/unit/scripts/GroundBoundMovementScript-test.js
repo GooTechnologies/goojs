@@ -1,16 +1,3 @@
-define([
-	'goo/scriptpack/GroundBoundMovementScript',
-	'goo/entities/components/MovementComponent',
-	'goo/entities/systems/MovementSystem',
-	'goo/entities/components/TransformComponent'
-], function (
-	GroundBoundMovementScript,
-	MovementComponent,
-	MovementSystem,
-	TransformComponent
-) {
-	'use strict';
-
 	xdescribe('Movement script tests', function () {
 		var movementSystem = new MovementSystem();
 		var groundBoundMovementScript;
@@ -115,4 +102,3 @@ define([
 			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
 		});
 	});
-});

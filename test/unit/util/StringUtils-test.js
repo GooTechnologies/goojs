@@ -1,10 +1,3 @@
-define([
-	'goo/util/StringUtils'
-], function(
-	StringUtils
-) {
-	'use strict';
-
 	describe('StringUtils', function() {
 		it('parses URLs', function () {
 			var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
@@ -18,4 +11,3 @@ define([
 			expect(parts.fragment).toEqual('fragment');
 		});
 	});
-});

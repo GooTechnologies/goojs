@@ -6,3 +6,8 @@ module.exports = {
 	TimelineSystem: require('./TimelineSystem'),
 	ValueChannel: require('./ValueChannel')
 };
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

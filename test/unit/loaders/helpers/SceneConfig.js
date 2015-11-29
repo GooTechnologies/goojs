@@ -1,11 +1,4 @@
-define([
-	'goo/util/ObjectUtil'
-], function (
-	_
-) {
-	'use strict';
-
-	return {
+SceneConfig = {
 		scene: function (complex) {
 			var entities = {};
 			var components = complex ? ['transform', 'meshRenderer', 'meshData', 'animation', 'camera', 'light'] : null;
@@ -80,4 +73,3 @@ define([
 			return config;
 		}
 	};
-});

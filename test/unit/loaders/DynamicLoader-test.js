@@ -1,44 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-
-	'goo/entities/systems/TransformSystem',
-	'goo/entities/systems/RenderSystem',
-	'goo/entities/systems/BoundingUpdateSystem',
-	'goo/entities/systems/ScriptSystem',
-	'goo/entities/systems/LightingSystem',
-	'goo/entities/systems/CameraSystem',
-	'goo/entities/systems/ParticlesSystem',
-	'goo/animationpack/systems/AnimationSystem',
-
-	'goo/sound/AudioContext',
-	'goo/entities/systems/SoundSystem',
-
-	'goo/animationpack/handlers/SkeletonHandler',
-	'goo/animationpack/handlers/AnimationComponentHandler',
-	'goo/animationpack/handlers/AnimationStateHandler',
-	'goo/animationpack/handlers/AnimationLayersHandler',
-	'goo/animationpack/handlers/AnimationClipHandler'
-], function (
-	World,
-	DynamicLoader,
-	Configs,
-
-	TransformSystem,
-	RenderSystem,
-	BoundingUpdateSystem,
-	ScriptSystem,
-	LightingSystem,
-	CameraSystem,
-	ParticlesSystem,
-	AnimationSystem,
-
-	AudioContext,
-	SoundSystem
-) {
-	'use strict';
-
 	describe('DynamicLoader', function () {
 		var loader;
 
@@ -213,4 +172,3 @@ define([
 			});
 		});
 	});
-});

@@ -1,22 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Texture',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	Material,
-	Shader,
-	ShaderLib,
-	Texture,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
-
 	describe('MaterialHandler', function () {
 		var loader;
 
@@ -64,4 +45,3 @@ define([
 			});
 		});
 	});
-});

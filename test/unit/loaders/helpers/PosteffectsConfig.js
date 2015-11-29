@@ -1,10 +1,4 @@
-define([
-	'goo/util/ObjectUtil'
-], function (
-	_
-) {
-	'use strict';
-	return {
+PosteffectsConfig = {
 		posteffects: function () {
 			var config = this.gooObject('posteffects', 'Dummy');
 			_.extend(config, {
@@ -22,4 +16,3 @@ define([
 			return config;
 		}
 	};
-});

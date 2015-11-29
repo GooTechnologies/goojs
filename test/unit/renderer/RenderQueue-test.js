@@ -1,12 +1,3 @@
-define([
-	'goo/renderer/RenderQueue',
-	'goo/math/Vector3'
-], function (
-	RenderQueue,
-	Vector3
-) {
-	'use strict';
-
 	describe('RenderQueue Sorting', function () {
 		var createRenderable = function (name, renderQueueBucket, translation, defineKey) {
 			var renderable = {
@@ -116,4 +107,3 @@ define([
 			expect(renderList).toEqual([r4, r2, r3, r1]);
 		});
 	});
-});

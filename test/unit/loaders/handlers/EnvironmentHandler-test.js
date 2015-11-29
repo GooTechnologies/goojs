@@ -1,24 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/loaders/DynamicLoader',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/systems/RenderSystem',
-	'test/loaders/Configs'
-], function (
-	World,
-	ShaderBuilder,
-	DynamicLoader,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	RenderSystem,
-	Configs
-) {
-	'use strict';
-
 	describe('EnvironmentHandler', function () {
 		var loader, world;
 
@@ -59,4 +38,3 @@ define([
 			});
 		});
 	});
-});

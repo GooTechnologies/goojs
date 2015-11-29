@@ -1,16 +1,3 @@
-define([
-	'goo/math/Ray',
-	'goo/math/Plane',
-	'goo/math/Vector3',
-	'test/CustomMatchers'
-], function (
-	Ray,
-	Plane,
-	Vector3,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('Ray', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -132,4 +119,3 @@ define([
 			});
 		});
 	});
-});
