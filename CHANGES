@@ -1,8 +1,10 @@
-v0.15.21 --- ????-??-??
+v0.15.21 --- 2015-11-30
 
 ### Fixes
 
   * Fixed touch bug in PanCamScript, making touch work when not using it with the OrbitNPanControlScript.
+  * Smoothing tpf is now done on a world.smoothedTpf parameter instead
+  * Fixed EntityCombiner to only create new root node when needed.
 
 ### Additions
 
