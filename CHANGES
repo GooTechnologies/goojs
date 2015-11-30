@@ -1,3 +1,13 @@
+v0.15.21 --- ????-??-??
+
+### Fixes
+
+  * Fixed touch bug in PanCamScript, making touch work when not using it with the OrbitNPanControlScript.
+
+### Additions
+
+  + Added "touchMode" parameter for PanCamScript.
+
 v0.15.20 --- 2015-11-26
 
 ### Fixes
