@@ -70,8 +70,9 @@ define([
 		for (var i = 0; i < keys.length; i++) {
 			var entity = keys[i];
 			var combineList = baseSubs.get(entity);
-
-			this._combine(entity, combineList);
+			if (combineList.length > 0) {
+				this._combine(entity, combineList);
+			}
 		}
 	};
 
@@ -86,7 +87,7 @@ define([
 			baseSubs.put(entity, subs);
 		}
 
-		if (entity.meshDataComponent && entity.meshRendererComponent &&
+		if (entity.static && entity.meshDataComponent && entity.meshRendererComponent &&
 			entity.meshRendererComponent.worldBound) {
 			subs.push(entity);
 		}
