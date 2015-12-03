@@ -236,12 +236,28 @@ define([
 			this.gravity.copy(options.gravity);
 		}
 
+		/**
+		 * Sorted particles.
+		 * @hidden
+		 */
 		this.particles = [];
-		this.unsortedParticles = []; // Same as particles but unsorted
+		
+		/**
+		 * Same as particles but unsorted.
+		 * @hidden
+		 */
+		this.unsortedParticles = [];
 
+		/**
+		 * @type {number}
+		 */
 		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
+
+		// Should be a curve
 		this.startColor = options.startColor !== undefined ? options.startColor : new Vector4(1, 1, 1, 1);
+
 		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve : null;
+
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
@@ -251,8 +267,13 @@ define([
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
+		
+		// Should be a curve
 		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
+
+		// Should be a curve
 		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime : 5;
+		
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
@@ -262,14 +283,21 @@ define([
 		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
+		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
+		
+		// Should be a curve
 		this.startSize = options.startSize !== undefined ? options.startSize : 1;
+		
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
+		
+		// Should be a curve
 		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
+		
 		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
-		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
+
 		if (options.texture) {
 			this.texture = options.texture;
 		}
