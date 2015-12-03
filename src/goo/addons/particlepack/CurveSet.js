@@ -1,18 +1,19 @@
 define([
+	'goo/addons/particlepack/Curve'
 ], function (
+	Curve
 ) {
 	'use strict';
-
-	function numberToGLSL(n) {
-		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
-	}
 
 	/**
 	 * A collection of Curve instances. Used to connect different types curves, joining them at their given time offsets.
 	 * @constructor
+	 * @extends Curve
 	 * @param {array} [segments]
 	 */
 	function CurveSet(segments) {
+		Curve.call(this, {});
+
 		/**
 		 * @type {Array<Curve>}
 		 */
@@ -49,15 +50,15 @@ define([
 		 * Returns a GLSL expression that gives the value of the curve at a given time.
 		 * @param {string} timeVariableName
 		 */
-		toGLSL: function (timeVariableName) {
+		toGLSL: function (timeVariableName/*, lerpValueVariableName*/) {
 			var segments = this.segments;
 			var glsl = [];
 			for (var i = 0; i < segments.length; i++) {
 				var a = segments[i];
-				var t0 = numberToGLSL(a.timeOffset);
+				var t0 = Curve.numberToGLSL(a.timeOffset);
 				var t1 = "1.0";
 				if (i < segments.length - 1) {
-					t1 = numberToGLSL(segments[i + 1].timeOffset);
+					t1 = Curve.numberToGLSL(segments[i + 1].timeOffset);
 				}
 				glsl.push(
 					'step(' + t0 + ',' + timeVariableName + ')*step(-' + t1 + ',-' + timeVariableName + ')*' + a.toGLSL(timeVariableName)
@@ -70,15 +71,15 @@ define([
 		 * Returns a GLSL expression that gives the integral value of the curve at a given time.
 		 * @param {string} timeVariableName
 		 */
-		integralToGLSL: function (timeVariableName) {
+		integralToGLSL: function (timeVariableName/*, lerpValueVariableName*/) {
 			var segments = this.segments;
 			var glsl = [];
 			for (var i = 0; i < segments.length; i++) {
 				var a = segments[i];
-				var t0 = numberToGLSL(a.timeOffset);
+				var t0 = Curve.numberToGLSL(a.timeOffset);
 				var t1 = "1.0";
 				if (i < segments.length - 1) {
-					t1 = numberToGLSL(segments[i + 1].timeOffset);
+					t1 = Curve.numberToGLSL(segments[i + 1].timeOffset);
 				}
 				glsl.push(
 					a.integralToGLSL('clamp(' + timeVariableName + ',' + t0 + ',' + t1 + ')')
@@ -92,7 +93,7 @@ define([
 		 * @param {number} t
 		 * @returns {number}
 		 */
-		getValueAt: function (t) {
+		getValueAt: function (t/*, lerpValue*/) {
 			// Find the matching segment
 			var segments = this.segments;
 			for (var i = 0; i < segments.length - 1; i++) {
@@ -110,7 +111,7 @@ define([
 		 * @param {number} t
 		 * @returns {number}
 		 */
-		getIntegralValueAt: function (t) {
+		getIntegralValueAt: function (t/*, lerpValue*/) {
 			// Add all integral values until the last segment
 			var segments = this.segments;
 			var value = 0;

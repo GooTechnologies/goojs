@@ -33,21 +33,21 @@ define([
 	LinearCurve.prototype = Object.create(Curve.prototype);
 	LinearCurve.prototype.constructor = LinearCurve;
 
-	LinearCurve.prototype.toGLSL = function (timeVariableName) {
-		return '(' + this.numberToGLSL(this.k) + '*' + timeVariableName + '+' + this.numberToGLSL(this.m) + ')';
+	LinearCurve.prototype.toGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
+		return '(' + Curve.numberToGLSL(this.k) + '*' + timeVariableName + '+' + Curve.numberToGLSL(this.m) + ')';
 	};
 
-	LinearCurve.prototype.integralToGLSL = function (timeVariableName) {
-		var k = this.numberToGLSL(this.k);
-		var m = this.numberToGLSL(this.m);
+	LinearCurve.prototype.integralToGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
+		var k = Curve.numberToGLSL(this.k);
+		var m = Curve.numberToGLSL(this.m);
 		return '(' + k + '*' + timeVariableName + '*' + timeVariableName + '*0.5+' + m + '*' + timeVariableName + ')';
 	};
 
-	LinearCurve.prototype.getValueAt = function (t) {
+	LinearCurve.prototype.getValueAt = function (t/*, lerpValue*/) {
 		return this.k * (t - this.timeOffset) + this.m;
 	};
 
-	LinearCurve.prototype.getIntegralValueAt = function (t) {
+	LinearCurve.prototype.getIntegralValueAt = function (t/*, lerpValue*/) {
 		var x = (t - this.timeOffset);
 		var k = this.k;
 		var m = this.m;

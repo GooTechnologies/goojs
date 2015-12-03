@@ -13,7 +13,8 @@ define([
 	'goo/math/Transform',
 	'goo/addons/particlepack/Particle',
 	'goo/renderer/Renderer',
-	'goo/shapes/Quad'
+	'goo/shapes/Quad',
+	'goo/addons/particlepack/Curve'
 ], function (
 	Matrix3,
 	Vector3,
@@ -29,15 +30,12 @@ define([
 	Transform,
 	Particle,
 	Renderer,
-	Quad
+	Quad,
+	Curve
 ) {
 	'use strict';
 
 	var tmpGravity = new Vector3();
-
-	function numberToGLSL(n) {
-		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
-	}
 
 	function hasParent(entity) {
 		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
@@ -366,9 +364,9 @@ define([
 				this._sizeCurve = value;
 				var shader = this.material.shader;
 				if (value) {
-					shader.setDefine('SIZE_CURVE_CODE', numberToGLSL(this.startSize) + '*' + value.toGLSL('t'));
+					shader.setDefine('SIZE_CURVE_CODE', Curve.numberToGLSL(this.startSize) + '*' + value.toGLSL('t'));
 				} else {
-					shader.setDefine('SIZE_CURVE_CODE', numberToGLSL(this.startSize));
+					shader.setDefine('SIZE_CURVE_CODE', Curve.numberToGLSL(this.startSize));
 				}
 			}
 		},
@@ -591,7 +589,7 @@ define([
 				return Number(this.material.shader.defines.START_SCALE);
 			},
 			set: function (value) {
-				this.material.shader.setDefine('START_SCALE', numberToGLSL(value));
+				this.material.shader.setDefine('START_SCALE', Curve.numberToGLSL(value));
 			}
 		},
 

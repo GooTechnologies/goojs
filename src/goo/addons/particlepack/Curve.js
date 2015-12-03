@@ -13,11 +13,25 @@ define([
 		options = options || {};
 
 		/**
+		 * The value type. Should be 'float' or 'vec4' to indicate which getValueAt method to use.
+		 */
+		this.type = options.type || 'float';
+
+		/**
 		 * The offset of this curve, when used in a CurveSet. Needs to be a number between 0 and 1.
 		 * @type {Number}
 		 */
 		this.timeOffset = options.timeOffset || 0;
 	}
+
+	/**
+	 * Convert a number to GLSL code.
+	 * @param {number} n
+	 * @return {string}
+	 */
+	Curve.numberToGLSL = function (n) {
+		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
+	};
 
 	Curve.prototype = {
 
@@ -26,27 +40,43 @@ define([
 		 * @param {number} timeVariableName
 		 * @return {string}
 		 */
-		toGLSL: function (/*timeVariableName*/) {
+		toGLSL: function (/*timeVariableName, lerpVariableName*/) {
 			return '0.0';
-		},
-
-		/**
-		 * Convert a number to GLSL code
-		 * @param {number} n
-		 * @return {string}
-		 */
-		numberToGLSL: function (n) {
-			return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
 		},
 
 		/**
 		 * Get a value at a given point in time
 		 * @param {number} t
+		 * @param {number} lerpValue
 		 * @return {number}
 		 */
-		getValueAt: function (/*t*/) {
+		getValueAt: function (/*t, lerpValue*/) {
 			return 0; // To be extended by child classes
-		}
+		},
+
+		/**
+		 * Get a vec4 value at a given point in time
+		 * @param {number} t
+		 * @param {number} lerpValue
+		 * @param {Vector4} store
+		 */
+		getVec4ValueAt: function (/*t, lerpValue, store*/) {},
+
+		/**
+		 * @param {number} t
+		 * @param {number} lerpValue
+		 * @return {number}
+		 */
+		getIntegralValueAt: function (/*t, lerpValue*/) {
+			return 0; // To be extended by child classes
+		},
+
+		/**
+		 * @param {number} t
+		 * @param {number} lerpValue
+		 * @param {Vector4} store
+		 */
+		getVec4IntegralValueAt: function (/*t, lerpValue, store*/) {}
 	};
 
 	return Curve;
