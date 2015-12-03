@@ -57,7 +57,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Skeleton Animation Test. Use shift + number keys to toggle different rendering modes. Use mouse click and drag or touch drag on the X-axis, to take manual control over the animation.');
+	V.describe('Skeleton Animation Test. Use shift + number keys [1 - 8] to toggle different rendering modes. Use mouse click and drag or touch drag on the X-axis, to take manual control over the animation.');
 
 	/**
 	* Adds needed attributes to the meshdata , in order to have skeleton animation

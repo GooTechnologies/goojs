@@ -121,6 +121,9 @@ module.exports = function (grunt) {
 			unit: {
 				configFile: 'test/unit/karma.conf.js',
 				singleRun: true,
+				browserDisconnectTimeout: 5000,
+				browserDisconnectTolerance: 1,
+				browserNoActivityTimeout: 60000,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}
 		},

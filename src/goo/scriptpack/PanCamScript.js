@@ -23,12 +23,20 @@ define([
 		var listeners;
 
 		function getTouchCenter(touches) {
+			var cx = 0;
+			var cy = 0;
+
 			var x1 = touches[0].clientX;
 			var y1 = touches[0].clientY;
-			var x2 = touches[1].clientX;
-			var y2 = touches[1].clientY;
-			var cx = (x1 + x2) / 2;
-			var cy = (y1 + y2) / 2;
+			if (touches.length >= 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+			} else {
+				cx = x1;
+				cy = y1;
+			}
 			return [cx, cy];
 		}
 
@@ -106,7 +114,7 @@ define([
 				},
 				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						mouseState.down = (event.targetTouches.length === 2);
+						mouseState.down = (parameters.touchMode === 'Any' || (parameters.touchMode === 'Single' && event.targetTouches.length === 1) || (parameters.touchMode === 'Double' && event.targetTouches.length === 2));
 						if (!mouseState.down) { return; }
 
 						var center = getTouchCenter(event.targetTouches);
@@ -121,6 +129,7 @@ define([
 						var center = getTouchCenter(event.targetTouches);
 						mouseState.x = center[0];
 						mouseState.y = center[1];
+						environment.dirty = true;
 					}
 				},
 				touchend: function (/*event*/) {
@@ -250,6 +259,13 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
+		}, {
+			key: 'touchMode',
+			description: 'Number of fingers needed to trigger panning.',
+			type: 'string',
+			control: 'select',
+			'default': 'Double',
+			options: ['Any', 'Single', 'Double']
 		}, {
 			key: 'panSpeed',
 			type: 'float',

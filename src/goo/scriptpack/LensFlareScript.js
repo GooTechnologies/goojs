@@ -3,13 +3,15 @@ define([
 	'goo/util/ParticleSystemUtils',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Quad'
+	'goo/shapes/Quad',
+	'goo/renderer/bounds/BoundingSphere'
 ], function (
 	Vector3,
 	ParticleSystemUtils,
 	Material,
 	ShaderLib,
-	Quad
+	Quad,
+	BoundingSphere
 ) {
 	'use strict';
 
@@ -126,6 +128,8 @@ define([
 				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1 },
 				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5 }
 			];
+
+			ctx.bounds = new BoundingSphere(ctx.entity.transformComponent.worldTransform.translation, 0);
 		}
 
 		function cleanup(/*args, ctx*/) {
@@ -134,7 +138,8 @@ define([
 		}
 
 		function update(args, ctx) {
-			if (ctx.entity.isVisible !== false) {
+			ctx.bounds.center.copy(ctx.entity.transformComponent.worldTransform.translation);
+			if (ctx.activeCameraEntity.cameraComponent.camera.contains(ctx.bounds)) {
 				flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
 				if (!isActive) {
 					flares = createFlareQuads(quadData, lightColor, args.scale, args.edgeDampen, args.edgeScaling);

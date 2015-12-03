@@ -1,3 +1,49 @@
+v0.15.21 --- 2015-11-30
+
+### Fixes
+
+  * Fixed touch bug in PanCamScript, making touch work when not using it with the OrbitNPanControlScript.
+  * Smoothing tpf is now done on a world.smoothedTpf parameter instead
+  * Fixed EntityCombiner to only create new root node when needed.
+
+### Additions
+
+  + Added "touchMode" parameter for PanCamScript.
+
+v0.15.20 --- 2015-11-26
+
+### Fixes
+
+  * Added touch support for button script
+  * Scripts will now update correctly in chrome devtools
+  * Handle the case where sigma < 0 in the convolution shader
+
+v0.15.19 --- 2015-11-23
+
+### Fixes
+
+  * Use bounds check manually for lens flare script
+  * Fix bug in Dom3dSystem cleanup method
+  * Fix for texture repeat V in TextureHandler
+
+v0.15.18 --- 2015-11-17
+
+### Fixes
+
+  * Fixed too tight limit on the joint count
+  * Updated package.json
+
+v0.15.17 --- 2015-11-14
+
+### Fixes
+
+  * Fixed cleanup methods in lots of state machine actions to check if entity exists
+  * handle unsupported DDS textures, makes mobile browsers not crash
+  * Added missing packs from dom3d visual test
+  * Fixing issues with Rendertargets used before being rendered to
+  * Added test for simplepartitioner
+  * Force joint count to be int
+
 v0.15.16 --- 2015-11-11
 
 ### Fixes

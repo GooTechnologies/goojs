@@ -29,21 +29,34 @@ define([
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
+		/** The total number of vertices in the buffer.
+		 * @type {number}
+		 */
 		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
+		
+		/** The total number of indices in the buffer.
+		 * @type {number}
+		 */
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
+
 		this.primitiveCounts = [0];
 
 		this.vertexData = null;
 		this.indexData = null;
 		this.dataViews = {};
 
+		/** The number of indices used by each segment, or null to indicate only one segment that uses the whole index buffer.
+		 * @type {Array<number>|null}
+		 */
 		this.indexLengths = null;
-		// Triangles, TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop, Points
+
+		/** The primitive rendering types to use, for each segment. Default value of this property is ['Triangles'], but also TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop and Points are available.
+		 * @type {Array<string>}
+		 */
 		this.indexModes = ['Triangles'];
 
 		this.type = MeshData.MESH;
 
-		//!RH: added to not mutate object
 		this.paletteMap = undefined;
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;

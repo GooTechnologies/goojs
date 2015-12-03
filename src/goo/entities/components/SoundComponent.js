@@ -153,7 +153,11 @@ define([
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
+		if (tpf > 0) {
+			this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
+		} else {
+			this._velocity.setDirect(0, 0, 0);
+		}
 		this._oldPosition.set(this._position);
 		this._orientation.setDirect(0, 0, -1);
 		this._orientation.applyPostVector(mvMat);
