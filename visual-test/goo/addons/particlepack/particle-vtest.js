@@ -12,6 +12,7 @@ require([
 	'goo/math/Vector3',
 	'goo/addons/particlepack/components/ParticleComponent',
 	'goo/addons/particlepack/systems/ParticleSystem',
+	'goo/addons/particlepack/ConstantCurve',
 	'goo/addons/particlepack/CurveSet',
 	'goo/addons/particlepack/LinearCurve',
 	'goo/addons/particlepack/Vector4Curve',
@@ -30,6 +31,7 @@ require([
 	Vector3,
 	ParticleComponent,
 	ParticleSystem,
+	ConstantCurve,
 	CurveSet,
 	LinearCurve,
 	Vector4Curve,
@@ -45,7 +47,7 @@ require([
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 		setTimeout(function () {
-			var max = 2000;
+			var max = 1000;
 
 			// var debugs = [];
 			// for (var i = 0; i < max; i++) {
@@ -56,43 +58,43 @@ require([
 				alphakill: 0,
 				seed: 123,
 				billboard: true,
-				startSize: 4,
-				startLifeTime: 1,
+				startSize: new LinearCurve({ m: 1, k: -1 }),
+				startLifeTime: 5,
 				loop: true,
 				preWarm: true,
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
-				duration: 1,
+				duration: 5,
 				shapeType: 'sphere',
 				coneAngle: 0,
-				blending: 'TransparencyBlending',
-				renderQueue: RenderQueue.TRANSPARENT,
+				// blending: 'TransparencyBlending',
+				// renderQueue: RenderQueue.TRANSPARENT,
 				depthWrite: true,
 				depthTest: true,
 				emitterRadius: 1,
-				emissionRate: max,
-				startSpeed: 8,
+				emissionRate: max / 5,
+				startSpeed: 4,
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: true,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
-				sizeCurve: new CurveSet([
-					new LinearCurve({ k: 1, m: 0 }),
-					new LinearCurve({ k: -1, m: 1, timeOffset: 0.5 })
-				]),
-				rotationSpeedCurve: new CurveSet([
-					new LinearCurve({ k: 0, m: 0 })
-				]),
-				colorCurve: new CurveSet([
-					new Vector4Curve({
-						x: new LinearCurve({ k: 0, m: 1 }),
-						y: new LinearCurve({ k: -1, m: 1 }),
-						z: new LinearCurve({ k: -2, m: 1 }),
-						w: new LinearCurve({ k: -1, m: 1 })
-					})
-				]),
-				startAngle: Math.PI / 4,
-				sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
+				// sizeCurve: new CurveSet([
+				// 	new LinearCurve({ k: 1, m: 0 }),
+				// 	new LinearCurve({ k: -1, m: 1, timeOffset: 0.5 })
+				// ]),
+				// rotationSpeedCurve: new CurveSet([
+				// 	new LinearCurve({ k: 0, m: 0 })
+				// ]),
+				// colorCurve: new CurveSet([
+				// 	new Vector4Curve({
+				// 		x: new LinearCurve({ k: 0, m: 1 }),
+				// 		y: new LinearCurve({ k: -1, m: 1 }),
+				// 		z: new LinearCurve({ k: -2, m: 1 }),
+				// 		w: new LinearCurve({ k: -1, m: 1 })
+				// 	})
+				// ]),
+				// startAngle: Math.PI / 4,
+				// sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
 				// var angle = world.time * 2 * Math.PI / 2 * 0;
@@ -116,7 +118,7 @@ require([
 			// 	entity.clearComponent('ScriptComponent');
 			// }, 2000);
 
-			entity.particleComponent.texture = texture;
+			//entity.particleComponent.texture = texture;
 		}, 500);
 	});
 	V.addLights();

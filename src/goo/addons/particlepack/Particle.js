@@ -20,6 +20,7 @@ define([
 		this.startPosition = new Vector3();
 		this.startDirection = new Vector3();
 		this.startAngle = 0;
+		this.startSize = 1;
 		this.sortValue = 0;
 	}
 

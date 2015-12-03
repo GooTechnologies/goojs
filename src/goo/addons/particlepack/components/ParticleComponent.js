@@ -87,7 +87,7 @@ define([
 
 		this.material = new Material({
 			defines: {
-				START_SCALE: '1.0',
+				START_SIZE_CODE: '1.0',
 				SIZE_CURVE_CODE: '1.0',
 				ROTATION_CURVE_CODE: '1.0',
 				COLOR_CURVE_CODE: 'vec4(1.0)'
@@ -118,7 +118,7 @@ define([
 				'attribute vec2 vertexUV0;',
 				'attribute vec4 timeInfo;',
 				'attribute vec4 startPos;',
-				'attribute vec3 startDir;',
+				'attribute vec4 startDir;',
 
 				'uniform vec4 textureTileInfo;',
 				'uniform mat4 viewMatrix;',
@@ -139,7 +139,11 @@ define([
 				'}',
 
 				'float getScale(float t){',
-				'    return clamp(SIZE_CURVE_CODE, 0.0, 1.0) * START_SCALE;',
+				'    return clamp(SIZE_CURVE_CODE, 0.0, 1.0);',
+				'}',
+
+				'float getStartSize(float t){',
+				'    return START_SIZE_CODE;',
 				'}',
 
 				'float getAngle(float t){',
@@ -175,9 +179,11 @@ define([
 
 				'    #ifdef LOOP',
 				'    age = mod(age, duration);',
+				'    emitTime = mod(emitTime, duration);',
 				'    #endif',
 
 				'    float unitAge = age / lifeTime;',
+				'    float startSize = getStartSize(emitTime / duration);',
 
 				'    color = uColor * getColor(unitAge);',
 
@@ -193,14 +199,14 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos.xyz, startDir, gravity);',
+				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity);',
 				'    #ifdef BILLBOARD',
-				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * getScale(unitAge) * active;',
+				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
 				'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
 				'    #else',
 				'    mat4 rot = rotationMatrix(normalize(vec3(sin(emitTime*5.0),cos(emitTime*1234.0),sin(emitTime))),rotation);',
-				'    gl_Position = viewProjectionMatrix * worldMatrix * (rot * vec4(getScale(unitAge) * active * vertexPosition, 1.0) + vec4(position,0.0));',
+				'    gl_Position = viewProjectionMatrix * worldMatrix * (rot * vec4(startSize * getScale(unitAge) * active * vertexPosition, 1.0) + vec4(position,0.0));',
 				'    #endif',
 				'}'
 			].join('\n'),
@@ -382,7 +388,7 @@ define([
 
 		/**
 		 * @target-class ParticleComponent sizeCurve member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		sizeCurve: {
 			get: function () {
@@ -390,12 +396,7 @@ define([
 			},
 			set: function (value) {
 				this._sizeCurve = value;
-				var shader = this.material.shader;
-				if (value) {
-					shader.setDefine('SIZE_CURVE_CODE', Curve.numberToGLSL(this.startSize) + '*' + value.toGLSL('t'));
-				} else {
-					shader.setDefine('SIZE_CURVE_CODE', Curve.numberToGLSL(this.startSize));
-				}
+				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t') : '1.0');
 			}
 		},
 
@@ -610,14 +611,15 @@ define([
 
 		/**
 		 * @target-class ParticleComponent startSize member
-		 * @type {number}
+		 * @type {Curve}
 		 */
 		startSize: {
 			get: function () {
-				return Number(this.material.shader.defines.START_SCALE);
+				return this._startSize;
 			},
 			set: function (value) {
-				this.material.shader.setDefine('START_SCALE', Curve.numberToGLSL(value));
+				this._startSize = value;
+				this.material.shader.setDefine('START_SIZE_CODE', value ? value.toGLSL('t') : '1.0');
 			}
 		},
 
@@ -786,9 +788,10 @@ define([
 				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
 				startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
-				startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
-				startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
-				startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
+				startDir[meshVertexCount * 4 * i + j * 4 + 0] = dir.x;
+				startDir[meshVertexCount * 4 * i + j * 4 + 1] = dir.y;
+				startDir[meshVertexCount * 4 * i + j * 4 + 2] = dir.z;
+				startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.startSize;
 			}
 		}
 		meshData.setAttributeDataUpdated('START_POS');
@@ -873,9 +876,10 @@ define([
 			startPos[meshVertexCount * 4 * i + j * 4 + 2] = particle.startPosition.z;
 			startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
 
-			startDir[meshVertexCount * 3 * i + j * 3 + 0] = particle.startDirection.x;
-			startDir[meshVertexCount * 3 * i + j * 3 + 1] = particle.startDirection.y;
-			startDir[meshVertexCount * 3 * i + j * 3 + 2] = particle.startDirection.z;
+			startDir[meshVertexCount * 4 * i + j * 4 + 0] = particle.startDirection.x;
+			startDir[meshVertexCount * 4 * i + j * 4 + 1] = particle.startDirection.y;
+			startDir[meshVertexCount * 4 * i + j * 4 + 2] = particle.startDirection.z;
+			startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.startSize;
 		}
 
 		meshData.setAttributeDataUpdated('START_POS');
@@ -925,39 +929,8 @@ define([
 			a[j + 1] = v;
 		}
 
-		// Update buffers
-		var meshData = this.meshData;
-		var startPos = meshData.getAttributeBuffer('START_POS');
-		var startDir = meshData.getAttributeBuffer('START_DIR');
-		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
-		// for (var i = 0; i < particles.length; i++) {
-		// 	var particle = particles[i];
-		// 	var emitTime = particle.emitTime;
-		// 	var pos = particle.startPosition;
-		// 	var dir = particle.startDirection;
-		// 	var meshVertexCount = this.mesh.meshVertexCount;
-		// 	for (var j = 0; j < meshVertexCount; j++) {
-		// 		// Todo optimzie index calculations
-		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
-		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
-		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = particle.lifeTime;
-		// 		timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
-
-		// 		startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
-		// 		startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
-		// 		startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
-		// 		startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
-
-		// 		startDir[meshVertexCount * 3 * i + j * 3 + 0] = dir.x;
-		// 		startDir[meshVertexCount * 3 * i + j * 3 + 1] = dir.y;
-		// 		startDir[meshVertexCount * 3 * i + j * 3 + 2] = dir.z;
-		// 	}
-		// }
-		meshData.setAttributeDataUpdated('START_POS');
-		meshData.setAttributeDataUpdated('START_DIR');
-		meshData.setAttributeDataUpdated('TIME_INFO');
-
 		// Update index buffer
+		var meshData = this.meshData;
 		var mesh = this.mesh;
 		var meshIndices = mesh.getIndexBuffer();
 		var indices = meshData.getIndexBuffer();
@@ -1023,7 +996,7 @@ define([
 		]);
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(4, 'Float');
-		attributeMap.START_DIR = MeshData.createAttribute(3, 'Float');
+		attributeMap.START_DIR = MeshData.createAttribute(4, 'Float');
 		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
