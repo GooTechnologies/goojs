@@ -5,6 +5,11 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * @class
+	 * @constructor
+	 * @param {ParticleComponent} particleComponent
+	 */
 	function Particle(particleComponent) {
 		this.index = 0;
 		this.component = particleComponent;
@@ -20,6 +25,11 @@ define([
 
 	var dirDelta = new Vector3();
 	var gravityDelta = new Vector3();
+
+	/**
+	 * Get the world position of the particle
+	 * @param {Vector3} store
+	 */
 	Particle.prototype.getWorldPosition = function (store) {
 		if(!this.active) return store;
 		var component = this.component;

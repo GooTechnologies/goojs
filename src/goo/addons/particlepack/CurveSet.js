@@ -7,6 +7,11 @@ define([
 		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
 	}
 
+	/**
+	 * A collection of Curve instances. Used to connect different types curves, joining them at their given time offsets.
+	 * @constructor
+	 * @param {array} [segments]
+	 */
 	function CurveSet(segments) {
 		/**
 		 * @type {Array<Curve>}
@@ -15,18 +20,35 @@ define([
 	}
 
 	CurveSet.prototype = {
+		
+		/**
+		 * @param {Curve} curve
+		 */
 		addSegment: function (curve) {
 			this.segments.push(curve);
 			this.sort();
 		},
+		
+		/**
+		 * @param {number} i
+		 */
 		removeSegment: function (i) {
 			this.segments.splice(i, 1);
 		},
+		
+		/**
+		 * Sorts the segments depending on their timeOffset.
+		 */
 		sort: function () {
 			this.segments = this.segments.sort(function (curveA, curveB) {
 				return curveA.timeOffset - curveB.timeOffset;
 			});
 		},
+
+		/**
+		 * Returns a GLSL expression that gives the value of the curve at a given time.
+		 * @param {string} timeVariableName
+		 */
 		toGLSL: function (timeVariableName) {
 			var segments = this.segments;
 			var glsl = [];
@@ -43,6 +65,11 @@ define([
 			}
 			return glsl.join('+');
 		},
+
+		/**
+		 * Returns a GLSL expression that gives the integral value of the curve at a given time.
+		 * @param {string} timeVariableName
+		 */
 		integralToGLSL: function (timeVariableName) {
 			var segments = this.segments;
 			var glsl = [];
@@ -59,6 +86,12 @@ define([
 			}
 			return glsl.join('+');
 		},
+
+		/**
+		 * Get the value of the curve at a given time.
+		 * @param {number} t
+		 * @returns {number}
+		 */
 		getValueAt: function (t) {
 			// Find the matching segment
 			var segments = this.segments;
@@ -71,6 +104,12 @@ define([
 			}
 			return this.segments[segments.length - 1].getValueAt(t);
 		},
+
+		/**
+		 * Get the integral value of the curve at a given time.
+		 * @param {number} t
+		 * @returns {number}
+		 */
 		getIntegralValueAt: function (t) {
 			// Add all integral values until the last segment
 			var segments = this.segments;

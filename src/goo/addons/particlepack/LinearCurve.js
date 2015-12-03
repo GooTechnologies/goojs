@@ -5,12 +5,29 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * @class
+	 * @constructor
+	 * @extends Curve
+	 * @param {object} [options]
+	 * @param {number} [options.k]
+	 * @param {number} [options.m]
+	 */
 	function LinearCurve(options) {
 		options = options || {};
 
 		Curve.call(this, options);
 
+		/**
+		 * Slope of the line
+		 * @type {number}
+		 */
 		this.k = options.k !== undefined ? options.k : 1;
+
+		/**
+		 * Offset of the line.
+		 * @type {number}
+		 */
 		this.m = options.m !== undefined ? options.m : 0;
 	}
 	LinearCurve.prototype = Object.create(Curve.prototype);
