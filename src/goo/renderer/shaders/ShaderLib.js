@@ -406,7 +406,7 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -444,7 +444,7 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -476,7 +476,7 @@ define([
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -504,7 +504,7 @@ define([
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -633,7 +633,7 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -844,7 +844,7 @@ define([
 
 		'void main() {',
 			'normal = vec3(worldMatrix * vec4(vertexNormal, 0.0));',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -886,7 +886,7 @@ define([
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -910,8 +910,7 @@ define([
 			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			heightMap: Shader.DIFFUSE_MAP,
 			resolution: [512, 512],
@@ -921,14 +920,13 @@ define([
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
 			'varying vec2 vUv;',
 			'void main() {',
 				'vUv = vertexUV0;',
-				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+				'gl_Position = viewProjectionMatrix * (worldMatrix * vec4( vertexPosition, 1.0 ));',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -970,7 +968,7 @@ define([
 
 		'void main(void) {',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 			'gl_PointSize = pointSize;',
 		'}'
 		].join('\n'),
@@ -1053,7 +1051,7 @@ define([
 		'void main(void) {',
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
-			'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
+			'worldPosition = viewMatrix * (wMatrix * vec4(vertexPosition, 1.0));',
 			'gl_Position = projectionMatrix * worldPosition;',
 		'}'
 		].join('\n'),
@@ -1134,12 +1132,11 @@ define([
 			ShaderBuilder.animation.vertex,
 
 			'#ifdef NORMAL',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 ));',
 			'#else',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition, 1.0 ));',
 			'#endif',
 
-			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'

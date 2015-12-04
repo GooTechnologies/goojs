@@ -67,8 +67,7 @@ define([
 			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			near: Shader.NEAR_PLANE,
 			far: Shader.FAR_PLANE
@@ -76,12 +75,11 @@ define([
 		vshader: [
 			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
 			'void main(void) {',
-			'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -123,8 +121,8 @@ define([
 			'varying vec2 vUv;',
 
 			'void main() {',
-			'	vUv = uv;',
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
+				'vUv = uv;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
 			'}'
 		].join('\n'),
 		fshader: [
