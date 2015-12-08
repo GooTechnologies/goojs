@@ -15,6 +15,7 @@ define([
 	TweenOpacityAction.prototype.constructor = TweenOpacityAction;
 
 	TweenOpacityAction.external = {
+		key: 'Tween Opacity',
 		name: 'Tween Material Opacity',
 		type: 'texture',
 		description: 'Tweens the opacity of a material',
