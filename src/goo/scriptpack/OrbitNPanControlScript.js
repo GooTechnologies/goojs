@@ -56,6 +56,7 @@ define([
 				break;
 			case 'panButton':
 				param.default = 'Right';
+				break;
 			case 'panSpeed':
 				param.default = 1;
 				break;
