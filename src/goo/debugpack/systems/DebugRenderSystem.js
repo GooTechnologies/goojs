@@ -36,9 +36,9 @@ define([
 		this.inserted();
 
 		this._interestComponents = [
-			'CameraComponent',
-			'LightComponent'
-			//'MeshRendererComponent'
+			['CameraComponent', 'cameraComponent'],
+			['LightComponent', 'lightComponent']
+			//['MeshRendererComponent', 'meshRendererComponent']
 		];
 
 		this.camera = null;
@@ -77,14 +77,14 @@ define([
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
 		var count = this.renderList.length = 0;
 		var renderables;
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
-				var componentName = this._interestComponents[j];
-				if (!entity._hidden && entity.hasComponent(componentName)) {
-					var component = entity.getComponent(componentName);
-
-					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
+				var componentNameUpper = this._interestComponents[j][0];
+				var componentName = this._interestComponents[j][1];
+				var component = entity[componentName];
+				if (!entity._hidden && component) {
+					var options = { full: this.doRender[componentNameUpper] || component.forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
