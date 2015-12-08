@@ -1,3 +1,9 @@
+v0.15.23 --- 2015-12-08
+
+### Fixes
+
+  * Added key "Tween Opacity" to TweenOpacityAction, making it backwards compatible.
+
 v0.15.22 --- 2015-12-08
 
 ### Fixes
