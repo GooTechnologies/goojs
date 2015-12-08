@@ -80,10 +80,10 @@ define([
 		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
-				var componentNameUpper = this._interestComponents[j][0];
 				var componentName = this._interestComponents[j][1];
 				var component = entity[componentName];
 				if (!entity._hidden && component) {
+					var componentNameUpper = this._interestComponents[j][0];
 					var options = { full: this.doRender[componentNameUpper] || component.forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
