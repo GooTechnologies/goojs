@@ -24,6 +24,7 @@ define([
 	'goo/fsmpack/statemachine/actions/PauseAnimationAction',
 	'goo/fsmpack/statemachine/actions/ResumeAnimationAction',
 	'goo/fsmpack/statemachine/actions/SetAnimationAction',
+	'goo/fsmpack/statemachine/actions/SetTimeScale',
 
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
@@ -55,6 +56,7 @@ define([
 	'goo/fsmpack/statemachine/actions/SmokeAction',
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
+	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
 
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
