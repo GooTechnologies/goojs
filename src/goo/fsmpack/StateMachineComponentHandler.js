@@ -60,7 +60,7 @@ define([
 	 */
 	StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
-		options = options || {}
+		options = options || {};
 		options.reload = true;
 		options.instantiate = true;
 

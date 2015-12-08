@@ -63,6 +63,7 @@ define([
 
 	'goo/fsmpack/statemachine/actions/SetRenderTargetAction',
 	'goo/fsmpack/statemachine/actions/TweenTextureOffsetAction',
+	'goo/fsmpack/statemachine/actions/SetMaterialColorAction',
 
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
