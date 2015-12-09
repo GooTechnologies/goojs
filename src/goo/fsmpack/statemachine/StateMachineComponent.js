@@ -72,15 +72,44 @@ define([
 		}
 	};
 
+	/**
+	 * Removes the specified state machine from the component.
+	 *
+	 * @param {Machine} machine
+	 *        The machine which is to be removed.
+	 *
+	 * @returns {StateMachineComponent}
+	 *          The component itself.
+	 */
 	StateMachineComponent.prototype.addMachine = function (machine) {
-		machine._fsm = this;
+		machine.setParentFSM(this);
 		machine.parent = this;
 		this._machines.push(machine);
+		return this;
 	};
 
+	/**
+	 * Removes the specified state machine from the component.
+	 *
+	 * @param {Machine} machine
+	 *        The machine which is to be removed.
+	 *
+	 * @returns {StateMachineComponent}
+	 *          The component itself.
+	 */
 	StateMachineComponent.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
 		ArrayUtils.remove(this._machines, machine);
+		return this;
+	};
+
+	/**
+	 * Gets a list with all the state machines in the component.
+	 *
+	 * @return {Machine[]}
+	 */
+	StateMachineComponent.prototype.getMachines = function () {
+		return this._machines;
 	};
 
 	/**
