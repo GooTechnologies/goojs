@@ -1,3 +1,11 @@
+v0.15.24 --- 2015-12-09
+
+### Fixes
+
+  * Fixed Matrix4.getRotation bug. Added unit test.
+  * Added missing break in OrbitNPanControlScript
+  * Fixed bugs in state machine removal of machines and states.
+
 v0.15.23 --- 2015-12-08
 
 ### Fixes
