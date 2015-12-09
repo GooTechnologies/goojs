@@ -5,6 +5,7 @@ define([], function (
 
 	function Machine(name) {
 		this.name = name;
+		this._states = {};
 		this._fsm = null;
 		this.initialState = 'entry';
 		this.currentState = null;
@@ -91,8 +92,7 @@ define([], function (
 	};
 
 	Machine.prototype.addState = function (state) {
-		if (!this._states) {
-			this._states = {};
+		if (Object.keys(this._states).length === 0) {
 			this.initialState = state.uuid;
 		}
 		state.parent = this;

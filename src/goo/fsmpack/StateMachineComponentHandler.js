@@ -40,10 +40,11 @@ define([
 	StateMachineComponentHandler.prototype._remove = function (entity) {
 		var component = entity.stateMachineComponent;
 		if (component) {
-			component._machines.forEach(function (machine) {
+			for (var i = component._machines.length - 1; i >= 0; i--) {
+				var machine = component._machines[i];
 				machine.cleanup();
 				component.removeMachine(machine);
-			});
+			}
 
 			component.cleanup();
 		}
