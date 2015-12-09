@@ -80,7 +80,7 @@ define([
 					}
 				}
 				// Removing old machines
-				for (var i = 0; i < component._machines.length; i++) {
+				for (var i = component._machines.length - 1; i >= 0; i--) {
 					if (machines.indexOf(component._machines[i]) === -1) {
 						component.removeMachine(component._machines[i]);
 					}
