@@ -232,5 +232,29 @@ define([
 		ArrayUtils.remove(this._machines, machine);
 	};
 
+	/**
+	 * Sets the state machine component to which this machine belongs.
+	 *
+	 * @param {fsm} fsm
+	 *        The state machine component to which the machine belongs.
+	 *
+	 * @returns {Machine}
+	 *          The machine itself.
+	 */
+	State.prototype.setParentFSM = function (fsm) {
+		this._fsm;
+		return this;
+	};
+
+	/**
+	 * Gets the state machine component to which the machine belongs.
+	 *
+	 * @return {StateMachineComponent}
+	 *         The state machine component to which the machine belongs.
+	 */
+	State.prototype.getParentFSM = function () {
+		return this._fsm;
+	};
+
 	return State;
 });
