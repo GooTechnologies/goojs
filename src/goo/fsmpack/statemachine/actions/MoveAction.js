@@ -78,8 +78,7 @@ define([
 			if (this.relative) {
 				if (this.everyFrame) {
 					var tpf = fsm.getTpf() * 10;
-					translation.addDirect(this.translation[0], this.translation[1], this.translation[2])
-						.scale(tpf);
+					translation.addDirect(this.translation[0] * tpf, this.translation[1] * tpf, this.translation[2] * tpf);
 				} else {
 					translation.addDirect(this.translation[0], this.translation[1], this.translation[2]);
 				}
