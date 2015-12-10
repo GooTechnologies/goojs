@@ -359,6 +359,70 @@ define(function () {
 		return MathUtils.randomSeed / 233280;
 	};
 
+	MathUtils.floatToHalfFloat = (function () {
+	    var floatView = new Float32Array(1);
+	    var int32View = new Int32Array(floatView.buffer);
+
+	    return function (val) {
+	        floatView[0] = val;
+	        var x = int32View[0];
+
+	        var bits = (x >> 16) & 0x8000; /* Get the sign */
+	        var m = (x >> 12) & 0x07ff; /* Keep one extra bit for rounding */
+	        var e = (x >> 23) & 0xff; /* Using int is faster here */
+
+	        if (e < 103) {
+	            return bits;
+	        }
+
+	        if (e > 142) {
+	            bits |= 0x7c00;
+	            bits |= ((e === 255) ? 0 : 1) && (x & 0x007fffff);
+	            return bits;
+	        }
+
+	        if (e < 113) {
+	            m |= 0x0800;
+	            bits |= (m >> (114 - e)) + ((m >> (113 - e)) & 1);
+	            return bits;
+	        }
+
+	        bits |= ((e - 112) << 10) | (m >> 1);
+	        bits += m & 1;
+	        return bits;
+	    };
+	})();
+
+	MathUtils.floatToHalfFloat2 = (function () {
+	    var floatView = new Float32Array(1);
+	    var int32View = new Int32Array(floatView.buffer);
+
+	    return function (fval) {
+	        floatView[0] = fval;
+	        var fbits = int32View[0];
+	        var sign = (fbits >> 16) & 0x8000;
+	        var val = (fbits & 0x7fffffff) + 0x1000;
+
+	        if (val >= 0x47800000) {
+	            if ((fbits & 0x7fffffff) >= 0x47800000) {
+	                if (val < 0x7f800000) {
+	                    return sign | 0x7c00;
+	                }
+	                return sign | 0x7c00 | (fbits & 0x007fffff) >> 13;
+	            }
+	            return sign | 0x7bff;
+	        }
+	        if (val >= 0x38800000) {
+	            return sign | val - 0x38000000 >> 13;
+	        }
+	        if (val < 0x33000000) {
+	            return sign;
+	        }
+	        val = (fbits & 0x7fffffff) >> 23;
+	        return sign | ((fbits & 0x7fffff | 0x800000) + (0x800000 >>> val - 102) >> 126 - val);
+	    };
+	})();
+
 	/**
 	 * Defines a property on an object that throws an exception when NaN is being assigned to it.
 	 * Useful for debugging.
