@@ -1,9 +1,11 @@
 /* jshint bitwise: false */
 define([
 	'goo/util/ObjectUtils',
+	'goo/renderer/Capabilities',
 	'goo/math/MathUtils'
 ], function (
 	ObjectUtils,
+	Capabilities,
 	MathUtils
 ) {
 	'use strict';
@@ -252,30 +254,53 @@ define([
 	};
 
 	RendererUtils.getGLPixelDataType = function (context, type) {
-		var glPixelDataType;
+		return RendererUtils.getGLDataType(context, type);
+	};
+
+	RendererUtils.getGLDataType = function (context, type) {
+		var glDataType;
 
 		switch (type) {
+			case 'Float':
+			case 'Double':
+				glDataType = context.FLOAT;
+				break;
+			case 'Byte':
+				glDataType = context.BYTE;
+				break;
 			case 'UnsignedByte':
-				glPixelDataType = context.UNSIGNED_BYTE;
+				glDataType = context.UNSIGNED_BYTE;
+				break;
+			case 'Short':
+				glDataType = context.SHORT;
+				break;
+			case 'UnsignedShort':
+				glDataType = context.UNSIGNED_SHORT;
+				break;
+			case 'Int':
+				glDataType = context.INT;
+				break;
+			case 'UnsignedInt':
+				glDataType = context.UNSIGNED_INT;
 				break;
 			case 'UnsignedShort565':
-				glPixelDataType = context.UNSIGNED_SHORT_5_6_5;
+				glDataType = context.UNSIGNED_SHORT_5_6_5;
 				break;
 			case 'UnsignedShort4444':
-				glPixelDataType = context.UNSIGNED_SHORT_4_4_4_4;
+				glDataType = context.UNSIGNED_SHORT_4_4_4_4;
 				break;
 			case 'UnsignedShort5551':
-				glPixelDataType = context.UNSIGNED_SHORT_5_5_5_1;
+				glDataType = context.UNSIGNED_SHORT_5_5_5_1;
 				break;
-			case 'Float':
-				glPixelDataType = context.FLOAT;
+			case 'HalfFloat':
+				glDataType = Capabilities.TextureHalfFloat.HALF_FLOAT_OES;
 				break;
 
 			default:
-				throw new Error('Unsupported type: ' + type);
+				throw new Error('Unknown datatype: ' + type);
 		}
 
-		return glPixelDataType;
+		return glDataType;
 	};
 
 	RendererUtils.getFilterFallback = function (filter) {
@@ -465,41 +490,6 @@ define([
 		}
 
 		return glMode;
-	};
-
-	RendererUtils.getGLDataType = function (context, type) {
-		var glDataType;
-
-		switch (type) {
-			case 'Float':
-			case 'HalfFloat':
-			case 'Double':
-				glDataType = context.FLOAT;
-				break;
-			case 'Byte':
-				glDataType = context.BYTE;
-				break;
-			case 'UnsignedByte':
-				glDataType = context.UNSIGNED_BYTE;
-				break;
-			case 'Short':
-				glDataType = context.SHORT;
-				break;
-			case 'UnsignedShort':
-				glDataType = context.UNSIGNED_SHORT;
-				break;
-			case 'Int':
-				glDataType = context.INT;
-				break;
-			case 'UnsignedInt':
-				glDataType = context.UNSIGNED_INT;
-				break;
-
-			default:
-				throw new Error('Unknown datatype: ' + type);
-		}
-
-		return glDataType;
 	};
 
 	RendererUtils.getGLBlendParam = function (context, param) {
