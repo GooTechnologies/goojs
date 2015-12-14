@@ -77,6 +77,8 @@ define([
 	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
 
 	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
+	'goo/fsmpack/statemachine/actions/ApplyForceAction',
+	'goo/fsmpack/statemachine/actions/ApplyTorqueAction',
 
 	'goo/fsmpack/statemachine/actions/CompareCounterAction',
 	'goo/fsmpack/statemachine/actions/CompareCountersAction',
