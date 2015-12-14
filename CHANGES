@@ -1,3 +1,14 @@
+v0.15.26 --- 2015-12-??
+
+### Additions
+
+  + Added ApplyForceAction
+  + Added ApplyTorqueAction
+  + Added optional argument "relativePoint" to RigidBodyComponent.prototype.applyForce
+  + Added RigidBodyComponent.prototype.applyForceLocal
+  + Added RigidBodyComponent.prototype.applyTorque
+  + Added RigidBodyComponent.prototype.applyTorqueLocal
+
 v0.15.25 --- 2015-12-10
 
 ### Fixes
