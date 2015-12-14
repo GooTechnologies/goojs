@@ -32,7 +32,7 @@ requirejs.config({
     }
 });
 
-require(['test/all-tests'], function() {
+require(['test/all-tests'], function () {
     window.__karma__.externalResourceRootPath = '/base/test/unit';
     window.__karma__.start();
 });

@@ -1,6 +1,11 @@
 // jshint node:true
 'use strict';
 
+/**
+ * Strips a module from its require wrapping `define([...], ...`.
+ * Esprima is used to parse the source. This is saner than using regexes.
+ */
+
 var _ = require('underscore');
 var esprima = require('esprima');
 var escodegen = require('escodegen');

@@ -1,22 +1,18 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/animationpack/layer/AnimationLayer',
-	'goo/animationpack/layer/LayerLERPBlender',
 	'goo/animationpack/state/FadeTransitionState',
 	'goo/animationpack/state/SyncFadeTransitionState',
 	'goo/animationpack/state/FrozenTransitionState',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	ConfigHandler,
 	AnimationLayer,
-	LayerLERPBlender,
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	RSVP,
-	PromiseUtil,
 	_
 ) {
 	'use strict';
@@ -40,7 +36,7 @@ define([
 	/**
 	 * Creates an empty array to store animation layers
 	 * @param {string} ref
-	 * @returns {AnimationLayer[]}
+	 * @returns {Array<AnimationLayer>}
 	 * @private
 	 */
 	AnimationLayersHandler.prototype._create = function (ref) {
@@ -68,14 +64,14 @@ define([
 	/**
 	 * Adds/updates/removes the animation layers
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */
 	AnimationLayersHandler.prototype._update = function (ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (object) {
-			if(!object) { return; }
+			if (!object) { return; }
 			var promises = [];
 
 			var i = 0;
@@ -95,7 +91,7 @@ define([
 
 	/**
 	 * Parses a single layer, puts the correct properties and {@link SteadyState} onto it
-	 * @param {object} layerConfig
+	 * @param {Object} layerConfig
 	 * @param {layer}
 	 * @returns {RSVP.Promise} resolves with layer
 	 * @private

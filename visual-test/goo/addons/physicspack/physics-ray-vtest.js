@@ -154,7 +154,7 @@ require([
 
 	var normalEndPosition = new Vector3();
 	var drawNormal = function (position, normal) {
-		normalEndPosition.setVector(normal).scale(0.5).addVector(position);
+		normalEndPosition.set(normal).scale(0.5).add(position);
 
 		lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
 	};
@@ -164,17 +164,17 @@ require([
 	var arrowDirection = new Vector3();
 	var drawLineArrow = function (origin, direction, length, fraction, color, width) {
 
-		arrowStartPosition.setVector(direction).scale(length * fraction).addVector(origin);
-		arrowEndPosition.setVector(direction).scale(-width).addVector(arrowStartPosition);
+		arrowStartPosition.set(direction).scale(length * fraction).add(origin);
+		arrowEndPosition.set(direction).scale(-width).add(arrowStartPosition);
 
-		var arrowUpDirection = arrowDirection.setVector(Vector3.UNIT_Y).scale(width);
-		arrowUpDirection.addVector(arrowEndPosition);
+		var arrowUpDirection = arrowDirection.set(Vector3.UNIT_Y).scale(width);
+		arrowUpDirection.add(arrowEndPosition);
 
 		lineRenderSystem.drawLine(arrowStartPosition, arrowUpDirection, color);
 
-		var arrowDownDirection = arrowDirection.subVector(arrowEndPosition);
+		var arrowDownDirection = arrowDirection.sub(arrowEndPosition);
 		arrowDownDirection.scale(-1);
-		arrowDownDirection.addVector(arrowEndPosition);
+		arrowDownDirection.add(arrowEndPosition);
 
 		lineRenderSystem.drawLine(arrowStartPosition, arrowDownDirection, color);
 	};
@@ -192,7 +192,7 @@ require([
 			drawLineArrow(origin, direction, length, frac, color, 0.05);
 		}
 
-		lineEndVector.setVector(direction).scale(length).addVector(origin);
+		lineEndVector.set(direction).scale(length).add(origin);
 		lineRenderSystem.drawLine(origin, lineEndVector, color);
 	};
 
@@ -307,7 +307,7 @@ require([
 		for (var i = 0; i < rayCasters.length; i++) {
 			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
 
-			rayCasters[i].origin.setVector(rayStart);
+			rayCasters[i].origin.set(rayStart);
 			rayCasters[i].cast();
 		}
 	};

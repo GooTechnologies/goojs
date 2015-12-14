@@ -13,6 +13,7 @@
 			var element = document.getElementById(id);
 			if (element) {
 				element.scrollIntoView();
+				window.parent.history.replaceState('Object', 'Title', 'index.html?c=' + id);
 			}
 		}, false);
 	} else {

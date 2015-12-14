@@ -16,10 +16,10 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('MaterialHandler', function () {
 		var loader;
-	
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -54,7 +54,7 @@ define([
 			});
 		});
 
-		it('loads a material with an engine shader', function () {
+		it('loads a material with an engine shader', function (done) {
 			var config = Configs.material();
 			config.shaderRef = 'GOO_ENGINE_SHADERS/uber';
 			loader.preload(Configs.get());

@@ -1,1 +1,1 @@
-define(['goo/entities/components/MeshDataComponent'], function(MeshDataComponent) {});
+define(['goo/entities/components/MeshDataComponent'], function (MeshDataComponent) {});

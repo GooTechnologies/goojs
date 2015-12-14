@@ -1,13 +1,13 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/entities/SystemBus',
-	'goo/util/ArrayUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/ArrayUtils',
+	'goo/util/ObjectUtils',
 	'goo/util/rsvp'
 ], function (
 	ConfigHandler,
 	SystemBus,
-	ArrayUtil,
+	ArrayUtils,
 	_,
 	RSVP
 ) {
@@ -33,7 +33,7 @@ define([
 	 * Removes the scene, i e removes all entities in scene from engine world
 	 * @param {ref}
 	 */
-	SceneHandler.prototype._remove = function(ref) {
+	SceneHandler.prototype._remove = function (ref) {
 		//Todo Clear engine
 		var scene = this._objects.get(ref);
 		if (scene) {
@@ -52,7 +52,7 @@ define([
 	 * @returns {Entity}
 	 * @private
 	 */
-	SceneHandler.prototype._create = function() {
+	SceneHandler.prototype._create = function () {
 		return {
 			id: null,
 			entities: {},
@@ -65,13 +65,13 @@ define([
 	/**
 	 * Creates/updates/removes a scene
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
-	SceneHandler.prototype._update = function(ref, config, options) {
+	SceneHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(scene) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (scene) {
 			if (!scene) { return; }
 			scene.id = ref;
 			var promises = [];
@@ -84,7 +84,7 @@ define([
 			}
 			if (!options.scene || !options.scene.dontSetCamera) {
 				if (config.initialCameraRef && config.initialCameraRef !== scene.initialCameraRef) {
-					promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {
+					promises.push(that._load(config.initialCameraRef, options).then(function (cameraEntity) {
 						if (cameraEntity && cameraEntity.cameraComponent) {
 							SystemBus.emit('goo.setCurrentCamera', {
 								camera: cameraEntity.cameraComponent.camera,
@@ -95,7 +95,7 @@ define([
 					}));
 				}
 			}
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				return scene;
 			});
 		});
@@ -103,11 +103,11 @@ define([
 
 	/**
 	 * Adding and removing entities to the engine and thereby the scene
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
-	SceneHandler.prototype._handleEntities = function(config, scene, options) {
+	SceneHandler.prototype._handleEntities = function (config, scene, options) {
 		var that = this;
 		var promises = [];
 
@@ -124,11 +124,11 @@ define([
 			}
 		}
 
-		_.forEach(config.entities, function(entityConfig) {
+		_.forEach(config.entities, function (entityConfig) {
 			promises.push(that._load(entityConfig.entityRef, options));
 		}, null, 'sortValue');
 
-		return RSVP.all(promises).then(function(entities) {
+		return RSVP.all(promises).then(function (entities) {
 			// Adding new entities
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
@@ -156,24 +156,23 @@ define([
 
 	/**
 	 * Handling posteffects
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
-	SceneHandler.prototype._handlePosteffects = function(config, scene, options) {
+	SceneHandler.prototype._handlePosteffects = function (config, scene, options) {
 		return this._load(config.posteffectsRef, options);
 	};
 
 	/**
 	 * Handling environment, to be implemented
-	 * @param {object} config
-	 * @param {object} scene
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} scene
+	 * @param {Object} options
 	 */
-	SceneHandler.prototype._handleEnvironment = function(config, scene, options) {
+	SceneHandler.prototype._handleEnvironment = function (config, scene, options) {
 		return this._load(config.environmentRef, options);
 	};
 
 	return SceneHandler;
-
 });

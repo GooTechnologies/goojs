@@ -16,7 +16,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/FullscreenUtils',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Quad'
 ], function (
@@ -37,7 +37,7 @@ define([
 	Texture,
 	Renderer,
 	FullscreenPass,
-	FullscreenUtil,
+	FullscreenUtils,
 	DirectionalLight,
 	Quad
 ) {
@@ -78,7 +78,7 @@ define([
 			materials: [mat],
 			transform: new Transform()
 		};
-		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
+		this.renderable.transform.setRotationXYZ(0, 0, Math.PI * 0.5);
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
 		this.copyPass.material.depthState.enabled = false;
@@ -217,7 +217,7 @@ define([
 		light.shadowSettings.size = 10;
 		var lightEntity = this.lightEntity = world.createEntity(light);
 		lightEntity.setTranslation(200, 200, 200);
-		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
+		lightEntity.setRotation(-Math.PI * 0.5, 0, 0);
 		lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
 
@@ -336,8 +336,8 @@ define([
 	Terrain.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
 		power = MathUtils.clamp(power, 0, 1);
 
-		x = (x - this.size/2) * 2;
-		z = (z - this.size/2) * 2;
+		x = (x - this.size / 2) * 2;
+		z = (z - this.size / 2) * 2;
 
 		if (mode === 'paint') {
 			this.renderable.materials[0] = this.drawMaterial2;
@@ -357,14 +357,14 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 
-			this.renderable.materials[0].uniforms.rgba = rgba || [1,1,1,1];
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.splat, false);
+			this.renderable.materials[0].uniforms.rgba = rgba || [1, 1, 1, 1];
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.splat, false);
 		} else if (mode === 'smooth') {
 			this.renderable.materials[0] = this.drawMaterial3;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -375,13 +375,13 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		} else if (mode === 'flatten') {
 			this.renderable.materials[0] = this.drawMaterial4;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -393,13 +393,13 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		} else {
 			this.renderable.materials[0] = this.drawMaterial1;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -418,11 +418,11 @@ define([
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
 			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
 		}
 	};
 
@@ -457,7 +457,7 @@ define([
 		}
 	};
 
-	Terrain.prototype.setLightmapTexture = function(lightMap) {
+	Terrain.prototype.setLightmapTexture = function (lightMap) {
 		// update all meshes.
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
@@ -465,7 +465,7 @@ define([
 				if (entity.meshRendererComponent) {
 					var material = entity.meshRendererComponent.materials[0];
 					if (lightMap) {
-						material.setTexture("LIGHT_MAP", lightMap);
+						material.setTexture('LIGHT_MAP', lightMap);
 						material.shader.setDefine('LIGHTMAP', true);
 					} else {
 						material.shader.removeDefine('LIGHTMAP');
@@ -477,7 +477,7 @@ define([
 
 	// Returns the ammo body.
 	Terrain.prototype.initAmmoBody = function () {
-		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
+		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, 'float', Ammo.ALLOC_NORMAL);
 
 		this.updateAmmoBody();
 
@@ -968,17 +968,17 @@ define([
 	};
 
 	var brushShader = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -992,7 +992,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
 
@@ -1007,19 +1007,19 @@ define([
 	};
 
 	var brushShader2 = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
-			rgba: [1,1,1,1],
-			diffuseMap : Shader.DIFFUSE_MAP,
-			splatMap : 'SPLAT_MAP'
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			rgba: [1, 1, 1, 1],
+			diffuseMap: Shader.DIFFUSE_MAP,
+			splatMap: 'SPLAT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1036,7 +1036,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D splatMap;',
 		'uniform vec4 rgba;',
@@ -1056,19 +1056,19 @@ define([
 	};
 
 	var brushShader3 = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
 			size: 1/512,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			heightMap : 'HEIGHT_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1085,7 +1085,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1110,19 +1110,19 @@ define([
 	};
 
 	var brushShader4 = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
 			height: 0,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			heightMap : 'HEIGHT_MAP'
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1139,7 +1139,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1159,16 +1159,16 @@ define([
 	};
 
 	var extractShader = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1182,7 +1182,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
@@ -1227,22 +1227,22 @@ define([
 	};
 
 	var terrainPickingShader = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraFar : Shader.FAR_PLANE,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraFar: Shader.FAR_PLANE,
 			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
 			resolution: [255, 1, 1, 1],
-			id : function (shaderInfo) {
+			id: function (shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform sampler2D heightMap;',
@@ -1277,8 +1277,8 @@ define([
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
-		].join("\n"),
-		fshader : [
+		].join('\n'),
+		fshader: [
 		'uniform float id;',
 
 		'varying float depth;',
@@ -1291,7 +1291,7 @@ define([
 			'gl_FragColor = vec4(packedId, packedDepth);',
 			// 'gl_FragColor = vec4(depth * 0.2, 0.0, 0.0, 1.0);',
 		'}'
-		].join("\n")
+		].join('\n')
 	};
 
 	// var detailShader = {
@@ -1366,17 +1366,17 @@ define([
 	// };
 
 	var normalmapShader = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			heightMap : Shader.DIFFUSE_MAP,
-			// normalMap : Shader.NORMAL_MAP,
-			resolution : [512, 512],
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			heightMap: Shader.DIFFUSE_MAP,
+			// normalMap: Shader.NORMAL_MAP,
+			resolution: [512, 512],
 			height	: 0.05
 		},
 		vshader: [
@@ -1387,30 +1387,30 @@ define([
 			'uniform mat4 projectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
-			"varying vec2 vUv;",
-			"void main() {",
-				"vUv = vertexUV0;",
-				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
-			"}"
-		].join("\n"),
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
 		fshader: [
-			"uniform float height;",
-			"uniform vec2 resolution;",
-			"uniform sampler2D heightMap;",
-			// "uniform sampler2D normalMap;",
+			'uniform float height;',
+			'uniform vec2 resolution;',
+			'uniform sampler2D heightMap;',
+			// 'uniform sampler2D normalMap;',
 
-			"varying vec2 vUv;",
+			'varying vec2 vUv;',
 
-			"void main() {",
-				"float val = texture2D(heightMap, vUv).x;",
-				"float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;",
-				"float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;",
+			'void main() {',
+				'float val = texture2D(heightMap, vUv).x;',
+				'float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;',
+				'float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;',
 
 				'vec3 normal = vec3(val - valU, val - valV, height);',
 				// 'normal.rgb += vec3(texture2D(normalMap, vUv).rg * 2.0 - 1.0, 0.0);',
-				"gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);",
-			"}"
-		].join("\n")
+				'gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);',
+			'}'
+		].join('\n')
 	};
 
 	return Terrain;

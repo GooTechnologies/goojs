@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/components/ScriptComponent'
-], function(
+], function (
 	World,
 	ScriptSystem,
 	ScriptComponent

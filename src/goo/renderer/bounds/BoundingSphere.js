@@ -49,25 +49,25 @@ define([
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.data[0] = x < min.data[0] ? x : min.data[0];
-			min.data[1] = y < min.data[1] ? y : min.data[1];
-			min.data[2] = z < min.data[2] ? z : min.data[2];
-			max.data[0] = x > max.data[0] ? x : max.data[0];
-			max.data[1] = y > max.data[1] ? y : max.data[1];
-			max.data[2] = z > max.data[2] ? z : max.data[2];
+			min.x = x < min.x ? x : min.x;
+			min.y = y < min.y ? y : min.y;
+			min.z = z < min.z ? z : min.z;
+			max.x = x > max.x ? x : max.x;
+			max.y = y > max.y ? y : max.y;
+			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.addVector(min).div(2.0);
+		var newCenter = max.add(min).scale(1 / 2.0);
 		var size = 0, test;
 		for (var i = 0; i < l; i += 3) {
 			vec.setDirect(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.subVector(newCenter).lengthSquared();
+			test = vec.sub(newCenter).lengthSquared();
 			if (test > size) {
 				size = test;
 			}
 		}
 
 		this.radius = Math.sqrt(size);
-		this.center.setVector(newCenter);
+		this.center.set(newCenter);
 	};
 
 	(function () {
@@ -79,7 +79,7 @@ define([
 		 * @returns {boolean}
 		 */
 		BoundingSphere.prototype.containsPoint = function (point) {
-			return relativePoint.setVector(point).subVector(this.center).lengthSquared() <= Math.pow(this.radius, 2);
+			return relativePoint.set(point).sub(this.center).lengthSquared() <= Math.pow(this.radius, 2);
 		};
 	})();
 
@@ -115,7 +115,7 @@ define([
 
 		var maxRadiusSqr = 0.0;
 		for (var i = 0; i < points.length; i++) {
-			var diff = Vector3.sub(points[i], this.center, tmpVec);
+			var diff = tmpVec.copy(points[i]).sub(this.center);
 			var radiusSqr = diff.lengthSquared();
 			if (radiusSqr > maxRadiusSqr) {
 				maxRadiusSqr = radiusSqr;
@@ -139,9 +139,9 @@ define([
 	};
 
 	BoundingSphere.prototype.whichSide = function (plane) {
-		var planeData = plane.normal.data;
-		var pointData = this.center.data;
-		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
+		var planeData = plane.normal;
+		var pointData = this.center;
+		var distance = planeData.x * pointData.x + planeData.y * pointData.y + planeData.z * pointData.z - plane.constant;
 
 		if (distance < -this.radius) {
 			return BoundingVolume.Inside;
@@ -208,7 +208,7 @@ define([
 	};
 
 	BoundingSphere.prototype.intersectsSphere = function (bs) {
-		var diff = tmpVec.setVector(this.center).subVector(bs.center);
+		var diff = tmpVec.set(this.center).sub(bs.center);
 		var rsum = this.radius + bs.radius;
 		return diff.dot(diff) <= rsum * rsum;
 		//return this.center.distanceSquared(bs.center) <= rsum * rsum;
@@ -219,7 +219,7 @@ define([
 			return false;
 		}
 
-		var diff = new Vector3().copy(ray.origin).sub(this.center);
+		var diff = ray.origin.clone().sub(this.center);
 		var a = diff.dot(diff) - this.radius * this.radius;
 		if (a <= 0.0) {
 			// in sphere
@@ -246,8 +246,8 @@ define([
 			var distances = [root - a1];
 			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
-				"distances": distances,
-				"points": points
+				distances: distances,
+				points: points
 			};
 		}
 
@@ -266,16 +266,16 @@ define([
 			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin),
 				new Vector3().copy(ray.direction).scale(distances[1]).add(ray.origin)];
 			return {
-				"distances": distances,
-				"points": points
+				distances: distances,
+				points: points
 			};
 		}
 
 		var distances = [-a1];
 		var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 		return {
-			"distances": distances,
-			"points": points
+			distances: distances,
+			points: points
 		};
 	};
 
@@ -293,7 +293,7 @@ define([
 			store = new BoundingSphere();
 		}
 
-		var diff = tmpVec.setVector(center).subVector(this.center);
+		var diff = tmpVec.set(center).sub(this.center);
 		var lengthSquared = diff.lengthSquared();
 		var radiusDiff = radius - this.radius;
 		var radiusDiffSqr = radiusDiff * radiusDiff;
@@ -302,13 +302,13 @@ define([
 		if (radiusDiffSqr >= lengthSquared) {
 			// if we contain the other
 			if (radiusDiff <= 0.0) {
-				store.center.setVector(this.center);
+				store.center.set(this.center);
 				store.radius = this.radius;
 				return store;
 			}
 			// else the other contains us
 			else {
-				store.center.setVector(center);
+				store.center.set(center);
 				store.radius = radius;
 				return store;
 			}
@@ -324,7 +324,7 @@ define([
 		if (length > MathUtils.EPSILON) {
 			// place us between the two centers, weighted by radii
 			var coeff = (length + radiusDiff) / (2.0 * length);
-			rCenter.addVector(diff.scale(coeff));
+			rCenter.add(diff.scale(coeff));
 		}
 
 		// Set radius

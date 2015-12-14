@@ -21,11 +21,11 @@ define([
 
 	SoundManager2Component.prototype = Object.create(Component.prototype);
 
-	SoundManager2Component.prototype.addSound = function(soundName, settings) {
+	SoundManager2Component.prototype.addSound = function (soundName, settings) {
 		this.sounds[soundName] = settings;
 	};
 
-	SoundManager2Component.prototype.playSound = function(soundName) {
+	SoundManager2Component.prototype.playSound = function (soundName) {
 		this.sounds[soundName].soundObject.play();
 	};
 

@@ -2,13 +2,17 @@
 define([
 	'goo/math/Vector',
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
+	'goo/math/Vector4',
+	'goo/math/Matrix3',
+	'goo/math/MathUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	Vector,
 	Vector3,
-	Matrix3x3,
-	MathUtils
+	Vector4,
+	Matrix3,
+	MathUtils,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -18,17 +22,42 @@ define([
 	 * Compared to Euler angles, Quaternions are simpler to compose and can help avoid the problem of gimbal lock.
 	 * Compared to rotation matrices, Quaternions are more numerically stable and the representation (4 numbers) is more compact.
 	 * Quaternions are non-commutative and provide a convenient way to interpolate between rotations (using the <i>slerp</i> function).
-	 * The four numbers in a quaternion are internally represented by a vector, and therefore inherits from it.
-	 * @extends Vector
-	 * @param {Vector|number[]|...number} arguments Initial values for the components.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
 	 */
-	function Quaternion () {
-		Vector.call(this, 4);
+	function Quaternion(x, y, z, w) {
+		// #ifdef DEBUG
+		this._x = 0;
+		this._y = 0;
+		this._z = 0;
+		this._w = 1;
+		// #endif
 
-		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+		if (arguments.length === 0) {
+			// Nothing given
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+			this.w = 1;
+		} else if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Quaternion) {
+				// Quaternion
+				this.copy(arguments[0]);
+			} else {
+				// Array
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+				this.z = arguments[0][2];
+				this.w = arguments[0][3];
+			}
 		} else {
-			this.data[3] = 1;
+			// Numbers
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.w = w;
 		}
 
 		// #ifdef DEBUG
@@ -36,182 +65,41 @@ define([
 		// #endif
 	}
 
-	Quaternion.prototype = Object.create(Vector.prototype);
-	Quaternion.prototype.constructor = Quaternion;
-
+	// #ifdef DEBUG
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
+	// #endif
+
+	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
+	Quaternion.prototype.dot = Vector4.prototype.dot;
+	Quaternion.prototype.length = Vector4.prototype.length;
+	Quaternion.prototype.lengthSquared = Vector4.prototype.lengthSquared;
+	Quaternion.prototype.normalize = Vector4.prototype.normalize;
+	Quaternion.prototype.equals = Vector4.prototype.equals;
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
-	//! AT: what is this?! isn't EPSILON enough?
-	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
-	/**
-	 * Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.add = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] + rhs.data[0];
-		target.data[1] = lhs.data[1] + rhs.data[1];
-		target.data[2] = lhs.data[2] + rhs.data[2];
-		target.data[3] = lhs.data[3] + rhs.data[3];
-
-		return target;
+	Quaternion.prototype.copy = function (rhs) {
+		this.x = rhs.x;
+		this.y = rhs.y;
+		this.z = rhs.z;
+		this.w = rhs.w;
+		return this;
 	};
 
-	/**
-	 * Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.sub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
+	Quaternion.prototype.set = function (rhs) {
+		if (rhs instanceof Quaternion) {
+			this.x = rhs.x;
+			this.y = rhs.y;
+			this.z = rhs.z;
+			this.w = rhs.w;
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+			this.z = arguments[2];
+			this.w = arguments[3];
 		}
 
-		target.data[0] = lhs.data[0] - rhs.data[0];
-		target.data[1] = lhs.data[1] - rhs.data[1];
-		target.data[2] = lhs.data[2] - rhs.data[2];
-		target.data[3] = lhs.data[3] - rhs.data[3];
-
-		return target;
-	};
-
-	/**
-	 * Performs a multiplication between two quaternions and stores the result in a separate quaternion.
-	 * The result is a <b>quaternion product</b>.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.mul = function(a, b, out) {
-		var ax = a.data[0], ay = a.data[1], az = a.data[2], aw = a.data[3],
-			bx = b.data[0], by = b.data[1], bz = b.data[2], bw = b.data[3];
-
-		out.data[0] = ax * bw + aw * bx + ay * bz - az * by;
-		out.data[1] = ay * bw + aw * by + az * bx - ax * bz;
-		out.data[2] = az * bw + aw * bz + ax * by - ay * bx;
-		out.data[3] = aw * bw - ax * bx - ay * by - az * bz;
-		return out;
-	};
-
-	/**
-	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		target.data[0] = (clean &= rhs.data[0] < 0.0 || rhs.data[0] > 0.0) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
-		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
-		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarAdd = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] + rhs;
-		target.data[1] = lhs.data[1] + rhs;
-		target.data[2] = lhs.data[2] + rhs;
-		target.data[3] = lhs.data[3] + rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Quaternion vector for storage.
-	 * @returns {Quaternion} A new quaternion if the target vector cannot be used for storage, else the target vector.
-	 */
-	Quaternion.scalarSub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] - rhs;
-		target.data[1] = lhs.data[1] - rhs;
-		target.data[2] = lhs.data[2] - rhs;
-		target.data[3] = lhs.data[3] - rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarMul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-		target.data[2] = lhs.data[2] * rhs;
-		target.data[3] = lhs.data[3] * rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarDiv = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
-
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-		target.data[2] = lhs.data[2] * rhs;
-		target.data[3] = lhs.data[3] * rhs;
-
-		return target;
+		return this;
 	};
 
 	/**
@@ -225,18 +113,18 @@ define([
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return workQuat.setVector(startQuat);
+			return workQuat.set(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return workQuat.setVector(endQuat);
+			return workQuat.set(endQuat);
 		}
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return workQuat.setVector(startQuat);
+			return workQuat.set(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
-		workQuat.setVector(endQuat);
+		workQuat.set(endQuat);
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
@@ -263,10 +151,10 @@ define([
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
-		var x = scale0 * startQuat.data[0] + scale1 * workQuat.data[0];
-		var y = scale0 * startQuat.data[1] + scale1 * workQuat.data[1];
-		var z = scale0 * startQuat.data[2] + scale1 * workQuat.data[2];
-		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
+		var x = scale0 * startQuat.x + scale1 * workQuat.x;
+		var y = scale0 * startQuat.y + scale1 * workQuat.y;
+		var z = scale0 * startQuat.z + scale1 * workQuat.z;
+		var w = scale0 * startQuat.w + scale1 * workQuat.w;
 
 		workQuat.setDirect(x, y, z, w);
 
@@ -279,10 +167,11 @@ define([
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.negate = function () {
-		this.data[0] *= -1;
-		this.data[1] *= -1;
-		this.data[2] *= -1;
-		this.data[3] *= -1;
+		this.x *= -1;
+		this.y *= -1;
+		this.z *= -1;
+		this.w *= -1;
+
 		return this;
 	};
 
@@ -291,9 +180,10 @@ define([
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.conjugate = function () {
-		this.data[0] *= -1;
-		this.data[1] *= -1;
-		this.data[2] *= -1;
+		this.x *= -1;
+		this.y *= -1;
+		this.z *= -1;
+
 		return this;
 	};
 
@@ -306,121 +196,43 @@ define([
 	};
 
 	/**
-	* Calculates the dot product between the current quaternion and another quaternion.
-	* @param rhs Quaternion on the right-hand side.
-	* @returns {number} The dot product.
-	*/
-	Quaternion.prototype.dot = function (rhs) {
-		var ldata = this.data;
-		var rdata = rhs.data || rhs;
-
-		var sum = 0.0;
-
-		sum += ldata[0] * rdata[0];
-		sum += ldata[1] * rdata[1];
-		sum += ldata[2] * rdata[2];
-		sum += ldata[3] * rdata[3];
-
-		return sum;
-	};
-
-	/**
-	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.add = function (rhs) {
-		return Quaternion.add(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.sub = function (rhs) {
-		return Quaternion.sub(this, rhs, this);
-	};
-
-	/**
 	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.mul = function (rhs) {
-		return Quaternion.mul(this, rhs, this);
-	};
+		var ax = this.x, ay = this.y, az = this.z, aw = this.w;
+		var bx = rhs.x, by = rhs.y, bz = rhs.z, bw = rhs.w;
 
-	/**
-	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.div = function (rhs) {
-		return Quaternion.div(this, rhs, this);
-	};
+		this.x = ax * bw + aw * bx + ay * bz - az * by;
+		this.y = ay * bw + aw * by + az * bx - ax * bz;
+		this.z = az * bw + aw * bz + ax * by - ay * bx;
+		this.w = aw * bw - ax * bx - ay * by - az * bz;
 
-	/**
-	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarAdd = function (rhs) {
-		return Quaternion.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarSub = function (rhs) {
-		return Quaternion.scalarSub(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarMul = function (rhs) {
-		return Quaternion.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarDiv = function (rhs) {
-		return Quaternion.scalarDiv(this, rhs, this);
-	};
-
-	var slerp_work_quat;
-	/**
-	 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
-	 * @param {Quaternion} endQuat End quaternion.
-	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
-		if(!slerp_work_quat) {
-			slerp_work_quat = new Quaternion();
-		}
-		slerp_work_quat.copy(endQuat);
-		Quaternion.slerp(this, endQuat, changeAmnt, slerp_work_quat);
-		this.copy(slerp_work_quat);
 		return this;
 	};
 
+	(function () {
+		var slerpWorkQuat = new Quaternion();
+
+		/**
+		 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
+		 * @param {Quaternion} endQuat End quaternion.
+		 * @param {number} changeAmount Interpolation factor between 0.0 and 1.0.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.slerp = function (endQuat, changeAmount) {
+			slerpWorkQuat.copy(endQuat);
+			Quaternion.slerp(this, endQuat, changeAmount, slerpWorkQuat);
+			this.copy(slerpWorkQuat);
+			return this;
+		};
+	})();
+
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * @param {Matrix3x3} matrix Rotation matrix.
+	 * @param {Matrix3} matrix Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -469,31 +281,27 @@ define([
 
 	/**
 	 * Return a rotation matrix representing the current quaternion.
-	 * @param {Matrix3x3} [store] The matrix to store our result in. If null, a new matrix is created.
-	 * @returns {Matrix3x3} The normalized rotation matrix representation of this quaternion.
+	 * @param {Matrix3} [store] The matrix to store our result in. If null, a new matrix is created.
+	 * @returns {Matrix3} The normalized rotation matrix representation of this quaternion.
 	 */
 	Quaternion.prototype.toRotationMatrix = function (store) {
-		var result = store;
-		if (!result) {
-			result = new Matrix3x3();
-		}
+		var result = store || new Matrix3();
 
-		var norm = this.magnitudeSquared();
+		var norm = this.lengthSquared();
 		var s = norm > 0.0 ? 2.0 / norm : 0.0;
 
-		var d = this.data;
-		var xs = d[0] * s;
-		var ys = d[1] * s;
-		var zs = d[2] * s;
-		var xx = d[0] * xs;
-		var xy = d[0] * ys;
-		var xz = d[0] * zs;
-		var xw = d[3] * xs;
-		var yy = d[1] * ys;
-		var yz = d[1] * zs;
-		var yw = d[3] * ys;
-		var zz = d[2] * zs;
-		var zw = d[3] * zs;
+		var xs = this.x * s;
+		var ys = this.y * s;
+		var zs = this.z * s;
+		var xx = this.x * xs;
+		var xy = this.x * ys;
+		var xz = this.x * zs;
+		var xw = this.w * xs;
+		var yy = this.y * ys;
+		var yz = this.y * zs;
+		var yw = this.w * ys;
+		var zz = this.z * zs;
+		var zw = this.w * zs;
 
 		var t = result.data;
 		t[0] = 1.0 - (yy + zz);
@@ -509,107 +317,81 @@ define([
 		return result;
 	};
 
-	/**
-	 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
-	 * @param {Vector3} from The source vector.
-	 * @param {Vector3} to The destination vector into which to rotate the source vector.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.fromVectorToVector = function (from, to) {
-		var a = from;
-		var b = to;
-		var factor = a.length() * b.length();
-		if (Math.abs(factor) > MathUtils.EPSILON) {
-			// Vectors have length > 0
-			var pivotVector = new Vector3();
-			var dot = a.dot(b) / factor;
-			var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
-			Vector3.cross(a, b, pivotVector);
-			if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
-				// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
-				// perpendicular to this vector will rotate vector a onto vector b.
+	(function () {
+		var pivotVector = new Vector3();
 
-				// The following guarantees the dot-product will be 0.0.
-				var dominantIndex;
-				if (Math.abs(a.x) > Math.abs(a.y)) {
-					if (Math.abs(a.x) > Math.abs(a.z)) {
-						dominantIndex = 0;
+		/**
+		 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
+		 * @param {Vector3} from The source vector.
+		 * @param {Vector3} to The destination vector into which to rotate the source vector.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.fromVectorToVector = function (from, to) {
+			var a = from; //! AT: why this aliasing?
+			var b = to;
+
+			var factor = a.length() * b.length();
+			if (Math.abs(factor) > MathUtils.EPSILON) {
+				// Vectors have length > 0
+				var dot = a.dot(b) / factor;
+				var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
+				pivotVector.copy(a).cross(b);
+				if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
+					// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
+					// perpendicular to this vector will rotate vector a onto vector b.
+
+					// The following guarantees the dot-product will be 0.0.
+					var dominantIndex;
+					if (Math.abs(a.x) > Math.abs(a.y)) {
+						if (Math.abs(a.x) > Math.abs(a.z)) {
+							dominantIndex = 0;
+						} else {
+							dominantIndex = 2;
+						}
 					} else {
-						dominantIndex = 2;
+						if (Math.abs(a.y) > Math.abs(a.z)) {
+							dominantIndex = 1;
+						} else {
+							dominantIndex = 2;
+						}
 					}
-				} else {
-					if (Math.abs(a.y) > Math.abs(a.z)) {
-						dominantIndex = 1;
-					} else {
-						dominantIndex = 2;
-					}
+					pivotVector.setValue(dominantIndex, -a[((dominantIndex + 1) % 3)]);
+					pivotVector.setValue((dominantIndex + 1) % 3, a[dominantIndex]);
+					pivotVector.setValue((dominantIndex + 2) % 3, 0.0);
 				}
-				pivotVector.setValue(dominantIndex, -a[((dominantIndex + 1) % 3)]);
-				pivotVector.setValue((dominantIndex + 1) % 3, a[dominantIndex]);
-				pivotVector.setValue((dominantIndex + 2) % 3, 0.0);
+				return this.fromAngleAxis(theta, pivotVector);
+			} else {
+				return this.set(Quaternion.IDENTITY);
 			}
-			return this.fromAngleAxis(theta, pivotVector);
-		} else {
-			return this.setVector(Quaternion.IDENTITY);
-		}
-	};
+		};
+	})();
+
+	(function () {
+		var tmpStoreVector3 = new Vector3();
+		/**
+		 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation.
+		 * Note that this method creates an object, so use fromAngleNormalAxis if your axis is already normalized.
+		 * If axis == (0, 0, 0) the quaternion is set to identity.
+		 * @param {number} angle The angle to rotate (in radians).
+		 * @param {Vector3} axis The axis of rotation.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.fromAngleAxis = function (angle, axis) {
+			tmpStoreVector3.copy(axis).normalize();
+			return this.fromAngleNormalAxis(angle, tmpStoreVector3);
+		};
+	})();
 
 	/**
-	 * Normalize the current quaternion.
-	 * @returns {Quaternion} Self, modified to be unit length, for chaining.
-	 */
-	Quaternion.prototype.normalize = function () {
-		var n = 1.0 / this.magnitude();
-		var xx = this.x * n;
-		var yy = this.y * n;
-		var zz = this.z * n;
-		var ww = this.w * n;
-		return this.setDirect(xx, yy, zz, ww);
-	};
-
-	/**
-	 * Calculate the magnitude of the current quaternion.
-	 * @returns {number} The magnitude of the quaternion.
-	 */
-	Quaternion.prototype.magnitude = function () {
-		var magnitudeSQ = this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
-		if (magnitudeSQ === 1.0) {
-			return 1.0;
-		}
-
-		return Math.sqrt(magnitudeSQ);
-	};
-
-	/**
-	 * Calculate the squared magnitude of the current quaternion.
-	 * @returns {number} The squared magnitude of the quaternion.
-	 */
-	Quaternion.prototype.magnitudeSquared = function () {
-		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
-	};
-
-	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
-	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
-	 * @param {number} angle The angle to rotate (in radians).
-	 * @param {Vector3} axis The axis of rotation.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
-		var temp = new Vector3(axis).normalize();
-		return this.fromAngleNormalAxis(angle, temp);
-	};
-
-	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
-	 *              the quaternion is set to identity.
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation.
+	 * If axis == (0, 0, 0) the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation (already normalized - unit length).
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {
-			return this.setVector(Quaternion.IDENTITY);
+			return this.set(Quaternion.IDENTITY);
 		}
 
 		var halfAngle = 0.5 * angle;
@@ -630,7 +412,7 @@ define([
 	Quaternion.prototype.toAngleAxis = function (axisStore) {
 		var sqrLength = this.x * this.x + this.y * this.y + this.z * this.z;
 		var angle;
-		if (Math.abs(sqrLength) <= Quaternion.ALLOWED_DEVIANCE) { // length is ~0
+		if (Math.abs(sqrLength) <= MathUtils.EPSILON) { // length is ~0
 			angle = 0.0;
 			if (axisStore !== null) {
 				axisStore.x = 1.0;
@@ -650,83 +432,398 @@ define([
 		return angle;
 	};
 
-	Quaternion.prototype.equals = function (o) {
-		if (this === o) {
-			return true;
-		}
-		if (!(o instanceof Quaternion)) {
-			return false;
-		}
-		return Math.abs(this.data[0] - o.data[0]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[1] - o.data[1]) < Quaternion.ALLOWED_DEVIANCE
-			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
-	};
-
-
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
-	// Performance methods
-	Quaternion.prototype.setDirect = function (x, y, z, w) {
-		this.data[0] = x;
-		this.data[1] = y;
-		this.data[2] = z;
-		this.data[3] = w;
-
-		return this;
-	};
-
-	Quaternion.prototype.setd = addWarning(
-		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
-	Quaternion.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
-		this.data[3] = array[3];
-
-		return this;
-	};
-
-	Quaternion.prototype.seta = addWarning(
-		Quaternion.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
-	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
-	Quaternion.prototype.setVector = function (quat) {
-		this.data[0] = quat.data[0];
-		this.data[1] = quat.data[1];
-		this.data[2] = quat.data[2];
-		this.data[3] = quat.data[3];
-
-		return this;
-	};
-
-	Quaternion.prototype.setv = addWarning(
-		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
-
 	/**
 	 * Clones the quaternion
 	 * @returns {Quaternion} Clone of self
 	 */
 	Quaternion.prototype.clone = function () {
-		return new Quaternion(this);
+		return new Quaternion(this.x, this.y, this.z, this.w);
+	};
+
+	/**
+	 * Calculates the dot product between the current quaternion and another quaternion.
+	 * @param rhs Quaternion on the right-hand side.
+	 * @returns {number} The dot product.
+	 */
+	Quaternion.prototype.dot = function (q) {
+		return this.x * q.x + this.y * q.y + this.z * q.z + this.w * q.w;
 	};
 
 	// #ifdef DEBUG
-	Vector.addPostChecks(Quaternion.prototype, [
-		'add', 'sub', 'mul',
-		'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
-		'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
-		'setDirect', 'setVector'
+	Vector.addReturnChecks(Quaternion.prototype, [
+		'dot', 'dotDirect',
+		'length', 'lengthSquared',
+		'distance', 'distanceSquared'
 	]);
 	// #endif
+
+	/**
+	 * Sets the vector's values from 4 numeric arguments
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Quaternion} Self to allow chaining
+	 * @example
+	 * var q = new Quaternion(); // q == (0, 0, 0, 0)
+	 * q.setDirect(2, 4, 6, 8); // q == (2, 4, 6, 8)
+	 */
+	Quaternion.prototype.setDirect = function (x, y, z, w) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
+
+		return this;
+	};
+
+	// SHIM START
+
+	Object.defineProperty(Quaternion.prototype, 'data', {
+		get: ObjectUtils.warnOnce(
+			'The .data property of Quaternion was removed. Please use the .x, .y, .z and .w properties instead.',
+			function () {
+				var data = [];
+				var that = this;
+				Object.defineProperties(data, {
+					'0': {
+						get: function () {
+							return that.x;
+						},
+						set: function (value) {
+							that.x = value;
+						}
+					},
+					'1': {
+						get: function () {
+							return that.y;
+						},
+						set: function (value) {
+							that.y = value;
+						}
+					},
+					'2': {
+						get: function () {
+							return that.z;
+						},
+						set: function (value) {
+							that.z = value;
+						}
+					},
+					'3': {
+						get: function () {
+							return that.w;
+						},
+						set: function (value) {
+							that.w = value;
+						}
+					}
+				});
+				return data;
+			}
+		)
+	});
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.add = ObjectUtils.warnOnce(
+		'Quaternion.add is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			target.x = lhs.x + rhs.x;
+			target.y = lhs.y + rhs.y;
+			target.z = lhs.z + rhs.z;
+			target.w = lhs.w + rhs.w;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.div = ObjectUtils.warnOnce(
+		'Quaternion.div is deprecated',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			var clean = true;
+
+			target.x = (clean &= rhs.x < 0 || rhs.x > 0) ? lhs.x / rhs.x : 0;
+			target.y = (clean &= rhs.y < 0 || rhs.y > 0) ? lhs.y / rhs.y : 0;
+			target.z = (clean &= rhs.z < 0 || rhs.z > 0) ? lhs.z / rhs.z : 0;
+			target.w = (clean &= rhs.w < 0 || rhs.w > 0) ? lhs.w / rhs.w : 0;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.mul = Quaternion.mul2 = ObjectUtils.warnOnce(
+		'Quaternion.mul is deprecated.',
+		function (a, b, out) {
+			var ax = a.x, ay = a.y, az = a.z, aw = a.w,
+				bx = b.x, by = b.y, bz = b.z, bw = b.w;
+
+			out.x = ax * bw + aw * bx + ay * bz - az * by;
+			out.y = ay * bw + aw * by + az * bx - ax * bz;
+			out.z = az * bw + aw * bz + ax * by - ay * bx;
+			out.w = aw * bw - ax * bx - ay * by - az * bz;
+			return out;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.sub = ObjectUtils.warnOnce(
+		'Quaternion.sub is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			target.x = lhs.x - rhs.x;
+			target.y = lhs.y - rhs.y;
+			target.z = lhs.z - rhs.z;
+			target.w = lhs.w - rhs.w;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.add = ObjectUtils.warnOnce(
+		'Quaternion.prototype.add is deprecated.',
+		function (rhs) {
+			return Quaternion.add(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.div = ObjectUtils.warnOnce(
+		'Quaternion.prototype.div is deprecated.',
+		function (rhs) {
+			return Quaternion.div(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.magnitude = ObjectUtils.warnOnce(
+		'Quaternion.prototype.magnitude is deprecated.',
+		function () {
+			var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+			if (magnitudeSQ === 1.0) {
+				return 1.0;
+			}
+			return Math.sqrt(magnitudeSQ);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.magnitudeSquared = ObjectUtils.warnOnce(
+		'Quaternion.prototype.magnitudeSquared is deprecated.',
+		function () {
+			return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarAdd = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarAdd is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			target.x = lhs.x + rhs;
+			target.y = lhs.y + rhs;
+			target.z = lhs.z + rhs;
+			target.w = lhs.w + rhs;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarDiv = ObjectUtils.warnOnce(
+		'Quaternion.scalarDiv is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			var clean = true;
+
+			rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
+
+			target.x = lhs.x * rhs;
+			target.y = lhs.y * rhs;
+			target.z = lhs.z * rhs;
+			target.w = lhs.w * rhs;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarMul = ObjectUtils.warnOnce(
+		'Quaternion.scalarMul is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			target.x = lhs.x * rhs;
+			target.y = lhs.y * rhs;
+			target.z = lhs.z * rhs;
+			target.w = lhs.w * rhs;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.scalarSub = ObjectUtils.warnOnce(
+		'Quaternion.scalarSub is deprecated.',
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Quaternion();
+			}
+
+			target.x = lhs.x - rhs;
+			target.y = lhs.y - rhs;
+			target.z = lhs.z - rhs;
+			target.w = lhs.w - rhs;
+
+			return target;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.setArray = ObjectUtils.warnOnce(
+		'Quaternion.prototype.setArray is deprecated.',
+		function (array) {
+			this.x = array[0];
+			this.y = array[1];
+			this.z = array[2];
+			this.w = array[3];
+
+			return this;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.setVector = ObjectUtils.warnOnce(
+		'Quaternion.prototype.setVector is deprecated.',
+		function (quat) {
+			this.x = quat.x;
+			this.y = quat.y;
+			this.z = quat.z;
+			this.w = quat.w;
+
+			return this;
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.sub = ObjectUtils.warnOnce(
+		'Quaternion.prototype.sub is deprecated.',
+		function (rhs) {
+			return Quaternion.sub(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.scalarAdd = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarAdd is deprecated.',
+		function (rhs) {
+			return Quaternion.scalarAdd(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.scalarSub = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarSub is deprecated.',
+		function (rhs) {
+			return Quaternion.scalarSub(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.scalarMul = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarMul is deprecated.',
+		function (rhs) {
+			return Quaternion.scalarMul(this, rhs, this);
+		}
+	);
+
+	/**
+	 * @hidden
+	 * @deprecated
+	 */
+	Quaternion.prototype.scalarDiv = ObjectUtils.warnOnce(
+		'Quaternion.prototype.scalarDiv is deprecated.',
+		function (rhs) {
+			return Quaternion.scalarDiv(this, rhs, this);
+		}
+	);
+
+	// SHIM END
 
 	return Quaternion;
 });

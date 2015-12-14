@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/TWEEN'
 ], function (
 	Action,
-	Vector3
+	Vector3,
+	TWEEN
 ) {
 	'use strict';
 
@@ -66,15 +68,15 @@ define([
 		this.time = settings.time;
 
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	DollyZoomAction.prototype._setup = function (fsm) {
-		this.tween = new window.TWEEN.Tween();
+		this.tween = new TWEEN.Tween();
 		var entity = fsm.getOwnerEntity();
 
 		if (entity.cameraComponent && entity.cameraComponent.camera) {
@@ -101,7 +103,11 @@ define([
 			var camera = entity.cameraComponent.camera;
 			var time = entity._world.time * 1000;
 
-			var to = new Vector3(this.lookAt).sub(initialTranslation).normalize().scale(this.forward).add(initialTranslation);
+			var to = Vector3.fromArray(this.lookAt)
+				.sub(initialTranslation)
+				.normalize()
+				.scale(this.forward)
+				.add(initialTranslation);
 
 			var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z, d: this.initialDistance };
 			var fakeTo = { x: to.x, y: to.y, z: to.z, d: +this.initialDistance - +this.forward };
@@ -109,10 +115,10 @@ define([
 			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 			var that = this;
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.data[0] += this.x - old.x;
-				translation.data[1] += this.y - old.y;
-				translation.data[2] += this.z - old.z;
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
+				translation.x += this.x - old.x;
+				translation.y += this.y - old.y;
+				translation.z += this.z - old.z;
 
 				old.x = this.x;
 				old.y = this.y;
@@ -122,7 +128,7 @@ define([
 
 				var fov = (180 / Math.PI) * 2 * Math.atan(that.eyeTargetScale / this.d);
 				camera.setFrustumPerspective(fov);
-			}).onComplete(function() {
+			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);
 		}

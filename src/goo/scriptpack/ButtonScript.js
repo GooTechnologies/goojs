@@ -17,7 +17,6 @@ define([
 	 * Attaches mouse events to an entity.
 	 */
 	function ButtonScript() {
-
 		function setup(params, env) {
 			env.button = ['Any', 'Left', 'Middle', 'Right'].indexOf(params.button) - 1;
 			if (env.button < -1) {
@@ -143,7 +142,7 @@ define([
 				if (type === 'mousedown' || type === 'touchstart') {
 					env.mouseState.downOnEntity = true;
 				}
-				if (params.linkUrl && type === 'click') {
+				if (params.linkUrl && (type === 'click' || type === 'touchstart')) {
 					window.open(params.linkUrl, params.linkTarget);
 				}
 			}

@@ -4,8 +4,8 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
-	'goo/math/Matrix4x4'
+	'goo/util/ObjectUtils',
+	'goo/math/Matrix4'
 ], function (
 	System,
 	AudioContext,
@@ -13,7 +13,7 @@ define([
 	MathUtils,
 	SystemBus,
 	_,
-	Matrix4x4
+	Matrix4
 ) {
 	'use strict';
 	/**
@@ -29,7 +29,7 @@ define([
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
 		this.entities = [];
-		this._relativeTransform = new Matrix4x4();
+		this._relativeTransform = new Matrix4();
 		this._camera = null;
 
 		this._settings = {
@@ -44,6 +44,8 @@ define([
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
 			that._camera = camConfig.camera;
 		});
+
+		this._scheduledUpdates = [];
 	}
 
 	SoundSystem.prototype = Object.create(System.prototype);
@@ -67,8 +69,8 @@ define([
 		this._listener.setPosition(0, 0, 0);
 		this._listener.setVelocity(0, 0, 0);
 		this._listener.setOrientation(
-			0,  0, -1, // Orientation
-			0,  1,  0  // Up
+			0, 0, -1, // Orientation
+			0, 1, 0  // Up
 		);
 
 		this.initialized = true;
@@ -79,7 +81,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.inserted = function(entity) {
+	SoundSystem.prototype.inserted = function (entity) {
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		entity.soundComponent.connectTo({
@@ -94,7 +96,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.deleted = function(entity) {
+	SoundSystem.prototype.deleted = function (entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -105,58 +107,66 @@ define([
 	};
 
 	/**
-	 * Update the environmental sound system properties
-	 * @param {object} [config]
+	 * Update the environmental sound system properties. The settings are not applied immediately.
+	 * @param {Object} [config]
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
-	SoundSystem.prototype.updateConfig = function(config) {
+	SoundSystem.prototype.updateConfig = function (config) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
 		}
-		_.extend(this._settings, config);
 
-		if (!this.initialized) { this._initializeAudioNodes(); }
+		this._scheduledUpdates.push(function () {
+			_.extend(this._settings, config);
 
-		if (config.dopplerFactor !== undefined) {
-			this._listener.dopplerFactor = config.dopplerFactor * 0.05;
-		}
-		if (config.volume !== undefined) {
-			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
-		}
-		if (config.reverb !== undefined) {
-			this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
-		}
+			if (!this.initialized) { this._initializeAudioNodes(); }
+
+			if (config.dopplerFactor !== undefined) {
+				this._listener.dopplerFactor = config.dopplerFactor * 0.05;
+			}
+			if (config.volume !== undefined) {
+				this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
+			}
+			if (config.reverb !== undefined) {
+				this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
+			}
+		});
 	};
 
 	/**
-	 * Set the reverb impulse response
+	 * Set the reverb impulse response. The settings are not applied immediately.
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
-	SoundSystem.prototype.setReverb = function(audioBuffer) {
+	SoundSystem.prototype.setReverb = function (audioBuffer) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
 		}
-		if (!this.initialized) { this._initializeAudioNodes(); }
 
-		this._wetNode.disconnect();
-		if(!audioBuffer && this._wetNode) {
-			this._convolver.buffer = null;
-		} else {
-			this._convolver.buffer = audioBuffer;
-			this._wetNode.connect(this._outNode);
-		}
+		this._scheduledUpdates.push(function () {
+			if (!this.initialized) {
+				this._initializeAudioNodes();
+			}
+
+			this._wetNode.disconnect();
+			if (!audioBuffer && this._wetNode) {
+				this._convolver.buffer = null;
+			} else {
+				this._convolver.buffer = audioBuffer;
+				this._wetNode.connect(this._outNode);
+			}
+		});
 	};
 
 	/**
 	 * Pause the sound system and thereby all sounds in the scene
 	 */
-	SoundSystem.prototype.pause = function() {
+	SoundSystem.prototype.pause = function () {
 		if (this._pausedSounds) { return; }
 		this._pausedSounds = {};
 		for (var i = 0; i < this.entities.length; i++) {
@@ -172,24 +182,11 @@ define([
 	};
 
 	/**
-	 * Stopping the sound system and all sounds in scene
-	 */
-	SoundSystem.prototype.stop = function() {
-		for (var i = 0; i < this.entities.length; i++) {
-			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
-				var sound = sounds[j];
-				sound.stop();
-			}
-		}
-		this._pausedSounds = null;
-	};
-
-	/**
 	 * Resumes playing of all sounds that were paused
 	 */
-	SoundSystem.prototype.resume = function() {
+	SoundSystem.prototype.resume = function () {
 		if (!this._pausedSounds) { return; }
+
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
 			for (var j = 0; j < sounds.length; j++) {
@@ -202,7 +199,26 @@ define([
 		this._pausedSounds = null;
 	};
 
-	SoundSystem.prototype.process = function(entities, tpf) {
+	/**
+	 * Resumes playing of all sounds that were paused; an alias for `.resume`
+	 */
+	SoundSystem.prototype.play = SoundSystem.prototype.resume;
+
+	/**
+	 * Stopping the sound system and all sounds in scene
+	 */
+	SoundSystem.prototype.stop = function () {
+		for (var i = 0; i < this.entities.length; i++) {
+			var sounds = this.entities[i].soundComponent.sounds;
+			for (var j = 0; j < sounds.length; j++) {
+				var sound = sounds[j];
+				sound.stop();
+			}
+		}
+		this._pausedSounds = null;
+	};
+
+	SoundSystem.prototype.process = function (entities, tpf) {
 		if (!AudioContext.isSupported()) {
 			// This should never happen because system shouldn't process
 			return;
@@ -210,13 +226,19 @@ define([
 		if (entities.length === 0) {
 			return;
 		}
+
+		while (this._scheduledUpdates.length) {
+			var thunk = this._scheduledUpdates.pop();
+			thunk.call(this);
+		}
+
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		this.entities = entities;
 		var relativeTransform = this._relativeTransform;
 
 		var viewMat;
-		if(this._camera){
+		if (this._camera) {
 			viewMat = this._camera.getViewMatrix();
 		}
 
@@ -226,9 +248,9 @@ define([
 
 			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
 
-			if(this._camera && !component._attachedToCamera){
+			if (this._camera && !component._attachedToCamera) {
 				// Give the transform relative to the camera
-				Matrix4x4.combine(viewMat, e.transformComponent.worldTransform.matrix, relativeTransform);
+				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
 				component.process(this._settings, relativeTransform, tpf);
 			} else {
 				// Component is attached to camera.

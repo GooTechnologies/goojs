@@ -1,7 +1,11 @@
 // jshint node:true
 'use strict';
 
+var _ = require('underscore');
+
 var jsdocParser = require('./jsdoc-parser');
+var typeParser = require('./type-expressions/type-parser');
+var jsdocSerializer = require('./type-expressions/jsdoc-serializer');
 var util = require('./util');
 
 // regex compilation for `[]()` links, `@link` and types (big mess)
@@ -38,6 +42,23 @@ var expandIcons = function (string) {
 	return string.replace(warningRegex, '<span class="icon-warning-yellow"></span>');
 };
 
+var translateType = function (closureType) {
+	if (closureType.trim().length > 0) {
+		try {
+			var parsed = typeParser.parse(closureType);
+			var jsdocType = jsdocSerializer.serialize(parsed);
+			return jsdocType;
+		} catch (e) {
+			console.warn(e);
+			return closureType;
+		}
+	} else {
+		return '';
+	}
+};
+
+var processType = _.compose(linkTypes, escapeType, translateType);
+
 var link = function (comment) {
 	if (!comment) { return; }
 
@@ -45,21 +66,21 @@ var link = function (comment) {
 
 	if (comment.param) {
 		comment.param.forEach(function (param) {
-			param.type = escapeType(param.type);
-			param.type = linkTypes(param.type);
+			param.rawType = param.type;
+			param.type = processType(param.type);
 			param.description = linkUrls(param.description);
 		});
 	}
 
 	if (comment.returns) {
-		comment.returns.type = escapeType(comment.returns.type);
-		comment.returns.type = linkTypes(comment.returns.type);
+		comment.returns.rawType = comment.returns.type;
+		comment.returns.type = processType(comment.returns.type);
 		comment.returns.description = linkUrls(comment.returns.description);
 	}
 
 	if (comment.type) {
-		comment.type.type = escapeType(comment.type.type);
-		comment.type.type = linkTypes(comment.type.type);
+		comment.type.rawType = comment.type.type;
+		comment.type.type = processType(comment.type.type);
 	}
 };
 
@@ -106,6 +127,7 @@ var compileComment = function (rawComment) {
 	var comment = {};
 	comment.description = parsed.description;
 
+	// this should stay in the presentation
 	if (parsed['@param']) {
 		comment.param = parsed['@param'];
 
@@ -121,9 +143,9 @@ var compileComment = function (rawComment) {
 		}
 	});
 
-	booleanTags.forEach(function (copyTag) {
-		if (parsed[copyTag.tag]) {
-			comment[copyTag.identifier] = !!parsed[copyTag.tag];
+	booleanTags.forEach(function (booleanTag) {
+		if (parsed[booleanTag.tag]) {
+			comment[booleanTag.identifier] = true;
 		}
 	});
 

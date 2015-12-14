@@ -5,26 +5,27 @@ define([
 	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/renderer/Util',
-	'goo/util/ObjectUtil',
+	'goo/util/PromiseUtils',
+	'goo/renderer/RendererUtils',
+	'goo/util/ObjectUtils',
 	'goo/util/CanvasUtils',
-	'goo/util/StringUtil',
-	'goo/entities/SystemBus'
-],
-function (
+	'goo/util/StringUtils',
+	'goo/entities/SystemBus',
+	'goo/math/MathUtils'
+], function (
 	ConfigHandler,
 	Texture,
 	DdsLoader,
 	CrunchLoader,
 	TgaLoader,
 	RSVP,
-	PromiseUtil,
-	Util,
+	PromiseUtils,
+	RendererUtils,
 	_,
 	CanvasUtils,
-	StringUtil,
-	SystemBus
+	StringUtils,
+	SystemBus,
+	MathUtils
 ) {
 	'use strict';
 
@@ -39,18 +40,16 @@ function (
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
-		SystemBus.addListener('playStateChanged', function(playState) {
+		SystemBus.addListener('playStateChanged', function (playState) {
 			this._objects.forEach(function (texture) {
 				if (texture.image && texture.image.play && texture.image.pause) {
 					var video = texture.image;
 					if (playState === 'play') {
 						video.play();
-					}
-					else if (playState === 'stop') {
+					} else if (playState === 'stop') {
 						video.pause();
 						video.currentTime = 0;
-					}
-					else if (playState === 'pause') {
+					} else if (playState === 'pause') {
 						video.pause();
 					}
 				}
@@ -70,10 +69,20 @@ function (
 		'BilinearNearestMipMap',
 		'Trilinear'
 	];
+
 	TextureHandler.magFilters = [
 		'NearestNeighbor',
 		'Bilinear'
 	];
+
+	TextureHandler.noMipMapAlternatives = {
+		'NearestNeighborNoMipMaps': 'NearestNeighborNoMipMaps',
+		'NearestNeighborNearestMipMap': 'NearestNeighborNoMipMaps',
+		'NearestNeighborLinearMipMap': 'NearestNeighborNoMipMaps',
+		'BilinearNoMipMaps': 'BilinearNoMipMaps',
+		'BilinearNearestMipMap': 'BilinearNoMipMaps',
+		'Trilinear': 'BilinearNoMipMaps'
+	};
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
@@ -87,7 +96,7 @@ function (
 
 	/**
 	 * Preparing texture config by populating it with defaults.
-	 * @param {object} config
+	 * @param {Object} config
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
@@ -141,7 +150,10 @@ function (
 		// Special (dds, tga, crn)
 		var Loader = TextureHandler.loaders[type];
 		var imageRef = config.imageRef;
+<<<<<<< HEAD
 		// texture.a = imageRef;
+=======
+>>>>>>> ead11b14dd37b76fbe042e8214c4a157c476600a
 		return this.loadObject(imageRef)
 		.then(function (data) {
 			if (data && data.preloaded) {
@@ -162,7 +174,8 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (!Util.isPowerOfTwo(video.width) || !Util.isPowerOfTwo(video.height)) {
+
+			if (!(MathUtils.isPowerOfTwo(video.width) && MathUtils.isPowerOfTwo(video.height))) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}
@@ -183,7 +196,7 @@ function (
 
 	TextureHandler.prototype._loadImage = function (texture, config, options) {
 		var imageRef = config.imageRef;
-		var path = StringUtil.parseURL(imageRef).path;
+		var path = StringUtils.parseURL(imageRef).path;
 		var type = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
 		if (TextureHandler.loaders[type]) {
 			return this._loadSpecialImage(texture, config, type, options);
@@ -194,14 +207,15 @@ function (
 		if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 			return this._loadVideo(texture, config, options);
 		}
-		return PromiseUtil.reject(new Error('Unknown image type: '+ type));
+
+		return PromiseUtils.reject(new Error('Unknown image type: ' + type));
 	};
 
 	/**
 	 * Adds/updates/removes a texture
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */
 	TextureHandler.prototype._update = function (ref, config, options) {
@@ -218,13 +232,15 @@ function (
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
-				texture.minFilter = config.minFilter;
+				texture.minFilter = config.generateMipmaps !== false ?
+					config.minFilter :
+					TextureHandler.noMipMapAlternatives[config.minFilter];
 			}
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
-			texture.offset.setArray(config.offset);
-			texture.repeat.setArray(config.repeat);
+			texture.offset.setDirect(config.offset[0], config.offset[1]);
+			texture.repeat.setDirect(config.repeat[0], config.repeat[1]);
 			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
@@ -250,7 +266,7 @@ function (
 				}
 			} else if (config.svgData) {
 				// Load SVG data
-				ret = PromiseUtil.createPromise(function (resolve, reject) {
+				ret = PromiseUtils.createPromise(function (resolve, reject) {
 					CanvasUtils.renderSvgToCanvas(config.svgData, {}, function (canvas) {
 						if (canvas) {
 							texture.setImage(canvas);

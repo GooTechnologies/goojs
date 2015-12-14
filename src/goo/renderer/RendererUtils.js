@@ -1,12 +1,14 @@
 /* jshint bitwise: false */
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils',
+	'goo/renderer/Capabilities',
+	'goo/math/MathUtils'
 ], function (
-	ObjectUtil
+	ObjectUtils,
+	Capabilities,
+	MathUtils
 ) {
 	'use strict';
-
-	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
 	 * Renderer-related utilities
@@ -16,7 +18,7 @@ define([
 	/**
 	 * Get size in bytes of a specific type.
 	 *
-	 * @param {String} type Type to retrieve bytesize for
+	 * @param {string} type Type to retrieve bytesize for
 	 */
 	RendererUtils.getByteSize = function (type) {
 		var byteSize;
@@ -81,35 +83,34 @@ define([
 
 	/**
 	 * Checks if a value is power of two
-	 *
-	 * @param {Number} value Number to check for power of two
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.isPowerOfTwo instead
+	 * @param {number} value Number to check for power of two
 	 * @returns true if value is power of two
 	 */
-	RendererUtils.isPowerOfTwo = function (value) {
-		return (value & (value - 1)) === 0;
-	};
+	RendererUtils.isPowerOfTwo = MathUtils.isPowerOfTwo;
 
 	/**
 	 * Converts input number to closest power of two
+	 * @deprecated Deprecated as of v0.14.x and scheduled for removal in v0.16.0; Consider using
+	 * MathUtils.nearestPowerOfTwo instead
 	 * @param {number} number Number to convert to power of two
 	 * @returns {number} Nearest power of two of input
 	 */
-	RendererUtils.nearestPowerOfTwo = function (number) {
-		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
-	};
+	RendererUtils.nearestPowerOfTwo = MathUtils.nearestPowerOfTwo;
 
 	/**
 	 * Clones an object recursively
-	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtil.deepClone` instead
+	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtils.deepClone` instead
 	 * @param {*} object Object to clone
 	 * @returns {*} Cloned object
 	 */
-	RendererUtils.clone = ObjectUtil.deepClone;
+	RendererUtils.clone = ObjectUtils.deepClone;
 
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function (texture, color, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 
@@ -150,8 +151,8 @@ define([
 	}
 
 	RendererUtils.scaleImage = function (texture, image, width, height, maxSize, index) {
-		var newWidth = RendererUtils.nearestPowerOfTwo(width);
-		var newHeight = RendererUtils.nearestPowerOfTwo(height);
+		var newWidth = MathUtils.nearestPowerOfTwo(width);
+		var newHeight = MathUtils.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
 		newHeight = Math.min(newHeight, maxSize);
 
@@ -186,15 +187,15 @@ define([
 		}
 	};
 
-	RendererUtils.getGLType = function (type) {
+	RendererUtils.getGLType = function (context, type) {
 		var glType;
 
 		switch (type) {
 			case '2D':
-				glType = WebGLRenderingContext.TEXTURE_2D;
+				glType = context.TEXTURE_2D;
 				break;
 			case 'CUBE':
-				glType = WebGLRenderingContext.TEXTURE_CUBE_MAP;
+				glType = context.TEXTURE_CUBE_MAP;
 				break;
 
 			default:
@@ -204,18 +205,18 @@ define([
 		return glType;
 	};
 
-	RendererUtils.getGLWrap = function (wrap) {
+	RendererUtils.getGLWrap = function (context, wrap) {
 		var glWrap;
 
 		switch (wrap) {
 			case 'Repeat':
-				glWrap = WebGLRenderingContext.REPEAT;
+				glWrap = context.REPEAT;
 				break;
 			case 'MirroredRepeat':
-				glWrap = WebGLRenderingContext.MIRRORED_REPEAT;
+				glWrap = context.MIRRORED_REPEAT;
 				break;
 			case 'EdgeClamp':
-				glWrap = WebGLRenderingContext.CLAMP_TO_EDGE;
+				glWrap = context.CLAMP_TO_EDGE;
 				break;
 
 			default:
@@ -225,24 +226,24 @@ define([
 		return glWrap;
 	};
 
-	RendererUtils.getGLInternalFormat = function (format) {
+	RendererUtils.getGLInternalFormat = function (context, format) {
 		var glInternalFormat;
 
 		switch (format) {
 			case 'RGBA':
-				glInternalFormat = WebGLRenderingContext.RGBA;
+				glInternalFormat = context.RGBA;
 				break;
 			case 'RGB':
-				glInternalFormat = WebGLRenderingContext.RGB;
+				glInternalFormat = context.RGB;
 				break;
 			case 'Alpha':
-				glInternalFormat = WebGLRenderingContext.ALPHA;
+				glInternalFormat = context.ALPHA;
 				break;
 			case 'Luminance':
-				glInternalFormat = WebGLRenderingContext.LUMINANCE;
+				glInternalFormat = context.LUMINANCE;
 				break;
 			case 'LuminanceAlpha':
-				glInternalFormat = WebGLRenderingContext.LUMINANCE_ALPHA;
+				glInternalFormat = context.LUMINANCE_ALPHA;
 				break;
 
 			default:
@@ -252,31 +253,54 @@ define([
 		return glInternalFormat;
 	};
 
-	RendererUtils.getGLPixelDataType = function (type) {
-		var glPixelDataType;
+	RendererUtils.getGLPixelDataType = function (context, type) {
+		return RendererUtils.getGLDataType(context, type);
+	};
+
+	RendererUtils.getGLDataType = function (context, type) {
+		var glDataType;
 
 		switch (type) {
+			case 'Float':
+			case 'Double':
+				glDataType = context.FLOAT;
+				break;
+			case 'Byte':
+				glDataType = context.BYTE;
+				break;
 			case 'UnsignedByte':
-				glPixelDataType = WebGLRenderingContext.UNSIGNED_BYTE;
+				glDataType = context.UNSIGNED_BYTE;
+				break;
+			case 'Short':
+				glDataType = context.SHORT;
+				break;
+			case 'UnsignedShort':
+				glDataType = context.UNSIGNED_SHORT;
+				break;
+			case 'Int':
+				glDataType = context.INT;
+				break;
+			case 'UnsignedInt':
+				glDataType = context.UNSIGNED_INT;
 				break;
 			case 'UnsignedShort565':
-				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
+				glDataType = context.UNSIGNED_SHORT_5_6_5;
 				break;
 			case 'UnsignedShort4444':
-				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
+				glDataType = context.UNSIGNED_SHORT_4_4_4_4;
 				break;
 			case 'UnsignedShort5551':
-				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
+				glDataType = context.UNSIGNED_SHORT_5_5_5_1;
 				break;
-			case 'Float':
-				glPixelDataType = WebGLRenderingContext.FLOAT;
+			case 'HalfFloat':
+				glDataType = Capabilities.TextureHalfFloat.HALF_FLOAT_OES;
 				break;
 
 			default:
-				throw new Error('Unsupported type: ' + type);
+				throw new Error('Unknown datatype: ' + type);
 		}
 
-		return glPixelDataType;
+		return glDataType;
 	};
 
 	RendererUtils.getFilterFallback = function (filter) {
@@ -302,15 +326,15 @@ define([
 		return filterFallback;
 	};
 
-	RendererUtils.getGLMagFilter = function (filter) {
+	RendererUtils.getGLMagFilter = function (context, filter) {
 		var glMagFilter;
 
 		switch (filter) {
 			case 'Bilinear':
-				glMagFilter = WebGLRenderingContext.LINEAR;
+				glMagFilter = context.LINEAR;
 				break;
 			case 'NearestNeighbor':
-				glMagFilter = WebGLRenderingContext.NEAREST;
+				glMagFilter = context.NEAREST;
 				break;
 
 			default:
@@ -320,27 +344,27 @@ define([
 		return glMagFilter;
 	};
 
-	RendererUtils.getGLMinFilter = function (filter) {
+	RendererUtils.getGLMinFilter = function (context, filter) {
 		var glMinFilter;
 
 		switch (filter) {
 			case 'BilinearNoMipMaps':
-				glMinFilter = WebGLRenderingContext.LINEAR;
+				glMinFilter = context.LINEAR;
 				break;
 			case 'Trilinear':
-				glMinFilter = WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
+				glMinFilter = context.LINEAR_MIPMAP_LINEAR;
 				break;
 			case 'BilinearNearestMipMap':
-				glMinFilter = WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
+				glMinFilter = context.LINEAR_MIPMAP_NEAREST;
 				break;
 			case 'NearestNeighborNoMipMaps':
-				glMinFilter = WebGLRenderingContext.NEAREST;
+				glMinFilter = context.NEAREST;
 				break;
 			case 'NearestNeighborNearestMipMap':
-				glMinFilter = WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
+				glMinFilter = context.NEAREST_MIPMAP_NEAREST;
 				break;
 			case 'NearestNeighborLinearMipMap':
-				glMinFilter = WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
+				glMinFilter = context.NEAREST_MIPMAP_LINEAR;
 				break;
 
 			default:
@@ -350,29 +374,29 @@ define([
 		return glMinFilter;
 	};
 
-	RendererUtils.getGLBufferTarget = function (target) {
+	RendererUtils.getGLBufferTarget = function (context, target) {
 		if (target === 'ElementArrayBuffer') {
-			return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
+			return context.ELEMENT_ARRAY_BUFFER;
 		}
 
-		return WebGLRenderingContext.ARRAY_BUFFER;
+		return context.ARRAY_BUFFER;
 	};
 
-	RendererUtils.getGLArrayType = function (indices) {
+	RendererUtils.getGLArrayType = function (context, indices) {
 		var glArrayType = null;
 
 		if (indices instanceof Uint8Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_BYTE;
+			glArrayType = context.UNSIGNED_BYTE;
 		} else if (indices instanceof Uint16Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_SHORT;
+			glArrayType = context.UNSIGNED_SHORT;
 		} else if (indices instanceof Uint32Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_INT;
+			glArrayType = context.UNSIGNED_INT;
 		} else if (indices instanceof Int8Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_BYTE;
+			glArrayType = context.UNSIGNED_BYTE;
 		} else if (indices instanceof Int16Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_SHORT;
+			glArrayType = context.UNSIGNED_SHORT;
 		} else if (indices instanceof Int32Array) {
-			glArrayType = WebGLRenderingContext.UNSIGNED_INT;
+			glArrayType = context.UNSIGNED_INT;
 		}
 
 		return glArrayType;
@@ -382,27 +406,27 @@ define([
 		return indices.BYTES_PER_ELEMENT || 1;
 	};
 
-	RendererUtils.getGLCubeMapFace = function (face) {
+	RendererUtils.getGLCubeMapFace = function (context, face) {
 		var glCubeMapFace;
 
 		switch (face) {
 			case 'PositiveX':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_POSITIVE_X;
 				break;
 			case 'NegativeX':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_NEGATIVE_X;
 				break;
 			case 'PositiveY':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_POSITIVE_Y;
 				break;
 			case 'NegativeY':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_NEGATIVE_Y;
 				break;
 			case 'PositiveZ':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_POSITIVE_Z;
 				break;
 			case 'NegativeZ':
-				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+				glCubeMapFace = context.TEXTURE_CUBE_MAP_NEGATIVE_Z;
 				break;
 
 			default:
@@ -412,144 +436,109 @@ define([
 		return glCubeMapFace;
 	};
 
-	RendererUtils.getGLBufferUsage = function (usage) {
+	RendererUtils.getGLBufferUsage = function (context, usage) {
 		var glMode;
 
 		switch (usage) {
 			case 'StaticDraw':
-				glMode = WebGLRenderingContext.STATIC_DRAW;
+				glMode = context.STATIC_DRAW;
 				break;
 			case 'DynamicDraw':
-				glMode = WebGLRenderingContext.DYNAMIC_DRAW;
+				glMode = context.DYNAMIC_DRAW;
 				break;
 			case 'StreamDraw':
-				glMode = WebGLRenderingContext.STREAM_DRAW;
+				glMode = context.STREAM_DRAW;
 				break;
 
 			default:
-				glMode = WebGLRenderingContext.STATIC_DRAW;
+				glMode = context.STATIC_DRAW;
 				break;
 		}
 
 		return glMode;
 	};
 
-	RendererUtils.getGLIndexMode = function (indexMode) {
+	RendererUtils.getGLIndexMode = function (context, indexMode) {
 		var glMode;
 
 		switch (indexMode) {
 			case 'Triangles':
-				glMode = WebGLRenderingContext.TRIANGLES;
+				glMode = context.TRIANGLES;
 				break;
 			case 'TriangleStrip':
-				glMode = WebGLRenderingContext.TRIANGLE_STRIP;
+				glMode = context.TRIANGLE_STRIP;
 				break;
 			case 'TriangleFan':
-				glMode = WebGLRenderingContext.TRIANGLE_FAN;
+				glMode = context.TRIANGLE_FAN;
 				break;
 			case 'Lines':
-				glMode = WebGLRenderingContext.LINES;
+				glMode = context.LINES;
 				break;
 			case 'LineStrip':
-				glMode = WebGLRenderingContext.LINE_STRIP;
+				glMode = context.LINE_STRIP;
 				break;
 			case 'LineLoop':
-				glMode = WebGLRenderingContext.LINE_LOOP;
+				glMode = context.LINE_LOOP;
 				break;
 			case 'Points':
-				glMode = WebGLRenderingContext.POINTS;
+				glMode = context.POINTS;
 				break;
 
 			default:
-				glMode = WebGLRenderingContext.TRIANGLES;
+				glMode = context.TRIANGLES;
 				break;
 		}
 
 		return glMode;
 	};
 
-	RendererUtils.getGLDataType = function (type) {
-		var glDataType;
-
-		switch (type) {
-			case 'Float':
-			case 'HalfFloat':
-			case 'Double':
-				glDataType = WebGLRenderingContext.FLOAT;
-				break;
-			case 'Byte':
-				glDataType = WebGLRenderingContext.BYTE;
-				break;
-			case 'UnsignedByte':
-				glDataType = WebGLRenderingContext.UNSIGNED_BYTE;
-				break;
-			case 'Short':
-				glDataType = WebGLRenderingContext.SHORT;
-				break;
-			case 'UnsignedShort':
-				glDataType = WebGLRenderingContext.UNSIGNED_SHORT;
-				break;
-			case 'Int':
-				glDataType = WebGLRenderingContext.INT;
-				break;
-			case 'UnsignedInt':
-				glDataType = WebGLRenderingContext.UNSIGNED_INT;
-				break;
-
-			default:
-				throw new Error('Unknown datatype: ' + type);
-		}
-
-		return glDataType;
-	};
-
-	RendererUtils.getGLBlendParam = function (param) {
+	RendererUtils.getGLBlendParam = function (context, param) {
 		var glBlendParam;
 
 		switch (param) {
 			case 'AddEquation':
-				glBlendParam = WebGLRenderingContext.FUNC_ADD;
+				glBlendParam = context.FUNC_ADD;
 				break;
 			case 'SubtractEquation':
-				glBlendParam = WebGLRenderingContext.FUNC_SUBTRACT;
+				glBlendParam = context.FUNC_SUBTRACT;
 				break;
 			case 'ReverseSubtractEquation':
-				glBlendParam = WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+				glBlendParam = context.FUNC_REVERSE_SUBTRACT;
 				break;
 
 			case 'ZeroFactor':
-				glBlendParam = WebGLRenderingContext.ZERO;
+				glBlendParam = context.ZERO;
 				break;
 			case 'OneFactor':
-				glBlendParam = WebGLRenderingContext.ONE;
+				glBlendParam = context.ONE;
 				break;
 			case 'SrcColorFactor':
-				glBlendParam = WebGLRenderingContext.SRC_COLOR;
+				glBlendParam = context.SRC_COLOR;
 				break;
 			case 'OneMinusSrcColorFactor':
-				glBlendParam = WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+				glBlendParam = context.ONE_MINUS_SRC_COLOR;
 				break;
 			case 'SrcAlphaFactor':
-				glBlendParam = WebGLRenderingContext.SRC_ALPHA;
+				glBlendParam = context.SRC_ALPHA;
 				break;
 			case 'OneMinusSrcAlphaFactor':
-				glBlendParam = WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+				glBlendParam = context.ONE_MINUS_SRC_ALPHA;
 				break;
 			case 'DstAlphaFactor':
-				glBlendParam = WebGLRenderingContext.DST_ALPHA;
+				glBlendParam = context.DST_ALPHA;
 				break;
 			case 'OneMinusDstAlphaFactor':
-				glBlendParam = WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+				glBlendParam = context.ONE_MINUS_DST_ALPHA;
 				break;
 
 			case 'DstColorFactor':
-				glBlendParam = WebGLRenderingContext.DST_COLOR;
+				glBlendParam = context.DST_COLOR;
 				break;
 			case 'OneMinusDstColorFactor':
-				glBlendParam = WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+				glBlendParam = context.ONE_MINUS_DST_COLOR;
 				break;
 			case 'SrcAlphaSaturateFactor':
-				glBlendParam = WebGLRenderingContext.SRC_ALPHA_SATURATE;
+				glBlendParam = context.SRC_ALPHA_SATURATE;
 				break;
 
 			default:

@@ -3,7 +3,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
 ], function (
@@ -11,7 +11,7 @@ define([
 	Vector2,
 	Vector3,
 	Vector4,
-	Matrix4x4,
+	Matrix4,
 	Camera,
 	MathUtils
 ) {
@@ -35,7 +35,7 @@ define([
 		this.origin = new Vector4();
 		this.direction = new Vector4();
 		this.source = new Vector2();
-		this.rangeMatrix = new Matrix4x4();
+		this.rangeMatrix = new Matrix4();
 
 		this.intersectBottomLeft = new Vector4();
 		this.intersectTopLeft = new Vector4();
@@ -67,6 +67,10 @@ define([
 	ProjectedGrid.prototype.constructor = ProjectedGrid;
 
 	ProjectedGrid.prototype.update = function (camera) {
+		if (camera.translation.y === 0) {
+			return;
+		}
+
 		var upperBound = this.upperBound;
 		var mainCamera = this.mainCamera;
 
@@ -141,8 +145,8 @@ define([
 			projectorCamera._direction.y = -projectorCamera._direction.y;
 
 			var tmpVec = new Vector3();
-			tmpVec.setVector(projectorCamera._direction).cross(projectorCamera._left).normalize();
-			projectorCamera._up.setVector(tmpVec);
+			tmpVec.set(projectorCamera._direction).cross(projectorCamera._left).normalize();
+			projectorCamera._up.set(tmpVec);
 		}
 
 		// find the plane intersection point
@@ -167,19 +171,19 @@ define([
 		}
 
 		// restrict the intersection point to be a certain distance from the camera in plane coords
-		planeIntersection.subVector(projectorCamera.translation);
+		planeIntersection.sub(projectorCamera.translation);
 		planeIntersection.y = 0.0;
 		var length = planeIntersection.length();
 		if (length > Math.abs(projectorCamera.translation.y)) {
 			planeIntersection.normalize();
 			planeIntersection.scale(Math.abs(projectorCamera.translation.y));
 		} else if (length < MathUtils.EPSILON) {
-			planeIntersection.addVector(projectorCamera._up);
+			planeIntersection.add(projectorCamera._up);
 			planeIntersection.y = 0.0;
 			planeIntersection.normalize();
 			planeIntersection.scale(0.1); // TODO: magic number
 		}
-		planeIntersection.addVector(projectorCamera.translation);
+		planeIntersection.add(projectorCamera.translation);
 		planeIntersection.y = 0.0;
 
 		// point projector at the new intersection point
@@ -190,10 +194,12 @@ define([
 		var spaceTransformation = new Vector4();
 		var intersections = this.intersections;
 		for (var i = 0; i < nrPoints; i++) {
-			spaceTransformation.setDirect(intersections[i].x, 0.0, this.intersections[i].z, 1.0);
-			modelViewProjectionMatrix.applyPost(spaceTransformation);
-			intersections[i].setDirect(spaceTransformation.x, spaceTransformation.y, 0);
-			intersections[i].div(spaceTransformation.w);
+			var intersection = intersections[i];
+			spaceTransformation.setDirect(intersection.x, 0.0, intersection.z, 1.0);
+			// modelViewProjectionMatrix.applyPost(spaceTransformation);
+			spaceTransformation.applyPost(modelViewProjectionMatrix);
+			intersection.setDirect(spaceTransformation.x, spaceTransformation.y, 0);
+			intersection.scale(1 / spaceTransformation.w);
 		}
 
 		// find min/max in projector space
@@ -225,7 +231,7 @@ define([
 		rangeMatrix.e13 = minY;
 
 		var modelViewProjectionInverseMatrix = projectorCamera.getViewProjectionInverseMatrix();
-		Matrix4x4.combine(modelViewProjectionInverseMatrix, rangeMatrix, rangeMatrix);
+		rangeMatrix.mul2(modelViewProjectionInverseMatrix, rangeMatrix);
 
 		source.setDirect(0.5, 0.5);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectBottomLeft);
@@ -241,22 +247,22 @@ define([
 
 	ProjectedGrid.prototype.getWorldIntersectionHomogenous = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix, store) {
 		this.calculateIntersection(planeHeight, screenPosition, modelViewProjectionInverseMatrix);
-		store.setVector(this.origin);
+		store.set(this.origin);
 	};
 
 	ProjectedGrid.prototype.getWorldIntersection = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix, store) {
 		this.calculateIntersection(planeHeight, screenPosition, modelViewProjectionInverseMatrix);
-		store.setDirect(this.origin.x, this.origin.y, this.origin.z).div(this.origin.w);
+		store.setDirect(this.origin.x, this.origin.y, this.origin.z).scale(1 / this.origin.w);
 	};
 
 	ProjectedGrid.prototype.getWorldIntersectionSimple = function (planeHeight, source, destination, store, tmpStorage) {
-		var origin = store.setVector(source);
-		var direction = tmpStorage.setVector(destination).subVector(origin);
+		var origin = store.set(source);
+		var direction = tmpStorage.set(destination).sub(origin);
 
 		var t = (planeHeight - origin.y) / (direction.y);
 
 		direction.scale(t);
-		origin.addVector(direction);
+		origin.add(direction);
 
 		return t >= 0.0 && t <= 1.0;
 	};
@@ -265,8 +271,10 @@ define([
 		this.origin.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, -1, 1);
 		this.direction.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, 1, 1);
 
-		modelViewProjectionInverseMatrix.applyPost(this.origin);
-		modelViewProjectionInverseMatrix.applyPost(this.direction);
+		// modelViewProjectionInverseMatrix.applyPost(this.origin);
+		// modelViewProjectionInverseMatrix.applyPost(this.direction);
+		this.origin.applyPost(modelViewProjectionInverseMatrix);
+		this.direction.applyPost(modelViewProjectionInverseMatrix);
 
 		this.direction.sub(this.origin);
 
@@ -278,7 +286,7 @@ define([
 			this.direction.scale(t);
 		} else {
 			this.direction.normalize();
-			this.direction.mul(this.mainCamera._frustumFar);
+			this.direction.scale(this.mainCamera._frustumFar);
 		}
 
 		this.origin.add(this.direction);

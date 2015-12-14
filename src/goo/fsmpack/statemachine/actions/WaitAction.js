@@ -1,4 +1,8 @@
-define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
+define([
+	'goo/fsmpack/statemachine/actions/Action'
+], function (
+	Action
+) {
 	'use strict';
 
 	/**
@@ -12,13 +16,13 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 
 		/**
 		 * Current time, in milliseconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.currentTime = 0;
 
 		/**
 		 * Wait time, in milliseconds.
-		 * @type {Number}
+		 * @type {number}
 		 */
 		this.totalWait = 0;
 	}
@@ -37,13 +41,13 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 			key: 'waitTime',
 			type: 'number',
 			description: 'Base time in milliseconds before transition fires',
-			"default": 5000
+			'default': 5000
 		}, {
 			name: 'Random (ms)',
 			key: 'randomTime',
 			type: 'number',
 			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
-			"default": 0
+			'default': 0
 		}],
 		transitions: [{
 			key: 'timeUp',
@@ -52,12 +56,12 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		}]
 	};
 
-	WaitAction.prototype._setup = function() {
+	WaitAction.prototype._setup = function () {
 		this.currentTime = 0;
-		this.totalWait = parseFloat(this.waitTime) + Math.random()*parseFloat(this.randomTime);
+		this.totalWait = parseFloat(this.waitTime) + Math.random() * parseFloat(this.randomTime);
 	};
 
-	WaitAction.prototype._run = function(fsm) {
+	WaitAction.prototype._run = function (fsm) {
 		this.currentTime += fsm.getTpf() * 1000;
 		if (this.currentTime >= this.totalWait) {
 			fsm.send(this.transitions.timeUp);

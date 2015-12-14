@@ -47,6 +47,8 @@ define([
 	var applyPoint = new Vector3();
 	ApplyImpulseAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
+		if (!entity.rigidBodyComponent) { return; }
+
 		impulseVector.setArray(this.impulse);
 		applyPoint.setArray(this.point);
 		if (this.space === 'World') {

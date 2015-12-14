@@ -1,10 +1,11 @@
-/*
-Goo's own JSHint reporter.
-Based on the default reporter,
-but also reports unused variables.
-*/
+// jshint node:true
+'use strict';
 
-"use strict";
+/**
+ * Goo's own JSHint reporter.
+ * Based on the default reporter,
+ * but also reports unused variables.
+ */
 
 module.exports = {
 	reporter: function (results, data, opts) {
@@ -12,15 +13,14 @@ module.exports = {
 		var str = '';
 		var prevfile;
 
-		opts = opts || {};
-
 		results.forEach(function (result) {
 			var file = result.file;
 			var error = result.error;
 
 			if (prevfile && prevfile !== file) {
-				str += "\n";
+				str += '\n';
 			}
+
 			prevfile = file;
 
 			str += file  + ': line ' + error.line + ', col ' +
@@ -30,6 +30,7 @@ module.exports = {
 
 			str += '\n';
 		});
+
 		data.forEach(function (result) {
 			var globals = result.implieds;
 			if (globals && globals.length) {
@@ -50,9 +51,8 @@ module.exports = {
 			}
 		});
 
-		if (str) {
-			process.stdout.write(str + "\n" + len + ' error' + ((len === 1) ? '' : 's') + "\n");
-			//process.exit(1);
+		if (str.length > 0) {
+			process.stdout.write(str + '\n' + len + ' error' + ((len === 1) ? '' : 's') + '\n');
 			process.on('exit', function () { process.exit(1); });
 		}
 	}

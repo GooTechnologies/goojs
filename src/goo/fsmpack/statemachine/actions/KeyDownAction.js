@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -12,7 +12,7 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			if (this.key) {
 				if (event.which === +this.key) {
 					this.updated = true;
@@ -45,22 +45,22 @@ define([
 	};
 
 	KeyDownAction.prototype.configure = function (settings) {
-		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyDownAction.prototype._setup = function() {
+	KeyDownAction.prototype._setup = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	KeyDownAction.prototype._run = function(fsm) {
+	KeyDownAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	KeyDownAction.prototype.exit = function() {
+	KeyDownAction.prototype.exit = function () {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 

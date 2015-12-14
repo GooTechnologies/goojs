@@ -1,9 +1,11 @@
 define([
 	'goo/math/Vector2',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	Vector2,
-	PromiseUtil
+	PromiseUtils,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -11,10 +13,10 @@ define([
 	 * <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
 	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes
 	 *        mipmapping if desired, magnificationFilter options, apply options and correction options. Default values are as follows:
-	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
+	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S, T and R, apply - Modulate,
 	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
-	 * @param {object} settings Texturing settings
+	 * @param {Object} settings Texturing settings
 	 * @param {string} [settings.wrapS='Repeat'] possible values:
 	 *		<ul>
 	 *			<li>'Repeat' = Repeat texture (ignore integer part of texture coords)
@@ -58,8 +60,8 @@ define([
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {Array} [settings.offset=(0,0)] Texture offset
-	 * @param {Array} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {Array} [settings.offset=(0, 0)] Texture offset
+	 * @param {Array} [settings.repeat=(1, 1)] Texture repeat/scale
 	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
 	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting
@@ -72,31 +74,32 @@ define([
 
 		settings = settings || {};
 
-		this.wrapS = settings.wrapS || 'Repeat';
-		this.wrapT = settings.wrapT || 'Repeat';
-
-		this.magFilter = settings.magFilter || 'Bilinear';
-		this.minFilter = settings.minFilter || 'Trilinear';
+		ObjectUtils.copyOptions(this, settings, {
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
+			magFilter: 'Bilinear',
+			minFilter: 'Trilinear',
+			format: 'RGBA',
+			type: 'UnsignedByte',
+			generateMipmaps: true,
+			premultiplyAlpha: false,
+			unpackAlignment: 1,
+			flipY: true
+		});
 
 		/**
-		 * The anisotropic filtering level.<br>
+		 * The anisotropic filtering level.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example
 		 * @type {number}
 		 */
 		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
 
-		this.format = settings.format || 'RGBA';
-		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = new Vector2(settings.offset || [0, 0]);
-		this.repeat = new Vector2(settings.repeat || [1, 1]);
-		this.lodBias = 0.0;
+		this.offset = settings.offset ?	Vector2.fromAny(settings.offset) : new Vector2(0, 0);
+		this.repeat = settings.repeat ? Vector2.fromAny(settings.repeat) : new Vector2(1, 1);
 
-		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
-		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
-		this.unpackAlignment = settings.unpackAlignment !== undefined ? settings.unpackAlignment : 1;
-		this.flipY = settings.flipY !== undefined ? settings.flipY : true;
+		this.lodBias = 0.0;
 
 		this.hasBorder = false;
 
@@ -113,7 +116,7 @@ define([
 			this.setImage(image, width, height, settings);
 		}
 
-		this.loadImage = PromiseUtil.resolve.bind(null, this);
+		this.loadImage = PromiseUtils.resolve.bind(null, this);
 
 		this.textureRecord = {};
 
@@ -124,7 +127,7 @@ define([
 
 	/**
 	* Checks if the texture's data is ready.
-	* @returns {Boolean} True if ready.
+	* @returns {boolean} True if ready.
 	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
@@ -132,7 +135,7 @@ define([
 
 	/**
 	* Checks if the texture needs an update.
-	* @returns {Boolean} True if needed.
+	* @returns {boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
 		//! AT: what's the precedence here? || first and then && or the other way around?
@@ -151,8 +154,8 @@ define([
 	 * Sets an image on the texture object.
 	 *
 	 * @param {Image} image The image to set. Can be an Image, TypedArray or an array of Images (for cubemaps)
-	 * @param {Number} [width]
-	 * @param {Number} [height]
+	 * @param {number} [width]
+	 * @param {number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
 		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
@@ -174,12 +177,12 @@ define([
 				};
 
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
-					this.type = 'UnsignedByte';
+					this.type = settings.type || 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
-					this.type = 'UnsignedShort565';
+					this.type = settings.type || 'UnsignedShort565';
 					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
-					this.type = 'Float';
+					this.type = settings.type || 'Float';
 					this.format = settings.format || 'RGBA';
 				}
 			} else {

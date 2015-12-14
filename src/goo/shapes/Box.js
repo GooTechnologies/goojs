@@ -1,23 +1,21 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/util/ObjectUtil'
-],
-
-	function (
-		MeshData,
-		_
-	) {
+	'goo/util/ObjectUtils'
+], function (
+	MeshData,
+	ObjectUtils
+) {
 	'use strict';
 
 	/**
 	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
 	 * from that center (a box).
 	 * @extends MeshData
-	 * @param {Number} [width=1] Total width of box.
-	 * @param {Number} [height=1] Total height of box.
-	 * @param {Number} [length=1] Total length of box.
-	 * @param {Number} [tileX=1] Number of texture repetitions in the texture's x direction.
-	 * @param {Number} [tileY=1] Number of texture repetitions in the texture's y direction.
+	 * @param {number} [width=1] Total width of box.
+	 * @param {number} [height=1] Total height of box.
+	 * @param {number} [length=1] Total length of box.
+	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
+	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 * @param {Enum} [textureMode=Box.TextureModes.Uniform] Texture wrapping mode.
 	 */
 	function Box(width, height, length, tileX, tileY, textureMode) {
@@ -30,36 +28,44 @@ define([
 			tileY = props.tileY;
 			textureMode = props.textureMode;
 		}
-		/** Extent along the local x axis.
-		 * @type {Number}
+
+		/**
+		 * Extent along the local x axis.
+		 * @type {number}
 		 * @default 0.5
 		 */
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
-		/** Extent along the local y axis.
-		 * @type {Number}
+
+		/**
+		 * Extent along the local y axis.
+		 * @type {number}
 		 * @default 0.5
 		 */
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
-		/** Extent along the local z axis.
-		 * @type {Number}
+
+		/**
+		 * Extent along the local z axis.
+		 * @type {number}
 		 * @default 0.5
 		 */
 		this.zExtent = length !== undefined ? length * 0.5 : 0.5;
-		/** Number of texture repetitions in the texture's x direction.
-		 * @type {Number}
+
+		/**
+		 * Number of texture repetitions in the texture's x direction.
+		 * @type {number}
 		 * @default 1
 		 */
 		this.tileX = tileX || 1;
-		/** Number of texture repetitions in the texture's y direction.
-		 * @type {Number}
+
+		/**
+		 * Number of texture repetitions in the texture's y direction.
+		 * @type {number}
 		 * @default 1
 		 */
 		this.tileY = tileY || 1;
 
-		if (typeof textureMode === 'string') {
-			textureMode = Box.TextureModes[textureMode];
-		}
-		/** Texture wrapping mode.
+		/**
+		 * Texture wrapping mode.
 		 * @type {Enum}
 		 * @default Box.TextureModes.Uniform
 		 */
@@ -118,12 +124,12 @@ define([
 		this.getAttributeBuffer(MeshData.POSITION).set(vertices);
 
 		var norms = [
-			 0,  0, -1,
-			 1,  0,  0,
-			 0,  0,  1,
-			-1,  0,  0,
-			 0,  1,  0,
-			 0, -1,  0
+			 0, 0, -1,
+			 1, 0, 0,
+			 0, 0, 1,
+			-1, 0, 0,
+			 0, 1, 0,
+			 0, -1, 0
 		];
 
 		var normals = [];
@@ -157,12 +163,12 @@ define([
 				tex.push(tileY);
 			}
 		} else {
-			tex.push(4/4, 1/3,   3/4, 1/3,   3/4, 2/3,   4/4, 2/3); // 5
-			tex.push(3/4, 1/3,   2/4, 1/3,   2/4, 2/3,   3/4, 2/3); // 4
-			tex.push(2/4, 1/3,   1/4, 1/3,   1/4, 2/3,   2/4, 2/3); // 3
-			tex.push(1/4, 1/3,   0/4, 1/3,   0/4, 2/3,   1/4, 2/3); // 2
-			tex.push(2/4, 3/3,   2/4, 2/3,   1/4, 2/3,   1/4, 3/3); // 1
-			tex.push(1/4, 0/3,   1/4, 1/3,   2/4, 1/3,   2/4, 0/3); // 6
+			tex.push(4 / 4, 1 / 3,   3 / 4, 1 / 3,   3 / 4, 2 / 3,   4 / 4, 2 / 3); // 5
+			tex.push(3 / 4, 1 / 3,   2 / 4, 1 / 3,   2 / 4, 2 / 3,   3 / 4, 2 / 3); // 4
+			tex.push(2 / 4, 1 / 3,   1 / 4, 1 / 3,   1 / 4, 2 / 3,   2 / 4, 2 / 3); // 3
+			tex.push(1 / 4, 1 / 3,   0 / 4, 1 / 3,   0 / 4, 2 / 3,   1 / 4, 2 / 3); // 2
+			tex.push(2 / 4, 3 / 3,   2 / 4, 2 / 3,   1 / 4, 2 / 3,   1 / 4, 3 / 3); // 1
+			tex.push(1 / 4, 0 / 3,   1 / 4, 1 / 3,   2 / 4, 1 / 3,   2 / 4, 0 / 3); // 6
 		}
 
 		this.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
@@ -184,7 +190,7 @@ define([
 	 * @returns {Box}
 	 */
 	Box.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
 
 		// converting xExtent to width so the constructor will convert it the other way around again
 		options.width = this.xExtent * 2;

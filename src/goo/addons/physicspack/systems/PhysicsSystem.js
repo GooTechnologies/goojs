@@ -92,7 +92,7 @@ function (
 		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
 		this._sortContacts = function (contactA, contactB) {
 			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
-		}.bind(this);
+		};
 
 		// Set iterator callback for lastContacts: emits endContact events
 		this._emitEndContactEvents = function (hash) {
@@ -127,6 +127,7 @@ function (
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
+
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 	PhysicsSystem.prototype.constructor = PhysicsSystem;
 
@@ -234,7 +235,6 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
-
 		// TODO: Move this logic to CANNON.js intead?
 
 		// Get overlapping entities
@@ -264,12 +264,10 @@ function (
 					} else {
 						this.emitTriggerEnter(entityA, entityB);
 					}
+				} else if (wasInContact) {
+					this.emitDuringContact(entityA, entityB);
 				} else {
-					if (wasInContact) {
-						this.emitDuringContact(entityA, entityB);
-					} else {
-						this.emitBeginContact(entityA, entityB);
-					}
+					this.emitBeginContact(entityA, entityB);
 				}
 			}
 
@@ -380,11 +378,11 @@ function (
 	 * @param  {number} [options.collisionMask=-1]
 	 * @param  {number} [options.collisionGroup=-1]
 	 * @param  {number} [options.skipBackFaces=true]
-	 * @param  {(RaycastResult) -> boolean} callback
+	 * @param  {function (result: RaycastResult) : boolean} callback
 	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, maxDistance, options, callback) {
-		if (typeof(options) === 'function') {
+		if (typeof options === 'function') {
 			callback = options;
 			options = {};
 		}
@@ -410,13 +408,6 @@ function (
 	};
 
 	/**
-	 * Stops simulation and updating of the entitiy transforms.
-	 */
-	PhysicsSystem.prototype.pause = function () {
-		this.passive = true;
-	};
-
-	/**
 	 * Resumes simulation and starts updating the entities after stop() or pause().
 	 */
 	PhysicsSystem.prototype.play = function () {
@@ -424,6 +415,20 @@ function (
 
 		// Initialize all of the physics world
 		this.initialize();
+	};
+
+	/**
+	 * Stops simulation and updating of the entitiy transforms.
+	 */
+	PhysicsSystem.prototype.pause = function () {
+		this.passive = true;
+	};
+
+	/**
+	 * Resumes simulation and starts updating the entities after stop() or pause(); an alias for `.play`
+	 */
+	PhysicsSystem.prototype.resume = function () {
+		this.passive = false;
 	};
 
 	/**
@@ -596,7 +601,7 @@ function (
 			}
 
 			// Set local transform of the entity
-			transform.translation.setVector(tmpVec);
+			transform.translation.set(tmpVec);
 			transform.rotation.copyQuaternion(tmpQuat);
 
 			// Update transform manually
@@ -605,7 +610,6 @@ function (
 
 			var parent = transformComponent.parent;
 			if (parent) {
-
 				// The rigid body is a child, but we have its physics world transform
 				// and need to set the world transform of it.
 				parent.entity.transformComponent.worldTransform.invert(tmpTransform);

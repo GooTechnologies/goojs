@@ -1,1 +1,1 @@
-define(['goo/debugpack/EntityCounter'], function(EntityCounter) {});
+define(['goo/debugpack/EntityCounter'], function (EntityCounter) {});

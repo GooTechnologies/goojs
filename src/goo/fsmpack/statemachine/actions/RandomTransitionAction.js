@@ -38,8 +38,8 @@ define([
 		}]
 	};
 
-	RandomTransitionAction.prototype._run = function(fsm) {
-		if(Math.random() < +this.skewness) {
+	RandomTransitionAction.prototype._run = function (fsm) {
+		if (Math.random() < +this.skewness) {
 			fsm.send(this.transitions.transition1);
 		} else {
 			fsm.send(this.transitions.transition2);

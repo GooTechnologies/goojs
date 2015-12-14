@@ -2,16 +2,16 @@ define([
 	'goo/util/Ajax'
 ], function (
 	Ajax
-	) {
+) {
 	'use strict';
 
 	var TestResponses = {
-		'good-url' : {
-			readyState : 4,
-			status : 200,
-			responseText : 'Successful response.',
-			responseHeader : {
-				'Content-Type' : 'application/text'
+		'good-url': {
+			readyState: 4,
+			status: 200,
+			responseText: 'Successful response.',
+			responseHeader: {
+				'Content-Type': 'application/text'
 			}
 		}
 	};

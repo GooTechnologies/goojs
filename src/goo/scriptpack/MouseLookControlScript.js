@@ -92,7 +92,7 @@ define([
 			angles = new Vector3();
 			var rotation = environment.entity.transformComponent.transform.rotation;
 			rotation.toAngles(angles);
-			_initialAzimuth = angles.data[1];
+			_initialAzimuth = angles.y;
 		}
 
 		function update(parameters, environment) {
@@ -105,8 +105,8 @@ define([
 			var rotation = entity.transformComponent.transform.rotation;
 			rotation.toAngles(angles);
 
-			var pitch = angles.data[0];
-			var yaw = angles.data[1];
+			var pitch = angles.x;
+			var yaw = angles.y;
 
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
@@ -123,8 +123,8 @@ define([
 			entity.transformComponent.setUpdated();
 			lastX = x;
 			lastY = y;
-
 		}
+
 		function cleanup(parameters, environment) {
 			var domElement = environment.domElement;
 			if (button === 3) {
@@ -157,7 +157,7 @@ define([
 				key: 'whenUsed',
 				type: 'boolean',
 				name: 'When Camera Used',
-				description:'Script only runs when the camera to which it is added is being used.',
+				description: 'Script only runs when the camera to which it is added is being used.',
 				'default': true
 			},
 			{

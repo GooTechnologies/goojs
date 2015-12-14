@@ -6,7 +6,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	Component,
 	Quaternion,
@@ -31,11 +31,11 @@ define([
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
 	 * var rigidBodyComponent = new CannonRigidBodyComponent({
-	 *   mass : 1
+	 *   mass: 1
 	 * });
 	 * entity.setComponent(rigidBodyComponent);
 	 * var boxColliderComponent = new CannonBoxColliderComponent({
-	 *   halfExtents : new Vector3(1, 1, 1)
+	 *   halfExtents: new Vector3(1, 1, 1)
 	 * });
 	 * entity.setComponent(boxColliderComponent);
 	 */
@@ -46,15 +46,15 @@ define([
 		this.type = 'CannonRigidbodyComponent';
 
 		_.defaults(settings, {
-			mass : 1,
-			velocity : new Vector3()
+			mass: 1,
+			velocity: new Vector3()
 			// Todo: a lot of more things from Cannon.js API
 		}); //! AT: this is modifying the settings object which is bad practice (as in 'unintended side effects')
 
 		this.mass = settings.mass;
 		this._initialPosition = null;
 		this._initialVelocity = new Vector3();
-		this._initialVelocity.setVector(settings.velocity);
+		this._initialVelocity.set(settings.velocity);
 		this.body = null;
 		this.centerOfMassOffset = new Vector3();
 	}
@@ -129,7 +129,6 @@ define([
 
 		var collider = CannonRigidbodyComponent.getCollider(entity);
 		if (!collider) {
-
 			// Needed for getting the Rigidbody-local transform of each collider
 			// entity.transformComponent.updateTransform();
 			// entity.transformComponent.updateWorldTransform();
@@ -144,7 +143,6 @@ define([
 			entity.traverse(function (childEntity) {
 				var collider = CannonRigidbodyComponent.getCollider(childEntity);
 				if (collider) {
-
 					// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 					// childEntity.transformComponent.updateTransform();
 					// childEntity.transformComponent.updateWorldTransform();
@@ -180,9 +178,7 @@ define([
 					body.addShape(collider.cannonShape, offset, orientation);
 				}
 			});
-
 		} else {
-
 			// Entity has a collider on the root
 			// Create a simple shape
 			body.addShape(collider.cannonShape);

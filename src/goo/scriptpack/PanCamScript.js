@@ -16,19 +16,27 @@ define([
 	'use strict';
 
 	function PanCamScript() {
-		var fwdVector, leftVector, moveVector, calcVector, calcVector2;
+		var fwdVector, leftVector, calcVector, calcVector2;
 		var panButton;
 		var lookAtPoint;
 		var mouseState;
 		var listeners;
 
 		function getTouchCenter(touches) {
+			var cx = 0;
+			var cy = 0;
+
 			var x1 = touches[0].clientX;
 			var y1 = touches[0].clientY;
-			var x2 = touches[1].clientX;
-			var y2 = touches[1].clientY;
-			var cx = (x1 + x2) / 2;
-			var cy = (y1 + y2) / 2;
+			if (touches.length >= 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+			} else {
+				cx = x1;
+				cy = y1;
+			}
 			return [cx, cy];
 		}
 
@@ -38,9 +46,8 @@ define([
 				panButton = -1;
 			}
 			lookAtPoint = environment.goingToLookAt;
-			fwdVector = new Vector3(Vector3.UNIT_Y);
-			leftVector = new Vector3(Vector3.UNIT_X).invert();
-			moveVector = new Vector3();
+			fwdVector = Vector3.UNIT_Y.clone();
+			leftVector = Vector3.UNIT_X.clone().negate();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
 
@@ -107,7 +114,7 @@ define([
 				},
 				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						mouseState.down = (event.targetTouches.length === 2);
+						mouseState.down = (parameters.touchMode === 'Any' || (parameters.touchMode === 'Single' && event.targetTouches.length === 1) || (parameters.touchMode === 'Double' && event.targetTouches.length === 2));
 						if (!mouseState.down) { return; }
 
 						var center = getTouchCenter(event.targetTouches);
@@ -122,6 +129,7 @@ define([
 						var center = getTouchCenter(event.targetTouches);
 						mouseState.x = center[0];
 						mouseState.y = center[1];
+						environment.dirty = true;
 					}
 				},
 				touchend: function (/*event*/) {
@@ -183,11 +191,10 @@ define([
 					calcVector.z,
 					calcVector
 				);
-				lookAtPoint.setVector(calcVector);
-
+				lookAtPoint.set(calcVector);
 			} else {
-				calcVector.setVector(fwdVector).scale(mouseState.dy);
-				calcVector2.setVector(leftVector).scale(mouseState.dx);
+				calcVector.set(fwdVector).scale(mouseState.dy);
+				calcVector2.set(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
 				//if (parameters.screenMove){
@@ -200,8 +207,8 @@ define([
 					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
 				}
 				//}
-				calcVector.addVector(calcVector2);
-				transform.rotation.applyPost(calcVector);
+				calcVector.add(calcVector2);
+				calcVector.applyPost(transform.rotation);
 				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 				if (camera.projectionMode === Camera.Perspective) {
@@ -210,13 +217,13 @@ define([
 				} else {
 					calcVector.scale(parameters.panSpeed);
 				}
-				entity.transformComponent.transform.translation.addVector(calcVector);
+				entity.transformComponent.transform.translation.add(calcVector);
 				entity.transformComponent.setUpdated();
 				environment.dirty = false;
 			}
 			SystemBus.emit('goo.cameraPositionChanged', {
-				translation: transform.translation.data,
-				lookAtPoint: lookAtPoint ? lookAtPoint.data : null,
+				translation: transform.translation.toArray(),
+				lookAtPoint: lookAtPoint ? lookAtPoint.toArray() : null,
 				id: entity.id
 			});
 		}
@@ -242,7 +249,7 @@ define([
 			key: 'whenUsed',
 			type: 'boolean',
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			'default': true
 		}, {
 			key: 'panButton',
@@ -252,6 +259,13 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
+		}, {
+			key: 'touchMode',
+			description: 'Number of fingers needed to trigger panning.',
+			type: 'string',
+			control: 'select',
+			'default': 'Double',
+			options: ['Any', 'Single', 'Double']
 		}, {
 			key: 'panSpeed',
 			type: 'float',

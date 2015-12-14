@@ -3,14 +3,14 @@ define([
 	'goo/entities/components/SoundComponent',
 	'goo/sound/AudioContext',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtils',
+	'goo/util/ObjectUtils'
 ], function (
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
 	RSVP,
-	PromiseUtil,
+	PromiseUtils,
 	_
 ) {
 	'use strict';
@@ -18,8 +18,8 @@ define([
 	/**
 	 * For handling loading of sound components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -37,7 +37,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundComponentHandler.prototype._remove = function(entity) {
+	SoundComponentHandler.prototype._remove = function (entity) {
 		var component = entity.soundComponent;
 		if (component && component.sounds) {
 			var sounds = component.sounds;
@@ -49,9 +49,9 @@ define([
 
 	/**
 	 * Prepares the config
-	 * @param {object} config
+	 * @param {Object} config
 	 */
-	SoundComponentHandler.prototype._prepare = function(config) {
+	SoundComponentHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			volume: 1.0,
 			reverb: 0.0
@@ -63,24 +63,24 @@ define([
 	 * @returns {SoundComponent} Should be soundcomponent
 	 * @private
 	 */
-	SoundComponentHandler.prototype._create = function() {
+	SoundComponentHandler.prototype._create = function () {
 		return new SoundComponent();
 	};
 
 	/**
 	 * Update engine sound component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	SoundComponentHandler.prototype.update = function(entity, config, options) {
+	SoundComponentHandler.prototype.update = function (entity, config, options) {
 		if (!AudioContext.isSupported()) {
-			return PromiseUtil.resolve(); //! AT: we're not really using reject
+			return PromiseUtils.resolve(); //! AT: we're not really using reject
 		}
 
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			component.updateConfig(config);
 
@@ -94,11 +94,11 @@ define([
 
 			var promises = [];
 			// Load all sounds
-			_.forEach(config.sounds, function(soundCfg) {
+			_.forEach(config.sounds, function (soundCfg) {
 				promises.push(that._load(soundCfg.soundRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(sounds) {
+			return RSVP.all(promises).then(function (sounds) {
 				// Add new sounds
 				for (var i = 0; i < sounds.length; i++) {
 					if (component.sounds.indexOf(sounds[i]) === -1) {

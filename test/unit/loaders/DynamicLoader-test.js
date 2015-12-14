@@ -10,7 +10,7 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
-	"goo/animationpack/systems/AnimationSystem",
+	'goo/animationpack/systems/AnimationSystem',
 
 	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem',
@@ -42,6 +42,10 @@ define([
 	describe('DynamicLoader', function () {
 		var loader;
 
+		var entityRef = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb.entity';
+		var materialRef = 'ccccddddccccddddccccddddccccdddd.material';
+		var imageRef = 'ccccddddccccddddccccddddccccddddccccdddd.jpg';
+
 		beforeEach(function () {
 			var world = new World();
 			world.setSystem(new TransformSystem());
@@ -69,7 +73,7 @@ define([
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (bundle) {
+			loader.load(bundleRef).then(function (/* bundle */) {
 				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
@@ -116,7 +120,7 @@ define([
 				}
 
 				// No objects in handlers
-				for (var key in loader._handlers) {
+				for (var key in loader._handlers) {
 					expect(loader._handlers[key]._objects.size).toBe(0);
 				}
 
@@ -134,7 +138,7 @@ define([
 			var entities = [];
 			for (var i = 0; i < 4; i++) {
 				entities[i] = Configs.entity(['transform', 'meshData']);
-				if (i > 0) {
+				if (i > 0) {
 					Configs.attachChild(entities[i - 1], entities[i]);
 				}
 			}
@@ -155,6 +159,57 @@ define([
 			}, function () {
 				expect('').toEqual('Should never get here');
 				done();
+			});
+		});
+
+		describe('_getRefsFromConfig', function () {
+			it('gets individual references', function () {
+				var config = {
+					aref: entityRef,
+					bref: materialRef
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('gets individual references several levels deep', function () {
+				var config = {
+					a: {
+						b: {
+							c: {
+								aref: entityRef,
+								bref: materialRef
+							}
+						}
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('gets packed references', function () {
+				var config = {
+					arefs: {
+						aref: entityRef,
+						bref: materialRef
+					}
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
+			});
+
+			it('ignores thumbnailRef', function () {
+				var config = {
+					aref: entityRef,
+					bref: materialRef,
+					thumbnailRef: imageRef
+				};
+
+				expect(DynamicLoader._getRefsFromConfig(config))
+					.toEqual([entityRef, materialRef]);
 			});
 		});
 	});

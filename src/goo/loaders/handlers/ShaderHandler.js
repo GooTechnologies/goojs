@@ -5,7 +5,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	ConfigHandler,
 	Material,
@@ -13,7 +13,7 @@ define([
 	Shader,
 	ShaderBuilder,
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
@@ -50,20 +50,20 @@ define([
 	 * Adds/updates/removes a shader
 	 * Currently it is not possible to update a shader, so we create a new one every time
 	 * @param {string} ref
-	 * @param {object|null} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */
 	ShaderHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.resolve();
+			return PromiseUtils.resolve();
 		}
 		if (!config.vshaderRef) {
-			return PromiseUtil.reject('Shader error, missing vertex shader ref');
+			return PromiseUtils.reject('Shader error, missing vertex shader ref');
 		}
 		if (!config.fshaderRef) {
-			return PromiseUtil.reject('Shader error, missing fragment shader ref');
+			return PromiseUtils.reject('Shader error, missing fragment shader ref');
 		}
 
 		var promises = [
@@ -76,10 +76,10 @@ define([
 			var fshader = shaders[1];
 
 			if (!vshader) {
-				return PromiseUtil.reject('Vertex shader' + config.vshaderRef + 'in shader' + ref + 'not found');
+				return PromiseUtils.reject('Vertex shader' + config.vshaderRef + 'in shader' + ref + 'not found');
 			}
 			if (!fshader) {
-				return PromiseUtil.reject('Fragment shader' + config.fshaderRef + 'in shader' + ref + 'not found');
+				return PromiseUtils.reject('Fragment shader' + config.fshaderRef + 'in shader' + ref + 'not found');
 			}
 
 			var shaderDefinition = {

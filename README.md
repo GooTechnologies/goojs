@@ -1,114 +1,72 @@
-GooJS
-=====
+# Goo Engine
 
-Goo Engine in JavaScript
+Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
+## Project examples
+<p>
+<a href="http://goocreate.com/showcase/case/mountains-of-mouthness/"><img src="http://labs.gooengine.com/github-images/mountains.jpg"/></a>
+<a href="http://goocreate.com/showcase/case/suissemania/"><img src="http://labs.gooengine.com/github-images/suissemania.jpg"/></a>
+<a href="http://goocreate.com/showcase/case/nike-phenomenal-shot/"><img src="http://labs.gooengine.com/github-images/nike.jpg"/></a>
+<br>
+<a href="http://goocreate.com/showcase/case/solar-system/"><img src="http://labs.gooengine.com/github-images/solarsystem.jpg"/></a>
+<a href="http://goocreate.com/showcase/case/thomson-reuters/"><img src="http://labs.gooengine.com/github-images/abb.jpg"/></a>
+<a href="http://goocreate.com/showcase/case/mazda/"><img src="http://labs.gooengine.com/github-images/mazda.jpg"/></a>
+<br>
+</p>
+[See more showcases](http://goocreate.com/)
 
-TL;DR
------
+## How to build
 
     npm install
     npm install -g grunt-cli
-    grunt init-git
+    grunt minify
 
+## Documentation
 
-Install dependencies
---------------------
+* [Learn pages](http://learn.goocreate.com/)
+* [API Reference](http://code.gooengine.com/latest/docs/)
+* [Forum](http://forum.goocreate.com/)
+* [Hello world codepen](http://codepen.io/rherlitz/pen/yKruG)
 
-First install dependencies:
+## Releases
 
-    npm install
+* [Goo Engine Releases](http://code.gooengine.com/)
 
-Optionally, if you want to runt Grunt using just the `grunt` command,
-install Grunt globally (may need to be run as root):
+## Goo Create Platform
 
-    npm install -g grunt-cli
+[Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
 
+## How to run unit tests and visual tests
 
-Style checks
-------------
+Start a web server, e.g. using:
+
+    npm install st -g
+    st --port 8000
+
+And then open:
+* Unit tests: http://localhost:8000/test/test.html
+* Visual tests: http://localhost:8000/visual-test/
+
+## Style checks
 
 To make sure that no incorrectly styled content appears, install the pre-commit hook:
 
     grunt init-git
 
-This makes Git check whether all added and modified files pass the style check
-before allowing a commit.
+This makes Git check whether all added and modified files pass the style check before allowing a commit.
 
-Note: The pre-commit hook checks the content of the files in the workspace, not the staged files. This means that if you are committing files that are correct in the staging area, but incorrect in the workspace, you'll get an error anyway.
-
-This also means that `git commit file.js` may not actually check file.js.
-
-Note: If you get a TypeError on Windows when running the JSHint script, try doing a SET HOME=%HOMEPATH% before running it.
-
-
-Tests
------
-
-The tests use Jasmine (http://pivotal.github.com/jasmine/) and Karma (http://karma-runner.github.io/).
-
-
-### Karma
-
-Open up a server and the open [http://localhost:your-fav-port/goojs/test/test.html]()
-
-OR
-
-Run `grunt test`
-
-This will start a browser and run all tests with Karma once. If you want to use the more convenient Karma server, continue with the following steps.
-
-Install Karma by running
-
-    npm install karma -g
-
-To start the karma server, run
-
-    karma start test/karma.conf.js
-
-which will start the karma server and remain idle watching for code or test changes.
-You need to touch a file in src/ or test/ to trigger the tests.
-
-If you get the following error, Karma didn't manage to start Chrome by itself.
-
-    error (launcher): Cannot start Chrome
-            CreateProcessW: The system cannot find the path specified.
-
-    info (launcher): Trying to start Chrome again.
-    Makefile:2: recipe for target `test' failed
-    make: *** [test] Error 127
-
-EITHER just open http://localhost:8080 manually in your browser.
-
-OR use the following command instead (adjusting the path if necessary):
-
-    karma start --browsers="c:\Program Files (x86)\Google\Chrome\Application\chrome.exe" test/karma.conf.js
-
-### Jasmine
-
-To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
-
-    coffee ../simple-node-server/app.coffee --goo-path .
-
-And then open http://localhost:8000/test/test.html
-
-### Code Coverage
-
-Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul), which is built in to Karma. Every time the tests are run a code coverage result is saved into the folder `coverage/`, e.g. `coverage/Chrome 33.0.1750 (Mac OS X 10.9.2)/index.html`.
-
-JS Doc
-------
+## JS Doc
 
 `grunt jsdoc` - outputs to `out-doc`
 
-GooJS uses a custom documentation compiler; see `tools/modoc/README.md`
+GooJS uses a custom documentation compiler, *modoc*; see `tools/modoc/README.md` for more details.
 
-## Releasing
+## Building details
 
-See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
++ Minified and mangled: `grunt minify`
++ Minified: `grunt minify-no-mangle`
++ Concatenated: `grunt minify-dev`
 
-## Building
+## License
 
-- Minified and mangled: `grunt`
-- Minified: `grunt minify-no-mangle`
-- Concatenated: `grunt minify-dev`
+The Goo Engine is released under the [MIT](http://opensource.org/licenses/MIT) license.

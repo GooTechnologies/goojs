@@ -6,6 +6,8 @@ used via the CI script on the
 BuildBot.
 """
 
+# incredibly old and unupdated; never had time to port this to JS/node
+
 import os
 import shutil
 import subprocess

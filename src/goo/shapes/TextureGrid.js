@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
 	_
@@ -14,7 +14,7 @@ define([
 	 * @param textureUnitsPerLine
 	 */
 	function TextureGrid(matrix, textureUnitsPerLine) {
-	    this.matrix = matrix;
+		this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
@@ -29,7 +29,7 @@ define([
 
 	function countCells(matrix) {
 		var count = 0;
-		for(var i = 0; i < matrix.length; i++) {
+		for (var i = 0; i < matrix.length; i++) {
 			count += matrix[i].length;
 		}
 		return count;
@@ -49,30 +49,34 @@ define([
 		for (var i = 0; i < this.matrix.length; i++) {
 			for (var j = 0; j < this.matrix[i].length; j++) {
 				verts.push(
-					j    , -i - 1, 0,
-					j    , -i    , 0,
-					j + 1, -i    , 0,
-					j + 1, -i - 1, 0);
+					j, -i - 1, 0,
+					j, -i, 0,
+					j + 1, -i, 0,
+					j + 1, -i - 1, 0
+				);
 
 				norms.push(
 					0, 0, 1,
 					0, 0, 1,
 					0, 0, 1,
-					0, 0, 1);
+					0, 0, 1
+				);
 
 				var texX = (this.matrix[i][j] % this.textureUnitsPerLine) / this.textureUnitsPerLine;
 				var texY = Math.floor(this.matrix[i][j] / this.textureUnitsPerLine) / this.textureUnitsPerLine;
 				texY = 1 - texY;
 
 				tex.push(
-					 texX      , texY - 1/this.textureUnitsPerLine,
-					 texX      , texY,
-					 texX + 1/this.textureUnitsPerLine, texY,
-					 texX + 1/this.textureUnitsPerLine, texY - 1/this.textureUnitsPerLine);
+					texX, texY - 1 / this.textureUnitsPerLine,
+					texX, texY,
+					texX + 1 / this.textureUnitsPerLine, texY,
+					texX + 1 / this.textureUnitsPerLine, texY - 1 / this.textureUnitsPerLine
+				);
 
 				indices.push(
 					indexCounter + 3, indexCounter + 1, indexCounter + 0,
-					indexCounter + 2, indexCounter + 1, indexCounter + 3);
+					indexCounter + 2, indexCounter + 1, indexCounter + 3
+				);
 
 				indexCounter += 4;
 			}
@@ -110,7 +114,7 @@ define([
 		return matrix;
 	}
 
-	TextureGrid.fromString = function(str) {
+	TextureGrid.fromString = function (str) {
 		return new TextureGrid(stringToMatrix(str), 16);
 	};
 

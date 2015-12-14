@@ -66,7 +66,7 @@ define([
 	 */
 	V.toVector3 = function (obj, def) {
 		if (Array.isArray(obj)) {
-			return new Vector3(obj);
+			return Vector3.fromArray(obj);
 		} else if (obj instanceof Vector3) {
 			return obj;
 		} else if (obj && (typeof obj.x === 'number') && (typeof obj.y === 'number') && (typeof obj.z === 'number')) {
@@ -94,13 +94,13 @@ define([
 		var camera = new Camera();
 
 		var orbitCamOptions = {
-			domElement        : V.goo.renderer.domElement,
-			lookAtDistance    : null,
-			spherical         : spherical,
-			lookAtPoint       : lookAt,
-			releaseVelocity   : true,
+			domElement: V.goo.renderer.domElement,
+			lookAtDistance: null,
+			spherical: spherical,
+			lookAtPoint: lookAt,
+			releaseVelocity: true,
 			interpolationSpeed: 7,
-			dragButton        : dragButton || 'Any'
+			dragButton: dragButton || 'Any'
 		};
 
 		if (!V.deterministic) {
@@ -141,7 +141,7 @@ define([
 	 * @returns {goo.renderer.Material} The generated material.
 	 */
 	V.getColoredMaterial = function (red, green, blue, alpha) {
-		var material = new Material(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.uber);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
 			material.uniforms.materialDiffuse = V.getRandomColor();
@@ -326,17 +326,25 @@ define([
 		function loop() {
 			framesRemaining--;
 			if (framesRemaining > 0) {
-				updateCallback();
-				requestAnimationFrame(loop);
-			} else {
-				if (endCallback) {
-					endCallback();
+				if (updateCallback) {
+					updateCallback();
 				}
+				requestAnimationFrame(loop);
+			} else if (endCallback) {
+				endCallback();
 			}
 		}
 
 		loop();
 	}
+
+	/**
+	 * Do a delayed callback
+	 * @param  {number} nFrames Number of frames to delay endcallback with
+	 * @param  {function} updateCallback Callback to call every frame
+	 * @param  {function} endCallback Callback to call after nFrames frames
+	 */
+	V.delay = delay;
 
 	/**
 	 * Required in 'deterministic' mode.
@@ -460,26 +468,26 @@ define([
 		console.log(text);
 	};
 
-    /**
-     * Adds a button to the description panel.
-     * @param {string} text Text of the button.
-     * @param {function} onClick Function to be called when the button is clicked.
-     */
-    V.button = function (text, onClick) {
-        if (V.deterministic || V.minimal) { return; }
+	/**
+	 * Adds a button to the description panel.
+	 * @param {string} text Text of the button.
+	 * @param {function} onClick Function to be called when the button is clicked.
+	 */
+	V.button = function (text, onClick) {
+		if (V.deterministic || V.minimal) { return; }
 
-        var panel = document.getElementById('vt-panel');
-        if (!panel) {
-            console.error('First create a panel with V.describe()');
-            return;
-        }
+		var panel = document.getElementById('vt-panel');
+		if (!panel) {
+			console.error('First create a panel with V.describe()');
+			return;
+		}
 
-        var button = document.createElement('button');
-        button.textContent = text;
-        button.addEventListener('click', onClick);
+		var button = document.createElement('button');
+		button.textContent = text;
+		button.addEventListener('click', onClick);
 
-        panel.appendChild(button);
-    };
+		panel.appendChild(button);
+	};
 
 	return V;
 });

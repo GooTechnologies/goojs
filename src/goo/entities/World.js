@@ -25,7 +25,6 @@ define([
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
 	function World(gooRunner) {
-
 		/** GooRunner for updating the world and calling the renderers.
 		 * @type {GooRunner}
 		 */
@@ -137,7 +136,7 @@ define([
 				this.setSystem(argument);
 			} else if (argument instanceof Component) {
 				//! AT: TransformComponent and co and NOT instances of Component
-			    this.registerComponent(argument);
+				this.registerComponent(argument);
 			}
 		}
 
@@ -145,7 +144,7 @@ define([
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components 
+	 * Registers a component type. This is necessary to allow automatic creation of components
 	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
 	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
 	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.
@@ -180,7 +179,7 @@ define([
 	/**
 	 * Retrieves a {@link Manager} of a certain type.
 	 *
-	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'.
+	 * @param {string} type Type of manager to retrieve eg. 'EntityManager'.
 	 * @returns {Manager}
 	 */
 	World.prototype.getManager = function (type) {
@@ -220,7 +219,7 @@ define([
 	/**
 	 * Retrieve a {@link System} of type 'type'.
 	 *
-	 * @param {String} type Type of system to retrieve.
+	 * @param {string} type Type of system to retrieve.
 	 * @returns {System}
 	 */
 	World.prototype.getSystem = function (type) {
@@ -237,7 +236,7 @@ define([
 	 * Entities tracked by the removed system will not get handled properly when they are removed from the world
 	 * or when their components (that are tracked by this system) change.
 	 *
-	 * @param {String} type Type of system to remove.
+	 * @param {string} type Type of system to remove.
 	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.clearSystem = function (type) {
@@ -263,7 +262,7 @@ define([
 	 *
 	 * @param {MeshData} [meshData]
 	 * @param {Material} [material]
-	 * @param {String} [name]
+	 * @param {string} [name]
 	 * @param {Camera} [camera]
 	 * @param {Light} [light]
 	 * @returns {Entity}
@@ -289,7 +288,7 @@ define([
 	/**
 	 * Get an array of all entities in world.
 	 *
-	 * @returns {Entity[]} All entities existing in world.
+	 * @returns {Array<Entity>} All entities existing in world.
 	 */
 	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();

@@ -3,20 +3,16 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/World' //! AT: this should not exist - why would shaders care about importing the world?!
-],
-
-	function (
+], function (
 	MeshData,
 	Shader,
 	ShaderFragment,
 	ShaderBuilder,
-	Util,
 	ShaderLib,
 	World
-	) {
+) {
 	'use strict';
 
 	/**
@@ -26,19 +22,19 @@ define([
 	function ShaderLibExtra() {}
 
 	ShaderLibExtra.billboard = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			viewMatrix: Shader.VIEW_MATRIX,
 
-			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.DIFFUSE_MAP
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
@@ -54,7 +50,7 @@ define([
 			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(0.0, 0.0, 0.0, 1.0) + projectionMatrix * vec4(vertexPosition.x, vertexPosition.y, 0.0, 0.0);',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'uniform sampler2D diffuseMap;',
 
 			'varying vec2 texCoord0;',
@@ -67,28 +63,26 @@ define([
 	};
 
 	ShaderLibExtra.showDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			near : Shader.NEAR_PLANE,
-			far : Shader.FAR_PLANE
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			near: Shader.NEAR_PLANE,
+			far: Shader.FAR_PLANE
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
 			'void main(void) {',
-			'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'uniform float near;',
 			'uniform float far;',
 
@@ -102,22 +96,22 @@ define([
 	};
 
 	ShaderLibExtra.bokehShader = {
-		attributes : {
-			position : MeshData.POSITION,
-			uv : MeshData.TEXCOORD0
+		attributes: {
+			position: MeshData.POSITION,
+			uv: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tColor : Shader.DIFFUSE_MAP,
-			tDepth : Shader.DEPTH_MAP,
-			focus : 1.0,
-			aspect : 1.0,
-			aperture : 0.025,
-			maxblur : 1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tColor: Shader.DIFFUSE_MAP,
+			tDepth: Shader.DEPTH_MAP,
+			focus: 1.0,
+			aspect: 1.0,
+			aperture: 0.025,
+			maxblur: 1.0
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 position;',
 			'attribute vec2 uv;',
 
@@ -127,11 +121,11 @@ define([
 			'varying vec2 vUv;',
 
 			'void main() {',
-			'	vUv = uv;',
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
+				'vUv = uv;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'varying vec2 vUv;',
 
 			'uniform sampler2D tColor;',
@@ -204,16 +198,16 @@ define([
 	};
 
 	ShaderLibExtra.sepia = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			amount : 1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			amount: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -249,19 +243,19 @@ define([
 	};
 
 	ShaderLibExtra.dotscreen = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			tSize:    [256, 256],
-			center:   [0.5, 0.5],
-			angle:	  1.57,
-			scale:	  1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			tSize: [256, 256],
+			center: [0.5, 0.5],
+			angle: 1.57,
+			scale: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -304,16 +298,16 @@ define([
 	};
 
 	ShaderLibExtra.vignette = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			offset:   1.0,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			offset: 1.0,
 			darkness: 1.5
 		},
 		vshader: [
@@ -344,33 +338,33 @@ define([
 			'gl_FragColor = vec4( mix( texel.rgb, vec3( 1.0 - darkness ), dot( uv, uv ) ), texel.a );',
 
 			/*
-			 'vec4 color = texture2D( tDiffuse, vUv );',
-			 'float dist = distance( vUv, vec2( 0.5 ) );',
-			 'color.rgb *= smoothstep( 0.8, offset * 0.799, dist *( darkness + offset ) );',
-			 'gl_FragColor = color;',
-			 */
+			'vec4 color = texture2D( tDiffuse, vUv );',
+			'float dist = distance( vUv, vec2( 0.5 ) );',
+			'color.rgb *= smoothstep( 0.8, offset * 0.799, dist *( darkness + offset ) );',
+			'gl_FragColor = color;',
+			*/
 			'}'
 		].join('\n')
 	};
 
 	ShaderLibExtra.film = {
-		attributes : ShaderLib.copy.attributes,
-		uniforms : {
-			tDiffuse : Shader.DIFFUSE_MAP,
-			time : function() {
+		attributes: ShaderLib.copy.attributes,
+		uniforms: {
+			tDiffuse: Shader.DIFFUSE_MAP,
+			time: function () {
 				return World.time;
 			},
 			// noise effect intensity value (0 = no effect, 1 = full effect)
-			nIntensity : 0.5,
+			nIntensity: 0.5,
 			// scanlines effect intensity value (0 = no effect, 1 = full effect)
-			sIntensity : 0.5,
+			sIntensity: 0.5,
 			// scanlines effect count value (0 = no effect, 4096 = full effect)
-			sCount : 1024,
-			grayscale : 0,
-			$link : ShaderLib.copy.uniforms
+			sCount: 1024,
+			grayscale: 0,
+			$link: ShaderLib.copy.uniforms
 		},
-		vshader : ShaderLib.copy.vshader,
-		fshader : [
+		vshader: ShaderLib.copy.vshader,
+		fshader: [
 			'uniform float time;',
 			'uniform bool grayscale;',
 			'uniform float nIntensity;',
@@ -389,7 +383,7 @@ define([
 			'vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );',
 			'cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;',
 			'cResult = cTextureScreen.rgb + nIntensity * ( cResult - cTextureScreen.rgb );',
-			'if( grayscale ) {',
+			'if ( grayscale ) {',
 			'	cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );',
 			'}',
 			'gl_FragColor = vec4( cResult, cTextureScreen.a );',
@@ -397,19 +391,19 @@ define([
 	};
 
 	ShaderLibExtra.noise = {
-		attributes : ShaderLib.copy.attributes,
-		uniforms : {
-			tDiffuse : Shader.DIFFUSE_MAP,
-			time : function() {
+		attributes: ShaderLib.copy.attributes,
+		uniforms: {
+			tDiffuse: Shader.DIFFUSE_MAP,
+			time: function () {
 				return World.time;
 			},
 			// noise effect intensity value (0 = no effect, 1 = full effect)
-			nIntensity : 0.5,
-			grayscale : 0,
-			$link : ShaderLib.copy.uniforms
+			nIntensity: 0.5,
+			grayscale: 0,
+			$link: ShaderLib.copy.uniforms
 		},
-		vshader : ShaderLib.copy.vshader,
-		fshader : [
+		vshader: ShaderLib.copy.vshader,
+		fshader: [
 			'uniform float time;',
 			'uniform bool grayscale;',
 			'uniform float nIntensity;',
@@ -437,16 +431,16 @@ define([
 	};
 
 	ShaderLibExtra.bleachbypass = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			opacity:   1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			opacity: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -492,17 +486,17 @@ define([
 	};
 
 	ShaderLibExtra.horizontalTiltShift = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			h : 1.0 / 128.0,
-			r : 0.5
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			h: 1.0 / 128.0,
+			r: 0.5
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -545,15 +539,15 @@ define([
 	};
 
 	ShaderLibExtra.colorify = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
 			color: [1.0, 1.0, 1.0],
 			amount: 1.0
 		},
@@ -588,15 +582,15 @@ define([
 	};
 
 	ShaderLibExtra.hatch = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
 			width: 0.0,
 			spread: 10.0,
 			replace: true
@@ -662,25 +656,25 @@ define([
 	};
 
 	ShaderLibExtra.ssao = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix :        Shader.VIEW_MATRIX,
-			projectionMatrix :  Shader.PROJECTION_MATRIX,
-			worldMatrix :       Shader.WORLD_MATRIX,
-			tDiffuse:           Shader.DIFFUSE_MAP,
-			tDepth:             Shader.DEPTH_MAP,
-			size:               [512, 512],
-			cameraNear:         Shader.MAIN_NEAR_PLANE,
-			cameraFar:          Shader.MAIN_FAR_PLANE,
-			fogNear:            Shader.MAIN_NEAR_PLANE,
-			fogFar:             Shader.MAIN_FAR_PLANE,
-			fogEnabled:         0,
-			onlyAO:             0,
-			aoClamp:            0.3,
-			lumInfluence:       0.0
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			tDepth: Shader.DEPTH_MAP,
+			size: [512, 512],
+			cameraNear: Shader.MAIN_NEAR_PLANE,
+			cameraFar: Shader.MAIN_FAR_PLANE,
+			fogNear: Shader.MAIN_NEAR_PLANE,
+			fogFar: Shader.MAIN_FAR_PLANE,
+			fogEnabled: 0,
+			onlyAO: 0,
+			aoClamp: 0.3,
+			lumInfluence: 0.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -871,9 +865,9 @@ define([
 	};
 
 	ShaderLibExtra.skinning = {
-		defines : {
-			JOINT_COUNT : 56,
-			WEIGHTS : 4
+		defines: {
+			JOINT_COUNT: 56,
+			WEIGHTS: 4
 		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
@@ -882,7 +876,7 @@ define([
 			vertexJointIDs: MeshData.JOINTIDS
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			diffuseMap: Shader.DIFFUSE_MAP,
 			jointPalette: function (shaderInfo) {
@@ -955,17 +949,17 @@ define([
 	};
 
 	ShaderLibExtra.rgbshift = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			amount : 0.005,
-			angle : 0.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			amount: 0.005,
+			angle: 0.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -999,15 +993,15 @@ define([
 	};
 
 	ShaderLibExtra.brightnesscontrast = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
 			brightness: 0,
 			contrast: 0,
 			saturation: 0
@@ -1051,15 +1045,15 @@ define([
 	};
 
 	ShaderLibExtra.hsb = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
 			hue: 0,
 			saturation: 0,
 			brightness: 0
@@ -1102,15 +1096,15 @@ define([
 	};
 
 	ShaderLibExtra.luminosity = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1141,24 +1135,24 @@ define([
 	};
 
 	ShaderLibExtra.toon = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			lightPosition : Shader.LIGHT0,
-			HighlightColor : [0.9,0.8,0.7,1.0],
-			MidColor : [0.65,0.55,0.45,1.0],
-			ShadowColor : [0.4,0.3,0.2,1.0],
-			HighlightSize : 0.2,
-			ShadowSize : 0.01,
-			OutlineWidth : 0.15
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			lightPosition: Shader.LIGHT0,
+			HighlightColor: [0.9, 0.8, 0.7, 1.0],
+			MidColor: [0.65, 0.55, 0.45, 1.0],
+			ShadowColor: [0.4, 0.3, 0.2, 1.0],
+			HighlightSize: 0.2,
+			ShadowSize: 0.01,
+			OutlineWidth: 0.15
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec3 vertexNormal;',
 
@@ -1180,7 +1174,7 @@ define([
 			'gl_Position = projectionMatrix * viewMatrix * worldPos;',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'uniform vec4 HighlightColor;',
 			'uniform vec4 MidColor;',
 			'uniform vec4 ShadowColor;',
@@ -1212,23 +1206,23 @@ define([
 	 * Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
 	 */
 	ShaderLibExtra.differenceOfGaussians = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			gaussBlurredImage1 : 'BLUR1',
-			gaussBlurredImage2 : 'BLUR2',
-			originalImage : 'ORIGINAL',
-			threshold : 0.01,
-			edgeColor : [1.0, 0.0, 1.0, 1.0],
-			backgroundColor : [0.0, 0.0, 0.0, 1.0],
-			backgroundMix : 1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			gaussBlurredImage1: 'BLUR1',
+			gaussBlurredImage2: 'BLUR2',
+			originalImage: 'ORIGINAL',
+			threshold: 0.01,
+			edgeColor: [1.0, 0.0, 1.0, 1.0],
+			backgroundColor: [0.0, 0.0, 0.0, 1.0],
+			backgroundMix: 1.0
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
@@ -1243,7 +1237,7 @@ define([
 			'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'uniform sampler2D gaussBlurredImage1;',
 			'uniform sampler2D gaussBlurredImage2;',
 			'uniform sampler2D originalImage;',
@@ -1275,15 +1269,15 @@ define([
 		defines: {
 			OVERLAY_TYPE: 0
 		},
-		processors: [function(shader, shaderInfo) {
+		processors: [function (shader, shaderInfo) {
 			var overlayTex = shaderInfo.material._textureMaps.OVERLAY_MAP;
 			if (overlayTex) {
 				shader.setDefine('OVERLAY_MAP', true);
 				var offsetRepeat = shader.uniforms.offsetRepeat;
-				offsetRepeat[0] = overlayTex.offset.data[0];
-				offsetRepeat[1] = overlayTex.offset.data[1];
-				offsetRepeat[2] = overlayTex.repeat.data[0];
-				offsetRepeat[3] = overlayTex.repeat.data[1];
+				offsetRepeat[0] = overlayTex.offset.x;
+				offsetRepeat[1] = overlayTex.offset.y;
+				offsetRepeat[2] = overlayTex.repeat.x;
+				offsetRepeat[3] = overlayTex.repeat.y;
 			} else {
 				shader.removeDefine('OVERLAY_MAP');
 			}
@@ -1389,20 +1383,20 @@ define([
 	};
 
 	ShaderLibExtra.levels = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			gamma : 1,
-			minInput : 0,
-			maxInput : 1,
-			minOutput : 0,
-			maxOutput : 1
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			gamma: 1,
+			minInput: 0,
+			maxInput: 1,
+			minOutput: 0,
+			maxOutput: 1
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1438,16 +1432,16 @@ define([
 	};
 
 	ShaderLibExtra.boxfilter = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			viewport : [128, 128]
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			viewport: [128, 128]
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1482,18 +1476,18 @@ define([
 	};
 
 	ShaderLibExtra.radial = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			frameBufSize : Shader.RESOLUTION,
-			offset : 0.5,
-			multiplier : -0.75
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			frameBufSize: Shader.RESOLUTION,
+			offset: 0.5,
+			multiplier: -0.75
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1532,16 +1526,16 @@ define([
 	};
 
 	ShaderLibExtra.packDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			farPlane: Shader.FAR_PLANE
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 
 			'uniform mat4 viewMatrix;',
@@ -1555,7 +1549,7 @@ define([
 			'gl_Position = projectionMatrix * vPosition;',
 			'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'uniform float farPlane;',
 
 			ShaderFragment.methods.packDepth,
@@ -1571,18 +1565,18 @@ define([
 	};
 
 	ShaderLibExtra.antialias = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			frameBufSize : Shader.RESOLUTION,
-			FXAA_SPAN_MAX : 8.0,
-			FXAA_REDUCE_MUL : 1.0/8.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			frameBufSize: Shader.RESOLUTION,
+			FXAA_SPAN_MAX: 8.0,
+			FXAA_REDUCE_MUL: 1.0 / 8.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',

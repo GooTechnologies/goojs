@@ -10,10 +10,10 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('ProjectHandler', function () {
 		var loader;
-		
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -22,7 +22,7 @@ define([
 				ajax: false
 			});
 		});
-		
+
 		it('loads a project with scene', function (done) {
 			var config = Configs.project();
 			loader.preload(Configs.get());
@@ -32,7 +32,7 @@ define([
 				done();
 			});
 		});
-		
+
 		it('loads a slightly more complex project', function (done) {
 			var config = Configs.project(true);
 			loader.preload(Configs.get());

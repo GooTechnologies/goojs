@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/PassLib'], function(PassLib) {});
+define(['goo/renderer/pass/PassLib'], function (PassLib) {});

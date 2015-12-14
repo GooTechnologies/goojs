@@ -1,14 +1,14 @@
 define([
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	_
 ) {
 	'use strict';
 
-	var ScriptUtils = {};
+	function ScriptUtils() {}
 
 
-	ScriptUtils.defaultsByType = {
+	ScriptUtils.DEFAULTS_BY_TYPE = {
 		'float': 0,
 		'int': 0,
 		'string': '',
@@ -16,16 +16,75 @@ define([
 		'vec3': [0, 0, 0],
 		'vec4': [0, 0, 0, 0],
 		'boolean': false,
-		'texture': {},
-		'entity': {}
+		'animation': null,
+		'camera': null,
+		'entity': null,
+		'image': null,
+		'sound': null,
+		'texture': null
 	};
 
+	ScriptUtils.REF_TYPES = [
+		'animation',
+		'camera',
+		'entity',
+		'image',
+		'sound',
+		'texture'
+	];
+
+	ScriptUtils.isRefType = function (type) {
+		return _.contains(ScriptUtils.REF_TYPES, type);
+	};
+
+	ScriptUtils.TYPE_VALIDATORS = (function () {
+		var isVec = function (length) {
+			return function (data) {
+				return Array.isArray(data) && data.length === length;
+			};
+		};
+
+		var isRef = function (type) {
+			function isDirectRef(data) {
+				return _.isString(data) && _.getExtension(data) === type;
+			}
+
+			// Checks for references passed like:
+			// {
+			//     entityRef: string
+			//     enabled: boolean
+			// }
+			function isWrappedRef(data) {
+				return data && isDirectRef(data[type + 'Ref']);
+			}
+
+			return function (data) {
+				return isDirectRef(data) || isWrappedRef(data);
+			};
+		};
+
+		return {
+			'float': _.isNumber,
+			'string': _.isString,
+			'boolean': _.isBoolean,
+			'int': _.isInteger,
+			'vec2': isVec(2),
+			'vec3': isVec(3),
+			'vec4': isVec(4),
+			'animation': isRef('animation'),
+			'camera': isRef('camera'),
+			'entity': isRef('entity'),
+			'image': isRef('image'),
+			'sound': isRef('sound'),
+			'texture': isRef('texture')
+		};
+	})();
 
 	/**
 	 * Fill a passed parameters object with defaults from spec
-	 * @private
-	 * @param parameters {object} The type of object passed as parameters to a script
-	 * @param specs {Array.<{key, name, default, description}>}
+	 * @hidden
+	 * @param parameters {Object} The type of object passed as parameters to a script
+	 * @param specs {Array<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
 		if (!(specs instanceof Array)) { return; }
@@ -36,13 +95,13 @@ define([
 				return;
 			}
 
-			if (spec['default'] === null || spec['default'] === undefined) {
-				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+			if (spec.default === null || spec.default === undefined) {
+				spec.default = _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[spec.type]);
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = _.clone(spec['default']);
+				parameters[spec.key] = _.clone(spec.default);
 			}
 		});
 
@@ -56,14 +115,14 @@ define([
 
 	/**
 	 * Fills specs' names with their prettyprinted keys (x -> x, maxX -> Max X, myBluePanda -> My Blue Panda)
-	 * @private
-	 * @param specs {Array.<{key, name, default, description}>}
+	 * @hidden
+	 * @param specs {Array<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
 		if (!(specs instanceof Array)) { return; }
 
 		function getNameFromKey(key) {
-			if(typeof key !== 'string' || key.length === 0) { return ''; }
+			if (typeof key !== 'string' || key.length === 0) { return ''; }
 			var capitalisedKey = key[0].toUpperCase() + key.slice(1);
 			return capitalisedKey.replace(/(.)([A-Z])/g, '$1 $2');
 		}
@@ -86,7 +145,6 @@ define([
 		}
 	};
 
-
 	ScriptUtils._keys = {
 		'Backspace': 8,
 		'Tab': 9,
@@ -98,7 +156,7 @@ define([
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,
-		'Space':32,
+		'Space': 32,
 		'Pageup': 33,
 		'Pagedown': 34,
 		'End': 35,
@@ -204,7 +262,7 @@ define([
 		'Backslash': 220
 	};
 
-	ScriptUtils._keyInverse = (function(assoc) {
+	ScriptUtils._keyInverse = (function (assoc) {
 		var inverseAssoc = {};
 
 		var keys = Object.keys(assoc);
@@ -214,7 +272,7 @@ define([
 		return inverseAssoc;
 	}(ScriptUtils._keys));
 
-	ScriptUtils.keyForCode = function(code) {
+	ScriptUtils.keyForCode = function (code) {
 		return ScriptUtils._keyInverse[code];
 	};
 

@@ -1,16 +1,16 @@
 define([
-	"goo/util/EventTarget"
-], function(
+	'goo/util/EventTarget'
+], function (
 	EventTarget
 ) {
-	"use strict";
+	'use strict';
 
 	function Test() {
 		EventTarget.apply(this, arguments);
 	}
 	Test.prototype = Object.create(EventTarget.prototype);
 
-	describe("EventTarget", function() {
+	describe('EventTarget', function () {
 		var test;
 		var listener = function (/*event*/) { };
 		var listener2 = function (/*event*/) { };
@@ -79,21 +79,21 @@ define([
 
 			test.on('send', obj.listener);
 
- 			expect(obj.listener).not.toHaveBeenCalled();
+			expect(obj.listener).not.toHaveBeenCalled();
 
 			test.fire(sendEvent);
- 			expect(obj.listener).toHaveBeenCalledWith(sendEvent);
+			expect(obj.listener).toHaveBeenCalledWith(sendEvent);
 
 			sendEvent.data = 1;
 			test.fire('send', 1);
- 			expect(obj.listener).toHaveBeenCalledWith(sendEvent);
+			expect(obj.listener).toHaveBeenCalledWith(sendEvent);
 
- 			var data = {
- 				type: 'send',
- 				test: 'test'
- 			};
+			var data = {
+				type: 'send',
+				test: 'test'
+			};
 			test.fire(data);
- 			expect(obj.listener).toHaveBeenCalledWith(data);
+			expect(obj.listener).toHaveBeenCalledWith(data);
 		});
 
 		it('Listener can remove itself during call', function () {
@@ -116,14 +116,14 @@ define([
 
 			test.fire(sendEvent);
 
- 			expect(counter).toEqual(3);
+			expect(counter).toEqual(3);
 			expect(test._listenerMap.get('send').length).toEqual(2);
 
 			counter = 0;
 
 			test.fire(sendEvent);
 
- 			expect(counter).toEqual(2);
+			expect(counter).toEqual(2);
 			expect(test._listenerMap.get('send').length).toEqual(2);
 		});
 
@@ -145,13 +145,13 @@ define([
 			test.on('send', listenerEnd);
 
 			test.fire(sendEvent);
- 			expect(counter).toEqual(2);
+			expect(counter).toEqual(2);
 			expect(test._listenerMap.get('send').length).toEqual(3);
 
 			counter = 0;
 
 			test.fire(sendEvent);
- 			expect(counter).toEqual(3);
+			expect(counter).toEqual(3);
 			expect(test._listenerMap.get('send').length).toEqual(3);
 		});
 	});

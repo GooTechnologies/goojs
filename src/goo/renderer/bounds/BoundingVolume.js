@@ -13,7 +13,7 @@ define([
 		// I don't dare change the behaviour since there's no telling what will break
 		this.center = new Vector3();
 		if (center) {
-			this.center.setVector(center);
+			this.center.set(center);
 		}
 
 		//! AT: can these be private?

@@ -2,20 +2,20 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtils'
 ], function (
 	ComponentHandler,
 	HtmlComponent,
 	RSVP,
-	PromiseUtil
+	PromiseUtils
 ) {
 	'use strict';
 
 	/**
 	 * For handling loading of HTML components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -30,8 +30,8 @@ define([
 
 	/**
 	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
+	 * @param {Object} config
+	 * @returns {Object}
 	 * @private
 	 */
 	HtmlComponentHandler.prototype._prepare = function (/*config*/) {};
@@ -55,8 +55,8 @@ define([
 	/**
 	 * Update engine cameracomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	HtmlComponentHandler.prototype.update = function (entity, config, options) {
@@ -132,7 +132,7 @@ define([
 			component.useTransformComponent = config.useTransformComponent !== false;
 
 			if (!innerHtmlChanged && !styleChanged) {
-				return PromiseUtil.resolve();
+				return PromiseUtils.resolve();
 			}
 
 			var wrappedStyle = '';

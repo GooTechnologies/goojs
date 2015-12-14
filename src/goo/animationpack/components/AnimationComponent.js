@@ -26,7 +26,7 @@ define([
 		this.type = 'AnimationComponent';
 
 		/**
-		 * @type {AnimationLayer[]}
+		 * @type {Array<AnimationLayer>}
 		 */
 		this.layers = [];
 		this.floats = {};
@@ -52,8 +52,8 @@ define([
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
-	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
-	 * @param {function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
+	 * @param {boolean} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
+	 * @param {Function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 * @returns {boolean} true if a transition was found and started
 	 */
 	AnimationComponent.prototype.transitionTo = function (stateKey, allowDirectSwitch, callback) {
@@ -67,7 +67,7 @@ define([
 	};
 	/**
 	 * Get available states
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getStates = function () {
 		return this.layers[0].getStates();
@@ -77,7 +77,7 @@ define([
 	};
 	/**
 	 * Get available transitions
-	 * returns {string[]} available state keys
+	 * returns {Array<string>} available state keys
 	 */
 	AnimationComponent.prototype.getTransitions = function () {
 		return this.layers[0].getTransitions();
@@ -92,7 +92,7 @@ define([
 		}
 
 		// grab current global time
-		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
+		globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 
 		// check throttle
 		if (this._updateRate !== 0.0) {
@@ -115,45 +115,45 @@ define([
 	 */
 	AnimationComponent.prototype.apply = function (transformComponent) {
 		var data = this.getCurrentSourceData();
+		if (!data) { return; }
+
 		var pose = this._skeletonPose;
 
 		// cycle through, pulling out and applying those we know about
-		if (data) {
-			var keys = Object.keys(data);
-			for (var i = 0, l = keys.length; i < l; i++) {
-				var key = keys[i];
-				var value = data[key];
-				if (value instanceof JointData) {
-					if (pose && value._jointIndex >= 0) {
-						value.applyTo(pose._localTransforms[value._jointIndex]);
-					}
-				} else if (value instanceof TransformData) {
-					if (transformComponent) {
-						value.applyTo(transformComponent.transform);
-						transformComponent.updateTransform();
-						this._updateWorldTransform(transformComponent);
-					}
-				} else if (value instanceof TriggerData) {
-					if (value.armed) {
-						// pull callback(s) for the current trigger key, if exists, and call.
-						// TODO: Integrate with GameMaker somehow
-						for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
-							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
-							if (callbacks && callbacks.length) {
-								for (var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
-									callbacks[j]();
-								}
+		var keys = Object.keys(data);
+		for (var i = 0, l = keys.length; i < l; i++) {
+			var key = keys[i];
+			var value = data[key];
+			if (value instanceof JointData) {
+				if (pose && value._jointIndex >= 0) {
+					value.applyTo(pose._localTransforms[value._jointIndex]);
+				}
+			} else if (value instanceof TransformData) {
+				if (transformComponent) {
+					value.applyTo(transformComponent.transform);
+					transformComponent.updateTransform();
+					this._updateWorldTransform(transformComponent);
+				}
+			} else if (value instanceof TriggerData) {
+				if (value.armed) {
+					// pull callback(s) for the current trigger key, if exists, and call.
+					// TODO: Integrate with GameMaker somehow
+					for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
+						var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
+						if (callbacks && callbacks.length) {
+							for (var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+								callbacks[j]();
 							}
 						}
-						value.armed = false;
 					}
-				} else if (value instanceof Array) {
-					this.floats[key] = value[0];
+					value.armed = false;
 				}
+			} else if (value instanceof Array) {
+				this.floats[key] = value[0];
 			}
-			if (pose) {
-				pose.updateTransforms();
-			}
+		}
+		if (pose) {
+			pose.updateTransforms();
 		}
 	};
 

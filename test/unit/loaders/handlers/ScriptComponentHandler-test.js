@@ -1,1 +1,1 @@
-define(['goo/scriptpack/ScriptComponentHandler'], function(ScriptComponentHandler) {});
+define(['goo/scriptpack/ScriptComponentHandler'], function (ScriptComponentHandler) {});

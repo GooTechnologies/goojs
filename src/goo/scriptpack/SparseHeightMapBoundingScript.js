@@ -3,7 +3,7 @@ define([], function () {
 
 	/**
 	 * Bounds the host entity to a height map computed from a set of terrain points
-	 * @param {Number[]} elevationData The array of height points given as a flat array
+	 * @param {Array<Number>} elevationData The array of height points given as a flat array
 	 */
 	function SparseHeightMapBoundingScript(elevationData) {
 		this.elevationData = elevationData;
@@ -15,7 +15,7 @@ define([], function () {
 	 * @param z
 	 * @returns {number} The height of the closest terrain point
 	 */
-	SparseHeightMapBoundingScript.prototype.getClosest = function(x, z) {
+	SparseHeightMapBoundingScript.prototype.getClosest = function (x, z) {
 		var minDist = Number.MAX_VALUE;
 		var minIndex = -1;
 		for (var i = 0; i < this.elevationData.length; i += 3) {
@@ -30,11 +30,11 @@ define([], function () {
 		return this.elevationData[minIndex + 1];
 	};
 
-	SparseHeightMapBoundingScript.prototype.run = function(entity) {
+	SparseHeightMapBoundingScript.prototype.run = function (entity) {
 		var translation = entity.transformComponent.transform.translation;
-		var closest = this.getClosest(translation.data[0], translation.data[2]);
-		var diff = translation.data[1] - closest;
-		translation.data[1] -= diff * 0.1;
+		var closest = this.getClosest(translation.x, translation.z);
+		var diff = translation.y - closest;
+		translation.y -= diff * 0.1;
 	};
 
 	return SparseHeightMapBoundingScript;

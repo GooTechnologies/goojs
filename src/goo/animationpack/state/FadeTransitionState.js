@@ -47,19 +47,19 @@ define([
 		}
 	};
 
-	FadeTransitionState.prototype.resetClips = function(globalTime) {
+	FadeTransitionState.prototype.resetClips = function (globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
-		if(this._targetState) {
+		if (this._targetState) {
 			this._targetState.resetClips(globalTime);
 		}
 	};
 
-	FadeTransitionState.prototype.shiftClipTime = function(shiftTime) {
+	FadeTransitionState.prototype.shiftClipTime = function (shiftTime) {
 		AbstractTransitionState.prototype.shiftClipTime.call(this, shiftTime);
-		if(this._targetState) {
+		if (this._targetState) {
 			this._targetState.shiftClipTime(shiftTime);
 		}
-		if(this._sourceState) {
+		if (this._sourceState) {
 			this._sourceState.shiftClipTime(shiftTime);
 		}
 	};

@@ -159,31 +159,31 @@ require([
 		var subEntity1 = world.createEntity(
 			new Box(h1.x * 2, h1.y * 2, h1.z * 2),
 			V.getColoredMaterial(),
-			new Vector3(0, 2, 0).mul(2),
+			new Vector3(0, 2, 0).scale(2),
 			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h1 }) })
 		);
 		var subEntity2 = world.createEntity(
 			new Box(h2.x * 2, h2.y * 2, h2.z * 2),
 			V.getColoredMaterial(),
-			new Vector3(-1.5, 0, 0).mul(2),
+			new Vector3(-1.5, 0, 0).scale(2),
 			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h2 }) })
 		);
 		var subEntity3 = world.createEntity(
 			new Box(h3.x * 2, h3.y * 2, h3.z * 2),
 			V.getColoredMaterial(),
-			new Vector3(1, 0, 0).mul(2),
+			new Vector3(1, 0, 0).scale(2),
 			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h3 }) })
 		);
 		var subEntity4 = world.createEntity(
 			new Box(h4.x * 2, h4.y * 2, h4.z * 2),
 			V.getColoredMaterial(),
-			new Vector3(1.5, -1, 0).mul(2),
+			new Vector3(1.5, -1, 0).scale(2),
 			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h4 }) })
 		);
 		var subEntity5 = world.createEntity(
 			new Box(h5.x * 2, h5.y * 2, h5.z * 2),
 			V.getColoredMaterial(),
-			new Vector3(0, -2, 0).mul(2),
+			new Vector3(0, -2, 0).scale(2),
 			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h5 }) })
 		);
 
@@ -366,11 +366,11 @@ require([
 			// Add some force to all bodies
 			world.by.system(physicsSystem.type).each(function (entity) {
 				// Force is directed to the origin
-				force.copy(entity.getTranslation(force)).mul(-1);
+				force.copy(entity.getTranslation(force)).scale(-1);
 
 				// Set a proper length of it
 				force.normalize();
-				force.mul(700);
+				force.scale(700);
 
 				// Apply it to the entity
 				entity.rigidBodyComponent.applyForce(force);
@@ -386,7 +386,7 @@ require([
 
 			// Set a proper length of it
 			force.normalize();
-			force.mul(5000);
+			force.scale(5000);
 
 			// Apply it to the entity
 			entity.rigidBodyComponent.applyForce(force);

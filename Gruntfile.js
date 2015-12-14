@@ -4,10 +4,7 @@
 var path = require('path');
 var _ = require('underscore');
 
-
 module.exports = function (grunt) {
-	'use strict';
-
 	var packs = {
 		fsmpack: 'goo/fsmpack',
 		geometrypack: 'goo/geometrypack',
@@ -125,12 +122,18 @@ module.exports = function (grunt) {
 			unit: {
 				configFile: 'test/unit/karma.conf.js',
 				singleRun: true,
+				browserDisconnectTimeout: 5000,
+				browserDisconnectTolerance: 1,
+				browserNoActivityTimeout: 60000,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}
 		},
 		shell: {
 			jsdoc: {
 				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
+			},
+			tern: {
+				command: 'node tools/modoc/src/tern-definitions.js src/goo out-tern'
 			},
 			update_webdriver: {
 				options: {
@@ -152,7 +155,15 @@ module.exports = function (grunt) {
 				force: true // Do not fail the task
 			}
 		},
-		watch: getWatchConfig(packs)
+		watch: getWatchConfig(packs),
+		eslint: {
+			options: {
+				configFile: '.eslintrc'
+			},
+			'src': ['Gruntfile.js', 'src/**/*.js'],
+			'unit-test': ['test/unit/*/**/*.js'],
+			'visual-test': ['visual-test/goo/goofy/**/*.js']
+		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -164,10 +175,12 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-keepalive');
+	grunt.loadNpmTasks('grunt-eslint');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('tern',		 ['shell:tern']);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);

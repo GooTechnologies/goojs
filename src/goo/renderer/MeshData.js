@@ -1,19 +1,19 @@
 define([
 	'goo/renderer/BufferData',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	BufferData,
-	Util,
+	RendererUtils,
 	BufferUtils,
 	Vector2,
 	Vector3,
 	Vector4,
-	ObjectUtil
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -29,32 +29,47 @@ define([
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
+		/** The total number of vertices in the buffer.
+		 * @type {number}
+		 */
 		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
+		
+		/** The total number of indices in the buffer.
+		 * @type {number}
+		 */
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
+
 		this.primitiveCounts = [0];
 
 		this.vertexData = null;
 		this.indexData = null;
 		this.dataViews = {};
 
+		/** The number of indices used by each segment, or null to indicate only one segment that uses the whole index buffer.
+		 * @type {Array<number>|null}
+		 */
 		this.indexLengths = null;
-		// Triangles, TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop, Points
+
+		/** The primitive rendering types to use, for each segment. Default value of this property is ['Triangles'], but also TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop and Points are available.
+		 * @type {Array<string>}
+		 */
 		this.indexModes = ['Triangles'];
 
 		this.type = MeshData.MESH;
 
-		//!RH: added to not mutate object
 		this.paletteMap = undefined;
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;
 		this.store = undefined;
 		this.wireframeData = undefined;
 		this.flatMeshData = undefined;
+		this.__boundingTree = undefined;
 
 		this._attributeDataNeedsRefresh = false;
 		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -123,7 +138,7 @@ define([
 			var keys = Object.keys(this.attributeMap);
 			for (var i = 0; i < keys.length; i++) {
 				var attribute = this.attributeMap[keys[i]];
-				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
+				vertexByteSize += RendererUtils.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
 
@@ -212,38 +227,39 @@ define([
 
 		// Ok, now pull primitive index based on indexmode.
 		switch (this.indexModes[section]) {
-		case "Triangles":
-			index += primitiveIndex * 3 + point;
-			break;
-		case "TriangleStrip":
-			// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
-			// if (point < 2 && primitiveIndex % 2 == 1) {
-			// index += primitiveIndex + (point == 0 ? 1 : 0);
-			// } else {
-			index += primitiveIndex + point;
-			// }
-			break;
-		case "TriangleFan":
-			if (point === 0) {
-				index += 0;
-			} else {
+			case 'Triangles':
+				index += primitiveIndex * 3 + point;
+				break;
+			case 'TriangleStrip':
+				// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
+				// if (point < 2 && primitiveIndex % 2 == 1) {
+				// index += primitiveIndex + (point == 0 ? 1 : 0);
+				// } else {
 				index += primitiveIndex + point;
-			}
-			break;
-		case "Points":
-			index += primitiveIndex;
-			break;
-		case "Lines":
-			index += primitiveIndex * 2 + point;
-			break;
-		case "LineStrip":
-		case "LineLoop":
-			index += primitiveIndex + point;
-			break;
-		default:
-			MeshData.logger.warning("unimplemented index mode: " + this.indexModes[section]);
-			return -1;
+				// }
+				break;
+			case 'TriangleFan':
+				if (point === 0) {
+					index += 0;
+				} else {
+					index += primitiveIndex + point;
+				}
+				break;
+			case 'Points':
+				index += primitiveIndex;
+				break;
+			case 'Lines':
+				index += primitiveIndex * 2 + point;
+				break;
+			case 'LineStrip':
+			case 'LineLoop':
+				index += primitiveIndex + point;
+				break;
+			default:
+				MeshData.logger.warning('unimplemented index mode: ' + this.indexModes[section]);
+				return -1;
 		}
+
 		return index;
 	};
 
@@ -271,39 +287,39 @@ define([
 
 	MeshData.getPrimitiveCount = function (indexMode, size) {
 		switch (indexMode) {
-		case "Triangles":
-			return size / 3;
-		case "TriangleFan":
-		case "TriangleStrip":
-			return size - 2;
-		case "Lines":
-			return size / 2;
-		case "LineStrip":
-			return size - 1;
-		case "LineLoop":
-			return size;
-		case "Points":
-			return size;
+			case 'Triangles':
+				return size / 3;
+			case 'TriangleFan':
+			case 'TriangleStrip':
+				return size - 2;
+			case 'Lines':
+				return size / 2;
+			case 'LineStrip':
+				return size - 1;
+			case 'LineLoop':
+				return size;
+			case 'Points':
+				return size;
+			default:
+				throw new Error('unimplemented index mode: ' + indexMode);
 		}
-
-		throw new Error("unimplemented index mode: " + indexMode);
 	};
 
 	MeshData.getVertexCount = function (indexMode) {
 		switch (indexMode) {
-		case "Triangles":
-		case "TriangleFan":
-		case "TriangleStrip":
-			return 3;
-		case "Lines":
-		case "LineStrip":
-		case "LineLoop":
-			return 2;
-		case "Points":
-			return 1;
+			case 'Triangles':
+			case 'TriangleFan':
+			case 'TriangleStrip':
+				return 3;
+			case 'Lines':
+			case 'LineStrip':
+			case 'LineLoop':
+				return 2;
+			case 'Points':
+				return 1;
+			default:
+				throw new Error('unimplemented index mode: ' + indexMode);
 		}
-
-		throw new Error("unimplemented index mode: " + indexMode);
 	};
 
 	var ArrayTypes = {
@@ -326,18 +342,18 @@ define([
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
-			offset += length * Util.getByteSize(attribute.type);
+			offset += length * RendererUtils.getByteSize(attribute.type);
 
 			var ArrayType = ArrayTypes[attribute.type];
 			if (ArrayType) {
 				view = new ArrayType(data, attribute.offset, length);
 			} else {
-				throw new Error("Unsupported DataType: " + attribute.type);
+				throw new Error('Unsupported DataType: ' + attribute.type);
 			}
 
 			this.dataViews[key] = view;
 
-			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' +
 				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
 		}
 	};
@@ -349,7 +365,7 @@ define([
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
-			stride += attribute.count * Util.getByteSize(attribute.type);
+			stride += attribute.count * RendererUtils.getByteSize(attribute.type);
 		}
 
 		var newVertexData = new BufferData(new ArrayBuffer(stride * this.vertexCount), this.vertexData.target);
@@ -363,7 +379,7 @@ define([
 			attribute.stride = stride;
 			var offset = attribute.offset;
 			var count = attribute.count;
-			var size = Util.getByteSize(attribute.type);
+			var size = RendererUtils.getByteSize(attribute.type);
 
 			var method = this.getDataMethod(attribute.type);
 			var fun = targetView[method];
@@ -429,7 +445,7 @@ define([
 
 	/**
 	 * Applies a transformation on a specified attribute buffer
-	 * @param {String} attributeName
+	 * @param {string} attributeName
 	 * @param {Transform} transform
 	 * @returns {MeshData} Self to allow chaining
 	 */
@@ -441,26 +457,26 @@ define([
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.matrix.applyPostPoint(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPostPoint(transform.matrix);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPost(transform.rotation);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPost(transform.rotation);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		}
 
@@ -469,7 +485,7 @@ define([
 
 	/**
 	 * Applies a function on the vertices of a specified attribute buffer
-	 * @param {String} attributeName
+	 * @param {string} attributeName
 	 * @param {Function} fun
 	 * @returns {MeshData} Self to allow chaining
 	 */
@@ -495,8 +511,8 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
 			}
 			break;
 		case 3:
@@ -506,9 +522,9 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
 			}
 			break;
 		case 4:
@@ -518,10 +534,10 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
-				view[i + 3] = outVert[3];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
+				view[i + 3] = outVert.w;
 			}
 			break;
 		}
@@ -577,7 +593,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -586,11 +602,11 @@ define([
 		var that = this;
 		var getIndex;
 		if (origI) {
-			getIndex = function(primitiveIndex, point, section) {
+			getIndex = function (primitiveIndex, point, section) {
 				return origI[that.getVertexIndex(primitiveIndex, point, section)];
 			};
 		} else {
-			getIndex = function(primitiveIndex, point, section) {
+			getIndex = function (primitiveIndex, point, section) {
 				return that.getVertexIndex(primitiveIndex, point, section);
 			};
 		}
@@ -604,9 +620,9 @@ define([
 			var primitiveCount = this.getPrimitiveCount(section);
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
-				case "Triangles":
-				case "TriangleFan":
-				case "TriangleStrip":
+				case 'Triangles':
+				case 'TriangleFan':
+				case 'TriangleStrip':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 					var i3 = getIndex(primitiveIndex, 2, section);
@@ -619,8 +635,8 @@ define([
 					targetI[indexCount + 5] = i1;
 					indexCount += 6;
 					break;
-				case "Lines":
-				case "LineStrip":
+				case 'Lines':
+				case 'LineStrip':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 
@@ -628,7 +644,7 @@ define([
 					targetI[indexCount + 1] = i2;
 					indexCount += 2;
 					break;
-				case "LineLoop":
+				case 'LineLoop':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 					if (primitiveIndex === primitiveCount - 1) {
@@ -639,7 +655,7 @@ define([
 					targetI[indexCount + 1] = i2;
 					indexCount += 2;
 					break;
-				case "Points":
+				case 'Points':
 					// Not supported in wireframe
 					break;
 				}
@@ -676,7 +692,7 @@ define([
 			return this;
 		}
 
-		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMap = ObjectUtils.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -693,11 +709,11 @@ define([
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
 				/*jshint -W086 */
-				case "TriangleStrip":
+				case 'TriangleStrip':
 					flip = (primitiveIndex % 2 === 1) ? true : false;
-				case "Triangles":
-				case "TriangleFan":
-
+					// fall through intended?
+				case 'Triangles':
+				case 'TriangleFan':
 					var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
 					var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
 					var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
@@ -732,22 +748,22 @@ define([
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subVector(v1);
-							v3.subVector(v1);
+							v2.sub(v1);
+							v3.sub(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {
-								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.z;
 							}
 						}
 					}
@@ -789,7 +805,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.clone = function () {
-		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
+		var attributeMapClone = ObjectUtils.deepClone(this.attributeMap);
 
 		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
 
@@ -899,7 +915,7 @@ define([
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = ObjectUtil.deepClone(defaults[type]);
+				map[type] = ObjectUtils.deepClone(defaults[type]);
 			} else {
 				throw new Error('No default attribute named: ' + type);
 			}
@@ -909,8 +925,8 @@ define([
 
 	/**
 	 * Creates an attribute given the types
-	 * @param {string[]} [types] An array of default types. If not provided you get an attributeMap with all default attributes
-	 * @returns {object}
+	 * @param {Array<string>} [types] An array of default types. If not provided you get an attributeMap with all default attributes
+	 * @returns {Object}
 	 * @example var map = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 	 */
 	MeshData.defaultMap = function (types) {

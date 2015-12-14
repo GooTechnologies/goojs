@@ -1,48 +1,48 @@
-define(['goo/math/Vector2'],
-
-	function (Vector2) {
+define([
+	'goo/math/Vector2',
+	'goo/util/ObjectUtil'
+], function (
+	Vector2,
+	ObjectUtil
+) {
 	'use strict';
 
 	/**
 	 * Creates a new RenderTarget object
 	 *
 	 * Post processing handler
-	 * @param {Number} width Width of rendertarget
-	 * @param {Number} height Height of rendertarget
-	 * @param {Parameters} parameters Settings
+	 * @param {number} width Width of rendertarget
+	 * @param {number} height Height of rendertarget
+	 * @param {Object} options Options
 	 */
 	function RenderTarget(width, height, options) {
 		this.glTexture = null;
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
 
-		this.width = Math.floor(width);
-		this.height = Math.floor(height);
+		this.width = Math.max(Math.floor(width), 1);
+		this.height = Math.max(Math.floor(height), 1);
 
-		options = options || {};
+		ObjectUtil.copyOptions(this, options, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			magFilter: 'Bilinear',
+			minFilter: 'BilinearNoMipMaps',
+			anisotropy: 1,
+			format: 'RGBA',
+			type: 'UnsignedByte',
+			generateMipmaps: false,
+			premultiplyAlpha: false,
+			unpackAlignment: 1,
+			flipY: true,
+			depthBuffer: true,
+			stencilBuffer: true
+		});
 
-		this.wrapS = options.wrapS !== undefined ? options.wrapS : 'EdgeClamp';
-		this.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
-
-		this.magFilter = options.magFilter !== undefined ? options.magFilter : 'Bilinear';
-		this.minFilter = options.minFilter !== undefined ? options.minFilter : 'BilinearNoMipMaps';
-
-		this.anisotropy = options.anisotropy !== undefined ? options.anisotropy : 1;
-
-		this.format = options.format !== undefined ? options.format : 'RGBA';
-		this.type = options.type !== undefined ? options.type : 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
 		this.offset = new Vector2(0, 0);
 		this.repeat = new Vector2(1, 1);
-
-		this.generateMipmaps = options.generateMipmaps !== undefined ? options.generateMipmaps : false;
-		this.premultiplyAlpha = options.premultiplyAlpha !== undefined ? options.premultiplyAlpha : false;
-		this.unpackAlignment = options.unpackAlignment !== undefined ? options.unpackAlignment : 1;
-		this.flipY = options.flipY !== undefined ? options.flipY : true;
-
-		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
-		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
 
 		this.textureRecord = {};
 	}
@@ -82,7 +82,7 @@ define(['goo/math/Vector2'],
 	 */
 	RenderTarget.prototype.getSizeInMemory = function () {
 		var size = this.width * this.height * 4;
-		
+
 		if (this.generateMipmaps) {
 			size = Math.ceil(size * 4 / 3);
 		}

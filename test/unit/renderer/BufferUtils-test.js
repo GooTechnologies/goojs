@@ -1,1 +1,1 @@
-define(['goo/renderer/BufferUtils'], function(BufferUtils) {});
+define(['goo/renderer/BufferUtils'], function (BufferUtils) {});

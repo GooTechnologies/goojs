@@ -5,10 +5,10 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface',
 		'goo/math/Vector3',
-		'goo/math/Matrix3x3'
+		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3x3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -18,14 +18,14 @@ define(
 		function LogicNodeApplyMatrix() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeApplyMatrix.logicInterface;
-			this.type = "LogicNodeApplyMatrix";
+			this.type = 'LogicNodeApplyMatrix';
 			this.vec = new Vector3();
 		}
 
 		LogicNodeApplyMatrix.prototype = Object.create(LogicNode.prototype);
-		LogicNodeApplyMatrix.editorName = "ApplyMatrix";
+		LogicNodeApplyMatrix.editorName = 'ApplyMatrix';
 
-		LogicNodeApplyMatrix.prototype.onInputChanged = function(instDesc) {
+		LogicNodeApplyMatrix.prototype.onInputChanged = function (instDesc) {
 			var vec = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportX);
 			var mat = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportY);
 			this.vec.copy(vec);
@@ -34,11 +34,11 @@ define(
 		};
 
 		LogicNodeApplyMatrix.logicInterface = new LogicInterface();
-		LogicNodeApplyMatrix.outportProduct = LogicNodeApplyMatrix.logicInterface.addOutputProperty("product", "Vector3");
-		LogicNodeApplyMatrix.inportX = LogicNodeApplyMatrix.logicInterface.addInputProperty("vec", "Vector3", new Vector3());
-		LogicNodeApplyMatrix.inportY = LogicNodeApplyMatrix.logicInterface.addInputProperty("mat", "Matrix3", new Matrix3x3());
+		LogicNodeApplyMatrix.outportProduct = LogicNodeApplyMatrix.logicInterface.addOutputProperty('product', 'Vector3');
+		LogicNodeApplyMatrix.inportX = LogicNodeApplyMatrix.logicInterface.addInputProperty('vec', 'Vector3', new Vector3());
+		LogicNodeApplyMatrix.inportY = LogicNodeApplyMatrix.logicInterface.addInputProperty('mat', 'Matrix3', new Matrix3());
 
-		LogicNodes.registerType("LogicNodeApplyMatrix", LogicNodeApplyMatrix);
+		LogicNodes.registerType('LogicNodeApplyMatrix', LogicNodeApplyMatrix);
 
 
 

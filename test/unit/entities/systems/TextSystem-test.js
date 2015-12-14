@@ -1,1 +1,1 @@
-define(['goo/entities/systems/TextSystem'], function(TextSystem) {});
+define(['goo/entities/systems/TextSystem'], function (TextSystem) {});

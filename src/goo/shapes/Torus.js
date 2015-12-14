@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	MeshData,
 	Vector3,
@@ -71,20 +71,20 @@ define([
 			var theta = MathUtils.TWO_PI * circleFraction;
 			var cosTheta = Math.cos(theta);
 			var sinTheta = Math.sin(theta);
-			radialAxis.set(cosTheta, sinTheta, 0);
-			Vector3.mul(radialAxis, this.centerRadius, torusMiddle);
+			radialAxis.setDirect(cosTheta, sinTheta, 0);
+			torusMiddle.copy(radialAxis).scale(this.centerRadius);
 
 			// compute slice vertices with duplication at end point
 			var iSave = i;
 			for (var radialCount = 0; radialCount < this.radialSamples; radialCount++) {
 				var radialFraction = radialCount * inverseRadialSamples;
-				// in [0,1)
+				// in [0, 1)
 				var phi = MathUtils.TWO_PI * radialFraction;
 				var cosPhi = Math.cos(phi);
 				var sinPhi = Math.sin(phi);
 
-				tempNormal.copy(radialAxis).mul(cosPhi);
-				tempNormal.z = tempNormal.z + sinPhi;
+				tempNormal.copy(radialAxis).scale(cosPhi);
+				tempNormal.z += sinPhi;
 				tempNormal.normalize();
 
 				if (!this.viewInside) {
@@ -97,7 +97,7 @@ define([
 					norms[i * 3 + 2] = -tempNormal.z;
 				}
 
-				tempNormal.mul(this.tubeRadius).add(torusMiddle);
+				tempNormal.scale(this.tubeRadius).add(torusMiddle);
 
 				vbuf[i * 3 + 0] = tempNormal.x;
 				vbuf[i * 3 + 1] = tempNormal.y;

@@ -12,9 +12,9 @@ define([
 		this.onFinished = null;
 	}
 
-	AbstractState.prototype.update = function() {};
-	AbstractState.prototype.postUpdate = function() {};
-	AbstractState.prototype.getCurrentSourceData = function() {};
+	AbstractState.prototype.update = function () {};
+	AbstractState.prototype.postUpdate = function () {};
+	AbstractState.prototype.getCurrentSourceData = function () {};
 
 	AbstractState.prototype.resetClips = function (globalTime) {
 		this._globalStartTime = globalTime;

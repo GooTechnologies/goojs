@@ -1,13 +1,12 @@
 define([
 	'goo/entities/systems/System',
 	'goo/shapes/TextureGrid',
-	'goo/entities/components/MeshDataComponent'],
-
-	function (
-		System,
-		TextureGrid,
-		MeshDataComponent
-	) {
+	'goo/entities/components/MeshDataComponent'
+], function (
+	System,
+	TextureGrid,
+	MeshDataComponent
+) {
 	'use strict';
 
 	/**
@@ -26,8 +25,8 @@ define([
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var textComponent = entity.textComponent;
-			if(textComponent.dirty) {
-				if(entity.hasComponent('MeshDataComponent')) {
+			if (textComponent.dirty) {
+				if (entity.hasComponent('MeshDataComponent')) {
 					entity.getComponent('MeshDataComponent').meshData = TextureGrid.fromString(textComponent.text);
 				}
 				else {

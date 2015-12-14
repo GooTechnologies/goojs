@@ -1,1 +1,1 @@
-define(['goo/particles/ParticleInfluence'], function(ParticleInfluence) {});
+define(['goo/particles/ParticleInfluence'], function (ParticleInfluence) {});

@@ -1,1 +1,1 @@
-define(['goo/geometrypack/RegularPolygon'], function(RegularPolygon) {});
+define(['goo/geometrypack/RegularPolygon'], function (RegularPolygon) {});

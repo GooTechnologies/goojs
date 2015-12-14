@@ -6,7 +6,7 @@ function () {
 	/**
 	 * A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
 	 *        for purposes of transitioning between two unrelated animations.
-	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} source Our sub source.
+	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} source Our sub source.
 	 * @param {number} frozenTime The time we are frozen at.
 	 */
 	function FrozenClipSource (source, frozenTime) {
@@ -46,12 +46,12 @@ function () {
 	/**
 	* Set time scale
 	*/
-	FrozenClipSource.prototype.setTimeScale = function() {};
+	FrozenClipSource.prototype.setTimeScale = function () {};
 
 	/**
 	 * @returns {FrozenClipSource}
 	 */
-	FrozenClipSource.prototype.clone = function() {
+	FrozenClipSource.prototype.clone = function () {
 		var cloned = new FrozenClipSource(
 			this._source.clone(),
 			this._time

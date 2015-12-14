@@ -1,6 +1,6 @@
 define([
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox',
@@ -9,11 +9,18 @@ define([
 	'goo/renderer/scanline/BoundingSphereOcclusionChecker',
 	'goo/renderer/scanline/OccluderTriangleData',
 	'goo/renderer/scanline/EdgeMap'
-	],
-
-
-	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
-				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
+], function (
+	Vector4,
+	Matrix4,
+	Edge,
+	BoundingSphere,
+	BoundingBox,
+	EdgeData,
+	BoundingBoxOcclusionChecker,
+	BoundingSphereOcclusionChecker,
+	OccluderTriangleData,
+	EdgeMap
+) {
 	'use strict';
 
 	// Variables used during creation of triangle data and rendering
@@ -30,8 +37,8 @@ define([
 	var clippedIndices = new Uint8Array(3);
 
 	// Store matrix4x4 to be re-used
-	var cameraViewProjectionMatrix = new Matrix4x4();
-	var combinedMatrix = new Matrix4x4();
+	var cameraViewProjectionMatrix = new Matrix4();
+	var combinedMatrix = new Matrix4();
 
 	// EdgeData used during rendering.
 	var edgeData = new EdgeData();
@@ -40,7 +47,7 @@ define([
 	/**
 	*	A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
-	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
+	*	@param {{width: Number, height: Number, camera: Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
@@ -73,7 +80,7 @@ define([
 			this._depthClear[i] = 0.0;
 		}
 
-		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount});
+		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount });
 
 		this.edgeMap = new EdgeMap(parameters.maxVertCount);
 
@@ -81,23 +88,21 @@ define([
 		this.boundingSphereModule = new BoundingSphereOcclusionChecker(this);
 
 		// Clipping vector is used for near clipping, thus the z component is set to negative camera near.
-		clipVec.data[2] = -this.camera.near;
+		clipVec.z = -this.camera.near;
 	}
 
 	/**
-	*	Clears the depth data.
-	*/
+	 * Clears the depth data.
+	 */
 	SoftwareRenderer.prototype._clearDepthData = function () {
 		this._depthData.set(this._depthClear);
 	};
 
 	/**
-	*	Renders z-buffer (w-buffer) from the given renderList of entities with OccluderComponents.
-	*
-	*	@param {Array.<Entity>} renderList The array of entities with attached OccluderComponents.
-	*/
+	 * Renders z-buffer (w-buffer) from the given renderList of entities with OccluderComponents.
+	 * @param {Array<Entity>} renderList The array of entities with attached OccluderComponents.
+	 */
 	SoftwareRenderer.prototype.render = function (renderList) {
-
 		this._clearDepthData();
 
 		var cameraViewMatrix = this.camera.getViewMatrix();
@@ -129,17 +134,17 @@ define([
 			var index3 = this._triangleData.indices[++i];
 
 			var vPos = index1 * 4;
-			v1.data[0] = this._triangleData.positions[vPos];
-			v1.data[1] = this._triangleData.positions[vPos + 1];
-			v1.data[2] = this._triangleData.positions[vPos + 3];
+			v1.x = this._triangleData.positions[vPos];
+			v1.y = this._triangleData.positions[vPos + 1];
+			v1.z = this._triangleData.positions[vPos + 3];
 			vPos = index2 * 4;
-			v2.data[0] = this._triangleData.positions[vPos];
-			v2.data[1] = this._triangleData.positions[vPos + 1];
-			v2.data[2] = this._triangleData.positions[vPos + 3];
+			v2.x = this._triangleData.positions[vPos];
+			v2.y = this._triangleData.positions[vPos + 1];
+			v2.z = this._triangleData.positions[vPos + 3];
 			vPos = index3 * 4;
-			v3.data[0] = this._triangleData.positions[vPos];
-			v3.data[1] = this._triangleData.positions[vPos + 1];
-			v3.data[2] = this._triangleData.positions[vPos + 3];
+			v3.x = this._triangleData.positions[vPos];
+			v3.y = this._triangleData.positions[vPos + 1];
+			v3.z = this._triangleData.positions[vPos + 3];
 
 			this.edgeMap.addEdge(index1, index2, v1, v2);
 			this.edgeMap.addEdge(index2, index3, v2, v3);
@@ -156,15 +161,13 @@ define([
 	*	@returns {Array.<Entity>} visibleEntities The array of entities which are visible after occlusion culling has been applied.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
-
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-		Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix, cameraViewProjectionMatrix);
+		cameraViewProjectionMatrix.mul2(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
 		var visibleEntities = [];
 
 		for (var i = 0, _len = renderList.length; i < _len; i++) {
-
 			var entity = renderList[i];
 			// If the entity does not have an occludeeComponent, it should not be able to to be culled.
 			var occludeeComponent = entity.occludeeComponent;
@@ -191,14 +194,14 @@ define([
 		 *
 		 * @param entity
 		 * @param cameraViewMatrix
-		 * @returns {Number}
+		 * @returns {number}
 		 * @private
 		 */
 	SoftwareRenderer.prototype._viewSpaceTransformAndCopyVertices = function (entity, cameraViewMatrix) {
 		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
+		combinedMatrix.mul2(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		// Reset the global vectors' w-components to 1
 		v1.data[3] = 1.0;
@@ -207,20 +210,20 @@ define([
 		var maxPos = originalPositions.length;
 		var offset = 0;
 		for (var i = 0; i < maxPos; i++) {
-			v1.data[0] = originalPositions[i];
+			v1.x = originalPositions[i];
 			i++;
-			v1.data[1] = originalPositions[i];
+			v1.y = originalPositions[i];
 			i++;
-			v1.data[2] = originalPositions[i];
+			v1.z = originalPositions[i];
 
 			combinedMatrix.applyPost(v1);
 
-			// Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
-			this._triangleData.positions[offset] = v1.data[0];
+			// Insert the homogeneous coordinate (x, y, z, w) to the triangleData's position array.
+			this._triangleData.positions[offset] = v1.x;
 			offset++;
-			this._triangleData.positions[offset] = v1.data[1];
+			this._triangleData.positions[offset] = v1.y;
 			offset++;
-			this._triangleData.positions[offset] = v1.data[2];
+			this._triangleData.positions[offset] = v1.z;
 			offset += 2;
 		}
 
@@ -244,7 +247,7 @@ define([
 		// TODO : The clipping method will have to be revised to be able to maintain edge connectivity information.
 
 		var outCount = this._categorizeVertices(-cameraNear);
-		var outIndex, origin, origin_x, origin_y, target, target_x, target_y, ratio;
+		var outIndex, origin, originX, originY, target, targetX, targetY, ratio;
 
 		switch (outCount) {
 			case 0:
@@ -255,24 +258,22 @@ define([
 				// All of the vertices are on the outside, dont add them.
 				break;
 			case 1:
-				/*
-				 Update the one vertex to its new position on the near plane and add a new vertex
-				 on the other intersection with the plane.
-				 */
+				// Update the one vertex to its new position on the near plane and add a new vertex
+				// on the other intersection with the plane.
 
 				// TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
 				// perhaps the entire function, in order to make use of them.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				originX = origin.x;
+				originY = origin.y;
 
 				target = globalVertices[insideIndices[0]];
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
-				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+				clipVec.x = originX + ratio * (target.x - originX);
+				clipVec.y = originY + ratio * (target.y - originY);
 
 				// Overwrite the vertex index with the new vertex.
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
@@ -281,18 +282,18 @@ define([
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// Calculate the new vertex's position
-				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+				clipVec.x = originX + ratio * (target.x - originX);
+				clipVec.y = originY + ratio * (target.y - originY);
 
 				// Add the new vertex and store the new vertex's index to be added at the last stage.
 				indices[3] = this._triangleData.addVertex(clipVec.data);
 
 				/*
-				 The order of the indices ( CCW / CW ) are not relevant at this point, since
-				 back face culling has been performed.
+				The order of the indices ( CCW / CW ) are not relevant at this point, since
+				back face culling has been performed.
 
-				 But to construct the right triangles, making use of the outside and inside indices is needed.
-				 */
+				But to construct the right triangles, making use of the outside and inside indices is needed.
+				*/
 
 				var insideIndex1 = insideIndices[0];
 				var extraIndex = indices[3];
@@ -311,32 +312,32 @@ define([
 			case 2:
 				// Update the two outside vertices to their new positions on the near plane.
 				target = globalVertices[insideIndices[0]];
-				target_x = target.data[0];
-				target_y = target.data[1];
+				targetX = target.x;
+				targetY = target.y;
 
 				// First new vertex.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				originX = origin.x;
+				originY = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = originX + ratio * (targetX - originX);
+				clipVec.y = originY + ratio * (targetY - originY);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
 				// Second new vertex.
 				outIndex = outsideIndices[1];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				originX = origin.x;
+				originY = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = originX + ratio * (targetX - originX);
+				clipVec.y = originY + ratio * (targetY - originY);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
@@ -352,9 +353,8 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._screenSpaceTransformTriangleData = function (cameraProjectionMatrix) {
-
-		 // TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
-		 //          Recreate position array from those and then transform?
+		// TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
+		//          Recreate position array from those and then transform?
 		var maxPos = this._triangleData.posCount;
 		var p = 0;
 		while (p < maxPos) {
@@ -363,9 +363,9 @@ define([
 			var p2 = p++;
 			var p3 = p++;
 			var p4 = p++;
-			v1.data[0] = this._triangleData.positions[p1];
-			v1.data[1] = this._triangleData.positions[p2];
-			v1.data[2] = this._triangleData.positions[p3];
+			v1.x = this._triangleData.positions[p1];
+			v1.y = this._triangleData.positions[p2];
+			v1.z = this._triangleData.positions[p3];
 			// The w-component is still 1.0 here.
 			v1.data[3] = 1.0;
 
@@ -374,27 +374,26 @@ define([
 			cameraProjectionMatrix.applyPost(v1);
 
 			// Homogeneous divide.
-			var homogeneousDivide =  1.0 / v1.data[3];
-			var divX = v1.data[0] * homogeneousDivide;
-			var divY = v1.data[1] * homogeneousDivide;
+			var homogeneousDivide = 1.0 / v1.data[3];
+			var divX = v1.x * homogeneousDivide;
+			var divY = v1.y * homogeneousDivide;
 
 			// Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
 			this._triangleData.positions[p1] = (divX + 1.0) * this._halfClipX;
 			this._triangleData.positions[p2] = (divY + 1.0) * this._halfClipY;
-			// positionArray[p3] = v1.data[2]; z-componenet is not used any more.
+			// positionArray[p3] = v1.z; z-componenet is not used any more.
 			// Invert w component here, this to be able to interpolate the depth over the triangles.
 			this._triangleData.positions[p4] = homogeneousDivide;
 		}
 	};
 
 	/**
-	*	Constructs the triangle data which makes up the visible triangles for the given entity.
-	*	@param {Entity} entity the entity from which to create triangles.
-	*   @param cameraProjectionMatrix
-	*   @param cameraViewMatrix
-	*/
+	 * Constructs the triangle data which makes up the visible triangles for the given entity.
+	 * @param {Entity} entity the entity from which to create triangles.
+	 * @param cameraProjectionMatrix
+	 * @param cameraViewMatrix
+	 */
 	SoftwareRenderer.prototype._setupTriangleDataForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
-
 		this._viewSpaceTransformAndCopyVertices(entity, cameraViewMatrix);
 
 		var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
@@ -412,17 +411,17 @@ define([
 			vertexPositions[2] = indices[2] * 4;
 
 			var vPos = vertexPositions[0];
-			v1.data[0] = this._triangleData.positions[vPos];
-			v1.data[1] = this._triangleData.positions[vPos + 1];
-			v1.data[2] = this._triangleData.positions[vPos + 2];
+			v1.x = this._triangleData.positions[vPos];
+			v1.y = this._triangleData.positions[vPos + 1];
+			v1.z = this._triangleData.positions[vPos + 2];
 			vPos = vertexPositions[1];
-			v2.data[0] = this._triangleData.positions[vPos];
-			v2.data[1] = this._triangleData.positions[vPos + 1];
-			v2.data[2] = this._triangleData.positions[vPos + 2];
+			v2.x = this._triangleData.positions[vPos];
+			v2.y = this._triangleData.positions[vPos + 1];
+			v2.z = this._triangleData.positions[vPos + 2];
 			vPos = vertexPositions[2];
-			v3.data[0] = this._triangleData.positions[vPos];
-			v3.data[1] = this._triangleData.positions[vPos + 1];
-			v3.data[2] = this._triangleData.positions[vPos + 2];
+			v3.x = this._triangleData.positions[vPos];
+			v3.y = this._triangleData.positions[vPos + 1];
+			v3.z = this._triangleData.positions[vPos + 2];
 
 			if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
@@ -439,16 +438,15 @@ define([
 	*	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
 	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
 	*   @param cameraNear
-	 *   @returns {Number} outCount
+	 *   @returns {number} outCount
 	*/
 	SoftwareRenderer.prototype._categorizeVertices = function (cameraNear) {
-
 		var outCount = 0;
 		var inCount= 0;
 
-		for ( var i = 0; i < 3; i++ ) {
+		for (var i = 0; i < 3; i++) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
-			if (globalVertices[i].data[2] <= cameraNear) {
+			if (globalVertices[i].z <= cameraNear) {
 				insideIndices[inCount] = i;
 				inCount++;
 			} else {
@@ -471,10 +469,9 @@ define([
 	*
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
-	*	@param {Number} near The near plane.
+	*	@param {number} near The near plane.
 	*/
 	SoftwareRenderer.prototype._calculateIntersectionRatio = function (origin, target, near) {
-
 		// Using a tip from Joel:
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
@@ -487,40 +484,39 @@ define([
 		// var ratio = a/(a+b);
 
 		// Simplified the ratio to :
-		var origin_z = origin.data[2];
-		return (origin_z + near) / (origin_z - target.data[2]);
+		var origin_z = origin.z;
+		return (origin_z + near) / (origin_z - target.z);
 
 	};
 
 	SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (vert1, vert2, vert3) {
-
 		// Calculate the dot product between the triangle's face normal and the camera's eye direction
 		// to find out if the face is facing away or not.
 
 		// Create edges for calculating the normal.
-		var v1_x = vert1.data[0];
-		var v1_y = vert1.data[1];
-		var v1_z = vert1.data[2];
+		var v1X = vert1.x;
+		var v1Y = vert1.y;
+		var v1Z = vert1.z;
 
-		var e1_x = vert2.data[0] - v1_x;
-		var e1_y = vert2.data[1] - v1_y;
-		var e1_z = vert2.data[2] - v1_z;
+		var e1X = vert2.x - v1X;
+		var e1Y = vert2.y - v1Y;
+		var e1Z = vert2.z - v1Z;
 
-		var e2_x = vert3.data[0] - v1_x;
-		var e2_y = vert3.data[1] - v1_y;
-		var e2_z = vert3.data[2] - v1_z;
+		var e2X = vert3.x - v1X;
+		var e2Y = vert3.y - v1Y;
+		var e2Z = vert3.z - v1Z;
 
 		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
-		var faceNormal_x = e2_z * e1_y - e2_y * e1_z;
-		var faceNormal_y = e2_x * e1_z - e2_z * e1_x;
-		var faceNormal_z = e2_y * e1_x - e2_x * e1_y;
+		var faceNormalX = e2Z * e1Y - e2Y * e1Z;
+		var faceNormalY = e2X * e1Z - e2Z * e1X;
+		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
 		// Picking the first vertex as the point on the triangle to evaulate the dot product on.
 
 		// No need to normalize the vectors due to only being
 		// interested in the sign of the dot product.
 
-		var dot = faceNormal_x * v1_x + faceNormal_y * v1_y + faceNormal_z * v1_z;
+		var dot = faceNormalX * v1X + faceNormalY * v1Y + faceNormalZ * v1Z;
 		return dot > 0.0;
 	};
 
@@ -531,23 +527,22 @@ define([
 	*	@param {Vector3} v1 Vertex #1
 	*	@param {Vector3} v2 Vertex #2
 	*	@param {Vector3} v3 Vertex #3
-	*	@returns {Boolean} true or false
+	*	@returns {boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
-
 		// Create edges, only need x and y , since only the z component of the dot product is needed.
-		var v1_x = v1.data[0];
-		var v1_y = v1.data[1];
+		var v1X = v1.x;
+		var v1Y = v1.y;
 
-		var e1X = v2.data[0] - v1_x;
-		var e1Y = v2.data[1] - v1_y;
+		var e1X = v2.x - v1X;
+		var e1Y = v2.y - v1Y;
 
-		var e2X = v3.data[0] - v1_x;
-		var e2Y = v3.data[1] - v1_y;
+		var e2X = v3.x - v1X;
+		var e2Y = v3.y - v1Y;
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
-		// The cameras eye direction will always be [0,0,-1] at this stage
+		// The cameras eye direction will always be [0, 0, -1] at this stage
 		// (the vertices are transformed into the camera's view projection space,
 		// thus the dot product can be simplified to only do multiplications on the z component.
 
@@ -565,21 +560,20 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._createOccludeeEdges = function (indices, positions) {
-
-		// Use (x,y,1/w), the w component is already inverted.
+		// Use (x, y, 1/w), the w component is already inverted.
 		// Reuse the global vectors for storing data to send as parameter to create Edges.
 		var vPos = indices[0] * 4;
-		v1.data[0] = positions[vPos];
-		v1.data[1] = positions[vPos + 1];
-		v1.data[2] = positions[vPos + 3];
+		v1.x = positions[vPos];
+		v1.y = positions[vPos + 1];
+		v1.z = positions[vPos + 3];
 		vPos = indices[1] * 4;
-		v2.data[0] = positions[vPos];
-		v2.data[1] = positions[vPos + 1];
-		v2.data[2] = positions[vPos + 3];
+		v2.x = positions[vPos];
+		v2.y = positions[vPos + 1];
+		v2.z = positions[vPos + 3];
 		vPos = indices[2] * 4;
-		v3.data[0] = positions[vPos];
-		v3.data[1] = positions[vPos + 1];
-		v3.data[2] = positions[vPos + 3];
+		v3.x = positions[vPos];
+		v3.y = positions[vPos + 1];
+		v3.z = positions[vPos + 3];
 
 		edges[0].setData(v1, v2);
 		edges[1].setData(v2, v3);
@@ -597,14 +591,13 @@ define([
 
 
 	SoftwareRenderer.prototype._getLongEdgeAndShortEdgeIndices = function () {
-
 		var maxHeight = edges[0].dy;
 		var longEdge = 0;
 
 		// Find edge with the greatest height in the Y axis, this is the long edge.
-		for(var i = 1; i < 3; i++) {
+		for (var i = 1; i < 3; i++) {
 			var height = edges[i].dy;
-			if(height > maxHeight) {
+			if (height > maxHeight) {
 				maxHeight = height;
 				longEdge = i;
 			}
@@ -626,7 +619,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._calculateOrientationData = function (shortEdge, longEdge) {
-
 		// TODO: Merge orientation data into edgeData.
 		var shortX = edgeData.getShortX();
 		var longX = edgeData.getLongX();
@@ -654,7 +646,6 @@ define([
 	*	Returns true if the triangle is occluded.
 	*/
 	SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (indices, positions) {
-
 		this._createOccludeeEdges(indices, positions);
 
 		var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
@@ -665,7 +656,7 @@ define([
 		// Vertical culling
 		if (this._verticalLongEdgeCull(longEdge)) {
 			// Triangle is outside the view, skipping rendering it;
-			console.log("renderingocclusion : vertical cull");
+			console.log('renderingocclusion : vertical cull');
 			return true;
 		}
 
@@ -678,12 +669,12 @@ define([
 
 			// Horizontal culling
 			if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
-				console.log("renderingocclusion : horizontal cull");
+				console.log('renderingocclusion : horizontal cull');
 				return true;
 			}
 
 			// Draw first portion of the triangle
-			if(!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)) {
 				return false;
 			}
 		}
@@ -694,12 +685,12 @@ define([
 				orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 				// Horizontal culling
 				if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
-					console.log("renderingocclusion : horizontal cull");
+					console.log('renderingocclusion : horizontal cull');
 					return true;
 				}
 			}
 			// Draw second portion of the triangle.
-			if(!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)) {
 				return false;
 			}
 		}
@@ -713,7 +704,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._renderTriangle = function (indices) {
-
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
 
@@ -723,9 +713,9 @@ define([
 		var i2 = indices[1];
 		var i3 = indices[2];
 
-		edges[0] = this.edgeMap.getEdge(i1,i2);
-		edges[1] = this.edgeMap.getEdge(i2,i3);
-		edges[2] = this.edgeMap.getEdge(i3,i1);
+		edges[0] = this.edgeMap.getEdge(i1, i2);
+		edges[1] = this.edgeMap.getEdge(i2, i3);
+		edges[2] = this.edgeMap.getEdge(i3, i1);
 
 		var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
 
@@ -794,8 +784,7 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
-
+	SoftwareRenderer.prototype._isEdgeOccluded = function (edgeData, orientationData) {
 		// Copypasted from _drawEdges.
 		var startLine = edgeData.getStartLine();
 		var stopLine = edgeData.getStopLine();
@@ -811,7 +800,6 @@ define([
 		if (orientationData[0]) { //RIGHT ORIENTED (long edge on right side)
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -855,7 +843,6 @@ define([
 				}
 			} else { // OUTWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -895,7 +882,6 @@ define([
 		} else { // LEFT ORIENTED
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -937,7 +923,6 @@ define([
 				}
 			} else { // OUTWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -1027,7 +1012,6 @@ define([
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
-
 				rightEdgeShared = longEdgeBetween;
 
 				// Setup where the samples of the x-values should be taken from, upper or lower part of the edge in
@@ -1069,7 +1053,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 
@@ -1139,7 +1122,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 
@@ -1172,7 +1154,6 @@ define([
 			}
 		} else { // LONG EDGE IS ON THE LEFT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
-
 				rightEdgeShared = shortEdgeBetween;
 
 				realLeftX = edgeData.getLongX();
@@ -1208,7 +1189,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 
@@ -1278,7 +1258,6 @@ define([
 				startLine++;
 
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 
@@ -1314,13 +1293,12 @@ define([
 
 	/**
 	 * Creates the EdgeData , used for rendering. False is returned if there is not anything to draw.
-	*	@returns {Boolean} drawable
+	*	@returns {boolean} drawable
 	*/
 
 	// TODO: The long edge's increment values are not necessary to write for each of the two sub-triangles. Separate this function
 	// into another.
 	SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
-
 		var startLine = Math.ceil(shortEdge.y0);
 		var stopLine = Math.floor(shortEdge.y1);
 
@@ -1395,7 +1373,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._isScanlineOccluded = function (leftX, rightX, y, leftZ, rightZ) {
-
 		// 99% COPY PASTE FROM _fillPixels()!
 
 		if (rightX < leftX || rightX < 0 || leftX > this._clipX) {
@@ -1403,11 +1380,11 @@ define([
 		}
 
 // 		if (leftZ < 0 || leftZ > 1.0000001) {
-// //			console.error("leftZ : ", leftZ);
+// //			console.error('leftZ : ', leftZ);
 // 		}
 
 // 		if (rightZ < 0 || rightZ > 1.0000001) {
-// //			console.error("rightZ : ", rightZ);
+// //			console.error('rightZ : ', rightZ);
 // 		}
 
 		// Horizontal clipping
@@ -1432,14 +1409,13 @@ define([
 		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
 		for (var i = leftX; i <= rightX; i++) {
-
 			// TODO : Remove this debugg add of color in prod....
 			this._colorData.set([Math.min(depth * 255 + 50, 255), 0, 0], index * 4);
 
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
 				// Not occluded
-			   return false;
+				return false;
 			}
 
 			index++;
@@ -1455,19 +1431,18 @@ define([
 	*
 	*/
 	SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
-
 		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return; // Nothing to draw here. early exit.
 		}
 		/*
 		if (leftZ < 0 || leftZ > 1.0000001) {
 			// This should not happen.
-			console.error("Rendering depth buffer : leftZ =", leftZ);
+			console.error('Rendering depth buffer : leftZ =', leftZ);
 		}
 
 		if (rightZ < 0 || rightZ > 1.0000001) {
 			// This should not happen.
-			console.error("Rendering depth buffer : rightZ =", rightZ);
+			console.error('Rendering depth buffer : rightZ =', rightZ);
 		}
 		*/
 
@@ -1500,7 +1475,6 @@ define([
 		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
 		for (var i = leftX; i <= rightX; i++) {
-
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
 				this._depthData[index] = depth;  // Store 1/w values in range [1/far, 1/near].
@@ -1513,10 +1487,10 @@ define([
 		/*
 		var lastDepth = depth - depthIncrement;
 		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX >= 0) {
-			console.error("Wrong depth interpolation!");
-			console.log("lastdepth", lastDepth);
-			console.log("rightZ", rightZ);
-			console.log("depthIncrement", depthIncrement);
+			console.error('Wrong depth interpolation!');
+			console.log('lastdepth', lastDepth);
+			console.log('rightZ', rightZ);
+			console.log('depthIncrement', depthIncrement);
 		}
 		*/
 	};
@@ -1525,17 +1499,15 @@ define([
 	*	Maps the data in the depth buffer to gray scale values in the color buffer.
 	*/
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
-
 		var colorIndex = 0;
 
-		for(var i = 0; i < this._depthData.length; i++) {
-
+		for (var i = 0; i < this._depthData.length; i++) {
 			// Convert the float value of depth into 8bit.
 			// var depth = this._depthData[i] * 255;
 			var depth = this._depthData[i];
 			if (depth > 0.0 ) {
 				//depth = 255;
-			    depth *= 255;
+				depth *= 255;
 				this._colorData[colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
@@ -1551,24 +1523,21 @@ define([
 		}
 	};
 
-
 	/**
-	*	Returns the array of RGBA color data.
-	*	@returns {Uint8Array} RGBA Color data.
-	*/
+	 * Returns the array of RGBA color data.
+	 * @returns {Uint8Array} RGBA Color data.
+	 */
 	SoftwareRenderer.prototype.getColorData = function () {
 		return this._colorData;
 	};
 
 	/**
-	*	Returns the array of depth data.
-	*	@returns {Float32Array} Depth data.
-	*/
+	 * Returns the array of depth data.
+	 * @returns {Float32Array} Depth data.
+	 */
 	SoftwareRenderer.prototype.getDepthData = function () {
-
 		return this._depthData;
 	};
-
 
 	SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clearColor) {
 		for (var i = 0; i < this._depthData.length; i++) {

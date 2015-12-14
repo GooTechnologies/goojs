@@ -1,1 +1,1 @@
-define(['goo/debugpack/Debugger'], function(Debugger) {});
+define(['goo/debugpack/Debugger'], function (Debugger) {});

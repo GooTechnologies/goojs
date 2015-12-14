@@ -11,7 +11,7 @@ define([
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
 
-	GetPositionAction.prototype.configure = function(settings) {
+	GetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
 		this.entity = settings.entity || null;
 		this.variableX = settings.variableX || null;
@@ -42,22 +42,22 @@ define([
 		transitions: []
 	};
 
-	GetPositionAction.prototype._run = function(fsm) {
+	GetPositionAction.prototype._run = function (fsm) {
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined
-				fsm.applyOnVariable(this.variableX, function() {
-					return translation.data[0];
+				fsm.applyOnVariable(this.variableX, function () {
+					return translation.x;
 				});
 			}
 			if (this.variableY) {
-				fsm.applyOnVariable(this.variableY, function() {
-					return translation.data[1];
+				fsm.applyOnVariable(this.variableY, function () {
+					return translation.y;
 				});
 			}
 			if (this.variableZ) {
-				fsm.applyOnVariable(this.variableZ, function() {
-					return translation.data[2];
+				fsm.applyOnVariable(this.variableZ, function () {
+					return translation.z;
 				});
 			}
 		}

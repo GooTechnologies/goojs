@@ -33,7 +33,7 @@ define([
 	ManagedTransformSource.prototype.setTranslation = function (channelName, translation) {
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
-			channel._translation.setVector(translation);
+			channel._translation.set(translation);
 		}
 	};
 
@@ -47,7 +47,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Vector3();
-			store.setVector(channel._translation);
+			store.set(channel._translation);
 		}
 		return store;
 	};
@@ -60,7 +60,7 @@ define([
 	ManagedTransformSource.prototype.setScale = function (channelName, scale) {
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
-			channel._scale.setVector(scale);
+			channel._scale.set(scale);
 		}
 	};
 
@@ -74,7 +74,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Vector3();
-			store.setVector(channel._scale);
+			store.set(channel._scale);
 		}
 		return store;
 	};
@@ -100,7 +100,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Quaternion();
-			store.setVector(channel._rotation);
+			store.set(channel._rotation);
 		}
 		return store;
 	};
@@ -108,10 +108,10 @@ define([
 	/**
 	 * Setup transform data for specific joints on this source, using the first frame from a given clip.
 	 * @param {AnimationClip} clip the animation clip to pull data from
-	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
+	 * @param {Array<string>} jointIndices the indices of the joints to initialize data for.
 	 */
 	ManagedTransformSource.prototype.initFromClip = function (clip, filter, channelNames) {
-		if(filter === 'Include' && channelNames && channelNames.length) {
+		if (filter === 'Include' && channelNames && channelNames.length) {
 			for ( var i = 0, max = channelNames.length; i < max; i++) {
 				var channelName = channelNames[i];
 				var channel = clip.findChannelByName(channelName);
@@ -119,19 +119,20 @@ define([
 					var data = channel.getData(0);
 					this._data[channelName] = data;
 				} else {
-					console.error('Channel not in clip: '+channelName);
+					console.error('Channel not in clip: ' + channelName);
 				}
 			}
 		} else {
 			for ( var i = 0, max = clip._channels.length; i < max; i++) {
 				var channel = clip._channels[i];
 				var channelName = channel._channelName;
-				if(filter === 'Exclude'
+				if (filter === 'Exclude'
 					&& channelNames
 					&& channelNames.length
-					&& channelNames.indexOf(channelName) > -1) {
-						var data = channel.getData(0);
-						this._data[channelName] = data;
+					&& channelNames.indexOf(channelName) > -1
+				) {
+					var data = channel.getData(0);
+					this._data[channelName] = data;
 				}
 			}
 		}

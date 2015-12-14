@@ -40,17 +40,17 @@ define([
 		});
 
 		it('can update its world collider', function () {
-			var cc = new ColliderComponent({
+			var colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			var entity = world.createEntity(cc).addToWorld();
+			var entity = world.createEntity(colliderComponent).addToWorld();
 
 			entity.setTranslation(1, 2, 3);
 			entity.setScale(1, 2, 3);
 
-			cc.updateWorldCollider(true);
+			colliderComponent.updateWorldCollider(true);
 
-			expect(cc.worldCollider.radius).toBe(3);
+			expect(colliderComponent.worldCollider.radius).toBe(3);
 		});
 
 		it('instantiates as a static body without a rigid body component', function () {
@@ -58,29 +58,29 @@ define([
 				friction: 0.6,
 				restitution: 0.7
 			});
-			var cc = new ColliderComponent({
+			var colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 }),
 				material: material
 			});
-			var entity = world.createEntity(cc).addToWorld();
+			var entity = world.createEntity(colliderComponent).addToWorld();
 
 			// Initialize
-			cc.initialize();
+			colliderComponent.initialize();
 
-			expect(cc.bodyEntity).toBeFalsy();
-			expect(cc.cannonBody).toBeTruthy();
-			expect(cc.cannonBody.shapes[0] instanceof CANNON.Sphere).toBeTruthy();
-			expect(cc.cannonBody.shapes[0].material.friction).toBe(material.friction);
-			expect(cc.cannonBody.shapes[0].material.restitution).toBe(material.restitution);
-			expect(cc.cannonBody.type).toBe(CANNON.Body.STATIC);
+			expect(colliderComponent.bodyEntity).toBeFalsy();
+			expect(colliderComponent.cannonBody).toBeTruthy();
+			expect(colliderComponent.cannonBody.shapes[0] instanceof CANNON.Sphere).toBeTruthy();
+			expect(colliderComponent.cannonBody.shapes[0].material.friction).toBe(material.friction);
+			expect(colliderComponent.cannonBody.shapes[0].material.restitution).toBe(material.restitution);
+			expect(colliderComponent.cannonBody.type).toBe(CANNON.Body.STATIC);
 
 			entity.removeFromWorld();
 
 			// Cleanup
-			cc.destroy();
+			colliderComponent.destroy();
 
-			expect(cc.bodyEntity).toBeFalsy();
-			expect(cc.cannonBody).toBeFalsy();
+			expect(colliderComponent.bodyEntity).toBeFalsy();
+			expect(colliderComponent.cannonBody).toBeFalsy();
 		});
 	});
 });

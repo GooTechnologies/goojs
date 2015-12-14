@@ -1,1 +1,1 @@
-define(['goo/entities/systems/ParticlesSystem'], function(ParticlesSystem) {});
+define(['goo/entities/systems/ParticlesSystem'], function (ParticlesSystem) {});

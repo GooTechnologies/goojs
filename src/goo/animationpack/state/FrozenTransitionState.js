@@ -44,12 +44,12 @@ define([
 	 * Resets the clips to start at given time
 	 * @param {number} globalTime
 	 */
-	FrozenTransitionState.prototype.resetClips = function(globalTime) {
+	FrozenTransitionState.prototype.resetClips = function (globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
 		this._targetState.resetClips(globalTime);
 	};
 
-	FrozenTransitionState.prototype.shiftClipTime = function(shiftTime) {
+	FrozenTransitionState.prototype.shiftClipTime = function (shiftTime) {
 		AbstractTransitionState.prototype.shiftClipTime.call(this, shiftTime);
 		this._targetState.shiftClipTime(shiftTime);
 	};

@@ -40,7 +40,7 @@ define(['goo/math/Vector3'], function (Vector3) {
 	var tmpVec = new Vector3();
 
 	/**
-	 * @param {Entity[]} renderList
+	 * @param {Array<Entity>} renderList
 	 * @param {Camera} camera
 	 */
 	RenderQueue.prototype.sort = function (renderList, camera) {
@@ -62,9 +62,9 @@ define(['goo/math/Vector3'], function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
-				distance = tmpVec.setVector(camera.translation).subVector(bound.center).lengthSquared();
+				distance = tmpVec.set(camera.translation).sub(bound.center).lengthSquared();
 			} else if (renderable.transformComponent) {
-				distance = tmpVec.setVector(camera.translation).subVector(renderable.transformComponent.worldTransform.translation).lengthSquared();
+				distance = tmpVec.set(camera.translation).sub(renderable.transformComponent.worldTransform.translation).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
 

@@ -1,19 +1,19 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/Vector3'
 ], function (
 	MeshData,
 	Surface,
-	Matrix3x3,
+	Matrix3,
 	Vector3
 ) {
 	'use strict';
 
 	/**
 	 * A polygonal line
-	 * @param {number[]} [verts] The vertices data array
+	 * @param {Array<number>} [verts] The vertices data array
 	 * @param {boolean} [closed=false] True if its ends should be connected
 	 */
 	function PolyLine(verts, closed) {
@@ -23,7 +23,7 @@ define([
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
 		MeshData.call(this, attributeMap, this.verts.length / 3, this.verts.length / 3);
 
-		if(this.closed) {
+		if (this.closed) {
 			this.indexModes = ['LineLoop'];
 		}
 		else {
@@ -55,28 +55,28 @@ define([
 
 	/**
 	 * Builds a surface as a result of multiplying 2 polyLines
-	 * @param {PolyLine} [that] The second operand
+	 * @param {PolyLine} rhs The second operand
 	 * @returns {Surface} The resulting surface
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/PolyLine-vtest.html Working example
 	 */
-	PolyLine.prototype.mul = function (that) {
-		if(!(that instanceof PolyLine)) {
+	PolyLine.prototype.mul = function (rhs) {
+		if (!(rhs instanceof PolyLine)) {
 			return;
 		}
 
-		var thatNVerts = that.verts.length / 3;
+		var rhsNVerts = rhs.verts.length / 3;
 		var verts = [];
 
 		for (var i = 0; i < this.verts.length; i += 3) {
-			for (var j = 0; j < that.verts.length; j += 3) {
+			for (var j = 0; j < rhs.verts.length; j += 3) {
 				verts.push(
-					this.verts[i + 0] + that.verts[j + 0],
-					this.verts[i + 1] + that.verts[j + 1],
-					this.verts[i + 2] + that.verts[j + 2]);
+					this.verts[i + 0] + rhs.verts[j + 0],
+					this.verts[i + 1] + rhs.verts[j + 1],
+					this.verts[i + 2] + rhs.verts[j + 2]);
 			}
 		}
 
-		return new Surface(verts, thatNVerts);
+		return new Surface(verts, rhsNVerts);
 	};
 
 	(function () {
@@ -108,8 +108,8 @@ define([
 		 * Extrudes and rotates a PolyLine along another PolyLine.
 		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
 		 * @param {Object} [options]
-		 * @param {(number) -> number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
-		 * @param {(number) -> number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
+		 * @param {function (number) : number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
+		 * @param {function (number) : number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
 		 * @returns {Surface} The resulting surface
 		 */
 		PolyLine.prototype.pipe = function (that, options) {
@@ -121,8 +121,8 @@ define([
 			var up = Vector3.UNIT_Y.clone();
 			var right = new Vector3();
 
-			var rotation = new Matrix3x3();
-			var twist = new Matrix3x3();
+			var rotation = new Matrix3();
+			var twist = new Matrix3();
 			var scale;
 
 			for (var i = 0; i < this.verts.length; i += 3) {
@@ -131,20 +131,20 @@ define([
 				var progress = i / (this.verts.length - 1);
 				if (options.twist) {
 					twist.fromAngles(0, 0, options.twist(progress));
-					rotation.combine(twist);
+					rotation.mul(twist);
 				}
 
 				scale = options.scale ? options.scale(progress) : 1;
 
 				forward.copy(FORWARD);
-				rotation.applyPost(forward);
+				forward.applyPost(rotation);
 
 				right.copy(forward).cross(up).normalize();
 				up.copy(right).cross(forward);
 
 				for (var j = 0; j < that.verts.length; j += 3) {
 					var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
-					rotation.applyPost(vertex);
+					vertex.applyPost(rotation);
 					vertex.scale(scale);
 					vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
 
@@ -182,11 +182,11 @@ define([
 
 	/**
 	 * Returns a new polyLine as a result of concatenating the 2 polyLines
-	 * @param {PolyLine} [that] The other operand
+	 * @param {PolyLine} that The other operand
 	 * @param {boolean} [closed] True if the resulting polyLine should be closed
 	 * @returns {PolyLine} The new polyLine
 	 */
-	PolyLine.prototype.concat = function(that, closed) {
+	PolyLine.prototype.concat = function (that, closed) {
 		var length = this.verts.length - 1;
 
 		if (
@@ -202,7 +202,7 @@ define([
 
 	/**
 	 * Creates a polyLine that approximates a given cubic Bezier curve
-	 * @param {number[]} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
+	 * @param {Array<number>} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
 	 * @param {number} [nSegments=16] The number of segments (higher values result in smoother curves)
 	 * @returns {PolyLine} The resulting polyLine
 	 */
@@ -251,11 +251,11 @@ define([
 			plVerts.push(p0123[0], p0123[1], p0123[2]);
 		}
 
-		plVerts = verts.slice(0,3).concat(plVerts);
+		plVerts = verts.slice(0, 3).concat(plVerts);
 		return new PolyLine(plVerts);
 	};
 
-	PolyLine.fromQuadraticSpline = function(verts, nSegments, closed) {
+	PolyLine.fromQuadraticSpline = function (verts, nSegments, closed) {
 		if (verts.length % 3 !== 0 && (verts.length / 3) % 2 !== 0) {
 			console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromQuadraticSpline');
 			return;
@@ -287,7 +287,7 @@ define([
 
 	/**
 	 * Creates a polyLine that approximates a given cubic spline
-	 * @param {number[]} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
+	 * @param {Array<number>} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
 	 * @param {number} [nSegments=16] The number of segments for each Bezier curve that forms the spline (higher values result in smoother curves)
 	 * @param {boolean} [closed=false] True if the spline should be closed or not
 	 * @returns {PolyLine} The resulting polyLine
@@ -302,31 +302,31 @@ define([
 			var nVerts = verts.length / 3;
 			var nCurves = nVerts / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0 * 3, 0 * 3 + 4 * 3), nSegments, 1);
 
 			for (var i = 1; i < nCurves - 1; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 4 * 3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 
-			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 3*3).concat(verts.slice(0, 3)), nSegments, 1);
+			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 3 * 3).concat(verts.slice(0, 3)), nSegments, 1);
 			ret = ret.concat(plToAdd);
 
 			return ret;
 		}
 		else {
-			if(verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 1) {
+			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 1) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
-				return ;
+				return;
 			}
 
 			var nVerts = verts.length / 3;
 			var nCurves = (nVerts - 1) / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0 * 3, 0 * 3 + 4 * 3), nSegments, 1);
 
 			for (var i = 1; i < nCurves; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 4 * 3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 

@@ -1,10 +1,12 @@
 define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
+	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
 ], function (
 	AudioContext,
 	MathUtils,
+	PromiseUtil,
 	RSVP
 ) {
 	'use strict';
@@ -48,10 +50,12 @@ define([
 
 	/**
 	 * Plays the sound if it's not playing
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should start to play.
 	 * @returns {RSVP.Promise} Resolves when sound has played through or when it's stopped.
 	 * Looping sounds will never resolve
 	 */
-	Sound.prototype.play = function () {
+	Sound.prototype.play = function (when) {
+		when = when || 0;
 		if (this._currentSource) {
 			return this._endPromise;
 		}
@@ -82,9 +86,9 @@ define([
 		var duration = this._duration - this._pausePos;
 
 		if (this._loop) {
-			this._currentSource.start();
+			this._currentSource.start(when, this._pausePos + this._offset);
 		} else {
-			this._currentSource.start(0, this._pausePos + this._offset, duration);
+			this._currentSource.start(when, this._pausePos + this._offset, duration);
 		}
 
 		return this._endPromise;
@@ -94,10 +98,10 @@ define([
 	 * Pauses the sound if it's playing
 	 */
 	Sound.prototype.pause = function () {
-
 		if (!this._currentSource) {
 			return;
 		}
+
 		this._paused = true;
 
 		this._pausePos = (AudioContext.getContext().currentTime - this._playStart) % this._duration;
@@ -107,15 +111,16 @@ define([
 
 	/**
 	 * Stops the sound if it's playing
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should stop.
 	 */
-	Sound.prototype.stop = function () {
+	Sound.prototype.stop = function (when) {
 		this._paused = false;
 		this._pausePos = 0;
 		if (this._endPromise) {
 			this._endPromise.resolve();
 		}
 		if (this._currentSource) {
-			this._stop();
+			this._stop(when);
 		}
 	};
 
@@ -135,11 +140,7 @@ define([
 	Sound.prototype.fade = function (volume, time) {
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		var p = new RSVP.Promise();
-		setTimeout(function () {
-			p.resolve();
-		}, time * 1000);
-		return p;
+		return PromiseUtil.delay(time * 1000);
 	};
 
 	Sound.prototype.isPlaying = function () {
@@ -148,16 +149,18 @@ define([
 
 	/**
 	 * Does the actual stopping of the sound
+	 * @param {number} when Time in seconds according to [AudioContext.currentTime]{@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/currentTime} when sound should stop.
 	 * @private
 	 */
-	Sound.prototype._stop = function () {
-		this._currentSource.stop(0);
+	Sound.prototype._stop = function (when) {
+		when = when || 0;
+		this._currentSource.stop(when);
 		this._currentSource = null;
 	};
 
 	/**
 	 * Updates the sound according to config
-	 * @param {object} [config]
+	 * @param {Object} [config]
 	 * @param {boolean} [config.loop]
 	 * @param {number} [config.volume]
 	 * @param {number} [config.name] The sound name
@@ -222,10 +225,9 @@ define([
 
 	/**
 	 * Connect output of sound to audionodes
-	 * @param {AudioNode[]|AudioNode} nodes
+	 * @param {(Array<AudioNode> | AudioNode)} nodes
 	 */
 	Sound.prototype.connectTo = function (nodes) {
-		this._outNode.disconnect();
 		if (!nodes) {
 			return;
 		}
@@ -234,6 +236,22 @@ define([
 		}
 		for (var i = 0; i < nodes.length; i++) {
 			this._outNode.connect(nodes[i]);
+		}
+	};
+
+	/**
+	 * Disconnect output of sound from audionodes
+	 * @param {(Array<AudioNode>|AudioNode)} nodes
+	 */
+	Sound.prototype.disconnectFrom = function (nodes) {
+		if (!nodes) {
+			return;
+		}
+		if (!(nodes instanceof Array)) {
+			nodes = [nodes];
+		}
+		for (var i = 0; i < nodes.length; i++) {
+			this._outNode.disconnect(nodes[i]);
 		}
 	};
 

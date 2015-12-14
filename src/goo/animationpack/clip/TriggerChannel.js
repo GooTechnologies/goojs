@@ -10,8 +10,8 @@ define([
 	/**
 	 * An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be in one keyword "state" at a given moment in time.
 	 * @param {string} channelName the name of this channel.
-	 * @param {number[]} times the time samples
-	 * @param {string[]} keys our key samples. Entries may be null. Should have as many entries as the times array.
+	 * @param {Array<number>} times the time samples
+	 * @param {Array<string>} keys our key samples. Entries may be null. Should have as many entries as the times array.
 	 * @private
 	 */
 	function TriggerChannel(channelName, times, keys, blendType) {

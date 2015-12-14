@@ -5,16 +5,14 @@ define([
 	'goo/debugpack/components/MarkerComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
-],
-
-	function (
-		System,
-		Material,
-		ShaderLib,
-		MarkerComponent,
-		Renderer,
-		Transform
-	) {
+], function (
+	System,
+	Material,
+	ShaderLib,
+	MarkerComponent,
+	Renderer,
+	Transform
+) {
 	'use strict';
 
 	/**
@@ -34,10 +32,10 @@ define([
 		this.entities = [];
 
 		// drawing needs to be performed AFTER the render system completes its execution
-		this.goo.callbacks.push(function() {
+		this.goo.callbacks.push(function () {
 			for (var i = 0; i < this.entities.length; i++) {
 				var entity = this.entities[i];
-				if(entity.hasComponent('MarkerComponent')) {
+				if (entity.hasComponent('MarkerComponent')) {
 					var transform = new Transform();
 					transform.copy(entity.transformComponent.worldTransform);
 					transform.setRotationXYZ(0, 0, 0);

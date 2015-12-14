@@ -31,10 +31,10 @@ define([
 	SetClearColorAction.prototype.ready = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var goo = entity._world.gooRunner;
-		this._oldClearColor[0] = goo.renderer._clearColor[0];
-		this._oldClearColor[1] = goo.renderer._clearColor[1];
-		this._oldClearColor[2] = goo.renderer._clearColor[2];
-		this._oldClearColor[3] = goo.renderer._clearColor[3];
+		this._oldClearColor[0] = goo.renderer._clearColor.x;
+		this._oldClearColor[1] = goo.renderer._clearColor.y;
+		this._oldClearColor[2] = goo.renderer._clearColor.z;
+		this._oldClearColor[3] = goo.renderer._clearColor.w;
 	};
 
 	SetClearColorAction.prototype._run = function (fsm) {
@@ -45,13 +45,15 @@ define([
 
 	SetClearColorAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		var goo = entity._world.gooRunner;
-		goo.renderer.setClearColor(
-			this._oldClearColor[0],
-			this._oldClearColor[1],
-			this._oldClearColor[2],
-			this._oldClearColor[3]
-		);
+		if (entity) {
+			var goo = entity._world.gooRunner;
+			goo.renderer.setClearColor(
+				this._oldClearColor[0],
+				this._oldClearColor[1],
+				this._oldClearColor[2],
+				this._oldClearColor[3]
+			);
+		}
 	};
 
 	return SetClearColorAction;

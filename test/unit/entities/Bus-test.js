@@ -7,33 +7,36 @@ define([
 
 	describe('Bus', function () {
 		var bus;
+
 		beforeEach(function () {
 			bus = new Bus();
 		});
 
 		it('can add a listener, emit and capture a message', function () {
-			var gotData;
-			bus.addListener('main', function (data) { gotData = data; });
+			var listener = jasmine.createSpy('listener');
+
+			bus.addListener('main', listener);
 			bus.emit('main', 123);
 
-			expect(gotData).toBe(123);
+			expect(listener).toHaveBeenCalledWith(123, 'main', bus);
 		});
 
 		it('can add multiple listeners to same channel', function () {
-			var gotData1, gotData2;
-			bus.addListener('main', function (data) { gotData1 = data; });
-			bus.addListener('main', function (data) { gotData2 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+
+			bus.addListener('main', listener1);
+			bus.addListener('main', listener2);
 			bus.emit('main', 123);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBe(123);
+			expect(listener1).toHaveBeenCalledWith(123, 'main', bus);
+			expect(listener2).toHaveBeenCalledWith(123, 'main', bus);
 		});
 
 		it('cannot add the same listener to a channel', function () {
-			var gotData;
-
 			var channel = 'main';
-			var listener = function (data) { gotData = data; };
+			var listener = jasmine.createSpy('listener');
+
 			bus.addListener(channel, listener);
 			bus.addListener(channel, listener);
 
@@ -41,106 +44,124 @@ define([
 		});
 
 		it('can send to multiple channels', function () {
-			var gotData1, gotData2, gotData3;
-			bus.addListener('first', function (data) { gotData1 = data; });
-			bus.addListener('second', function (data) { gotData2 = data; });
-			bus.addListener('third', function (data) { gotData3 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
+
+			bus.addListener('first', listener1);
+			bus.addListener('second', listener2);
+			bus.addListener('third', listener3);
 			bus.emit(['first', 'third'], 123);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBe(123);
+			expect(listener1).toHaveBeenCalledWith(123, 'first', bus);
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).toHaveBeenCalledWith(123, 'third', bus);
 		});
 
 		it('can send to superchannels', function () {
-			var gotData1, gotData2, gotData3;
-			bus.addListener('main.first', function (data) { gotData1 = data; });
-			bus.addListener('main', function (data) { gotData2 = data; });
-			bus.addListener('second', function (data) { gotData3 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
+
+			bus.addListener('main.first', listener1);
+			bus.addListener('main', listener2);
+			bus.addListener('second', listener3);
 			bus.emit('main', 123);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBe(123);
-			expect(gotData3).toBeUndefined();
+			expect(listener1).toHaveBeenCalledWith(123, 'main', bus);
+			expect(listener2).toHaveBeenCalledWith(123, 'main', bus);
+			expect(listener3).not.toHaveBeenCalled();
 		});
 
 		it('can send to subchannels', function () {
-			var gotData1, gotData2, gotData3;
-			bus.addListener('main.first.second', function (data) { gotData1 = data; });
-			bus.addListener('main.first', function (data) { gotData2 = data; });
-			bus.addListener('third', function (data) { gotData3 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
+
+			bus.addListener('main.first.second', listener1);
+			bus.addListener('main.first', listener2);
+			bus.addListener('third', listener3);
 			bus.emit('main.first.second', 123);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBeUndefined();
+			expect(listener1).toHaveBeenCalledWith(123, 'main.first.second', bus);
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).not.toHaveBeenCalled();
 		});
 
 		it('can remove a listener from a channel', function () {
-			var gotData1, gotData2, gotData3;
-			bus.addListener('first', function (data) { gotData1 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
 
-			var secondListener = function (data) { gotData2 = data; };
-			bus.addListener('second', secondListener);
+			bus.addListener('first', listener1);
+			bus.addListener('second', listener2);
+			bus.addListener('third', listener3);
 
-			bus.addListener('third', function (data) { gotData3 = data; });
-			bus.removeListener('second', secondListener);
+			bus.removeListener('second', listener2);
 
 			bus.emit('first', 123);
 			bus.emit('second', 321);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBeUndefined();
+			expect(listener1).toHaveBeenCalledWith(123, 'first', bus);
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).not.toHaveBeenCalled();
 		});
 
 		it('can remove a listener from a channel only', function () {
-			var gotData1, gotData2, gotData3, gotData4;
-			bus.addListener('first', function (data) { gotData1 = data; });
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
+			var listener4 = jasmine.createSpy('listener4');
 
-			var secondListener = function (data) { gotData2 = data; };
-			bus.addListener('first.second', secondListener);
+			bus.addListener('first', listener1);
+			bus.addListener('first.second', listener2);
+			bus.addListener('first.second.third', listener3);
+			bus.addListener('fourth', listener4);
 
-			bus.addListener('first.second.third', function (data) { gotData3 = data; });
-			bus.addListener('fourth', function (data) { gotData4 = data; });
-
-			bus.removeListener('first.second', secondListener);
+			bus.removeListener('first.second', listener2);
 
 			bus.emit('first', 123);
 			bus.emit('first.second', 234);
 			bus.emit('first.second.third', 345);
 			bus.emit('fourth', 456);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBe(345);
-			expect(gotData4).toBe(456);
+			expect(listener1).toHaveBeenCalledWith(123, 'first', bus);
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).toHaveBeenCalledWith(345, 'first.second.third', bus);
+			expect(listener4).toHaveBeenCalledWith(456, 'fourth', bus);
 		});
 
 		it('can remove all listeners from a channel', function () {
-			var gotData1, gotData2, gotData3;
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
 
-			bus.addListener('first', function (data) { gotData1 = data; });
-			bus.addListener('first', function (data) { gotData2 = data; });
-			bus.addListener('second', function (data) { gotData3 = data; });
+			bus.addListener('first', listener1);
+			bus.addListener('first', listener2);
+			bus.addListener('second', listener3);
+
 			bus.removeAllOnChannel('first');
 
 			bus.emit('first', 123);
 			bus.emit('second', 321);
 
-			expect(gotData1).toBeUndefined();
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBe(321);
+			expect(listener1).not.toHaveBeenCalled();
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).toHaveBeenCalledWith(321, 'second', bus);
 		});
 
 		it('can remove all listeners from a channel only', function () {
-			var gotData1, gotData2, gotData3, gotData4, gotData5;
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
+			var listener3 = jasmine.createSpy('listener3');
+			var listener4 = jasmine.createSpy('listener4');
+			var listener5 = jasmine.createSpy('listener5');
 
-			bus.addListener('first', function (data) { gotData1 = data; });
-			bus.addListener('first.second', function (data) { gotData2 = data; });
-			bus.addListener('first.second', function (data) { gotData3 = data; });
-			bus.addListener('first.second.third', function (data) { gotData4 = data; });
-			bus.addListener('fourth', function (data) { gotData5 = data; });
+			bus.addListener('first', listener1);
+			bus.addListener('first.second', listener2);
+			bus.addListener('first.second', listener3);
+			bus.addListener('first.second.third', listener4);
+			bus.addListener('fourth', listener5);
 
 			bus.removeAllOnChannel('first.second');
 
@@ -149,38 +170,43 @@ define([
 			bus.emit('first.second.third', 345);
 			bus.emit('fourth', 456);
 
-			expect(gotData1).toBe(123);
-			expect(gotData2).toBeUndefined();
-			expect(gotData3).toBeUndefined();
-			expect(gotData4).toBe(345);
-			expect(gotData5).toBe(456);
+			expect(listener1).toHaveBeenCalledWith(123, 'first', bus);
+			expect(listener2).not.toHaveBeenCalled();
+			expect(listener3).not.toHaveBeenCalled();
+			expect(listener4).toHaveBeenCalledWith(345, 'first.second.third', bus);
+			expect(listener5).toHaveBeenCalledWith(456, 'fourth', bus);
 		});
 
 		it('can remove a listener from all channels', function () {
-			var gotData1, gotData2;
-			var listener = function (data) { gotData1 = data; };
+			var listener1 = jasmine.createSpy('listener1');
+			var listener2 = jasmine.createSpy('listener2');
 
-			bus.addListener('first', listener);
-			bus.addListener('second', listener);
-			bus.addListener('third', function (data) { gotData2 = data; });
-			bus.removeListenerFromAllChannels(listener);
+			bus.addListener('first', listener1);
+			bus.addListener('second', listener1);
+			bus.addListener('third', listener2);
+
+			bus.removeListenerFromAllChannels(listener1);
 
 			bus.emit('first', 123);
 			bus.emit('third', 321);
 
-			expect(gotData1).toBeUndefined();
-			expect(gotData2).toBe(321);
+			expect(listener1).not.toHaveBeenCalled();
+			expect(listener2).toHaveBeenCalledWith(321, 'third', bus);
 		});
 
 		describe('removeChannelAndChildren', function () {
 			it('can remove a channel and its children', function () {
-				var gotData1, gotData2, gotData3, gotData4, gotData5;
+				var listener1 = jasmine.createSpy('listener1');
+				var listener2 = jasmine.createSpy('listener2');
+				var listener3 = jasmine.createSpy('listener3');
+				var listener4 = jasmine.createSpy('listener4');
+				var listener5 = jasmine.createSpy('listener5');
 
-				bus.addListener('first', function (data) { gotData1 = data; });
-				bus.addListener('first.second', function (data) { gotData2 = data; });
-				bus.addListener('first.second', function (data) { gotData3 = data; });
-				bus.addListener('first.second.third', function (data) { gotData4 = data; });
-				bus.addListener('fourth', function (data) { gotData5 = data; });
+				bus.addListener('first', listener1);
+				bus.addListener('first.second', listener2);
+				bus.addListener('first.second', listener3);
+				bus.addListener('first.second.third', listener4);
+				bus.addListener('fourth', listener5);
 
 				bus.removeChannelAndChildren('first.second');
 
@@ -189,26 +215,27 @@ define([
 				bus.emit('first.second.third', 345);
 				bus.emit('fourth', 456);
 
-				expect(gotData1).toBe(123);
-				expect(gotData2).toBeUndefined();
-				expect(gotData3).toBeUndefined();
-				expect(gotData4).toBeUndefined();
-				expect(gotData5).toBe(456);
+				expect(listener1).toHaveBeenCalledWith(123, 'first', bus);
+				expect(listener2).not.toHaveBeenCalled();
+				expect(listener3).not.toHaveBeenCalled();
+				expect(listener4).not.toHaveBeenCalled();
+				expect(listener5).toHaveBeenCalledWith(456, 'fourth', bus);
 			});
 
 			it('removes the channel even if it\'s a top level channel', function () {
-				var gotData1, gotData2;
+				var listener1 = jasmine.createSpy('listener1');
+				var listener2 = jasmine.createSpy('listener2');
 
-				bus.addListener('first', function (data) { gotData1 = data; });
-				bus.addListener('first.second', function (data) { gotData2 = data; });
+				bus.addListener('first', listener1);
+				bus.addListener('first.second', listener2);
 
 				bus.removeChannelAndChildren('first');
 
 				bus.emit('first', 123);
 				bus.emit('first.second', 234);
 
-				expect(gotData1).toBeUndefined();
-				expect(gotData2).toBeUndefined();
+				expect(listener1).not.toHaveBeenCalled();
+				expect(listener2).not.toHaveBeenCalled();
 			});
 		});
 
@@ -216,19 +243,19 @@ define([
 			it('does not store the last message by default', function () {
 				bus.emit('main', 123);
 
-				var gotData;
-				bus.addListener('main', function (data) { gotData = data; });
+				var listener = jasmine.createSpy('listener');
+				bus.addListener('main', listener);
 
-				expect(gotData).toBeUndefined();
+				expect(listener).not.toHaveBeenCalled();
 			});
 
 			it('stores the last message when told to', function () {
 				bus.emit('main', 123, true);
 
-				var gotData;
-				bus.addListener('main', function (data) { gotData = data; }, true);
+				var listener = jasmine.createSpy('listener');
+				bus.addListener('main', listener, true);
 
-				expect(gotData).toBe(123);
+				expect(listener).toHaveBeenCalledWith(123, 'main', bus);
 			});
 
 			it('returns itself', function () {
@@ -291,10 +318,10 @@ define([
 			it('does not retrieve the last message by default', function () {
 				bus.emit('main', 123, true);
 
-				var gotData;
-				bus.addListener('main', function (data) { gotData = data; });
+				var listener = jasmine.createSpy('listener');
+				bus.addListener('main', listener);
 
-				expect(gotData).toBeUndefined();
+				expect(listener).not.toHaveBeenCalled();
 			});
 
 			it('returns itself', function () {

@@ -1,1 +1,1 @@
-define(['goo/particles/ParticleUtils'], function(ParticleUtils) {});
+define(['goo/particles/ParticleUtils'], function (ParticleUtils) {});

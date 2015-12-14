@@ -7,7 +7,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 
 	SetLightRangeAction.prototype = Object.create(Action.prototype);
 
-	SetLightRangeAction.prototype.configure = function(settings) {
+	SetLightRangeAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
 		this.entity = settings.entity || null;
 		this.range = settings.range || 100;
@@ -38,7 +38,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		transitions: []
 	};
 
-	SetLightRangeAction.prototype._run = function(/*fsm*/) {
+	SetLightRangeAction.prototype._run = function (/*fsm*/) {
 		if (this.entity &&
 			this.entity.lightComponent &&
 			this.entity.lightComponent.light) {

@@ -1,11 +1,11 @@
 define([
 	'goo/util/ObjectUtil'
-], function(
+], function (
 	_
 ) {
 	'use strict';
 	return {
-		mesh: function() {
+		mesh: function () {
 			var config = this.gooObject('mesh', 'Dummy');
 			var samples = 3;
 			_.extend(config, {

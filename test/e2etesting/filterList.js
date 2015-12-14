@@ -14,6 +14,7 @@ var filterList = [
 	'goofy',
 	'TimelineComponent',
 	'HTMLComponent', // displays nothing on the canvas, it's html!
+	'Dom3dComponent', // displays nothing on the canvas, it's html!
 	'Cannon-terrain', // needs fixing
 	'HtmlComponentHandler', // displays nothing on the canvas, it's html!
 	'CrunchLoader',
@@ -31,11 +32,20 @@ var filterList = [
 
 	'physicspack', // tests that just need screenshots; silenting them until that is resolved
 	'Cannon-cylinder',
+	'Clone-camera',
 	'Spline',
 	'TextComponent',
 	'TextMeshGenerator',
 	'linerenderpack',
-	'Pipe'
+	'Pipe',
+	'PolyLine',
+	'ParticleInfluence',
+	'HeightMap',
+	'SkeletonAnimation',
+	'Sound-shared',
+	'projected-water',
+
+	'GridRenderSystem' // until we can render updated screenshot
 ];
 
 exports.filterList = filterList;

@@ -22,7 +22,7 @@ function (
 
 		/**
 		 * @private
-		 * @type {Entity|null}
+		 * @type {Entity}
 		 */
 		this.entity = null;
 

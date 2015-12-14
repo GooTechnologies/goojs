@@ -43,18 +43,18 @@ define([
 			worldMatrix: Shader.WORLD_MATRIX,
 			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			offsetRepeat : [0,0,1,1],
-			normalMap : Shader.NORMAL_MAP,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			offsetRepeat: [0, 0, 1, 1],
+			normalMap: Shader.NORMAL_MAP,
 			normalMultiplier: 1.0,
-			specularMap : Shader.SPECULAR_MAP,
-			emissiveMap : Shader.EMISSIVE_MAP,
-			aoMap : Shader.AO_MAP,
-			lightMap : Shader.LIGHT_MAP,
-			environmentCube : 'ENVIRONMENT_CUBE',
-			environmentSphere : 'ENVIRONMENT_SPHERE',
-			reflectionMap : 'REFLECTION_MAP',
-			transparencyMap : 'TRANSPARENCY_MAP',
+			specularMap: Shader.SPECULAR_MAP,
+			emissiveMap: Shader.EMISSIVE_MAP,
+			aoMap: Shader.AO_MAP,
+			lightMap: Shader.LIGHT_MAP,
+			environmentCube: 'ENVIRONMENT_CUBE',
+			environmentSphere: 'ENVIRONMENT_SPHERE',
+			reflectionMap: 'REFLECTION_MAP',
+			transparencyMap: 'TRANSPARENCY_MAP',
 			opacity: 1.0,
 			reflectivity: 0.0,
 			refractivity: 0.0,
@@ -263,9 +263,9 @@ define([
 
 				'#ifdef LIGHT_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0;',
 					'#elif defined(TEXCOORD0)',
-						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0;',
 					'#endif',
 				'#else',
 					'vec3 N = vec3(0.0, 1.0, 0.0);',
@@ -354,14 +354,14 @@ define([
 
 	// only terrain depends on this
 	ShaderLib.screenCopy = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -372,7 +372,7 @@ define([
 			'gl_Position = vec4(vertexPosition, 1.0);',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
@@ -385,17 +385,17 @@ define([
 	};
 
 	ShaderLib.copy = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -406,10 +406,10 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
 
@@ -423,17 +423,17 @@ define([
 	};
 
 	ShaderLib.copyPure = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -444,10 +444,10 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
 
@@ -462,24 +462,24 @@ define([
 	};
 
 	ShaderLib.simple = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'void main(void)',
 		'{',
 			'gl_FragColor = vec4(1.0);',
@@ -488,26 +488,26 @@ define([
 	};
 
 	ShaderLib.simpleColored = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			color : [1.0, 1.0, 1.0],
-			opacity : 1.0
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			color: [1.0, 1.0, 1.0],
+			opacity: 1.0
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform vec3 color;',
 		'uniform float opacity;',
 
@@ -528,14 +528,14 @@ define([
 		defines: {
 			NORMAL: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
 			opacity: 1.0
 		},
 		builder: function (shader, shaderInfo) {
@@ -613,16 +613,16 @@ define([
 			TEXCOORD0: true,
 			DIFFUSE_MAP: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -633,10 +633,10 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'#if defined(TEXCOORD0) && defined(DIFFUSE_MAP)',
 		'uniform sampler2D diffuseMap;',
 
@@ -658,16 +658,16 @@ define([
 		processors: [
 			ShaderBuilder.light.processor
 		],
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -727,24 +727,24 @@ define([
 	};
 
 	ShaderLib.convolution = {
-		defines : {
-			KERNEL_SIZE_FLOAT : '25.0',
-			KERNEL_SIZE_INT : '25'
+		defines: {
+			KERNEL_SIZE_FLOAT: '25.0',
+			KERNEL_SIZE_INT: '25'
 		},
-		attributes : {
-			position : MeshData.POSITION,
-			uv : MeshData.TEXCOORD0
+		attributes: {
+			position: MeshData.POSITION,
+			uv: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP,
-			uImageIncrement : [0.001953125, 0.0],
-			cKernel : [],
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			uImageIncrement: [0.001953125, 0.0],
+			cKernel: [],
 			size: 1.0
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 position;',
 		'attribute vec2 uv;',
 
@@ -762,7 +762,7 @@ define([
 			'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform float cKernel[ KERNEL_SIZE_INT ];',
 		'uniform sampler2D tDiffuse;',
 		'uniform vec2 uImageIncrement;',
@@ -774,7 +774,7 @@ define([
 			'vec2 imageCoord = vUv;',
 			'vec4 sum = vec4( 0.0 );',
 
-			// 'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
+			// 'for ( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
 				// 'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
 				// 'imageCoord += uImageIncrement * size;',
 			// '}',
@@ -787,7 +787,11 @@ define([
 			'gl_FragColor = sum;',
 		'}'
 		].join('\n'),
-		buildKernel : function(sigma) {
+		buildKernel: function (sigma) {
+			// Ensure no negative values are used; otherwise we get an invalid
+			// kernel size.
+			sigma = Math.abs(sigma);
+
 			// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
 			function gauss(x, sigma) {
 				return Math.exp(-(x * x) / (2.0 * sigma * sigma));
@@ -818,18 +822,18 @@ define([
 		defines: {
 			NORMAL: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			opacity : 1.0
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec3 vertexNormal;',
 
@@ -840,10 +844,10 @@ define([
 
 		'void main() {',
 			'normal = vec3(worldMatrix * vec4(vertexNormal, 0.0));',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform float opacity;',
 		'#ifdef NORMAL',
 		'varying vec3 normal;',
@@ -858,17 +862,17 @@ define([
 	};
 
 	ShaderLib.particles = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexColor : MeshData.COLOR,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexColor: MeshData.COLOR,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec4 vertexColor;',
 		'attribute vec2 vertexUV0;',
@@ -882,10 +886,10 @@ define([
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
@@ -901,30 +905,28 @@ define([
 	};
 
 	ShaderLib.normalmap = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			heightMap : Shader.DIFFUSE_MAP,
-			resolution : [512, 512],
-			height	: 0.05
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			heightMap: Shader.DIFFUSE_MAP,
+			resolution: [512, 512],
+			height: 0.05
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
 			'varying vec2 vUv;',
 			'void main() {',
 				'vUv = vertexUV0;',
-				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+				'gl_Position = viewProjectionMatrix * (worldMatrix * vec4( vertexPosition, 1.0 ));',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -945,16 +947,16 @@ define([
 	};
 
 	ShaderLib.point = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexColor : MeshData.COLOR
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexColor: MeshData.COLOR
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			pointSize : 2.0
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			pointSize: 2.0
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec4 vertexColor;',
 
@@ -966,11 +968,11 @@ define([
 
 		'void main(void) {',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 			'gl_PointSize = pointSize;',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'varying vec4 color;',
 
 		'void main(void)',
@@ -981,15 +983,15 @@ define([
 	};
 
 	ShaderLib.downsample = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1025,18 +1027,18 @@ define([
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
+		attributes: {
+			vertexPosition: MeshData.POSITION,
 			vertexJointIDs: MeshData.JOINTIDS,
 			vertexWeights: MeshData.WEIGHTS
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraScale : Shader.MAIN_DEPTH_SCALE
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraScale: Shader.MAIN_DEPTH_SCALE
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform mat4 viewMatrix;',
@@ -1049,11 +1051,11 @@ define([
 		'void main(void) {',
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
-			'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
+			'worldPosition = viewMatrix * (wMatrix * vec4(vertexPosition, 1.0));',
 			'gl_Position = projectionMatrix * worldPosition;',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform float cameraScale;',
 
 		'varying vec4 worldPosition;',
@@ -1077,20 +1079,20 @@ define([
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
-		attributes : {
-			vertexPosition : MeshData.POSITION,
+		attributes: {
+			vertexPosition: MeshData.POSITION,
 			vertexJointIDs: MeshData.JOINTIDS,
 			vertexWeights: MeshData.WEIGHTS,
-			vertexNormal : MeshData.NORMAL
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
+		uniforms: {
 			normalMatrix: Shader.NORMAL_MATRIX,
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraFar : Shader.FAR_PLANE,
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraFar: Shader.FAR_PLANE,
 			thickness: 0.0,
-			id : function(shaderInfo) {
+			id: function (shaderInfo) {
 				return shaderInfo.renderable._index != null ? shaderInfo.renderable._index + 1 : shaderInfo.renderable.id + 1;
 			}
 		},
@@ -1102,7 +1104,7 @@ define([
 				shader.setDefine('NORMAL', true);
 			}
 		],
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'#ifdef NORMAL',
@@ -1130,17 +1132,16 @@ define([
 			ShaderBuilder.animation.vertex,
 
 			'#ifdef NORMAL',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 ));',
 			'#else',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition, 1.0 ));',
 			'#endif',
 
-			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform float id;',
 
 		'varying float depth;',

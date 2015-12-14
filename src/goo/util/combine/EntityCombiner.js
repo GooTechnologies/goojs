@@ -37,7 +37,7 @@ define([
 	/**
 	 * Runs the combiner
 	 */
-	EntityCombiner.prototype.combine = function() {
+	EntityCombiner.prototype.combine = function () {
 		this.world.processEntityChanges();
 		this.world.getSystem('TransformSystem')._process();
 		this.world.getSystem('BoundingUpdateSystem')._process();
@@ -49,30 +49,34 @@ define([
 		this._combineList(topEntities);
 	};
 
-	EntityCombiner.prototype._combineList = function(entities) {
+	EntityCombiner.prototype._combineList = function (entities) {
 		var root = entities;
 		this.createdEntities = [];
-		if (entities instanceof Entity === false) {
-			root = this.world.createEntity('root');
-			root.addToWorld();
-			for (var i = 0; i < entities.length; i++) {
-				root.attachChild(entities[i]);
-			}
+		if (entities instanceof Entity === true) {
+			root = [entities];
 		}
 
 		var baseSubs = new Map();
-		this._buildSubs(root, baseSubs);
+		var subs = [];
+		for (var i = 0; i < root.length; i++) {
+			this._buildSubs(root[i], baseSubs, subs);
+		}
+		if (subs.length > 1) {
+			root = this.world.createEntity('RootCombined').addToWorld();
+			baseSubs.put(root, subs);
+		}
 
 		var keys = baseSubs.getKeys();
 		for (var i = 0; i < keys.length; i++) {
 			var entity = keys[i];
 			var combineList = baseSubs.get(entity);
-
-			this._combine(entity, combineList);
+			if (combineList.length > 0) {
+				this._combine(entity, combineList);
+			}
 		}
 	};
 
-	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
+	EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
 		if (entity._hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
@@ -83,7 +87,7 @@ define([
 			baseSubs.put(entity, subs);
 		}
 
-		if (entity.meshDataComponent && entity.meshRendererComponent &&
+		if (entity.static && entity.meshDataComponent && entity.meshRendererComponent &&
 			entity.meshRendererComponent.worldBound) {
 			subs.push(entity);
 		}
@@ -94,7 +98,7 @@ define([
 		}
 	};
 
-	EntityCombiner.prototype._combine = function(root, combineList) {
+	EntityCombiner.prototype._combine = function (root, combineList) {
 		var rootTransform = root.transformComponent.worldTransform;
 		var invertTransform = new Transform();
 		var calcTransform = new Transform();
@@ -180,7 +184,7 @@ define([
 		}
 	};
 
-	EntityCombiner.prototype._calculateBounds = function(entities) {
+	EntityCombiner.prototype._calculateBounds = function (entities) {
 		var first = true;
 		var wb = new BoundingBox();
 		for (var i = 0; i < entities.length; i++) {
@@ -192,10 +196,10 @@ define([
 						if (bound instanceof BoundingBox) {
 							wb.copy(bound);
 						} else if (bound instanceof BoundingSphere) {
-							wb.center.setVector(bound.center);
+							wb.center.set(bound.center);
 							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;
 						} else {
-							wb.center.setVector(Vector3.ZERO);
+							wb.center.set(Vector3.ZERO);
 							wb.xExtent = wb.yExtent = wb.zExtent = 10;
 						}
 
@@ -209,7 +213,7 @@ define([
 		return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 	};
 
-	EntityCombiner.prototype.cleanup = function(entities) {
+	EntityCombiner.prototype.cleanup = function (entities) {
 		for (var i = 0; i < this.createdEntities.length; i++) {
 			var entity = this.createdEntities[i];
 
@@ -218,7 +222,6 @@ define([
 			entity.parent().each(function (parent) {
 				parent.detachChild(entity);
 			});
-
 		}
 	};
 
@@ -227,7 +230,7 @@ define([
 			values = [];
 
 		return {
-			put: function(key, value) {
+			put: function (key, value) {
 				var index = keys.indexOf(key);
 				if (index === -1) {
 					keys.push(key);
@@ -236,13 +239,13 @@ define([
 					values[index] = value;
 				}
 			},
-			get: function(key) {
+			get: function (key) {
 				return values[keys.indexOf(key)];
 			},
-			getKeys: function() {
+			getKeys: function () {
 				return keys;
 			},
-			getValues: function() {
+			getValues: function () {
 				return values;
 			}
 		};

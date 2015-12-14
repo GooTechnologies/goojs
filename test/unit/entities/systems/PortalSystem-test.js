@@ -1,1 +1,1 @@
-define(['goo/entities/systems/PortalSystem'], function(PortalSystem) {});
+define(['goo/entities/systems/PortalSystem'], function (PortalSystem) {});

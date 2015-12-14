@@ -1,9 +1,9 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/FsmUtils'
 ], function (
 	Action,
-	FSMUtil
+	FsmUtils
 ) {
 	'use strict';
 
@@ -12,7 +12,7 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			if (!this.key || event.which === +this.key) {
 				this.updated = true;
 			}
@@ -43,7 +43,7 @@ define([
 	};
 
 	KeyUpAction.prototype.configure = function (settings) {
-		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keyup: settings.transitions.keyup };
 	};
 

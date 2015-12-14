@@ -1,7 +1,7 @@
 define([
-	'goo/util/ArrayUtil'
+	'goo/util/ArrayUtils'
 ], function (
-	ArrayUtil
+	ArrayUtils
 ) {
 	'use strict';
 
@@ -33,16 +33,16 @@ define([
 				return this._fsm;
 			}.bind(this),
 			getOwnerEntity: function () {
-				return this._fsm.entity;
+				return this._fsm && this._fsm.entity;
+			}.bind(this),
+			getEntityById: function (id) {
+				return this._fsm.entity._world.by.id(id).first();
 			}.bind(this),
 			send: function (channels/*, data*/) {
 				if (channels) {
 					if (typeof channels === 'string' && this._transitions[channels]) {
 						this.requestTransition(this._transitions[channels]);
 					}
-					/*else {
-					 this._fsm._bus.emit(channels, data);
-					 }*/
 				}
 			}.bind(this),
 			addListener: function (channelName, callback) {
@@ -218,7 +218,7 @@ define([
 			action.onDestroy(this.proxy);
 		}
 
-		ArrayUtil.remove(this._actions, action);
+		ArrayUtils.remove(this._actions, action);
 	};
 
 	State.prototype.addMachine = function (machine) {
@@ -232,7 +232,7 @@ define([
 
 	State.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
-		ArrayUtil.remove(this._machines, machine);
+		ArrayUtils.remove(this._machines, machine);
 	};
 
 	return State;

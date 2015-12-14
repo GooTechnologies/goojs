@@ -30,15 +30,15 @@ define([
 	GamepadComponent.prototype = Object.create(Component.prototype);
 	GamepadComponent.prototype.constructor = GamepadComponent;
 
-	GamepadComponent.prototype.setButtonDownFunction = function(buttonIndex, buttonFunction) {
+	GamepadComponent.prototype.setButtonDownFunction = function (buttonIndex, buttonFunction) {
 		this.buttonDownFunctions[buttonIndex] = buttonFunction;
 	};
 
-	GamepadComponent.prototype.setButtonUpFunction = function(buttonIndex, buttonFunction) {
+	GamepadComponent.prototype.setButtonUpFunction = function (buttonIndex, buttonFunction) {
 		this.buttonUpFunctions[buttonIndex] = buttonFunction;
 	};
 
-	GamepadComponent.prototype.setButtonPressedFunction= function(buttonIndex, buttonFunction) {
+	GamepadComponent.prototype.setButtonPressedFunction = function (buttonIndex, buttonFunction) {
 		this.buttonPressedFunctions[buttonIndex] = buttonFunction;
 	};
 

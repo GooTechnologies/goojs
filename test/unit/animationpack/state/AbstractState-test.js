@@ -1,1 +1,1 @@
-define(['goo/animationpack/state/AbstractState'], function(AbstractState) {});
+define(['goo/animationpack/state/AbstractState'], function (AbstractState) {});

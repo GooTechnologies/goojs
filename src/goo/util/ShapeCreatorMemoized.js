@@ -5,18 +5,17 @@ define([
 	'goo/shapes/Cylinder',
 	'goo/shapes/Torus',
 	'goo/shapes/Disk',
-	'goo/shapes/Cone'
-],
-
-
-function (
+	'goo/shapes/Cone',
+	'goo/util/ObjectUtil'
+], function (
 	Box,
 	Quad,
 	Sphere,
 	Cylinder,
 	Torus,
 	Disk,
-	Cone
+	Cone,
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -24,8 +23,7 @@ function (
 	 * Factory for shape creation.
 	 * Only used to define the class. Should never be instantiated.
 	 */
-	function ShapeCreatorMemoized() {
-	}
+	function ShapeCreatorMemoized() {}
 
 	var _cache = {};
 	//var hits = 0, requests = 0;
@@ -70,7 +68,10 @@ function (
 
 	ShapeCreatorMemoized.createBox = function (options, oldMeshData) {
 		options = options || {};
-		options.textureMode = options.textureMode || 'Uniform';
+		ObjectUtil.defaults(options, {
+			textureMode: 'Uniform'
+		});
+
 		var width = 1, height = 1, length = 1, tileX = 1, tileY = 1;
 		if (!oldMeshData ||
 			width !== oldMeshData.xExtent ||
@@ -89,10 +90,12 @@ function (
 
 	ShapeCreatorMemoized.createSphere = function (options, oldMeshData) {
 		options = options || {};
-		options.zSamples = options.zSamples || 8;
-		options.radialSamples = options.radialSamples || 8;
-		options.textureMode = options.textureMode || 'Projected';
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			zSamples: 8,
+			radialSamples: 8,
+			textureMode: 'Projected',
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.zSamples !== oldMeshData.zSamples - 1 ||
@@ -109,8 +112,10 @@ function (
 
 	ShapeCreatorMemoized.createCylinder = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.radialSamples ||
@@ -125,17 +130,19 @@ function (
 
 	ShapeCreatorMemoized.createTorus = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.circleSamples = options.circleSamples || 12;
-		options.tubeRadius = options.tubeRadius || 0.2;
-		options.centerRadius = options.centerRadius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			circleSamples: 12,
+			tubeRadius: 0.2,
+			centerRadius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData._radialSamples ||
 			options.circleSamples !== oldMeshData._circleSamples ||
 			options.tubeRadius !== oldMeshData._tubeRadius ||
 			options.centerRadius !== oldMeshData._centerRadius) {
-			//return cacheOrCreate('torus', options, function() { // cannot cache torus because of real typed tubeRadius
+			//return cacheOrCreate('torus', options, function () { // cannot cache torus because of real typed tubeRadius
 			return new Torus(options.circleSamples, options.radialSamples, options.tubeRadius, options.centerRadius);
 			//});
 		} else {
@@ -145,9 +152,11 @@ function (
 
 	ShapeCreatorMemoized.createDisk = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.pointiness = typeof options.pointiness === 'undefined' ? 0 : options.pointiness;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			pointiness: 0,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.nSegments ||
@@ -167,9 +176,11 @@ function (
 
 	ShapeCreatorMemoized.createCone = function (options, oldMeshData) {
 		options = options || {};
-		options.radialSamples = options.radialSamples || 8;
-		options.height = typeof options.height === 'undefined' ? 0 : options.height;
-		options.radius = options.radius || 1;
+		ObjectUtil.defaults(options, {
+			radialSamples: 8,
+			height: 0,
+			radius: 1
+		});
 
 		if (!oldMeshData ||
 			options.radialSamples !== oldMeshData.radialSamples ||

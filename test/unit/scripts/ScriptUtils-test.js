@@ -63,8 +63,8 @@ define([
 				'c': '',
 				'd': [0, 0, 0],
 				'e': false,
-				'f': {},
-				'g': {}
+				'f': null,
+				'g': null
 			};
 
 			expect(parametersValues).toEqual(expected);

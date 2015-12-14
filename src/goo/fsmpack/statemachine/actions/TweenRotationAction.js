@@ -1,16 +1,16 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Quaternion',
-	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
-],
-
-	function(
+	'goo/math/Matrix3',
+	'goo/math/MathUtils',
+	'goo/util/TWEEN'
+], function (
 	Action,
 	Quaternion,
-	Matrix3x3,
-	MathUtils
-	) {
+	Matrix3,
+	MathUtils,
+	TWEEN
+) {
 	'use strict';
 
 	function TweenRotationAction(/*id, settings*/) {
@@ -68,20 +68,20 @@ define([
 		}]
 	};
 
-	TweenRotationAction.prototype.configure = function(settings) {
+	TweenRotationAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenRotationAction.prototype._setup = function() {
-		this.tween = new window.TWEEN.Tween();
+	TweenRotationAction.prototype._setup = function () {
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenRotationAction.prototype.cleanup = function (/*fsm*/) {
@@ -90,25 +90,25 @@ define([
 		}
 	};
 
-	TweenRotationAction.prototype._run = function(fsm) {
+	TweenRotationAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var rotation = transformComponent.transform.rotation;
 
 		var initialRotation = new Quaternion().fromRotationMatrix(rotation);
-		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
+		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
 		var workQuaternion = new Quaternion();
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			Quaternion.mul(initialRotation, finalRotation, finalRotation);
+			finalRotation.mul(initialRotation);
 		}
 
-		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function () {
 			Quaternion.slerp(initialRotation, finalRotation, this.t, workQuaternion);
 			rotation.copyQuaternion(workQuaternion);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
 	};

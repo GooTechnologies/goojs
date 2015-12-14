@@ -1,1 +1,1 @@
-define(['goo/renderer/shaders/ShaderFragment'], function(ShaderFragment) {});
+define(['goo/renderer/shaders/ShaderFragment'], function (ShaderFragment) {});

@@ -59,18 +59,18 @@ require([
 
 	entity.rigidBodyComponent.initialize();
 
-	SystemBus.addListener('goo.physics.beginContact', function (evt) {
+	SystemBus.addListener('goo.physics.triggerEnter', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
-		console.log('Contact begins between', evt.entityA, 'and', evt.entityB);
+		console.log('Trigger is entered!', evt.entityA, evt.entityB);
 	});
 
-	SystemBus.addListener('goo.physics.duringContact', function (/*evt*/) {
-		console.log('During contact event is emitted!');
+	SystemBus.addListener('goo.physics.triggerStay', function (/*evt*/) {
+		console.log('Object is staying inside the trigger!');
 	});
 
-	SystemBus.addListener('goo.physics.endContact', function (evt) {
+	SystemBus.addListener('goo.physics.triggerExit', function (evt) {
 		material.uniforms.materialDiffuse = [0, 1, 0, 1];
-		console.log('Contact ends between', evt.entityA, 'and', evt.entityB);
+		console.log('Trigger exited!', evt.entityA, evt.entityB);
 	});
 
 	var position = new Vector3();

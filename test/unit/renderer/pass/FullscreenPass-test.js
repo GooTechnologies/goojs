@@ -1,1 +1,1 @@
-define(['goo/renderer/pass/FullscreenPass'], function(FullscreenPass) {});
+define(['goo/renderer/pass/FullscreenPass'], function (FullscreenPass) {});

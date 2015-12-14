@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/TWEEN'
 ], function (
 	Action,
-	Vector3
+	Vector3,
+	TWEEN
 ) {
 	'use strict';
 
@@ -55,20 +57,20 @@ define([
 		}]
 	};
 
-	TweenLookAtAction.prototype.configure = function(settings) {
+	TweenLookAtAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
+			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
 		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenLookAtAction.prototype._setup = function() {
-		this.tween = new window.TWEEN.Tween();
+	TweenLookAtAction.prototype._setup = function () {
+		this.tween = new TWEEN.Tween();
 	};
 
 	TweenLookAtAction.prototype.cleanup = function (/*fsm*/) {
@@ -77,30 +79,30 @@ define([
 		}
 	};
 
-	TweenLookAtAction.prototype._run = function(fsm) {
+	TweenLookAtAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 
-		var distance = Vector3.distance(new Vector3(this.to), transform.translation);
+		var distance = Vector3.fromArray(this.to).distance(transform.translation);
 		var time = entity._world.time * 1000;
 
 		var initialLookAt = new Vector3(0, 0, 1);
 		var orientation = transform.rotation;
-		orientation.applyPost(initialLookAt);
+		initialLookAt.applyPost(orientation);
 		initialLookAt.scale(distance);
 
 		var fakeFrom = { x: initialLookAt.x, y: initialLookAt.y, z: initialLookAt.z };
 		var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 		var tmpVec3 = new Vector3();
 
-		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-			tmpVec3.data[0] = this.x;
-			tmpVec3.data[1] = this.y;
-			tmpVec3.data[2] = this.z;
+		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
+			tmpVec3.x = this.x;
+			tmpVec3.y = this.y;
+			tmpVec3.z = this.z;
 			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
 	};

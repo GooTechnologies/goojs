@@ -15,7 +15,7 @@ define([
 
 	/**
 	 * Serializes an svg path command
-	 * @param {object} command
+	 * @param {Object} command
 	 * @returns {string}
 	 */
 	function serializeCommand(command) {
@@ -38,7 +38,7 @@ define([
 	 * Computes a cloud of points from an svg path
 	 * @param {string} serializedPath
 	 * @param {number} stepLength Lower values result in more detail
-	 * @returns {{ x: number, y: number }[]} Aa array of point-like objects
+	 * @returns {Array<{ x: number, y: number }>} Aa array of point-like objects
 	 */
 	function getPathPoints(serializedPath, stepLength) {
 		var svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -67,9 +67,9 @@ define([
 
 	/**
 	 * Isolates separate polygons by the distance between points
-	 * @param {{ x: number, y: number}[]} points
+	 * @param {Array<{ x: number, y: number }>} points
 	 * @param {number} stepLength
-	 * @returns {{ x: number, y: number}[][]}
+	 * @returns {Array<Array<{ x: number, y: number }>>}
 	 */
 	function groupPoints(points, stepLength) {
 		var groups = [];
@@ -98,8 +98,8 @@ define([
 
 	/**
 	 * Simplifies a polygon by collapsing collinear adjacent points
-	 * @param {{ x: number, y: number}[]} polygon
-	 * @returns {{ x: number, y: number}[]}
+	 * @param {Array<{ x: number, y: number }>} polygon
+	 * @returns {Array<{ x: number, y: number }>}
 	 */
 	function simplifyPath(polygon) {
 		var simplePolygon = [];
@@ -127,7 +127,7 @@ define([
 
 	/**
 	 * Computes the 2D bounding box of a poygon
-	 * @param {{ x: number, y: number}[]} polygon
+	 * @param {Array<{ x: number, y: number }>} polygon
 	 * @returns {{ min: Vector2, max: Vector2 }}
 	 */
 	function getBoundingVolume(polygon) {
@@ -176,7 +176,7 @@ define([
 
 	/**
 	 * Groups polygons in contours with holes
-	 * @param {{ x: number, y: number}[]} polygons
+	 * @param {Array<{ x: number, y: number }>} polygons
 	 * @returns {{ polygon, holes }}
 	 */
 	function getHierarchy(polygons) {
@@ -276,8 +276,8 @@ define([
 
 	/**
 	 * Flattens an array of points defined as objects { x, y } into an array
-	 * @param {{ x: number, y: number, }[]} points
-	 * @returns {number[]}
+	 * @param {Array<{ x: number, y: number }>} points
+	 * @returns {Array<number>}
 	 */
 	function getVerts(points) {
 		// use an inverse map from indices to _indices
@@ -366,7 +366,7 @@ define([
 	 * @param {number} [options.extrusion=4] Extrusion amount
 	 * @param {number} [options.fontSize=48]
 	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
-	 * @returns {MeshData[]}
+	 * @returns {Array<MeshData>}
 	 */
 	function meshesForText(text, font, options) {
 		options = options || {};
@@ -376,7 +376,7 @@ define([
 
 
 		var dataSets = [];
-		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
+		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y) {
 			if (glyph.path.commands.length > 0) {
 				dataSets.push({
 					data: dataForGlyph(glyph, options),

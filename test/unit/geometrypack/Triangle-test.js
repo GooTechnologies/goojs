@@ -1,1 +1,1 @@
-define(['goo/geometrypack/Triangle'], function(Triangle) {});
+define(['goo/geometrypack/Triangle'], function (Triangle) {});

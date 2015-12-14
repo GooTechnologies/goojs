@@ -4,7 +4,7 @@ define([
 	'goo/animationpack/Joint',
 	'goo/util/MeshBuilder',
 	'goo/renderer/MeshData'
-], function(
+], function (
 	Box,
 	Transform,
 	Joint,
@@ -15,7 +15,7 @@ define([
 	function SkeletonDebug() {}
 	var calcTrans = new Transform();
 
-	SkeletonDebug.prototype.getMesh = function(pose) {
+	SkeletonDebug.prototype.getMesh = function (pose) {
 		var joints = pose._skeleton._joints;
 		return [
 			this._buildLines(joints),
@@ -23,10 +23,10 @@ define([
 		];
 	};
 
-	SkeletonDebug.prototype._buildBoxes = function(joints) {
+	SkeletonDebug.prototype._buildBoxes = function (joints) {
 		var boxBuilder = new MeshBuilder();
 
-		var box = new Box(2,2,2);
+		var box = new Box(2, 2, 2);
 		box.attributeMap.WEIGHTS = MeshData.createAttribute(4, 'Float');
 		box.attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Float');
 		box.rebuildData();
@@ -45,17 +45,17 @@ define([
 		return boxes;
 	};
 
-	SkeletonDebug.prototype._buildLines = function(joints) {
+	SkeletonDebug.prototype._buildLines = function (joints) {
 		var positions = [], weights = [], jointIds = [],
 			indices = [], count = 0, td = calcTrans.matrix.data;
 
-		for(var i = 0; i < joints.length; i++) {
+		for (var i = 0; i < joints.length; i++) {
 			var joint = joints[i];
 			if (joint._parentIndex !== Joint.NO_PARENT) {
 				var parentJoint = joints[joint._parentIndex];
-				weights.push(1,0,0,0,1,0,0,0);
-				jointIds.push(joint._index,0,0,0,parentJoint._index,0,0,0);
-				indices.push(count*2, count*2+1);
+				weights.push(1, 0, 0, 0, 1, 0, 0, 0);
+				jointIds.push(joint._index, 0, 0, 0, parentJoint._index, 0, 0, 0);
+				indices.push(count * 2, count * 2 + 1);
 				count++;
 
 				calcTrans.matrix.copy(joint._inverseBindPose.matrix).invert();
@@ -70,7 +70,7 @@ define([
 				MeshData.POSITION,
 				MeshData.WEIGHTS,
 				MeshData.JOINTIDS
-			]), positions.length/3, indices.length);
+			]), positions.length / 3, indices.length);
 		line.indexModes = ['Lines'];
 		line.getAttributeBuffer(MeshData.POSITION).set(positions);
 		line.getAttributeBuffer(MeshData.WEIGHTS).set(weights);
@@ -81,7 +81,7 @@ define([
 		return line;
 	};
 
-	SkeletonDebug.prototype._stuffBox = function(box, joint) {
+	SkeletonDebug.prototype._stuffBox = function (box, joint) {
 		var weights = box.getAttributeBuffer('WEIGHTS');
 		var jointIds = box.getAttributeBuffer('JOINTIDS');
 		for (var i = 0; i < weights.length; i += 4) {
@@ -90,7 +90,7 @@ define([
 		}
 	};
 
-	SkeletonDebug.prototype._buildPaletteMap = function(meshData, joints) {
+	SkeletonDebug.prototype._buildPaletteMap = function (meshData, joints) {
 		var paletteMap = [];
 		for (var i = 0; i < joints.length; i++) {
 			paletteMap[i] = joints[i]._index;

@@ -4,7 +4,6 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util',
 	'goo/debugpack/DebugDrawHelper'
 ], function (
 	System,
@@ -12,14 +11,13 @@ define([
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	Util,
 	DebugDrawHelper
 ) {
 	'use strict';
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling
-	 * @property {Boolean} doRender Only render if set to true
+	 * @property {boolean} doRender Only render if set to true
 	 * @extends System
 	 */
 	function DebugRenderSystem() {
@@ -103,7 +101,7 @@ define([
 
 					for (var k = 0; k < renderables.length; k++) {
 						var renderable = renderables[k];
-						renderable.transform.translation.setVector(entity.transformComponent.worldTransform.translation);
+						renderable.transform.translation.set(entity.transformComponent.worldTransform.translation);
 						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
 						renderable.transform.scale.setDirect(1, 1, 1);
 						renderable.transform.update();

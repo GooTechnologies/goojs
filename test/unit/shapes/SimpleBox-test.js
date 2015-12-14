@@ -1,1 +1,1 @@
-define(['goo/shapes/SimpleBox'], function(SimpleBox) {});
+define(['goo/shapes/SimpleBox'], function (SimpleBox) {});

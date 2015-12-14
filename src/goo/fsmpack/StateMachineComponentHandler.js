@@ -2,20 +2,20 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil'
-], function(
+	'goo/util/ObjectUtils'
+], function (
 	ComponentHandler,
 	StateMachineComponent,
 	RSVP,
 	_
-	) {
+) {
 	'use strict';
 
 	/**
 	 * For handling loading of state machine components
 	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
-	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {Function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -33,28 +33,47 @@ define([
 	 * @returns {StateMachineComponent} the created component object
 	 * @hidden
 	 */
-	StateMachineComponentHandler.prototype._create = function() {
+	StateMachineComponentHandler.prototype._create = function () {
 		return new StateMachineComponent();
+	};
+
+	StateMachineComponentHandler.prototype._remove = function (entity) {
+		var component = entity.stateMachineComponent;
+		if (component) {
+			for (var i = component._machines.length - 1; i >= 0; i--) {
+				var machine = component._machines[i];
+				machine.cleanup();
+				component.removeMachine(machine);
+			}
+
+			component.cleanup();
+		}
+
+		entity.clearComponent(this._type);
 	};
 
 	/**
 	 * Update engine statemachine component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
+	 * @param {Object} config
+	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
+	StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		options = options || {};
+		options.reload = true;
+		options.instantiate = true;
+
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
 			var promises = [];
-			_.forEach(config.machines, function(machineCfg) {
-				promises.push(that._load(machineCfg.machineRef, options));
+			_.forEach(config.machines, function (machineConfig) {
+				promises.push(that._load(machineConfig.machineRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(machines) {
+			return RSVP.all(promises).then(function (machines) {
 				// Adding new machines
 				for (var i = 0; i < machines.length; i++) {
 					if (component._machines.indexOf(machines[i]) === -1) {
@@ -62,7 +81,7 @@ define([
 					}
 				}
 				// Removing old machines
-				for (var i = 0; i < component._machines.length; i++) {
+				for (var i = component._machines.length - 1; i >= 0; i--) {
 					if (machines.indexOf(component._machines[i]) === -1) {
 						component.removeMachine(component._machines[i]);
 					}

@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/AnimationClipInstance'], function(AnimationClipInstance) {});
+define(['goo/animationpack/clip/AnimationClipInstance'], function (AnimationClipInstance) {});

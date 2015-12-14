@@ -8,7 +8,7 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
-	'goo/fsmpack/statemachine/actions/WASDAction',
+	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
 	'goo/fsmpack/statemachine/actions/RotateAction',
@@ -24,6 +24,7 @@ define([
 	'goo/fsmpack/statemachine/actions/PauseAnimationAction',
 	'goo/fsmpack/statemachine/actions/ResumeAnimationAction',
 	'goo/fsmpack/statemachine/actions/SetAnimationAction',
+	'goo/fsmpack/statemachine/actions/SetTimeScale',
 
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
@@ -55,26 +56,36 @@ define([
 	'goo/fsmpack/statemachine/actions/SmokeAction',
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
+	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
+	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
 
 	'goo/fsmpack/statemachine/actions/SetRenderTargetAction',
 	'goo/fsmpack/statemachine/actions/TweenTextureOffsetAction',
+	'goo/fsmpack/statemachine/actions/SetMaterialColorAction',
 
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
-	'goo/fsmpack/statemachine/actions/HTMLAction',
+	'goo/fsmpack/statemachine/actions/HtmlAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
 
 	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
 	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
 
-	'goo/fsmpack/statemachine/actions/ApplyImpulseAction'
-], function (
+	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
+	'goo/fsmpack/statemachine/actions/ApplyForceAction',
+	'goo/fsmpack/statemachine/actions/ApplyTorqueAction',
 
+	'goo/fsmpack/statemachine/actions/CompareCounterAction',
+	'goo/fsmpack/statemachine/actions/CompareCountersAction',
+	'goo/fsmpack/statemachine/actions/SetCounterAction',
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+], function (
+	_ // placeholder // what for?
 ) {
 	'use strict';
 
@@ -103,7 +114,7 @@ define([
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (IGNORED_ACTIONS.indexOf(key) == -1) {
+			if (IGNORED_ACTIONS.indexOf(key) === -1) {
 				actions[key] = _actions[key];
 			}
 		}

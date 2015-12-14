@@ -34,12 +34,12 @@ function () {
 	ShaderFragment.noise2d = [
 		ShaderFragment.noisecommon,
 		'float snoise(vec2 v) {',
-			'const vec4 C = vec4(0.211324865405187,  (3.0-sqrt(3.0))/6.0',
-				'0.366025403784439,  0.5*(sqrt(3.0)-1.0)',
-				'-0.577350269189626,  -1.0 + 2.0 * C.x',
-				'0.024390243902439); 1.0 / 41.0',
+			'const vec4 C = vec4(0.211324865405187, // (3.0-sqrt(3.0))/6.0',
+				'0.366025403784439, // 0.5*(sqrt(3.0)-1.0)',
+				'-0.577350269189626, // -1.0 + 2.0 * C.x',
+				'0.024390243902439); // 1.0 / 41.0',
 			'vec2 i  = floor(v + dot(v, C.yy) );',
-			'vec2 x0 = v -   i + dot(i, C.xx);',
+			'vec2 x0 = v - i + dot(i, C.xx);',
 			'vec2 i1;',
 			'//i1.x = step( x0.y, x0.x ); x0.x > x0.y ? 1.0 : 0.0',
 			'//i1.y = 1.0 - i1.x;',
@@ -49,7 +49,7 @@ function () {
 			'// x2 = x0 - 1.0 + 2.0 * C.xx ;',
 			'vec4 x12 = x0.xyxy + C.xxzz;',
 			'x12.xy -= i1;',
-			'i = mod289(i); Avoid truncation effects in permutation',
+			'i = mod289(i); // Avoid truncation effects in permutation',
 			'vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))',
 				'+ i.x + vec3(0.0, i1.x, 1.0 ));',
 			'vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);',
@@ -77,24 +77,24 @@ function () {
 			'const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;',
 			'const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);',
 			'vec3 i  = floor(v + dot(v, C.yyy) );',
-			'vec3 x0 =   v - i + dot(i, C.xxx) ;',
+			'vec3 x0 = v - i + dot(i, C.xxx);',
 			'vec3 g = step(x0.yzx, x0.xyz);',
 			'vec3 l = 1.0 - g;',
 			'vec3 i1 = min( g.xyz, l.zxy );',
 			'vec3 i2 = max( g.xyz, l.zxy );',
 			'vec3 x1 = x0 - i1 + C.xxx;',
-			'vec3 x2 = x0 - i2 + C.yyy; 2.0*C.x = 1/3 = C.y',
-			'vec3 x3 = x0 - D.yyy;      -1.0+3.0*C.x = -0.5 = -D.y',
+			'vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y',
+			'vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y',
 			'i = mod289(i); ',
 			'vec4 p = permute( permute( permute( ',
 				'i.z + vec4(0.0, i1.z, i2.z, 1.0 ))',
 				'+ i.y + vec4(0.0, i1.y, i2.y, 1.0 )) ',
 				'+ i.x + vec4(0.0, i1.x, i2.x, 1.0 ));',
-			'float n_ = 0.142857142857; 1.0/7.0',
-			'vec3  ns = n_ * D.wyz - D.xzx;',
-			'vec4 j = p - 49.0 * floor(p * ns.z * ns.z);   mod(p,7*7)',
+			'float n_ = 0.142857142857; // 1.0/7.0',
+			'vec3 ns = n_ * D.wyz - D.xzx;',
+			'vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7)',
 			'vec4 x_ = floor(j * ns.z);',
-			'vec4 y_ = floor(j - 7.0 * x_ );    mod(j,N)',
+			'vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N)',
 			'vec4 x = x_ *ns.x + ns.yyyy;',
 			'vec4 y = y_ *ns.x + ns.yyyy;',
 			'vec4 h = 1.0 - abs(x) - abs(y);',
@@ -138,7 +138,7 @@ function () {
 	].join('\n');
 
 	ShaderFragment.methods = {
-		packDepth : [
+		packDepth: [
 			'vec4 packDepth( const in float depth ) {',
 				'const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );',
 				'const vec4 bit_mask  = vec4( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );',
@@ -147,14 +147,14 @@ function () {
 				'return res;',
 			'}'
 		].join('\n'),
-		unpackDepth : [
+		unpackDepth: [
 			'float unpackDepth( const in vec4 rgba_depth ) {',
 				'const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );',
 				'float depth = dot( rgba_depth, bit_shift );',
 				'return depth;',
 			'}'
 		].join('\n'),
-		packFloat : [
+		packFloat: [
 			packCommon,
 			'vec4 packFloat (float val) {',
 				'if (val == 0.0) return vec4(0, 0, 0, 0);',
@@ -193,19 +193,19 @@ function () {
 				'return sign * mantissa * exp2(exponent);',
 			'}'
 		].join('\n'),
-		packDepth16 : [
+		packDepth16: [
 			'vec2 packDepth16( const in float depth ) {',
 				'const vec2 bias = vec2(1.0 / 255.0, 0.0);',
 				'vec2 res = vec2(depth, fract(depth * 255.0));',
 				'return res - (res.yy * bias);',
 			'}'
 		].join('\n'),
-		unpackDepth16 : [
+		unpackDepth16: [
 			'float unpackDepth16( const in vec2 rg_depth ) {',
 				'return rg_depth.x + (rg_depth.y / 255.0);',
 			'}'
 		].join('\n'),
-		hsv : [
+		hsv: [
 			'vec3 rgb2hsv(vec3 c) {',
 				'vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);',
 				'vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));',
@@ -214,7 +214,7 @@ function () {
 				'float e = 1.0e-10;',
 				'return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);',
 			'}',
-			'vec3 hsv2rgb(vec3 c){',
+			'vec3 hsv2rgb(vec3 c) {',
 				'vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);',
 				'vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);',
 				'return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);',
@@ -269,7 +269,7 @@ function () {
 		'#define LevelsControlInputRange(color, minInput, maxInput)						min(max(color - vec3(minInput), vec3(0.0)) / (vec3(maxInput) - vec3(minInput)), vec3(1.0))',
 		'#define LevelsControlInput(color, minInput, gamma, maxInput)					GammaCorrection(LevelsControlInputRange(color, minInput, maxInput), gamma)',
 		'#define LevelsControlOutputRange(color, minOutput, maxOutput)					mix(vec3(minOutput), vec3(maxOutput), color)',
-		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)',
+		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)'
 	].join('\n');
 
 	return ShaderFragment;

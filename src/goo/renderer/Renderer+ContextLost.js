@@ -85,10 +85,10 @@ define([
 		this.rendererRecord = new RendererRecord();
 
 		this.context.clearColor(
-			this._clearColor[0],
-			this._clearColor[1],
-			this._clearColor[2],
-			this._clearColor[3]
+			this._clearColor.x,
+			this._clearColor.y,
+			this._clearColor.z,
+			this._clearColor.w
 		);
 	};
 });

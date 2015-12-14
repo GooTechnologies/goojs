@@ -34,7 +34,7 @@ define([
 		transitions: []
 	};
 
-	LookAtAction.prototype._run = function(fsm) {
+	LookAtAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 

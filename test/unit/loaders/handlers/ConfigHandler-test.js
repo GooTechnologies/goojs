@@ -1,1 +1,1 @@
-define(['goo/loaders/handlers/ConfigHandler'], function(ConfigHandler) {});
+define(['goo/loaders/handlers/ConfigHandler'], function (ConfigHandler) {});

@@ -214,10 +214,10 @@ require([
 
 	function addLight(dims) {
 		var light1 = new PointLight();
-		light1.color.set(0.8, 0.7,0.61);
+		light1.color.setDirect(0.8, 0.7,0.61);
 		var light1Entity = goo.world.createEntity('light');
 		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+		light1Entity.transformComponent.transform.translation.setDirect( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
 		light1Entity.addToWorld();
 	}
 
@@ -295,7 +295,7 @@ require([
 			// Add camera
 			var camera = new Camera(45, 1, 1, 1000);
 			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 50, 90);
+			cameraEntity.transformComponent.transform.translation.setDirect(0, 50, 90);
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();

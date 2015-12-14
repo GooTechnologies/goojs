@@ -97,16 +97,38 @@ var extractType = function (string, offset) {
 	};
 };
 
-var extractName = function (string, offset) {
+var isSpace = function (char) {
+	return char === ' ' || char === '\t';
+};
+
+var firstSpace = function (string, offset) {
 	var i = offset;
-	while (string[i] === ' ') {
+	while (!isSpace(string[i])) {
 		i++;
+		if (i >= string.length) {
+			return -1;
+		}
 	}
+	return i;
+};
+
+var firstNonSpace = function (string, offset) {
+	var i = offset;
+	while (isSpace(string[i])) {
+		i++;
+		if (i >= string.length) {
+			return -1;
+		}
+	}
+	return i;
+};
+
+var extractName = function (string, offset) {
+	var i = firstNonSpace(string, offset);
 
 	var name, default_, optional = false, end;
 	if (string[i] === '[') {
 		optional = true;
-		// should instead find the matching ']'
 		var endParen = indexOfMatchingParen(string, i, '[', ']');
 		end = endParen;
 		var equals = string.indexOf('=', i);
@@ -119,7 +141,7 @@ var extractName = function (string, offset) {
 		}
 		end += 2;
 	} else {
-		var space = string.indexOf(' ', i + 1);
+		var space = firstSpace(string, i + 1);
 		var newLine = string.length;
 
 		end = space !== -1 ? space : newLine;
@@ -136,24 +158,18 @@ var extractName = function (string, offset) {
 };
 
 var extractDescription = function (string, offset) {
-	var i = offset;
-	while (string[i] === ' ') {
-		i++;
-	}
+	var i = firstNonSpace(string, offset);
 
 	return {
-		description: string.substring(i),
+		description: i === -1 ? '' : string.substring(i),
 		end: string.length
 	};
 };
 
-var extractUntil = function (string, until, offset) {
-	var i = offset;
-	while (string[i] === ' ') {
-		i++;
-	}
+var extractUntilSpace = function (string, offset) {
+	var i = firstNonSpace(string, offset);
 
-	var limit = string.indexOf(until, i);
+	var limit = firstSpace(string, i);
 
 	return {
 		string: string.substring(i, limit),
@@ -230,7 +246,7 @@ var extractTagExtends = function (extends_) {
 };
 
 var extractTagExampleLink = function (exampleLink) {
-	var linkData = extractUntil(exampleLink, ' ', 0);
+	var linkData = extractUntilSpace(exampleLink, 0);
 	var link = linkData.string;
 	var offset = linkData.end;
 
@@ -317,5 +333,6 @@ exports._extractDescription = extractDescription;
 exports._extractTagParam = extractTagParam;
 exports._extractTagReturn = extractTagReturn;
 exports._extractTagType = extractTagType;
+exports._extractTagExtends = extractTagExtends;
 exports._extractTagTargetClass = extractTagTargetClass;
 exports.extract = extract;

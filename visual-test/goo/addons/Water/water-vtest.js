@@ -50,7 +50,7 @@ require([
 		goo.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
-			target.translation.setVector(source.translation);
+			target.translation.set(source.translation);
 			target.update();
 		});
 	}

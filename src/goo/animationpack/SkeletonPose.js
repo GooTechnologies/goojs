@@ -1,11 +1,11 @@
 define([
 	'goo/math/Transform',
 	'goo/animationpack/Joint',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4'
 ], function (
 	Transform,
 	Joint,
-	Matrix4x4
+	Matrix4
 ) {
 	'use strict';
 
@@ -35,7 +35,7 @@ define([
 
 		// init palette
 		for (var i = 0; i < jointCount; i++) {
-			this._matrixPalette[i] = new Matrix4x4();
+			this._matrixPalette[i] = new Matrix4();
 		}
 
 		// start off in bind pose.
@@ -54,7 +54,10 @@ define([
 			var parentIndex = this._skeleton._joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We remove the parent's transform simply by multiplying by its inverse bind pose.
-				Matrix4x4.combine(this._skeleton._joints[parentIndex]._inverseBindPose.matrix, this._localTransforms[i].matrix, this._localTransforms[i].matrix);
+				this._localTransforms[i].matrix.mul2(
+					this._skeleton._joints[parentIndex]._inverseBindPose.matrix,
+					this._localTransforms[i].matrix
+				);
 			}
 		}
 		this.updateTransforms();
@@ -66,11 +69,13 @@ define([
 	SkeletonPose.prototype.updateTransforms = function () {
 		var joints = this._skeleton._joints;
 		for (var i = 0, l = joints.length; i < l; i++) {
-
 			var parentIndex = joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
-				Matrix4x4.combine(this._globalTransforms[parentIndex].matrix, this._localTransforms[i].matrix, this._globalTransforms[i].matrix);
+				this._globalTransforms[i].matrix.mul2(
+					this._globalTransforms[parentIndex].matrix,
+					this._localTransforms[i].matrix
+				);
 			} else {
 				// No parent so just set global to the local transform
 				this._globalTransforms[i].matrix.copy(this._localTransforms[i].matrix);
@@ -81,8 +86,10 @@ define([
 			 * joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
 			 * vertex from bind pose (model space) to current pose (model space).
 			 */
-			Matrix4x4
-				.combine(this._globalTransforms[i].matrix, joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
+			this._matrixPalette[i].mul2(
+				this._globalTransforms[i].matrix,
+				joints[i]._inverseBindPose.matrix
+			);
 		}
 
 		this.firePoseUpdated();

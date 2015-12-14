@@ -1,1 +1,1 @@
-define(['goo/animationpack/state/FadeTransitionState'], function(FadeTransitionState) {});
+define(['goo/animationpack/state/FadeTransitionState'], function (FadeTransitionState) {});

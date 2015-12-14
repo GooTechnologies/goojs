@@ -1,12 +1,515 @@
+v0.15.26 --- 2015-12-??
+
+### Additions
+
+  + Added ApplyForceAction
+  + Added ApplyTorqueAction
+  + Added optional argument "relativePoint" to RigidBodyComponent.prototype.applyForce
+  + Added RigidBodyComponent.prototype.applyForceLocal
+  + Added RigidBodyComponent.prototype.applyTorque
+  + Added RigidBodyComponent.prototype.applyTorqueLocal
+
+v0.15.25 --- 2015-12-10
+
+### Fixes
+
+  * Fixed broken MoveAction when using non-oriented every-frame movement.
+
+v0.15.24 --- 2015-12-09
+
+### Fixes
+
+  * Fixed Matrix4.getRotation bug. Added unit test.
+  * Added missing break in OrbitNPanControlScript
+  * Fixed bugs in state machine removal of machines and states.
+
+v0.15.23 --- 2015-12-08
+
+### Fixes
+
+  * Added key "Tween Opacity" to TweenOpacityAction, making it backwards compatible.
+
+v0.15.22 --- 2015-12-08
+
+### Fixes
+
+  * Fixed some shader precision issues
+
+### Additions
+
+  + Added SetTimeScaleAction to statemachine
+  + Added SetMaterialColorAction to statemachine
+  + Added ToggleFullscreenAction to statemachine
+  + Added TogglePostFxAction to statemachine
+
+v0.15.21 --- 2015-11-30
+
+### Fixes
+
+  * Fixed touch bug in PanCamScript, making touch work when not using it with the OrbitNPanControlScript.
+  * Smoothing tpf is now done on a world.smoothedTpf parameter instead
+  * Fixed EntityCombiner to only create new root node when needed.
+
+### Additions
+
+  + Added "touchMode" parameter for PanCamScript.
+
+v0.15.20 --- 2015-11-26
+
+### Fixes
+
+  * Added touch support for button script
+  * Scripts will now update correctly in chrome devtools
+  * Handle the case where sigma < 0 in the convolution shader
+
+v0.15.19 --- 2015-11-23
+
+### Fixes
+
+  * Use bounds check manually for lens flare script
+  * Fix bug in Dom3dSystem cleanup method
+  * Fix for texture repeat V in TextureHandler
+
+v0.15.18 --- 2015-11-17
+
+### Fixes
+
+  * Fixed too tight limit on the joint count
+  * Updated package.json
+
+v0.15.17 --- 2015-11-14
+
+### Fixes
+
+  * Fixed cleanup methods in lots of state machine actions to check if entity exists
+  * handle unsupported DDS textures, makes mobile browsers not crash
+  * Added missing packs from dom3d visual test
+  * Fixing issues with Rendertargets used before being rendered to
+  * Added test for simplepartitioner
+  * Force joint count to be int
+
+v0.15.16 --- 2015-11-11
+
+### Fixes
+
+  * Fixed a bug in resolving entities in loaders
+
+v0.15.15 --- 2015-11-10
+
+### Fixes
+
+  * Fixed a critical bug in ObjectUtils
+
+v0.15.14 --- 2015-11-10
+
+### Additions
+
+  + Added Vector2.prototype.toArray
+  + Added Vector4.prototype.toArray
+
+### Fixes
+
+  * Undeprecated Vector2.prototype.setArray
+  * Undeprecated Vector3.prototype.setArray
+  * Undeprecated Vector4.prototype.setArray
+
+v0.15.13 --- 2015-10-28
+----------------------
+
+### Additions
+ + Added dom3d (html3d) functionality, for mixing dom and WebGL
+
+### Fixes
+  * Fixed bug in Ray.js intersection code
+  * Fixed snapping
+  * Fixed bug with reseting clearcolor in SetClearColorAction
+  * Lots of fixes for math backwards compatibility
+
+v0.15.11 --- 2015-10-16
+----------------------
+
+### Additions
+ + GridRenderSystem now supports infinite grid with fading and adaptive resolution
+
+v0.15.10 --- 2015-10-15
+----------------------
+
+### Additions
+
+ + Matrix2.prototype.equals
+ + Matrix2.prototype.mul2
+ + Matrix2.prototype.scale
+ + Matrix2.prototype.set
+ + Matrix3.prototype.copyMatrix4
+ + Matrix3.prototype.equals
+ + Matrix3.prototype.mul2
+ + Matrix3.prototype.scale
+ + Matrix3.prototype.set
+ + Matrix4.prototype.equals
+ + Matrix4.prototype.mul2
+ + Matrix4.prototype.scale
+ + Matrix4.prototype.set
+ + Vector2.fromAny
+ + Vector2.fromArray
+ + Vector2.prototype.applyPost
+ + Vector2.prototype.applyPre
+ + Vector2.prototype.distance
+ + Vector2.prototype.distanceSquared
+ + Vector2.prototype.divDirect
+ + Vector2.prototype.dotDirect
+ + Vector2.prototype.equals
+ + Vector2.prototype.equalsDirect
+ + Vector2.prototype.getComponent
+ + Vector2.prototype.length
+ + Vector2.prototype.lengthSquared
+ + Vector2.prototype.lerp
+ + Vector2.prototype.negate
+ + Vector2.prototype.normalize
+ + Vector2.prototype.set
+ + Vector2.prototype.setComponent
+ + Vector2.prototype.unsafeNormalize
+ + Vector3.fromAny
+ + Vector3.fromArray
+ + Vector3.prototype.applyPost
+ + Vector3.prototype.applyPostPoint
+ + Vector3.prototype.applyPostVector
+ + Vector3.prototype.applyPre
+ + Vector3.prototype.crossDirect
+ + Vector3.prototype.divDirect
+ + Vector3.prototype.dotDirect
+ + Vector3.prototype.equals
+ + Vector3.prototype.equalsDirect
+ + Vector3.prototype.getComponent
+ + Vector3.prototype.negate
+ + Vector3.prototype.set
+ + Vector3.prototype.setComponent
+ + Vector3.prototype.toArray
+ + Vector3.prototype.unsafeNormalize
+ + Vector4.fromAny
+ + Vector4.fromArray
+ + Vector4.prototype.applyPost
+ + Vector4.prototype.applyPre
+ + Vector4.prototype.distance
+ + Vector4.prototype.distanceSquared
+ + Vector4.prototype.divDirect
+ + Vector4.prototype.dotDirect
+ + Vector4.prototype.equals
+ + Vector4.prototype.equalsDirect
+ + Vector4.prototype.getComponent
+ + Vector4.prototype.length
+ + Vector4.prototype.lengthSquared
+ + Vector4.prototype.negate
+ + Vector4.prototype.normalize
+ + Vector4.prototype.reflect
+ + Vector4.prototype.set
+ + Vector4.prototype.setComponent
+ + Vector4.prototype.unsafeNormalize
+
+### Deprecated
+
+The following classes were renamed. You can still use the old classes but when you do, you’ll get a warning in the console.
+
+ - Matrix2x2 - use Matrix2 instead
+ - Matrix3x3 - use Matrix3 instead
+ - Matrix4x4 - use Matrix4 instead
+
+The following methods in the math classes were deprecated. Most of the methods were shimmed, so you can use them as before - but you’ll get warnings. Don’t worry, there are alternatives, and the warnings should point you in the right direction.
+
+ - Matrix.add
+ - Matrix.combine
+ - Matrix.copy
+ - Matrix.div
+ - Matrix.equals
+ - Matrix.mul
+ - Matrix.prototype.add
+ - Matrix.prototype.clone
+ - Matrix.prototype.combine
+ - Matrix.prototype.copy
+ - Matrix.prototype.div
+ - Matrix.prototype.equals
+ - Matrix.prototype.isNormal
+ - Matrix.prototype.isOrthogonal
+ - Matrix.prototype.isOrthonormal
+ - Matrix.prototype.mul
+ - Matrix.prototype.set
+ - Matrix.prototype.sub
+ - Matrix.prototype.toString
+ - Matrix.prototype.transpose
+ - Matrix.sub
+ - Matrix.transpose
+ - Matrix2.add
+ - Matrix2.combine
+ - Matrix2.div
+ - Matrix2.mul
+ - Matrix2.prototype.combine
+ - Matrix2.prototype.div
+ - Matrix2.sub
+ - Matrix2.transpose
+ - Matrix3.add
+ - Matrix3.combine
+ - Matrix3.div
+ - Matrix3.mul
+ - Matrix3.prototype.applyPost
+ - Matrix3.prototype.applyPre
+ - Matrix3.prototype.combine
+ - Matrix3.prototype.div
+ - Matrix3.sub
+ - Matrix3.transpose
+ - Matrix4.add
+ - Matrix4.combine
+ - Matrix4.div
+ - Matrix4.mul
+ - Matrix4.prototype.applyPost
+ - Matrix4.prototype.applyPostPoint
+ - Matrix4.prototype.applyPostVector
+ - Matrix4.prototype.applyPre
+ - Matrix4.prototype.combine
+ - Matrix4.prototype.div
+ - Matrix4.sub
+ - Matrix4.transpose
+ - Quaternion.add
+ - Quaternion.ALLOWED_DEVIANCE
+ - Quaternion.div
+ - Quaternion.mul
+ - Quaternion.prototype.add
+ - Quaternion.prototype.div
+ - Quaternion.prototype.magnitude
+ - Quaternion.prototype.magnitudeSquared
+ - Quaternion.prototype.normalize  - > Vector4 normalize
+ - Quaternion.prototype.scalarAdd
+ - Quaternion.prototype.scalarDiv
+ - Quaternion.prototype.scalarMul
+ - Quaternion.prototype.scalarSub
+ - Quaternion.prototype.setArray
+ - Quaternion.prototype.setVector
+ - Quaternion.prototype.sub
+ - Quaternion.scalarAdd
+ - Quaternion.scalarDiv
+ - Quaternion.scalarMul
+ - Quaternion.scalarSub
+ - Quaternion.sub
+ - Vector.add
+ - Vector.apply
+ - Vector.copy
+ - Vector.distance
+ - Vector.distanceSquared
+ - Vector.div
+ - Vector.dot
+ - Vector.equals
+ - Vector.mul
+ - Vector.prototype.add
+ - Vector.prototype.apply
+ - Vector.prototype.clone
+ - Vector.prototype.copy
+ - Vector.prototype.distance
+ - Vector.prototype.distanceSquared
+ - Vector.prototype.div
+ - Vector.prototype.dot
+ - Vector.prototype.equals
+ - Vector.prototype.invert
+ - Vector.prototype.length
+ - Vector.prototype.lengthSquared
+ - Vector.prototype.mul
+ - Vector.prototype.normalize
+ - Vector.prototype.scale
+ - Vector.prototype.set
+ - Vector.prototype.sub
+ - Vector.prototype.toString
+ - Vector.sub
+ - Vector2.add
+ - Vector2.div
+ - Vector2.dot
+ - Vector2.mul
+ - Vector2.prototype.addVector
+ - Vector2.prototype.dotVector
+ - Vector2.prototype.mulVector
+ - Vector2.prototype.setArray
+ - Vector2.prototype.subVector
+ - Vector2.sub
+ - Vector3.add
+ - Vector3.addv
+ - Vector3.cross
+ - Vector3.distance
+ - Vector3.distanceSquared
+ - Vector3.div
+ - Vector3.dot
+ - Vector3.mul
+ - Vector3.prototype.addVector
+ - Vector3.prototype.dotVector
+ - Vector3.prototype.invert
+ - Vector3.prototype.mulVector
+ - Vector3.prototype.setArray
+ - Vector3.prototype.subVector
+ - Vector3.sub
+ - Vector4.add
+ - Vector4.div
+ - Vector4.dot
+ - Vector4.mul
+ - Vector4.prototype.addVector
+ - Vector4.prototype.dotVector
+ - Vector4.prototype.mulVector
+ - Vector4.prototype.setArray
+ - Vector4.prototype.setVector
+ - Vector4.prototype.subVector
+ - Vector4.sub
+
+Also, the .data property was removed from all vector classes. Use the .x, .y, .z, .w properties instead. But we shimmed it, so you should be able to use it as before - with console warnings. (Hopefully you didn't use this private property anyway).
+
+### Removed
+
+ - Vector4.prototype.setd
+ - Vector4.prototype.setv
+ - Vector4.prototype.seta
+ - Vector3.prototype.setd
+ - Vector3.prototype.setv
+ - Vector3.prototype.sub_d
+ - Vector3.prototype.seta
+ - Vector3.prototype.subv
+ - Vector3.prototype.muld
+ - Vector3.prototype.mulv
+ - Vector3.prototype.add_d
+ - Vector3.prototype.addv
+ - Vector3.dotv
+ - Vector2.prototype.setd
+ - Vector2.prototype.setv
+ - Vector2.prototype.seta
+ - Quaternion.prototype.seta
+ - Quaternion.prototype.setd
+ - Quaternion.prototype.setv
+
+v0.15.9 --- 2015-10-01
+----------------------
+
+### Fixes
+ * fixes to default azimuth value of OrbitCamControlScript
+
+
+v0.15.8 --- 2015-09-29
+----------------------
+
+### Fixes
+ * fixed Renderer.prototype.preloadTextures
+
+
+v0.15.7 --- 2015-09-23
+----------------------
+
+### Fixes
+ * added support for UMD modules in published scenes from Goo Create.
+
+v0.15.6 --- 2015-09-18
+----------------------
+
+### Fixes
+ * added support for iOS9
+
+
+v0.15.5 --- 2015-09-02
+----------------------
+
+### Additions
+ + the third parameter passed to scripts (the "restricted" goo namespace) is now the same as the global goo namespace
+ + Sound.prototype.stop takes an optional parameter that delays the stop
+
+### Fixes
+ * external dependencies for scripts loaded via the *DynamicLoader* are executed in order
+ * duplicate shaders cached under different keys in certain cases
+ * script cleanup functions not executing when parameter definitions are missing
+
+
+v0.15.4 --- 2015-08-13
+----------------------
+
+### Additions
+ + system bus listeners receive the channel that the mssage was sent as well as a reference to the bus
+ + the documentation renderer mentions methods without associated documentation
+ + switched to using [Closure-style](https://developers.google.com/closure/compiler/docs/js-for-compiler#types) type expressions
+
+
+v0.15.3 --- 2015-08-06
+----------------------
+
+### Fixes
+ * materials deeply clone uniforms when `shareUniforms` is `false`
+ * unresolved *entity* or *texture* script parameters are set to `null` instead of an empty object
+
+
+v0.15.2 --- 2015-07-28
+----------------------
+
+### Additions
+ + sounds can be shared between entities
+ + [Sharing sounds visual test](http://code.gooengine.com/0.15.2/visual-test/goo/addons/Sound/Sound-shared-vtest.html)
+
+
+v0.15.1 --- 2015-07-08
+----------------------
+
+### Fixes
+ * renamed *goo.Tween* to *goo.TWEEN*
+ * TWEEN is installed on window as well as on the goo namespace
+ * mentioned old *...Util* classes on the goo script namespace
+
+
+v0.15.0 --- 2015-07-07
+----------------------
+
+### Additions
+ + readded the *requestAnimationFrame* shim
+
+### Deprecated
+ - *...Util* classes in favour of *...Utils* classes; *ObjectUtil*, *PromiseUtil*, *StringUtil*, *ArrayUtil*, *FullScreenUtil*
+ - `RendererUtils.isPowerOfTwo` in favour of `MathUtils.isPowerOfTwo`
+ - `RendererUtils.nearestPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+ - `MathUtils.nearestHigherPowerOfTwo` in favour of `MathUtils.nearestPowerOfTwo`
+
+### Removed
+ - *CSSTransformComponent* has been renamed to *CssTransformComponent*; `entity.cSSTransformComponent` is now `entity.cssTransformComponent`
+ - *DoGPass* is now *DogPass*
+ - *DOFPass* is now *DofPass*
+ - *SSAOPass* is now *SsaoUtils*
+ - *FSMUtil* is now *FsmUtils*
+ - *BinaryLERPSource* is now *BinaryLerpSource*
+ - *LayerLERPBlender* is now *LayerLerpBlender*
+ - *renderer/Util* in favour of *renderer/RendererUtil*
+
+
+v0.14.4 --- 2015-06-25
+----------------------
+
+### Fixes
+ * the *SoundSystem* creates an *AudioContext* only if needed (re-fix)
+
+### Deprecated
+ - `PromiseUtil.defer`; please use `PromiseUtil.delay` instead
+
+
+v0.14.3 --- 2015-06-24
+----------------------
+
+### Additions
+ + [ParticleInfluence visual test](http://code.gooengine.com/0.14.3/visual-test/goo/particles/ParticleInfluence-vtest
+ .html)
+ + [SkeletonAnimation visual test](http://code.gooengine.com/0.14
+ .3/visual-test/goo/animationpack/SkeletonAnimation-vtest.html)
+
+### Changes
+ * sole's tween.js has been integrated into the engine and is accessible under the goo namespace (*goo.Tween*)
+
+### Fixes
+ * shader precision settings not being preserved after context re-initialization
+ * Ludei-related fix
+
+
 v0.14.2 --- 2015-05-28
 ----------------------
 
-###Additions
+### Additions
  + the PolyLine.prototype.pipe is not confined to the XY plane anymore; also added optional scale and twist modifier - [Pipe3D visual test](http://code.gooengine.com/0.14.2/visual-test/goo/geometrypack/Surface/Pipe-vtest.html)
  + exposed linear and angular rigid body constraints
  + raycast results now hold the distance
 
-###Fixes
+### Fixes
  * physics related fixes regarding triggers
  * ShaderLibExtra is exposed on the goo namespace passed to scripts
 
@@ -14,77 +517,77 @@ v0.14.2 --- 2015-05-28
 v0.14.1 --- 2015-05-12
 ----------------------
 
-###Fixes
+### Fixes
  + yet more physics-related fixes
 
 
 v0.14.0 --- 2015-04-27
 ----------------------
 
-###Fixes
+### Fixes
  + numerous physics-related fixes regarding contacts and especially
  + all *Transform* methods which did not return anything now return the transform
 
-###Breaking changes
+### Breaking changes
  + TextureCreator and SoundCreator return promises instead of using callbacks
 
 
 v0.13.6 --- 2015-03-31
 ----------------------
 
-###Fixes
+### Fixes
  + another batch of physics-related fixes
 
-###Removed
+### Removed
  - the `goo.useOwnRequire` flag as well as `goo.define` and `goo.require`
 
 
 v0.13.5 --- 2015-03-25
 ----------------------
 
-###Additions
+### Additions
  + debug render system for collider components
 
-###Fixes
+### Fixes
  * various physics-related fixes
 
 
 v0.13.4 --- 2015-03-11
 ----------------------
 
-###Additions
+### Additions
  + experimental new [EventTarget](http://code.gooengine.com/0.13.4/docs/index.html?c=EventTarget)
 
-###Fixes
+### Fixes
  * `World.prototype.setSystem` does not allow for the same system to be added twice to the world
  * the *SoundSystem* creates an *AudioContext* only if needed
 
-###Deprecated
+### Deprecated
  - *cannonpack* has been deprecated in favour of the new *physicspack*
 
 
 v0.13.3 --- 2015-03-04
 ----------------------
 
-###Additions
+### Additions
  + [Spline](http://code.gooengine.com/0.13.4/visual-test/goo/math/Spline/Spline-vtest.html) to represent cubic splines
  + [SplineWalker](http://code.gooengine.com/0.13.4/visual-test/goo/math/SplineWalker/SplineWalker-vtest.html) to interpolate across a spline
 
-###Fixes
+### Fixes
  * various physics-related fixes
 
 
 v0.13.2 --- 2015-02-17
 ----------------------
 
-###Fixes
+### Fixes
  * rare bug when trying to pre-load materials without textures in certain conditions
 
 
 v0.13.1 --- 2015-02-12
 ----------------------
 
-###Fixes
+### Fixes
  + handling of non-Error exceptions thrown by scripts handled by the ScriptHandler
  + cloning mesh data with uninitialised indexLengths
 
@@ -92,19 +595,19 @@ v0.13.1 --- 2015-02-12
 v0.13.0 --- 2015-02-11
 ----------------------
 
-###Additions
+### Additions
  + the engine can be forced to use its own internal require, even if a global one is present; this can be done by running `window.goo = { useOwnRequire: true }` before *goo.js* executes
  + a new visual test, [CubeMap](http://code.gooengine.com/0.13.0/visual-test/goo/renderer/texture/CubeMaps/Cubemap-vtest.html)
 
-###Fixes
+### Fixes
  * *Ray* copies the data it receives on creation
  * lights copy the color data they receive on creation
 
-###Changes
+### Changes
  * the AudioContext is created now only on demand, via the `.getContext()` function
  * goo.js no longer installs `require` and `define` in the global scope if they are not present
 
-###Deprecated
+### Deprecated
  - *goo/renderer/Util* has been renamed to *goo/renderer/RendererUtils*
  - `RendererUtils.clone` (formerly `Util.clone`); please use `ObjectUtil.deepClone` instead
 
@@ -112,11 +615,11 @@ v0.13.0 --- 2015-02-11
 v0.12.9 --- 2015-02-03
 ----------------------
 
-###Additions
+### Additions
  + `.clone` methods for *Ray*, *Plane*, *Transform*, *BoundingBox*, *BoundingSphere*, *PointLight*, *DirectionalLight*, *SpotLight*, *LightComponent*, *Camera*, *CameraComponent*, *BufferData*, *MeshData*, *MeshDataComponent*, *Texture*, *Material*, *MeshRendererComponent* and all Primitive shapes - *Box*, *Cone*, *Cylinder*, *Disk*, *Grid*, *Quad*, *SimpleBox*, *TextureGrid*, *Torus*
  + `Quaternion.prototype.conjugate` and `Quaternion.prototype.invert`
 
-###Fixes
+### Fixes
  + `world.by.component()` is not case sensitive anymore
  + an event listener on the *SystemBus* can safely remove other event listeners on the same channel
  + `Quaternion.prototype.clone` returns an instance of *Quaternion*
@@ -126,17 +629,17 @@ v0.12.9 --- 2015-02-03
 v0.12.8 --- 2015-01-21
 ----------------------
 
-###Additions
+### Additions
  + the *uber shader* can switch between using the red channel for transparency or the alpha channel by setting the `useBWTransparency` uniform
 
 
 v0.12.7 --- 2014-12-16
 ----------------------
 
-###Additions
+### Additions
  + a new visual-test [AmbientTest](http://code.gooengine.com/0.12.7/visual-test/goo/renderer/UberShader/AmbientTest-vtest.html)
 
-###Fixes
+### Fixes
  * uniform updating bug
  * ambient-light bug
  * `MeshData.prototype.destroy` when *indexData* or *vertexData* are un-initialised
@@ -145,7 +648,7 @@ v0.12.7 --- 2014-12-16
 v0.12.6 --- 2014-12-12
 ----------------------
 
-###Fixes
+### Fixes
  * normal matrix not being updated properly
  * derived 'classes' have their `prototype.constructor` pointing to the derived constructors
 
@@ -153,7 +656,7 @@ v0.12.6 --- 2014-12-12
 v0.12.5 --- 2014-12-11
 ----------------------
 
-###Additions
+### Additions
  + components can now inject methods on the *EntitySelection* prototype which makes `world.by.tag('cake').show()` possible; other available component-specific methods are: `setTranslation`, `setRotation`, `setScale`, `lookAt`, `move`, `addTranslation`, `addRotation`, `hide`, `setDiffuse` - and even more are planned
  + a new module, *goo/renderer/Capabilities* which holds information regarding available WebGL extensions
  + can update individual attribute data using `MeshData.prototype.setAttributeDataUpdated`
@@ -162,10 +665,10 @@ v0.12.5 --- 2014-12-11
  + `.reflect` for *Vector2* and *Vector3* which reflects a vector intersecting another vector/plane
  + `.dotVector` for *Vector2/3/4*
 
-###Fixes
+### Fixes
  * the engine adjusts for the lack of supported WebGL extensions
 
-###Deprecated
+### Deprecated
  - the static method `Vector3.dotv`; please use the instance method `Vector3.prototype.dotVector` instead
  - the static method `Vector3.addv`; please use the instance method `Vector3.prototype.addVector` instead
  - the static method `Vector3.subv`; please use the instance method `Vector3.prototype.subVector` instead
@@ -174,7 +677,7 @@ v0.12.5 --- 2014-12-11
 v0.12.4 --- 2014-12-01
 ----------------------
 
-###Fixes
+### Fixes
  * local environment map now showing
  * shader precompilation issues
 
@@ -182,51 +685,51 @@ v0.12.4 --- 2014-12-01
 v0.12.3 --- 2014-11-28
 ----------------------
 
-###Fixes
+### Fixes
  * accounted for partial support of Map and Set in Safari and IE
 
 
 v0.12.2 --- 2014-11-27
 ----------------------
 
-###Fixes
+### Fixes
  * could not load entities with tags using the DynamicLoader
 
 
 v0.12.1 --- 2014-11-27
 ----------------------
 
-###Additions
+### Additions
  + the engine will not safely shut down when the WebGL context was lost and restart when the context was regained
  + `setDirect`, `setArray`, `setDirect`, `add/sub/mul Vector`, `add/sub/mul Direct` for *Vector2/3/4*
  + `ArrayUtil.fromKeys(map | set)`, `ArrayUtil.fromValues(map | set)`
  + `fromAngleNormalAxis` visual test
 
-###Changes
+### Changes
  * major optimizations in how shaders are cached and reused
  * faster math-related methods
  * passing a transform's translation to `transform.lookAt` will do nothing
 
-###Fixes
+### Fixes
  * `new Vector3(1, 2, NaN).equals(new Vector(1, 2, 10)` returning true
  * `entity.attach/detachChild` ignoring the second parameter, *keepTransform*
 
-###Deprecated
+### Deprecated
  - all short `setd`, `seta`, `setv`, `add_d`, `addv`, `sub_d`, `subv`, `mulv`, `muld` methods on *Vector2/3/4*
 
 
 v0.12.0 --- 2014-11-18
 ----------------------
 
-###Additions
+### Additions
  + visual tests for *Skybox*, *Box*, *Sphere*, *.lookAt*
  + bounding box/sphere `.containsPoint`
 
-###Changes
+### Changes
  * math classes do not throw errors anymore
  * various speed optimizations
 
-###Fixes
+### Fixes
  * `.setToObliqueMatrix` of *Camera*
  * calling `.set([1, 2, 3])` on entities not working
  * lights not having their transform updated when added to existing entities
@@ -234,7 +737,7 @@ v0.12.0 --- 2014-11-18
  * `.lookAt` on matrices pointing in the opposite direction
  * *Matrix* constructors not working properly with arrays or other matrices
 
-###Removed
+### Removed
  - `EntityUtils.hide/show`; please use `entity.hide/show` instead
  - *util/Enum*, *util/Latch*, *util/Handy*
 
@@ -242,7 +745,7 @@ v0.12.0 --- 2014-11-18
 v0.11.7 --- 2014-10-30
 ----------------------
 
-###Additions
+### Additions
  + 'TransparencyBlending' for materials; this allows correct blending with the background
 
 
@@ -256,10 +759,10 @@ v0.11.6 --- 2014-10-28
 v0.11.5 --- 2014-10-28
 ----------------------
 
-###Additions
+### Additions
  + .move method on the TransformComponent and Entity
 
-###Fixes
+### Fixes
  * VSM shadows work on Android
  * opacity, reflection issues
  * refraction of animated meshes
@@ -268,17 +771,17 @@ v0.11.5 --- 2014-10-28
 v0.11.4 --- 2014-10-14
 ----------------------
 
-###Additions
+### Additions
  + .centerOfMassOffset method to CannonRigidbodyComponent
  + trigger option for CannonBoxCollider
  + .unbindTexture method to Renderer
  + TextureHandler can now take a *generateMipmaps* option
 
-###Changes
+### Changes
  * goo installs itself in a global *goo* namespace even if RequireJS is present
  * improved the minification process a bit, resulting in slightly smaller builds
 
-###Fixes
+### Fixes
  * issues with entities sharing the same id
  * lens flare script glitching out in edge cases
  * lens flare not working on child entities
@@ -288,14 +791,14 @@ v0.11.4 --- 2014-10-14
 v0.11.3 --- 2014-09-10
 ----------------------
 
-###Additions
+### Additions
  + added CannonTerrainColliderComponent class
 
-###Changes
+### Changes
  * updated Cannon.js to bleeding edge dev version
  * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
 
-###Fixes
+### Fixes
  * transform gizmos do not vary size with FOV
  * lens flare script not working for entities without a MeshDataComponent
  * safed up against MeshDataComponents without MeshData
@@ -304,33 +807,33 @@ v0.11.3 --- 2014-09-10
 v0.11.2 --- 2014-08-19
 ----------------------
 
-###Fixes
+### Fixes
  * graceful handling of http/https issues when loading external dependencies for scripts
 
 
 v0.11.1 --- 2014-08-14
 ----------------------
 
-###Fixes
+### Fixes
  * state machine issues when interfacing with Create
 
 
 v0.11.0 --- 2014-08-13
 ----------------------
 
-###Additions
+### Additions
  + sound instances now have a name property
 
-###Changes
+### Changes
  * entities get added/removed to managers synchronously
 
-###Fixes
+### Fixes
  * cameras don't get scaled according to their parent entity anymore
 
-###Deprecated
+### Deprecated
  - PromiseUtil.createDummyPromise; use PromiseUtil.resolve/reject instead
 
-###Removed
+### Removed
  - Howler.js sound library support; use the Goo SoundComponent instead.
  - Material.createMaterial(...); use new Material(...) instead.
 
@@ -338,18 +841,18 @@ v0.11.0 --- 2014-08-13
 v0.10.8 --- 2014-07-02
 ----------------------
 
-###Fixes
+### Fixes
  * minor fix in the quadComponent handler
 
 
 v0.10.7 --- 2014-07-01
 ----------------------
 
-###Fixes
+### Fixes
  * minor orbit camera script fixes
  * dynamic loader now releases GPU resources when removing entities
 
-###Deprecated
+### Deprecated
  - EntityUtils.hide/show; use entity.hide/show instead
  - entity.hidden is no longer exposed; use entity.isHidden and entity.isVisiblyHidden instead
 
@@ -357,7 +860,7 @@ v0.10.7 --- 2014-07-01
 v0.10.6 --- 2014-06-25
 ----------------------
 
-###Fixes
+### Fixes
  * texture leaks when using posteffects
  * animation start time related bugs
  * can now hide htmlComponents that are unsynced with their entity (transform-wise)
@@ -366,10 +869,10 @@ v0.10.6 --- 2014-06-25
 v0.10.5 --- 2014-06-17
 ----------------------
 
-###Additions
+### Additions
  + support for touchstart, touchmove and touchend on GooRunner
 
-###Fixes
+### Fixes
  * better parameter validation for scripts
  * picking of entities with an HTML component
  * textComponent visual-test not displaying anything
@@ -378,17 +881,17 @@ v0.10.5 --- 2014-06-17
 v0.10.3 --- 2014-06-05
 ----------------------
 
-###Breaking changes
+### Breaking changes
  * transparency map now uses alpha value
 
 
 v0.10.2 --- 2014-06-05
 ----------------------
 
-###Fixes
+### Fixes
  * bugfix in Renderer.prototype._deallocateRenderTarget
 
-###Breaking changes
+### Breaking changes
  * all addons are now split in packs:
      goo/addons/p2/* -> goo/addons/p2pack/*
      goo/addons/box2d/* -> goo/addons/box2dpack/*
@@ -411,7 +914,7 @@ v0.10.2 --- 2014-06-05
 v0.10.1 --- 2014-05-27
 ----------------------
 
-###Fixes
+### Fixes
  * animations can have timescale and loopcount 0
  * fixed .preloadTextures/.procompileShaders crashing on devices without support for the global 'performance'
 
@@ -419,7 +922,7 @@ v0.10.1 --- 2014-05-27
 v0.10.0 --- 2014-05-20
 ----------------------
 
-###Additions
+### Additions
  + experimental way of clearing the engine using GooRunner.prototype.clear
  + examples are linked to from jsdocs
  + added Matrix4x4.prototype.getRotation
@@ -427,11 +930,11 @@ v0.10.0 --- 2014-05-20
  + added AnimationLayer.prototype.getStateById
  + added AnimationLayer.prototype.getStateByName
 
-###Fixes
+### Fixes
  * AnimationLayer.prototype.setCurrentStateByName now gets the state by name and not id
  * fix in Quaternion.prototype.fromVectorToVector
 
-###Breaking changes
+### Breaking changes
  * all debug related classes are relocated in the debugpack (MarkerComponent, CameraDebug, LightDebug, MeshRendererDebug, SkeletonDebug, CameraDebugSystem, DebugRenderSystem, LightDebugSystem, MarkerSystem, BoundingVolumeMeshBuilder, DebugDrawHelper, Debugger, EntityCounter, FrustumViewer, LightPointer)
  * new wave scripts (src/goo/scripts/newwave) are relocated to the parent folder, replacing some of the older scripts. The old FPCamControlScript, FlyControlScript, OrbitCamControlScript, OrbitNPanControlScript, MouseLookControlScript and WASDControlScript are thus replaced with new style scripts and are not backwards-compatible.
  - EntityUtils.createTypicalEntity has been removed as scheduled; use world.createEntity instead
@@ -442,10 +945,10 @@ v0.10.0 --- 2014-05-20
 v.0.9.10 --- 2014-05-14
 -----------------------
 
-###Additions
+### Additions
  + added experimental .clear on GooRunner, World and SystemBus
 
-###Fixes
+### Fixes
  * fixed video looping bug
  * made sure projects loads even if sound decoding fails
 
@@ -453,38 +956,38 @@ v.0.9.10 --- 2014-05-14
 v0.9.9 --- 2014-05-06
 ---------------------
 
-###Additions
+### Additions
  + added a way to preload textures to the GPU gradually, without freezing up the browser
  + added a way to precompile shaders gradually, without freezing up the browser
  + added World.prototype.processEntityChanges that only processes add/changed/removed entities and does not call the systems for an update
 
-###Fixes
+### Fixes
  * fixed a picking bug
  * fixed an infinite loop in the DynamicLoader
  * fixed several performance issues in the DynamicLoader
 
-###Changes
+### Changes
  * Camera.prototype.getWorldCoordinates now uses the correct Y direction of screen coordinates
 
 
 v0.9.8 --- 2014-04-24
 ---------------------
 
-###Fixes
+### Fixes
  * SetRenderTargetAction, InFrustumAction fixes
 
 
 v0.9.7 --- 2014-04-22
 ---------------------
 
-###Fixes
+### Fixes
  * numerous tiny bugfixes
 
 
 v0.9.6 --- 2014-04-15
 ---------------------
 
-###Fixes
+### Fixes
  * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
  * Grabbing the global window.Ammo object after it is loaded
  * Stop forcing aspect ratio when loading camera
@@ -493,7 +996,7 @@ v0.9.6 --- 2014-04-15
 v0.9.0 --- 2014-03-07
 ---------------------
 
-###Additions
+### Additions
  + added own sound system
  + added a lot of documentation
  + can get precise point of picking for shader-based picking in world coordinates
@@ -502,31 +1005,31 @@ v0.9.0 --- 2014-03-07
  + MeshRendererComponent takes an optional array materials as parameter
  + can now schedule callbacks to execute next frame from within a callback
 
-###Fixed
+### Fixed
  * various performance fixes
  * canvas resizing is stabilised if they have no style referring to dimensions
 
-###Changes
+### Changes
  * major changes of the DynamicLoader API
 
-###Deprecated
+### Deprecated
  - Material.createMaterial(); use new Material() instead
 
 
 v0.8.0 --- 2014-02-10
 ---------------------
 
-###Additions
+### Additions
  + goo.js does not require that you use requirejs anymore; if requirejs is not detected when goo.js starts loading the it will automatically create a "goo" namespace and fill it with every class that the engine consists of
  + a new EntitySelection API
  + entities can now be tagged
  + entities can hold attributes
  + entity "selectors" based on id, name, system, components, tags and attributes
 
-###Changes
+### Changes
  * goo.js is now split into a core goo.js (which is much smaller) and additional packs which provides extra functionality
 
-###Deprecated
+### Deprecated
  - EntityUtils.traverse(); use entity.traverse() instead
  - EntityUtils.getChildren(); use entity.children.toArray() instead
 
@@ -534,7 +1037,7 @@ v0.8.0 --- 2014-02-10
 v0.7.0 --- 2014-01-23
 ---------------------
 
-###Additions
+### Additions
  + Made engine IE compliant
  + Light cookies
  + More post effects: blur, hatch, HSV, noise
@@ -551,25 +1054,25 @@ v0.7.0 --- 2014-01-23
  + Added camera aspect ratio locking
  + Various fixes and performance improvements
 
-###Experimental additions
+### Experimental additions
  + Logic System
  + Beta support for AmmoComponent to add realistic physical behavior to entities
  + World has `add` method for adding entities/managers/systems and registering components
  + Entity has `set` method for adding/or modifying data supported by registered components
 
-###Changes
+### Changes
  * Bounding boxes are now the default bounding volumes
  * Methods in Entity and World that did not return anything now return themselves to allow chaining
  * Tweaked default parameters of Lights, Camera and .lookAt
 
-###Deprecated
+### Deprecated
  - EntityUtils.createTypicalEntity(); use world.createEntity() instead
 
 
 v0.6.0 --- 2013-11-06
 ---------------------
 
-###Added
+### Added
  + Fog
  + Global ambient
  + Opacity discard
@@ -580,17 +1083,17 @@ v0.6.0 --- 2013-11-06
  + New texture mapping for the cylinder
  + Added Hammer touch support to OrbitNPan control script
 
-###Fixes
+### Fixes
  * Various
 
-###Removals
+### Removals
  - Removed unused/underused/undocumented classes
 
 
 v0.5.0 --- 2013-09-23
 ---------------------
 
-###Additions
+### Additions
  + Shadows for more than one light
  + Anisotropic filtering
  + Bus - a message bus with hierarchical channels
@@ -599,11 +1102,11 @@ v0.5.0 --- 2013-09-23
  + More visual tests
  + More API-documentation
 
-###Experimental additions
+### Experimental additions
  + Software occlusion culling
  + Nested, layered, event driven state machine system
 
-###Fixes
+### Fixes
  * Marker system now displays both bounding boxes and bounding spheres
  * Fixed a background flickering bug
  * Fixed bugs in the light debug mesh

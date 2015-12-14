@@ -42,12 +42,10 @@ define([
 			}
 
 			this.handleExit();
-
 		}.bind(this);
 	}
 
 	PickAndExitAction.prototype = Object.create(Action.prototype);
-
 	PickAndExitAction.prototype.constructor = PickAndExitAction;
 
 	PickAndExitAction.external = {
@@ -89,7 +87,6 @@ define([
 	};
 
 	PickAndExitAction.prototype.handleExit = function () {
-
 		var handler = window.gooHandleExit || function (url) {
 			window.open(url, '_blank');
 		};

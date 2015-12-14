@@ -1,1 +1,1 @@
-define(['goo/debugpack/systems/MarkerSystem'], function(MarkerSystem) {});
+define(['goo/debugpack/systems/MarkerSystem'], function (MarkerSystem) {});

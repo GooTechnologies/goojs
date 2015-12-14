@@ -1,16 +1,16 @@
 define([
 	'goo/entities/systems/System',
 	'goo/renderer/Renderer',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/MathUtils',
 	'goo/math/Vector3'
 ], function (
 	System,
 	Renderer,
-	Matrix4x4,
+	Matrix4,
 	MathUtils,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
@@ -20,24 +20,29 @@ define([
 	function HtmlSystem(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);
 		this.renderer = renderer;
+
+		// this.prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
+		this.prefixes = ['', '-webkit-'];
+		this.styleCache = new Map();
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
 	HtmlSystem.prototype.constructor = HtmlSystem;
 
-	//
 	// Browsers implement z-index as signed 32bit int.
 	// Overflowing pushes the element to the back.
-	//
 	var MAX_Z_INDEX = 2147483647;
-
 	var tmpVector = new Vector3();
 
 	// Copied from CSSTransformComponent
-	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
-	var setStyle = function (element, property, style) {
-		for (var j = 0; j < prefixes.length; j++) {
-			element.style[prefixes[j] + property] = style;
+	HtmlSystem.prototype.setStyle = function (element, property, style) {
+		var cachedStyle = this.styleCache.get(element);
+
+		if (style !== cachedStyle) {
+			for (var j = 0; j < this.prefixes.length; j++) {
+				element.style[this.prefixes[j] + property] = style;
+			}
+			this.styleCache.set(element, style);
 		}
 	};
 
@@ -57,7 +62,7 @@ define([
 			// Always show if not using transform (if not hidden)
 			if (!component.useTransformComponent) {
 				component.domElement.style.display = component.hidden ? 'none' : '';
-				setStyle(component.domElement, 'transform', '');
+				this.setStyle(component.domElement, 'transform', '');
 				continue;
 			}
 
@@ -68,8 +73,8 @@ define([
 			}
 
 			// Behind camera
-			tmpVector.setVector(camera.translation)
-				.subVector(entity.transformComponent.worldTransform.translation);
+			tmpVector.set(camera.translation)
+				.sub(entity.transformComponent.worldTransform.translation);
 			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;
@@ -93,7 +98,7 @@ define([
 			var fx = Math.floor(tmpVector.x / devicePixelRatio);
 			var fy = Math.floor(tmpVector.y / devicePixelRatio);
 
-			setStyle(component.domElement, 'transform',
+			this.setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) ' +
 				'translate(' + fx + 'px, ' + fy + 'px)' +
 				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
@@ -102,15 +107,17 @@ define([
 		}
 	};
 
-	HtmlSystem.prototype.deleted = function(entity) {
+	HtmlSystem.prototype.deleted = function (entity) {
 		if (!entity || !entity.htmlComponent) {
 			return;
 		}
 
 		var component = entity.htmlComponent;
+
 		if (component.domElement.parentNode) {
 			component.domElement.parentNode.removeChild(component.domElement);
 		}
+
 		component.domElement = null;
 	};
 

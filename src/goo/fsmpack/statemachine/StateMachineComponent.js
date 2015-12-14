@@ -1,10 +1,10 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/ArrayUtil',
+	'goo/util/ArrayUtils',
 	'goo/entities/SystemBus'
 ], function (
 	Component,
-	ArrayUtil,
+	ArrayUtils,
 	SystemBus
 ) {
 	'use strict';
@@ -23,6 +23,7 @@ define([
 		this.vars = {};
 		this.system = null;
 		this.time = 0;
+		this.entered = false;
 
 		this.active = true;
 	}
@@ -79,7 +80,7 @@ define([
 
 	StateMachineComponent.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
-		ArrayUtil.remove(this._machines, machine);
+		ArrayUtils.remove(this._machines, machine);
 	};
 
 	/**

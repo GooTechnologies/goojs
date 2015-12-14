@@ -1,1 +1,1 @@
-define(['goo/animationpack/clip/JointData'], function(JointData) {});
+define(['goo/animationpack/clip/JointData'], function (JointData) {});

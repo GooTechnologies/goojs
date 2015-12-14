@@ -5,7 +5,7 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtils'
 ], function (
 	System,
 	BoundingBox,
@@ -22,9 +22,9 @@ define([
 	/**
 	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
-	 * @param [Object] [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.stepFrequency=60]
-	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0,-10,0)
+	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0, -10, 0)
 	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @example
@@ -40,9 +40,9 @@ define([
 		settings = settings || {};
 
 		_.defaults(settings, {
-			gravity :		new Vector3(0, -10, 0),
-			stepFrequency : 60,
-			broadphase :	'naive'
+			gravity: new Vector3(0, -10, 0),
+			stepFrequency: 60,
+			broadphase: 'naive'
 		});
 
 		this.priority = 1; // make sure it processes after transformsystem
@@ -172,7 +172,7 @@ define([
 			position.vadd(tmpVec, tmpVec);
 			entity.transformComponent.setTranslation(tmpVec.x, tmpVec.y, tmpVec.z);
 
-			tmpQuat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
+			tmpQuat.setDirect(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 			entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
 			entity.transformComponent.setUpdated();
 		}
