@@ -247,7 +247,7 @@ define([
 	/**
 	 * Apply a force to a point on the body in world space.
 	 * @param {Vector3} force The force vector, oriented in world space.
-	 * @param {Vector3} [relativePoint]
+	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
 	 */
 	RigidBodyComponent.prototype.applyForce = function (force, relativePoint) {
 		var cannonForce = tmpCannonVec;
@@ -264,8 +264,8 @@ define([
 
 	/**
 	 * Apply a force to the body in local body space.
-	 * @param {Vector3} force The force vector, oriented in world space.
-	 * @param {Vector3} [relativePoint]
+	 * @param {Vector3} force The force vector, oriented in local space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
 	 */
 	RigidBodyComponent.prototype.applyForceLocal = function (force, relativePoint) {
 		var cannonForce = tmpCannonVec;
