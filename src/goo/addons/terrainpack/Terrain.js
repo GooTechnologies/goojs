@@ -43,19 +43,17 @@ define([
 ) {
 	'use strict';
 
-	var Ammo = window.Ammo; // make jslint happy
-
 	/**
 	 * A terrain
 	 */
-	function Terrain(goo, size, count) {
+	function Terrain(goo, size, clipmapCount) {
 		this.world = goo.world;
 		this.renderer = goo.renderer;
 		this.size = size;
-		this.count = count;
+		this.clipmapCount = clipmapCount;
 		this.splatMult = 2;
 
-		this._gridCache = {};
+		this.gridCache = {};
 
 		var brush = new Quad(2 / size, 2 / size);
 
@@ -92,27 +90,29 @@ define([
 		this.normalmapPass.material.uniforms.height = 10;
 
 		this.extractFloatPass = new FullscreenPass(extractShader);
-		// this.detailmapPass = new FullscreenPass(detailShader);
 
-		this.normalMap = new RenderTarget(size, size);
-		// this.detailMap = new RenderTarget(size, size);
+		this.normalMap = new RenderTarget(size, size, {
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
+		});
 
+		this.clipmaps = [];
 		this.textures = [];
 		this.texturesBounce = [];
-		for (var i = 0; i < count; i++) {
+		for (var i = 0; i < clipmapCount; i++) {
 			this.textures[i] = new RenderTarget(size, size, {
 				magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false,
 				type: 'Float'
 			});
 			this.texturesBounce[i] = new RenderTarget(size, size, {
 				magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false,
 				type: 'Float'
 			});
@@ -128,33 +128,49 @@ define([
 		console.log('grid size: ', this.gridSize);
 
 		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false
 		});
 		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
 
+	Terrain.prototype.cleanup = function () {
+		// clean all textures!
+		// for (var name in this.terrainTextures) {
+		// 	var texture = this.terrainTextures[name];
+		// 	if (texture instanceof Texture) {
+		// 		this.renderer._deallocateTexture(texture);
+		// 	}
+		// }
+		// this.terrainTextures = null;
+
+		// this.renderer._deallocateRenderTarget(this.normalMap);
+		// this.renderer._deallocateRenderTarget(this.outputTarget);
+		// this.renderer._deallocateRenderTarget(this.splat);
+		// this.renderer._deallocateRenderTarget(this.splatCopy);
+
+		this.terrainRoot.removeFromWorld();
+	};
+
 	Terrain.prototype.init = function (terrainTextures) {
 		var world = this.world;
-		var count = this.count;
+		var clipmapCount = this.clipmapCount;
 
-		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
-		entity.addToWorld();
-		this.clipmaps = [];
-		for (var i = 0; i < count; i++) {
+		var entity = this.terrainRoot = world.createEntity('TerrainRoot').addToWorld();
+		for (var i = 0; i < clipmapCount; i++) {
 			var size = Math.pow(2, i);
 
 			var material = new Material(terrainShaderDefFloat, 'clipmap' + i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			material.cullState.frontFace = 'CW';
-			// material.wireframe = true;
+			material.wireframe = true;
 			material.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			material.uniforms.resolutionNorm = [this.size, this.size];
 
@@ -200,31 +216,37 @@ define([
 		lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
 
+		terrainTextures.heightMap = terrainTextures.heightMap || new Float32Array(this.size * this.size);
 		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
 			generateMipmaps: false,
 			format: 'Luminance'
 		}, this.size, this.size);
 
+		terrainTextures.splatMap = terrainTextures.splatMap || new Uint8Array(this.size * this.splatMult * this.size * this.splatMult * 4);
 		this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
 			generateMipmaps: false,
 			flipY: false
 		}, this.size * this.splatMult, this.size * this.splatMult);
 
-		for (var i = 0; i < this.count; i++) {
+		for (var i = 0; i < this.clipmapCount; i++) {
 			var material = this.clipmaps[i].origMaterial;
 			var texture = this.textures[i];
 
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', this.normalMap);
-			material.setTexture('DETAIL_MAP', this.detailMap);
+			material.setTexture('DETAIL_MAP', terrainTextures.detailMap);
+			if (terrainTextures.lightMap) {
+				material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
+				material.shader.setDefine('LIGHTMAP', true);
+			}
 
 			material.setTexture('SPLAT_MAP', this.splat);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -237,21 +259,6 @@ define([
 			var terrainPickingMaterial = this.clipmaps[i].terrainPickingMaterial;
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
-
-		// var normalAdd = new TextureCreator().loadTexture2D('res/terrain/grass2n.jpg', {
-			// anisotropy: 4
-		// }, function (texture) {});
-		// this.normalmapPass.material.setTexture('NORMAL_MAP', normalAdd);
-
-		// var material = this.detailmapPass.material;
-		// material.setTexture('NORMAL_MAP', this.normalMap);
-		// material.setTexture('SPLAT_MAP', this.splat);
-		// material.setTexture('GROUND_MAP1', terrainTextures.ground1);
-		// material.setTexture('GROUND_MAP2', terrainTextures.ground2);
-		// material.setTexture('GROUND_MAP3', terrainTextures.ground3);
-		// material.setTexture('GROUND_MAP4', terrainTextures.ground4);
-		// material.setTexture('GROUND_MAP5', terrainTextures.ground5);
-		// material.setTexture('STONE_MAP', terrainTextures.stone);
 
 		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
@@ -411,7 +418,7 @@ define([
 		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
 		this.renderer.readPixels(0, 0, this.size, this.size, normalBuffer);
 
-		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
+		var splatBuffer = new Uint8Array(this.size * this.size * 4 * this.splatMult * this.splatMult);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 		this.renderer.readPixels(0, 0, this.size * this.splatMult, this.size * this.splatMult, splatBuffer);
 
@@ -422,85 +429,8 @@ define([
 		};
 	};
 
-	Terrain.prototype.updateAmmoBody = function () {
-		var heights = this.getTerrainData().heights;
-		var heightBuffer = this.heightBuffer;
-		for (var z = 0; z < this.size; z++) {
-			for (var x = 0; x < this.size; x++) {
-				Ammo.setValue(heightBuffer + (z * this.size + x) * 4, heights[(this.size - z - 1) * this.size + x], 'float');
-			}
-		}
-	};
-
-	Terrain.prototype.setLightmapTexture = function (lightMap) {
-		// update all meshes.
-		for (var i = 0; i < this.clipmaps.length; i++) {
-			var clipmap = this.clipmaps[i];
-			clipmap.clipmapEntity.traverse(function (entity) {
-				if (entity.meshRendererComponent) {
-					var material = entity.meshRendererComponent.materials[0];
-					if (lightMap) {
-						material.setTexture('LIGHT_MAP', lightMap);
-						material.shader.setDefine('LIGHTMAP', true);
-					} else {
-						material.shader.removeDefine('LIGHTMAP');
-					}
-				}
-			});
-		}
-	};
-
-	// Returns the ammo body.
-	Terrain.prototype.initAmmoBody = function () {
-		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, 'float', Ammo.ALLOC_NORMAL);
-
-		this.updateAmmoBody();
-
-		var heightScale = 1.0;
-		var minHeight = -500;
-		var maxHeight = 500;
-		var upAxis = 1; // 0 => x, 1 => y, 2 => z
-		var heightDataType = 0; //PHY_FLOAT;
-		var flipQuadEdges = false;
-
-		var shape = new Ammo.btHeightfieldTerrainShape(
-			this.size,
-			this.size,
-			heightBuffer,
-			heightScale,
-			minHeight,
-			maxHeight,
-			upAxis,
-			heightDataType,
-			flipQuadEdges
-		);
-
-		// var sx = xw / widthPoints;
-		// var sz = zw / lengthPoints;
-		// var sy = 1.0;
-
-		// var sizeVector = new Ammo.btVector3(sx, sy, sz);
-		// shape.setLocalScaling(sizeVector);
-
-		var ammoTransform = new Ammo.btTransform();
-		ammoTransform.setIdentity(); // TODO: is this needed ?
-		ammoTransform.setOrigin(new Ammo.btVector3( this.size / 2, 0, this.size / 2 ));
-		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
-		var localInertia = new Ammo.btVector3(0, 0, 0);
-
-		var mass = 0;
-
-		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
-		var body = new Ammo.btRigidBody(info);
-		body.setFriction(1);
-
-		this.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
-
-		return body;
-	};
-
 	Terrain.prototype.updateTextures = function () {
-		for (var i = 0; i < this.count - 1; i++) {
+		for (var i = 0; i < this.clipmapCount - 1; i++) {
 			var mipmap = this.textures[i];
 			var child = this.textures[i + 1];
 
@@ -511,7 +441,7 @@ define([
 		}
 
 		var size = this.size;
-		for (var i = 0; i < this.count; i++) {
+		for (var i = 0; i < this.clipmapCount; i++) {
 			var mipmapTarget = this.texturesBounce[i];
 			var mipmap = this.textures[i];
 			var child = this.textures[i + 1];
@@ -534,7 +464,7 @@ define([
 			size *= 0.5;
 		}
 
-		for (var i = 0; i < this.count; i++) {
+		for (var i = 0; i < this.clipmapCount; i++) {
 			this.copyPass.render(this.renderer, this.textures[i], this.texturesBounce[i]);
 		}
 
@@ -676,13 +606,13 @@ define([
 
 	Terrain.prototype.createGrid = function (w, h) {
 		var key = w + '_' + h;
-		if (this._gridCache[key]) {
-			return this._gridCache[key];
+		if (this.gridCache[key]) {
+			return this.gridCache[key];
 		}
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
 		var meshData = new MeshData(attributeMap, (w + 1) * (h + 1), (w * 2 + 4) * h);
-		this._gridCache[key] = meshData;
+		this.gridCache[key] = meshData;
 
 		meshData.indexModes = ['TriangleStrip'];
 
@@ -764,7 +694,9 @@ define([
 			col: [0, 0, 0]
 		},
 		builder: function (shader, shaderInfo) {
-			ShaderBuilder.light.builder(shader, shaderInfo);
+			if (!shader.hasDefine('LIGHTMAP')) {
+				ShaderBuilder.light.builder(shader, shaderInfo);
+			}
 		},
 		vshader: function () {
 			return [
@@ -780,7 +712,9 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prevertex,
+				'#endif',
 
 				'const vec2 alphaOffset = vec2(45.0);',
 				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
@@ -796,7 +730,7 @@ define([
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				//'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -1000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -805,7 +739,9 @@ define([
 				'vWorldPos = worldPos.xyz;',
 				'viewPosition = cameraPosition - vWorldPos;',
 
-				ShaderBuilder.light.vertex,
+				'#ifndef LIGHTMAP',
+					ShaderBuilder.light.vertex,
+				'#endif',
 				'}'
 			].join('\n');
 		},
@@ -835,10 +771,12 @@ define([
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
 
+				'#ifndef LIGHTMAP',
 				ShaderBuilder.light.prefragment,
+				'#endif',
 
 				'void main(void) {',
-					'if (alphaval.w < -1000.0) discard;',
+					//'if (alphaval.w <= 0.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',
@@ -868,9 +806,9 @@ define([
 					// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
 					'#ifdef LIGHTMAP',
-					'final_color = final_color * texture2D(lightMap, mapcoord);',
+						'final_color = final_color * texture2D(lightMap, mapcoord) * 1.5;',
 					'#else',
-					ShaderBuilder.light.fragment,
+						ShaderBuilder.light.fragment,
 					'#endif',
 
 					'#ifdef FOG',

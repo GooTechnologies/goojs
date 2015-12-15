@@ -46,9 +46,30 @@ define([
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings) {
+	Vegetation.prototype.cleanup = function () {
+		// clean all textures!
+		var renderer = this.world.gooRunner.renderer;
+
+		// renderer._deallocateTexture(this.material.getTexture('DIFFUSE_MAP'));
+		// this.material.removeTexture('DIFFUSE_MAP');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
+					entity.meshDataComponent.meshData.destroy();
+				}
+				entity.removeFromWorld();
+			}
+		}
+		this.grid = [];
+	};
+
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, terrainData, terrainTextures) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
+
+		var vegetationTypes = terrainData.vegetationTypes;
 
 		this.vegetationList = {};
 		for (var type in vegetationTypes) {
@@ -59,8 +80,9 @@ define([
 
 		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
+		material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
 		material.cullState.enabled = false;
-		material.uniforms.discardThreshold = 0.2;
+		material.uniforms.discardThreshold = 0.3;
 		material.blendState.blending = 'CustomBlending';
 		// material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
@@ -69,28 +91,22 @@ define([
 		material.renderQueue = 3001;
 		this.material = material;
 
-		this.patchSize = 15;
-		this.patchDensity = 19;
-		this.gridSize = 7;
-
-		if (settings) {
-			this.patchSize = settings.patchSize || this.patchSize;
-			this.patchDensity = settings.patchDensity || this.patchDensity;
-			this.gridSize = settings.gridSize || this.gridSize;
-		}
+		this.patchSize = terrainData.vegetationDensity.patchSize || 15;
+		this.patchDensity = terrainData.vegetationDensity.patchDensity || 25;
+		this.gridSize = terrainData.vegetationDensity.gridSize || 7;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
-		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
+		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
 		var dummyMesh = this.createPatch(0, 0);
 		for (var x = 0; x < this.gridSize; x++) {
 			this.grid[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
-				var entity = this.world.createEntity(this.material);
+				var entity = this.world.createEntity('VegetationPatch'+x+'_'+z, this.material);
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
-				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.xExtent = this.patchSize * 0.5;
 				meshDataComponent.modelBound.yExtent = 500;
-				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.modelBound.zExtent = this.patchSize * 0.5;
 				meshDataComponent.autoCompute = false;
 				entity.set(meshDataComponent);
 				entity.addToWorld();
@@ -128,9 +144,15 @@ define([
 		}
 	};
 
+	var patches = [];
 	Vegetation.prototype.update = function (x, z) {
 		if (!this.initDone || hidden) {
 			return;
+		}
+
+		if (patches.length > 0) {
+			var patch = patches.shift();
+			this.updatePatch(patch.patchX, patch.patchZ);
 		}
 
 		var newX = Math.floor(x / this.patchSize);
@@ -155,21 +177,28 @@ define([
 
 				patchX -= this.gridSizeHalf;
 				patchZ -= this.gridSizeHalf;
-				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
-				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
 
-				patchX *= this.patchSize;
-				patchZ *= this.patchSize;
+				patches.push({
+					patchX: patchX,
+					patchZ: patchZ,
+				});
 
-				var entity = this.grid[modX][modZ];
-				var meshData = this.createPatch(patchX, patchZ);
-				if (!meshData) {
-					entity.meshRendererComponent.hidden = true;
-				} else {
-					entity.meshRendererComponent.hidden = false;
-					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
-				}
+
+				// var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+				// var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+				// patchX *= this.patchSize;
+				// patchZ *= this.patchSize;
+
+				// var entity = this.grid[modX][modZ];
+				// var meshData = this.createPatch(patchX, patchZ);
+				// if (!meshData) {
+				// 	entity.meshRendererComponent.hidden = true;
+				// } else {
+				// 	entity.meshRendererComponent.hidden = false;
+				// 	entity.meshDataComponent.meshData = meshData;
+				// 	entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				// }
 			}
 		}
 
@@ -179,17 +208,36 @@ define([
 		// console.timeEnd('vegetation update');
 	};
 
+	Vegetation.prototype.updatePatch = function (patchX, patchZ) {
+		var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+		var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+		patchX *= this.patchSize;
+		patchZ *= this.patchSize;
+
+		var entity = this.grid[modX][modZ];
+		var meshData = this.createPatch(patchX, patchZ);
+		if (!meshData) {
+			entity.meshRendererComponent.hidden = true;
+		} else {
+			entity.meshRendererComponent.hidden = false;
+			entity.meshDataComponent.meshData = meshData;
+			entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+		}
+	};
+
 	Vegetation.prototype.createPatch = function (patchX, patchZ) {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random() * 0.5) * patchSpacing;
-				var zz = patchZ + (z + Math.random() * 0.5) * patchSpacing;
+				var xx = patchX + (x + MathUtils.fastRandom()*0.5) * patchSpacing;
+				var zz = patchZ + (z + MathUtils.fastRandom()*0.5) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -207,10 +255,10 @@ define([
 					continue;
 				}
 
-				var size = Math.random() * 0.4 + 0.8;
+				var size = MathUtils.fastRandom() * 0.4 + 0.8;
 				transform.scale.setDirect(size, size, size);
 				transform.translation.setDirect(0, 0, 0);
-				var angle = Math.random() * Math.PI * 2.0;
+				var angle = MathUtils.fastRandom() * Math.PI * 2.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setDirect(anglex, 0.0, anglez);
@@ -229,18 +277,18 @@ define([
 		var meshDatas = meshBuilder.build();
 
 		// Calculate lighting from lightmap
-		for (var i = 0; i<meshDatas.length; i++) {
-			var meshData = meshDatas[i];
-			var verts = meshData.getAttributeBuffer(MeshData.POSITION);
-			var cols = meshData.getAttributeBuffer(MeshData.COLOR);
-			for (var i = 0, j = 0; i < verts.length; i += 3, j += 4) {
-				var col = this.terrainQuery.getLightAt([verts[i], verts[i + 1], verts[i + 2]]);
-				cols[j] = col;
-				cols[j + 1] = col;
-				cols[j + 2] = col;
-				cols[j + 3] = 1;
-			}
-		}
+		// for (var i=0;i<meshDatas.length;i++) {
+		// 	var meshData = meshDatas[i];
+		// 	var verts = meshData.getAttributeBuffer(MeshData.POSITION);
+		// 	var cols = meshData.getAttributeBuffer(MeshData.COLOR);
+		// 	for (var i=0,j=0;i<verts.length;i+=3,j+=4) {
+		// 		var col = this.terrainQuery.getLightAt([verts[i], verts[i+1], verts[i+2]]);
+		// 		cols[j] = col;
+		// 		cols[j+1] = col;
+		// 		cols[j+2] = col;
+		// 		cols[j+3] = 1;
+		// 	}
+		// }
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
@@ -250,22 +298,22 @@ define([
 	var _tempZ = new Vector3();
 
 	Vegetation.prototype.lookAt = function (matrix, direction, up) {
-		var x = _tempX, y = _tempY, z = _tempZ;
+		var xVec = _tempX, yVec = _tempY, zVec = _tempZ;
 
-		y.set(up).normalize();
-		x.set(up).cross(direction).normalize();
-		z.set(y).cross(x);
+		yVec.set(up).normalize();
+		xVec.set(up).cross(direction).normalize();
+		zVec.set(yVec).cross(xVec);
 
 		var d = matrix.data;
-		d[0] = x.x;
-		d[1] = x.y;
-		d[2] = x.z;
-		d[3] = y.x;
-		d[4] = y.y;
-		d[5] = y.z;
-		d[6] = z.x;
-		d[7] = z.y;
-		d[8] = z.z;
+		d[0] = xVec.x;
+		d[1] = xVec.y;
+		d[2] = xVec.z;
+		d[3] = yVec.x;
+		d[4] = yVec.y;
+		d[5] = yVec.z;
+		d[6] = zVec.x;
+		d[7] = zVec.y;
+		d[8] = zVec.z;
 
 		return this;
 	};
@@ -291,10 +339,10 @@ define([
 		]);
 
 		meshData.getAttributeBuffer(MeshData.COLOR).set([
-			1, 1, 1, 1,
-			1, 1, 1, 1,
-			1, 1, 1, 1,
-			1, 1, 1, 1
+			1,1,1,1,
+			1,1,1,1,
+			1,1,1,1,
+			1,1,1,1
 		]);
 
 		var meshBuilder = new MeshBuilder();
@@ -306,19 +354,19 @@ define([
 		meshBuilder.addMeshData(meshData, transform);
 
 		// transform.setRotationXYZ(0, Math.PI * 0.5, 0);
-		transform.setRotationXYZ(0, Math.PI * 0.3, 0);
-		transform.translation.x = type.w * 0.1;
-		transform.translation.z = type.w * 0.1;
+			transform.setRotationXYZ(0, Math.PI * 0.3, 0);
+			transform.translation.x = type.w * 0.1;
+			transform.translation.z = type.w * 0.1;
 		transform.update();
 
 		meshBuilder.addMeshData(meshData, transform);
 
-		transform.setRotationXYZ(0, -Math.PI * 0.3, 0);
-		transform.translation.x = -type.w * 0.1;
-		transform.translation.z = type.w * 0.1;
-		transform.update();
+			transform.setRotationXYZ(0, -Math.PI * 0.3, 0);
+			transform.translation.x = -type.w * 0.1;
+			transform.translation.z = type.w * 0.1;
+			transform.update();
 
-		meshBuilder.addMeshData(meshData, transform);
+			meshBuilder.addMeshData(meshData, transform);
 
 		var meshDatas = meshBuilder.build();
 
@@ -338,18 +386,19 @@ define([
 				}
 			}
 		],
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexNormal: MeshData.NORMAL,
-			vertexUV0: MeshData.TEXCOORD0,
-			vertexColor: MeshData.COLOR,
-			base: 'BASE'
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexNormal : MeshData.NORMAL,
+			vertexUV0 : MeshData.TEXCOORD0,
+			vertexColor : MeshData.COLOR,
+			base : 'BASE'
 		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			cameraPosition: Shader.CAMERA,
-			diffuseMap: Shader.DIFFUSE_MAP,
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraPosition : Shader.CAMERA,
+			diffuseMap : Shader.DIFFUSE_MAP,
+			lightMap : 'LIGHT_MAP',
 			discardThreshold: -0.01,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
@@ -357,91 +406,93 @@ define([
 			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			time: Shader.TIME,
-			fadeDistMin: 40.0,
-			fadeDistMax: 50.0
+			time : Shader.TIME,
+			fadeDistMin : 40.0,
+			fadeDistMax : 50.0
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
 		},
 		vshader: function () {
 			return [
-				'attribute vec3 vertexPosition;',
-				'attribute vec3 vertexNormal;',
-				'attribute vec2 vertexUV0;',
-				'attribute vec4 vertexColor;',
-				'attribute float base;',
+			'attribute vec3 vertexPosition;',
+			'attribute vec3 vertexNormal;',
+			'attribute vec2 vertexUV0;',
+			'attribute vec4 vertexColor;',
+			'attribute float base;',
 
-				'uniform mat4 viewProjectionMatrix;',
-				'uniform mat4 worldMatrix;',
-				'uniform vec3 cameraPosition;',
-				'uniform float time;',
-				'uniform float fadeDistMin;',
-				'uniform float fadeDistMax;',
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
+			'uniform float time;',
+			'uniform float fadeDistMin;',
+			'uniform float fadeDistMax;',
 
-				ShaderBuilder.light.prevertex,
+			ShaderBuilder.light.prevertex,
 
-				'varying vec3 normal;',
-				'varying vec3 vWorldPos;',
-				'varying vec3 viewPosition;',
-				'varying vec2 texCoord0;',
-				'varying vec4 color;',
-				'varying float dist;',
+			'varying vec3 normal;',
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'varying vec2 texCoord0;',
+			'varying vec4 color;',
+			'varying float dist;',
 
-				'void main(void) {',
-					'vec3 swayPos = vertexPosition;',
-					'swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;',
-					'vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
-					'vWorldPos = worldPos.xyz;',
-					'gl_Position = viewProjectionMatrix * worldPos;',
+			'void main(void) {',
+				'vec3 swayPos = vertexPosition;',
+				'swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;',
+				'vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
+				'vWorldPos = worldPos.xyz;',
+				'gl_Position = viewProjectionMatrix * worldPos;',
 
-					ShaderBuilder.light.vertex,
+				ShaderBuilder.light.vertex,
 
-					'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-					'texCoord0 = vertexUV0;',
-					'color = vertexColor;',
-					'viewPosition = cameraPosition - worldPos.xyz;',
-					'dist = 1.0 - smoothstep(fadeDistMin, fadeDistMax, length(viewPosition.xz));',
-				'}'
-			].join('\n');
+				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+				'texCoord0 = vertexUV0;',
+				'color = vertexColor;',
+				'viewPosition = cameraPosition - worldPos.xyz;',
+				'dist = 1.0 - smoothstep(fadeDistMin, fadeDistMax, length(viewPosition.xz));',
+			'}'
+		].join('\n');
 		},
 		fshader: function () {
 			return [
-				'uniform sampler2D diffuseMap;',
-				'uniform float discardThreshold;',
-				'uniform vec2 fogSettings;',
-				'uniform vec3 fogColor;',
+			'uniform sampler2D diffuseMap;',
+			'uniform sampler2D lightMap;',
+			'uniform float discardThreshold;',
+			'uniform vec2 fogSettings;',
+			'uniform vec3 fogColor;',
 
-				ShaderBuilder.light.prefragment,
+			ShaderBuilder.light.prefragment,
 
-				'varying vec3 normal;',
-				'varying vec3 vWorldPos;',
-				'varying vec3 viewPosition;',
-				'varying vec2 texCoord0;',
-				'varying float dist;',
-				'varying vec4 color;',
+			'varying vec3 normal;',
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'varying vec2 texCoord0;',
+			'varying float dist;',
+			'varying vec4 color;',
 
-				'void main(void)',
-				'{',
-					'vec4 final_color = texture2D(diffuseMap, texCoord0) * color;',
-					'if (final_color.a < discardThreshold) discard;',
-					'final_color.a = min(final_color.a, dist);',
-					'if (final_color.a <= 0.0) discard;',
+			'void main(void)',
+			'{',
+				'vec4 final_color = texture2D(diffuseMap, texCoord0) * color;',
+				'if (final_color.a < discardThreshold) discard;',
+				'final_color.a = min(final_color.a, dist);',
+				'if (final_color.a <= 0.0) discard;',
 
-					'vec3 N = normalize(normal);',
+				'vec3 N = normalize(normal);',
 
-					ShaderBuilder.light.fragment,
+				// ShaderBuilder.light.fragment,
+				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 1.5;',
 
-					'final_color.a = pow(final_color.a, 0.5);',
+				'final_color.a = pow(final_color.a, 0.5);',
 
-					'#ifdef FOG',
-					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
-					'#endif',
+				'#ifdef FOG',
+				'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+				'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+				'#endif',
 
-					'gl_FragColor = final_color;',
-				'}'
-			].join('\n');
+				'gl_FragColor = final_color;',
+			'}'
+		].join('\n');
 		}
 	};
 
