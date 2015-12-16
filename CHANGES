@@ -1,4 +1,8 @@
-v0.15.26 --- 2015-12-??
+v0.15.26 --- ????-??-??
+
+### Fixes
+
+  * Trigger events now also work for kinematic vs kinematic and kinematic vs static.
 
 ### Additions
 

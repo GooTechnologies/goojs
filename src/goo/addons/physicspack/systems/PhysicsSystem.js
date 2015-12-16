@@ -48,11 +48,19 @@ function (
 		this.cannonWorld.addEventListener('beginShapeContact', function (evt) {
 			var entityA = this._shapeIdToColliderEntityMap.get(evt.shapeA.id);
 			var entityB = this._shapeIdToColliderEntityMap.get(evt.shapeB.id);
-			this._stayingEntities.push(entityA, entityB);
+
+			if (!entityA || !entityB) {
+				return;
+			}
+
 			if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
 				this.emitTriggerEnter(entityA, entityB);
-			} else {
+				this._stayingEntities.push(entityA, entityB);
+
+				// At least one of the colliders need to have a non-kinematic rigid body
+			} else if ((entityA.colliderComponent.getBodyEntity() && !entityA.colliderComponent.getBodyEntity().rigidBodyComponent.isKinematic) || (entityB.colliderComponent.getBodyEntity() && !entityB.colliderComponent.getBodyEntity().rigidBodyComponent.isKinematic)) {
 				this.emitBeginContact(entityA, entityB);
+				this._stayingEntities.push(entityA, entityB);
 			}
 		}.bind(this));
 

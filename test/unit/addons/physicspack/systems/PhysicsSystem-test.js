@@ -266,13 +266,13 @@ define([
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
-			expect(numDuringContact).toEqual(0);
+			expect(numDuringContact).toEqual(1);
 			expect(numEndContact).toEqual(0);
 
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
-			expect(numDuringContact).toEqual(1);
+			expect(numDuringContact).toEqual(2);
 			expect(numEndContact).toEqual(0);
 
 			rbcA.setPosition(new Vector3(0, 0, 3));
@@ -281,12 +281,427 @@ define([
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
-			expect(numDuringContact).toEqual(1);
+			expect(numDuringContact).toEqual(2);
 			expect(numEndContact).toEqual(1);
 
 			for (var key in listeners) {
 				SystemBus.removeListener(key, listeners[key]);
 			}
+		});
+
+		describe('trigger and contact events', function () {
+			var numTriggerEnter = 0;
+			var numTriggerStay = 0;
+			var numTriggerExit = 0;
+			var numBeginContact = 0;
+			var numDuringContact = 0;
+			var numEndContact = 0;
+
+			var listeners = {
+				'goo.physics.triggerEnter': function () {
+					numTriggerEnter++;
+				},
+				'goo.physics.triggerStay': function () {
+					numTriggerStay++;
+				},
+				'goo.physics.triggerExit': function () {
+					numTriggerExit++;
+				},
+				'goo.physics.beginContact': function () {
+					numBeginContact++;
+				},
+				'goo.physics.duringContact': function () {
+					numDuringContact++;
+				},
+				'goo.physics.endContact': function () {
+					numEndContact++;
+				}
+			};
+
+			beforeEach(function () {
+				numTriggerEnter = 0;
+				numTriggerStay = 0;
+				numTriggerExit = 0;
+				numBeginContact = 0;
+				numDuringContact = 0;
+				numEndContact = 0;
+
+				for (var key in listeners) {
+					SystemBus.addListener(key, listeners[key]);
+				}
+			});
+
+			afterEach(function () {
+				for (var key in listeners) {
+					SystemBus.removeListener(key, listeners[key]);
+				}
+			});
+
+			function createStaticCollider(x) {
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 })
+				});
+				world.createEntity(ccA, [x || 0, 0, 0]).addToWorld();
+				ccA.initialize();
+			}
+
+			function createStaticTriggerCollider(x) {
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 }),
+					isTrigger: true
+				});
+				world.createEntity(ccA, [x || 0, 0, 0]).addToWorld();
+				ccA.initialize();
+			}
+
+			function createRigidBodyTriggerCollider() {
+				var rbcA = new RigidBodyComponent({ mass: 1 });
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 }),
+					isTrigger: true
+				});
+				world.createEntity(rbcA, ccA).addToWorld();
+				rbcA.initialize();
+			}
+
+			function createRigidBodyCollider(x) {
+				var rbcA = new RigidBodyComponent({ mass: 1 });
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 })
+				});
+				world.createEntity(rbcA, ccA, [x || 0, 0, 0]).addToWorld();
+				rbcA.initialize();
+			}
+
+			function createKinematicRigidBodyCollider() {
+				var rbcA = new RigidBodyComponent({ mass: 1, isKinematic: true });
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 })
+				});
+				world.createEntity(rbcA, ccA).addToWorld();
+				rbcA.initialize();
+			}
+
+			function createKinematicRigidBodyTriggerCollider() {
+				var rbcA = new RigidBodyComponent({ mass: 1, isKinematic: true });
+				var ccA = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 }),
+					isTrigger: true
+				});
+				world.createEntity(rbcA, ccA).addToWorld();
+				rbcA.initialize();
+			}
+
+			describe('Static Collider vs...', function () {
+				it('Static Collider', function () {
+					createStaticCollider();
+					createStaticCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigid Body Collider', function () {
+					createStaticCollider(0);
+					createRigidBodyCollider(0.1);
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(1);
+					expect(numDuringContact).toEqual(1);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Collider', function () {
+					createStaticCollider();
+					createKinematicRigidBodyCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Static Trigger Collider', function () {
+					createStaticCollider();
+					createStaticTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigidbody Trigger Collider', function () {
+					createStaticCollider();
+					createRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigidbody Trigger Collider', function () {
+					createStaticCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
+
+			describe('Rigid Body Collider vs...', function () {
+				it('Rigid Body Collider', function () {
+					createRigidBodyCollider();
+					createRigidBodyCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(1);
+					expect(numDuringContact).toEqual(1);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Collider', function () {
+					createRigidBodyCollider();
+					createKinematicRigidBodyCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(1);
+					expect(numDuringContact).toEqual(1);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Static Trigger Collider', function () {
+					createRigidBodyCollider();
+					createStaticTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigid Body Trigger Collider', function () {
+					createRigidBodyCollider();
+					createRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Trigger Collider', function () {
+					createRigidBodyCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
+
+
+			describe('Kinematic Rigid Body Collider vs...', function () {
+
+				it('Kinematic Rigid Body Collider', function () {
+					createKinematicRigidBodyCollider();
+					createKinematicRigidBodyCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Static Trigger Collider', function () {
+					createKinematicRigidBodyCollider();
+					createStaticTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigid Body Trigger Collider', function () {
+					createKinematicRigidBodyCollider();
+					createRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Trigger Collider', function () {
+					createKinematicRigidBodyCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
+
+			describe('Static Trigger Collider vs...', function () {
+
+				it('Static Trigger Collider', function () {
+					createStaticTriggerCollider();
+					createStaticTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(0);
+					expect(numTriggerStay).toEqual(0);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Rigid Body Trigger Collider', function () {
+					createStaticTriggerCollider();
+					createRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Trigger Collider', function () {
+					createStaticTriggerCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
+
+			describe('Rigid Body Trigger Collider vs...', function () {
+
+				it('Rigid Body Trigger Collider', function () {
+					createRigidBodyTriggerCollider();
+					createRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+
+				it('Kinematic Rigid Body Trigger Collider', function () {
+					createRigidBodyTriggerCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
+
+			describe('Kinematic Rigid Body Trigger Collider vs...', function () {
+
+				it('Kinematic Rigid Body Trigger Collider', function () {
+					createKinematicRigidBodyTriggerCollider();
+					createKinematicRigidBodyTriggerCollider();
+
+					world.process();
+
+					expect(numTriggerEnter).toEqual(1);
+					expect(numTriggerStay).toEqual(1);
+					expect(numTriggerExit).toEqual(0);
+					expect(numBeginContact).toEqual(0);
+					expect(numDuringContact).toEqual(0);
+					expect(numEndContact).toEqual(0);
+				});
+			});
 		});
 
 		it('emits substep events', function () {
