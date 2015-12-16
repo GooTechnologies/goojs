@@ -1,4 +1,4 @@
-v0.15.26 --- 2015-12-??
+v0.15.26 --- 2015-12-16
 
 ### Additions
 
@@ -8,6 +8,7 @@ v0.15.26 --- 2015-12-??
   + Added RigidBodyComponent.prototype.applyForceLocal
   + Added RigidBodyComponent.prototype.applyTorque
   + Added RigidBodyComponent.prototype.applyTorqueLocal
+  + Added HalfFloat support
 
 v0.15.25 --- 2015-12-10
 
