@@ -17,8 +17,7 @@ require([
 
 	var orbitCam = V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 
-
-	var terrain = new Terrain(goo, 128, 5);
+	var terrain = new Terrain(goo, 32, 5);
 	terrain.init({
 	});
 	goo.callbacks.push(function() {

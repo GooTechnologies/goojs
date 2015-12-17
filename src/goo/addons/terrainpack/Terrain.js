@@ -49,7 +49,10 @@ define([
 	function Terrain(goo, size, clipmapCount) {
 		this.world = goo.world;
 		this.renderer = goo.renderer;
+
+		size = MathUtils.nearestPowerOfTwo(size);
 		this.size = size;
+
 		this.clipmapCount = clipmapCount;
 		this.splatMult = 2;
 
@@ -123,8 +126,10 @@ define([
 		mat3.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
 		mat4.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
 
-		this.n = 31;
-		this.gridSize = (this.n + 1) * 4 - 1;
+		this.gridSize = this.size - 1;
+		this.n = this.size / 4 - 1;
+		console.log('size: ', this.size);
+		console.log('n: ', this.n);
 		console.log('grid size: ', this.gridSize);
 
 		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
