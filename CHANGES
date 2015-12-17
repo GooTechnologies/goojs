@@ -1,3 +1,9 @@
+v0.??.?? --- ????-??-??
+
+### Fixes
+
+  * PhysicsSystem.prototype.raycast* methods now produces a RaycastResult with has the ColliderComponent entity as hit object, and not the RigidBodyComponent entity. If you need the RigidBodyComponent entity, just run ColliderComponent.prototype.getBodyEntity()
+
 v0.15.26 --- 2015-12-16
 
 ### Additions
