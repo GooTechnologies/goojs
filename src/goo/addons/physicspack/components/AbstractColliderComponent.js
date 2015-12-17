@@ -58,6 +58,10 @@ function (
 	AbstractColliderComponent.prototype = Object.create(Component.prototype);
 	AbstractColliderComponent.prototype.constructor = AbstractColliderComponent;
 
+	/**
+	 * Get the closest parent (or self) entity that has a RigidBodyComponent. Returns undefined if none was found.
+	 * @return {Entity}
+	 */
 	AbstractColliderComponent.prototype.getBodyEntity = function () {
 		var bodyEntity;
 		this.entity.traverseUp(function (parent) {
