@@ -360,7 +360,7 @@ define([
 
 			var addDependencyPromises = [];
 
-			if (config.body && config.dependencies) {
+			if (isCustomScript(config) && config.dependencies) {
 				delete script.dependencyErrors;
 
 				// Get all the script HTML elements which refer to the current
@@ -396,14 +396,16 @@ define([
 
 			_.forEach(config.dependencies, function (dependency) {
 				var scriptElement = that._scriptElementsByURL.get(dependency.url);
-				parentElement.appendChild(scriptElement);
+				if (scriptElement) {
+					parentElement.appendChild(scriptElement);
+				}
 			}, null, 'sortValue');
 
 			return RSVP.all(addDependencyPromises)
 			.then(function () {
-				if (config.className) { // Engine script.
+				if (isEngineScript(config)) {
 					that._updateFromClass(script, config, options);
-				} else if (config.body) { // Custom script.
+				} else if (isCustomScript(config)) {
 					that._updateFromCustom(script, config, options);
 				}
 
@@ -440,6 +442,32 @@ define([
 			});
 		});
 	};
+
+	/**
+	 * Gets whether the specified configuration object refers to a built-in
+	 * engine script (i.e. not a custom script).
+	 *
+	 * @param {object} config
+	 *        The configuration object which is to be checked.
+	 *
+	 * @return {Boolean}
+	 */
+	function isEngineScript(config) {
+		return Boolean(config.className);
+	}
+
+	/**
+	 * Gets whether the specified configuration object refers to a custom script
+	 * script (i.e. not a built-in engine script).
+	 *
+	 * @param {object} config
+	 *        The configuration object which is to be checked.
+	 *
+	 * @return {Boolean}
+	 */
+	function isCustomScript(config) {
+		return !isEngineScript(config) && config.body !== undefined;
+	}
 
 	/**
 	 * Removes all the script HTML elements that are not needed by any script
@@ -498,7 +526,6 @@ define([
 			}
 		});
 	};
-
 
 	// The allowed types for the script parameters.
 	var PARAMETER_TYPES = [
@@ -610,9 +637,6 @@ define([
 		}
 	};
 
-	// why does the engine care about these thing si beyond me
-	// there's a lot of very create specific validation done here
-	// `exponential` for instance has NOTHING to do with the engine
 	var PROPERTY_VALIDATORS = [
 		{ name: 'key', validator: TYPE_VALIDATORS.string },
 		{ name: 'name', validator: TYPE_VALIDATORS.string },
