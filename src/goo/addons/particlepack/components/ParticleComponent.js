@@ -264,9 +264,11 @@ define([
 
 		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve : null;
 
-		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 5;
+
+		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
+		this.randomDirection = options.randomDirection !== undefined ? options.randomDirection : false;
 		this.sphereEmitFromShell = options.sphereEmitFromShell !== undefined ? options.sphereEmitFromShell : false;
 		this.coneEmitFrom = options.coneEmitFrom !== undefined ? options.coneEmitFrom : 'base'; // base, volume, volumeshell
 		this.boxExtents = options.boxExtents !== undefined ? options.boxExtents.clone() : new Vector3(1, 1, 1);
@@ -816,16 +818,7 @@ define([
 		var sin = Math.sin;
 		var pi = Math.PI;
 
-		// Default
-		direction.setDirect(0, startSpeed, 0);
-
-		if (shapeType === 'box') {
-			position.setDirect(
-				this._random() - 0.5,
-				this._random() - 0.5,
-				this._random() - 0.5
-			).mul(this.boxExtents);
-		} else if (shapeType === 'sphere') {
+		if (shapeType === 'sphere') {
 			var theta = Math.acos(2 * this._random() - 1);
 			var phi = 2 * pi * this._random();
 			var r = this.sphereRadius;
@@ -874,10 +867,25 @@ define([
 				direction.copy(position);
 				break;
 			}
-			direction.normalize().scale(startSpeed);
 		} else {
-			throw new Error('Shape type not recognized: ' + shapeType);
+			// box
+			position.setDirect(
+				this._random() - 0.5,
+				this._random() - 0.5,
+				this._random() - 0.5
+			).mul(this.boxExtents);
+			direction.setDirect(0, 1, 0);
 		}
+		if(this.randomDirection){
+			var theta = Math.acos(2 * this._random() - 1);
+			var phi = 2 * pi * this._random();
+			direction.setDirect(
+				cos(phi) * sin(theta),
+				cos(theta),
+				sin(phi) * sin(theta)
+			);
+		}
+		direction.normalize().scale(startSpeed);
 	};
 
 	/**
