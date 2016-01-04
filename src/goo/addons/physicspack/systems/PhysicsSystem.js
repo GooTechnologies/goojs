@@ -46,27 +46,31 @@ function (
 		});
 
 		this.cannonWorld.addEventListener('beginShapeContact', function (evt) {
-			var entityA = this._shapeIdToColliderEntityMap.get(evt.shapeA.id);
-			var entityB = this._shapeIdToColliderEntityMap.get(evt.shapeB.id);
+			var shapeIdToColliderEntityMap = this._shapeIdToColliderEntityMap;
+			var entityA = shapeIdToColliderEntityMap.get(evt.shapeA.id);
+			var entityB = shapeIdToColliderEntityMap.get(evt.shapeB.id);
 
 			if (!entityA || !entityB) {
 				return;
 			}
 
-			if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+			var colliderComponentA = entityA.colliderComponent;
+			var colliderComponentB = entityB.colliderComponent;
+			if (colliderComponentA.isTrigger || colliderComponentB.isTrigger) {
 				this.emitTriggerEnter(entityA, entityB);
 				this._stayingEntities.push(entityA, entityB);
 
 				// At least one of the colliders need to have a non-kinematic rigid body
-			} else if ((entityA.colliderComponent.getBodyEntity() && !entityA.colliderComponent.getBodyEntity().rigidBodyComponent.isKinematic) || (entityB.colliderComponent.getBodyEntity() && !entityB.colliderComponent.getBodyEntity().rigidBodyComponent.isKinematic)) {
+			} else if ((colliderComponentA.getBodyEntity() && !colliderComponentA.getBodyEntity().rigidBodyComponent.isKinematic) || (colliderComponentB.getBodyEntity() && !colliderComponentB.getBodyEntity().rigidBodyComponent.isKinematic)) {
 				this.emitBeginContact(entityA, entityB);
 				this._stayingEntities.push(entityA, entityB);
 			}
 		}.bind(this));
 
 		this.cannonWorld.addEventListener('endShapeContact', function (evt) {
-			var entityA = this._shapeIdToColliderEntityMap.get(evt.shapeA.id);
-			var entityB = this._shapeIdToColliderEntityMap.get(evt.shapeB.id);
+			var shapeIdToColliderEntityMap = this._shapeIdToColliderEntityMap;
+			var entityA = shapeIdToColliderEntityMap.get(evt.shapeA.id);
+			var entityB = shapeIdToColliderEntityMap.get(evt.shapeB.id);
 
 			// Remove them from the staying array
 			var stayingEntities = this._stayingEntities;
