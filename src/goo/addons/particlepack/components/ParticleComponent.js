@@ -61,7 +61,7 @@ define([
 	 * @param {number} [options.depthTest=true]
 	 * @param {number} [options.depthWrite=true]
 	 * @param {number} [options.duration=5]
-	 * @param {number} [options.emissionRate=10]
+	 * @param {Curve} [options.emissionRate]
 	 * @param {number} [options.boxExtents]
 	 * @param {number} [options.sphereRadius=1]
 	 * @param {Vector3} [options.gravity]
@@ -71,7 +71,7 @@ define([
 	 * @param {MeshData} [options.mesh]
 	 * @param {number} [options.preWarm=true]
 	 * @param {number} [options.renderQueue=3010]
-	 * @param {number} [options.rotationSpeedCurve]
+	 * @param {Curve} [options.rotationSpeed]
 	 * @param {number} [options.coneRadius=1]
 	 * @param {number} [options.seed]
 	 * @param {number} [options.shapeType='sphere']
@@ -289,15 +289,16 @@ define([
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this.startSpeed = options.startSpeed !== undefined ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
-		
-		// TODO: Should be a curve (constant / curve)
-		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
-
+		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
 		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime.clone() : new ConstantCurve({ value: 5 });
-		
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
+
+		/**
+		 * Pre-warm the emission. Not available if looping is on.
+		 * @type {boolean}
+		 */
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this.blending = options.blending !== undefined ? options.blending : 'NoBlending';
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
@@ -314,7 +315,7 @@ define([
 		// Should be a curve
 		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
 		
-		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve.clone() : null;
+		this.rotationSpeed = options.rotationSpeed !== undefined ? options.rotationSpeed.clone() : null;
 
 		if (options.texture) {
 			this.texture = options.texture;
@@ -413,15 +414,15 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent rotationSpeedCurve member
+		 * @target-class ParticleComponent rotationSpeed member
 		 * @type {Curve}
 		 */
-		rotationSpeedCurve: {
+		rotationSpeed: {
 			get: function () {
-				return this._rotationSpeedCurve;
+				return this._rotationSpeed;
 			},
 			set: function (value) {
-				this._rotationSpeedCurve = value;
+				this._rotationSpeed = value;
 				this.material.shader.setDefine('ROTATION_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.ROTATION_CURVE_CODE);
 			}
 		},
@@ -463,10 +464,11 @@ define([
 				return this.material.shader.hasDefine('LOOP');
 			},
 			set: function (value) {
+				var shader = this.material.shader;
 				if (value) {
-					this.material.shader.setDefine('LOOP', true);
+					shader.setDefine('LOOP', true);
 				} else {
-					this.material.shader.removeDefine('LOOP');
+					shader.removeDefine('LOOP');
 				}
 			}
 		},
@@ -547,11 +549,13 @@ define([
 				return this.material.getTexture('PARTICLE_TEXTURE');
 			},
 			set: function (value) {
-				this.material.setTexture('PARTICLE_TEXTURE', value);
-				var shader = this.material.shader;
+				var material = this.material;
+				var shader = material.shader;
 				if (value) {
+					material.setTexture('PARTICLE_TEXTURE', value);
 					shader.setDefine('PARTICLE_TEXTURE', true);
 				} else {
+					material.removeTexture('PARTICLE_TEXTURE');
 					shader.removeDefine('PARTICLE_TEXTURE');
 				}
 			}
@@ -757,22 +761,36 @@ define([
 
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
+		var emissionRate = this.emissionRate;
+		var numToEmitEachStep;
+		if(this.localSpace){
+			numToEmitEachStep = [];
+			var steps = Math.ceil(duration * 60); // Should not need to emit more precise than 60Hz
+			var sum = 0;
+			var lastIntegral = 0;
+			for(var i=0; i<steps && sum < maxParticles; i++){
+				var currentIntegral = emissionRate.getIntegralValueAt(i / steps);
+				var numToEmit = Math.floor(currentIntegral - sum);
+				lastIntegral = currentIntegral;
+				sum += numToEmit;
+				numToEmitEachStep.push(numToEmit);
+			}
+		}
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
 			particle.active = 1;
 
 			if (this.localSpace) {
 
-				if(this.preWarm){
+				particle.emitTime = i / emissionRate;
+				
+				if(this.preWarm && !this.loop){
 					// Already emitted, shift emit time back
-					particle.emitTime = i / this.emissionRate - duration;
-				} else {
-					// Emit in the future, positive time
-					particle.emitTime = i / this.emissionRate;
+					particle.emitTime -= duration;
 				}
 
 				if (this.loop) {
-					particle.active = i < duration * this.emissionRate ? 1 : 0;
+					particle.active = i < duration * emissionRate ? 1 : 0;
 				}
 
 			} else {
@@ -798,8 +816,9 @@ define([
 			var pos = particle.startPosition;
 			var dir = particle.startDirection;
 
-			this._generateLocalPositionAndDirection(pos, dir, (particle.emitTime / duration) % 1);
-			particle.startAngle = this._generateStartAngle();
+			var t = (particle.emitTime / duration) % 1;
+			this._generateLocalPositionAndDirection(pos, dir, t);
+			particle.startAngle = this._generateStartAngle(t);
 
 			for (j = 0; j < meshVertexCount; j++) {
 				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
@@ -817,8 +836,8 @@ define([
 		meshData.setAttributeDataUpdated('START_DIR');
 	};
 
-	// TODO do something about randomness
-	ParticleComponent.prototype._generateStartAngle = function () {
+	// TODO make curve
+	ParticleComponent.prototype._generateStartAngle = function (time) {
 		return this.startAngle;
 	};
 
@@ -1018,14 +1037,16 @@ define([
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
-			var numToEmit = Math.floor(this.time * this.emissionRate) - Math.floor(this.lastTime * this.emissionRate);
+			var emissionRate = this.emissionRate;
+			var numToEmit = Math.floor(this.time * emissionRate.getValueAt(this.time, this._random())) - Math.floor(this.lastTime * emissionRate.getValueAt(this.time, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
 				// get pos and direction from the shape
 				this._generateLocalPositionAndDirection(tmpPos, tmpDir, this.time);
 
 				// Transform to world space
-				tmpPos.applyPostPoint(this._entity.transformComponent.worldTransform.matrix);
-				tmpDir.applyPost(this._entity.transformComponent.worldTransform.rotation);
+				var worldTransform = this._entity.transformComponent.worldTransform;
+				tmpPos.applyPostPoint(worldTransform.matrix);
+				tmpDir.applyPost(worldTransform.rotation);
 
 				// Emit
 				this.emitOne(tmpPos, tmpDir);

@@ -85,7 +85,7 @@ require([
 				depthWrite: true,
 				depthTest: true,
 				emitterRadius: 1,
-				emissionRate: max / 5,
+				emissionRate: new LinearCurve({ m: 0, k: max / 5 }),
 				startSpeed: new LinearCurve({ m: 10, k: 0 }),
 				// startSpeed: new LerpCurve({
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
