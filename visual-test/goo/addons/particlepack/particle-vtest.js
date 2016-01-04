@@ -69,8 +69,8 @@ require([
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 1, k: 0 })
 				// }),
-				loop: true,
-				preWarm: true,
+				loop: false,
+				preWarm: false,
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
 				duration: 1,
@@ -86,7 +86,7 @@ require([
 				depthTest: true,
 				emitterRadius: 1,
 				emissionRate: max / 5,
-				startSpeed: new LinearCurve({ m: 5, k: 0 }),
+				startSpeed: new LinearCurve({ m: 10, k: 0 }),
 				// startSpeed: new LerpCurve({
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 5, k: 0 })

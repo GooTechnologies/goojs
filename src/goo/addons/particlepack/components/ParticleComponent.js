@@ -724,6 +724,7 @@ define([
 	ParticleComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
+		var duration = this.duration;
 		var i, j;
 
 		var offset = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
@@ -763,15 +764,15 @@ define([
 			if (this.localSpace) {
 
 				if(this.preWarm){
-					// Already emitted, negative time
-					particle.emitTime = -i / this.emissionRate;
+					// Already emitted, shift emit time back
+					particle.emitTime = i / this.emissionRate - duration;
 				} else {
 					// Emit in the future, positive time
 					particle.emitTime = i / this.emissionRate;
 				}
 
 				if (this.loop) {
-					particle.active = i < this.duration * this.emissionRate ? 1 : 0;
+					particle.active = i < duration * this.emissionRate ? 1 : 0;
 				}
 
 			} else {
@@ -797,7 +798,7 @@ define([
 			var pos = particle.startPosition;
 			var dir = particle.startDirection;
 
-			this._generateLocalPositionAndDirection(pos, dir, (particle.emitTime / this.duration) % 1);
+			this._generateLocalPositionAndDirection(pos, dir, (particle.emitTime / duration) % 1);
 			particle.startAngle = this._generateStartAngle();
 
 			for (j = 0; j < meshVertexCount; j++) {
@@ -1008,9 +1009,9 @@ define([
 
 		this.lastTime = this.time;
 		this.time += tpf;
-		if (this.loop && this.time > this.duration) { // TODO: should this be done in shader only?
-			this.time %= this.duration;
-		}
+		// if (this.loop && this.time > this.duration) { // TODO: should this be done in shader only?
+		// 	this.time %= this.duration;
+		// }
 		this._updateUniforms();
 		this._sortParticles();
 		this._updateBounds();
