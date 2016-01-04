@@ -22,10 +22,10 @@ define([
 		options.type = 'vec4';
 		Curve.call(this, options);
 
-		this.x = options.x !== undefined ? options.x : new LinearCurve({ k: 0, m: 1 });
-		this.y = options.y !== undefined ? options.y : new LinearCurve({ k: 0, m: 1 });
-		this.z = options.z !== undefined ? options.z : new LinearCurve({ k: 0, m: 1 });
-		this.w = options.w !== undefined ? options.w : new LinearCurve({ k: 0, m: 1 });
+		this.x = options.x !== undefined ? options.x.clone() : new LinearCurve({ k: 0, m: 1 });
+		this.y = options.y !== undefined ? options.y.clone() : new LinearCurve({ k: 0, m: 1 });
+		this.z = options.z !== undefined ? options.z.clone() : new LinearCurve({ k: 0, m: 1 });
+		this.w = options.w !== undefined ? options.w.clone() : new LinearCurve({ k: 0, m: 1 });
 
 		if (this.x.type !== 'float' || this.y.type !== 'float' || this.z.type !== 'float' || this.w.type !== 'float') {
 			throw new Error('Vector4Curve must have scalar components.');
@@ -34,12 +34,12 @@ define([
 	Vector4Curve.prototype = Object.create(Curve.prototype);
 	Vector4Curve.prototype.constructor = Vector4Curve;
 
-	Vector4Curve.prototype.toGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
-		return 'vec4(' + this.x.toGLSL(timeVariableName) + ',' + this.y.toGLSL(timeVariableName) + ',' + this.z.toGLSL(timeVariableName) + ',' + this.w.toGLSL(timeVariableName) + ')';
+	Vector4Curve.prototype.toGLSL = function (timeVariableName, lerpValueVariableName) {
+		return 'vec4(' + this.x.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.w.toGLSL(timeVariableName, lerpValueVariableName) + ')';
 	};
 
-	Vector4Curve.prototype.integralToGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
-		return 'vec4(' + this.x.integralToGLSL(timeVariableName) + ',' + this.y.integralToGLSL(timeVariableName) + ',' + this.z.integralToGLSL(timeVariableName) + ',' + this.w.integralToGLSL(timeVariableName) + ')';
+	Vector4Curve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
+		return 'vec4(' + this.x.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.w.integralToGLSL(timeVariableName, lerpValueVariableName) + ')';
 	};
 
 	Vector4Curve.prototype.getVec4ValueAt = function (t, lerpValue, store) {

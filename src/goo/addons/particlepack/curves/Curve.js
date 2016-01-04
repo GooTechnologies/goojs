@@ -74,7 +74,14 @@ define([], function () {
 		 * @param {number} lerpValue
 		 * @param {Vector4} store
 		 */
-		getVec4IntegralValueAt: function (/*t, lerpValue, store*/) {}
+		getVec4IntegralValueAt: function (/*t, lerpValue, store*/) {},
+
+		/**
+		 * @return {Curve}
+		 */
+		clone: function(){
+			return new this.constructor(this);
+		}
 	};
 
 	return Curve;

@@ -1,6 +1,8 @@
 define([
+	'goo/math/MathUtils',
 	'goo/addons/particlepack/curves/Curve'
 ], function (
+	MathUtils,
 	Curve
 ) {
 	'use strict';
@@ -21,18 +23,18 @@ define([
 		/**
 		 * @type {Curve}
 		 */
-		this.curveA = options.curveA !== undefined ? options.curveA : 0;
+		this.curveA = options.curveA !== undefined ? options.curveA.clone() : null;
 		
 		/**
 		 * @type {Curve}
 		 */
-		this.curveB = options.curveB !== undefined ? options.curveB : 0;
+		this.curveB = options.curveB !== undefined ? options.curveB.clone() : null;
 	}
 	LerpCurve.prototype = Object.create(Curve.prototype);
 	LerpCurve.prototype.constructor = LerpCurve;
 
 	LerpCurve.prototype.toGLSL = function (timeVariableName, lerpVariableName) {
-		return 'mix(' + this.curveA.toGLSL(timeVariableName) + ',' + this.curveB.toGLSL(timeVariableName) + ', ' + lerpVariableName + ')';
+		return 'mix(' + this.curveA.toGLSL(timeVariableName, lerpVariableName) + ',' + this.curveB.toGLSL(timeVariableName, lerpVariableName) + ', ' + lerpVariableName + ')';
 	};
 
 	LerpCurve.prototype.integralToGLSL = function (timeVariableName, lerpVariableName) {
@@ -40,11 +42,11 @@ define([
 	};
 
 	LerpCurve.prototype.getValueAt = function (t, lerpValue) {
-		return MathUtils.lerp(lerpValue, this.curveA.getValueAt(t), this.curveB.getValueAt(t));
+		return MathUtils.lerp(lerpValue, this.curveA.getValueAt(t, lerpValue), this.curveB.getValueAt(t, lerpValue));
 	};
 
 	LerpCurve.prototype.getIntegralValueAt = function (t, lerpValue) {
-		return MathUtils.lerp(lerpValue, this.curveA.getIntegralValueAt(t), this.curveB.getIntegralValueAt(t));
+		return MathUtils.lerp(lerpValue, this.curveA.getIntegralValueAt(t, lerpValue), this.curveB.getIntegralValueAt(t, lerpValue));
 	};
 
 	return LerpCurve;

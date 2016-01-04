@@ -87,7 +87,7 @@ define([
 
 		this.material = new Material({
 			defines: {
-				START_SPEED_CODE: '1.0',
+				START_LIFETIME_CODE: '5.0',
 				START_SIZE_CODE: '1.0',
 				SIZE_CURVE_CODE: '1.0',
 				ROTATION_CURVE_CODE: '1.0',
@@ -135,20 +135,20 @@ define([
 				'varying vec4 color;',
 				'varying vec2 coords;',
 
-				'vec3 getPosition(float t, vec3 pos, vec3 dir, vec3 g){',
-				'    return pos + dir * t + 0.5 * t * t * g;',
+				'vec3 getPosition(float t, vec3 pos, vec3 vel, vec3 g){',
+				'    return pos + vel * t + 0.5 * t * t * g;',
 				'}',
 
 				'float getScale(float t){',
 				'    return clamp(SIZE_CURVE_CODE, 0.0, 1.0);',
 				'}',
 
-				'float getStartSize(float t){',
+				'float getStartSize(float t, float emitRandom){',
 				'    return START_SIZE_CODE;',
 				'}',
 
-				'float getStartSpeed(float t){',
-				'    return START_SPEED_CODE;',
+				'float getStartLifeTime(float t, float emitRandom){',
+				'    return START_LIFETIME_CODE;',
 				'}',
 
 				'float getAngle(float t){',
@@ -175,7 +175,6 @@ define([
 
 				'void main(void) {',
 
-				'    float lifeTime = timeInfo.x;',
 				'    float active = timeInfo.y;',
 				'    float emitTime = timeInfo.w;',
 				'    float age = time * active - emitTime;',
@@ -187,11 +186,12 @@ define([
 				'    emitTime = mod(emitTime, duration);',
 				'    #endif',
 
-				'    float unitAge = age / lifeTime;',
 				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
-				'    float startSize = getStartSize(unitEmitTime);',
-				'    float startSpeed = getStartSpeed(unitEmitTime);',
+				'    float emitRandom = fract(sin(unitEmitTime * 12.9898) * 43758.5453);',
+				'    float startSize = getStartSize(unitEmitTime, emitRandom);',
+				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
 
+				'    float unitAge = age / lifeTime;',
 				'    color = uColor * getColor(unitAge);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;',
@@ -206,7 +206,7 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz * startSpeed, gravity);',
+				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -269,8 +269,7 @@ define([
 
 		// TODO: Should be a curve
 		this.startColor = options.startColor !== undefined ? options.startColor : new Vector4(1, 1, 1, 1);
-
-		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve : null;
+		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve.clone() : null;
 
 		this.duration = options.duration !== undefined ? options.duration : 5;
 
@@ -284,14 +283,13 @@ define([
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
-		this.startSpeed = options.startSpeed !== undefined ? options.startSpeed : new ConstantCurve({ value: 5 });
+		this.startSpeed = options.startSpeed !== undefined ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
 		
 		// TODO: Should be a curve (constant / curve)
 		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
 
-		// TODO: Should be a curve (constant / curve / random between constants / random between curves)
-		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime : 5;
+		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime.clone() : new ConstantCurve({ value: 5 });
 		
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
@@ -303,18 +301,16 @@ define([
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
-		
-		this.startSize = options.startSize !== undefined ? options.startSize : null;
-		
+		this.startSize = options.startSize !== undefined ? options.startSize.clone() : null;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
-		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve : null;
+		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve.clone() : null;
 		
 		// Should be a curve
 		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
 		
-		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve : null;
+		this.rotationSpeedCurve = options.rotationSpeedCurve !== undefined ? options.rotationSpeedCurve.clone() : null;
 
 		if (options.texture) {
 			this.texture = options.texture;
@@ -408,7 +404,7 @@ define([
 			},
 			set: function (value) {
 				this._sizeCurve = value;
-				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t') : '1.0');
+				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : '1.0');
 			}
 		},
 
@@ -424,7 +420,7 @@ define([
 				this._rotationSpeedCurve = value;
 				var shader = this.material.shader;
 				if (value) {
-					shader.setDefine('ROTATION_CURVE_CODE', value.integralToGLSL('t'));
+					shader.setDefine('ROTATION_CURVE_CODE', value.integralToGLSL('t','emitRandom'));
 				} else {
 					shader.setDefine('ROTATION_CURVE_CODE', '0.0');
 				}
@@ -443,7 +439,7 @@ define([
 				this._colorCurve = value;
 				var shader = this.material.shader;
 				if (value) {
-					shader.setDefine('COLOR_CURVE_CODE', value.toGLSL('t'));
+					shader.setDefine('COLOR_CURVE_CODE', value.toGLSL('t','emitRandom'));
 				} else {
 					shader.setDefine('COLOR_CURVE_CODE', 'vec4(1.0)');
 				}
@@ -614,12 +610,21 @@ define([
 				return this._startSpeed;
 			},
 			set: function (value) {
-				// if (this._startSpeed !== value) {
-				// 	this._startSpeed = value;
-				// 	this._updateVertexData();
-				// }
 				this._startSpeed = value;
-				this.material.shader.setDefine('START_SPEED_CODE', value ? value.toGLSL('t') : '1.0');
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent startLifeTime member
+		 * @type {Curve}
+		 */
+		startLifeTime: {
+			get: function () {
+				return this._startLifeTime;
+			},
+			set: function (value) {
+				this._startLifeTime = value;
+				this.material.shader.setDefine('START_LIFETIME_CODE', value ? value.toGLSL('t','emitRandom') : '5.0');
 			}
 		},
 
@@ -633,7 +638,7 @@ define([
 			},
 			set: function (value) {
 				this._startSize = value;
-				this.material.shader.setDefine('START_SIZE_CODE', value ? value.toGLSL('t') : '1.0');
+				this.material.shader.setDefine('START_SIZE_CODE', value ? value.toGLSL('t','emitRandom') : '1.0');
 			}
 		},
 
@@ -754,7 +759,6 @@ define([
 		for (i = 0; i < maxParticles; i++) {
 			var particle = this.particles[i];
 			particle.active = 1;
-			particle.lifeTime = this.startLifeTime;
 
 			if (this.localSpace) {
 
@@ -793,7 +797,7 @@ define([
 			var pos = particle.startPosition;
 			var dir = particle.startDirection;
 
-			this._generateLocalPositionAndDirection(pos, dir);
+			this._generateLocalPositionAndDirection(pos, dir, (particle.emitTime / this.duration) % 1);
 			particle.startAngle = this._generateStartAngle();
 
 			for (j = 0; j < meshVertexCount; j++) {
@@ -820,7 +824,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction) {
+	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction, time) {
 		var shapeType = this.shapeType;
 		var cos = Math.cos;
 		var sin = Math.sin;
@@ -894,7 +898,7 @@ define([
 				sin(phi) * sin(theta)
 			);
 		}
-		direction.normalize();
+		direction.normalize().scale(this.startSpeed.getValueAt(time, this._random()));
 	};
 
 	/**
@@ -1013,7 +1017,7 @@ define([
 			var numToEmit = Math.floor(this.time * this.emissionRate) - Math.floor(this.lastTime * this.emissionRate);
 			for (var i = 0; i < numToEmit; i++) {
 				// get pos and direction from the shape
-				this._generateLocalPositionAndDirection(tmpPos, tmpDir);
+				this._generateLocalPositionAndDirection(tmpPos, tmpDir, this.time);
 
 				// Transform to world space
 				tmpPos.applyPostPoint(this._entity.transformComponent.worldTransform.matrix);

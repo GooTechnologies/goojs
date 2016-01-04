@@ -16,6 +16,7 @@ require([
 	'goo/addons/particlepack/curves/CurveSet',
 	'goo/addons/particlepack/curves/LinearCurve',
 	'goo/addons/particlepack/curves/Vector4Curve',
+	'goo/addons/particlepack/curves/LerpCurve',
 	'lib/V'
 ], function (
 	Material,
@@ -35,6 +36,7 @@ require([
 	CurveSet,
 	LinearCurve,
 	Vector4Curve,
+	LerpCurve,
 	V
 ) {
 	'use strict';
@@ -59,7 +61,14 @@ require([
 				seed: 123,
 				billboard: true,
 				startSize: new LinearCurve({ m: 0.1, k: 0 }),
-				startLifeTime: 5,
+				// startSize: new LerpCurve({
+				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
+				// 	curveB: new LinearCurve({ m: .2, k: 0 })
+				// }),
+				// startLifeTime: new LerpCurve({
+				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
+				// 	curveB: new LinearCurve({ m: 1, k: 0 })
+				// }),
 				loop: true,
 				preWarm: true,
 				gravity: new Vector3(0, 0, 0),
@@ -77,7 +86,11 @@ require([
 				depthTest: true,
 				emitterRadius: 1,
 				emissionRate: max / 5,
-				startSpeed: new LinearCurve({ m: 0, k: 5 }),
+				//startSpeed: new LinearCurve({ m: 5, k: 0 }),
+				startSpeed: new LerpCurve({
+					curveA: new LinearCurve({ m: 0, k: 0 }),
+					curveB: new LinearCurve({ m: 5, k: 0 })
+				}),
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: false,

@@ -18,11 +18,19 @@ define([
 		/**
 		 * @type {Array<Curve>}
 		 */
-		this.segments = segments ? segments.slice(0) : [];
+		this.segments = segments ? segments.map(function (curve) {
+			return curve.clone();
+		}) : [];
+
+
 	}
 
 	CurveSet.prototype = {
 		
+		clone: function () {
+			return new CurveSet(this.segments);
+		},
+
 		/**
 		 * @param {Curve} curve
 		 */
@@ -51,7 +59,7 @@ define([
 		 * Returns a GLSL expression that gives the value of the curve at a given time.
 		 * @param {string} timeVariableName
 		 */
-		toGLSL: function (timeVariableName/*, lerpValueVariableName*/) {
+		toGLSL: function (timeVariableName, lerpValueVariableName) {
 			var segments = this.segments;
 			var glsl = [];
 			for (var i = 0; i < segments.length; i++) {
@@ -62,7 +70,7 @@ define([
 					t1 = Curve.numberToGLSL(segments[i + 1].timeOffset);
 				}
 				glsl.push(
-					'step(' + t0 + ',' + timeVariableName + ')*step(-' + t1 + ',-' + timeVariableName + ')*' + a.toGLSL(timeVariableName)
+					'step(' + t0 + ',' + timeVariableName + ')*step(-' + t1 + ',-' + timeVariableName + ')*' + a.toGLSL(timeVariableName, lerpValueVariableName)
 				);
 			}
 			return glsl.join('+');
@@ -72,7 +80,7 @@ define([
 		 * Returns a GLSL expression that gives the integral value of the curve at a given time.
 		 * @param {string} timeVariableName
 		 */
-		integralToGLSL: function (timeVariableName/*, lerpValueVariableName*/) {
+		integralToGLSL: function (timeVariableName, lerpValueVariableName) {
 			var segments = this.segments;
 			var glsl = [];
 			for (var i = 0; i < segments.length; i++) {
@@ -83,7 +91,10 @@ define([
 					t1 = Curve.numberToGLSL(segments[i + 1].timeOffset);
 				}
 				glsl.push(
-					a.integralToGLSL('clamp(' + timeVariableName + ',' + t0 + ',' + t1 + ')')
+					a.integralToGLSL(
+						'clamp(' + timeVariableName + ',' + t0 + ',' + t1 + ')',
+						lerpValueVariableName
+					)
 				);
 			}
 			return glsl.join('+');
