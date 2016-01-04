@@ -1,7 +1,7 @@
 define([
-	'goo/addons/particlepack/Curve',
-	'goo/addons/particlepack/LinearCurve',
-	'goo/addons/particlepack/CurveSet'
+	'goo/addons/particlepack/curves/Curve',
+	'goo/addons/particlepack/curves/LinearCurve',
+	'goo/addons/particlepack/curves/CurveSet'
 ], function (
 	Curve,
 	LinearCurve,

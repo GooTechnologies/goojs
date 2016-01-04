@@ -14,7 +14,7 @@ define([
 	'goo/addons/particlepack/Particle',
 	'goo/renderer/Renderer',
 	'goo/shapes/Quad',
-	'goo/addons/particlepack/Curve'
+	'goo/addons/particlepack/curves/ConstantCurve'
 ], function (
 	Matrix3,
 	Vector3,
@@ -31,7 +31,7 @@ define([
 	Particle,
 	Renderer,
 	Quad,
-	Curve
+	ConstantCurve
 ) {
 	'use strict';
 
@@ -87,6 +87,7 @@ define([
 
 		this.material = new Material({
 			defines: {
+				START_SPEED_CODE: '1.0',
 				START_SIZE_CODE: '1.0',
 				SIZE_CURVE_CODE: '1.0',
 				ROTATION_CURVE_CODE: '1.0',
@@ -146,6 +147,10 @@ define([
 				'    return START_SIZE_CODE;',
 				'}',
 
+				'float getStartSpeed(float t){',
+				'    return START_SPEED_CODE;',
+				'}',
+
 				'float getAngle(float t){',
 				'    return ROTATION_CURVE_CODE;',
 				'}',
@@ -183,7 +188,9 @@ define([
 				'    #endif',
 
 				'    float unitAge = age / lifeTime;',
-				'    float startSize = getStartSize(emitTime / duration);',
+				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
+				'    float startSize = getStartSize(unitEmitTime);',
+				'    float startSpeed = getStartSpeed(unitEmitTime);',
 
 				'    color = uColor * getColor(unitAge);',
 
@@ -199,7 +206,7 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity);',
+				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz * startSpeed, gravity);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -231,16 +238,17 @@ define([
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
+		/**
+		 * @type {number}
+		 */
 		this.time = 0;
+
 		this._paused = false;
 
 		/**
 		 * @type {Vector3}
 		 */
-		this.gravity = new Vector3();
-		if (options.gravity) {
-			this.gravity.copy(options.gravity);
-		}
+		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
 
 		/**
 		 * Sorted particles.
@@ -259,7 +267,7 @@ define([
 		 */
 		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
 
-		// Should be a curve
+		// TODO: Should be a curve
 		this.startColor = options.startColor !== undefined ? options.startColor : new Vector4(1, 1, 1, 1);
 
 		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve : null;
@@ -276,7 +284,7 @@ define([
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
-		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
+		this.startSpeed = options.startSpeed !== undefined ? options.startSpeed : new ConstantCurve({ value: 5 });
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
 		
 		// TODO: Should be a curve (constant / curve)
@@ -296,8 +304,7 @@ define([
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
 		
-		// Should be a curve
-		this.startSize = options.startSize !== undefined ? options.startSize : 1;
+		this.startSize = options.startSize !== undefined ? options.startSize : null;
 		
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
@@ -600,17 +607,19 @@ define([
 
 		/**
 		 * @target-class ParticleComponent startSpeed member
-		 * @type {number}
+		 * @type {Curve}
 		 */
 		startSpeed: {
 			get: function () {
 				return this._startSpeed;
 			},
 			set: function (value) {
-				if (this._startSpeed !== value) {
-					this._startSpeed = value;
-					this._updateVertexData();
-				}
+				// if (this._startSpeed !== value) {
+				// 	this._startSpeed = value;
+				// 	this._updateVertexData();
+				// }
+				this._startSpeed = value;
+				this.material.shader.setDefine('START_SPEED_CODE', value ? value.toGLSL('t') : '1.0');
 			}
 		},
 
@@ -812,7 +821,6 @@ define([
 	 * @private
 	 */
 	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction) {
-		var startSpeed = this.startSpeed;
 		var shapeType = this.shapeType;
 		var cos = Math.cos;
 		var sin = Math.sin;
@@ -834,18 +842,19 @@ define([
 				cos(phi) * sin(theta),
 				cos(theta),
 				sin(phi) * sin(theta)
-			).normalize().scale(startSpeed);
+			);
 		} else if (shapeType === 'cone') {
 			var phi = 2 * pi * this._random();
 			var yrand = this._random();
-			var y = yrand * this.coneLength;
+			var coneLength = this.coneLength;
+			var y = yrand * coneLength;
 			var rad = this.coneRadius * Math.sqrt(this._random()) * yrand;
 			switch(this.coneEmitFrom){
 			case 'base':
 				position.setDirect(0, 0, 0);
 				direction.setDirect(
 					rad * cos(phi),
-					this.coneLength,
+					coneLength,
 					rad * sin(phi)
 				);
 				break;
@@ -885,7 +894,7 @@ define([
 				sin(phi) * sin(theta)
 			);
 		}
-		direction.normalize().scale(startSpeed);
+		direction.normalize();
 	};
 
 	/**

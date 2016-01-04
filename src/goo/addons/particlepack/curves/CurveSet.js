@@ -1,5 +1,5 @@
 define([
-	'goo/addons/particlepack/Curve'
+	'goo/addons/particlepack/curves/Curve'
 ], function (
 	Curve
 ) {
@@ -10,6 +10,7 @@ define([
 	 * @constructor
 	 * @extends Curve
 	 * @param {array} [segments]
+	 * @todo rename to CompositeCurve?
 	 */
 	function CurveSet(segments) {
 		Curve.call(this, {});

@@ -1,5 +1,5 @@
 define([
-	'goo/addons/particlepack/LinearCurve'
+	'goo/addons/particlepack/curves/LinearCurve'
 ], function (
 	LinearCurve
 ) {
