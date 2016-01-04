@@ -268,17 +268,19 @@ define([
 		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
 		this.sphereEmitFromShell = options.sphereEmitFromShell !== undefined ? options.sphereEmitFromShell : false;
+		this.coneEmitFrom = options.coneEmitFrom !== undefined ? options.coneEmitFrom : 'base'; // base, volume, volumeshell
 		this.boxExtents = options.boxExtents !== undefined ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
+		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this._startSpeed = options.startSpeed !== undefined ? options.startSpeed : 5;
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
 		
-		// Should be a curve
+		// TODO: Should be a curve (constant / curve)
 		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate : 10;
 
-		// Should be a curve
+		// TODO: Should be a curve (constant / curve / random between constants / random between curves)
 		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime : 5;
 		
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
@@ -808,45 +810,73 @@ define([
 	 * @private
 	 */
 	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction) {
-		// Default
-		direction.setDirect(0, this.startSpeed, 0);
+		var startSpeed = this.startSpeed;
+		var shapeType = this.shapeType;
+		var cos = Math.cos;
+		var sin = Math.sin;
+		var pi = Math.PI;
 
-		if (this.shapeType === 'box') {
+		// Default
+		direction.setDirect(0, startSpeed, 0);
+
+		if (shapeType === 'box') {
 			position.setDirect(
 				this._random() - 0.5,
 				this._random() - 0.5,
 				this._random() - 0.5
 			).mul(this.boxExtents);
-		} else if (this.shapeType === 'sphere') {
+		} else if (shapeType === 'sphere') {
 			var theta = Math.acos(2 * this._random() - 1);
-			var phi = 2 * Math.PI * this._random();
+			var phi = 2 * pi * this._random();
 			var r = this.sphereRadius;
 			if(!this.sphereEmitFromShell){
 				r *= Math.cbrt(this._random());
 			}
 			position.setDirect(
-				r * Math.cos(phi) * Math.sin(theta),
-				r * Math.cos(theta),
-				r * Math.sin(phi) * Math.sin(theta)
+				r * cos(phi) * sin(theta),
+				r * cos(theta),
+				r * sin(phi) * sin(theta)
 			);
 			direction.setDirect(
-				Math.cos(phi) * Math.sin(theta),
-				Math.cos(theta),
-				Math.sin(phi) * Math.sin(theta)
-			).normalize().scale(this.startSpeed);
-		} else if (this.shapeType === 'cone') {
-			var phi = 2 * Math.PI * this._random();
-			var y = this._random();
-			var rad = this.coneRadius * this._random() * y;
-			position.setDirect(
-				rad * Math.cos(phi),
-				y,
-				rad * Math.sin(phi)
-			);
-			direction.copy(position).normalize().scale(this.startSpeed);
-			position.y -= 0.5;
+				cos(phi) * sin(theta),
+				cos(theta),
+				sin(phi) * sin(theta)
+			).normalize().scale(startSpeed);
+		} else if (shapeType === 'cone') {
+			var phi = 2 * pi * this._random();
+			var yrand = this._random();
+			var y = yrand * this.coneLength;
+			var rad = this.coneRadius * Math.sqrt(this._random()) * yrand;
+			switch(this.coneEmitFrom){
+			case 'base':
+				position.setDirect(0, 0, 0);
+				direction.setDirect(
+					rad * cos(phi),
+					this.coneLength,
+					rad * sin(phi)
+				);
+				break;
+			case 'volume':
+				position.setDirect(
+					rad * cos(phi),
+					y,
+					rad * sin(phi)
+				);
+				direction.copy(position);
+				break;
+			case 'volumeshell':
+				rad = this.coneRadius * yrand;
+				position.setDirect(
+					rad * cos(phi),
+					y,
+					rad * sin(phi)
+				);
+				direction.copy(position);
+				break;
+			}
+			direction.normalize().scale(startSpeed);
 		} else {
-			throw new Error('Shape type not recognized: ' + this.shapeType);
+			throw new Error('Shape type not recognized: ' + shapeType);
 		}
 	};
 
