@@ -41,6 +41,15 @@ define([
 		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
 	}
 
+	var defines = {
+		START_LIFETIME_CODE: '5.0',
+		START_SIZE_CODE: '1.0',
+		START_COLOR_CODE: 'vec4(1.0)',
+		SIZE_CURVE_CODE: '1.0',
+		ROTATION_CURVE_CODE: '1.0',
+		COLOR_CURVE_CODE: 'vec4(1.0)'
+	}
+
 	/**
 	 * @class
 	 * @constructor
@@ -86,13 +95,7 @@ define([
 		this._entity = null;
 
 		this.material = new Material({
-			defines: {
-				START_LIFETIME_CODE: '5.0',
-				START_SIZE_CODE: '1.0',
-				SIZE_CURVE_CODE: '1.0',
-				ROTATION_CURVE_CODE: '1.0',
-				COLOR_CURVE_CODE: 'vec4(1.0)'
-			},
+			defines: defines,
 			attributes: {
 				vertexPosition: MeshData.POSITION,
 				timeInfo: 'TIME_INFO',
@@ -111,7 +114,6 @@ define([
 				time: 0,
 				duration: 5,
 				gravity: [0, 0, 0],
-				uColor: [1, 1, 1, 1],
 				alphakill: 0
 			},
 			vshader: [
@@ -130,7 +132,6 @@ define([
 				'uniform float time;',
 				'uniform float duration;',
 				'uniform vec3 gravity;',
-				'uniform vec4 uColor;',
 
 				'varying vec4 color;',
 				'varying vec2 coords;',
@@ -157,6 +158,10 @@ define([
 
 				'vec4 getColor(float t){',
 				'    return COLOR_CURVE_CODE;',
+				'}',
+
+				'vec4 getStartColor(float t, float emitRandom){',
+				'    return START_COLOR_CODE;',
 				'}',
 
 				'mat4 rotationMatrix(vec3 axis, float angle){',
@@ -192,7 +197,7 @@ define([
 				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
-				'    color = uColor * getColor(unitAge);',
+				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;',
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
@@ -267,8 +272,7 @@ define([
 		 */
 		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
 
-		// TODO: Should be a curve
-		this.startColor = options.startColor !== undefined ? options.startColor : new Vector4(1, 1, 1, 1);
+		this.startColor = options.startColor !== undefined ? options.startColor.clone() : null;
 		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve.clone() : null;
 
 		this.duration = options.duration !== undefined ? options.duration : 5;
@@ -404,7 +408,7 @@ define([
 			},
 			set: function (value) {
 				this._sizeCurve = value;
-				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : '1.0');
+				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.SIZE_CURVE_CODE);
 			}
 		},
 
@@ -418,12 +422,7 @@ define([
 			},
 			set: function (value) {
 				this._rotationSpeedCurve = value;
-				var shader = this.material.shader;
-				if (value) {
-					shader.setDefine('ROTATION_CURVE_CODE', value.integralToGLSL('t','emitRandom'));
-				} else {
-					shader.setDefine('ROTATION_CURVE_CODE', '0.0');
-				}
+				this.material.shader.setDefine('ROTATION_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.ROTATION_CURVE_CODE);
 			}
 		},
 
@@ -437,12 +436,21 @@ define([
 			},
 			set: function (value) {
 				this._colorCurve = value;
-				var shader = this.material.shader;
-				if (value) {
-					shader.setDefine('COLOR_CURVE_CODE', value.toGLSL('t','emitRandom'));
-				} else {
-					shader.setDefine('COLOR_CURVE_CODE', 'vec4(1.0)');
-				}
+				this.material.shader.setDefine('COLOR_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.COLOR_CURVE_CODE);
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent startColor member
+		 * @type {Vector4Curve}
+		 */
+		startColor: {
+			get: function () {
+				return this._startColor;
+			},
+			set: function (value) {
+				this._startColor = value;
+				this.material.shader.setDefine('START_COLOR_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_COLOR_CODE);
 			}
 		},
 
@@ -624,7 +632,7 @@ define([
 			},
 			set: function (value) {
 				this._startLifeTime = value;
-				this.material.shader.setDefine('START_LIFETIME_CODE', value ? value.toGLSL('t','emitRandom') : '5.0');
+				this.material.shader.setDefine('START_LIFETIME_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_LIFETIME_CODE);
 			}
 		},
 
@@ -638,7 +646,7 @@ define([
 			},
 			set: function (value) {
 				this._startSize = value;
-				this.material.shader.setDefine('START_SIZE_CODE', value ? value.toGLSL('t','emitRandom') : '1.0');
+				this.material.shader.setDefine('START_SIZE_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_SIZE_CODE);
 			}
 		},
 
@@ -687,14 +695,6 @@ define([
 		uniforms.gravity[0] = tmpGravity.x;
 		uniforms.gravity[1] = tmpGravity.y;
 		uniforms.gravity[2] = tmpGravity.z;
-
-		// Color
-		var d = this.startColor;
-		uniforms.uColor = uniforms.uColor || [];
-		uniforms.uColor[0] = d.x;
-		uniforms.uColor[1] = d.y;
-		uniforms.uColor[2] = d.z;
-		uniforms.uColor[3] = d.w;
 
 		uniforms.time = this.time;
 	};
@@ -848,6 +848,9 @@ define([
 				sin(phi) * sin(theta)
 			);
 		} else if (shapeType === 'cone') {
+
+			// TODO: Implement cone base
+
 			var phi = 2 * pi * this._random();
 			var yrand = this._random();
 			var coneLength = this.coneLength;

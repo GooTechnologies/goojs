@@ -73,7 +73,7 @@ require([
 				preWarm: true,
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
-				duration: 5,
+				duration: 1,
 				shapeType: 'cone',
 				sphereRadius: 10,
 				coneAngle: Math.PI / 8,
@@ -86,14 +86,22 @@ require([
 				depthTest: true,
 				emitterRadius: 1,
 				emissionRate: max / 5,
-				//startSpeed: new LinearCurve({ m: 5, k: 0 }),
-				startSpeed: new LerpCurve({
-					curveA: new LinearCurve({ m: 0, k: 0 }),
-					curveB: new LinearCurve({ m: 5, k: 0 })
+				startSpeed: new LinearCurve({ m: 5, k: 0 }),
+				// startSpeed: new LerpCurve({
+				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
+				// 	curveB: new LinearCurve({ m: 5, k: 0 })
+				// }),
+
+				startColor: new Vector4Curve({
+					x: new LinearCurve({ k: 0, m: 1 }),
+					y: new LinearCurve({ k: -1, m: 1 }),
+					z: new LinearCurve({ k: -1, m: 1 }),
+					w: new LinearCurve({ k: -1, m: 1 })
 				}),
+
 				textureTilesX: 1,
 				textureTilesY: 1,
-				localSpace: false,
+				localSpace: true,
 				sphereEmitFromShell: true,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
 				// sizeCurve: new CurveSet([
