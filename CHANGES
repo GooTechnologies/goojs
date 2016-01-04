@@ -1,8 +1,8 @@
-v0.15.26 --- ????-??-??
+v0.15.27 --- 2015-12-17
 
 ### Fixes
 
-  * Trigger events now also work for kinematic vs kinematic and kinematic vs static.
+  * PhysicsSystem.prototype.raycast* methods now produces a RaycastResult with has the ColliderComponent entity as hit object, and not the RigidBodyComponent entity. If you need the RigidBodyComponent entity, just run ColliderComponent.prototype.getBodyEntity()
 
 v0.15.26 --- 2015-12-16
 
