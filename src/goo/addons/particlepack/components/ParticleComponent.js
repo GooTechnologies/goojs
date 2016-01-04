@@ -267,6 +267,7 @@ define([
 		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
 		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
+		this.sphereEmitFromShell = options.sphereEmitFromShell !== undefined ? options.sphereEmitFromShell : false;
 		this.boxExtents = options.boxExtents !== undefined ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
@@ -820,6 +821,9 @@ define([
 			var theta = Math.acos(2 * this._random() - 1);
 			var phi = 2 * Math.PI * this._random();
 			var r = this.sphereRadius;
+			if(!this.sphereEmitFromShell){
+				r *= Math.cbrt(this._random());
+			}
 			position.setDirect(
 				r * Math.cos(phi) * Math.sin(theta),
 				r * Math.cos(theta),

@@ -48,8 +48,9 @@ define([
 
 		if (component.localSpace) {
 			// Transform to world space
-			store.applyPost(this.component._entity.transformComponent.worldTransform.rotation);
-			store.add(this.component._entity.transformComponent.worldTransform.translation);
+			var worldTransform = this.component._entity.transformComponent.worldTransform;
+			store.applyPost(worldTransform.rotation);
+			store.add(worldTransform.translation);
 		}
 
 		return store;
