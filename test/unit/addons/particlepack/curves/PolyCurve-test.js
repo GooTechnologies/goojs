@@ -1,38 +1,38 @@
 define([
 	'goo/addons/particlepack/curves/Curve',
 	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/CurveSet'
+	'goo/addons/particlepack/curves/PolyCurve'
 ], function (
 	Curve,
 	LinearCurve,
-	CurveSet
+	PolyCurve
 ) {
 	'use strict';
 
-	describe('CurveSet', function () {
+	describe('PolyCurve', function () {
 		it('can add a segment', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			var curve = new Curve();
 			set.addSegment(curve);
 			expect(set.segments.length).toBe(1);
 		});
 
 		it('can get a value', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			var curve = new Curve();
 			set.addSegment(curve);
 			expect(set.getValueAt(0.5)).toBe(0);
 		});
 
 		it('can get an integral value', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			var curve = new LinearCurve({ timeOffset: 0, k: 1, m: 0 });
 			set.addSegment(curve);
 			expect(set.getIntegralValueAt(0.5)).toBe(0.125);
 		});
 
 		it('can get a value from multiple curve types', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			set.addSegment(new Curve({ timeOffset: 0 }));
 			set.addSegment(new LinearCurve({ timeOffset: 0.5, k: 1, m: 0 }));
 			expect(set.getValueAt(0)).toBe(0);
@@ -40,14 +40,14 @@ define([
 		});
 
 		it('can be converted to GLSL', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			set.addSegment(new Curve({ timeOffset: 0 }));
 			set.addSegment(new Curve({ timeOffset: 0.5 }));
 			expect(set.toGLSL('t')).toBe('step(0.0,t)*step(-0.5,-t)*0.0+step(0.5,t)*step(-1.0,-t)*0.0');
 		});
 
 		it('can have its integral converted to GLSL', function () {
-			var set = new CurveSet();
+			var set = new PolyCurve();
 			set.addSegment(new LinearCurve({ timeOffset: 0, k: 1, m: 0 }));
 			expect(set.integralToGLSL('t')).toBe('(1.0*clamp(t,0.0,1.0)*clamp(t,0.0,1.0)*0.5+0.0*clamp(t,0.0,1.0))');
 		});

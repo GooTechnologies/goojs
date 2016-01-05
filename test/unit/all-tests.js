@@ -127,7 +127,7 @@ define([
 	'test/addons/linerenderpack/LineRenderer-test',
 	'test/addons/linerenderpack/LineRenderSystem-test',
 	'test/addons/particlepack/curves/Curve-test',
-	'test/addons/particlepack/curves/CurveSet-test',
+	'test/addons/particlepack/curves/PolyCurve-test',
 	'test/addons/particlepack/curves/LinearCurve-test',
 	'test/addons/physicspack/systems/PhysicsSystem-test',
 	'test/addons/physicspack/systems/PhysicsDebugRenderSystem-test',
