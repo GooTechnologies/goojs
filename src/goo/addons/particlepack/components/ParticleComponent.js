@@ -352,7 +352,7 @@ define([
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 
 		this.startColor = options.startColor ? options.startColor.clone() : null;
-		this.colorCurve = options.colorCurve ? options.colorCurve.clone() : null;
+		this.color = options.color ? options.color.clone() : null;
 		this.duration = options.duration !== undefined ? options.duration : 5;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this.startSpeed = options.startSpeed ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
@@ -512,15 +512,15 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent colorCurve member
+		 * @target-class ParticleComponent color member
 		 * @type {Vector4Curve}
 		 */
-		colorCurve: {
+		color: {
 			get: function () {
-				return this._colorCurve;
+				return this._color;
 			},
 			set: function (value) {
-				this._colorCurve = value;
+				this._color = value;
 				this.material.shader.setDefine('COLOR_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.COLOR_CURVE_CODE);
 			}
 		},
