@@ -10,9 +10,8 @@ define([
 	 * @constructor
 	 * @extends Curve
 	 * @param {array} [segments]
-	 * @todo rename to CompositeCurve?
 	 */
-	function CurveSet(segments) {
+	function PolyCurve(segments) {
 		Curve.call(this, {});
 
 		/**
@@ -21,14 +20,12 @@ define([
 		this.segments = segments ? segments.map(function (curve) {
 			return curve.clone();
 		}) : [];
-
-
 	}
 
-	CurveSet.prototype = {
+	PolyCurve.prototype = {
 		
 		clone: function () {
-			return new CurveSet(this.segments);
+			return new PolyCurve(this.segments);
 		},
 
 		/**
@@ -144,5 +141,5 @@ define([
 		}
 	};
 
-	return CurveSet;
+	return PolyCurve;
 });

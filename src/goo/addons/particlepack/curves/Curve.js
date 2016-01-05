@@ -16,7 +16,7 @@ define([], function () {
 		this.type = options.type || 'float';
 
 		/**
-		 * The offset of this curve, when used in a CurveSet. Needs to be a number between 0 and 1.
+		 * The offset of this curve, when used in a PolyCurve. Needs to be a number between 0 and 1.
 		 * @type {Number}
 		 */
 		this.timeOffset = options.timeOffset || 0;

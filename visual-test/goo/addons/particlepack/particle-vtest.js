@@ -13,7 +13,7 @@ require([
 	'goo/addons/particlepack/components/ParticleComponent',
 	'goo/addons/particlepack/systems/ParticleSystem',
 	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/CurveSet',
+	'goo/addons/particlepack/curves/PolyCurve',
 	'goo/addons/particlepack/curves/LinearCurve',
 	'goo/addons/particlepack/curves/Vector4Curve',
 	'goo/addons/particlepack/curves/Vector3Curve',
@@ -34,7 +34,7 @@ require([
 	ParticleComponent,
 	ParticleSystem,
 	ConstantCurve,
-	CurveSet,
+	PolyCurve,
 	LinearCurve,
 	Vector4Curve,
 	Vector3Curve,
@@ -102,24 +102,24 @@ require([
 					z: new ConstantCurve({ value: 0 })
 				}),
 
-				// startColor: new Vector4Curve({
-				// 	x: new LinearCurve({ k: 0, m: 1 }),
-				// 	y: new LinearCurve({ k: -1, m: 1 }),
-				// 	z: new LinearCurve({ k: -1, m: 1 }),
-				// 	w: new LinearCurve({ k: -1, m: 1 })
-				// }),
+				startColor: new Vector4Curve({
+					x: new LinearCurve({ k: 0, m: 1 }),
+					y: new LinearCurve({ k: -1, m: 1 }),
+					z: new LinearCurve({ k: -1, m: 1 }),
+					w: new LinearCurve({ k: -1, m: 1 })
+				}),
 
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: true,
 				sphereEmitFromShell: false,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
-				// sizeCurve: new CurveSet([
+				// sizeCurve: new PolyCurve([
 				// 	new LinearCurve({ k: 1, m: 0 }),
 				// 	new LinearCurve({ k: -1, m: 1, timeOffset: 0.5 })
 				// ]),
 				rotationSpeed: new LinearCurve({ k: 20 * Math.PI, m: 0 }),
-				// colorCurve: new CurveSet([
+				// colorCurve: new PolyCurve([
 				// 	new Vector4Curve({
 				// 		x: new LinearCurve({ k: 0, m: 1 }),
 				// 		y: new LinearCurve({ k: -1, m: 1 }),

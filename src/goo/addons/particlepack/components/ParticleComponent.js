@@ -499,6 +499,7 @@ define([
 			},
 			set: function (value) {
 				this._startColor = value;
+				debugger
 				this.material.shader.setDefine('START_COLOR_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_COLOR_CODE);
 			}
 		},
@@ -725,10 +726,12 @@ define([
 				return this.meshData ? this.meshData.vertexCount / this.mesh.vertexCount : this._maxParticles;
 			},
 			set: function (value) {
-				if (value * this.mesh.vertexCount !== this.meshData.vertexCount) {
-					this.meshData.vertexCount = value * this.mesh.vertexCount;
-					this.meshData.indexCount = value * this.mesh.indexCount;
-					this.meshData.rebuildData();
+				var mesh = this.mesh;
+				var meshData = this.meshData;
+				if (value * mesh.vertexCount !== meshData.vertexCount) { // Only rebuild if changed
+					meshData.vertexCount = value * mesh.vertexCount;
+					meshData.indexCount = value * mesh.indexCount;
+					meshData.rebuildData();
 					this._updateParticles();
 					this._updateVertexData();
 				}
@@ -758,10 +761,10 @@ define([
 		tmpGravity.copy(this.gravity);
 		invRot.copy(worldRotation).invert();
 		tmpGravity.applyPost(invRot);
-		uniforms.gravity = uniforms.gravity || [];
-		uniforms.gravity[0] = tmpGravity.x;
-		uniforms.gravity[1] = tmpGravity.y;
-		uniforms.gravity[2] = tmpGravity.z;
+		var g = uniforms.gravity = uniforms.gravity || [];
+		g[0] = tmpGravity.x;
+		g[1] = tmpGravity.y;
+		g[2] = tmpGravity.z;
 
 		uniforms.worldRotation = uniforms.worldRotation || [];
 		for(var i=0; i<9; i++){
