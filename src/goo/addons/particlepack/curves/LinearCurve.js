@@ -28,10 +28,15 @@ define([
 		 * Offset of the line.
 		 * @type {number}
 		 */
-		this.m = options.m !== undefined ? options.m : 0;
+		this.m = options.m || 0;
 	}
 	LinearCurve.prototype = Object.create(Curve.prototype);
 	LinearCurve.prototype.constructor = LinearCurve;
+
+	LinearCurve.prototype.fromStartEnd = function (startValue, endValue) {
+		this.m = startValue;
+		this.k = endValue - startValue;
+	};
 
 	LinearCurve.prototype.toGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
 		return '(' + Curve.numberToGLSL(this.k) + '*' + timeVariableName + '+' + Curve.numberToGLSL(this.m) + ')';
