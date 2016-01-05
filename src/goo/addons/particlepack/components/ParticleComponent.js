@@ -264,12 +264,19 @@ define([
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
+		this._paused = false;
+		this.nextEmitParticle = 0;
+
+		// Sorted particles.
+		this.particles = [];
+		
+		// Same as particles but unsorted.
+		this.unsortedParticles = [];
+
 		/**
 		 * @type {number}
 		 */
-		this.time = 0;
-
-		this._paused = false;
+		this.time = options.time || 0;
 
 		/**
 		 * @type {Vector3}
@@ -277,36 +284,76 @@ define([
 		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
 
 		/**
-		 * Sorted particles.
-		 * @hidden
-		 */
-		this.particles = [];
-		
-		/**
-		 * Same as particles but unsorted.
-		 * @hidden
-		 */
-		this.unsortedParticles = [];
-
-		/**
 		 * @type {number}
 		 */
 		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
 
+		/**
+		 * Emitter volume. Set to 'sphere', 'cone', or 'box'.
+		 * @type {string}
+		 */
+		this.shapeType = options.shapeType || 'sphere';
+
+		/**
+		 * Radius of the sphere, if sphere shape type is being used.
+		 * @type {number}
+		 */
+		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
+
+		/**
+		 * Whether to emit from the sphere shell, if sphere shape is used.
+		 * @todo this should probably update vertex data if localspace is used
+		 * @type {boolean}
+		 */
+		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
+
+		/**
+		 * Emit in random directions, instead of in the emitter volume direction.
+		 * @todo this should probably update vertex data if localspace is used
+		 * @type {boolean}
+		 */
+		this.randomDirection = options.randomDirection || false;
+		
+		/**
+		 * Where to emit from, if using the cone shape. Set to 'base', 'volume' or 'volumeshell'.
+		 * @type {string}
+		 */
+		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
+
+		/**
+		 * Extents of the box, if box shape is used.
+		 * @type {Vector3}
+		 */
+		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+
+		/**
+		 * Radius of the cone, if cone shape is used.
+		 * @type {number}
+		 */
+		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
+		
+		/**
+		 * Angle of the cone, if cone shape is used.
+		 * @todo implement me!
+		 * @type {number}
+		 */
+		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
+
+		/**
+		 * Length of the cone, if cone shape is used.
+		 * @type {number}
+		 */
+		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
+
+		/**
+		 * Pre-warm the emission. Not available if looping is on.
+		 * @type {boolean}
+		 */
+		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
+
 		this.startColor = options.startColor ? options.startColor.clone() : null;
 		this.colorCurve = options.colorCurve ? options.colorCurve.clone() : null;
-
 		this.duration = options.duration !== undefined ? options.duration : 5;
-
-		this.shapeType = options.shapeType || 'sphere';
-		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
-		this.randomDirection = options.randomDirection || false;
-		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
-		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
-		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
-		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
-		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
-		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this.startSpeed = options.startSpeed ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
 		this.localVelocity = options.localVelocity ? options.localVelocity.clone() : new Vector3Curve();
@@ -317,12 +364,6 @@ define([
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill || 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
-
-		/**
-		 * Pre-warm the emission. Not available if looping is on.
-		 * @type {boolean}
-		 */
-		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this.blending = options.blending || 'NoBlending';
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
 		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
@@ -331,17 +372,12 @@ define([
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
 		this.startSize = options.startSize ? options.startSize.clone() : null;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
-		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
+		this.mesh = options.mesh ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.sizeCurve = options.sizeCurve ? options.sizeCurve.clone() : null;
 		this.startAngle = options.startAngle ? options.startAngle.clone() : null;
 		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
-
-		if (options.texture) {
-			this.texture = options.texture;
-		}
-
-		this.nextEmitParticle = 0;
+		this.texture = options.texture ? options.texture : null;
 	}
 	ParticleComponent.prototype = Object.create(Component.prototype);
 	ParticleComponent.prototype.constructor = ParticleComponent;
@@ -499,7 +535,6 @@ define([
 			},
 			set: function (value) {
 				this._startColor = value;
-				debugger
 				this.material.shader.setDefine('START_COLOR_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_COLOR_CODE);
 			}
 		},
@@ -1007,12 +1042,12 @@ define([
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
-		var startPosition = particle.startPosition;
-		var startDirection = particle.startDirection;
 
 		// Get the last emitted particle
 		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.unsortedParticles[i];
+		var startPosition = particle.startPosition;
+		var startDirection = particle.startDirection;
 		particle.emitTime = this.time; // Emitting NOW
 
 		startPosition.copy(position);
@@ -1180,6 +1215,17 @@ define([
 		}
 		this.meshEntity.removeFromWorld();
 		this._entity = this._system = this.meshEntity = null;
+	};
+	
+	/**
+	 * @private
+	 * @param obj
+	 * @param entity
+	 */
+	ParticleComponent.applyOnEntity = function (obj, entity) {
+		if (obj instanceof ParticleComponent) {
+			entity.setComponent(obj);
+		}
 	};
 
 	/**
