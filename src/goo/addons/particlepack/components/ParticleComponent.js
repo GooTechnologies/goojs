@@ -47,7 +47,8 @@ define([
 		START_COLOR_CODE: 'vec4(1.0)',
 		SIZE_CURVE_CODE: '1.0',
 		ROTATION_CURVE_CODE: '1.0',
-		COLOR_CURVE_CODE: 'vec4(1.0)'
+		COLOR_CURVE_CODE: 'vec4(1.0)',
+		VELOCITY_CURVE_CODE: 'vec3(0.0)'
 	}
 
 	/**
@@ -136,8 +137,12 @@ define([
 				'varying vec4 color;',
 				'varying vec2 coords;',
 
-				'vec3 getPosition(float t, vec3 pos, vec3 vel, vec3 g){',
-				'    return pos + vel * t + 0.5 * t * t * g;',
+				'vec3 getVelocityCurveIntegral(float t, float emitRandom){',
+				'    return VELOCITY_CURVE_CODE;',
+				'}',
+
+				'vec3 getPosition(float t, vec3 pos, vec3 vel, vec3 g, float emitRandom){',
+				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t, emitRandom);',
 				'}',
 
 				'float getScale(float t){',
@@ -192,7 +197,7 @@ define([
 				'    #endif',
 
 				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
-				'    float emitRandom = fract(sin(unitEmitTime * 12.9898) * 43758.5453);',
+				'    float emitRandom = timeInfo.z;// fract(sin(unitEmitTime * 12.9898) * 43758.5453);',
 				'    float startSize = getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
 
@@ -211,7 +216,7 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity);',
+				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity, emitRandom);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -272,8 +277,8 @@ define([
 		 */
 		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
 
-		this.startColor = options.startColor !== undefined ? options.startColor.clone() : null;
-		this.colorCurve = options.colorCurve !== undefined ? options.colorCurve.clone() : null;
+		this.startColor = options.startColor ? options.startColor.clone() : null;
+		this.colorCurve = options.colorCurve ? options.colorCurve.clone() : null;
 
 		this.duration = options.duration !== undefined ? options.duration : 5;
 
@@ -282,15 +287,16 @@ define([
 		this.randomDirection = options.randomDirection !== undefined ? options.randomDirection : false;
 		this.sphereEmitFromShell = options.sphereEmitFromShell !== undefined ? options.sphereEmitFromShell : false;
 		this.coneEmitFrom = options.coneEmitFrom !== undefined ? options.coneEmitFrom : 'base'; // base, volume, volumeshell
-		this.boxExtents = options.boxExtents !== undefined ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
-		this.startSpeed = options.startSpeed !== undefined ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
+		this.startSpeed = options.startSpeed ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
+		this.localVelocity = options.localVelocity ? options.localVelocity.clone() : new Vector3Curve();
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
-		this.emissionRate = options.emissionRate !== undefined ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
-		this.startLifeTime = options.startLifeTime !== undefined ? options.startLifeTime.clone() : new ConstantCurve({ value: 5 });
+		this.emissionRate = options.emissionRate ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
+		this.startLifeTime = options.startLifeTime ? options.startLifeTime.clone() : new ConstantCurve({ value: 5 });
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
@@ -306,11 +312,11 @@ define([
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
-		this.startSize = options.startSize !== undefined ? options.startSize.clone() : null;
+		this.startSize = options.startSize ? options.startSize.clone() : null;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
-		this.sizeCurve = options.sizeCurve !== undefined ? options.sizeCurve.clone() : null;
+		this.sizeCurve = options.sizeCurve ? options.sizeCurve.clone() : null;
 		
 		// Should be a curve
 		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
@@ -424,6 +430,20 @@ define([
 			set: function (value) {
 				this._rotationSpeed = value;
 				this.material.shader.setDefine('ROTATION_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.ROTATION_CURVE_CODE);
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent localVelocity member
+		 * @type {Curve}
+		 */
+		localVelocity: {
+			get: function () {
+				return this._localVelocity;
+			},
+			set: function (value) {
+				this._localVelocity = value;
+				this.material.shader.setDefine('VELOCITY_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.VELOCITY_CURVE_CODE);
 			}
 		},
 
@@ -805,10 +825,11 @@ define([
 				particle.emitTime = -2 * particle.lifeTime;
 			}
 
+			var rand = this._random();
 			for (j = 0; j < meshVertexCount; j++) {
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
-				timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = particle.lifeTime;
+				timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = rand;
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 			}
 		}
@@ -953,7 +974,9 @@ define([
 
 		var meshVertexCount = this.mesh.vertexCount;
 
+		var rand = this._random();
 		for (var j = 0; j < meshVertexCount; j++) {
+			timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = rand;
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
 			startPos[meshVertexCount * 4 * i + j * 4 + 0] = particle.startPosition.x;

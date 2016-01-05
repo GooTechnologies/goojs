@@ -1,5 +1,5 @@
 define([
-	'goo/addons/particlepack/curves/LinearCurve',
+	'goo/addons/particlepack/curves/ConstantCurve',
 	'goo/addons/particlepack/curves/Curve'
 ], function (
 	LinearCurve,
@@ -22,10 +22,11 @@ define([
 		options.type = 'vec4';
 		Curve.call(this, options);
 
-		this.x = options.x !== undefined ? options.x.clone() : new LinearCurve({ k: 0, m: 1 });
-		this.y = options.y !== undefined ? options.y.clone() : new LinearCurve({ k: 0, m: 1 });
-		this.z = options.z !== undefined ? options.z.clone() : new LinearCurve({ k: 0, m: 1 });
-		this.w = options.w !== undefined ? options.w.clone() : new LinearCurve({ k: 0, m: 1 });
+		// TODO: if these were an array, we could do .map() in the methods
+		this.x = options.x ? options.x.clone() : new ConstantCurve();
+		this.y = options.y ? options.y.clone() : new ConstantCurve();
+		this.z = options.z ? options.z.clone() : new ConstantCurve();
+		this.w = options.w ? options.w.clone() : new ConstantCurve({ value: 1 });
 
 		if (this.x.type !== 'float' || this.y.type !== 'float' || this.z.type !== 'float' || this.w.type !== 'float') {
 			throw new Error('Vector4Curve must have scalar components.');
@@ -44,19 +45,19 @@ define([
 
 	Vector4Curve.prototype.getVec4ValueAt = function (t, lerpValue, store) {
 		store.setDirect(
-			this.x.getValueAt(t),
-			this.y.getValueAt(t),
-			this.z.getValueAt(t),
-			this.w.getValueAt(t)
+			this.x.getValueAt(t, lerpValue),
+			this.y.getValueAt(t, lerpValue),
+			this.z.getValueAt(t, lerpValue),
+			this.w.getValueAt(t, lerpValue)
 		);
 	};
 
 	Vector4Curve.prototype.getVec4IntegralValueAt = function (t, lerpValue, store) {
 		store.setDirect(
-			this.x.getIntegralValueAt(t),
-			this.y.getIntegralValueAt(t),
-			this.z.getIntegralValueAt(t),
-			this.w.getIntegralValueAt(t)
+			this.x.getIntegralValueAt(t, lerpValue),
+			this.y.getIntegralValueAt(t, lerpValue),
+			this.z.getIntegralValueAt(t, lerpValue),
+			this.w.getIntegralValueAt(t, lerpValue)
 		);
 	};
 

@@ -16,6 +16,7 @@ require([
 	'goo/addons/particlepack/curves/CurveSet',
 	'goo/addons/particlepack/curves/LinearCurve',
 	'goo/addons/particlepack/curves/Vector4Curve',
+	'goo/addons/particlepack/curves/Vector3Curve',
 	'goo/addons/particlepack/curves/LerpCurve',
 	'lib/V'
 ], function (
@@ -36,6 +37,7 @@ require([
 	CurveSet,
 	LinearCurve,
 	Vector4Curve,
+	Vector3Curve,
 	LerpCurve,
 	V
 ) {
@@ -86,11 +88,18 @@ require([
 				depthTest: true,
 				emitterRadius: 1,
 				emissionRate: new LinearCurve({ m: 0, k: max/2 }),
+
 				startSpeed: new LinearCurve({ m: 10, k: 0 }),
 				// startSpeed: new LerpCurve({
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 5, k: 0 })
 				// }),
+
+				localVelocity: new Vector3Curve({
+					x: new LinearCurve({ k: 0, m: 0 }),
+					y: new LinearCurve({ k: -20, m: 10 }),
+					z: new ConstantCurve({ value: 0 })
+				}),
 
 				// startColor: new Vector4Curve({
 				// 	x: new LinearCurve({ k: 0, m: 1 }),
