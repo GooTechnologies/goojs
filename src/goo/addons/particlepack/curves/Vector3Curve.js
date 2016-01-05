@@ -1,9 +1,11 @@
 define([
 	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/Curve'
+	'goo/addons/particlepack/curves/Curve',
+	'goo/util/ObjectUtils'
 ], function (
 	ConstantCurve,
-	Curve
+	Curve,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -18,6 +20,7 @@ define([
 	function Vector3Curve(options) {
 		options = options || {};
 
+		options = ObjectUtils.clone(options);
 		options.type = 'vec3';
 		Curve.call(this, options);
 
@@ -33,11 +36,11 @@ define([
 	Vector3Curve.prototype.constructor = Vector3Curve;
 
 	Vector3Curve.prototype.toGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec3(' + this.x.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.toGLSL(timeVariableName, lerpValueVariableName) + ')';
+		return 'vec3(' + [this.x, this.y, this.z].map(function(c){ return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector3Curve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec3(' + this.x.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.integralToGLSL(timeVariableName, lerpValueVariableName) + ')';
+		return 'vec3(' + [this.x, this.y, this.z].map(function(c){ return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector3Curve.prototype.getVec3ValueAt = function (t, lerpValue, store) {

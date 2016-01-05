@@ -1,9 +1,11 @@
 define([
 	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/Curve'
+	'goo/addons/particlepack/curves/Curve',
+	'goo/util/ObjectUtils'
 ], function (
 	ConstantCurve,
-	Curve
+	Curve,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -19,10 +21,10 @@ define([
 	function Vector4Curve(options) {
 		options = options || {};
 
+		options = ObjectUtils.clone(options);
 		options.type = 'vec4';
 		Curve.call(this, options);
 
-		// TODO: if these were an array, we could do .map() in the methods
 		this.x = options.x ? options.x.clone() : new ConstantCurve();
 		this.y = options.y ? options.y.clone() : new ConstantCurve();
 		this.z = options.z ? options.z.clone() : new ConstantCurve();
@@ -36,11 +38,11 @@ define([
 	Vector4Curve.prototype.constructor = Vector4Curve;
 
 	Vector4Curve.prototype.toGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec4(' + this.x.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.toGLSL(timeVariableName, lerpValueVariableName) + ',' + this.w.toGLSL(timeVariableName, lerpValueVariableName) + ')';
+		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c){ return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector4Curve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec4(' + this.x.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.y.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.z.integralToGLSL(timeVariableName, lerpValueVariableName) + ',' + this.w.integralToGLSL(timeVariableName, lerpValueVariableName) + ')';
+		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c){ return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector4Curve.prototype.getVec4ValueAt = function (t, lerpValue, store) {
