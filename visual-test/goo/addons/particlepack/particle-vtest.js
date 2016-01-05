@@ -95,7 +95,7 @@ require([
 				// 	curveB: new LinearCurve({ m: 5, k: 0 })
 				// }),
 
-				localVelocity: new Vector3Curve({
+				worldVelocity: new Vector3Curve({
 					x: new LinearCurve({ k: 0, m: 0 }),
 					y: new LinearCurve({ k: -20, m: 10 }),
 					z: new ConstantCurve({ value: 0 })
@@ -132,11 +132,11 @@ require([
 				// sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
-				// var angle = world.time * 2 * Math.PI / 2 * 0;
+				var angle = world.time * 2 * Math.PI / 2;
 				// var x = 10 * Math.cos(world.time * 2);
 				// var y = 0 * Math.sin(world.time * 2) * 0;
 				// entity.setTranslation(0, y, x);
-				// entity.setRotation(angle, 0, 0);
+				entity.setRotation(angle, 0, 0);
 				// sphereEntity.setTranslation(0, y, x);
 				// sphereEntity.setRotation(angle, 0, 0);
 

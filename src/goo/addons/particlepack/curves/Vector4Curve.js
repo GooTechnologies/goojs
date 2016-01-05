@@ -2,7 +2,7 @@ define([
 	'goo/addons/particlepack/curves/ConstantCurve',
 	'goo/addons/particlepack/curves/Curve'
 ], function (
-	LinearCurve,
+	ConstantCurve,
 	Curve
 ) {
 	'use strict';

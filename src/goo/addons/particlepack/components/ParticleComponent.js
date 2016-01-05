@@ -14,7 +14,9 @@ define([
 	'goo/addons/particlepack/Particle',
 	'goo/renderer/Renderer',
 	'goo/shapes/Quad',
-	'goo/addons/particlepack/curves/ConstantCurve'
+	'goo/addons/particlepack/curves/ConstantCurve',
+	'goo/addons/particlepack/curves/Vector3Curve',
+	'goo/addons/particlepack/curves/Vector4Curve'
 ], function (
 	Matrix3,
 	Vector3,
@@ -31,7 +33,9 @@ define([
 	Particle,
 	Renderer,
 	Quad,
-	ConstantCurve
+	ConstantCurve,
+	Vector3Curve,
+	Vector4Curve
 ) {
 	'use strict';
 
@@ -48,7 +52,8 @@ define([
 		SIZE_CURVE_CODE: '1.0',
 		ROTATION_CURVE_CODE: '1.0',
 		COLOR_CURVE_CODE: 'vec4(1.0)',
-		VELOCITY_CURVE_CODE: 'vec3(0.0)'
+		VELOCITY_CURVE_CODE: 'vec3(0.0)',
+		WORLD_VELOCITY_CURVE_CODE: 'vec3(0.0)'
 	}
 
 	/**
@@ -110,6 +115,7 @@ define([
 				projectionMatrix: Shader.PROJECTION_MATRIX,
 				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 				worldMatrix: Shader.WORLD_MATRIX,
+				worldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 				particleTexture: 'PARTICLE_TEXTURE',
 				cameraPosition: Shader.CAMERA,
 				time: 0,
@@ -129,6 +135,7 @@ define([
 				'uniform mat4 projectionMatrix;',
 				'uniform mat4 viewProjectionMatrix;',
 				'uniform mat4 worldMatrix;',
+				'uniform mat3 worldRotation;',
 				'uniform vec3 cameraPosition;',
 				'uniform float time;',
 				'uniform float duration;',
@@ -141,8 +148,12 @@ define([
 				'    return VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getPosition(float t, vec3 pos, vec3 vel, vec3 g, float emitRandom){',
-				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t, emitRandom);',
+				'vec3 getWorldVelocityCurveIntegral(mat3 worldRotation, float t, float emitRandom){',
+				'    return worldRotation * WORLD_VELOCITY_CURVE_CODE;',
+				'}',
+
+				'vec3 getPosition(mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom){',
+				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t, emitRandom) + getWorldVelocityCurveIntegral(worldRotation, t, emitRandom);',
 				'}',
 
 				'float getScale(float t){',
@@ -216,7 +227,7 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(age, startPos.xyz, startDir.xyz, gravity, emitRandom);',
+				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -282,11 +293,11 @@ define([
 
 		this.duration = options.duration !== undefined ? options.duration : 5;
 
-		this.shapeType = options.shapeType !== undefined ? options.shapeType : 'sphere';
+		this.shapeType = options.shapeType || 'sphere';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
-		this.randomDirection = options.randomDirection !== undefined ? options.randomDirection : false;
-		this.sphereEmitFromShell = options.sphereEmitFromShell !== undefined ? options.sphereEmitFromShell : false;
-		this.coneEmitFrom = options.coneEmitFrom !== undefined ? options.coneEmitFrom : 'base'; // base, volume, volumeshell
+		this.randomDirection = options.randomDirection || false;
+		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
+		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
@@ -294,11 +305,12 @@ define([
 		this.localSpace = options.localSpace !== undefined ? options.localSpace : true;
 		this.startSpeed = options.startSpeed ? options.startSpeed.clone() : new ConstantCurve({ value: 5 });
 		this.localVelocity = options.localVelocity ? options.localVelocity.clone() : new Vector3Curve();
+		this.worldVelocity = options.worldVelocity ? options.worldVelocity.clone() : new Vector3Curve();
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
 		this.emissionRate = options.emissionRate ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
 		this.startLifeTime = options.startLifeTime ? options.startLifeTime.clone() : new ConstantCurve({ value: 5 });
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
-		this.alphakill = options.alphakill !== undefined ? options.alphakill : 0;
+		this.alphakill = options.alphakill || 0;
 		this.loop = options.loop !== undefined ? options.loop : true;
 
 		/**
@@ -306,7 +318,7 @@ define([
 		 * @type {boolean}
 		 */
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
-		this.blending = options.blending !== undefined ? options.blending : 'NoBlending';
+		this.blending = options.blending || 'NoBlending';
 		this.depthWrite = options.depthWrite !== undefined ? options.depthWrite : true;
 		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
@@ -319,9 +331,9 @@ define([
 		this.sizeCurve = options.sizeCurve ? options.sizeCurve.clone() : null;
 		
 		// Should be a curve
-		this.startAngle = options.startAngle !== undefined ? options.startAngle : 0;
+		this.startAngle = options.startAngle || 0;
 		
-		this.rotationSpeed = options.rotationSpeed !== undefined ? options.rotationSpeed.clone() : null;
+		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
 
 		if (options.texture) {
 			this.texture = options.texture;
@@ -444,6 +456,20 @@ define([
 			set: function (value) {
 				this._localVelocity = value;
 				this.material.shader.setDefine('VELOCITY_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.VELOCITY_CURVE_CODE);
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent worldVelocity member
+		 * @type {Curve}
+		 */
+		worldVelocity: {
+			get: function () {
+				return this._worldVelocity;
+			},
+			set: function (value) {
+				this._worldVelocity = value;
+				this.material.shader.setDefine('WORLD_VELOCITY_CURVE_CODE', value ? value.integralToGLSL('t','emitRandom') : defines.WORLD_VELOCITY_CURVE_CODE);
 			}
 		},
 
@@ -710,15 +736,21 @@ define([
 	 */
 	ParticleComponent.prototype._updateUniforms = function () {
 		var uniforms = this.material.uniforms;
+		var worldRotation = this.meshEntity.transformComponent.worldTransform.rotation;
 
 		// Gravity in local space
 		tmpGravity.copy(this.gravity);
-		invRot.copy(this.meshEntity.transformComponent.worldTransform.rotation).invert();
+		invRot.copy(worldRotation).invert();
 		tmpGravity.applyPost(invRot);
 		uniforms.gravity = uniforms.gravity || [];
 		uniforms.gravity[0] = tmpGravity.x;
 		uniforms.gravity[1] = tmpGravity.y;
 		uniforms.gravity[2] = tmpGravity.z;
+
+		uniforms.worldRotation = uniforms.worldRotation || [];
+		for(var i=0; i<9; i++){
+			uniforms.worldRotation[i] = invRot[i];
+		}
 
 		uniforms.time = this.time;
 	};
