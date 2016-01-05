@@ -62,7 +62,7 @@ require([
 				alphakill: 0,
 				seed: 123,
 				billboard: true,
-				startSize: new LinearCurve({ m: 0.1, k: 0 }),
+				startSize: new LinearCurve({ m: 1, k: 0 }),
 				// startSize: new LerpCurve({
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: .2, k: 0 })
@@ -71,12 +71,13 @@ require([
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 1, k: 0 })
 				// }),
+				startAngle: new LinearCurve({ m: 0, k: 5 * Math.PI }),
 				loop: true,
 				preWarm: false,
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
 				duration: 3,
-				shapeType: 'sphere',
+				shapeType: 'cone',
 				sphereRadius: 0,
 				coneAngle: Math.PI / 8,
 				coneLength: 3,
@@ -87,7 +88,7 @@ require([
 				depthWrite: true,
 				depthTest: true,
 				emitterRadius: 1,
-				emissionRate: new LinearCurve({ m: 0, k: max/2 }),
+				emissionRate: new LinearCurve({ m: 10, k: 0 }),
 
 				startSpeed: new LinearCurve({ m: 10, k: 0 }),
 				// startSpeed: new LerpCurve({
@@ -117,9 +118,7 @@ require([
 				// 	new LinearCurve({ k: 1, m: 0 }),
 				// 	new LinearCurve({ k: -1, m: 1, timeOffset: 0.5 })
 				// ]),
-				// rotationSpeedCurve: new CurveSet([
-				// 	new LinearCurve({ k: 0, m: 0 })
-				// ]),
+				rotationSpeed: new LinearCurve({ k: 20 * Math.PI, m: 0 }),
 				// colorCurve: new CurveSet([
 				// 	new Vector4Curve({
 				// 		x: new LinearCurve({ k: 0, m: 1 }),
@@ -128,7 +127,6 @@ require([
 				// 		w: new LinearCurve({ k: -1, m: 1 })
 				// 	})
 				// ]),
-				// startAngle: Math.PI / 4,
 				// sortMode: ParticleComponent.SORT_CAMERA_DISTANCE
 			}), function (entity) {
 
@@ -136,7 +134,7 @@ require([
 				// var x = 10 * Math.cos(world.time * 2);
 				// var y = 0 * Math.sin(world.time * 2) * 0;
 				// entity.setTranslation(0, y, x);
-				entity.setRotation(angle, 0, 0);
+				//entity.setRotation(angle, 0, 0);
 				// sphereEntity.setTranslation(0, y, x);
 				// sphereEntity.setRotation(angle, 0, 0);
 

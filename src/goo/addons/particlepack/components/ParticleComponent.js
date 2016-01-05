@@ -48,9 +48,10 @@ define([
 	var defines = {
 		START_LIFETIME_CODE: '5.0',
 		START_SIZE_CODE: '1.0',
+		START_ROTATION_CURVE_CODE: '0.0',
 		START_COLOR_CODE: 'vec4(1.0)',
 		SIZE_CURVE_CODE: '1.0',
-		ROTATION_CURVE_CODE: '1.0',
+		ROTATION_CURVE_CODE: '0.0',
 		COLOR_CURVE_CODE: 'vec4(1.0)',
 		VELOCITY_CURVE_CODE: 'vec3(0.0)',
 		WORLD_VELOCITY_CURVE_CODE: 'vec3(0.0)'
@@ -83,7 +84,7 @@ define([
 	 * @param {number} [options.shapeType='sphere']
 	 * @param {number} [options.sizeCurve]
 	 * @param {number} [options.sortMode]
-	 * @param {number} [options.startAngle=0]
+	 * @param {Curve} [options.startAngle]
 	 * @param {number} [options.startLifeTime=5]
 	 * @param {number} [options.startSize=1]
 	 * @param {number} [options.startSpeed=0]
@@ -180,6 +181,10 @@ define([
 				'    return START_COLOR_CODE;',
 				'}',
 
+				'float getStartAngle(float t, float emitRandom){',
+				'    return START_ROTATION_CURVE_CODE;',
+				'}',
+
 				'mat4 rotationMatrix(vec3 axis, float angle){',
 				'    axis = normalize(axis);',
 				'    float s = sin(angle);',
@@ -200,7 +205,6 @@ define([
 				'    float emitTime = timeInfo.w;',
 				'    float age = time * active - emitTime;',
 				'    float ageNoMod = time * active - emitTime;',
-				'    float startAngle = startPos.w;',
 
 				'    #ifdef LOOP',
 				'    age = mod(age, duration);',
@@ -211,6 +215,7 @@ define([
 				'    float emitRandom = timeInfo.z;// fract(sin(unitEmitTime * 12.9898) * 43758.5453);',
 				'    float startSize = getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
+				'    float startAngle = getStartAngle(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
 				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge);',
@@ -329,10 +334,7 @@ define([
 		this.mesh = options.mesh !== undefined ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.sizeCurve = options.sizeCurve ? options.sizeCurve.clone() : null;
-		
-		// Should be a curve
-		this.startAngle = options.startAngle || 0;
-		
+		this.startAngle = options.startAngle ? options.startAngle.clone() : null;
 		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
 
 		if (options.texture) {
@@ -498,6 +500,20 @@ define([
 			set: function (value) {
 				this._startColor = value;
 				this.material.shader.setDefine('START_COLOR_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_COLOR_CODE);
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent startAngle member
+		 * @type {Curve}
+		 */
+		startAngle: {
+			get: function () {
+				return this._startAngle;
+			},
+			set: function (value) {
+				this._startAngle = value;
+				this.material.shader.setDefine('START_ROTATION_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_ROTATION_CURVE_CODE);
 			}
 		},
 
@@ -878,13 +894,12 @@ define([
 
 			var t = (particle.emitTime / duration) % 1;
 			this._generateLocalPositionAndDirection(pos, dir, t);
-			particle.startAngle = this._generateStartAngle(t);
 
 			for (j = 0; j < meshVertexCount; j++) {
 				startPos[meshVertexCount * 4 * i + j * 4 + 0] = pos.x;
 				startPos[meshVertexCount * 4 * i + j * 4 + 1] = pos.y;
 				startPos[meshVertexCount * 4 * i + j * 4 + 2] = pos.z;
-				startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
+				startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0;
 
 				startDir[meshVertexCount * 4 * i + j * 4 + 0] = dir.x;
 				startDir[meshVertexCount * 4 * i + j * 4 + 1] = dir.y;
@@ -894,11 +909,6 @@ define([
 		}
 		meshData.setAttributeDataUpdated('START_POS');
 		meshData.setAttributeDataUpdated('START_DIR');
-	};
-
-	// TODO make curve
-	ParticleComponent.prototype._generateStartAngle = function (time) {
-		return this.startAngle;
 	};
 
 	/**
@@ -994,15 +1004,17 @@ define([
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
+		var startPosition = particle.startPosition;
+		var startDirection = particle.startDirection;
 
 		// Get the last emitted particle
 		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.unsortedParticles[i];
 		particle.emitTime = this.time; // Emitting NOW
-		particle.startPosition.copy(position);
-		particle.startDirection.copy(direction);
+
+		startPosition.copy(position);
+		startDirection.copy(direction);
 		particle.active = 1;
-		particle.startAngle = this._generateStartAngle();
 
 		var meshVertexCount = this.mesh.vertexCount;
 
@@ -1011,14 +1023,14 @@ define([
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = rand;
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
-			startPos[meshVertexCount * 4 * i + j * 4 + 0] = particle.startPosition.x;
-			startPos[meshVertexCount * 4 * i + j * 4 + 1] = particle.startPosition.y;
-			startPos[meshVertexCount * 4 * i + j * 4 + 2] = particle.startPosition.z;
-			startPos[meshVertexCount * 4 * i + j * 4 + 3] = particle.startAngle;
+			startPos[meshVertexCount * 4 * i + j * 4 + 0] = startPosition.x;
+			startPos[meshVertexCount * 4 * i + j * 4 + 1] = startPosition.y;
+			startPos[meshVertexCount * 4 * i + j * 4 + 2] = startPosition.z;
+			startPos[meshVertexCount * 4 * i + j * 4 + 3] = 0;
 
-			startDir[meshVertexCount * 4 * i + j * 4 + 0] = particle.startDirection.x;
-			startDir[meshVertexCount * 4 * i + j * 4 + 1] = particle.startDirection.y;
-			startDir[meshVertexCount * 4 * i + j * 4 + 2] = particle.startDirection.z;
+			startDir[meshVertexCount * 4 * i + j * 4 + 0] = startDirection.x;
+			startDir[meshVertexCount * 4 * i + j * 4 + 1] = startDirection.y;
+			startDir[meshVertexCount * 4 * i + j * 4 + 2] = startDirection.z;
 			startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.startSize;
 		}
 
@@ -1171,24 +1183,7 @@ define([
 	 * @returns ParticleComponent
 	 */
 	ParticleComponent.prototype.clone = function () {
-		return new ParticleComponent({
-			gravity: this.gravity,
-			startColor: this.startColor,
-			shapeType: this.shapeType,
-			textureTilesX: this.textureTilesX,
-			textureTilesY: this.textureTilesY,
-			particles: this.particles,
-			duration: this.duration,
-			sphereRadius: this.sphereRadius,
-			coneRadius: this.coneRadius,
-			coneAngle: this.coneAngle,
-			localSpace: this.localSpace,
-			emissionRate: this.emissionRate,
-			startLifeTime: this.startLifeTime,
-			renderQueue: this.renderQueue,
-			alphakill: this.alphakill,
-			loop: this.loop
-		});
+		return new ParticleComponent(this);
 	};
 
 	return ParticleComponent;
