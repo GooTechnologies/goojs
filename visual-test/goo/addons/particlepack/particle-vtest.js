@@ -49,7 +49,7 @@ require([
 
 	new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
 		setTimeout(function () {
-			var max = 1000;
+			var max = 5000;
 
 			// var debugs = [];
 			// for (var i = 0; i < max; i++) {
@@ -69,13 +69,13 @@ require([
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 1, k: 0 })
 				// }),
-				loop: false,
+				loop: true,
 				preWarm: false,
 				gravity: new Vector3(0, 0, 0),
 				maxParticles: max,
-				duration: 1,
-				shapeType: 'cone',
-				sphereRadius: 10,
+				duration: 3,
+				shapeType: 'sphere',
+				sphereRadius: 0,
 				coneAngle: Math.PI / 8,
 				coneLength: 3,
 				coneEmitFrom: 'base',
@@ -85,24 +85,24 @@ require([
 				depthWrite: true,
 				depthTest: true,
 				emitterRadius: 1,
-				emissionRate: new LinearCurve({ m: 0, k: max / 5 }),
+				emissionRate: new LinearCurve({ m: 0, k: max/2 }),
 				startSpeed: new LinearCurve({ m: 10, k: 0 }),
 				// startSpeed: new LerpCurve({
 				// 	curveA: new LinearCurve({ m: 0, k: 0 }),
 				// 	curveB: new LinearCurve({ m: 5, k: 0 })
 				// }),
 
-				startColor: new Vector4Curve({
-					x: new LinearCurve({ k: 0, m: 1 }),
-					y: new LinearCurve({ k: -1, m: 1 }),
-					z: new LinearCurve({ k: -1, m: 1 }),
-					w: new LinearCurve({ k: -1, m: 1 })
-				}),
+				// startColor: new Vector4Curve({
+				// 	x: new LinearCurve({ k: 0, m: 1 }),
+				// 	y: new LinearCurve({ k: -1, m: 1 }),
+				// 	z: new LinearCurve({ k: -1, m: 1 }),
+				// 	w: new LinearCurve({ k: -1, m: 1 })
+				// }),
 
 				textureTilesX: 1,
 				textureTilesY: 1,
 				localSpace: true,
-				sphereEmitFromShell: true,
+				sphereEmitFromShell: false,
 				//mesh: new Box(1, 1, 1, 1/2, 1/2),
 				// sizeCurve: new CurveSet([
 				// 	new LinearCurve({ k: 1, m: 0 }),

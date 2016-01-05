@@ -728,6 +728,7 @@ define([
 	ParticleComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
+		var particles = this.particles;
 		var duration = this.duration;
 		var i, j;
 
@@ -762,35 +763,41 @@ define([
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		var emissionRate = this.emissionRate;
-		var numToEmitEachStep;
 		if(this.localSpace){
-			numToEmitEachStep = [];
 			var steps = Math.ceil(duration * 60); // Should not need to emit more precise than 60Hz
 			var sum = 0;
 			var lastIntegral = 0;
-			for(var i=0; i<steps && sum < maxParticles; i++){
-				var currentIntegral = emissionRate.getIntegralValueAt(i / steps);
+			var particleIndex = 0;
+			var fullIntegral = emissionRate.getIntegralValueAt(1);
+			for(var i=0; sum < maxParticles; i++){
+				var currentIntegral = (Math.floor(i / steps) * fullIntegral + emissionRate.getIntegralValueAt((i / steps) % 1)) * duration;
 				var numToEmit = Math.floor(currentIntegral - sum);
 				lastIntegral = currentIntegral;
 				sum += numToEmit;
-				numToEmitEachStep.push(numToEmit);
+				while(particleIndex < sum && particleIndex < maxParticles){
+					particles[particleIndex++].emitTime = i / steps * duration;
+				}
+				if(particleIndex >= maxParticles){
+					break;
+				}
+			}
+			while(particleIndex < maxParticles){
+				particles[particleIndex++].emitTime = 2 * duration;
 			}
 		}
 		for (i = 0; i < maxParticles; i++) {
-			var particle = this.particles[i];
+			var particle = particles[i];
 			particle.active = 1;
 
 			if (this.localSpace) {
 
-				particle.emitTime = i / emissionRate;
-				
 				if(this.preWarm && !this.loop){
 					// Already emitted, shift emit time back
 					particle.emitTime -= duration;
 				}
 
 				if (this.loop) {
-					particle.active = i < duration * emissionRate ? 1 : 0;
+					particle.active = particle.emitTime < duration ? 1 : 0;
 				}
 
 			} else {
@@ -812,7 +819,7 @@ define([
 		var startDir = meshData.getAttributeBuffer('START_DIR');
 
 		for (i = 0; i < maxParticles; i++) {
-			var particle = this.particles[i];
+			var particle = particles[i];
 			var pos = particle.startPosition;
 			var dir = particle.startDirection;
 
