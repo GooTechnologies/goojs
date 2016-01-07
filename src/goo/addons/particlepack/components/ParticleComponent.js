@@ -271,7 +271,7 @@ define([
 		this.particles = [];
 		
 		// Same as particles but unsorted.
-		this.unsortedParticles = [];
+		this.unsortedParticles = []; // TODO: the .particles should probably be unsorted instead, and then this should be renamed to sorted.
 
 		/**
 		 * @type {number}
@@ -1044,7 +1044,8 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 
 		// Get the last emitted particle
-		var i = this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
+		var i = this.nextEmitParticle;
+		this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.unsortedParticles[i];
 		var startPosition = particle.startPosition;
 		var startDirection = particle.startDirection;
@@ -1135,6 +1136,11 @@ define([
 
 	var tmpPos = new Vector3();
 	var tmpDir = new Vector3();
+
+	/**
+	 * @private
+	 * @param entity
+	 */
 	ParticleComponent.prototype.process = function (tpf) {
 		if(this.paused) return;
 

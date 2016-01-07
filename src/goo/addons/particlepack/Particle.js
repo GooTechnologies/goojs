@@ -48,7 +48,7 @@ define([
 
 		if (component.localSpace) {
 			// Transform to world space
-			var worldTransform = this.component._entity.transformComponent.worldTransform;
+			var worldTransform = component._entity.transformComponent.worldTransform;
 			store.applyPost(worldTransform.rotation);
 			store.add(worldTransform.translation);
 		}
