@@ -1,26 +1,14 @@
 define([
 	'goo/addons/particlepack/components/ParticleComponent',
-	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/Vector4Curve',
-	'goo/addons/particlepack/curves/Vector3Curve',
 	'goo/math/Vector3',
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
-	'goo/entities/systems/TransformSystem',
-	'goo/renderer/Texture',
-	'goo/renderer/MeshData',
 	'test/CustomMatchers'
 ], function (
 	ParticleComponent,
-	LinearCurve,
-	Vector4Curve,
-	Vector3Curve,
 	Vector3,
 	World,
 	TransformComponent,
-	TransformSystem,
-	Texture,
-	MeshData,
 	CustomMatchers
 ) {
 	'use strict';

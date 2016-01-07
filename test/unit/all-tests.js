@@ -130,6 +130,8 @@ define([
 	'test/addons/particlepack/curves/Curve-test',
 	'test/addons/particlepack/curves/PolyCurve-test',
 	'test/addons/particlepack/curves/Vector3Curve-test',
+	'test/addons/particlepack/curves/Vector4Curve-test',
+	'test/addons/particlepack/curves/LerpCurve-test',
 	'test/addons/particlepack/curves/LinearCurve-test',
 	'test/addons/particlepack/curves/ConstantCurve-test',
 	'test/addons/particlepack/components/ParticleComponent-test',

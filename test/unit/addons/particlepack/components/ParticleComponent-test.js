@@ -68,17 +68,15 @@ define([
 				duration: 123,
 				localSpace: false,
 				startSpeed: new LinearCurve({ k: 123, m: 123 }),
-				localVelocity: new Vector4Curve({
+				localVelocity: new Vector3Curve({
 					x: new LinearCurve({ k: 123, m: 123 }),
 					y: new LinearCurve({ k: 123, m: 123 }),
-					z: new LinearCurve({ k: 123, m: 123 }),
-					w: new LinearCurve({ k: 123, m: 123 })
+					z: new LinearCurve({ k: 123, m: 123 })
 				}),
-				worldVelocity: new Vector4Curve({
+				worldVelocity: new Vector3Curve({
 					x: new LinearCurve({ k: 123, m: 123 }),
 					y: new LinearCurve({ k: 123, m: 123 }),
-					z: new LinearCurve({ k: 123, m: 123 }),
-					w: new LinearCurve({ k: 123, m: 123 })
+					z: new LinearCurve({ k: 123, m: 123 })
 				}),
 				emissionRate: new LinearCurve({ k: 123, m: 123 }),
 				startLifeTime: new LinearCurve({ k: 123, m: 123 }),
