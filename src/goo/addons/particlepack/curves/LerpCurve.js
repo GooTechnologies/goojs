@@ -34,11 +34,11 @@ define([
 	LerpCurve.prototype.constructor = LerpCurve;
 
 	LerpCurve.prototype.toGLSL = function (timeVariableName, lerpVariableName) {
-		return 'mix(' + this.curveA.toGLSL(timeVariableName, lerpVariableName) + ',' + this.curveB.toGLSL(timeVariableName, lerpVariableName) + ', ' + lerpVariableName + ')';
+		return 'mix(' + this.curveA.toGLSL(timeVariableName, lerpVariableName) + ',' + this.curveB.toGLSL(timeVariableName, lerpVariableName) + ',' + lerpVariableName + ')';
 	};
 
 	LerpCurve.prototype.integralToGLSL = function (timeVariableName, lerpVariableName) {
-		return 'mix(' + this.curveA.integralToGLSL(timeVariableName, lerpVariableName) + ',' + this.curveB.integralToGLSL(timeVariableName, lerpVariableName) + ', ' + lerpVariableName + ')';
+		return 'mix(' + this.curveA.integralToGLSL(timeVariableName, lerpVariableName) + ',' + this.curveB.integralToGLSL(timeVariableName, lerpVariableName) + ',' + lerpVariableName + ')';
 	};
 
 	LerpCurve.prototype.getValueAt = function (t, lerpValue) {
