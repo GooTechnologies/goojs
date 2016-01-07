@@ -284,73 +284,21 @@ define([
 		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
 
 		/**
-		 * @type {number}
-		 */
-		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
-
-		/**
-		 * Emitter volume. Set to 'sphere', 'cone', or 'box'.
-		 * @type {string}
-		 */
-		this.shapeType = options.shapeType || 'sphere';
-
-		/**
-		 * Radius of the sphere, if sphere shape type is being used.
-		 * @type {number}
-		 */
-		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
-
-		/**
-		 * Whether to emit from the sphere shell, if sphere shape is used.
-		 * @todo this should probably update vertex data if localspace is used
-		 * @type {boolean}
-		 */
-		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
-
-		/**
-		 * Emit in random directions, instead of in the emitter volume direction.
-		 * @todo this should probably update vertex data if localspace is used
-		 * @type {boolean}
-		 */
-		this.randomDirection = options.randomDirection || false;
-		
-		/**
-		 * Where to emit from, if using the cone shape. Set to 'base', 'volume' or 'volumeshell'.
-		 * @type {string}
-		 */
-		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
-
-		/**
-		 * Extents of the box, if box shape is used.
-		 * @type {Vector3}
-		 */
-		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
-
-		/**
-		 * Radius of the cone, if cone shape is used.
-		 * @type {number}
-		 */
-		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
-		
-		/**
-		 * Angle of the cone, if cone shape is used.
-		 * @todo implement me!
-		 * @type {number}
-		 */
-		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
-
-		/**
-		 * Length of the cone, if cone shape is used.
-		 * @type {number}
-		 */
-		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
-
-		/**
 		 * Pre-warm the emission. Not available if looping is on.
 		 * @type {boolean}
 		 */
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 
+		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
+		this.shapeType = options.shapeType || 'sphere';
+		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
+		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
+		this.randomDirection = options.randomDirection || false;
+		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
+		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
+		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
+		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.startColor = options.startColor ? options.startColor.clone() : null;
 		this.color = options.color ? options.color.clone() : null;
 		this.duration = options.duration !== undefined ? options.duration : 5;
@@ -768,8 +716,159 @@ define([
 					meshData.indexCount = value * mesh.indexCount;
 					meshData.rebuildData();
 					this._updateParticles();
-					this._updateVertexData();
+					this._vertexDataDirty = true;
 				}
+			}
+		},
+
+		/**
+		 * Randomization seed.
+		 * @target-class ParticleComponent seed member
+		 * @type {number}
+		 */
+		seed: {
+			get: function () {
+				return this._seed;
+			},
+			set: function (value) {
+				this._seed = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Emitter volume. Set to 'sphere', 'cone', or 'box'.
+		 * @target-class ParticleComponent shapeType member
+		 * @type {string}
+		 */
+		shapeType: {
+			get: function () {
+				return this._shapeType;
+			},
+			set: function (value) {
+				this._shapeType = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Radius of the sphere, if sphere shape type is being used.
+		 * @target-class ParticleComponent shapeType member
+		 * @type {number}
+		 */
+		shapeType: {
+			get: function () {
+				return this._shapeType;
+			},
+			set: function (value) {
+				this._shapeType = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Whether to emit from the sphere shell, if sphere shape is used.
+		 * @target-class ParticleComponent sphereEmitFromShell member
+		 * @type {boolean}
+		 */
+		sphereEmitFromShell: {
+			get: function () {
+				return this._sphereEmitFromShell;
+			},
+			set: function (value) {
+				this._sphereEmitFromShell = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Emit in random directions, instead of in the emitter volume direction.
+		 * @target-class ParticleComponent randomDirection member
+		 * @type {boolean}
+		 */
+		randomDirection: {
+			get: function () {
+				return this._randomDirection;
+			},
+			set: function (value) {
+				this._randomDirection = value;
+				this._vertexDataDirty = true;
+			}
+		},
+		
+		/**
+		 * Where to emit from, if using the cone shape. Set to 'base', 'volume' or 'volumeshell'.
+		 * @target-class ParticleComponent coneEmitFrom member
+		 * @type {string}
+		 */
+		coneEmitFrom: {
+			get: function () {
+				return this._coneEmitFrom;
+			},
+			set: function (value) {
+				this._coneEmitFrom = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Extents of the box, if box shape is used.
+		 * @target-class ParticleComponent boxExtents member
+		 * @type {Vector3}
+		 */
+		boxExtents: {
+			get: function () {
+				return this._boxExtents;
+			},
+			set: function (value) {
+				this._boxExtents = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Radius of the cone, if cone shape is used.
+		 * @target-class ParticleComponent coneRadius member
+		 * @type {number}
+		 */
+		coneRadius: {
+			get: function () {
+				return this._coneRadius;
+			},
+			set: function (value) {
+				this._coneRadius = value;
+				this._vertexDataDirty = true;
+			}
+		},
+		
+		/**
+		 * Angle of the cone, if cone shape is used.
+		 * @todo implement me!
+		 * @target-class ParticleComponent coneAngle member
+		 * @type {number}
+		 */
+		coneAngle: {
+			get: function () {
+				return this._coneAngle;
+			},
+			set: function (value) {
+				this._coneAngle = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * Length of the cone, if cone shape is used.
+		 * @target-class ParticleComponent coneLength member
+		 * @type {number}
+		 */
+		coneLength: {
+			get: function () {
+				return this._coneLength;
+			},
+			set: function (value) {
+				this._coneLength = value;
+				this._vertexDataDirty = true;
 			}
 		}
 	});
@@ -1144,6 +1243,11 @@ define([
 	ParticleComponent.prototype.process = function (tpf) {
 		if(this.paused) return;
 
+		if(this._vertexDataDirty){
+			this._updateVertexData();
+			this._vertexDataDirty = false;
+		}
+
 		this.lastTime = this.time;
 		this.time += tpf;
 		this._updateUniforms();
@@ -1203,7 +1307,7 @@ define([
 		if (this._localSpace) {
 			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
 		}
-		this._updateVertexData();
+		this._vertexDataDirty = true;
 	};
 
 	/**
