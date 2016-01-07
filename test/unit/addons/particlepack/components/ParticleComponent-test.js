@@ -151,8 +151,8 @@ define([
 			var direction = new Vector3(0,1,0);
 			component.emitOne(position, direction);
 
-			expect(component.unsortedParticles[0].startPosition).toEqual(position);
-			expect(component.unsortedParticles[0].startDirection).toEqual(direction);
+			expect(component.particles[0].startPosition).toEqual(position);
+			expect(component.particles[0].startDirection).toEqual(direction);
 		});
 
 		it('can play/pause', function () {

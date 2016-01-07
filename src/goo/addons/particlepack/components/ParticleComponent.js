@@ -268,10 +268,10 @@ define([
 		this.nextEmitParticle = 0;
 
 		// Sorted particles.
-		this.particles = [];
+		this.sortedParticles = [];
 		
 		// Same as particles but unsorted.
-		this.unsortedParticles = []; // TODO: the .particles should probably be unsorted instead, and then this should be renamed to sorted.
+		this.particles = [];
 
 		/**
 		 * @type {number}
@@ -813,8 +813,8 @@ define([
 	 * @private
 	 */
 	ParticleComponent.prototype._updateParticles = function () {
-		var particles = this.particles;
-		var unsortedParticles = this.unsortedParticles;
+		var particles = this.sortedParticles;
+		var unsortedParticles = this.particles;
 		var maxParticles = this.maxParticles;
 		while (particles.length < maxParticles) {
 			var particle = new Particle(this);
@@ -834,7 +834,7 @@ define([
 	ParticleComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
-		var particles = this.particles;
+		var particles = this.sortedParticles;
 		var duration = this.duration;
 		var i, j;
 
@@ -1046,7 +1046,7 @@ define([
 		// Get the last emitted particle
 		var i = this.nextEmitParticle;
 		this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
-		var particle = this.unsortedParticles[i];
+		var particle = this.particles[i];
 		var startPosition = particle.startPosition;
 		var startDirection = particle.startDirection;
 		particle.emitTime = this.time; // Emitting NOW
@@ -1099,7 +1099,7 @@ define([
 		if (this.sortMode === ParticleComponent.SORT_NONE) {
 			return;
 		}
-		var particles = this.particles;
+		var particles = this.sortedParticles;
 
 		// Update sort values
 		for (var i = 0; i < particles.length; i++) {
@@ -1146,9 +1146,6 @@ define([
 
 		this.lastTime = this.time;
 		this.time += tpf;
-		// if (this.loop && this.time > this.duration) { // TODO: should this be done in shader only?
-		// 	this.time %= this.duration;
-		// }
 		this._updateUniforms();
 		this._sortParticles();
 		this._updateBounds();
@@ -1184,8 +1181,8 @@ define([
 		for (var i = 0; i < maxParticles; i++) {
 			var particle = new Particle(this);
 			particle.index = i;
+			this.sortedParticles.push(particle);
 			this.particles.push(particle);
-			this.unsortedParticles.push(particle);
 		}
 
 		var attributeMap = MeshData.defaultMap([
@@ -1215,7 +1212,7 @@ define([
 	 */
 	ParticleComponent.prototype.detached = function (/*entity*/) {
 		this.meshEntity.clearComponent('MeshDataComponent');
-		this.unsortedParticles.length = this.particles.length = 0;
+		this.particles.length = this.sortedParticles.length = 0;
 		if (hasParent(this.meshEntity)) {
 			this._entity.detachChild(this.meshEntity);
 		}
