@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	describe('LinearCurve', function () {
-		it('can get a value on the curve', function () {
+		it('.getValueAt', function () {
 			var curve = new LinearCurve({
 				k: 1,
 				m: 0
@@ -21,7 +21,7 @@ define([
 			expect(curve.getValueAt(1)).toBe(1);
 		});
 
-		it('can get an integral value on the curve', function () {
+		it('.getIntegralValueAt', function () {
 			var curve = new LinearCurve({
 				k: 1,
 				m: 0
@@ -36,7 +36,7 @@ define([
 			expect(curve.getIntegralValueAt(1)).toBe(0.75); // 0.5 * 1^2 + 0.5
 		});
 
-		it('can be converted to GLSL', function () {
+		it('.toGLSL', function () {
 			var curve = new LinearCurve({
 				k: 1,
 				m: 0
@@ -44,7 +44,7 @@ define([
 			expect(curve.toGLSL('t')).toBe('(1.0*t+0.0)');
 		});
 
-		it('can have its integral converted to GLSL', function () {
+		it('.integralToGLSL', function () {
 			var curve = new LinearCurve({
 				k: 1,
 				m: 0

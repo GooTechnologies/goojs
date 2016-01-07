@@ -36,6 +36,12 @@ define([
 			world.registerComponent(ParticleComponent);
 		});
 
+		it('gets added to the entity via world.createEntity', function () {
+			var component = new ParticleComponent();
+			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			expect(entity.particleComponent).toBe(component);
+		});
+
 		it('can clone', function () {
 			var component = new ParticleComponent({
 				maxParticles: 10,
@@ -139,11 +145,27 @@ define([
 		});
 
 		it('can emit one', function () {
-			var component = new ParticleComponent();
+			var component = new ParticleComponent({
+				localSpace: false
+			});
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
 			var position = new Vector3();
 			var direction = new Vector3(0,1,0);
 			component.emitOne(position, direction);
+
+			expect(component.unsortedParticles[0].startPosition).toEqual(position);
+			expect(component.unsortedParticles[0].startDirection).toEqual(direction);
+		});
+
+		it('can play/pause', function () {
+			var component = new ParticleComponent();
+			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			expect(component.time).toBe(0);
+			component.process(1);
+			expect(component.time).toBe(1);
+			component.paused = true;
+			component.process(1);
+			expect(component.time).toBe(1);
 		});
 	});
 });
