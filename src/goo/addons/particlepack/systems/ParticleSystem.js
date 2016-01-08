@@ -44,5 +44,31 @@ define([
 	 */
 	ParticleSystem.prototype.removedComponent = function (/*entity, component*/) {};
 
+	ParticleSystem.prototype.pause = function () {
+		this.passive = true;
+		var entities = this._activeEntities;
+		for (var i = 0; i < entities.length; i++) {
+			entities[i].particleComponent.pause();
+		}
+	};
+
+	ParticleSystem.prototype.resume = function () {
+		this.passive = false;
+		var entities = this._activeEntities;
+		for (var i = 0; i < entities.length; i++) {
+			entities[i].particleComponent.resume();
+		}
+	};
+
+	ParticleSystem.prototype.play = ParticleSystem.prototype.resume;
+
+	ParticleSystem.prototype.stop = function () {
+		this.pause();
+		var entities = this._activeEntities;
+		for (var i = 0; i < entities.length; i++) {
+			entities[i].particleComponent.stop();
+		}
+	};
+
 	return ParticleSystem;
 });

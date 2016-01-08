@@ -71,6 +71,11 @@ define([
 					poseRef: this.skeleton().id
 				};
 			},
+			particle: function () {
+				return {
+					// TODO
+				};
+			},
 			meshRenderer: function () {
 				var config = {
 					cullMode: 'Dynamic',

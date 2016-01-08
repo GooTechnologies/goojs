@@ -155,13 +155,30 @@ define([
 			expect(component.particles[0].startDirection).toEqual(direction);
 		});
 
-		it('can play/pause', function () {
+		it('can pause/resume', function () {
 			var component = new ParticleComponent();
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
 			expect(component.time).toBe(0);
 			component.process(1);
 			expect(component.time).toBe(1);
-			component.paused = true;
+			component.pause();
+			component.process(1);
+			expect(component.time).toBe(1);
+			component.resume();
+			component.process(1);
+			expect(component.time).toBe(2);
+		});
+
+		it('can stop/resume', function () {
+			var component = new ParticleComponent();
+			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			component.process(1);
+			expect(component.time).toBe(1);
+			component.stop();
+			expect(component.time).toBe(0);
+			component.process(1);
+			expect(component.time).toBe(0);
+			component.resume();
 			component.process(1);
 			expect(component.time).toBe(1);
 		});

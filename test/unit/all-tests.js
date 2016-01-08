@@ -135,6 +135,7 @@ define([
 	'test/addons/particlepack/curves/LinearCurve-test',
 	'test/addons/particlepack/curves/ConstantCurve-test',
 	'test/addons/particlepack/components/ParticleComponent-test',
+	'test/addons/particlepack/handlers/ParticleComponentHandler-test',
 	'test/addons/physicspack/systems/PhysicsSystem-test',
 	'test/addons/physicspack/systems/PhysicsDebugRenderSystem-test',
 	'test/addons/physicspack/components/RigidBodyComponent-test',

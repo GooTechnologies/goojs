@@ -31,8 +31,7 @@ define([
 	 * @private
 	 */
 	ParticleComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
-		});
+		return _.defaults(config, {});
 	};
 
 	/**

@@ -277,6 +277,12 @@ define([
 		 * @type {number}
 		 */
 		this.time = options.time || 0;
+		
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._lastTime = this.time;
 
 		/**
 		 * @type {Vector3}
@@ -356,19 +362,6 @@ define([
 			},
 			set: function (value) {
 				this.material.uniforms.textureTileInfo[2] = value;
-			}
-		},
-
-		/**
-		 * @target-class ParticleComponent paused member
-		 * @type {boolean}
-		 */
-		paused: {
-			get: function () {
-				return this._paused;
-			},
-			set: function (value) {
-				this._paused = value;
 			}
 		},
 
@@ -909,6 +902,35 @@ define([
 	};
 
 	/**
+	 * Pause the animation.
+	 */
+	ParticleComponent.prototype.pause = function () {
+		this._paused = true;
+	};
+
+	/**
+	 * Resume the animation.
+	 */
+	ParticleComponent.prototype.resume = function () {
+		this.play();
+	};
+
+	/**
+	 * Play the animation.
+	 */
+	ParticleComponent.prototype.play = function () {
+		this._paused = false;
+	};
+
+	/**
+	 * Stop the animation.
+	 */
+	ParticleComponent.prototype.stop = function () {
+		this.pause();
+		this.time = 0;
+	};
+
+	/**
 	 * @private
 	 */
 	ParticleComponent.prototype._updateParticles = function () {
@@ -1241,29 +1263,31 @@ define([
 	 * @param entity
 	 */
 	ParticleComponent.prototype.process = function (tpf) {
-		if(this.paused) return;
+		if(this._paused) return;
 
 		if(this._vertexDataDirty){
 			this._updateVertexData();
 			this._vertexDataDirty = false;
 		}
 
-		this.lastTime = this.time;
+		this._lastTime = this.time;
 		this.time += tpf;
 		this._updateUniforms();
 		this._sortParticles();
 		this._updateBounds();
 
+		var time = this.time;
+		var worldTransform = this._entity.transformComponent.worldTransform;
+
 		// Emit according to emit rate
 		if (!this.localSpace) {
 			var emissionRate = this.emissionRate;
-			var numToEmit = Math.floor(this.time * emissionRate.getValueAt(this.time, this._random())) - Math.floor(this.lastTime * emissionRate.getValueAt(this.time, this._random()));
+			var numToEmit = Math.floor(time * emissionRate.getValueAt(time, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(time, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
 				// get pos and direction from the shape
-				this._generateLocalPositionAndDirection(tmpPos, tmpDir, this.time);
+				this._generateLocalPositionAndDirection(tmpPos, tmpDir, time);
 
 				// Transform to world space
-				var worldTransform = this._entity.transformComponent.worldTransform;
 				tmpPos.applyPostPoint(worldTransform.matrix);
 				tmpDir.applyPost(worldTransform.rotation);
 
