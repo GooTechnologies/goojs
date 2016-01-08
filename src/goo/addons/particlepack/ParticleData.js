@@ -10,17 +10,62 @@ define([
 	 * @constructor
 	 * @param {ParticleComponent} particleComponent
 	 */
-	function Particle(particleComponent) {
-		this.index = 0;
+	function ParticleData(particleComponent) {
+
+		/**
+		 * The owner component
+		 * @type {number}
+		 */
 		this.component = particleComponent;
+
+		/**
+		 * @type {number}
+		 */
+		this.index = 0;
+
+		/**
+		 * @type {number}
+		 */
 		this.lifeTime = 1;
+
+		/**
+		 * @type {number}
+		 */
 		this.timeScale = 0;
+
+		/**
+		 * @type {number}
+		 */
 		this.emitTime = 0;
+
+		/**
+		 * @type {number}
+		 */
 		this.active = 1;
+
+		/**
+		 * @type {Vector3}
+		 */
 		this.startPosition = new Vector3();
+
+		/**
+		 * @type {Vector3}
+		 */
 		this.startDirection = new Vector3();
+
+		/**
+		 * @type {number}
+		 */
 		this.startAngle = 0;
+
+		/**
+		 * @type {number}
+		 */
 		this.startSize = 1;
+
+		/**
+		 * @type {number}
+		 */
 		this.sortValue = 0;
 	}
 
@@ -31,7 +76,7 @@ define([
 	 * Get the world position of the particle
 	 * @param {Vector3} store
 	 */
-	Particle.prototype.getWorldPosition = function (store) {
+	ParticleData.prototype.getWorldPosition = function (store) {
 		if(!this.active) return store;
 		var component = this.component;
 
@@ -56,5 +101,5 @@ define([
 		return store;
 	};
 
-	return Particle;
+	return ParticleData;
 });

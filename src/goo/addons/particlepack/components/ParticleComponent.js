@@ -11,7 +11,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/Shader',
 	'goo/math/Transform',
-	'goo/addons/particlepack/Particle',
+	'goo/addons/particlepack/ParticleData',
 	'goo/renderer/Renderer',
 	'goo/shapes/Quad',
 	'goo/addons/particlepack/curves/ConstantCurve',
@@ -30,7 +30,7 @@ define([
 	Texture,
 	Shader,
 	Transform,
-	Particle,
+	ParticleData,
 	Renderer,
 	Quad,
 	ConstantCurve,
@@ -937,7 +937,7 @@ define([
 		var unsortedParticles = this.particles;
 		var maxParticles = this.maxParticles;
 		while (particles.length < maxParticles) {
-			var particle = new Particle(this);
+			var particle = new ParticleData(this);
 			particle.index = particles.length;
 			particles.push(particle);
 			unsortedParticles.push(particle);
@@ -1306,7 +1306,7 @@ define([
 
 		var maxParticles = this.maxParticles;
 		for (var i = 0; i < maxParticles; i++) {
-			var particle = new Particle(this);
+			var particle = new ParticleData(this);
 			particle.index = i;
 			this.sortedParticles.push(particle);
 			this.particles.push(particle);
