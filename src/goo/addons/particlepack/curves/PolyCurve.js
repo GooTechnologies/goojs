@@ -9,15 +9,18 @@ define([
 	 * A collection of Curve instances. Used to connect different types curves, joining them at their given time offsets.
 	 * @constructor
 	 * @extends Curve
-	 * @param {array} [segments]
+	 * @param {object} [options]
+	 * @param {array} [options.segments]
 	 */
-	function PolyCurve(segments) {
-		Curve.call(this, {});
+	function PolyCurve(options) {
+		options = options || {};
+
+		Curve.call(this, options);
 
 		/**
 		 * @type {Array<Curve>}
 		 */
-		this.segments = segments ? segments.map(function (curve) {
+		this.segments = options.segments ? options.segments.map(function (curve) {
 			return curve.clone();
 		}) : [];
 	}
@@ -25,7 +28,7 @@ define([
 	PolyCurve.prototype = {
 		
 		clone: function () {
-			return new PolyCurve(this.segments);
+			return new PolyCurve(this);
 		},
 
 		/**

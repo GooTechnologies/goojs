@@ -295,13 +295,18 @@ define([
 		 */
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 
-		this.seed = options.seed !== undefined ? options.seed : Math.floor(Math.random() * 32768);
+		/**
+		 * Extents of the box, if box shape is used.
+		 * @type {Vector3}
+		 */
+		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+
+		this.seed = options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768);
 		this.shapeType = options.shapeType || 'sphere';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
 		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
 		this.randomDirection = options.randomDirection || false;
 		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
-		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
 		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
 		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
@@ -538,17 +543,17 @@ define([
 				return hasParent(this.meshEntity);
 			},
 			set: function (value) {
-				if (!this.meshEntity) {
+				var meshEntity = this.meshEntity;
+				if (!meshEntity) {
 					// Didn't initialize yet
 					this._localSpace = value;
 					return;
 				}
-				var entity = this.meshEntity;
-				var hasParent = this.localSpace;
-				if (!value && hasParent) {
-					entity.transformComponent.parent.detachChild(entity.transformComponent);
-				} else if (value && !hasParent) {
-					entity.transformComponent.parent.attachChild(this.meshEntity.transformComponent);
+				var meshHasParent = hasParent(meshEntity);
+				if (!value && meshHasParent) {
+					this._entity.transformComponent.detachChild(meshEntity.transformComponent);
+				} else if (value && !meshHasParent) {
+					this._entity.transformComponent.attachChild(meshEntity.transformComponent);
 				}
 			}
 		},
@@ -805,21 +810,6 @@ define([
 		},
 
 		/**
-		 * Extents of the box, if box shape is used.
-		 * @target-class ParticleComponent boxExtents member
-		 * @type {Vector3}
-		 */
-		boxExtents: {
-			get: function () {
-				return this._boxExtents;
-			},
-			set: function (value) {
-				this._boxExtents = value;
-				this._vertexDataDirty = true;
-			}
-		},
-
-		/**
 		 * Radius of the cone, if cone shape is used.
 		 * @target-class ParticleComponent coneRadius member
 		 * @type {number}
@@ -865,6 +855,15 @@ define([
 			}
 		}
 	});
+
+	/**
+	 * Set the boxExtents.
+	 * @param {Vector3} extents
+	 */
+	ParticleComponent.prototype.setBoxExtents = function (extents) {
+		this.boxExtents.copy(extents);
+		this._vertexDataDirty = true;
+	};
 
 	/**
 	 * @private
