@@ -1,3 +1,10 @@
+v0.15.28 --- 2016-01-11
+
+### Fixes
+
+  * Fix problem with script dependencies that happens if a script has no body
+  * Minor code optimization in PhysicsSystem.js
+
 v0.15.27 --- 2015-12-17
 
 ### Fixes
