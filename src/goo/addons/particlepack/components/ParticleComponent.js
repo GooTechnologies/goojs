@@ -301,7 +301,7 @@ define([
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 
-		this.seed = options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768);
+		this._initSeed = this._seed = this.seed = (options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768));
 		this.shapeType = options.shapeType || 'sphere';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
 		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
@@ -726,11 +726,13 @@ define([
 		 */
 		seed: {
 			get: function () {
-				return this._seed;
+				return this._initSeed;
 			},
 			set: function (value) {
-				this._seed = value;
-				this._vertexDataDirty = true;
+				if(value !== this._initSeed){
+					this._initSeed = value;
+					this._vertexDataDirty = true;
+				}
 			}
 		},
 
@@ -823,6 +825,27 @@ define([
 				this._vertexDataDirty = true;
 			}
 		},
+
+		/**
+		 * Radius of the cone, if cone shape is used.
+		 * @target-class ParticleComponent coneRadius member
+		 * @type {number}
+		 */
+		sortMode: {
+			get: function () {
+				return this._sortMode;
+			},
+			set: function (value) {
+				this._sortMode = value;
+
+				var meshData = this.meshData;
+				var mesh = this.mesh;
+				if(value !== ParticleComponent.SORT_NONE || !meshData || !mesh){
+					return;
+				}
+				this._updateIndexBuffer(this.particles);
+			}
+		},
 		
 		/**
 		 * Angle of the cone, if cone shape is used.
@@ -870,8 +893,8 @@ define([
 	 */
 	ParticleComponent.prototype._random = function () {
 		var a = 214013, c = 2531011, m = 32768;
-		this.seed = (this.seed * a + c) % m;
-		return this.seed / m;
+		this._seed = (this._seed * a + c) % m;
+		return this._seed / m;
 	};
 
 	var invRot = new Matrix3();
@@ -898,6 +921,20 @@ define([
 		}
 
 		uniforms.time = this.time;
+	};
+
+	ParticleComponent.prototype._updateIndexBuffer = function (particles) {
+		var mesh = this.mesh;
+		var meshData = this.meshData;
+		var meshIndices = mesh.getIndexBuffer();
+		var indices = meshData.getIndexBuffer();
+		meshData.getIndexData().setDataNeedsRefresh();
+		var meshVertexCount = mesh.vertexCount;
+		for (var i = 0; i < particles.length; i++) {
+			for (var j = 0; j < meshIndices.length; j++) {
+				indices[i * meshIndices.length + j] = meshIndices[j] + particles[i].index * meshVertexCount;
+			}
+		}
 	};
 
 	/**
@@ -927,6 +964,8 @@ define([
 	ParticleComponent.prototype.stop = function () {
 		this.pause();
 		this.time = 0;
+		this._seed = this._initSeed;
+		this._vertexDataDirty = true;
 	};
 
 	/**
@@ -954,7 +993,7 @@ define([
 	ParticleComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
-		var particles = this.sortedParticles;
+		var particles = this.particles;
 		var duration = this.duration;
 		var i, j;
 
@@ -1067,6 +1106,8 @@ define([
 		}
 		meshData.setAttributeDataUpdated('START_POS');
 		meshData.setAttributeDataUpdated('START_DIR');
+
+
 	};
 
 	/**
@@ -1241,17 +1282,7 @@ define([
 		}
 
 		// Update index buffer
-		var meshData = this.meshData;
-		var mesh = this.mesh;
-		var meshIndices = mesh.getIndexBuffer();
-		var indices = meshData.getIndexBuffer();
-		meshData.getIndexData().setDataNeedsRefresh();
-		var meshVertexCount = mesh.vertexCount;
-		for (var i = 0; i < particles.length; i++) {
-			for (var j = 0; j < meshIndices.length; j++) {
-				indices[i * meshIndices.length + j] = meshIndices[j] + particles[i].index * meshVertexCount;
-			}
-		}
+		this._updateIndexBuffer(particles);
 	};
 
 	var tmpPos = new Vector3();

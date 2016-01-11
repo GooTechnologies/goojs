@@ -202,15 +202,21 @@ define([
 			component.textureTilesY = config.textureTilesY;
 			component.textureAnimationSpeed = config.textureAnimationSpeed;
 			component.startSize = createCurve(config.startSize);
-			component.sortMode = config.sortMode;
+			component.sortMode = {
+				'none': ParticleComponent.SORT_NONE,
+				'camera_distance': ParticleComponent.SORT_CAMERA_DISTANCE
+			}[config.sortMode];
 			component.billboard = config.billboard;
 			component.sizeCurve = createCurve(config.sizeCurve);
 			component.startAngle = createCurve(config.startAngle);
 			component.rotationSpeed = createCurve(config.rotationSpeed);
 
+			component.stop();
+			component.play();
+
 			var promises = [];
 
-			var textureRef = config.textureRef;
+			var textureRef = config.texture && config.texture.enabled && config.texture.textureRef;
 			if(textureRef){
 				promises.push(that._load(textureRef, options).then(function (texture) {
 					component.texture = texture;
