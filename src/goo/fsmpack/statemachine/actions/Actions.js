@@ -58,6 +58,7 @@ define([
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
 	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
 	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
+	'goo/fsmpack/statemachine/actions/ScriptAction',
 
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
