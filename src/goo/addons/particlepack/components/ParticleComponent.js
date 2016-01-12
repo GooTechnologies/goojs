@@ -82,7 +82,7 @@ define([
 	 * @param {number} [options.coneRadius=1]
 	 * @param {number} [options.seed]
 	 * @param {number} [options.shapeType='sphere']
-	 * @param {number} [options.sizeCurve]
+	 * @param {number} [options.size]
 	 * @param {number} [options.sortMode]
 	 * @param {Curve} [options.startAngle]
 	 * @param {number} [options.startLifeTime=5]
@@ -333,7 +333,7 @@ define([
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
-		this.sizeCurve = options.sizeCurve ? options.sizeCurve.clone() : null;
+		this.size = options.size ? options.size.clone() : null;
 		this.startAngle = options.startAngle ? options.startAngle.clone() : null;
 		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
 		this.texture = options.texture ? options.texture : null;
@@ -402,15 +402,15 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent sizeCurve member
+		 * @target-class ParticleComponent size member
 		 * @type {Curve|null}
 		 */
-		sizeCurve: {
+		size: {
 			get: function () {
-				return this._sizeCurve;
+				return this._size;
 			},
 			set: function (value) {
-				this._sizeCurve = value;
+				this._size = value;
 				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.SIZE_CURVE_CODE);
 			}
 		},
@@ -536,17 +536,13 @@ define([
 		 */
 		localSpace: {
 			get: function () {
-				if (!this.meshEntity) {
-					// Didn't initialize yet
-					return this._localSpace;
-				}
-				return hasParent(this.meshEntity);
+				return this._localSpace;
 			},
 			set: function (value) {
+				this._localSpace = value;
 				var meshEntity = this.meshEntity;
 				if (!meshEntity) {
 					// Didn't initialize yet
-					this._localSpace = value;
 					return;
 				}
 				var meshHasParent = hasParent(meshEntity);
@@ -1358,9 +1354,7 @@ define([
 		meshEntity.name = 'ParticleSystem';
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		meshEntity.addToWorld();
-		if (this._localSpace) {
-			this._entity.transformComponent.attachChild(meshEntity.transformComponent, false);
-		}
+		this.localSpace = this._localSpace;
 		this._vertexDataDirty = true;
 	};
 

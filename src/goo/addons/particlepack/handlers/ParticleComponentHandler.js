@@ -54,6 +54,7 @@ define([
 	 */
 	ParticleComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
+			gravity: [0, 0, 0],
 			seed: -1,
 			shapeType: 'cone',
 			sphereRadius: 1,
@@ -96,7 +97,7 @@ define([
 			startSize: constantCurve(1),
 			sortMode: 'none',
 			billboard: true,
-			sizeCurve: constantCurve(1),
+			size: constantCurve(1),
 			startAngle: constantCurve(0),
 			rotationSpeed: constantCurve(0),
 			textureRef: null
@@ -172,6 +173,7 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
+			component.gravity.setArray(config.gravity);
 			component.seed = config.seed;
 			component.shapeType = config.shapeType;
 			component.sphereRadius = config.sphereRadius;
@@ -207,7 +209,7 @@ define([
 				'camera_distance': ParticleComponent.SORT_CAMERA_DISTANCE
 			}[config.sortMode];
 			component.billboard = config.billboard;
-			component.sizeCurve = createCurve(config.sizeCurve);
+			component.size = createCurve(config.size);
 			component.startAngle = createCurve(config.startAngle);
 			component.rotationSpeed = createCurve(config.rotationSpeed);
 
