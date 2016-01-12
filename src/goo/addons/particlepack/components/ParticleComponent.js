@@ -540,17 +540,6 @@ define([
 			},
 			set: function (value) {
 				this._localSpace = value;
-				var meshEntity = this.meshEntity;
-				if (!meshEntity) {
-					// Didn't initialize yet
-					return;
-				}
-				var meshHasParent = hasParent(meshEntity);
-				if (!value && meshHasParent) {
-					this._entity.transformComponent.detachChild(meshEntity.transformComponent);
-				} else if (value && !meshHasParent) {
-					this._entity.transformComponent.attachChild(meshEntity.transformComponent);
-				}
 			}
 		},
 
@@ -1043,7 +1032,7 @@ define([
 				}
 			}
 			while(particleIndex < maxParticles){
-				particles[particleIndex++].emitTime = 2 * duration;
+				particles[particleIndex++].emitTime = 2 * duration; // ???
 			}
 		}
 		for (i = 0; i < maxParticles; i++) {
@@ -1064,6 +1053,7 @@ define([
 			} else {
 				// Set all particles to be active but already dead - ready to be re-emitted at any point
 				particle.emitTime = -2 * particle.lifeTime;
+				particle.active = false;
 			}
 
 			var rand = this._random();
@@ -1216,6 +1206,8 @@ define([
 
 		var rand = this._random();
 		for (var j = 0; j < meshVertexCount; j++) {
+			timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
+			timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 2] = rand;
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 3] = particle.emitTime;
 
@@ -1304,6 +1296,12 @@ define([
 
 		var time = this.time;
 		var worldTransform = this._entity.transformComponent.worldTransform;
+
+		if(this.localSpace){
+			var meshEntity = this.meshEntity;
+			meshEntity.transformComponent.transform.copy(this._entity.transformComponent.transform);
+			meshEntity.transformComponent.worldTransform.copy(this._entity.transformComponent.worldTransform);
+		}
 
 		// Emit according to emit rate
 		if (!this.localSpace) {
