@@ -1276,6 +1276,12 @@ define([
 	var tmpPos = new Vector3();
 	var tmpDir = new Vector3();
 
+	function copyPositionAndRotation(destTransform, srcTransform){
+		destTransform.rotation.copy(srcTransform.rotation);
+		destTransform.translation.copy(srcTransform.translation);
+		destTransform.update();
+	}
+
 	/**
 	 * @private
 	 * @param entity
@@ -1295,12 +1301,13 @@ define([
 		this._updateBounds();
 
 		var time = this.time;
-		var worldTransform = this._entity.transformComponent.worldTransform;
+		var entity = this._entity;
+		var worldTransform = entity.transformComponent.worldTransform;
 
 		if(this.localSpace){
 			var meshEntity = this.meshEntity;
-			meshEntity.transformComponent.transform.copy(this._entity.transformComponent.transform);
-			meshEntity.transformComponent.worldTransform.copy(this._entity.transformComponent.worldTransform);
+			copyPositionAndRotation(meshEntity.transformComponent.transform, entity.transformComponent.transform);
+			copyPositionAndRotation(meshEntity.transformComponent.worldTransform, entity.transformComponent.worldTransform);
 		}
 
 		// Emit according to emit rate
