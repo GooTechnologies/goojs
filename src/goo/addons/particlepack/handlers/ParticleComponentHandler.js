@@ -8,7 +8,8 @@ define([
 	'goo/addons/particlepack/curves/Vector4Curve',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtils',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function (
 	ComponentHandler,
 	ParticleComponent,
@@ -19,7 +20,8 @@ define([
 	Vector4Curve,
 	RSVP,
 	_,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
 	'use strict';
 
@@ -119,7 +121,9 @@ define([
 		entity.clearComponent('ParticleComponent');
 	};
 
-	function createCurve(configs){
+	function createCurve(configs, multiplier){
+		multiplier = multiplier !== undefined ? multiplier : 1;
+
 		var curve = new PolyCurve();
 
 		for(var i=0; i<configs.length; i++){
@@ -129,14 +133,21 @@ define([
 			case 'linear':
 				curve.addSegment(new LinearCurve({
 					timeOffset: config.offset,
-					k: options.k,
-					m: options.m
+					k: options.k * multiplier,
+					m: options.m * multiplier
 				}));
 				break;
 			case 'constant':
 				curve.addSegment(new ConstantCurve({
 					timeOffset: config.offset,
-					value: options.value
+					value: options.value * multiplier
+				}));
+				break;
+			case 'lerp':
+				curve.addSegment(new LerpCurve({
+					timeOffset: config.offset,
+					curveA: createCurve(options.curveA),
+					curveB: createCurve(options.curveB)
 				}));
 				break;
 			}
@@ -210,8 +221,8 @@ define([
 			}[config.sortMode];
 			component.billboard = config.billboard;
 			component.size = createCurve(config.size);
-			component.startAngle = createCurve(config.startAngle);
-			component.rotationSpeed = createCurve(config.rotationSpeed);
+			component.startAngle = createCurve(config.startAngle, MathUtils.DEG_TO_RAD);
+			component.rotationSpeed = createCurve(config.rotationSpeed, MathUtils.DEG_TO_RAD);
 
 			component.stop();
 			component.play();

@@ -90,7 +90,7 @@ define([
 				startSize: constantCurve(123),
 				sortMode: 'camera_distance',
 				billboard: false,
-				sizeCurve: constantCurve(1),
+				size: constantCurve(1),
 				startAngle: constantCurve(0),
 				rotationSpeed: constantCurve(0)
 				//textureRef: null
@@ -149,9 +149,9 @@ define([
 				expect(c.textureTilesY).toEqual(34);
 				expect(c.textureAnimationSpeed).toEqual(123);
 				expect(c.startSize).toEqual(newConstantPolyCurve(123));
-				expect(c.sortMode).toEqual('camera_distance');
+				expect(c.sortMode).toEqual(ParticleComponent.SORT_CAMERA_DISTANCE);
 				expect(c.billboard).toEqual(false);
-				expect(c.sizeCurve).toEqual(newConstantPolyCurve(1));
+				expect(c.size).toEqual(newConstantPolyCurve(1));
 				expect(c.startAngle).toEqual(newConstantPolyCurve(0));
 				expect(c.rotationSpeed).toEqual(newConstantPolyCurve(0));
 
