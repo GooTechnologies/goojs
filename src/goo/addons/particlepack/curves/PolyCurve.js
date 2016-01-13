@@ -105,17 +105,17 @@ define([
 		 * @param {number} t
 		 * @returns {number}
 		 */
-		getValueAt: function (t/*, lerpValue*/) {
+		getValueAt: function (t, lerpValue) {
 			// Find the matching segment
 			var segments = this.segments;
 			for (var i = 0; i < segments.length - 1; i++) {
 				var a = segments[i];
 				var b = segments[i + 1];
 				if (a.timeOffset <= t && b.timeOffset > t) {
-					return this.segments[i].getValueAt(t);
+					return this.segments[i].getValueAt(t, lerpValue);
 				}
 			}
-			return this.segments[segments.length - 1].getValueAt(t);
+			return this.segments[segments.length - 1].getValueAt(t, lerpValue);
 		},
 
 		/**
@@ -123,7 +123,7 @@ define([
 		 * @param {number} t
 		 * @returns {number}
 		 */
-		getIntegralValueAt: function (t/*, lerpValue*/) {
+		getIntegralValueAt: function (t, lerpValue) {
 			// Add all integral values until the last segment
 			var segments = this.segments;
 			var value = 0;
@@ -134,10 +134,10 @@ define([
 					t1 = segments[i + 1].timeOffset;
 				}
 				if (a.timeOffset <= t && t1 > t) {
-					value += this.segments[i].getIntegralValueAt(t);
+					value += this.segments[i].getIntegralValueAt(t, lerpValue);
 					break;
 				} else {
-					value += this.segments[i].getIntegralValueAt(t1);
+					value += this.segments[i].getIntegralValueAt(t1, lerpValue);
 				}
 			}
 			return value;
