@@ -157,8 +157,8 @@ define([
 				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t, emitRandom) + getWorldVelocityCurveIntegral(worldRotation, t, emitRandom);',
 				'}',
 
-				'float getScale(float t){',
-				'    return clamp(SIZE_CURVE_CODE, 0.0, 1.0);',
+				'float getScale(float t, float emitRandom){',
+				'    return SIZE_CURVE_CODE;',
 				'}',
 
 				'float getStartSize(float t, float emitRandom){',
@@ -169,11 +169,11 @@ define([
 				'    return START_LIFETIME_CODE;',
 				'}',
 
-				'float getAngle(float t){',
+				'float getAngle(float t, float emitRandom){',
 				'    return ROTATION_CURVE_CODE;',
 				'}',
 
-				'vec4 getColor(float t){',
+				'vec4 getColor(float t, float emitRandom){',
 				'    return COLOR_CURVE_CODE;',
 				'}',
 
@@ -218,7 +218,7 @@ define([
 				'    float startAngle = getStartAngle(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
-				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge);',
+				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;',
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
@@ -226,7 +226,7 @@ define([
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
 
-				'    float rotation = getAngle(unitAge) + startAngle;',
+				'    float rotation = getAngle(unitAge, emitRandom) + startAngle;',
 				'    float c = cos(rotation);',
 				'    float s = sin(rotation);',
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
@@ -234,12 +234,12 @@ define([
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
 				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom);',
 				'    #ifdef BILLBOARD',
-				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge) * active;',
+				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge, emitRandom) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
 				'    gl_Position = viewProjectionMatrix * (worldMatrix + matPos) * vec4(0, 0, 0, 1) + projectionMatrix * vec4(offset.xy, 0, 0);',
 				'    #else',
 				'    mat4 rot = rotationMatrix(normalize(vec3(sin(emitTime*5.0),cos(emitTime*1234.0),sin(emitTime))),rotation);',
-				'    gl_Position = viewProjectionMatrix * worldMatrix * (rot * vec4(startSize * getScale(unitAge) * active * vertexPosition, 1.0) + vec4(position,0.0));',
+				'    gl_Position = viewProjectionMatrix * worldMatrix * (rot * vec4(startSize * getScale(unitAge, emitRandom) * active * vertexPosition, 1.0) + vec4(position,0.0));',
 				'    #endif',
 				'}'
 			].join('\n'),

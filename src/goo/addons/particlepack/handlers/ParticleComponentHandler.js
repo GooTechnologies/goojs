@@ -69,23 +69,13 @@ define([
 			coneRadius: 1,
 			coneAngle: 10,
 			coneLength: 1,
-			startColorR: constantCurve(1),
-			startColorG: constantCurve(1),
-			startColorB: constantCurve(1),
-			startColorA: constantCurve(1),
-			colorR: constantCurve(1),
-			colorG: constantCurve(1),
-			colorB: constantCurve(1),
-			colorA: constantCurve(1),
+			startColor: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
+			color: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
 			duration: 5,
 			localSpace: true,
 			startSpeed: constantCurve(5),
-			localVelocityX: constantCurve(0),
-			localVelocityY: constantCurve(0),
-			localVelocityZ: constantCurve(0),
-			worldVelocityX: constantCurve(0),
-			worldVelocityY: constantCurve(0),
-			worldVelocityZ: constantCurve(0),
+			localVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
+			worldVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
 			maxParticles: 100,
 			emissionRate: constantCurve(10),
 			startLifeTime: constantCurve(5),
@@ -197,13 +187,13 @@ define([
 			component.coneRadius = config.coneRadius;
 			component.coneAngle = config.coneAngle;
 			component.coneLength = config.coneLength;
-			component.startColor = createVec4Curve(config.startColorR, config.startColorG, config.startColorB, config.startColorA);
-			component.color = createVec4Curve(config.colorR, config.colorG, config.colorB, config.colorA);
+			component.startColor = createVec4Curve(config.startColor[0], config.startColor[1], config.startColor[2], config.startColor[3]);
+			component.color = createVec4Curve(config.color[0], config.color[1], config.color[2], config.color[3]);
 			component.duration = config.duration;
 			component.localSpace = config.localSpace;
 			component.startSpeed = createCurve(config.startSpeed);
-			component.localVelocity = createVec3Curve(config.localVelocityX, config.localVelocityY, config.localVelocityZ);
-			component.worldVelocity = createVec3Curve(config.worldVelocityX, config.worldVelocityY, config.worldVelocityZ);
+			component.localVelocity = createVec3Curve(config.localVelocity[0], config.localVelocity[1], config.localVelocity[2]);
+			component.worldVelocity = createVec3Curve(config.worldVelocity[0], config.worldVelocity[1], config.worldVelocity[2]);
 			component.maxParticles = config.maxParticles;
 			component.emissionRate = createCurve(config.emissionRate);
 			component.startLifeTime = createCurve(config.startLifeTime);
