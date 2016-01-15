@@ -520,6 +520,20 @@ define([
 		},
 
 		/**
+		 * @target-class ParticleComponent preWarm member
+		 * @type {boolean}
+		 */
+		preWarm: {
+			get: function () {
+				return this._preWarm;
+			},
+			set: function (value) {
+				this._preWarm = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
 		 * @target-class ParticleComponent blending member
 		 * @type {string}
 		 */
