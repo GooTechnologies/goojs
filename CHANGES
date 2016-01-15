@@ -1,3 +1,9 @@
+v0.15.29 --- 2016-01-15
+
+### Fixes
+
+  * SoundSystem now executes scheduledUpdates in the order they came in.
+
 v0.15.28 --- 2016-01-11
 
 ### Fixes
