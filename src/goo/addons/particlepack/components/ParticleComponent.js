@@ -101,6 +101,8 @@ define([
 		this._system = null;
 		this._entity = null;
 
+		this._invRotation = new Matrix3();
+
 		this.material = new Material({
 			defines: defines,
 			attributes: {
@@ -220,11 +222,11 @@ define([
 				'    float unitAge = age / lifeTime;',
 				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
 
-				'    float textureAnimationSpeed = textureTileInfo.z;',
+				'    float textureAnimationSpeed = textureTileInfo.z;', // Should be curve?
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
-				'    float tileY = floor(mod(textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.y));',
+				'    float tileY = floor(mod(-textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.y));',
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
-				'    coords = vertexUV0 / textureTileInfo.xy + texOffset;',
+				'    coords = (vertexUV0 / textureTileInfo.xy + texOffset);',
 
 				'    float rotation = getAngle(unitAge, emitRandom) + startAngle;',
 				'    float c = cos(rotation);',
@@ -882,8 +884,6 @@ define([
 		return this._seed / m;
 	};
 
-	var invRot = new Matrix3();
-
 	/**
 	 * @private
 	 */
@@ -892,6 +892,7 @@ define([
 		var worldRotation = this.meshEntity.transformComponent.worldTransform.rotation;
 
 		// Gravity in local space
+		var invRot = this._invRotation;
 		tmpGravity.copy(this.gravity);
 		invRot.copy(worldRotation).invert();
 		tmpGravity.applyPost(invRot);
@@ -1056,7 +1057,7 @@ define([
 				particle.active = false;
 			}
 
-			var rand = this._random();
+			var rand = particle.emitRandom = this._random();
 			for (j = 0; j < meshVertexCount; j++) {
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
@@ -1204,7 +1205,7 @@ define([
 
 		var meshVertexCount = this.mesh.vertexCount;
 
-		var rand = this._random();
+		var rand = particle.emitRandom = this._random();
 		for (var j = 0; j < meshVertexCount; j++) {
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
 			timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;

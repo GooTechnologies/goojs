@@ -67,10 +67,17 @@ define([
 		 * @type {number}
 		 */
 		this.sortValue = 0;
+
+		/**
+		 * @type {number}
+		 */
+		this.emitRandom = 0;
 	}
 
 	var dirDelta = new Vector3();
 	var gravityDelta = new Vector3();
+	var localVelocityDelta = new Vector3();
+	var worldVelocityDelta = new Vector3();
 
 	/**
 	 * Get the world position of the particle
@@ -90,6 +97,20 @@ define([
 		dirDelta.copy(this.startDirection).scale(age);
 		gravityDelta.copy(component.gravity).scale(age * age * 0.5);
 		store.copy(this.startPosition).add(dirDelta).add(gravityDelta);
+
+		// Add velocity over lifetime
+		if(component.localVelocity){
+			var unitAge = age / component.duration;
+			component.localVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
+			store.add(localVelocityDelta);
+		}
+
+		if(component.worldVelocity){
+			var unitAge = age / component.duration;
+			component.worldVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
+			worldVelocityDelta.applyPost(component._invRotation);
+			store.add(worldVelocityDelta);
+		}
 
 		if (component.localSpace) {
 			// Transform to world space
