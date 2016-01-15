@@ -82,6 +82,7 @@ define([
 			renderQueue: 3010,
 			alphakill: 0,
 			loop: false,
+			preWarm: true,
 			blending: 'NoBlending',
 			depthWrite: true,
 			depthTest: true,
@@ -200,6 +201,7 @@ define([
 			component.renderQueue = config.renderQueue;
 			component.alphakill = config.alphakill;
 			component.loop = config.loop;
+			component.preWarm = config.preWarm;
 			component.blending = config.blending;
 			component.depthWrite = config.depthWrite;
 			component.depthTest = config.depthTest;

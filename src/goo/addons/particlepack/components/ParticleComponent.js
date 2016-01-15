@@ -206,7 +206,7 @@ define([
 				'    float active = timeInfo.y;',
 				'    float emitTime = timeInfo.w;',
 				'    float age = time * active - emitTime;',
-				'    float ageNoMod = time * active - emitTime;',
+				'    float ageNoMod = age;',
 
 				'    #ifdef LOOP',
 				'    age = mod(age, duration);',
@@ -214,7 +214,7 @@ define([
 				'    #endif',
 
 				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
-				'    float emitRandom = timeInfo.z;// fract(sin(unitEmitTime * 12.9898) * 43758.5453);',
+				'    float emitRandom = timeInfo.z;',
 				'    float startSize = getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
 				'    float startAngle = getStartAngle(unitEmitTime, emitRandom);',
@@ -1054,7 +1054,7 @@ define([
 			} else {
 				// Set all particles to be active but already dead - ready to be re-emitted at any point
 				particle.emitTime = -2 * particle.lifeTime;
-				particle.active = false;
+				particle.active = 0;
 			}
 
 			var rand = particle.emitRandom = this._random();
