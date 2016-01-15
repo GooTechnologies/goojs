@@ -1,3 +1,9 @@
+v0.15.30 --- 2016-01-15
+
+### Fixes
+
+  * Added reflectivity type multiply, for materials
+
 v0.15.29 --- 2016-01-15
 
 ### Fixes
