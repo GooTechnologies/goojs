@@ -331,6 +331,8 @@ define([
 							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
 						'#elif REFLECTION_TYPE == 1',
 							'final_color.rgb += environment.rgb * reflectionAmount;',
+						'#elif REFLECTION_TYPE == 2',
+							'final_color.rgb *= environment.rgb * reflectionAmount;',
 						'#endif',
 						'final_color.a = min(final_color.a + reflectionAmount, 1.0);',
 					'}',
