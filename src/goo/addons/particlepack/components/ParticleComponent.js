@@ -153,8 +153,8 @@ define([
 				'    return worldRotation * WORLD_VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getPosition(mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom){',
-				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t, emitRandom) + getWorldVelocityCurveIntegral(worldRotation, t, emitRandom);',
+				'vec3 getPosition(mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom, float duration){',
+				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t / duration, emitRandom) + getWorldVelocityCurveIntegral(worldRotation, t / duration, emitRandom);',
 				'}',
 
 				'float getScale(float t, float emitRandom){',
@@ -232,7 +232,7 @@ define([
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
 				// Particle should show if lifeTime >= age > 0 and within life span
 				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
-				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom);',
+				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge, emitRandom) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
