@@ -124,7 +124,7 @@ function (
 				continue;
 			}
 
-			entity.particleComponent.process(tpf);
+			// entity.particleComponent.process(tpf);
 
 			// var collider = entity.colliderComponent.worldCollider;
 			// var meshData = this.getMeshData(collider);

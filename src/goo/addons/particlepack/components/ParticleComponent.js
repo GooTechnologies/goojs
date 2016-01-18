@@ -720,8 +720,9 @@ define([
 					meshData.vertexCount = value * mesh.vertexCount;
 					meshData.indexCount = value * mesh.indexCount;
 					meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
-					meshData.getIndexData().setDataNeedsRefresh();
 					this._updateParticles();
+					this._updateVertexData();
+					this._updateIndexBuffer(this.particles);
 					this._vertexDataDirty = true;
 				}
 			}
@@ -991,8 +992,8 @@ define([
 			unsortedParticles.push(particle);
 		}
 		while (particles.length > maxParticles) {
-			var particle = particles.pop();
-			unsortedParticles.splice(unsortedParticles.indexOf(particle), 1);
+			var particle = unsortedParticles.pop();
+			particles.splice(particles.indexOf(particle), 1);
 		}
 	};
 
