@@ -104,7 +104,8 @@ define([
 	 * @private
 	 */
 	ParticleComponentHandler.prototype._create = function () {
-		return new ParticleComponent();
+		var component = new ParticleComponent();
+		return component;
 	};
 
 	/**

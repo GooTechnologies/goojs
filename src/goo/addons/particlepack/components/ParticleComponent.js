@@ -39,8 +39,6 @@ define([
 ) {
 	'use strict';
 
-	var tmpGravity = new Vector3();
-
 	function hasParent(entity) {
 		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
 	}
@@ -290,6 +288,8 @@ define([
 		 * @type {Vector3}
 		 */
 		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
+
+		this._localGravity = new Vector3();
 
 		/**
 		 * Pre-warm the emission. Not available if looping is on.
@@ -556,6 +556,11 @@ define([
 			},
 			set: function (value) {
 				this._localSpace = value;
+				if(this.meshEntity){
+					var transformComponent = this.meshEntity.transformComponent;
+					transformComponent.transform.setIdentity();
+					transformComponent.setUpdated();
+				}
 			}
 		},
 
@@ -705,7 +710,8 @@ define([
 		 */
 		maxParticles: {
 			get: function () {
-				return this.meshData ? this.meshData.vertexCount / this.mesh.vertexCount : this._maxParticles;
+				var meshData = this.meshData;
+				return meshData ? meshData.vertexCount / this.mesh.vertexCount : this._maxParticles;
 			},
 			set: function (value) {
 				var mesh = this.mesh;
@@ -713,7 +719,8 @@ define([
 				if (value * mesh.vertexCount !== meshData.vertexCount) { // Only rebuild if changed
 					meshData.vertexCount = value * mesh.vertexCount;
 					meshData.indexCount = value * mesh.indexCount;
-					meshData.rebuildData();
+					meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
+					meshData.getIndexData().setDataNeedsRefresh();
 					this._updateParticles();
 					this._vertexDataDirty = true;
 				}
@@ -907,13 +914,14 @@ define([
 
 		// Gravity in local space
 		var invRot = this._invRotation;
-		tmpGravity.copy(this.gravity);
+		var localGravity = this._localGravity;
+		localGravity.copy(this.gravity);
 		invRot.copy(worldRotation).invert();
-		tmpGravity.applyPost(invRot);
+		localGravity.applyPost(invRot);
 		var g = uniforms.gravity = uniforms.gravity || [];
-		g[0] = tmpGravity.x;
-		g[1] = tmpGravity.y;
-		g[2] = tmpGravity.z;
+		g[0] = localGravity.x;
+		g[1] = localGravity.y;
+		g[2] = localGravity.z;
 
 		uniforms.worldRotation = uniforms.worldRotation || [];
 		for(var i=0; i<9; i++){
@@ -966,6 +974,7 @@ define([
 		this.time = 0;
 		this._seed = this._initSeed;
 		this._vertexDataDirty = true;
+		this._updateUniforms();
 	};
 
 	/**
@@ -1302,12 +1311,12 @@ define([
 	 * @param entity
 	 */
 	ParticleComponent.prototype.process = function (tpf) {
-		if(this._paused) return;
-
 		if(this._vertexDataDirty){
 			this._updateVertexData();
 			this._vertexDataDirty = false;
 		}
+
+		if(this._paused) return;
 
 		this._lastTime = this.time;
 		this.time += tpf;
