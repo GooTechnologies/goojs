@@ -16,7 +16,8 @@ define([
 	'goo/shapes/Quad',
 	'goo/addons/particlepack/curves/ConstantCurve',
 	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/addons/particlepack/curves/Vector4Curve'
+	'goo/addons/particlepack/curves/Vector4Curve',
+	'goo/util/ObjectUtils'
 ], function (
 	Matrix3,
 	Vector3,
@@ -35,7 +36,8 @@ define([
 	Quad,
 	ConstantCurve,
 	Vector3Curve,
-	Vector4Curve
+	Vector4Curve,
+	ObjectUtils
 ) {
 	'use strict';
 
@@ -102,7 +104,7 @@ define([
 		this._invRotation = new Matrix3();
 
 		this.material = new Material({
-			defines: defines,
+			defines: ObjectUtils.clone(defines),
 			attributes: {
 				vertexPosition: MeshData.POSITION,
 				timeInfo: 'TIME_INFO',
@@ -974,7 +976,13 @@ define([
 		this.pause();
 		this.time = 0;
 		this._seed = this._initSeed;
+		this.nextEmitParticle = 0;
+		this._updateParticles();
+		this._updateVertexData();
+		var meshData = this.meshData;
+		meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
 		this._vertexDataDirty = true;
+		this._updateIndexBuffer(this.particles);
 		this._updateUniforms();
 	};
 
@@ -1117,8 +1125,6 @@ define([
 		}
 		meshData.setAttributeDataUpdated('START_POS');
 		meshData.setAttributeDataUpdated('START_DIR');
-
-
 	};
 
 	/**
@@ -1381,7 +1387,7 @@ define([
 		this.meshData = meshData;
 		var meshEntity = this.meshEntity = this._entity._world.createEntity(meshData);
 		meshEntity.set(new MeshRendererComponent(this.material));
-		meshEntity.name = 'ParticleSystem';
+		meshEntity.name = 'ParticleSystemMesh';
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		meshEntity.addToWorld();
 		this.localSpace = this._localSpace;

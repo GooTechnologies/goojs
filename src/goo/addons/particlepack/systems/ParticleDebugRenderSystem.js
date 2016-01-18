@@ -2,47 +2,19 @@ define([
 	'goo/entities/EntitySelection',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsCylinderDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsSphereDebugShape',
-	'goo/addons/physicspack/shapes/PhysicsBoxDebugShape',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/MeshCollider',
-	'goo/math/Quaternion',
 	'goo/math/Vector3',
 	'goo/math/Transform',
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/addons/physicspack/util/Pool'
+	'goo/renderer/shaders/ShaderLib'
 ],
 function (
 	EntitySelection,
 	System,
 	SystemBus,
-	Sphere,
-	Box,
-	Cylinder,
-	PhysicsPlaneDebugShape,
-	PhysicsCylinderDebugShape,
-	PhysicsSphereDebugShape,
-	PhysicsBoxDebugShape,
-	SphereCollider,
-	BoxCollider,
-	CylinderCollider,
-	PlaneCollider,
-	MeshCollider,
-	Quaternion,
 	Vector3,
 	Transform,
 	Material,
-	ShaderLib,
-	Pool
+	ShaderLib
 ) {
 	'use strict';
 
@@ -76,31 +48,9 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.sphereMeshData = new PhysicsSphereDebugShape(32);
-		this.boxMeshData = new PhysicsBoxDebugShape();
-		this.cylinderMeshData = new PhysicsCylinderDebugShape(32);
-		this.planeMeshData = new PhysicsPlaneDebugShape();
-
 		this.material = new Material(ShaderLib.simpleColored);
 		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
-		this.renderablePool = new Pool({
-			create: function () {
-				return {
-					meshData: null,
-					transform: new Transform(),
-					materials: []
-				};
-			},
-			init: function (meshData, material) {
-				this.meshData = meshData;
-				this.materials[0] = material;
-			},
-			destroy: function (renderable) {
-				renderable.meshData = null;
-				renderable.materials.length = 0;
-			}
-		});
 	}
 	ParticleDebugRenderSystem.prototype = Object.create(System.prototype);
 	ParticleDebugRenderSystem.prototype.constructor = ParticleDebugRenderSystem;
@@ -153,10 +103,10 @@ function (
 	 * @param  {Renderer} renderer
 	 */
 	ParticleDebugRenderSystem.prototype.render = function (renderer) {
-		renderer.checkResize(this.camera);
-		if (this.camera) {
-			renderer.render(this.renderList, this.camera, null, null, false);
-		}
+		// renderer.checkResize(this.camera);
+		// if (this.camera) {
+		// 	renderer.render(this.renderList, this.camera, null, null, false);
+		// }
 	};
 
 	/**
@@ -164,9 +114,9 @@ function (
 	 * @private
 	 */
 	ParticleDebugRenderSystem.prototype.clear = function () {
-		for (var i = 0, N = this.renderList.length; i !== N; i++) {
-			this.renderablePool.release(this.renderList[i]);
-		}
+		// for (var i = 0, N = this.renderList.length; i !== N; i++) {
+		// 	this.renderablePool.release(this.renderList[i]);
+		// }
 		this.renderList.length = 0;
 	};
 

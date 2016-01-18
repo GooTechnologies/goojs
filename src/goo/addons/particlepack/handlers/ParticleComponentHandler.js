@@ -222,6 +222,14 @@ define([
 			component.stop();
 			component.play();
 
+			// Force shader recompile
+			var shaderCache = entity._world.gooRunner.renderer.rendererRecord.shaderCache;
+			shaderCache.forEach(function (shader, defineKey){
+				if(shader._id === component.material.shader._id){
+					shaderCache.delete(defineKey);
+				}
+			});
+
 			var promises = [];
 
 			var textureRef = config.texture && config.texture.enabled && config.texture.textureRef;
