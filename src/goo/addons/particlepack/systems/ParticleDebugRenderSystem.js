@@ -8,7 +8,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
-	'goo/shapes/Cone'
+	'goo/shapes/Cylinder'
 ],
 function (
 	EntitySelection,
@@ -20,7 +20,7 @@ function (
 	ShaderLib,
 	Sphere,
 	Box,
-	Cone
+	Cylinder
 ) {
 	'use strict';
 
@@ -56,7 +56,6 @@ function (
 
 		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [0, 1, 0];
-		material.wireframe = true;
 		this.sphereRenderable = {
 			materials: [material],
 			transform: new Transform(),
@@ -70,7 +69,7 @@ function (
 		this.coneRenderable = {
 			materials: [material],
 			transform: new Transform(),
-			meshData: new Cone(8, 1, 1)
+			meshData: new Cylinder(16, 1, 1, 1)
 		};
 		this.offsetTransform = new Transform();
 	}
@@ -120,13 +119,19 @@ function (
 				var coneRadius = entity.particleComponent.coneRadius;
 				renderable = this.coneRenderable;
 				this.offsetTransform.setIdentity();
-				renderable.transform.scale.setDirect(coneRadius, coneRadius, entity.particleComponent.coneLength);
-				this.offsetTransform.translation.set(0,0,-entity.particleComponent.coneLength);
-				this.offsetTransform.rotation.rotateX(Math.PI / 2);
+				renderable.meshData.radiusTop = coneRadius + Math.tan(entity.particleComponent.coneAngle) * entity.particleComponent.coneLength;
+				renderable.meshData.radiusBottom = coneRadius;
+				renderable.meshData.height = entity.particleComponent.coneLength;
+				renderable.meshData.rebuild();
+				renderable.meshData.setVertexDataUpdated();
+				this.offsetTransform.translation.set(0,0,entity.particleComponent.coneLength * 0.5);
+				this.offsetTransform.rotation.rotateX(3 * Math.PI / 2);
 				break;
 			}
 
 			if(renderable){
+				renderable.meshData.indexModes = ['Lines'];
+
 				var transform = renderable.transform;
 				var worldTransform = entity.transformComponent.worldTransform;
 

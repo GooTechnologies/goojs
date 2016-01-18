@@ -1164,29 +1164,54 @@ define([
 			var rad = this.coneRadius * Math.sqrt(this._random()) * yrand;
 			switch(this.coneEmitFrom){
 			case 'base':
-				position.setDirect(0, 0, 0);
+				// Somewhere in the base
+				var ra = Math.sqrt(this._random());
+				var r = this.coneRadius * ra;
+				position.setDirect(r * cos(phi), 0, r * sin(phi));
+
+				var r2 = (this.coneRadius + this.coneLength * Math.tan(this.coneAngle)) * ra;
 				direction.setDirect(
-					rad * cos(phi),
-					coneLength,
-					rad * sin(phi)
-				);
+					r2 * cos(phi),
+					this.coneLength,
+					r2 * sin(phi)
+				).sub(position);
 				break;
+
 			case 'volume':
-				position.setDirect(
-					rad * cos(phi),
-					y,
-					rad * sin(phi)
-				);
-				direction.copy(position);
+				// Somewhere in the base
+				var ra = Math.sqrt(this._random());
+				var r = this.coneRadius * ra;
+				position.setDirect(r * cos(phi), 0, r * sin(phi));
+
+				var r2 = (this.coneRadius + this.coneLength * Math.tan(this.coneAngle)) * ra;
+				direction.setDirect(
+					r2 * cos(phi),
+					this.coneLength,
+					r2 * sin(phi)
+				).sub(position);
+
+				direction.setDirect(
+					r2 * cos(phi),
+					this.coneLength,
+					r2 * sin(phi)
+				)
+				position.lerp(direction, this._random());
+				direction.sub(position);
 				break;
+
 			case 'volumeshell':
-				rad = this.coneRadius * yrand;
-				position.setDirect(
-					rad * cos(phi),
-					y,
-					rad * sin(phi)
+
+				var r = this.coneRadius;
+				position.setDirect(r * cos(phi), 0, r * sin(phi));
+
+				var r2 = (this.coneRadius + this.coneLength * Math.tan(this.coneAngle));
+				direction.setDirect(
+					r2 * cos(phi),
+					this.coneLength,
+					r2 * sin(phi)
 				);
-				direction.copy(position);
+				position.lerp(direction, this._random());
+				direction.sub(position);
 				break;
 			}
 		} else {

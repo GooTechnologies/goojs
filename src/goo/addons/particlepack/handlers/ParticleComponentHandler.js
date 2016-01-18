@@ -187,7 +187,7 @@ define([
 			component.coneEmitFrom = config.coneEmitFrom;
 			component.setBoxExtents(new Vector3(config.boxExtents));
 			component.coneRadius = config.coneRadius;
-			component.coneAngle = config.coneAngle;
+			component.coneAngle = config.coneAngle * MathUtils.DEG_TO_RAD;
 			component.coneLength = config.coneLength;
 			component.startColor = createVec4Curve(config.startColor[0], config.startColor[1], config.startColor[2], config.startColor[3]);
 			component.color = createVec4Curve(config.color[0], config.color[1], config.color[2], config.color[3]);
