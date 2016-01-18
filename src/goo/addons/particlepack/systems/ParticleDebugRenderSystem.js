@@ -5,7 +5,10 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Transform',
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/shapes/Cone'
 ],
 function (
 	EntitySelection,
@@ -14,7 +17,10 @@ function (
 	Vector3,
 	Transform,
 	Material,
-	ShaderLib
+	ShaderLib,
+	Sphere,
+	Box,
+	Cone
 ) {
 	'use strict';
 
@@ -48,9 +54,25 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.material = new Material(ShaderLib.simpleColored);
-		this.material.uniforms.color = [0, 1, 0];
-		this.material.wireframe = true;
+		var material = new Material(ShaderLib.simpleColored);
+		material.uniforms.color = [0, 1, 0];
+		material.wireframe = true;
+		this.sphereRenderable = {
+			materials: [material],
+			transform: new Transform(),
+			meshData: new Sphere(12,12,1)
+		};
+		this.boxRenderable = {
+			materials: [material],
+			transform: new Transform(),
+			meshData: new Box(1,1,1)
+		};
+		this.coneRenderable = {
+			materials: [material],
+			transform: new Transform(),
+			meshData: new Cone(8, 1, 1)
+		};
+		this.offsetTransform = new Transform();
 	}
 	ParticleDebugRenderSystem.prototype = Object.create(System.prototype);
 	ParticleDebugRenderSystem.prototype.constructor = ParticleDebugRenderSystem;
@@ -59,13 +81,20 @@ function (
 	 * @private
 	 * @param  {array} entities
 	 */
-	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {
-		this.clear();
+	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {};
 
-		if (this.passive) {
+	/**
+	 * @private
+	 * @param  {Renderer} renderer
+	 */
+	ParticleDebugRenderSystem.prototype.render = function (renderer) {
+		if (!this.camera || this.passive) {
 			return;
 		}
 
+		renderer.checkResize(this.camera);
+
+		var entities = this._activeEntities;
 		for (var i = 0, N = entities.length; i !== N; i++) {
 			var entity = entities[i];
 
@@ -74,67 +103,59 @@ function (
 				continue;
 			}
 
-			// entity.particleComponent.process(tpf);
+			var renderable;
+			switch(entity.particleComponent.shapeType){
+			case 'sphere':
+				renderable = this.sphereRenderable;
+				var radius = entity.particleComponent.sphereRadius;
+				renderable.transform.scale.setDirect(radius,radius,radius);
+				this.offsetTransform.setIdentity();
+				break;
+			case 'box':
+				renderable = this.boxRenderable;
+				renderable.transform.scale.copy(entity.particleComponent.boxExtents);
+				this.offsetTransform.setIdentity();
+				break;
+			case 'cone':
+				var coneRadius = entity.particleComponent.coneRadius;
+				renderable = this.coneRenderable;
+				this.offsetTransform.setIdentity();
+				renderable.transform.scale.setDirect(coneRadius, coneRadius, entity.particleComponent.coneLength);
+				this.offsetTransform.translation.set(0,0,-entity.particleComponent.coneLength);
+				this.offsetTransform.rotation.rotateX(Math.PI / 2);
+				break;
+			}
 
-			// var collider = entity.colliderComponent.worldCollider;
-			// var meshData = this.getMeshData(collider);
-			// var renderable = this.renderablePool.get(meshData, this.material);
+			if(renderable){
+				var transform = renderable.transform;
+				var worldTransform = entity.transformComponent.worldTransform;
 
-			// renderable.transform.update();
+				transform.rotation.copy(this.offsetTransform.rotation);
+				transform.rotation.mul(worldTransform.rotation);
 
-			// this.renderList.push(renderable);
+				this.offsetTransform.translation.applyPost(transform.rotation);
+				transform.translation.copy(this.offsetTransform.translation).add(worldTransform.translation);
+
+				transform.update();
+				renderer.render(renderable, this.camera, null, null, false);
+			}
 		}
 	};
 
 	/**
-	 * Get mesh data to use for debug rendering.
-	 * @private
-	 * @param  {Entity} entity
-	 * @returns {MeshData}
-	 * @todo
-	 */
-	ParticleDebugRenderSystem.prototype.getMeshData = function (entity) {
-		var meshData;
-		return meshData;
-	};
-
-	/**
-	 * @private
-	 * @param  {Renderer} renderer
-	 */
-	ParticleDebugRenderSystem.prototype.render = function (renderer) {
-		// renderer.checkResize(this.camera);
-		// if (this.camera) {
-		// 	renderer.render(this.renderList, this.camera, null, null, false);
-		// }
-	};
-
-	/**
-	 * Release all previous renderables in the renderList
 	 * @private
 	 */
-	ParticleDebugRenderSystem.prototype.clear = function () {
-		// for (var i = 0, N = this.renderList.length; i !== N; i++) {
-		// 	this.renderablePool.release(this.renderList[i]);
-		// }
-		this.renderList.length = 0;
-	};
-
-	/**
-	 * @private
-	 */
-	ParticleDebugRenderSystem.prototype.cleanup = function () {
-		this.clear();
-	};
+	ParticleDebugRenderSystem.prototype.cleanup = function () {};
 
 	/**
 	 * 
 	 * @private
 	 */
 	ParticleDebugRenderSystem.prototype.update = function () {
-		var l = this._activeEntities.length;
+		var entities = this._activeEntities;
+		var l = entities.length;
 		while(l--){
-			var entity = this._activeEntities[l];
+			var entity = entities[l];
 
 			if (this.renderAll || this.selection.contains(entity)) {
 				entity.particleComponent.play();
