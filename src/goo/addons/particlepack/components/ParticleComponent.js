@@ -54,7 +54,8 @@ define([
 		ROTATION_CURVE_CODE: '0.0',
 		COLOR_CURVE_CODE: 'vec4(1.0)',
 		VELOCITY_CURVE_CODE: 'vec3(0.0)',
-		WORLD_VELOCITY_CURVE_CODE: 'vec3(0.0)'
+		WORLD_VELOCITY_CURVE_CODE: 'vec3(0.0)',
+		TEXTURE_FRAME_CODE: 't'
 	}
 
 	/**
@@ -179,6 +180,10 @@ define([
 				'    return START_SIZE_CODE;',
 				'}',
 
+				'float getTextureFrame(float t, float emitRandom){',
+				'    return TEXTURE_FRAME_CODE;',
+				'}',
+
 				'float getStartLifeTime(float t, float emitRandom){',
 				'    return START_LIFETIME_CODE;',
 				'}',
@@ -234,9 +239,9 @@ define([
 				'    float unitAge = age / lifeTime;',
 				'    color = uStartColor * getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
 
-				'    float textureAnimationSpeed = textureTileInfo.z;', // Should be curve?
-				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
-				'    float tileY = floor(mod(-textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.y));',
+				'    float textureAnimationSpeed = textureTileInfo.z;',
+				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationSpeed, textureTileInfo.x));',
+				'    float tileY = floor(mod(-textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationSpeed, textureTileInfo.y));',
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = (vertexUV0 / textureTileInfo.xy + texOffset);',
 
@@ -355,6 +360,7 @@ define([
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
+		this.textureFrame = options.textureFrame ? options.textureFrame.clone() : null;
 		this.startSize = options.startSize ? options.startSize.clone() : null;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
 		this.mesh = options.mesh ? options.mesh : new Quad(1, 1, 1, 1);
@@ -754,6 +760,20 @@ define([
 			set: function (value) {
 				this._startLifeTime = value;
 				this.material.shader.setDefine('START_LIFETIME_CODE', value ? value.toGLSL('t','emitRandom') : defines.START_LIFETIME_CODE);
+			}
+		},
+
+		/**
+		 * @target-class ParticleComponent textureFrame member
+		 * @type {Curve}
+		 */
+		textureFrame: {
+			get: function () {
+				return this._textureFrame;
+			},
+			set: function (value) {
+				this._textureFrame = value;
+				this.material.shader.setDefine('TEXTURE_FRAME_CODE', value ? value.toGLSL('t','emitRandom') : defines.TEXTURE_FRAME_CODE);
 			}
 		},
 
@@ -1422,7 +1442,7 @@ define([
 		}
 
 		if(this._paused) return;
-		
+
 		this.meshEntity.meshRendererComponent.hidden = this._entity.isVisiblyHidden();
 
 		this._lastTime = this.time;

@@ -50,6 +50,17 @@ define([
 		}];
 	}
 
+	function linearCurve(k,m){
+		return [{
+			type: 'linear',
+			offset: 0,
+			options: {
+				k: k,
+				m: m
+			}
+		}];
+	}
+
 	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {Object} config
@@ -89,6 +100,7 @@ define([
 			textureTilesX: 1,
 			textureTilesY: 1,
 			textureAnimationSpeed: 1,
+			textureFrame: linearCurve(1,0),
 			startSize: constantCurve(1),
 			sortMode: 'none',
 			billboard: true,
@@ -140,8 +152,8 @@ define([
 			case 'lerp':
 				curve.addSegment(new LerpCurve({
 					timeOffset: config.offset,
-					curveA: createCurve(options.curveA),
-					curveB: createCurve(options.curveB)
+					curveA: createCurve(options.curveA, multiplier),
+					curveB: createCurve(options.curveB, multiplier)
 				}));
 				break;
 			}
@@ -208,6 +220,7 @@ define([
 			component.depthTest = config.depthTest;
 			component.textureTilesX = config.textureTilesX;
 			component.textureTilesY = config.textureTilesY;
+			component.textureFrame = createCurve(config.textureFrame);
 			component.textureAnimationSpeed = config.textureAnimationSpeed;
 			component.startSize = createCurve(config.startSize);
 			component.sortMode = {
