@@ -1147,7 +1147,7 @@ define([
 
 			if (this.localSpace) {
 
-				if(this.preWarm && !this.loop){
+				if(this.preWarm && this.loop){
 					// Already emitted, shift emit time back
 					particle.emitTime -= duration;
 				}

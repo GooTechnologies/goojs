@@ -153,7 +153,6 @@ function (
 	ParticleDebugRenderSystem.prototype.cleanup = function () {};
 
 	/**
-	 * 
 	 * @private
 	 */
 	ParticleDebugRenderSystem.prototype.update = function () {
@@ -164,9 +163,11 @@ function (
 
 			if (this.renderAll || this.selection.contains(entity)) {
 				entity.particleComponent.play();
+				entity.particleComponent.meshEntity.meshRendererComponent.hidden = false;
 			} else {
 				entity.particleComponent.stop();
 				entity.particleComponent._updateVertexData();
+				entity.particleComponent.meshEntity.meshRendererComponent.hidden = true;
 			}
 		}
 	};
