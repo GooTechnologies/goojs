@@ -1422,6 +1422,8 @@ define([
 		}
 
 		if(this._paused) return;
+		
+		this.meshEntity.meshRendererComponent.hidden = this._entity.isVisiblyHidden();
 
 		this._lastTime = this.time;
 		this.time += tpf;
