@@ -113,18 +113,25 @@ define([
 				vertexUV0: MeshData.TEXCOORD0
 			},
 			uniforms: {
-				textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
 				viewMatrix: Shader.VIEW_MATRIX,
 				projectionMatrix: Shader.PROJECTION_MATRIX,
 				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 				worldMatrix: Shader.WORLD_MATRIX,
+				cameraPosition: Shader.CAMERA,
+
+				textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
 				worldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 				particleTexture: 'PARTICLE_TEXTURE',
-				cameraPosition: Shader.CAMERA,
 				time: 0,
 				duration: 5,
 				gravity: [0, 0, 0],
-				alphakill: 0
+				alphakill: 0,
+
+				// Scaling curves
+				uStartColor: [1, 1, 1, 1],
+				uStartSize: 1,
+				uStartAngle: 1,
+				uRotationSpeed: 1
 			},
 			vshader: [
 				'attribute vec3 vertexPosition;',
@@ -143,6 +150,11 @@ define([
 				'uniform float time;',
 				'uniform float duration;',
 				'uniform vec3 gravity;',
+
+				'uniform vec4 uStartColor;',
+				'uniform float uStartSize;',
+				'uniform float uStartAngle;',
+				'uniform float uRotationSpeed;',
 
 				'varying vec4 color;',
 				'varying vec2 coords;',
@@ -215,12 +227,12 @@ define([
 
 				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
 				'    float emitRandom = timeInfo.z;',
-				'    float startSize = getStartSize(unitEmitTime, emitRandom);',
+				'    float startSize = uStartSize * getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
-				'    float startAngle = getStartAngle(unitEmitTime, emitRandom);',
+				'    float startAngle = uStartAngle * getStartAngle(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
-				'    color = getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
+				'    color = uStartColor * getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;', // Should be curve?
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * unitAge * textureAnimationSpeed, textureTileInfo.x));',
@@ -228,7 +240,7 @@ define([
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = (vertexUV0 / textureTileInfo.xy + texOffset);',
 
-				'    float rotation = getAngle(unitAge, emitRandom) + startAngle;',
+				'    float rotation = uRotationSpeed * getAngle(unitAge, emitRandom) + startAngle;',
 				'    float c = cos(rotation);',
 				'    float s = sin(rotation);',
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
@@ -266,45 +278,55 @@ define([
 		this.material.cullState.enabled = false;
 		this.material.uniforms.textureTileInfo = [1, 1, 1, 0];
 
-		this._paused = false;
-		this.nextEmitParticle = 0;
+		ObjectUtils.extend(this.material.uniforms, {
+			textureTileInfo: [1, 1, 1, 0],
+			worldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+			gravity: [0, 0, 0],
+			uStartColor: [1, 1, 1, 1]
+		});
 
-		// Sorted particles.
-		this.sortedParticles = [];
-		
-		// Same as particles but unsorted.
+		this._paused = false;
+		this._nextEmitParticle = 0;
+		this._localGravity = new Vector3();
+		this._lastTime = this.time;
+
+		/**
+		 * The current particles in the system.
+		 * @type {Array<ParticleData>}
+		 */
 		this.particles = [];
 
 		/**
+		 * The particles in the system, sorted according to the sortMode.
+		 * @type {Array<ParticleData>}
+		 */
+		this.sortedParticles = [];
+
+		/**
+		 * Current time in the system. Read only.
 		 * @type {number}
 		 */
 		this.time = options.time || 0;
 		
 		/**
-		 * @private
-		 * @type {number}
-		 */
-		this._lastTime = this.time;
-
-		/**
+		 * Force that makes particles fall.
 		 * @type {Vector3}
 		 */
 		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
-
-		this._localGravity = new Vector3();
-
-		/**
-		 * Pre-warm the emission. Not available if looping is on.
-		 * @type {boolean}
-		 */
-		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 
 		/**
 		 * Extents of the box, if box shape is used.
 		 * @type {Vector3}
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
+		
+		/**
+		 * Acts as a scale on the color curve.
+		 * @type {Vector4}
+		 */
+		this.startColorScale = options.startColorScale ? options.startColorScale.clone() : new Vector4(1,1,1,1);
 
+		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this._initSeed = this._seed = this.seed = (options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768));
 		this.shapeType = options.shapeType || 'sphere';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
@@ -360,6 +382,48 @@ define([
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
 
 	Object.defineProperties(ParticleComponent.prototype, {
+
+		/**
+		 * Acts as a scale on the startAngle curve.
+		 * @target-class ParticleComponent startAngleScale member
+		 * @type {number}
+		 */
+		startAngleScale: {
+			get: function () {
+				return this.material.uniforms.uStartAngle;
+			},
+			set: function (value) {
+				this.material.uniforms.uStartAngle = value;
+			}
+		},
+
+		/**
+		 * Acts as a scale on the startSize curve.
+		 * @target-class ParticleComponent startSizeScale member
+		 * @type {number}
+		 */
+		startSizeScale: {
+			get: function () {
+				return this.material.uniforms.uStartSize;
+			},
+			set: function (value) {
+				this.material.uniforms.uStartSize = value;
+			}
+		},
+
+		/**
+		 * Acts as a scale on the rotationSpeed curve.
+		 * @target-class ParticleComponent rotationSpeedScale member
+		 * @type {number}
+		 */
+		rotationSpeedScale: {
+			get: function () {
+				return this.material.uniforms.uRotationSpeed;
+			},
+			set: function (value) {
+				this.material.uniforms.uRotationSpeed = value;
+			}
+		},
 
 		/**
 		 * @target-class ParticleComponent textureAnimationSpeed member
@@ -522,6 +586,7 @@ define([
 		},
 
 		/**
+		 * Pre-warm the emission. Not available if looping is on.
 		 * @target-class ParticleComponent preWarm member
 		 * @type {boolean}
 		 */
@@ -921,19 +986,27 @@ define([
 		localGravity.copy(this.gravity);
 		invRot.copy(worldRotation).invert();
 		localGravity.applyPost(invRot);
-		var g = uniforms.gravity = uniforms.gravity || [];
+		var g = uniforms.gravity;
 		g[0] = localGravity.x;
 		g[1] = localGravity.y;
 		g[2] = localGravity.z;
-
-		uniforms.worldRotation = uniforms.worldRotation || [];
 		for(var i=0; i<9; i++){
 			uniforms.worldRotation[i] = invRot[i];
 		}
 
 		uniforms.time = this.time;
+
+		var uStartColor = uniforms.uStartColor;
+		var colorScale = this.startColorScale;
+		uStartColor[0] = colorScale.x;
+		uStartColor[1] = colorScale.y;
+		uStartColor[2] = colorScale.z;
+		uStartColor[3] = colorScale.w;
 	};
 
+	/**
+	 * @private
+	 */
 	ParticleComponent.prototype._updateIndexBuffer = function (particles) {
 		var mesh = this.mesh;
 		var meshData = this.meshData;
@@ -976,7 +1049,7 @@ define([
 		this.pause();
 		this.time = 0;
 		this._seed = this._initSeed;
-		this.nextEmitParticle = 0;
+		this._nextEmitParticle = 0;
 		this._updateParticles();
 		this._updateVertexData();
 		var meshData = this.meshData;
@@ -1247,8 +1320,8 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 
 		// Get the last emitted particle
-		var i = this.nextEmitParticle;
-		this.nextEmitParticle = (this.nextEmitParticle + 1) % this.maxParticles;
+		var i = this._nextEmitParticle;
+		this._nextEmitParticle = (this._nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.particles[i];
 		var startPosition = particle.startPosition;
 		var startDirection = particle.startDirection;
