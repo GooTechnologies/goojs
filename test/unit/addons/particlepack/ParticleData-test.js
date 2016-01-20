@@ -1,11 +1,11 @@
 define([
-	'goo/addons/particlepack/components/ParticleComponent',
+	'goo/addons/particlepack/components/ParticleSystemComponent',
 	'goo/math/Vector3',
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
 	'test/CustomMatchers'
 ], function (
-	ParticleComponent,
+	ParticleSystemComponent,
 	Vector3,
 	World,
 	TransformComponent,
@@ -13,7 +13,7 @@ define([
 ) {
 	'use strict';
 
-	describe('Particle', function () {
+	describe('ParticleData', function () {
 		
 		var world;
 
@@ -21,11 +21,11 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 			world = new World();
 			world.registerComponent(TransformComponent);
-			world.registerComponent(ParticleComponent);
+			world.registerComponent(ParticleSystemComponent);
 		});
 
 		it('can get world position', function () {
-			var component = new ParticleComponent();
+			var component = new ParticleSystemComponent();
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
 			var store = new Vector3();
 			component.particles[0].getWorldPosition(store);

@@ -95,15 +95,15 @@ define([
 	 * @param {number} [options.textureTilesY=1]
 	 * @param {number} [options.textureAnimationSpeed=1]
 	 * @example
-	 * var particleComponent = new ParticleComponent({
+	 * var particleComponent = new ParticleSystemComponent({
 	 *     startSpeed: 10
 	 * });
 	 * var entity = world.createEntity([0, 0, 0], particleComponent).addToWorld();
 	 */
-	function ParticleComponent(options) {
+	function ParticleSystemComponent(options) {
 		options = options || {};
 		Component.apply(this, arguments);
-		this.type = ParticleComponent.type;
+		this.type = ParticleSystemComponent.type;
 
 		this._system = null;
 		this._entity = null;
@@ -375,7 +375,7 @@ define([
 		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
 		this.textureFrame = options.textureFrame ? options.textureFrame.clone() : null;
 		this.startSize = options.startSize ? options.startSize.clone() : null;
-		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleComponent.SORT_NONE;
+		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleSystemComponent.SORT_NONE;
 		this.mesh = options.mesh ? options.mesh : new Quad(1, 1, 1, 1);
 		this.billboard = options.billboard !== undefined ? options.billboard : true;
 		this.size = options.size ? options.size.clone() : null;
@@ -383,28 +383,28 @@ define([
 		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
 		this.texture = options.texture ? options.texture : null;
 	}
-	ParticleComponent.prototype = Object.create(Component.prototype);
-	ParticleComponent.prototype.constructor = ParticleComponent;
+	ParticleSystemComponent.prototype = Object.create(Component.prototype);
+	ParticleSystemComponent.prototype.constructor = ParticleSystemComponent;
 
-	ParticleComponent.type = 'ParticleComponent';
+	ParticleSystemComponent.type = 'ParticleSystemComponent';
 
 	/**
 	 * No sorting of particles.
 	 * @type {number}
 	 */
-	ParticleComponent.SORT_NONE = 1;
+	ParticleSystemComponent.SORT_NONE = 1;
 
 	/**
 	 * Sort particles by camera distance.
 	 * @type {number}
 	 */
-	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
+	ParticleSystemComponent.SORT_CAMERA_DISTANCE = 2;
 
-	Object.defineProperties(ParticleComponent.prototype, {
+	Object.defineProperties(ParticleSystemComponent.prototype, {
 
 		/**
 		 * Acts as a scale on the startAngle curve.
-		 * @target-class ParticleComponent startAngleScale member
+		 * @target-class ParticleSystemComponent startAngleScale member
 		 * @type {number}
 		 */
 		startAngleScale: {
@@ -418,7 +418,7 @@ define([
 
 		/**
 		 * Acts as a scale on the startSize curve.
-		 * @target-class ParticleComponent startSizeScale member
+		 * @target-class ParticleSystemComponent startSizeScale member
 		 * @type {number}
 		 */
 		startSizeScale: {
@@ -432,7 +432,7 @@ define([
 
 		/**
 		 * Acts as a scale on the rotationSpeed curve.
-		 * @target-class ParticleComponent rotationSpeedScale member
+		 * @target-class ParticleSystemComponent rotationSpeedScale member
 		 * @type {number}
 		 */
 		rotationSpeedScale: {
@@ -446,7 +446,7 @@ define([
 
 		/**
 		 * How fast the texture animation should cycle. Acts as a scale on the textureFrame curve.
-		 * @target-class ParticleComponent textureAnimationSpeed member
+		 * @target-class ParticleSystemComponent textureAnimationSpeed member
 		 * @type {number}
 		 */
 		textureAnimationSpeed: {
@@ -460,7 +460,7 @@ define([
 
 		/**
 		 * The time for a full animation cycle of the emission.
-		 * @target-class ParticleComponent duration member
+		 * @target-class ParticleSystemComponent duration member
 		 * @type {number}
 		 */
 		duration: {
@@ -474,7 +474,7 @@ define([
 
 		/**
 		 * If set to true, the particles will always face the camera.
-		 * @target-class ParticleComponent billboard member
+		 * @target-class ParticleSystemComponent billboard member
 		 * @type {boolean}
 		 */
 		billboard: {
@@ -493,7 +493,7 @@ define([
 
 		/**
 		 * This curve alters the size of particles over their life time.
-		 * @target-class ParticleComponent size member
+		 * @target-class ParticleSystemComponent size member
 		 * @type {Curve|null}
 		 */
 		size: {
@@ -508,7 +508,7 @@ define([
 
 		/**
 		 * The rotation speed in radians per second, specified using a curve over the particle life time.
-		 * @target-class ParticleComponent rotationSpeed member
+		 * @target-class ParticleSystemComponent rotationSpeed member
 		 * @type {Curve|null}
 		 */
 		rotationSpeed: {
@@ -523,7 +523,7 @@ define([
 
 		/**
 		 * The velocity of particles in local particle space.
-		 * @target-class ParticleComponent localVelocity member
+		 * @target-class ParticleSystemComponent localVelocity member
 		 * @type {Curve|null}
 		 */
 		localVelocity: {
@@ -538,7 +538,7 @@ define([
 
 		/**
 		 * Velocity of particles in world space.
-		 * @target-class ParticleComponent worldVelocity member
+		 * @target-class ParticleSystemComponent worldVelocity member
 		 * @type {Curve|null}
 		 */
 		worldVelocity: {
@@ -553,7 +553,7 @@ define([
 
 		/**
 		 * Color of particles, as a curve over their life time.
-		 * @target-class ParticleComponent color member
+		 * @target-class ParticleSystemComponent color member
 		 * @type {Vector4Curve}
 		 */
 		color: {
@@ -568,7 +568,7 @@ define([
 
 		/**
 		 * The initial color of particles as a color curve over the emitter duration.
-		 * @target-class ParticleComponent startColor member
+		 * @target-class ParticleSystemComponent startColor member
 		 * @type {Vector4Curve}
 		 */
 		startColor: {
@@ -583,7 +583,7 @@ define([
 
 		/**
 		 * The initial angle of particles, as a curve over the emitter duration.
-		 * @target-class ParticleComponent startAngle member
+		 * @target-class ParticleSystemComponent startAngle member
 		 * @type {Curve|null}
 		 */
 		startAngle: {
@@ -598,7 +598,7 @@ define([
 
 		/**
 		 * Whether to loop the particle emission after one duration cycle.
-		 * @target-class ParticleComponent loop member
+		 * @target-class ParticleSystemComponent loop member
 		 * @type {boolean}
 		 */
 		loop: {
@@ -612,7 +612,7 @@ define([
 
 		/**
 		 * Pre-warm the emission (fast forward time one duration). Not available if looping is on.
-		 * @target-class ParticleComponent preWarm member
+		 * @target-class ParticleSystemComponent preWarm member
 		 * @type {boolean}
 		 */
 		preWarm: {
@@ -627,7 +627,7 @@ define([
 
 		/**
 		 * What type of blending to use for the particle mesh.
-		 * @target-class ParticleComponent blending member
+		 * @target-class ParticleSystemComponent blending member
 		 * @type {string}
 		 */
 		blending: {
@@ -640,7 +640,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent renderQueue member
+		 * @target-class ParticleSystemComponent renderQueue member
 		 * @type {number}
 		 */
 		renderQueue: {
@@ -654,7 +654,7 @@ define([
 
 		/**
 		 * If set to true, the partiles will be simulated in local entity space. If set to false, world space is used.
-		 * @target-class ParticleComponent localSpace member
+		 * @target-class ParticleSystemComponent localSpace member
 		 * @type {boolean}
 		 */
 		localSpace: {
@@ -672,7 +672,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent depthWrite member
+		 * @target-class ParticleSystemComponent depthWrite member
 		 * @type {boolean}
 		 */
 		depthWrite: {
@@ -685,7 +685,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent depthTest member
+		 * @target-class ParticleSystemComponent depthTest member
 		 * @type {boolean}
 		 */
 		depthTest: {
@@ -699,7 +699,7 @@ define([
 
 		/**
 		 * At what alpha threshold should the fragments be discarded?
-		 * @target-class ParticleComponent alphakill member
+		 * @target-class ParticleSystemComponent alphakill member
 		 * @type {number}
 		 */
 		alphakill: {
@@ -713,7 +713,7 @@ define([
 
 		/**
 		 * A texture for the particles.
-		 * @target-class ParticleComponent texture member
+		 * @target-class ParticleSystemComponent texture member
 		 * @type {Texture|null}
 		 */
 		texture: {
@@ -735,7 +735,7 @@ define([
 
 		/**
 		 * Texture tiling in the X direction.
-		 * @target-class ParticleComponent textureTilesX member
+		 * @target-class ParticleSystemComponent textureTilesX member
 		 * @type {number}
 		 */
 		textureTilesX: {
@@ -749,7 +749,7 @@ define([
 
 		/**
 		 * Texture tiling in the Y direction.
-		 * @target-class ParticleComponent textureTilesY member
+		 * @target-class ParticleSystemComponent textureTilesY member
 		 * @type {number}
 		 */
 		textureTilesY: {
@@ -763,7 +763,7 @@ define([
 
 		/**
 		 * Initial speed of the particles, described by a curve over the emitter duration.
-		 * @target-class ParticleComponent startSpeed member
+		 * @target-class ParticleSystemComponent startSpeed member
 		 * @type {Curve|null}
 		 */
 		startSpeed: {
@@ -777,7 +777,7 @@ define([
 
 		/**
 		 * Initial life time of particles, as a curve over the emitter duration.
-		 * @target-class ParticleComponent startLifeTime member
+		 * @target-class ParticleSystemComponent startLifeTime member
 		 * @type {Curve|null}
 		 */
 		startLifeTime: {
@@ -792,7 +792,7 @@ define([
 
 		/**
 		 * The current texture frame, given by a curve over the particle life time.
-		 * @target-class ParticleComponent textureFrame member
+		 * @target-class ParticleSystemComponent textureFrame member
 		 * @type {Curve|null}
 		 */
 		textureFrame: {
@@ -807,7 +807,7 @@ define([
 
 		/**
 		 * Initial size of particles, as a curve over the emitter duration.
-		 * @target-class ParticleComponent startSize member
+		 * @target-class ParticleSystemComponent startSize member
 		 * @type {Curve|null}
 		 */
 		startSize: {
@@ -822,7 +822,7 @@ define([
 
 		/**
 		 * Maximum number of particles visible at the same time.
-		 * @target-class ParticleComponent maxParticles member
+		 * @target-class ParticleSystemComponent maxParticles member
 		 * @type {number}
 		 */
 		maxParticles: {
@@ -847,7 +847,7 @@ define([
 
 		/**
 		 * Randomization seed.
-		 * @target-class ParticleComponent seed member
+		 * @target-class ParticleSystemComponent seed member
 		 * @type {number}
 		 */
 		seed: {
@@ -864,7 +864,7 @@ define([
 
 		/**
 		 * Emitter volume. Set to 'sphere', 'cone', or 'box'.
-		 * @target-class ParticleComponent shapeType member
+		 * @target-class ParticleSystemComponent shapeType member
 		 * @type {string}
 		 */
 		shapeType: {
@@ -879,7 +879,7 @@ define([
 
 		/**
 		 * Whether to emit from the sphere shell, if sphere shape is used.
-		 * @target-class ParticleComponent sphereEmitFromShell member
+		 * @target-class ParticleSystemComponent sphereEmitFromShell member
 		 * @type {boolean}
 		 */
 		sphereEmitFromShell: {
@@ -894,7 +894,7 @@ define([
 
 		/**
 		 * Emit in random directions, instead of in the emitter volume direction.
-		 * @target-class ParticleComponent randomDirection member
+		 * @target-class ParticleSystemComponent randomDirection member
 		 * @type {boolean}
 		 */
 		randomDirection: {
@@ -909,7 +909,7 @@ define([
 		
 		/**
 		 * Where to emit from, if using the cone shape. Set to 'base', 'volume' or 'volumeshell'.
-		 * @target-class ParticleComponent coneEmitFrom member
+		 * @target-class ParticleSystemComponent coneEmitFrom member
 		 * @type {string}
 		 */
 		coneEmitFrom: {
@@ -924,7 +924,7 @@ define([
 
 		/**
 		 * Radius of the cone, if cone shape is used.
-		 * @target-class ParticleComponent coneRadius member
+		 * @target-class ParticleSystemComponent coneRadius member
 		 * @type {number}
 		 */
 		coneRadius: {
@@ -939,7 +939,7 @@ define([
 
 		/**
 		 * Radius of the cone, if cone shape is used.
-		 * @target-class ParticleComponent coneRadius member
+		 * @target-class ParticleSystemComponent coneRadius member
 		 * @type {number}
 		 */
 		sortMode: {
@@ -951,7 +951,7 @@ define([
 
 				var meshData = this.meshData;
 				var mesh = this.mesh;
-				if(value !== ParticleComponent.SORT_NONE || !meshData || !mesh){
+				if(value !== ParticleSystemComponent.SORT_NONE || !meshData || !mesh){
 					return;
 				}
 				this._updateIndexBuffer(this.particles);
@@ -960,7 +960,7 @@ define([
 		
 		/**
 		 * Angle of the cone, if cone shape is used.
-		 * @target-class ParticleComponent coneAngle member
+		 * @target-class ParticleSystemComponent coneAngle member
 		 * @type {number}
 		 */
 		coneAngle: {
@@ -975,7 +975,7 @@ define([
 
 		/**
 		 * Length of the cone, if cone shape is used.
-		 * @target-class ParticleComponent coneLength member
+		 * @target-class ParticleSystemComponent coneLength member
 		 * @type {number}
 		 */
 		coneLength: {
@@ -993,7 +993,7 @@ define([
 	 * Set the boxExtents.
 	 * @param {Vector3} extents
 	 */
-	ParticleComponent.prototype.setBoxExtents = function (extents) {
+	ParticleSystemComponent.prototype.setBoxExtents = function (extents) {
 		this.boxExtents.copy(extents);
 		this._vertexDataDirty = true;
 	};
@@ -1001,7 +1001,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._random = function () {
+	ParticleSystemComponent.prototype._random = function () {
 		var a = 214013, c = 2531011, m = 32768;
 		this._seed = (this._seed * a + c) % m;
 		return this._seed / m;
@@ -1010,7 +1010,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._updateUniforms = function () {
+	ParticleSystemComponent.prototype._updateUniforms = function () {
 		var uniforms = this.material.uniforms;
 		var worldRotation = this.meshEntity.transformComponent.worldTransform.rotation;
 
@@ -1041,7 +1041,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._updateIndexBuffer = function (particles) {
+	ParticleSystemComponent.prototype._updateIndexBuffer = function (particles) {
 		var mesh = this.mesh;
 		var meshData = this.meshData;
 		var meshIndices = mesh.getIndexBuffer();
@@ -1058,28 +1058,28 @@ define([
 	/**
 	 * Pause the animation.
 	 */
-	ParticleComponent.prototype.pause = function () {
+	ParticleSystemComponent.prototype.pause = function () {
 		this._paused = true;
 	};
 
 	/**
 	 * Resume the animation.
 	 */
-	ParticleComponent.prototype.resume = function () {
+	ParticleSystemComponent.prototype.resume = function () {
 		this.play();
 	};
 
 	/**
 	 * Play the animation.
 	 */
-	ParticleComponent.prototype.play = function () {
+	ParticleSystemComponent.prototype.play = function () {
 		this._paused = false;
 	};
 
 	/**
 	 * Stop the animation.
 	 */
-	ParticleComponent.prototype.stop = function () {
+	ParticleSystemComponent.prototype.stop = function () {
 		this.pause();
 		this.time = 0;
 		this._seed = this._initSeed;
@@ -1096,7 +1096,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._updateParticles = function () {
+	ParticleSystemComponent.prototype._updateParticles = function () {
 		var particles = this.sortedParticles;
 		var unsortedParticles = this.particles;
 		var maxParticles = this.maxParticles;
@@ -1115,7 +1115,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._updateVertexData = function () {
+	ParticleSystemComponent.prototype._updateVertexData = function () {
 		var meshData = this.meshData;
 		var maxParticles = this.maxParticles;
 		var particles = this.particles;
@@ -1257,7 +1257,7 @@ define([
 	 * Get a random position and location inside the current shape.
 	 * @private
 	 */
-	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction, time) {
+	ParticleSystemComponent.prototype._generateLocalPositionAndDirection = function (position, direction, time) {
 		var shapeType = this.shapeType;
 		var cos = Math.cos;
 		var sin = Math.sin;
@@ -1367,7 +1367,7 @@ define([
 	 * @param {Vector3} position
 	 * @param {Vector3} direction
 	 */
-	ParticleComponent.prototype.emitOne = function (position, direction) {
+	ParticleSystemComponent.prototype.emitOne = function (position, direction) {
 		var meshData = this.meshData;
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
@@ -1414,7 +1414,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._updateBounds = function () {
+	ParticleSystemComponent.prototype._updateBounds = function () {
 		if(this.localSpace){
 			return;
 		}
@@ -1428,8 +1428,8 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleComponent.prototype._sortParticles = function () {
-		if (this.sortMode === ParticleComponent.SORT_NONE) {
+	ParticleSystemComponent.prototype._sortParticles = function () {
+		if (this.sortMode === ParticleSystemComponent.SORT_NONE) {
 			return;
 		}
 		var particles = this.sortedParticles;
@@ -1470,7 +1470,7 @@ define([
 	 * @private
 	 * @param entity
 	 */
-	ParticleComponent.prototype.process = function (tpf) {
+	ParticleSystemComponent.prototype.process = function (tpf) {
 		if(this._vertexDataDirty){
 			this._updateVertexData();
 			this._vertexDataDirty = false;
@@ -1527,7 +1527,7 @@ define([
 	 * @private
 	 * @param entity
 	 */
-	ParticleComponent.prototype.attached = function (entity) {
+	ParticleSystemComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
 
@@ -1551,7 +1551,7 @@ define([
 		this.meshData = meshData;
 		var meshEntity = this.meshEntity = this._entity._world.createEntity(meshData);
 		meshEntity.set(new MeshRendererComponent(this.material));
-		meshEntity.name = 'ParticleSystemMesh';
+		meshEntity.name = 'ParticleSystemComponentMesh';
 		meshEntity.meshRendererComponent.cullMode = 'Never'; // TODO: cull with approx bounding sphere
 		meshEntity.addToWorld();
 		this.localSpace = this._localSpace;
@@ -1562,7 +1562,7 @@ define([
 	 * @private
 	 * @param entity
 	 */
-	ParticleComponent.prototype.detached = function (/*entity*/) {
+	ParticleSystemComponent.prototype.detached = function (/*entity*/) {
 		this.meshEntity.clearComponent('MeshDataComponent');
 		this.particles.length = this.sortedParticles.length = 0;
 		if (hasParent(this.meshEntity)) {
@@ -1577,18 +1577,18 @@ define([
 	 * @param obj
 	 * @param entity
 	 */
-	ParticleComponent.applyOnEntity = function (obj, entity) {
-		if (obj instanceof ParticleComponent) {
+	ParticleSystemComponent.applyOnEntity = function (obj, entity) {
+		if (obj instanceof ParticleSystemComponent) {
 			entity.setComponent(obj);
 		}
 	};
 
 	/**
-	 * @returns ParticleComponent
+	 * @returns ParticleSystemComponent
 	 */
-	ParticleComponent.prototype.clone = function () {
-		return new ParticleComponent(this);
+	ParticleSystemComponent.prototype.clone = function () {
+		return new ParticleSystemComponent(this);
 	};
 
-	return ParticleComponent;
+	return ParticleSystemComponent;
 });

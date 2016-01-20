@@ -20,7 +20,7 @@ define([
 	'goo/animationpack/handlers/AnimationStateHandler',
 	'goo/animationpack/handlers/AnimationLayersHandler',
 	'goo/animationpack/handlers/AnimationClipHandler',
-	'goo/addons/particlepack/handlers/ParticleComponentHandler'
+	'goo/addons/particlepack/handlers/ParticleSystemComponentHandler'
 ], function (
 	World,
 	DynamicLoader,

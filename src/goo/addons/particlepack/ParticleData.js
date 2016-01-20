@@ -6,10 +6,10 @@ define([
 	'use strict';
 
 	/**
-	 * Container for particle data in the ParticleComponent.
+	 * Container for particle data in the ParticleSystemComponent.
 	 * @class
 	 * @constructor
-	 * @param {ParticleComponent} particleComponent
+	 * @param {ParticleSystemComponent} particleComponent
 	 */
 	function ParticleData(particleComponent) {
 

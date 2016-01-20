@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/particlepack/components/ParticleComponent',
+	'goo/addons/particlepack/components/ParticleSystemComponent',
 	'goo/addons/particlepack/curves/LinearCurve',
 	'goo/addons/particlepack/curves/ConstantCurve',
 	'goo/addons/particlepack/curves/PolyCurve',
@@ -13,7 +13,7 @@ define([
 	'goo/math/MathUtils'
 ], function (
 	ComponentHandler,
-	ParticleComponent,
+	ParticleSystemComponent,
 	LinearCurve,
 	ConstantCurve,
 	PolyCurve,
@@ -31,14 +31,14 @@ define([
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
-	function ParticleComponentHandler() {
+	function ParticleSystemComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		this._type = 'ParticleComponent';
+		this._type = 'ParticleSystemComponent';
 	}
 
-	ParticleComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ParticleComponentHandler.prototype.constructor = ParticleComponentHandler;
-	ComponentHandler._registerClass('particle', ParticleComponentHandler);
+	ParticleSystemComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	ParticleSystemComponentHandler.prototype.constructor = ParticleSystemComponentHandler;
+	ComponentHandler._registerClass('particle', ParticleSystemComponentHandler);
 
 	function constantCurve(value){
 		return [{
@@ -67,7 +67,7 @@ define([
 	 * @returns {Object}
 	 * @private
 	 */
-	ParticleComponentHandler.prototype._prepare = function (config) {
+	ParticleSystemComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 			gravity: [0, 0, 0],
 			seed: -1,
@@ -112,11 +112,11 @@ define([
 	};
 
 	/**
-	 * @returns {ParticleComponent} the created component object
+	 * @returns {ParticleSystemComponent} the created component object
 	 * @private
 	 */
-	ParticleComponentHandler.prototype._create = function () {
-		var component = new ParticleComponent();
+	ParticleSystemComponentHandler.prototype._create = function () {
+		var component = new ParticleSystemComponent();
 		return component;
 	};
 
@@ -124,8 +124,8 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	ParticleComponentHandler.prototype._remove = function (entity) {
-		entity.clearComponent('ParticleComponent');
+	ParticleSystemComponentHandler.prototype._remove = function (entity) {
+		entity.clearComponent('ParticleSystemComponent');
 	};
 
 	function createCurve(configs, multiplier){
@@ -186,7 +186,7 @@ define([
 	 * @param {Object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	ParticleComponentHandler.prototype.update = function (entity, config, options) {
+	ParticleSystemComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
@@ -225,8 +225,8 @@ define([
 			component.textureAnimationSpeed = config.textureAnimationSpeed;
 			component.startSize = createCurve(config.startSize);
 			component.sortMode = {
-				'none': ParticleComponent.SORT_NONE,
-				'camera_distance': ParticleComponent.SORT_CAMERA_DISTANCE
+				'none': ParticleSystemComponent.SORT_NONE,
+				'camera_distance': ParticleSystemComponent.SORT_CAMERA_DISTANCE
 			}[config.sortMode];
 			component.billboard = config.billboard;
 			component.size = createCurve(config.size);
@@ -237,12 +237,14 @@ define([
 			component.play();
 
 			// Force shader recompile
-			var shaderCache = entity._world.gooRunner.renderer.rendererRecord.shaderCache;
-			shaderCache.forEach(function (shader, defineKey){
-				if(shader._id === component.material.shader._id){
-					shaderCache.delete(defineKey);
-				}
-			});
+			var shaderCache = entity._world.gooRunner && entity._world.gooRunner.renderer.rendererRecord.shaderCache;
+			if(shaderCache){
+				shaderCache.forEach(function (shader, defineKey){
+					if(shader._id === component.material.shader._id){
+						shaderCache.delete(defineKey);
+					}
+				});
+			}
 
 			var promises = [];
 
@@ -264,5 +266,5 @@ define([
 		});
 	};
 
-	return ParticleComponentHandler;
+	return ParticleSystemComponentHandler;
 });

@@ -1,6 +1,6 @@
 define([
 	'goo/entities/World',
-	'goo/addons/particlepack/components/ParticleComponent',
+	'goo/addons/particlepack/components/ParticleSystemComponent',
 	'goo/addons/particlepack/curves/ConstantCurve',
 	'goo/addons/particlepack/curves/PolyCurve',
 	'goo/addons/particlepack/curves/Vector3Curve',
@@ -11,7 +11,7 @@ define([
 	'goo/util/ObjectUtil'
 ], function (
 	World,
-	ParticleComponent,
+	ParticleSystemComponent,
 	ConstantCurve,
 	PolyCurve,
 	Vector3Curve,
@@ -23,7 +23,7 @@ define([
 ) {
 	'use strict';
 
-	describe('ParticleComponentHandler', function () {
+	describe('ParticleSystemComponentHandler', function () {
 		var loader;
 		
 		beforeEach(function () {
@@ -34,7 +34,7 @@ define([
 			});
 		});
 		
-		it('loads an entity with a ParticleComponent', function (done) {
+		it('loads an entity with a ParticleSystemComponent', function (done) {
 			var config = Configs.entity(['transform', 'particle']);
 
 			function constantCurve(value){
@@ -98,7 +98,7 @@ define([
 
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
-				expect(entity.particleComponent).toEqual(jasmine.any(ParticleComponent));
+				expect(entity.particleSystemComponent).toEqual(jasmine.any(ParticleSystemComponent));
 				
 				function newConstantPolyCurve(value){
 					return new PolyCurve({ segments: [new ConstantCurve({ value: value })] });
@@ -118,7 +118,7 @@ define([
 						z: newConstantPolyCurve(z)
 					});
 				}
-				var c = entity.particleComponent;
+				var c = entity.particleSystemComponent;
 				expect(c.seed).toEqual(123);
 				expect(c.shapeType).toEqual('sphere');
 				expect(c.sphereRadius).toEqual(123);
@@ -127,7 +127,7 @@ define([
 				expect(c.coneEmitFrom).toEqual('volume');
 				expect(c.boxExtents).toEqual(new Vector3(1, 2, 3));
 				expect(c.coneRadius).toEqual(123);
-				expect(c.coneAngle).toEqual(12);
+				expect(c.coneAngle.toFixed(4)).toEqual((12 * Math.PI / 180).toFixed(4));
 				expect(c.coneLength).toEqual(123);
 				expect(c.startColor).toEqual(newVector4Curve(0,1,0,1));
 				expect(c.color).toEqual(newVector4Curve(1,0,0,1));
@@ -149,7 +149,7 @@ define([
 				expect(c.textureTilesY).toEqual(34);
 				expect(c.textureAnimationSpeed).toEqual(123);
 				expect(c.startSize).toEqual(newConstantPolyCurve(123));
-				expect(c.sortMode).toEqual(ParticleComponent.SORT_CAMERA_DISTANCE);
+				expect(c.sortMode).toEqual(ParticleSystemComponent.SORT_CAMERA_DISTANCE);
 				expect(c.billboard).toEqual(false);
 				expect(c.size).toEqual(newConstantPolyCurve(1));
 				expect(c.startAngle).toEqual(newConstantPolyCurve(0));

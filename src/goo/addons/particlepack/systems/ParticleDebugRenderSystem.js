@@ -25,11 +25,11 @@ function (
 	'use strict';
 
 	/**
-	 * Renders all ParticleComponents in the scene.
+	 * Renders all ParticleSystemComponents in the scene.
 	 * @extends System
 	 */
 	function ParticleDebugRenderSystem() {
-		System.call(this, 'ParticleDebugRenderSystem', ['ParticleComponent']);
+		System.call(this, 'ParticleDebugRenderSystem', ['ParticleSystemComponent']);
 
 		this.priority = 3;
 
@@ -41,7 +41,7 @@ function (
 		}.bind(this));
 
 		/**
-		 * If set to true, all entities with a ParticleComponent attached is rendered, and the selection is disregarded.
+		 * If set to true, all entities with a ParticleSystemComponent attached is rendered, and the selection is disregarded.
 		 * @type {boolean}
 		 */
 		this.renderAll = true;
@@ -101,28 +101,28 @@ function (
 			}
 
 			var renderable;
-			switch(entity.particleComponent.shapeType){
+			switch(entity.particleSystemComponent.shapeType){
 			case 'sphere':
 				renderable = this.sphereRenderable;
-				var radius = entity.particleComponent.sphereRadius;
+				var radius = entity.particleSystemComponent.sphereRadius;
 				renderable.transform.scale.setDirect(radius,radius,radius);
 				this.offsetTransform.setIdentity();
 				break;
 			case 'box':
 				renderable = this.boxRenderable;
-				renderable.transform.scale.copy(entity.particleComponent.boxExtents);
+				renderable.transform.scale.copy(entity.particleSystemComponent.boxExtents);
 				this.offsetTransform.setIdentity();
 				break;
 			case 'cone':
-				var coneRadius = entity.particleComponent.coneRadius;
+				var coneRadius = entity.particleSystemComponent.coneRadius;
 				renderable = this.coneRenderable;
 				this.offsetTransform.setIdentity();
-				renderable.meshData.radiusTop = coneRadius + Math.tan(entity.particleComponent.coneAngle) * entity.particleComponent.coneLength;
+				renderable.meshData.radiusTop = coneRadius + Math.tan(entity.particleSystemComponent.coneAngle) * entity.particleSystemComponent.coneLength;
 				renderable.meshData.radiusBottom = coneRadius;
-				renderable.meshData.height = entity.particleComponent.coneLength;
+				renderable.meshData.height = entity.particleSystemComponent.coneLength;
 				renderable.meshData.rebuild();
 				renderable.meshData.setVertexDataUpdated();
-				this.offsetTransform.translation.set(0,0,entity.particleComponent.coneLength * 0.5);
+				this.offsetTransform.translation.set(0,0,entity.particleSystemComponent.coneLength * 0.5);
 				this.offsetTransform.rotation.rotateX(3 * Math.PI / 2);
 				break;
 			}
@@ -160,12 +160,12 @@ function (
 			var entity = entities[l];
 
 			if (this.renderAll || this.selection.contains(entity)) {
-				entity.particleComponent.play();
-				entity.particleComponent.meshEntity.meshRendererComponent.hidden = false;
+				entity.particleSystemComponent.play();
+				entity.particleSystemComponent.meshEntity.meshRendererComponent.hidden = false;
 			} else {
-				entity.particleComponent.stop();
-				entity.particleComponent._updateVertexData();
-				entity.particleComponent.meshEntity.meshRendererComponent.hidden = true;
+				entity.particleSystemComponent.stop();
+				entity.particleSystemComponent._updateVertexData();
+				entity.particleSystemComponent.meshEntity.meshRendererComponent.hidden = true;
 			}
 		}
 	};

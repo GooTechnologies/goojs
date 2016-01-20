@@ -1,5 +1,5 @@
 define([
-	'goo/addons/particlepack/components/ParticleComponent',
+	'goo/addons/particlepack/components/ParticleSystemComponent',
 	'goo/addons/particlepack/curves/LinearCurve',
 	'goo/addons/particlepack/curves/Vector4Curve',
 	'goo/addons/particlepack/curves/Vector3Curve',
@@ -11,7 +11,7 @@ define([
 	'goo/renderer/MeshData',
 	'test/CustomMatchers'
 ], function (
-	ParticleComponent,
+	ParticleSystemComponent,
 	LinearCurve,
 	Vector4Curve,
 	Vector3Curve,
@@ -25,7 +25,7 @@ define([
 ) {
 	'use strict';
 
-	describe('ParticleComponent', function () {
+	describe('ParticleSystemComponent', function () {
 		
 		var world;
 
@@ -33,17 +33,17 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 			world = new World();
 			world.registerComponent(TransformComponent);
-			world.registerComponent(ParticleComponent);
+			world.registerComponent(ParticleSystemComponent);
 		});
 
 		it('gets added to the entity via world.createEntity', function () {
-			var component = new ParticleComponent();
+			var component = new ParticleSystemComponent();
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
-			expect(entity.particleComponent).toBe(component);
+			expect(entity.particleSystemComponent).toBe(component);
 		});
 
 		it('can clone', function () {
-			var component = new ParticleComponent({
+			var component = new ParticleSystemComponent({
 				maxParticles: 10,
 				time: 1,
 				gravity: new Vector3(1, 2, 3),
@@ -90,7 +90,7 @@ define([
 				textureTilesY: 123,
 				textureAnimationSpeed: 123,
 				startSize: new LinearCurve({ k: 123, m: 123 }),
-				sortMode: ParticleComponent.SORT_CAMERA_DISTANCE,
+				sortMode: ParticleSystemComponent.SORT_CAMERA_DISTANCE,
 				mesh: new MeshData(),
 				billboard: false,
 				sizeCurve: new LinearCurve({ k: 123, m: 123 }),
@@ -143,7 +143,7 @@ define([
 		});
 
 		it('can emit one', function () {
-			var component = new ParticleComponent({
+			var component = new ParticleSystemComponent({
 				localSpace: false
 			});
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
@@ -156,7 +156,7 @@ define([
 		});
 
 		it('can pause/resume', function () {
-			var component = new ParticleComponent();
+			var component = new ParticleSystemComponent();
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
 			expect(component.time).toBe(0);
 			component.process(1);
@@ -170,7 +170,7 @@ define([
 		});
 
 		it('can stop/resume', function () {
-			var component = new ParticleComponent();
+			var component = new ParticleSystemComponent();
 			var entity = world.createEntity([0, 0, 0], component).addToWorld();
 			component.process(1);
 			expect(component.time).toBe(1);

@@ -71,7 +71,7 @@ define([
 					t1 = Curve.numberToGLSL(segments[i + 1].timeOffset);
 				}
 				glsl.push(
-					a.toGLSL(timeVariableName, lerpValueVariableName)
+					'step(' + t0 + ',t)*step(-' + t1 + ',-t)*' + a.toGLSL(timeVariableName, lerpValueVariableName)
 				);
 			}
 			return glsl.join('+');
