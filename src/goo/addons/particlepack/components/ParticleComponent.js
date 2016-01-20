@@ -222,7 +222,7 @@ define([
 
 				'    float active = timeInfo.y;',
 				'    float emitTime = timeInfo.w;',
-				'    float age = time * active - emitTime;',
+				'    float age = time - emitTime;',
 				'    float ageNoMod = age;',
 
 				'    #ifdef LOOP',
@@ -249,8 +249,15 @@ define([
 				'    float c = cos(rotation);',
 				'    float s = sin(rotation);',
 				'    mat3 spinMatrix = mat3(c, s, 0, -s, c, 0, 0, 0, 1);',
-				// Particle should show if lifeTime >= age > 0 and within life span
-				'    active *= step(0.0, ageNoMod) * step(0.0, age) * step(-lifeTime, -age);',
+
+				// hide if age > lifeTime
+				'    active *= step(-lifeTime, -age);',
+
+				// hide if age < 0
+				'    #ifdef HIDE_IF_EMITTED_BEFORE_ZERO',
+				'    active *= step(0.0, ageNoMod) * step(0.0, age);',
+				'    #endif',
+
 				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge, emitRandom) * active;',
@@ -579,15 +586,10 @@ define([
 		 */
 		loop: {
 			get: function () {
-				return this.material.shader.hasDefine('LOOP');
+				return this._loop;
 			},
 			set: function (value) {
-				var shader = this.material.shader;
-				if (value) {
-					shader.setDefine('LOOP', true);
-				} else {
-					shader.removeDefine('LOOP');
-				}
+				this._loop = value;
 			}
 		},
 
@@ -1133,7 +1135,19 @@ define([
 		meshData.setAttributeDataUpdated(MeshData.POSITION);
 
 		if (!this.localSpace) {
-			this.loop = false;
+			this.material.shader.removeDefine('LOOP');
+		} else {
+			if(this._loop){
+				this.material.shader.setDefine('LOOP', true);
+			} else {
+				this.material.shader.removeDefine('LOOP');
+			}
+		}
+
+		if(this.preWarm){
+			this.material.shader.removeDefine('HIDE_IF_EMITTED_BEFORE_ZERO');
+		} else {
+			this.material.shader.setDefine('HIDE_IF_EMITTED_BEFORE_ZERO', true);
 		}
 
 		// Time info
@@ -1162,19 +1176,21 @@ define([
 			}
 		}
 		var preWarm = this.preWarm;
+		var loop = this.loop;
 		for (i = 0; i < maxParticles; i++) {
 			var particle = particles[i];
 			particle.active = 1;
 
 			if (this.localSpace) {
 
-				if(preWarm && this.loop){
+				if(preWarm && loop){
 					// Already emitted, shift emit time back
 					particle.emitTime -= duration;
 				}
 
-				if (this.loop) {
-					if(((!preWarm && particle.emitTime >= 0) || preWarm) && ((particle.emitTime <= 0 && preWarm) || (particle.emitTime <= duration && !preWarm))){
+				if (loop) {
+					var emitTime = particle.emitTime;
+					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= duration && !preWarm))){
 						particle.active = 1;
 					} else {
 						particle.active = 0;
@@ -1348,6 +1364,7 @@ define([
 		var i = this._nextEmitParticle;
 		this._nextEmitParticle = (this._nextEmitParticle + 1) % this.maxParticles;
 		var particle = this.particles[i];
+
 		var startPosition = particle.startPosition;
 		var startDirection = particle.startDirection;
 		particle.emitTime = this.time; // Emitting NOW
@@ -1469,8 +1486,17 @@ define([
 		// Emit according to emit rate
 		if (!this.localSpace) {
 			var emissionRate = this.emissionRate;
+			var loop = this.loop;
+			var duration = this.duration;
 			var numToEmit = Math.floor(time * emissionRate.getValueAt(time, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(time, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
+
+				var particle = this.particles[this._nextEmitParticle];
+				var age = time - particle.emitTime;
+				if((!loop && particle.active) || (loop && (age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)))){
+					continue;
+				}
+
 				// get pos and direction from the shape
 				this._generateLocalPositionAndDirection(tmpPos, tmpDir, time);
 
