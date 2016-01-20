@@ -1161,19 +1161,24 @@ define([
 				particles[particleIndex++].emitTime = 2 * duration; // ???
 			}
 		}
+		var preWarm = this.preWarm;
 		for (i = 0; i < maxParticles; i++) {
 			var particle = particles[i];
 			particle.active = 1;
 
 			if (this.localSpace) {
 
-				if(this.preWarm && this.loop){
+				if(preWarm && this.loop){
 					// Already emitted, shift emit time back
 					particle.emitTime -= duration;
 				}
 
 				if (this.loop) {
-					particle.active = particle.emitTime < duration ? 1 : 0;
+					if(((!preWarm && particle.emitTime >= 0) || preWarm) && ((particle.emitTime <= 0 && preWarm) || (particle.emitTime <= duration && !preWarm))){
+						particle.active = 1;
+					} else {
+						particle.active = 0;
+					}
 				}
 
 			} else {
