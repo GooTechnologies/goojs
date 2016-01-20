@@ -25,7 +25,7 @@ define([], function () {
 	/**
 	 * Convert a number to GLSL code.
 	 * @param {number} n
-	 * @return {string}
+	 * @returns {string}
 	 */
 	Curve.numberToGLSL = function (n) {
 		return (n + '').indexOf('.') === -1 ? n + '.0' : n + '';
@@ -36,7 +36,7 @@ define([], function () {
 		/**
 		 * Convert the curve into GLSL code.
 		 * @param {number} timeVariableName
-		 * @return {string}
+		 * @returns {string}
 		 */
 		toGLSL: function (/*timeVariableName, lerpVariableName*/) {
 			return '0.0';
@@ -46,7 +46,7 @@ define([], function () {
 		 * Get a value at a given point in time
 		 * @param {number} t
 		 * @param {number} lerpValue
-		 * @return {number}
+		 * @returns {number}
 		 */
 		getValueAt: function (/*t, lerpValue*/) {
 			return 0; // To be extended by child classes
@@ -63,7 +63,7 @@ define([], function () {
 		/**
 		 * @param {number} t
 		 * @param {number} lerpValue
-		 * @return {number}
+		 * @returns {number}
 		 */
 		getIntegralValueAt: function (/*t, lerpValue*/) {
 			return 0; // To be extended by child classes
@@ -77,7 +77,7 @@ define([], function () {
 		getVec4IntegralValueAt: function (/*t, lerpValue, store*/) {},
 
 		/**
-		 * @return {Curve}
+		 * @returns {Curve}
 		 */
 		clone: function(){
 			return new this.constructor(this);

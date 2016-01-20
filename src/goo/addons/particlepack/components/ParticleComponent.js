@@ -850,21 +850,6 @@ define([
 		},
 
 		/**
-		 * Radius of the sphere, if sphere shape type is being used.
-		 * @target-class ParticleComponent shapeType member
-		 * @type {number}
-		 */
-		shapeType: {
-			get: function () {
-				return this._shapeType;
-			},
-			set: function (value) {
-				this._shapeType = value;
-				this._vertexDataDirty = true;
-			}
-		},
-
-		/**
 		 * Whether to emit from the sphere shell, if sphere shape is used.
 		 * @target-class ParticleComponent sphereEmitFromShell member
 		 * @type {boolean}
@@ -1154,7 +1139,7 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		var emissionRate = this.emissionRate;
 		if(this.localSpace){
-			var steps = Math.ceil(duration * 60); // Should not need to emit more precise than 60Hz
+			var steps = Math.min(Math.ceil(duration * 60), 1e5); // Should not need to emit more precise than 60Hz
 			var sum = 0;
 			var lastIntegral = 0;
 			var particleIndex = 0;
