@@ -25,10 +25,8 @@ function (
 	'use strict';
 
 	/**
-	 * Renders all ColliderComponents in the scene.
+	 * Renders all ParticleComponents in the scene.
 	 * @extends System
-	 * @example
-	 * world.setSystem(new ParticleDebugRenderSystem());
 	 */
 	function ParticleDebugRenderSystem() {
 		System.call(this, 'ParticleDebugRenderSystem', ['ParticleComponent']);
@@ -43,7 +41,7 @@ function (
 		}.bind(this));
 
 		/**
-		 * If set to true, all entities with a ColliderComponent attached is rendered, and the selection is disregarded.
+		 * If set to true, all entities with a ParticleComponent attached is rendered, and the selection is disregarded.
 		 * @type {boolean}
 		 */
 		this.renderAll = true;

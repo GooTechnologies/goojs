@@ -59,6 +59,7 @@ define([
 	}
 
 	/**
+	 * A particle emitter component.
 	 * @class
 	 * @constructor
 	 * @param {Object} [options]
@@ -93,6 +94,11 @@ define([
 	 * @param {number} [options.textureTilesX=1]
 	 * @param {number} [options.textureTilesY=1]
 	 * @param {number} [options.textureAnimationSpeed=1]
+	 * @example
+	 * var particleComponent = new ParticleComponent({
+	 *     startSpeed: 10
+	 * });
+	 * var entity = world.createEntity([0, 0, 0], particleComponent).addToWorld();
 	 */
 	function ParticleComponent(options) {
 		options = options || {};
@@ -327,7 +333,7 @@ define([
 		this.gravity = options.gravity ? options.gravity.clone() : new Vector3();
 
 		/**
-		 * Extents of the box, if box shape is used.
+		 * Extents of the box, if box shape is used. Read only. To change it, see the method setBoxExtents().
 		 * @type {Vector3}
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
@@ -383,13 +389,13 @@ define([
 	ParticleComponent.type = 'ParticleComponent';
 
 	/**
-	 * Don't sort particles.
+	 * No sorting of particles.
 	 * @type {number}
 	 */
 	ParticleComponent.SORT_NONE = 1;
 
 	/**
-	 * Sort by camera distance.
+	 * Sort particles by camera distance.
 	 * @type {number}
 	 */
 	ParticleComponent.SORT_CAMERA_DISTANCE = 2;
@@ -439,6 +445,7 @@ define([
 		},
 
 		/**
+		 * How fast the texture animation should cycle. Acts as a scale on the textureFrame curve.
 		 * @target-class ParticleComponent textureAnimationSpeed member
 		 * @type {number}
 		 */
@@ -452,6 +459,7 @@ define([
 		},
 
 		/**
+		 * The time for a full animation cycle of the emission.
 		 * @target-class ParticleComponent duration member
 		 * @type {number}
 		 */
@@ -465,6 +473,7 @@ define([
 		},
 
 		/**
+		 * If set to true, the particles will always face the camera.
 		 * @target-class ParticleComponent billboard member
 		 * @type {boolean}
 		 */
@@ -483,6 +492,7 @@ define([
 		},
 
 		/**
+		 * This curve alters the size of particles over their life time.
 		 * @target-class ParticleComponent size member
 		 * @type {Curve|null}
 		 */
@@ -497,8 +507,9 @@ define([
 		},
 
 		/**
+		 * The rotation speed in radians per second, specified using a curve over the particle life time.
 		 * @target-class ParticleComponent rotationSpeed member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		rotationSpeed: {
 			get: function () {
@@ -511,8 +522,9 @@ define([
 		},
 
 		/**
+		 * The velocity of particles in local particle space.
 		 * @target-class ParticleComponent localVelocity member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		localVelocity: {
 			get: function () {
@@ -525,8 +537,9 @@ define([
 		},
 
 		/**
+		 * Velocity of particles in world space.
 		 * @target-class ParticleComponent worldVelocity member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		worldVelocity: {
 			get: function () {
@@ -539,6 +552,7 @@ define([
 		},
 
 		/**
+		 * Color of particles, as a curve over their life time.
 		 * @target-class ParticleComponent color member
 		 * @type {Vector4Curve}
 		 */
@@ -553,6 +567,7 @@ define([
 		},
 
 		/**
+		 * The initial color of particles as a color curve over the emitter duration.
 		 * @target-class ParticleComponent startColor member
 		 * @type {Vector4Curve}
 		 */
@@ -567,8 +582,9 @@ define([
 		},
 
 		/**
+		 * The initial angle of particles, as a curve over the emitter duration.
 		 * @target-class ParticleComponent startAngle member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		startAngle: {
 			get: function () {
@@ -581,6 +597,7 @@ define([
 		},
 
 		/**
+		 * Whether to loop the particle emission after one duration cycle.
 		 * @target-class ParticleComponent loop member
 		 * @type {boolean}
 		 */
@@ -594,7 +611,7 @@ define([
 		},
 
 		/**
-		 * Pre-warm the emission. Not available if looping is on.
+		 * Pre-warm the emission (fast forward time one duration). Not available if looping is on.
 		 * @target-class ParticleComponent preWarm member
 		 * @type {boolean}
 		 */
@@ -609,6 +626,7 @@ define([
 		},
 
 		/**
+		 * What type of blending to use for the particle mesh.
 		 * @target-class ParticleComponent blending member
 		 * @type {string}
 		 */
@@ -622,6 +640,20 @@ define([
 		},
 
 		/**
+		 * @target-class ParticleComponent renderQueue member
+		 * @type {number}
+		 */
+		renderQueue: {
+			get: function () {
+				return this.material.renderQueue;
+			},
+			set: function (value) {
+				this.material.renderQueue = value;
+			}
+		},
+
+		/**
+		 * If set to true, the partiles will be simulated in local entity space. If set to false, world space is used.
 		 * @target-class ParticleComponent localSpace member
 		 * @type {boolean}
 		 */
@@ -640,6 +672,19 @@ define([
 		},
 
 		/**
+		 * @target-class ParticleComponent depthWrite member
+		 * @type {boolean}
+		 */
+		depthWrite: {
+			get: function () {
+				return this.material.depthState.write;
+			},
+			set: function (value) {
+				this.material.depthState.write = value;
+			}
+		},
+
+		/**
 		 * @target-class ParticleComponent depthTest member
 		 * @type {boolean}
 		 */
@@ -653,6 +698,7 @@ define([
 		},
 
 		/**
+		 * At what alpha threshold should the fragments be discarded?
 		 * @target-class ParticleComponent alphakill member
 		 * @type {number}
 		 */
@@ -666,6 +712,7 @@ define([
 		},
 
 		/**
+		 * A texture for the particles.
 		 * @target-class ParticleComponent texture member
 		 * @type {Texture|null}
 		 */
@@ -687,6 +734,7 @@ define([
 		},
 
 		/**
+		 * Texture tiling in the X direction.
 		 * @target-class ParticleComponent textureTilesX member
 		 * @type {number}
 		 */
@@ -700,6 +748,7 @@ define([
 		},
 
 		/**
+		 * Texture tiling in the Y direction.
 		 * @target-class ParticleComponent textureTilesY member
 		 * @type {number}
 		 */
@@ -713,34 +762,9 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleComponent depthWrite member
-		 * @type {boolean}
-		 */
-		depthWrite: {
-			get: function () {
-				return this.material.depthState.write;
-			},
-			set: function (value) {
-				this.material.depthState.write = value;
-			}
-		},
-
-		/**
-		 * @target-class ParticleComponent renderQueue member
-		 * @type {number}
-		 */
-		renderQueue: {
-			get: function () {
-				return this.material.renderQueue;
-			},
-			set: function (value) {
-				this.material.renderQueue = value;
-			}
-		},
-
-		/**
+		 * Initial speed of the particles, described by a curve over the emitter duration.
 		 * @target-class ParticleComponent startSpeed member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		startSpeed: {
 			get: function () {
@@ -752,8 +776,9 @@ define([
 		},
 
 		/**
+		 * Initial life time of particles, as a curve over the emitter duration.
 		 * @target-class ParticleComponent startLifeTime member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		startLifeTime: {
 			get: function () {
@@ -766,8 +791,9 @@ define([
 		},
 
 		/**
+		 * The current texture frame, given by a curve over the particle life time.
 		 * @target-class ParticleComponent textureFrame member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		textureFrame: {
 			get: function () {
@@ -780,8 +806,9 @@ define([
 		},
 
 		/**
+		 * Initial size of particles, as a curve over the emitter duration.
 		 * @target-class ParticleComponent startSize member
-		 * @type {Curve}
+		 * @type {Curve|null}
 		 */
 		startSize: {
 			get: function () {
@@ -794,6 +821,7 @@ define([
 		},
 
 		/**
+		 * Maximum number of particles visible at the same time.
 		 * @target-class ParticleComponent maxParticles member
 		 * @type {number}
 		 */
@@ -932,7 +960,6 @@ define([
 		
 		/**
 		 * Angle of the cone, if cone shape is used.
-		 * @todo implement me!
 		 * @target-class ParticleComponent coneAngle member
 		 * @type {number}
 		 */
@@ -1227,6 +1254,7 @@ define([
 	};
 
 	/**
+	 * Get a random position and location inside the current shape.
 	 * @private
 	 */
 	ParticleComponent.prototype._generateLocalPositionAndDirection = function (position, direction, time) {

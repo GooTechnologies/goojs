@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * System that runs all the ParticleComponents.
 	 * @extends System
 	 */
 	function ParticleSystem() {
@@ -43,7 +44,10 @@ define([
 	 * @param  {Component} component
 	 */
 	ParticleSystem.prototype.removedComponent = function (/*entity, component*/) {};
-
+	
+	/**
+	 * Pause all ParticleComponents.
+	 */
 	ParticleSystem.prototype.pause = function () {
 		var entities = this._activeEntities;
 		for (var i = 0; i < entities.length; i++) {
@@ -51,6 +55,9 @@ define([
 		}
 	};
 
+	/**
+	 * Resume all ParticleComponents.
+	 */
 	ParticleSystem.prototype.resume = function () {
 		var entities = this._activeEntities;
 		for (var i = 0; i < entities.length; i++) {
@@ -58,6 +65,9 @@ define([
 		}
 	};
 
+	/**
+	 * Play all ParticleComponents.
+	 */
 	ParticleSystem.prototype.play = ParticleSystem.prototype.resume;
 
 	ParticleSystem.prototype.stop = function () {

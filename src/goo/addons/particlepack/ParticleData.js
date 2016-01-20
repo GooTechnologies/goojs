@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * Container for particle data in the ParticleComponent.
 	 * @class
 	 * @constructor
 	 * @param {ParticleComponent} particleComponent

@@ -19,13 +19,13 @@ define([
 		Curve.call(this, options);
 
 		/**
-		 * Slope of the line
+		 * Slope of the line.
 		 * @type {number}
 		 */
 		this.k = options.k !== undefined ? options.k : 1;
 
 		/**
-		 * Offset of the line.
+		 * Value of the line when time is 0.
 		 * @type {number}
 		 */
 		this.m = options.m || 0;
@@ -33,6 +33,11 @@ define([
 	LinearCurve.prototype = Object.create(Curve.prototype);
 	LinearCurve.prototype.constructor = LinearCurve;
 
+	/**
+	 * Create the linar curve from a start and end value.
+	 * @param {number} startValue
+	 * @param {number} endValue
+	 */
 	LinearCurve.prototype.fromStartEnd = function (startValue, endValue) {
 		this.m = startValue;
 		this.k = endValue - startValue;

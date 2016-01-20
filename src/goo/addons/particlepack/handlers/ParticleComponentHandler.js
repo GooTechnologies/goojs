@@ -121,7 +121,8 @@ define([
 	};
 
 	/**
-	 * @param {string} ref
+	 * @param {Entity} entity
+	 * @private
 	 */
 	ParticleComponentHandler.prototype._remove = function (entity) {
 		entity.clearComponent('ParticleComponent');

@@ -6,11 +6,12 @@ define([
 	'use strict';
 
 	/**
+	 * A curve with a constant value.
 	 * @class
 	 * @constructor
 	 * @extends Curve
 	 * @param {object} [options]
-	 * @param {number} [options.value]
+	 * @param {number} [options.value=1]
 	 */
 	function ConstantCurve(options) {
 		options = options || {};

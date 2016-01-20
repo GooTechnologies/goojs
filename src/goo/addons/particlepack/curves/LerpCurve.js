@@ -13,7 +13,8 @@ define([
 	 * @constructor
 	 * @extends Curve
 	 * @param {object} [options]
-	 * @param {number} [options.lerpValue]
+	 * @param {Curve} [options.curveA]
+	 * @param {Curve} [options.curveB]
 	 */
 	function LerpCurve(options) {
 		options = options || {};

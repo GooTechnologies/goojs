@@ -5,13 +5,14 @@ define([], function () {
 	 * A curve that has a time-dependent value (time is always between 0 and 1), and can be translated into GLSL code.
 	 * @constructor
 	 * @param {object} [options]
-	 * @param {number} [options.timeOffset]
+	 * @param {string} [options.type]
+	 * @param {number} [options.timeOffset=0]
 	 */
 	function Curve(options) {
 		options = options || {};
 
 		/**
-		 * The value type. Should be 'float' or 'vec4' to indicate which getValueAt method to use.
+		 * The value type. Should be 'float', 'vec3' or 'vec4' to indicate which getValueAt method to use.
 		 */
 		this.type = options.type || 'float';
 

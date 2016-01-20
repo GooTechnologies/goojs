@@ -10,7 +10,7 @@ define([
 	 * @constructor
 	 * @extends Curve
 	 * @param {object} [options]
-	 * @param {array} [options.segments]
+	 * @param {Array<Curve>} [options.segments]
 	 */
 	function PolyCurve(options) {
 		options = options || {};
@@ -58,6 +58,7 @@ define([
 		/**
 		 * Returns a GLSL expression that gives the value of the curve at a given time.
 		 * @param {string} timeVariableName
+		 * @param {string} lerpVariableName
 		 */
 		toGLSL: function (timeVariableName, lerpValueVariableName) {
 			var segments = this.segments;
@@ -79,6 +80,7 @@ define([
 		/**
 		 * Returns a GLSL expression that gives the integral value of the curve at a given time.
 		 * @param {string} timeVariableName
+		 * @param {string} lerpVariableName
 		 */
 		integralToGLSL: function (timeVariableName, lerpValueVariableName) {
 			var segments = this.segments;
@@ -103,6 +105,7 @@ define([
 		/**
 		 * Get the value of the curve at a given time.
 		 * @param {number} t
+		 * @param {number} lerpValue
 		 * @returns {number}
 		 */
 		getValueAt: function (t, lerpValue) {
@@ -121,6 +124,7 @@ define([
 		/**
 		 * Get the integral value of the curve at a given time.
 		 * @param {number} t
+		 * @param {number} lerpValue
 		 * @returns {number}
 		 */
 		getIntegralValueAt: function (t, lerpValue) {
