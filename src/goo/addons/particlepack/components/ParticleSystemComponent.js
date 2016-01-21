@@ -41,6 +41,10 @@ define([
 ) {
 	'use strict';
 
+	function mod(a,b) {
+	    return ((a % b) + b) % b;
+	};
+
 	function hasParent(entity) {
 		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
 	}
@@ -108,7 +112,8 @@ define([
 		this._system = null;
 		this._entity = null;
 
-		this._invRotation = new Matrix3();
+		this._worldToLocalRotation = new Matrix3();
+		this._localToWorldRotation = new Matrix3();
 
 		this.material = new Material({
 			defines: ObjectUtils.clone(defines),
@@ -127,6 +132,7 @@ define([
 				cameraPosition: Shader.CAMERA,
 
 				textureTileInfo: [1, 1, 1, 0], // tilesX, tilesY, cycles over lifetime, unused
+				invWorldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 				worldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 				particleTexture: 'PARTICLE_TEXTURE',
 				time: 0,
@@ -152,6 +158,7 @@ define([
 				'uniform mat4 projectionMatrix;',
 				'uniform mat4 viewProjectionMatrix;',
 				'uniform mat4 worldMatrix;',
+				'uniform mat3 invWorldRotation;',
 				'uniform mat3 worldRotation;',
 				'uniform vec3 cameraPosition;',
 				'uniform float time;',
@@ -170,12 +177,12 @@ define([
 				'    return VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getWorldVelocityCurveIntegral(mat3 worldRotation, float t, float emitRandom){',
-				'    return worldRotation * WORLD_VELOCITY_CURVE_CODE;',
+				'vec3 getWorldVelocityCurveIntegral(float t, float emitRandom){',
+				'    return WORLD_VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getPosition(mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom, float duration){',
-				'    return pos + vel * t + 0.5 * t * t * g + getVelocityCurveIntegral(t / duration, emitRandom) + getWorldVelocityCurveIntegral(worldRotation, t / duration, emitRandom);',
+				'vec3 getPosition(mat3 invWorldRotation, mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom, float duration){',
+				'    return pos + vel * t + 0.5 * t * t * g + worldRotation * getVelocityCurveIntegral(t / duration, emitRandom) + invWorldRotation * getWorldVelocityCurveIntegral(t / duration, emitRandom);',
 				'}',
 
 				'float getScale(float t, float emitRandom){',
@@ -264,7 +271,7 @@ define([
 				'    active *= step(0.0, ageNoMod) * step(0.0, age);',
 				'    #endif',
 
-				'    vec3 position = getPosition(worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
+				'    vec3 position = getPosition(invWorldRotation, worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
 				'    #ifdef BILLBOARD',
 				'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge, emitRandom) * active;',
 				'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
@@ -298,6 +305,7 @@ define([
 
 		ObjectUtils.extend(this.material.uniforms, {
 			textureTileInfo: [1, 1, 1, 0],
+			invWorldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 			worldRotation: [1, 0, 0, 0, 1, 0, 0, 0, 1],
 			gravity: [0, 0, 0],
 			uStartColor: [1, 1, 1, 1]
@@ -1013,20 +1021,35 @@ define([
 	 */
 	ParticleSystemComponent.prototype._updateUniforms = function () {
 		var uniforms = this.material.uniforms;
-		var worldRotation = this.meshEntity.transformComponent.worldTransform.rotation;
 
 		// Gravity in local space
-		var invRot = this._invRotation;
+		var worldToLocalRotation = this._worldToLocalRotation;
+		var localToWorldRotation = this._localToWorldRotation;
+
+		if(this.localSpace){
+			// In local space:
+			// 1. Need to multiply the worldVelocity with the inverse rotation, to get local velocity
+			// 2. World velocity is good as it is
+			worldToLocalRotation.copy(this.meshEntity.transformComponent.worldTransform.rotation).invert();
+			localToWorldRotation.copy(Matrix3.IDENTITY);
+		} else {
+			// 1. Need to multiply the localVelocity with the world rotation, to get local velocity
+			// 2. Local velocity is good as it is
+			worldToLocalRotation.copy(Matrix3.IDENTITY);
+			localToWorldRotation.copy(this._entity.transformComponent.worldTransform.rotation);
+		}
+
 		var localGravity = this._localGravity;
 		localGravity.copy(this.gravity);
-		invRot.copy(worldRotation).invert();
-		localGravity.applyPost(invRot);
+		localGravity.applyPost(worldToLocalRotation);
 		var g = uniforms.gravity;
 		g[0] = localGravity.x;
 		g[1] = localGravity.y;
 		g[2] = localGravity.z;
+
 		for(var i=0; i<9; i++){
-			uniforms.worldRotation[i] = invRot[i];
+			uniforms.invWorldRotation[i] = worldToLocalRotation.data[i]; // will be multiplied with the world velocity
+			uniforms.worldRotation[i] = localToWorldRotation.data[i]; // will be multiplied with the local velocity
 		}
 
 		uniforms.time = this.time;
@@ -1283,8 +1306,6 @@ define([
 			);
 		} else if (shapeType === 'cone') {
 
-			// TODO: Implement cone base
-
 			var phi = 2 * pi * this._random();
 			var yrand = this._random();
 			var coneLength = this.coneLength;
@@ -1360,7 +1381,9 @@ define([
 				sin(phi) * sin(theta)
 			);
 		}
-		direction.normalize().scale(this.startSpeed.getValueAt(time, this._random()));
+
+		var speed = this.startSpeed.getValueAt(time, this._random());
+		direction.normalize().scale(speed);
 	};
 
 	/**
@@ -1493,13 +1516,15 @@ define([
 		var worldTransform = entity.transformComponent.worldTransform;
 
 		if(this.localSpace){
+
+			// Copy the parent mesh translation and rotation.
 			var meshEntity = this.meshEntity;
 			copyPositionAndRotation(meshEntity.transformComponent.transform, entity.transformComponent.transform);
 			copyPositionAndRotation(meshEntity.transformComponent.worldTransform, entity.transformComponent.worldTransform);
-		}
 
-		// Emit according to emit rate
-		if (!this.localSpace) {
+		} else {
+
+			// Emit according to emit rate.
 			var emissionRate = this.emissionRate;
 			var loop = this.loop;
 			var duration = this.duration;
@@ -1513,7 +1538,7 @@ define([
 				}
 
 				// get pos and direction from the shape
-				this._generateLocalPositionAndDirection(tmpPos, tmpDir, time);
+				this._generateLocalPositionAndDirection(tmpPos, tmpDir, mod(time / duration, 1));
 
 				// Transform to world space
 				tmpPos.applyPostPoint(worldTransform.matrix);

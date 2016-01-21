@@ -86,6 +86,7 @@ define([
 	 */
 	ParticleData.prototype.getWorldPosition = function (store) {
 		if(!this.active) return store;
+		
 		var component = this.component;
 
 		// pos + dir * t + 0.5 * t * t * g
@@ -104,13 +105,14 @@ define([
 		if(component.localVelocity){
 			var unitAge = age / duration;
 			component.localVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
+			localVelocityDelta.applyPost(component._localToWorldRotation);
 			store.add(localVelocityDelta);
 		}
 
 		if(component.worldVelocity){
 			var unitAge = age / duration;
 			component.worldVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
-			worldVelocityDelta.applyPost(component._invRotation);
+			worldVelocityDelta.applyPost(component._worldToLocalRotation);
 			store.add(worldVelocityDelta);
 		}
 
