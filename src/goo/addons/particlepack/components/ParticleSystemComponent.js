@@ -1514,6 +1514,8 @@ define([
 		var time = this.time;
 		var entity = this._entity;
 		var worldTransform = entity.transformComponent.worldTransform;
+		var particles = this.particles;
+		var maxParticles = this.maxParticles;
 
 		if(this.localSpace){
 
@@ -1528,10 +1530,11 @@ define([
 			var emissionRate = this.emissionRate;
 			var loop = this.loop;
 			var duration = this.duration;
-			var numToEmit = Math.floor(time * emissionRate.getValueAt(time, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(time, this._random()));
+			var normalizedTime = mod(time / duration, 1);
+			var numToEmit = Math.floor(time * emissionRate.getValueAt(normalizedTime, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(normalizedTime, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
 
-				var particle = this.particles[this._nextEmitParticle];
+				var particle = particles[this._nextEmitParticle];
 				var age = time - particle.emitTime;
 				if((!loop && particle.active) || (loop && (age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)))){
 					continue;

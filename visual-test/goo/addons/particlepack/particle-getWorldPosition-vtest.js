@@ -53,10 +53,11 @@ require([
 	for(var i=0; i<2; i++){
 		var entity = world.createEntity([(i-1/2) * 10,-13,0], new ParticleSystemComponent({
 			seed: 123,
-			loop: true,
+			loop: false,
+			preWarm: false,
 			localSpace: i === 0,
-			maxParticles: 5,
-			emissionRate: new ConstantCurve({ value: 5 }),
+			maxParticles: 15,
+			emissionRate: new LinearCurve({ m: 5, k: 50 }),
 			startSize: new ConstantCurve({ value: 0.3 }),
 			startSpeed: new LinearCurve({ m: 5, k: 0 }),
 			localVelocity: new Vector3Curve({
@@ -69,7 +70,6 @@ require([
 				y: new ConstantCurve({ value: 0 }),
 				z: new ConstantCurve({ value: 0 })
 			}),
-			preWarm: false,
 			coneAngle: Math.PI / 32
 		})).addToWorld();
 		entities.push(entity);
@@ -87,7 +87,7 @@ require([
 	}
 
 	var markerPosition = new Vector3();
-	goo.callbacks.push(function(){
+	goo.callbacksPreRender.push(function(){
 		entities.forEach(function(entity){
 			var particles = entity.particleSystemComponent.particles;
 			for(var i=0; i<particles.length; i++){
