@@ -35,7 +35,7 @@ define([
 		});
 		
 		it('loads an entity with a ParticleSystemComponent', function (done) {
-			var config = Configs.entity(['transform', 'particle']);
+			var config = Configs.entity(['transform', 'particleSystem']);
 
 			function constantCurve(value){
 				return [{
@@ -47,7 +47,7 @@ define([
 				}];
 			}
 
-			_.extend(config.components.particle, {
+			_.extend(config.components.particleSystem, {
 				seed: 123,
 				shapeType: 'sphere',
 				sphereRadius: 123,

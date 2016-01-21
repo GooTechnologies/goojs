@@ -71,7 +71,7 @@ define([
 					poseRef: this.skeleton().id
 				};
 			},
-			particle: function () {
+			particleSystem: function () {
 				function particleCurve() {
 					return [{
 						type: 'linear',
