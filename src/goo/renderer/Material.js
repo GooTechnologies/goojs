@@ -131,6 +131,8 @@ define([
 		this.wireframe = false;
 		this.flat = false;
 
+		this.lineWidth = 1;
+
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
 		 *			<li>RenderQueue.BACKGROUND = Rendered before any other objects. Commonly used for skyboxes and the likes (0-999)

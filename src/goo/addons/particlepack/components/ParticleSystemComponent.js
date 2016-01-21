@@ -1507,9 +1507,6 @@ define([
 
 		this._lastTime = this.time;
 		this.time += tpf;
-		this._updateUniforms();
-		this._sortParticles();
-		this._updateBounds();
 
 		var time = this.time;
 		var entity = this._entity;
@@ -1551,6 +1548,10 @@ define([
 				this.emitOne(tmpPos, tmpDir);
 			}
 		}
+		
+		this._updateUniforms();
+		this._sortParticles();
+		this._updateBounds();
 	};
 
 	/**
