@@ -83,7 +83,7 @@ define([
 	 * @param {Curve} [options.rotationSpeed]
 	 * @param {number} [options.coneRadius=1]
 	 * @param {number} [options.seed]
-	 * @param {number} [options.shapeType='sphere']
+	 * @param {number} [options.shapeType='cone']
 	 * @param {number} [options.size]
 	 * @param {number} [options.sortMode]
 	 * @param {Curve} [options.startAngle]
@@ -103,7 +103,7 @@ define([
 	function ParticleSystemComponent(options) {
 		options = options || {};
 		Component.apply(this, arguments);
-		this.type = ParticleSystemComponent.type;
+		this.type = 'ParticleSystemComponent';
 
 		this._system = null;
 		this._entity = null;
@@ -346,13 +346,13 @@ define([
 
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
 		this._initSeed = this._seed = this.seed = (options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768));
-		this.shapeType = options.shapeType || 'sphere';
+		this.shapeType = options.shapeType || 'cone';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
 		this.sphereEmitFromShell = options.sphereEmitFromShell || false;
 		this.randomDirection = options.randomDirection || false;
 		this.coneEmitFrom = options.coneEmitFrom || 'base'; // base, volume, volumeshell
 		this.coneRadius = options.coneRadius !== undefined ? options.coneRadius : 1;
-		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : 10;
+		this.coneAngle = options.coneAngle !== undefined ? options.coneAngle : Math.PI / 8;
 		this.coneLength = options.coneLength !== undefined ? options.coneLength : 1;
 		this.startColor = options.startColor ? options.startColor.clone() : null;
 		this.color = options.color ? options.color.clone() : null;
@@ -382,6 +382,7 @@ define([
 		this.startAngle = options.startAngle ? options.startAngle.clone() : null;
 		this.rotationSpeed = options.rotationSpeed ? options.rotationSpeed.clone() : null;
 		this.texture = options.texture ? options.texture : null;
+		this.boundsRadius = options.boundsRadius !== undefined ? options.boundsRadius : Number.MAX_VALUE;
 	}
 	ParticleSystemComponent.prototype = Object.create(Component.prototype);
 	ParticleSystemComponent.prototype.constructor = ParticleSystemComponent;
@@ -1415,12 +1416,13 @@ define([
 	 * @private
 	 */
 	ParticleSystemComponent.prototype._updateBounds = function () {
-		if(this.localSpace){
+		if(!this.meshEntity || !this.meshEntity.meshRendererComponent.worldBound){
 			return;
 		}
 		var bounds = this.meshEntity.meshRendererComponent.worldBound;
 		bounds.center.copy(this._entity.transformComponent.worldTransform.translation);
-		bounds.xExtent = bounds.yExtent = bounds.zExtent = 0;
+		var r = this.boundsRadius;
+		bounds.xExtent = bounds.yExtent = bounds.zExtent = r * 2;
 	};
 	
 	var tmpWorldPos = new Vector3();

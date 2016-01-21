@@ -38,7 +38,7 @@ define([
 
 	ParticleSystemComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ParticleSystemComponentHandler.prototype.constructor = ParticleSystemComponentHandler;
-	ComponentHandler._registerClass('particle', ParticleSystemComponentHandler);
+	ComponentHandler._registerClass('particleSystem', ParticleSystemComponentHandler);
 
 	function constantCurve(value){
 		return [{
