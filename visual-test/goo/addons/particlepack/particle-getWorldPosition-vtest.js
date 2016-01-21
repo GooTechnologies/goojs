@@ -60,8 +60,9 @@ require([
 			localSpace: i === 0,
 			maxParticles: 15,
 			//gravity: new Vector3(0,-10,0),
+			startLifeTime: new ConstantCurve({ value: 5 }),
 			emissionRate: new LinearCurve({ m: 5, k: 50 }),
-			startSize: new ConstantCurve({ value: 0.3 }),
+			startSize: new ConstantCurve({ value: 1 }),
 			startSpeed: new LinearCurve({ m: 5, k: 0 }),
 			localVelocity: new Vector3Curve({
 				x: new ConstantCurve({ value: 0 }),

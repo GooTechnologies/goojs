@@ -197,9 +197,9 @@ define([
 				'    return TEXTURE_FRAME_CODE;',
 				'}',
 
-				'float getStartLifeTime(float t, float emitRandom){',
-				'    return START_LIFETIME_CODE;',
-				'}',
+				// 'float getStartLifeTime(float t, float emitRandom){',
+				// '    return START_LIFETIME_CODE;',
+				// '}',
 
 				'float getAngle(float t, float emitRandom){',
 				'    return ROTATION_CURVE_CODE;',
@@ -246,7 +246,7 @@ define([
 				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
 				'    float emitRandom = timeInfo.z;',
 				'    float startSize = uStartSize * getStartSize(unitEmitTime, emitRandom);',
-				'    float lifeTime = getStartLifeTime(unitEmitTime, emitRandom);',
+				'    float lifeTime = timeInfo.x;//getStartLifeTime(unitEmitTime, emitRandom);',
 				'    float startAngle = uStartAngle * getStartAngle(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
@@ -1240,6 +1240,8 @@ define([
 			}
 
 			var rand = particle.emitRandom = this._random();
+			var t = mod(particle.emitTime / duration, 1);
+			particle.lifeTime = this.startLifeTime.getValueAt(t, this._random());
 			for (j = 0; j < meshVertexCount; j++) {
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
@@ -1531,14 +1533,29 @@ define([
 			var numToEmit = Math.floor(time * emissionRate.getValueAt(normalizedTime, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(normalizedTime, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
 
-				var particle = particles[this._nextEmitParticle];
-				var age = time - particle.emitTime;
-				if((!loop && particle.active) || (loop && (age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)))){
-					continue;
+
+				if(loop){
+					// var particle = particles[this._nextEmitParticle];
+					// var age = time - particle.emitTime;
+					// if(age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)){
+					// 	continue;
+					// }
+					var particle = this._findGoodParticle();
+					if(!particle){
+						continue;
+					} else {
+						this._nextEmitParticle = particle.index;
+					}
+				} else {
+					var particle = particles[this._nextEmitParticle];
+					var age = time - particle.emitTime;
+					if(particle.active){
+						continue;
+					}
 				}
 
 				// get pos and direction from the shape
-				this._generateLocalPositionAndDirection(tmpPos, tmpDir, mod(time / duration, 1));
+				this._generateLocalPositionAndDirection(tmpPos, tmpDir, normalizedTime);
 
 				// Transform to world space
 				tmpPos.applyPostPoint(worldTransform.matrix);
@@ -1548,10 +1565,23 @@ define([
 				this.emitOne(tmpPos, tmpDir);
 			}
 		}
-		
+
 		this._updateUniforms();
 		this._sortParticles();
 		this._updateBounds();
+	};
+
+	ParticleSystemComponent.prototype._findGoodParticle = function () {
+		var time = this.time;
+		var duration = this.duration;
+		var particles = this.particles;
+		for(var i=this._nextEmitParticle; i<this._nextEmitParticle + particles.length; i++){
+			var particle = particles[i % particles.length];
+			var age = time - particle.emitTime;
+			if(age > particle.lifeTime || Math.floor(time / duration) > Math.floor(particle.emitTime / duration)){
+				return particle;
+			}
+		}
 	};
 
 	/**
