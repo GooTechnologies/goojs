@@ -1393,7 +1393,7 @@ define([
 	 * @param {Vector3} position
 	 * @param {Vector3} direction
 	 */
-	ParticleSystemComponent.prototype.emitOne = function (position, direction) {
+	ParticleSystemComponent.prototype.emitOne = function (position, direction, time) {
 		var meshData = this.meshData;
 		var startPos = meshData.getAttributeBuffer('START_POS');
 		var startDir = meshData.getAttributeBuffer('START_DIR');
@@ -1406,7 +1406,7 @@ define([
 
 		var startPosition = particle.startPosition;
 		var startDirection = particle.startDirection;
-		particle.emitTime = this.time; // Emitting NOW
+		particle.emitTime = time !== undefined ? time : this.time; // Emitting NOW
 
 		startPosition.copy(position);
 		startDirection.copy(direction);
@@ -1533,7 +1533,6 @@ define([
 			var numToEmit = Math.floor(time * emissionRate.getValueAt(normalizedTime, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(normalizedTime, this._random()));
 			for (var i = 0; i < numToEmit; i++) {
 
-
 				if(loop){
 					// var particle = particles[this._nextEmitParticle];
 					// var age = time - particle.emitTime;
@@ -1562,6 +1561,7 @@ define([
 				tmpDir.applyPost(worldTransform.rotation);
 
 				// Emit
+				//var interpolationCompensation = (time - this._lastTime) * (i + 1) / numToEmit;
 				this.emitOne(tmpPos, tmpDir);
 			}
 		}
