@@ -311,10 +311,16 @@ define([
 			uStartColor: [1, 1, 1, 1]
 		});
 
-		this._paused = false;
-		this._nextEmitParticle = 0;
+		this._nextEmitParticleIndex = 0;
 		this._localGravity = new Vector3();
 		this._lastTime = this.time;
+
+		/**
+		 * Read only. Use the pause/play/stop methods if you want to modify the state.
+		 * @type {boolean}
+		 * @default false
+		 */
+		this.paused = options.paused !== undefined ? options.paused : false;
 
 		/**
 		 * The current particles in the system.
@@ -352,7 +358,7 @@ define([
 		 */
 		this.startColorScale = options.startColorScale ? options.startColorScale.clone() : new Vector4(1,1,1,1);
 
-		this.preWarm = options.preWarm !== undefined ? options.preWarm : true;
+		this.preWarm = options.preWarm !== undefined ? options.preWarm : false;
 		this._initSeed = this._seed = this.seed = (options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768));
 		this.shapeType = options.shapeType || 'cone';
 		this.sphereRadius = options.sphereRadius !== undefined ? options.sphereRadius : 1;
@@ -846,7 +852,7 @@ define([
 					meshData.vertexCount = value * mesh.vertexCount;
 					meshData.indexCount = value * mesh.indexCount;
 					meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
-					this._updateParticles();
+					this._syncParticleDataArrays();
 					this._updateVertexData();
 					this._updateIndexBuffer(this.particles);
 					this._vertexDataDirty = true;
@@ -1083,7 +1089,7 @@ define([
 	 * Pause the animation.
 	 */
 	ParticleSystemComponent.prototype.pause = function () {
-		this._paused = true;
+		this.paused = true;
 	};
 
 	/**
@@ -1097,7 +1103,7 @@ define([
 	 * Play the animation.
 	 */
 	ParticleSystemComponent.prototype.play = function () {
-		this._paused = false;
+		this.paused = false;
 	};
 
 	/**
@@ -1107,8 +1113,8 @@ define([
 		this.pause();
 		this.time = 0;
 		this._seed = this._initSeed;
-		this._nextEmitParticle = 0;
-		this._updateParticles();
+		this._nextEmitParticleIndex = 0;
+		this._syncParticleDataArrays();
 		this._updateVertexData();
 		var meshData = this.meshData;
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
@@ -1120,7 +1126,7 @@ define([
 	/**
 	 * @private
 	 */
-	ParticleSystemComponent.prototype._updateParticles = function () {
+	ParticleSystemComponent.prototype._syncParticleDataArrays = function () {
 		var particles = this.sortedParticles;
 		var unsortedParticles = this.particles;
 		var maxParticles = this.maxParticles;
@@ -1400,8 +1406,8 @@ define([
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 
 		// Get the last emitted particle
-		var i = this._nextEmitParticle;
-		this._nextEmitParticle = (this._nextEmitParticle + 1) % this.maxParticles;
+		var i = this._nextEmitParticleIndex;
+		this._nextEmitParticleIndex = (this._nextEmitParticleIndex + 1) % this.maxParticles;
 		var particle = this.particles[i];
 
 		var startPosition = particle.startPosition;
@@ -1503,7 +1509,7 @@ define([
 			this._vertexDataDirty = false;
 		}
 
-		if(this._paused) return;
+		if(this.paused) return;
 
 		this.meshEntity.meshRendererComponent.hidden = this._entity.isVisiblyHidden();
 
@@ -1534,7 +1540,7 @@ define([
 			for (var i = 0; i < numToEmit; i++) {
 
 				if(loop){
-					// var particle = particles[this._nextEmitParticle];
+					// var particle = particles[this._nextEmitParticleIndex];
 					// var age = time - particle.emitTime;
 					// if(age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)){
 					// 	continue;
@@ -1543,10 +1549,10 @@ define([
 					if(!particle){
 						continue;
 					} else {
-						this._nextEmitParticle = particle.index;
+						this._nextEmitParticleIndex = particle.index;
 					}
 				} else {
-					var particle = particles[this._nextEmitParticle];
+					var particle = particles[this._nextEmitParticleIndex];
 					var age = time - particle.emitTime;
 					if(particle.active){
 						continue;
@@ -1575,7 +1581,7 @@ define([
 		var time = this.time;
 		var duration = this.duration;
 		var particles = this.particles;
-		for(var i=this._nextEmitParticle; i<this._nextEmitParticle + particles.length; i++){
+		for(var i=this._nextEmitParticleIndex; i<this._nextEmitParticleIndex + particles.length; i++){
 			var particle = particles[i % particles.length];
 			var age = time - particle.emitTime;
 			if(age > particle.lifeTime || Math.floor(time / duration) > Math.floor(particle.emitTime / duration)){
