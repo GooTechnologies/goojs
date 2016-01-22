@@ -78,7 +78,7 @@ require([
 			coneRadius: 0
 		})).addToWorld();
 		entities.push(entity);
-		entity.setRotation(0,Math.PI / 2,0);
+		entity.setRotation(0,Math.PI / 2,0.01);
 
 		// HTML below
 		var htmlElement = document.createElement('p');
