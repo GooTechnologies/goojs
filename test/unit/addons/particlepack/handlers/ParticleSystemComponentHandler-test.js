@@ -64,7 +64,7 @@ define([
 					constantCurve(0),
 					constantCurve(1)
 				],
-				color: [
+				colorOverLifetime: [
 					constantCurve(1),
 					constantCurve(0),
 					constantCurve(0),
@@ -73,26 +73,27 @@ define([
 				duration: 123,
 				localSpace: true,
 				startSpeed: constantCurve(123),
-				localVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
-				worldVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
+				localVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
+				worldVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
 				maxParticles: 123,
 				emissionRate: constantCurve(123),
-				startLifeTime: constantCurve(123),
+				startLifetime: constantCurve(123),
 				renderQueue: 3123,
-				alphakill: 0.6,
+				discardThreshold: 0.6,
 				loop: true,
 				blending: 'TransparencyBlending',
 				depthWrite: false,
 				depthTest: false,
 				textureTilesX: 12,
 				textureTilesY: 34,
+				textureFrameOverLifetime: constantCurve(0),
 				textureAnimationSpeed: 123,
 				startSize: constantCurve(123),
 				sortMode: 'camera_distance',
 				billboard: false,
-				size: constantCurve(1),
+				sizeOverLifetime: constantCurve(1),
 				startAngle: constantCurve(0),
-				rotationSpeed: constantCurve(0)
+				rotationSpeedOverLifetime: constantCurve(0)
 				//textureRef: null
 			});
 
@@ -130,17 +131,17 @@ define([
 				expect(c.coneAngle.toFixed(4)).toEqual((12 * Math.PI / 180).toFixed(4));
 				expect(c.coneLength).toEqual(123);
 				expect(c.startColor).toEqual(newVector4Curve(0,1,0,1));
-				expect(c.color).toEqual(newVector4Curve(1,0,0,1));
+				expect(c.colorOverLifetime).toEqual(newVector4Curve(1,0,0,1));
 				expect(c.duration).toEqual(123);
 				expect(c.localSpace).toEqual(true);
 				expect(c.startSpeed).toEqual(newConstantPolyCurve(123));
-				expect(c.localVelocity).toEqual(newVector3Curve(0,0,0));
-				expect(c.worldVelocity).toEqual(newVector3Curve(0,0,0));
+				expect(c.localVelocityOverLifetime).toEqual(newVector3Curve(0,0,0));
+				expect(c.worldVelocityOverLifetime).toEqual(newVector3Curve(0,0,0));
 				expect(c.maxParticles).toEqual(123);
 				expect(c.emissionRate).toEqual(newConstantPolyCurve(123));
-				expect(c.startLifeTime).toEqual(newConstantPolyCurve(123));
+				expect(c.startLifetime).toEqual(newConstantPolyCurve(123));
 				expect(c.renderQueue).toEqual(3123);
-				expect(c.alphakill).toEqual(0.6);
+				expect(c.discardThreshold).toEqual(0.6);
 				expect(c.loop).toEqual(true);
 				expect(c.blending).toEqual('TransparencyBlending');
 				expect(c.depthWrite).toEqual(false);
@@ -148,12 +149,13 @@ define([
 				expect(c.textureTilesX).toEqual(12);
 				expect(c.textureTilesY).toEqual(34);
 				expect(c.textureAnimationSpeed).toEqual(123);
+				expect(c.textureFrameOverLifetime).toEqual(newConstantPolyCurve(0));
 				expect(c.startSize).toEqual(newConstantPolyCurve(123));
 				expect(c.sortMode).toEqual(ParticleSystemComponent.SORT_CAMERA_DISTANCE);
 				expect(c.billboard).toEqual(false);
-				expect(c.size).toEqual(newConstantPolyCurve(1));
+				expect(c.sizeOverLifetime).toEqual(newConstantPolyCurve(1));
 				expect(c.startAngle).toEqual(newConstantPolyCurve(0));
-				expect(c.rotationSpeed).toEqual(newConstantPolyCurve(0));
+				expect(c.rotationSpeedOverLifetime).toEqual(newConstantPolyCurve(0));
 
 				done();
 			});

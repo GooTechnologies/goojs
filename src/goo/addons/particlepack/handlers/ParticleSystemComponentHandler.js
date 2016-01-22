@@ -81,17 +81,17 @@ define([
 			coneAngle: 10,
 			coneLength: 1,
 			startColor: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
-			color: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
+			colorOverLifetime: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
 			duration: 5,
 			localSpace: true,
 			startSpeed: constantCurve(5),
-			localVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
-			worldVelocity: [constantCurve(0),constantCurve(0),constantCurve(0)],
+			localVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
+			worldVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
 			maxParticles: 100,
 			emissionRate: constantCurve(10),
-			startLifeTime: constantCurve(5),
+			startLifetime: constantCurve(5),
 			renderQueue: 3010,
-			alphakill: 0,
+			discardThreshold: 0,
 			loop: false,
 			preWarm: true,
 			blending: 'NoBlending',
@@ -100,13 +100,13 @@ define([
 			textureTilesX: 1,
 			textureTilesY: 1,
 			textureAnimationSpeed: 1,
-			textureFrame: linearCurve(1,0),
+			textureFrameOverLifetime: linearCurve(1,0),
 			startSize: constantCurve(1),
 			sortMode: 'none',
 			billboard: true,
-			size: constantCurve(1),
+			sizeOverLifetime: constantCurve(1),
 			startAngle: constantCurve(0),
-			rotationSpeed: constantCurve(0),
+			rotationSpeedOverLifetime: constantCurve(0),
 			textureRef: null
 		});
 	};
@@ -203,17 +203,17 @@ define([
 			component.coneAngle = config.coneAngle * MathUtils.DEG_TO_RAD;
 			component.coneLength = config.coneLength;
 			component.startColor = createVec4Curve(config.startColor[0], config.startColor[1], config.startColor[2], config.startColor[3]);
-			component.color = createVec4Curve(config.color[0], config.color[1], config.color[2], config.color[3]);
+			component.colorOverLifetime = createVec4Curve(config.colorOverLifetime[0], config.colorOverLifetime[1], config.colorOverLifetime[2], config.colorOverLifetime[3]);
 			component.duration = config.duration;
 			component.localSpace = config.localSpace;
 			component.startSpeed = createCurve(config.startSpeed);
-			component.localVelocity = createVec3Curve(config.localVelocity[0], config.localVelocity[1], config.localVelocity[2]);
-			component.worldVelocity = createVec3Curve(config.worldVelocity[0], config.worldVelocity[1], config.worldVelocity[2]);
+			component.localVelocityOverLifetime = createVec3Curve(config.localVelocityOverLifetime[0], config.localVelocityOverLifetime[1], config.localVelocityOverLifetime[2]);
+			component.worldVelocityOverLifetime = createVec3Curve(config.worldVelocityOverLifetime[0], config.worldVelocityOverLifetime[1], config.worldVelocityOverLifetime[2]);
 			component.maxParticles = config.maxParticles;
 			component.emissionRate = createCurve(config.emissionRate);
-			component.startLifeTime = createCurve(config.startLifeTime);
+			component.startLifetime = createCurve(config.startLifetime);
 			component.renderQueue = config.renderQueue;
-			component.alphakill = config.alphakill;
+			component.discardThreshold = config.discardThreshold;
 			component.loop = config.loop;
 			component.preWarm = config.preWarm;
 			component.blending = config.blending;
@@ -221,7 +221,7 @@ define([
 			component.depthTest = config.depthTest;
 			component.textureTilesX = config.textureTilesX;
 			component.textureTilesY = config.textureTilesY;
-			component.textureFrame = createCurve(config.textureFrame);
+			component.textureFrameOverLifetime = createCurve(config.textureFrameOverLifetime);
 			component.textureAnimationSpeed = config.textureAnimationSpeed;
 			component.startSize = createCurve(config.startSize);
 			component.sortMode = {
@@ -229,9 +229,9 @@ define([
 				'camera_distance': ParticleSystemComponent.SORT_CAMERA_DISTANCE
 			}[config.sortMode];
 			component.billboard = config.billboard;
-			component.size = createCurve(config.size);
+			component.sizeOverLifetime = createCurve(config.sizeOverLifetime);
 			component.startAngle = createCurve(config.startAngle, MathUtils.DEG_TO_RAD);
-			component.rotationSpeed = createCurve(config.rotationSpeed, MathUtils.DEG_TO_RAD);
+			component.rotationSpeedOverLifetime = createCurve(config.rotationSpeedOverLifetime, MathUtils.DEG_TO_RAD);
 
 			component.stop();
 			component.play();

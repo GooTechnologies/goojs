@@ -43,6 +43,9 @@ define([
 		});
 
 		it('can clone', function () {
+
+			var texture = new Texture();
+
 			var component = new ParticleSystemComponent({
 				maxParticles: 10,
 				time: 1,
@@ -59,7 +62,7 @@ define([
 				coneLength: 123,
 				preWarm: true,
 				startColor: new LinearCurve({ k: 123, m: 123 }),
-				color: new Vector4Curve({
+				colorOverLifetime: new Vector4Curve({
 					x: new LinearCurve({ k: 123, m: 123 }),
 					y: new LinearCurve({ k: 123, m: 123 }),
 					z: new LinearCurve({ k: 123, m: 123 }),
@@ -68,20 +71,20 @@ define([
 				duration: 123,
 				localSpace: false,
 				startSpeed: new LinearCurve({ k: 123, m: 123 }),
-				localVelocity: new Vector3Curve({
+				localVelocityOverLifetime: new Vector3Curve({
 					x: new LinearCurve({ k: 123, m: 123 }),
 					y: new LinearCurve({ k: 123, m: 123 }),
 					z: new LinearCurve({ k: 123, m: 123 })
 				}),
-				worldVelocity: new Vector3Curve({
+				worldVelocityOverLifetime: new Vector3Curve({
 					x: new LinearCurve({ k: 123, m: 123 }),
 					y: new LinearCurve({ k: 123, m: 123 }),
 					z: new LinearCurve({ k: 123, m: 123 })
 				}),
 				emissionRate: new LinearCurve({ k: 123, m: 123 }),
-				startLifeTime: new LinearCurve({ k: 123, m: 123 }),
+				startLifetime: new LinearCurve({ k: 123, m: 123 }),
 				renderQueue: 123,
-				alphakill: 0.123,
+				discardThreshold: 0.123,
 				loop: true,
 				blending: 'TransparencyBlending',
 				depthWrite: false,
@@ -93,53 +96,69 @@ define([
 				sortMode: ParticleSystemComponent.SORT_CAMERA_DISTANCE,
 				mesh: new MeshData(),
 				billboard: false,
-				sizeCurve: new LinearCurve({ k: 123, m: 123 }),
+				sizeOverLifetime: new LinearCurve({ k: 123, m: 123 }),
 				startAngle: new LinearCurve({ k: 123, m: 123 }),
-				rotationSpeed: new LinearCurve({ k: 123, m: 123 }),
-				texture: new Texture()
+				rotationSpeedOverLifetime: new LinearCurve({ k: 123, m: 123 }),
+				texture: texture,
+				textureFrameOverLifetime: new LinearCurve({ k: 1, m: 0 })
 			});
+			
 			var clone = component.clone();
-			expect(component.maxParticles).toEqual(clone.maxParticles);
-			expect(component.time).toEqual(clone.time);
-			expect(component.gravity).toEqual(clone.gravity);
-			expect(component.seed).toEqual(clone.seed);
-			expect(component.shapeType).toEqual(clone.shapeType);
-			expect(component.sphereRadius).toEqual(clone.sphereRadius);
-			expect(component.sphereEmitFromShell).toEqual(clone.sphereEmitFromShell);
-			expect(component.randomDirection).toEqual(clone.randomDirection);
-			expect(component.coneEmitFrom).toEqual(clone.coneEmitFrom);
-			expect(component.boxExtents).toEqual(clone.boxExtents);
-			expect(component.coneRadius).toEqual(clone.coneRadius);
-			expect(component.coneAngle).toEqual(clone.coneAngle);
-			expect(component.coneLength).toEqual(clone.coneLength);
-			expect(component.preWarm).toEqual(clone.preWarm);
-			expect(component.startColor).toEqual(clone.startColor);
-			expect(component.color).toEqual(clone.color);
-			expect(component.duration).toEqual(clone.duration);
-			expect(component.localSpace).toEqual(clone.localSpace);
-			expect(component.startSpeed).toEqual(clone.startSpeed);
-			expect(component.localVelocity).toEqual(clone.localVelocity);
-			expect(component.worldVelocity).toEqual(clone.worldVelocity);
-			expect(component.maxParticles).toEqual(clone.maxParticles);
-			expect(component.emissionRate).toEqual(clone.emissionRate);
-			expect(component.startLifeTime).toEqual(clone.startLifeTime);
-			expect(component.renderQueue).toEqual(clone.renderQueue);
-			expect(component.alphakill).toEqual(clone.alphakill);
-			expect(component.loop).toEqual(clone.loop);
-			expect(component.blending).toEqual(clone.blending);
-			expect(component.depthWrite).toEqual(clone.depthWrite);
-			expect(component.depthTest).toEqual(clone.depthTest);
-			expect(component.textureTilesX).toEqual(clone.textureTilesX);
-			expect(component.textureTilesY).toEqual(clone.textureTilesY);
-			expect(component.textureAnimationSpeed).toEqual(clone.textureAnimationSpeed);
-			expect(component.startSize).toEqual(clone.startSize);
-			expect(component.sortMode).toEqual(clone.sortMode);
-			expect(component.mesh).toEqual(clone.mesh);
-			expect(component.billboard).toEqual(clone.billboard);
-			expect(component.sizeCurve).toEqual(clone.sizeCurve);
-			expect(component.startAngle).toEqual(clone.startAngle);
-			expect(component.rotationSpeed).toEqual(clone.rotationSpeed);
-			expect(component.texture).toEqual(clone.texture);
+
+			expect(clone.maxParticles).toBe(10);
+			expect(clone.time).toBe(1);
+			expect(clone.gravity).toEqual(new Vector3(1, 2, 3));
+			expect(clone.seed).toEqual(123);
+			expect(clone.shapeType).toBe('box');
+			expect(clone.sphereRadius).toBe(123);
+			expect(clone.sphereEmitFromShell).toBe(true);
+			expect(clone.randomDirection).toBe(true);
+			expect(clone.coneEmitFrom).toBe('volume');
+			expect(clone.boxExtents).toEqual(new Vector3(1, 2, 3));
+			expect(clone.coneRadius).toBe(123);
+			expect(clone.coneAngle).toBe(123);
+			expect(clone.coneLength).toBe(123);
+			expect(clone.preWarm).toBe(true);
+			expect(clone.startColor).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.colorOverLifetime).toEqual(new Vector4Curve({
+				x: new LinearCurve({ k: 123, m: 123 }),
+				y: new LinearCurve({ k: 123, m: 123 }),
+				z: new LinearCurve({ k: 123, m: 123 }),
+				w: new LinearCurve({ k: 123, m: 123 })
+			}));
+			expect(clone.duration).toBe(123);
+			expect(clone.localSpace).toBe(false);
+			expect(clone.startSpeed).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.localVelocityOverLifetime).toEqual(new Vector3Curve({
+				x: new LinearCurve({ k: 123, m: 123 }),
+				y: new LinearCurve({ k: 123, m: 123 }),
+				z: new LinearCurve({ k: 123, m: 123 })
+			}));
+			expect(clone.worldVelocityOverLifetime).toEqual(new Vector3Curve({
+				x: new LinearCurve({ k: 123, m: 123 }),
+				y: new LinearCurve({ k: 123, m: 123 }),
+				z: new LinearCurve({ k: 123, m: 123 })
+			}));
+			expect(clone.emissionRate).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.startLifetime).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.renderQueue).toBe(123); 
+			expect(clone.discardThreshold).toBe(0.123);
+			expect(clone.loop).toBe(true);
+			expect(clone.blending).toBe('TransparencyBlending');
+			expect(clone.depthWrite).toBe(false);
+			expect(clone.depthTest).toBe(false);
+			expect(clone.textureTilesX).toBe(123);
+			expect(clone.textureTilesY).toBe(123);
+			expect(clone.textureAnimationSpeed).toBe(123);
+			expect(clone.startSize).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.sortMode).toEqual(ParticleSystemComponent.SORT_CAMERA_DISTANCE);
+			expect(clone.mesh).toEqual(new MeshData());
+			expect(clone.billboard).toBe(false);
+			expect(clone.sizeOverLifetime).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.startAngle).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.rotationSpeedOverLifetime).toEqual(new LinearCurve({ k: 123, m: 123 }));
+			expect(clone.texture).toEqual(texture);
+			expect(clone.textureFrameOverLifetime).toEqual(new LinearCurve({ m: 0, k: 1 }));
 		});
 
 		it('can emit one', function () {
