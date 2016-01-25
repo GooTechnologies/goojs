@@ -96,10 +96,9 @@ define([
 
 		// pos + dir * t + 0.5 * t * t * g
 		var age = component.time - this.emitTime;
-		var duration = component.duration;
 
 		if (component.loop) {
-			age = age % duration;
+			age = age % this.loopAfter;
 		}
 
 		dirDelta.copy(this.startDirection).scale(age);
@@ -107,16 +106,16 @@ define([
 		store.copy(this.startPosition).add(dirDelta).add(gravityDelta);
 
 		// Add velocity over lifetime
-		if(component.localVelocity){
-			var unitAge = age / duration;
-			component.localVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
+		if(component.localVelocityOverLifetime){
+			var unitAge = age / this.loopAfter;
+			component.localVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
 			localVelocityDelta.applyPost(component._localToWorldRotation);
 			store.add(localVelocityDelta);
 		}
 
-		if(component.worldVelocity){
-			var unitAge = age / duration;
-			component.worldVelocity.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
+		if(component.worldVelocityOverLifetime){
+			var unitAge = age / this.loopAfter;
+			component.worldVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
 			worldVelocityDelta.applyPost(component._worldToLocalRotation);
 			store.add(worldVelocityDelta);
 		}

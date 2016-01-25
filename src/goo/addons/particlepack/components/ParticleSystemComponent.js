@@ -1227,7 +1227,7 @@ define([
 			var lastIntegral = 0;
 			var particleIndex = 0;
 			var fullIntegral = emissionRate.getIntegralValueAt(1);
-			for(var i=0; sum < maxParticles; i++){
+			for(var i=0; sum < maxParticles &&  i < steps; i++){
 				var currentIntegral = (Math.floor(i / steps) * fullIntegral + emissionRate.getIntegralValueAt((i / steps) % 1)) * duration;
 				var numToEmit = Math.floor(currentIntegral - sum);
 				lastIntegral = currentIntegral;
