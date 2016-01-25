@@ -62,7 +62,7 @@ define([
 		for (var i = 0; i < entities.length; i++) {
 			component = entities[i].stateMachineComponent;
 			if (!component.entered) {
-				component.init();
+				// component.init();
 				component.doEnter();
 				component.entered = true;
 			}

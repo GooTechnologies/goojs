@@ -136,6 +136,12 @@ define([
 			' if (typeof update !== "undefined") {',
 			'  obj.update = update;',
 			' }',
+			' if (typeof enter !== "undefined") {',
+			'  obj.enter = enter;',
+			' }',
+			' if (typeof exit !== "undefined") {',
+			'  obj.exit = exit;',
+			' }',
 			' return obj;',
 			'};',
 			'// ]]>'
@@ -161,6 +167,8 @@ define([
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
+				script.enter = newScript.enter;
+				script.exit = newScript.exit;
 				script.parameters = {};
 				script.enabled = false;
 			} catch (e) {
@@ -300,6 +308,8 @@ define([
 			script.update = newScript.update;
 			script.run = newScript.run;
 			script.cleanup = newScript.cleanup;
+			script.enter = newScript.enter;
+			script.exit = newScript.exit;
 			script.parameters = newScript.parameters || {};
 			script.enabled = false;
 
@@ -759,6 +769,8 @@ define([
 			script.update = null;
 			script.run = null;
 			script.cleanup = null;
+			script.enter = null;
+			script.exit = null;
 
 			script.parameters = {};
 			script.enabled = false;

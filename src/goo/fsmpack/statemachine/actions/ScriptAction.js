@@ -59,24 +59,37 @@ define([
 			fsm: fsm
 		};
 
-		this.script.setup(this.args, this.ctx);
+		if (this.script) {
+			this.script.setup(this.args, this.ctx);
+		}
 	};
 
 	ScriptAction.prototype.cleanup = function () {
-		this.script.cleanup(this.args, this.ctx);
-		this.script = null;
+		if (this.script) {
+			this.script.cleanup(this.args, this.ctx);
+			this.script = null;
+		}
 	};
 
 	ScriptAction.prototype._setup = function () {
-		this.script.enter(this.args, this.ctx);
+		if (this.script && this.script.enter) {
+			this.script.enter(this.args, this.ctx);
+		}
 	};
 
 	ScriptAction.prototype._run = function () {
-		this.script.update(this.args, this.ctx);
+		if (this.script) {
+			this.script.update(this.args, this.ctx);
+		}
 	};
 
 	ScriptAction.prototype.exit = function () {
-		this.script.exit(this.args, this.ctx);
+		if (this.script && this.script.exit) {
+			this.script.exit(this.args, this.ctx);
+		}
+	};
+
+	ScriptAction.prototype.onDestroy = function () {
 	};
 
 	return ScriptAction;
