@@ -73,6 +73,11 @@ define([
 		 * @type {number}
 		 */
 		this.emitRandom = 0;
+
+		/**
+		 * @type {number}
+		 */
+		this.loopAfter = 0;
 	}
 
 	var dirDelta = new Vector3();

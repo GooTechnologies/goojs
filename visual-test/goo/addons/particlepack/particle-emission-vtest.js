@@ -7,7 +7,9 @@ require([
 	'goo/entities/systems/HtmlSystem',
 	'goo/addons/particlepack/components/ParticleSystemComponent',
 	'goo/addons/particlepack/systems/ParticleSystemSystem',
-	'goo/addons/particlepack/curves/ConstantCurve'
+	'goo/addons/particlepack/curves/ConstantCurve',
+	'goo/addons/particlepack/curves/LinearCurve',
+	'goo/addons/particlepack/curves/Vector4Curve'
 ], function (
 	Vector3,
 	Box,
@@ -17,7 +19,9 @@ require([
 	HtmlSystem,
 	ParticleSystemComponent,
 	ParticleSystemSystem,
-	ConstantCurve
+	ConstantCurve,
+	LinearCurve,
+	Vector4Curve
 ) {
 	'use strict';
 
@@ -32,50 +36,82 @@ require([
 
 	var optionsObjects = [
 
-	{
-		label: 'preWarm: false<br>loop: true<br>localSpace: false',
-		loop: true,
-		localSpace: false,
-		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
-		preWarm: false
-	}, {
-		label: 'preWarm: false<br>loop: true<br>localSpace: true',
-		loop: true,
-		localSpace: true,
-		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
-		preWarm: false
-	},
+	// {
+	// 	label: 'preWarm: false<br>loop: true<br>localSpace: false',
+	// 	loop: true,
+	// 	localSpace: false,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// 	preWarm: false
+	// }, {
+	// 	label: 'preWarm: false<br>loop: true<br>localSpace: true',
+	// 	loop: true,
+	// 	localSpace: true,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// 	preWarm: false
+	// },
 
-	{
-		label: 'preWarm: true<br>loop: true<br>localSpace: false',
-		loop: true,
-		localSpace: false,
-		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
-		preWarm: true
-	}, {
-		label: 'preWarm: true<br>loop: true<br>localSpace: true',
-		loop: true,
-		localSpace: true,
-		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
-		preWarm: true
-	},
+	// {
+	// 	label: 'preWarm: true<br>loop: true<br>localSpace: false',
+	// 	loop: true,
+	// 	localSpace: false,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// 	preWarm: true
+	// }, {
+	// 	label: 'preWarm: true<br>loop: true<br>localSpace: true',
+	// 	loop: true,
+	// 	localSpace: true,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// 	preWarm: true
+	// },
 
+	// {
+	// 	label: 'loop: false<br>localSpace: false',
+	// 	loop: false,
+	// 	localSpace: false,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// }, {
+	// 	label: 'loop: false<br>localSpace: true',
+	// 	loop: false,
+	// 	localSpace: true,
+	// 	maxParticles: 10,
+	// 	emissionRate: new ConstantCurve({ value: 10 }),
+	// },
+
+	// Make it run out of particles
 	{
-		label: 'loop: false<br>localSpace: false',
-		loop: false,
+		label: 'duration: 1<br>lifeTime: 2<br>localSpace: false',
+		duration: 1,
+		startLifetime: new ConstantCurve({ value: 2 }),
+		loop: true,
 		localSpace: false,
 		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
-	}, {
-		label: 'loop: false<br>localSpace: true',
-		loop: false,
+		startColor: new Vector4Curve({
+			x: new LinearCurve({ m: 0, k: 1 }),
+			y: new LinearCurve({ m: 1, k: -1 }),
+			z: new LinearCurve({ m: 1, k: -1 }),
+			w: new LinearCurve({ m: 1, k: 0 })
+		}),
+		emissionRate: new LinearCurve({ m: 10, k: 0 })
+	},
+	{
+		label: 'duration: 1<br>lifeTime: 2<br>localSpace: true',
+		duration: 1,
+		startLifetime: new ConstantCurve({ value: 2 }),
+		startColor: new Vector4Curve({
+			x: new LinearCurve({ m: 0, k: 1 }),
+			y: new LinearCurve({ m: 1, k: -1 }),
+			z: new LinearCurve({ m: 1, k: -1 }),
+			w: new LinearCurve({ m: 1, k: 0 })
+		}),
+		loop: true,
 		localSpace: true,
 		maxParticles: 10,
-		emissionRate: new ConstantCurve({ value: 10 }),
+		emissionRate: new LinearCurve({ m: 10, k: 0 })
 	}
 
 	];

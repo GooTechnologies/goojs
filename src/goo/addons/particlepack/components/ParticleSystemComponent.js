@@ -230,20 +230,21 @@ define([
 				'    float emitTime = timeInfo.w;',
 				'    float age = time - emitTime;',
 				'    float ageNoMod = age;',
+				'    float loopAfter = startDir.w;',
 
 				'    #ifdef LOOP',
-				'    age = mod(age, duration);',
-				'    emitTime = mod(emitTime, duration);',
+				'    age = mod(age, loopAfter);',
+				'    emitTime = mod(emitTime, loopAfter);',
 				'    #endif',
 
-				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
+				'    float unitEmitTime = emitTime / duration;',
 				'    float emitRandom = timeInfo.z;',
 				'    float startSize = uStartSize * getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = timeInfo.x;',
 				'    float startAngle = uStartAngle * getStartAngle(unitEmitTime, emitRandom);',
 
 				'    float unitAge = age / lifeTime;',
-				'    color = uColor * getStartColor(unitEmitTime, emitRandom) * getColor(unitAge, emitRandom);',
+				'    color = uColor * getStartColor(unitAge, emitRandom) * getColor(unitAge, emitRandom);',
 
 				'    float textureAnimationSpeed = textureTileInfo.z;',
 				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationSpeed, textureTileInfo.x));',
@@ -1248,6 +1249,10 @@ define([
 			var particle = particles[i];
 			particle.active = 1;
 
+			var rand = particle.emitRandom = this._random();
+			var t = mod(particle.emitTime / duration, 1);
+			particle.lifeTime = this.startLifetime.getValueAt(t, this._random());
+
 			if (this.localSpace) {
 
 				if(preWarm && loop){
@@ -1257,11 +1262,12 @@ define([
 
 				if (loop) {
 					var emitTime = particle.emitTime;
-					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= duration && !preWarm))){
+					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= particle.lifeTime && !preWarm))){
 						particle.active = 1;
 					} else {
 						particle.active = 0;
 					}
+					particle.loopAfter = Math.max(duration, particle.lifeTime);
 				}
 
 			} else {
@@ -1270,9 +1276,6 @@ define([
 				particle.active = 0;
 			}
 
-			var rand = particle.emitRandom = this._random();
-			var t = mod(particle.emitTime / duration, 1);
-			particle.lifeTime = this.startLifetime.getValueAt(t, this._random());
 			for (j = 0; j < meshVertexCount; j++) {
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 0] = particle.lifeTime;
 				timeInfo[meshVertexCount * 4 * i + j * 4 + 1] = particle.active;
@@ -1303,7 +1306,7 @@ define([
 				startDir[meshVertexCount * 4 * i + j * 4 + 0] = dir.x;
 				startDir[meshVertexCount * 4 * i + j * 4 + 1] = dir.y;
 				startDir[meshVertexCount * 4 * i + j * 4 + 2] = dir.z;
-				startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.startSize;
+				startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.loopAfter;
 			}
 		}
 		meshData.setAttributeDataUpdated('START_POS');
@@ -1460,7 +1463,7 @@ define([
 			startDir[meshVertexCount * 4 * i + j * 4 + 0] = startDirection.x;
 			startDir[meshVertexCount * 4 * i + j * 4 + 1] = startDirection.y;
 			startDir[meshVertexCount * 4 * i + j * 4 + 2] = startDirection.z;
-			startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.startSize;
+			startDir[meshVertexCount * 4 * i + j * 4 + 3] = particle.loopAfter;
 		}
 
 		meshData.setAttributeDataUpdated('START_POS');
@@ -1566,11 +1569,6 @@ define([
 			for (var i = 0; i < numToEmit; i++) {
 
 				if(loop){
-					// var particle = particles[this._nextEmitParticleIndex];
-					// var age = time - particle.emitTime;
-					// if(age < particle.lifeTime || Math.floor(time / duration) <= Math.floor(particle.emitTime / duration)){
-					// 	continue;
-					// }
 					var particle = this._findGoodParticle();
 					if(!particle){
 						continue;
@@ -1589,7 +1587,7 @@ define([
 				this._generateLocalPositionAndDirection(tmpPos, tmpDir, normalizedTime);
 
 				// Transform to world space
-				// TODO: interpolation between last and current
+				// TODO: interpolation between last and current transforms
 				tmpPos.applyPostPoint(worldTransform.matrix);
 				tmpDir.applyPost(worldTransform.rotation);
 
@@ -1611,7 +1609,7 @@ define([
 		for(var i=this._nextEmitParticleIndex; i<this._nextEmitParticleIndex + particles.length; i++){
 			var particle = particles[i % particles.length];
 			var age = time - particle.emitTime;
-			if(age > particle.lifeTime || Math.floor(time / duration) > Math.floor(particle.emitTime / duration)){
+			if(age > particle.lifeTime){
 				return particle;
 			}
 		}
