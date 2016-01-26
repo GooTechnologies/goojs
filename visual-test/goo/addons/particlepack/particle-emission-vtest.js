@@ -36,51 +36,51 @@ require([
 
 	var optionsObjects = [
 
-	// {
-	// 	label: 'preWarm: false<br>loop: true<br>localSpace: false',
-	// 	loop: true,
-	// 	localSpace: false,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// 	preWarm: false
-	// }, {
-	// 	label: 'preWarm: false<br>loop: true<br>localSpace: true',
-	// 	loop: true,
-	// 	localSpace: true,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// 	preWarm: false
-	// },
+	{
+		label: 'preWarm: false<br>loop: true<br>localSpace: false',
+		loop: true,
+		localSpace: false,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+		preWarm: false
+	}, {
+		label: 'preWarm: false<br>loop: true<br>localSpace: true',
+		loop: true,
+		localSpace: true,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+		preWarm: false
+	},
 
-	// {
-	// 	label: 'preWarm: true<br>loop: true<br>localSpace: false',
-	// 	loop: true,
-	// 	localSpace: false,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// 	preWarm: true
-	// }, {
-	// 	label: 'preWarm: true<br>loop: true<br>localSpace: true',
-	// 	loop: true,
-	// 	localSpace: true,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// 	preWarm: true
-	// },
+	{
+		label: 'preWarm: true<br>loop: true<br>localSpace: false',
+		loop: true,
+		localSpace: false,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+		preWarm: true
+	}, {
+		label: 'preWarm: true<br>loop: true<br>localSpace: true',
+		loop: true,
+		localSpace: true,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+		preWarm: true
+	},
 
-	// {
-	// 	label: 'loop: false<br>localSpace: false',
-	// 	loop: false,
-	// 	localSpace: false,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// }, {
-	// 	label: 'loop: false<br>localSpace: true',
-	// 	loop: false,
-	// 	localSpace: true,
-	// 	maxParticles: 10,
-	// 	emissionRate: new ConstantCurve({ value: 10 }),
-	// },
+	{
+		label: 'loop: false<br>localSpace: false',
+		loop: false,
+		localSpace: false,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+	}, {
+		label: 'loop: false<br>localSpace: true',
+		loop: false,
+		localSpace: true,
+		maxParticles: 10,
+		emissionRate: new ConstantCurve({ value: 10 }),
+	},
 
 	// Make it run out of particles
 	{

@@ -1263,7 +1263,7 @@ define([
 
 				if (loop) {
 					var emitTime = particle.emitTime;
-					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= particle.lifeTime && !preWarm))){
+					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= duration && !preWarm))){
 						particle.active = 1;
 					} else {
 						particle.active = 0;
