@@ -99,7 +99,7 @@ define([
 			depthTest: true,
 			textureTilesX: 1,
 			textureTilesY: 1,
-			textureAnimationSpeed: 1,
+			textureAnimationCycles: 1,
 			textureFrameOverLifetime: linearCurve(1,0),
 			startSize: constantCurve(1),
 			sortMode: 'none',
@@ -222,7 +222,7 @@ define([
 			component.textureTilesX = config.textureTilesX;
 			component.textureTilesY = config.textureTilesY;
 			component.textureFrameOverLifetime = createCurve(config.textureFrameOverLifetime);
-			component.textureAnimationSpeed = config.textureAnimationSpeed;
+			component.textureAnimationCycles = config.textureAnimationCycles;
 			component.startSize = createCurve(config.startSize);
 			component.sortMode = {
 				'none': ParticleSystemComponent.SORT_NONE,

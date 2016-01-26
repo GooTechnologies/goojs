@@ -91,7 +91,7 @@ define([
 				depthTest: false,
 				textureTilesX: 123,
 				textureTilesY: 123,
-				textureAnimationSpeed: 123,
+				textureAnimationCycles: 123,
 				startSize: new LinearCurve({ k: 123, m: 123 }),
 				sortMode: ParticleSystemComponent.SORT_CAMERA_DISTANCE,
 				mesh: new MeshData(),
@@ -149,7 +149,7 @@ define([
 			expect(clone.depthTest).toBe(false);
 			expect(clone.textureTilesX).toBe(123);
 			expect(clone.textureTilesY).toBe(123);
-			expect(clone.textureAnimationSpeed).toBe(123);
+			expect(clone.textureAnimationCycles).toBe(123);
 			expect(clone.startSize).toEqual(new LinearCurve({ k: 123, m: 123 }));
 			expect(clone.sortMode).toEqual(ParticleSystemComponent.SORT_CAMERA_DISTANCE);
 			expect(clone.mesh).toEqual(new MeshData());

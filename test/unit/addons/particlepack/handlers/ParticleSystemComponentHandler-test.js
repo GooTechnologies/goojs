@@ -87,7 +87,7 @@ define([
 				textureTilesX: 12,
 				textureTilesY: 34,
 				textureFrameOverLifetime: constantCurve(0),
-				textureAnimationSpeed: 123,
+				textureAnimationCycles: 123,
 				startSize: constantCurve(123),
 				sortMode: 'camera_distance',
 				billboard: false,
@@ -148,7 +148,7 @@ define([
 				expect(c.depthTest).toEqual(false);
 				expect(c.textureTilesX).toEqual(12);
 				expect(c.textureTilesY).toEqual(34);
-				expect(c.textureAnimationSpeed).toEqual(123);
+				expect(c.textureAnimationCycles).toEqual(123);
 				expect(c.textureFrameOverLifetime).toEqual(newConstantPolyCurve(0));
 				expect(c.startSize).toEqual(newConstantPolyCurve(123));
 				expect(c.sortMode).toEqual(ParticleSystemComponent.SORT_CAMERA_DISTANCE);

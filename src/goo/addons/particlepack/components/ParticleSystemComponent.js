@@ -89,7 +89,7 @@ define([
  	 * @param {number} [startAngleScale=1]
  	 * @param {number} [startSizeScale=1]
  	 * @param {number} [texture]
- 	 * @param {number} [textureAnimationSpeed=1]
+ 	 * @param {number} [textureAnimationCycles=1]
  	 * @param {number} [textureTilesX=1]
  	 * @param {number} [textureTilesY=1]
  	 * @param {number} [time=0]
@@ -246,9 +246,9 @@ define([
 				'    float unitAge = age / lifeTime;',
 				'    color = uColor * getStartColor(unitAge, emitRandom) * getColor(unitAge, emitRandom);',
 
-				'    float textureAnimationSpeed = textureTileInfo.z;',
-				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationSpeed, textureTileInfo.x));',
-				'    float tileY = floor(mod(-textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationSpeed, textureTileInfo.y));',
+				'    float textureAnimationCycles = textureTileInfo.z;',
+				'    float tileX = floor(mod(textureTileInfo.x * textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationCycles, textureTileInfo.x));',
+				'    float tileY = floor(mod(-textureTileInfo.y * getTextureFrame(unitAge, emitRandom) * textureAnimationCycles, textureTileInfo.y));',
 				'    vec2 texOffset = vec2(tileX, tileY) / textureTileInfo.xy;',
 				'    coords = (vertexUV0 / textureTileInfo.xy + texOffset);',
 
@@ -389,7 +389,7 @@ define([
 		this.depthTest = options.depthTest !== undefined ? options.depthTest : true;
 		this.textureTilesX = options.textureTilesX !== undefined ? options.textureTilesX : 1;
 		this.textureTilesY = options.textureTilesY !== undefined ? options.textureTilesY : 1;
-		this.textureAnimationSpeed = options.textureAnimationSpeed !== undefined ? options.textureAnimationSpeed : 1;
+		this.textureAnimationCycles = options.textureAnimationCycles !== undefined ? options.textureAnimationCycles : 1;
 		this.textureFrameOverLifetime = options.textureFrameOverLifetime ? options.textureFrameOverLifetime.clone() : null;
 		this.startSize = options.startSize ? options.startSize.clone() : null;
 		this.sortMode = options.sortMode !== undefined ? options.sortMode : ParticleSystemComponent.SORT_NONE;
@@ -959,10 +959,10 @@ define([
 
 		/**
 		 * How fast the texture animation should cycle. Acts as a scale on the textureFrameOverLifetime curve.
-		 * @target-class ParticleSystemComponent textureAnimationSpeed member
+		 * @target-class ParticleSystemComponent textureAnimationCycles member
 		 * @type {number}
 		 */
-		textureAnimationSpeed: {
+		textureAnimationCycles: {
 			get: function () {
 				return this.material.uniforms.textureTileInfo[2];
 			},
@@ -1158,6 +1158,7 @@ define([
 		while (particles.length < maxParticles) {
 			var particle = new ParticleData(this);
 			particle.index = particles.length;
+			particle.loopAfter = this.duration;
 			particles.push(particle);
 			particlesUnSorted.push(particle);
 		}
@@ -1622,13 +1623,7 @@ define([
 	ParticleSystemComponent.prototype.attached = function (entity) {
 		this.entity = entity;
 
-		var maxParticles = this.maxParticles;
-		for (var i = 0; i < maxParticles; i++) {
-			var particle = new ParticleData(this);
-			particle.index = i;
-			this.particlesSorted.push(particle);
-			this.particles.push(particle);
-		}
+		this._syncParticleDataArrays();
 
 		var attributeMap = MeshData.defaultMap([
 			MeshData.POSITION,
@@ -1637,6 +1632,8 @@ define([
 		attributeMap.TIME_INFO = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_POS = MeshData.createAttribute(4, 'Float');
 		attributeMap.START_DIR = MeshData.createAttribute(4, 'Float');
+
+		var maxParticles = this.maxParticles;
 		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
