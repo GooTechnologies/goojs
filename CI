@@ -2,7 +2,7 @@
 #
 # Continuous integration script
 #
-#rm -rf node_modules
+rm -rf node_modules
 
 npm config set registry https://registry.npmjs.org
 npm install --verbose

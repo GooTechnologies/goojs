@@ -35,6 +35,9 @@ define([
 			getOwnerEntity: function () {
 				return this._fsm && this._fsm.entity;
 			}.bind(this),
+			getEntityById: function (id) {
+				return this._fsm.entity._world.by.id(id).first();
+			}.bind(this),
 			send: function (channels/*, data*/) {
 				if (channels) {
 					if (typeof channels === 'string' && this._transitions[channels]) {

@@ -177,12 +177,12 @@ define([
 				};
 
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
-					this.type = 'UnsignedByte';
+					this.type = settings.type || 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
-					this.type = 'UnsignedShort565';
+					this.type = settings.type || 'UnsignedShort565';
 					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
-					this.type = 'Float';
+					this.type = settings.type || 'Float';
 					this.format = settings.format || 'RGBA';
 				}
 			} else {

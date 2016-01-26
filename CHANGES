@@ -1,3 +1,101 @@
+v0.15.30 --- 2016-01-15
+
+### Fixes
+
+  * Added reflectivity type multiply, for materials
+
+v0.15.29 --- 2016-01-15
+
+### Fixes
+
+  * SoundSystem now executes scheduledUpdates in the order they came in.
+
+v0.15.28 --- 2016-01-11
+
+### Fixes
+
+  * Fix problem with script dependencies that happens if a script has no body
+  * Minor code optimization in PhysicsSystem.js
+
+v0.15.27 --- 2015-12-17
+
+### Fixes
+
+  * PhysicsSystem.prototype.raycast* methods now produces a RaycastResult with has the ColliderComponent entity as hit object, and not the RigidBodyComponent entity. If you need the RigidBodyComponent entity, just run ColliderComponent.prototype.getBodyEntity()
+
+v0.15.26 --- 2015-12-16
+
+### Additions
+
+  + Added ApplyForceAction
+  + Added ApplyTorqueAction
+  + Added optional argument "relativePoint" to RigidBodyComponent.prototype.applyForce
+  + Added RigidBodyComponent.prototype.applyForceLocal
+  + Added RigidBodyComponent.prototype.applyTorque
+  + Added RigidBodyComponent.prototype.applyTorqueLocal
+  + Added HalfFloat support
+
+v0.15.25 --- 2015-12-10
+
+### Fixes
+
+  * Fixed broken MoveAction when using non-oriented every-frame movement.
+
+v0.15.24 --- 2015-12-09
+
+### Fixes
+
+  * Fixed Matrix4.getRotation bug. Added unit test.
+  * Added missing break in OrbitNPanControlScript
+  * Fixed bugs in state machine removal of machines and states.
+
+v0.15.23 --- 2015-12-08
+
+### Fixes
+
+  * Added key "Tween Opacity" to TweenOpacityAction, making it backwards compatible.
+
+v0.15.22 --- 2015-12-08
+
+### Fixes
+
+  * Fixed some shader precision issues
+
+### Additions
+
+  + Added SetTimeScaleAction to statemachine
+  + Added SetMaterialColorAction to statemachine
+  + Added ToggleFullscreenAction to statemachine
+  + Added TogglePostFxAction to statemachine
+
+v0.15.21 --- 2015-11-30
+
+### Fixes
+
+  * Fixed touch bug in PanCamScript, making touch work when not using it with the OrbitNPanControlScript.
+  * Smoothing tpf is now done on a world.smoothedTpf parameter instead
+  * Fixed EntityCombiner to only create new root node when needed.
+
+### Additions
+
+  + Added "touchMode" parameter for PanCamScript.
+
+v0.15.20 --- 2015-11-26
+
+### Fixes
+
+  * Added touch support for button script
+  * Scripts will now update correctly in chrome devtools
+  * Handle the case where sigma < 0 in the convolution shader
+
+v0.15.19 --- 2015-11-23
+
+### Fixes
+
+  * Use bounds check manually for lens flare script
+  * Fix bug in Dom3dSystem cleanup method
+  * Fix for texture repeat V in TextureHandler
+
 v0.15.18 --- 2015-11-17
 
 ### Fixes

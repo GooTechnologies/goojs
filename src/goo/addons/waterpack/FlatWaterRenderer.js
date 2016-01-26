@@ -41,20 +41,15 @@ define([
 		settings = settings || {};
 
 		this.useRefraction = settings.useRefraction !== undefined ? settings.useRefraction : true;
+		this.divider = settings.divider || 2;
+
+		this.width = -1;
+		this.height = -1;
 
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);
 		this.renderList = [];
 
 		this.waterPlane = new Plane();
-
-		var width = Math.floor(window.innerWidth / (settings.divider || 2));
-		var height = Math.floor(window.innerHeight / (settings.divider || 2));
-
-		this.reflectionTarget = new RenderTarget(width, height);
-		if (this.useRefraction) {
-			this.refractionTarget = new RenderTarget(width, height);
-			this.depthTarget = new RenderTarget(width, height);
-		}
 
 		var waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.shader.setDefine('REFRACTION', this.useRefraction);
@@ -95,10 +90,38 @@ define([
 		this.depthMaterial = new Material(packDepthY, 'depth');
 	}
 
+	FlatWaterRenderer.prototype.updateSize = function (renderer) {
+		var width = Math.floor(renderer.viewportWidth / this.divider);
+		var height = Math.floor(renderer.viewportHeight / this.divider);
+		if (width === this.width && height === this.height) {
+			return;			
+		}
+		this.width = width;
+		this.height = height;
+
+		if (this.reflectionTarget) {
+			renderer._deallocateRenderTarget(this.reflectionTarget);
+		}
+		this.reflectionTarget = new RenderTarget(width, height);
+
+		if (this.useRefraction) {
+			if (this.refractionTarget) {
+				renderer._deallocateRenderTarget(this.refractionTarget);
+			}
+			if (this.depthTarget) {
+				renderer._deallocateRenderTarget(this.depthTarget);
+			}
+			this.refractionTarget = new RenderTarget(width, height);
+			this.depthTarget = new RenderTarget(width, height);
+		}
+	};
+
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
 		if (!this.waterEntity) {
 			return;
 		}
+
+		this.updateSize(renderer);
 
 		entities = entities.filter(function (entity) {
 			return entity.meshRendererComponent.isReflectable;
@@ -126,10 +149,8 @@ define([
 
 				renderer.render(this.renderList, this.waterCamera, lights, this.refractionTarget, true);
 
-				if (!this.waterMaterial.getTexture('REFRACTION_MAP')) {
-					this.waterMaterial.setTexture('REFRACTION_MAP', this.refractionTarget);
-					this.waterMaterial.setTexture('DEPTH_MAP', this.depthTarget);
-				}
+				this.waterMaterial.setTexture('REFRACTION_MAP', this.refractionTarget);
+				this.waterMaterial.setTexture('DEPTH_MAP', this.depthTarget);
 			}
 
 			var calcVect = this.calcVect;
@@ -207,9 +228,7 @@ define([
 			}
 		}
 
-		if (!this.waterMaterial.getTexture('REFLECTION_MAP')) {
-			this.waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
-		}
+		this.waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;

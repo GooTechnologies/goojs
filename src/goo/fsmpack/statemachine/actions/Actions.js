@@ -24,6 +24,7 @@ define([
 	'goo/fsmpack/statemachine/actions/PauseAnimationAction',
 	'goo/fsmpack/statemachine/actions/ResumeAnimationAction',
 	'goo/fsmpack/statemachine/actions/SetAnimationAction',
+	'goo/fsmpack/statemachine/actions/SetTimeScale',
 
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
@@ -55,12 +56,15 @@ define([
 	'goo/fsmpack/statemachine/actions/SmokeAction',
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
+	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
+	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
 
 	'goo/fsmpack/statemachine/actions/SetRenderTargetAction',
 	'goo/fsmpack/statemachine/actions/TweenTextureOffsetAction',
+	'goo/fsmpack/statemachine/actions/SetMaterialColorAction',
 
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
@@ -73,6 +77,8 @@ define([
 	'goo/fsmpack/statemachine/actions/TriggerLeaveAction',
 
 	'goo/fsmpack/statemachine/actions/ApplyImpulseAction',
+	'goo/fsmpack/statemachine/actions/ApplyForceAction',
+	'goo/fsmpack/statemachine/actions/ApplyTorqueAction',
 
 	'goo/fsmpack/statemachine/actions/CompareCounterAction',
 	'goo/fsmpack/statemachine/actions/CompareCountersAction',

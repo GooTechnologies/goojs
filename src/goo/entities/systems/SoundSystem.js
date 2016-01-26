@@ -228,7 +228,7 @@ define([
 		}
 
 		while (this._scheduledUpdates.length) {
-			var thunk = this._scheduledUpdates.pop();
+			var thunk = this._scheduledUpdates.shift();
 			thunk.call(this);
 		}
 

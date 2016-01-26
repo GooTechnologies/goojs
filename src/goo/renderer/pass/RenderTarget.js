@@ -20,8 +20,8 @@ define([
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
 
-		this.width = Math.floor(width);
-		this.height = Math.floor(height);
+		this.width = Math.max(Math.floor(width), 1);
+		this.height = Math.max(Math.floor(height), 1);
 
 		ObjectUtil.copyOptions(this, options, {
 			wrapS: 'EdgeClamp',

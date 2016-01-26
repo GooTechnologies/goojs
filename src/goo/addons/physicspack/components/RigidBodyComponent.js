@@ -245,12 +245,67 @@ define([
 	};
 
 	/**
-	 * Apply a force to the center of mass of the body.
+	 * Apply a force to a point on the body in world space.
 	 * @param {Vector3} force The force vector, oriented in world space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
 	 */
-	RigidBodyComponent.prototype.applyForce = function (force) {
-		tmpCannonVec.copy(force);
-		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
+	RigidBodyComponent.prototype.applyForce = function (force, relativePoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = CANNON.Vec3.ZERO;
+		if (relativePoint) {
+			cannonPoint = tmpCannonVec2;
+			cannonPoint.copy(relativePoint);
+		}
+
+		this.cannonBody.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a force to the body in local body space.
+	 * @param {Vector3} force The force vector, oriented in local space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
+	 */
+	RigidBodyComponent.prototype.applyForceLocal = function (force, relativePoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = CANNON.Vec3.ZERO;
+		if (relativePoint) {
+			cannonPoint = tmpCannonVec2;
+			cannonPoint.copy(relativePoint);
+		}
+
+		var body = this.cannonBody;
+
+		// Transform the vectors to world space
+		body.vectorToWorldFrame(cannonForce, cannonForce);
+		body.vectorToWorldFrame(cannonPoint, cannonPoint);
+
+		body.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a torque to a point on the body in world space.
+	 * @param {Vector3} torque The torque vector, oriented in world space.
+	 */
+	RigidBodyComponent.prototype.applyTorque = function (torque) {
+		tmpCannonVec.copy(torque);
+		this.cannonBody.torque.vadd(tmpCannonVec, this.cannonBody.torque);
+	};
+
+	/**
+	 * Apply a torque to the body in local body space.
+	 * @param {Vector3} torque The torque vector, oriented in local body space.
+	 */
+	RigidBodyComponent.prototype.applyTorqueLocal = function (torque) {
+		var cannonTorque = tmpCannonVec;
+		cannonTorque.copy(torque);
+
+		// Transform to world space
+		this.cannonBody.vectorToWorldFrame(cannonTorque, cannonTorque);
+		this.cannonBody.torque.vadd(cannonTorque, this.cannonBody.torque);
 	};
 
 	/**

@@ -1,10 +1,12 @@
 define([
+	'goo/math/Matrix3',
 	'goo/math/Matrix4',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Quaternion',
 	'test/CustomMatchers'
 ], function (
+	Matrix3,
 	Matrix4,
 	Vector3,
 	Vector4,
@@ -155,6 +157,13 @@ define([
 
 		it('can set the scale part', function () {
 			expect(new Matrix4().setScale(new Vector3(1, 2, 3))).toBeCloseToMatrix(new Matrix4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1));
+		});
+
+		it('can get rotational part', function () {
+			var original = new Matrix4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
+			var rotation = new Matrix3();
+			original.getRotation(rotation);
+			expect(rotation).toBeCloseToMatrix(new Matrix3(10, 20, 30, 50, 60, 70, 90, 100, 110));
 		});
 
 		describe('add', function () {

@@ -142,7 +142,7 @@ define([
 				if (type === 'mousedown' || type === 'touchstart') {
 					env.mouseState.downOnEntity = true;
 				}
-				if (params.linkUrl && type === 'click') {
+				if (params.linkUrl && (type === 'click' || type === 'touchstart')) {
 					window.open(params.linkUrl, params.linkTarget);
 				}
 			}
