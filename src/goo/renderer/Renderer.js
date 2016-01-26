@@ -1188,12 +1188,19 @@ define([
 	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
+
 		var shader = material.shader;
 		var defineKey = shader.getDefineKey(this._definesIndices);
 		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
 		var cachedShader = shaderCache.get(defineKey);
+	
+		// Check if the shader cache is invalid
+		if (cachedShader && cachedShader.defineKey !== defineKey) {
+			shaderCache.delete(defineKey);
+			cachedShader = undefined;
+		}
 
 		if (cachedShader) {
 			if (cachedShader !== material.shader) {

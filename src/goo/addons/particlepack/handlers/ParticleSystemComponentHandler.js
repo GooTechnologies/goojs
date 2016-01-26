@@ -237,14 +237,14 @@ define([
 			component.play();
 
 			// Force shader recompile
-			var shaderCache = entity._world.gooRunner && entity._world.gooRunner.renderer.rendererRecord.shaderCache;
-			if(shaderCache){
-				shaderCache.forEach(function (shader, defineKey){
-					if(shader._id === component.material.shader._id){
-						shaderCache.delete(defineKey);
-					}
-				});
-			}
+			// var shaderCache = entity._world.gooRunner && entity._world.gooRunner.renderer.rendererRecord.shaderCache;
+			// if(shaderCache){
+			// 	shaderCache.forEach(function (shader, defineKey){
+			// 		if(shader._id === component.material.shader._id){
+			// 			shaderCache.delete(defineKey);
+			// 		}
+			// 	});
+			// }
 
 			var promises = [];
 
