@@ -361,6 +361,7 @@ define([
 		 */
 		this.startColorScale = options.startColorScale ? options.startColorScale.clone() : new Vector4(1,1,1,1);
 
+		this.emissionRate = options.emissionRate ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
 		this.preWarm = options.preWarm !== undefined ? options.preWarm : false;
 		this._initSeed = this._seed = this.seed = (options.seed !== undefined && options.seed > 0 ? options.seed : Math.floor(Math.random() * 32768));
 		this.shapeType = options.shapeType || 'cone';
@@ -379,7 +380,6 @@ define([
 		this.localVelocityOverLifetime = options.localVelocityOverLifetime ? options.localVelocityOverLifetime.clone() : null;
 		this.worldVelocityOverLifetime = options.worldVelocityOverLifetime ? options.worldVelocityOverLifetime.clone() : null;
 		this._maxParticles = options.maxParticles !== undefined ? options.maxParticles : 100;
-		this.emissionRate = options.emissionRate ? options.emissionRate.clone() : new ConstantCurve({ value: 10 });
 		this.startLifetime = options.startLifetime ? options.startLifetime.clone() : new ConstantCurve({ value: 5 });
 		this.renderQueue = options.renderQueue !== undefined ? options.renderQueue : 3010;
 		this.discardThreshold = options.discardThreshold || 0;
@@ -579,6 +579,20 @@ define([
 			},
 			set: function (value) {
 				this.material.uniforms.duration = value;
+				this._vertexDataDirty = true;
+			}
+		},
+
+		/**
+		 * @target-class ParticleSystemComponent emissionRate member
+		 * @type {Curve}
+		 */
+		emissionRate: {
+			get: function () {
+				return this._emissionRate;
+			},
+			set: function (value) {
+				this._emissionRate = value;
 				this._vertexDataDirty = true;
 			}
 		},
@@ -1539,9 +1553,9 @@ define([
 			this._vertexDataDirty = false;
 		}
 
-		if(this.paused) return;
-
 		this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
+		
+		if(this.paused) return;
 
 		this._lastTime = this.time;
 		this.time += tpf;
@@ -1651,9 +1665,6 @@ define([
 	ParticleSystemComponent.prototype.detached = function (/*entity*/) {
 		this.meshEntity.clearComponent('MeshDataComponent');
 		this.particles.length = this.particlesSorted.length = 0;
-		if (hasParent(this.meshEntity)) {
-			this.entity.detachChild(this.meshEntity);
-		}
 		this.meshEntity.removeFromWorld();
 		this.entity = this.meshEntity = null;
 	};
