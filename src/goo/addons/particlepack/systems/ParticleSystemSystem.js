@@ -68,7 +68,15 @@ define([
 	/**
 	 * Play all ParticleSystemComponents.
 	 */
-	ParticleSystemSystem.prototype.play = ParticleSystemSystem.prototype.resume;
+	ParticleSystemSystem.prototype.play = function(){
+		var entities = this._activeEntities;
+		for (var i = 0; i < entities.length; i++) {
+			var component = entities[i].particleSystemComponent;
+			if(component.autoPlay){
+				component.play();
+			}
+		}
+	};
 
 	ParticleSystemSystem.prototype.stop = function () {
 		this.pause();

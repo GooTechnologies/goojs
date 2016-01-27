@@ -84,9 +84,13 @@ function (
 				if(entity.isVisiblyHidden())
 					meshEntity.meshRendererComponent.hidden = true;
 				else 
-					meshEntity.meshRendererComponent.hidden = !(this.renderAll || this.selection.contains(entity));
+					meshEntity.meshRendererComponent.hidden = !this._shouldRenderDebugForEntity(entity);
 			}
 		}
+	};
+
+	ParticleDebugRenderSystem.prototype._shouldRenderDebugForEntity = function (entity) {
+		return !this.passive && (this.renderAll || this.selection.contains(entity));
 	};
 
 	/**
@@ -168,7 +172,7 @@ function (
 		while(l--){
 			var entity = entities[l];
 
-			if (this.renderAll || this.selection.contains(entity)) {
+			if (this._shouldRenderDebugForEntity(entity)) {
 				entity.particleSystemComponent.play();
 			} else {
 				entity.particleSystemComponent.stop();

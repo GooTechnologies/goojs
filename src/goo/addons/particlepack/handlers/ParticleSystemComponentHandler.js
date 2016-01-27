@@ -232,9 +232,13 @@ define([
 			component.sizeOverLifetime = createCurve(config.sizeOverLifetime);
 			component.startAngle = createCurve(config.startAngle, MathUtils.DEG_TO_RAD);
 			component.rotationSpeedOverLifetime = createCurve(config.rotationSpeedOverLifetime, MathUtils.DEG_TO_RAD);
+			component.autoPlay = config.autoPlay;
 
 			component.stop();
-			component.play();
+
+			if(component.autoPlay){
+				component.play();
+			}
 
 			var promises = [];
 

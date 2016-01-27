@@ -325,6 +325,13 @@ define([
 		this.paused = options.paused !== undefined ? options.paused : false;
 
 		/**
+		 * Whether to start playing when the ParticleSystemSystem plays.
+		 * @type {boolean}
+		 * @default true
+		 */
+		this.autoPlay = options.autoPlay !== undefined ? options.autoPlay : true;
+
+		/**
 		 * The current particles in the system.
 		 * @type {Array<ParticleData>}
 		 */
