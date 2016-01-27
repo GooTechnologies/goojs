@@ -76,7 +76,18 @@ function (
 	 * @private
 	 * @param  {array} entities
 	 */
-	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {};
+	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {
+		for(var i=0; i<entities.length; i++){
+			var entity = entities[i];
+			var meshEntity = entity.particleSystemComponent.meshEntity;
+			if(meshEntity){
+				if(entity.isVisiblyHidden())
+					meshEntity.meshRendererComponent.hidden = true;
+				else 
+					meshEntity.meshRendererComponent.hidden = !(this.renderAll || this.selection.contains(entity));
+			}
+		}
+	};
 
 	/**
 	 * @private
@@ -159,13 +170,12 @@ function (
 
 			if (this.renderAll || this.selection.contains(entity)) {
 				entity.particleSystemComponent.play();
-				entity.particleSystemComponent.meshEntity.meshRendererComponent.hidden = false;
 			} else {
 				entity.particleSystemComponent.stop();
-				entity.particleSystemComponent._updateVertexData();
-				entity.particleSystemComponent.meshEntity.meshRendererComponent.hidden = true;
 			}
 		}
+
+		this.process(this._activeEntities);
 	};
 
 
