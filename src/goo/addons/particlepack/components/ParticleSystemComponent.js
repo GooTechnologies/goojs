@@ -1554,7 +1554,7 @@ define([
 		}
 
 		this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
-		
+
 		if(this.paused) return;
 
 		this._lastTime = this.time;
@@ -1651,9 +1651,14 @@ define([
 		var meshData = new MeshData(attributeMap, maxParticles * this.mesh.vertexCount, maxParticles * this.mesh.indexCount);
 		meshData.vertexData.setDataUsage('DynamicDraw');
 		this.meshData = meshData;
+
+		var meshRendererComponent = new MeshRendererComponent(this.material);
+		meshRendererComponent.castShadows = meshRendererComponent.receiveShadows = meshRendererComponent.isPickable = meshRendererComponent.isReflectable = false;
+		
 		var meshEntity = this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
-			.set(new MeshRendererComponent(this.material))
+			.set(meshRendererComponent)
 			.addToWorld();
+
 		this.localSpace = this._localSpace;
 		this._vertexDataDirty = true;
 	};
