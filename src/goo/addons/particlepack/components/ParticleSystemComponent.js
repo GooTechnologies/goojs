@@ -312,15 +312,17 @@ define([
 		this._localToWorldRotation = new Matrix3();
 
 		/**
-		 * Read only. The entity which the component is attached on. Will be set when the component is attached to the entity.
+		 * The entity which the component is attached on. Will be set when the component is attached to the entity.
 		 * @type {Entity|null}
+		 * @readonly
 		 */
 		this.entity = null;
 
 		/**
-		 * Read only. Use the pause/play/stop methods if you want to modify the state.
+		 * Use the pause/play/stop methods if you want to modify the state.
 		 * @type {boolean}
 		 * @default false
+		 * @readonly
 		 */
 		this.paused = options.paused !== undefined ? options.paused : false;
 
@@ -334,18 +336,21 @@ define([
 		/**
 		 * The current particles in the system.
 		 * @type {Array<ParticleData>}
+		 * @readonly
 		 */
 		this.particles = [];
 
 		/**
 		 * The particles in the system, sorted according to the sortMode.
 		 * @type {Array<ParticleData>}
+		 * @readonly
 		 */
 		this.particlesSorted = [];
 
 		/**
-		 * Current time in the system. Read only.
+		 * Current time in the system.
 		 * @type {number}
+		 * @readonly
 		 */
 		this.time = options.time || 0;
 		
@@ -358,6 +363,7 @@ define([
 		/**
 		 * Extents of the box, if box shape is used. Read only. To change it, see the method setBoxExtents().
 		 * @type {Vector3}
+		 * @readonly
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
 		
@@ -416,12 +422,14 @@ define([
 	/**
 	 * No sorting of particles.
 	 * @type {number}
+	 * @readonly	 
 	 */
 	ParticleSystemComponent.SORT_NONE = 1;
 
 	/**
 	 * Sort particles by camera distance.
 	 * @type {number}
+	 * @readonly
 	 */
 	ParticleSystemComponent.SORT_CAMERA_DISTANCE = 2;
 

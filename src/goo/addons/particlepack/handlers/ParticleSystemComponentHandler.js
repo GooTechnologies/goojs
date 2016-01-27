@@ -234,7 +234,9 @@ define([
 			component.rotationSpeedOverLifetime = createCurve(config.rotationSpeedOverLifetime, MathUtils.DEG_TO_RAD);
 			component.autoPlay = config.autoPlay;
 
-			component.stop();
+			if(!component.paused){
+				component.stop();
+			}
 
 			if(component.autoPlay){
 				component.play();
@@ -254,9 +256,13 @@ define([
 				component.texture = null;
 			}
 			
-			return RSVP.all(promises).then(function () {
+			if(promises.length){
+				return RSVP.all(promises).then(function () {
+					return component;
+				});
+			} else {
 				return component;
-			});
+			}
 		});
 	};
 
