@@ -32,11 +32,6 @@ define([
 		/**
 		 * @type {number}
 		 */
-		this.timeScale = 0;
-
-		/**
-		 * @type {number}
-		 */
 		this.emitTime = 0;
 
 		/**

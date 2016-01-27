@@ -237,7 +237,7 @@ define([
 				'    emitTime = mod(emitTime, loopAfter);',
 				'    #endif',
 
-				'    float unitEmitTime = emitTime / duration;',
+				'    float unitEmitTime = mod(emitTime / duration, 1.0);',
 				'    float emitRandom = timeInfo.z;',
 				'    float startSize = uStartSize * getStartSize(unitEmitTime, emitRandom);',
 				'    float lifeTime = timeInfo.x;',
