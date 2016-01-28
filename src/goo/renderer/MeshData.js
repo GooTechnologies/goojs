@@ -358,6 +358,12 @@ define([
 		}
 	};
 
+	MeshData.prototype.deIndex = function () {
+		console.log('de-index');
+
+		
+	};
+
 	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;

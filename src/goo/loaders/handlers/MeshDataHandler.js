@@ -2,12 +2,14 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/MeshData',
 	'goo/renderer/BufferUtils',
+	'goo/renderer/Capabilities',
 	'goo/util/PromiseUtils',
 	'goo/util/ArrayUtils'
 ], function (
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
+	Capabilities,
 	PromiseUtils,
 	ArrayUtils
 ) {
@@ -183,6 +185,11 @@ define([
 				throw new Error('Bounding volume was not BoundingBox');
 			}
 		}
+
+		if (!Capabilities.ElementIndexUInt && meshData.vertexCount > 65536) {
+			meshData.deIndex();
+		}
+
 		return meshData;
 	};
 
