@@ -80,7 +80,9 @@ define([
 			this.oldQueue = this.material.renderQueue;
 			this.oldOpacity = this.material.uniforms.opacity;
 
-			this.material.blendState.blending = 'CustomBlending';
+			if (this.material.blendState.blending === 'NoBlending') {
+				this.material.blendState.blending = 'TransparencyBlending';
+			}
 			if (this.material.renderQueue < 2000) {
 				this.material.renderQueue = 2000;
 			}
