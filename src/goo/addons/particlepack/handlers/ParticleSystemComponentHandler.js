@@ -10,7 +10,8 @@ define([
 	'goo/util/rsvp',
 	'goo/util/ObjectUtils',
 	'goo/math/Vector3',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/util/ParticleSystemUtils'
 ], function (
 	ComponentHandler,
 	ParticleSystemComponent,
@@ -23,7 +24,8 @@ define([
 	RSVP,
 	_,
 	Vector3,
-	MathUtils
+	MathUtils,
+	ParticleSystemUtils
 ) {
 	'use strict';
 
@@ -33,6 +35,7 @@ define([
 	 */
 	function ParticleSystemComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._cachedPresetTextures = {};
 		this._type = 'ParticleSystemComponent';
 	}
 
@@ -107,6 +110,7 @@ define([
 			sizeOverLifetime: constantCurve(1),
 			startAngle: constantCurve(0),
 			rotationSpeedOverLifetime: constantCurve(0),
+			texturePreset: 'Custom',
 			textureRef: null
 		});
 	};
@@ -244,14 +248,28 @@ define([
 
 			var promises = [];
 
+			var cachedTextures = that._cachedPresetTextures;
+
 			var textureRef = config.texture && config.texture.enabled && config.texture.textureRef;
-			if(textureRef){
+			if(textureRef && config.texturePreset === 'Custom'){
 				promises.push(that._load(textureRef, options).then(function (texture) {
 					component.texture = texture;
 					return component;
 				}).then(null, function (err) {
 					throw new Error('Error loading texture: ' + textureRef + ' - ' + err);
 				}));
+			} else if(config.texturePreset === 'Flare') {
+				cachedTextures.Flare = cachedTextures.Flare || ParticleSystemUtils.createFlareTexture(32)
+				component.texture = cachedTextures.Flare;
+			} else if(config.texturePreset === 'Splash') {
+				cachedTextures.Splash = cachedTextures.Splash || ParticleSystemUtils.createSplashTexture(32)
+				component.texture = cachedTextures.Splash;
+			} else if(config.texturePreset === 'Plankton') {
+				cachedTextures.Plankton = cachedTextures.Plankton || ParticleSystemUtils.createPlanktonTexture(32)
+				component.texture = cachedTextures.Plankton;
+			} else if(config.texturePreset === 'Snowflake') {
+				cachedTextures.Snowflake = cachedTextures.Snowflake || ParticleSystemUtils.createSnowflakeTexture(32)
+				component.texture = cachedTextures.Snowflake;
 			} else {
 				component.texture = null;
 			}
