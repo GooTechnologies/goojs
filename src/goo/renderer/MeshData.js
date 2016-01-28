@@ -158,6 +158,9 @@ define([
 		if (this.indexCount > 0) {
 			var indices = BufferUtils.createIndexBuffer(this.indexCount, this.vertexCount);
 			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
+		} else {
+			this.indexLengths = null;
+			this.indexModes = ['Triangles'];
 		}
 	};
 
@@ -359,9 +362,38 @@ define([
 	};
 
 	MeshData.prototype.deIndex = function () {
-		console.log('de-index');
+		var origI = this.getIndexBuffer();
+		if (!origI) {
+			return;
+		}
 
-		
+		var data = {};
+		var keys = Object.keys(this.attributeMap);
+		for (var ii = 0, l = keys.length; ii < l; ii++) {
+			var key = keys[ii];
+			var map = this.attributeMap[key];
+			var view = this.getAttributeBuffer(key);
+
+			var array = data[key] = [];
+			for (var i = 0; i < origI.length; i++) {
+				var index = origI[i];
+				for (var j = 0; j < map.count; j++) {
+					array[i * map.count + j] = view[index * map.count + j];
+				}
+			}
+		}
+
+		console.log(data);
+
+		this.rebuildData(this.indexCount, 0);
+
+		for (var ii = 0, l = keys.length; ii < l; ii++) {
+			var key = keys[ii];
+			var view = this.getAttributeBuffer(key);
+			view.set(data[key]);
+		}
+
+		this.setVertexDataUpdated();
 	};
 
 	//! AT: unused

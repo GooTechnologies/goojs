@@ -36,7 +36,8 @@ require([
 		material.setTexture('DIFFUSE_MAP', texture);
 	});
 
-	var sphere0 = new Sphere(32, 32);
+	var sphere0 = new Quad(1, 1);
+	// var sphere0 = new Sphere(3, 3);
 	var sphere1 = new Sphere(100, 100);
 	var sphere2 = new Sphere(140, 140);
 
@@ -44,8 +45,8 @@ require([
 	world.createEntity(sphere1, material, [0, 0, 0]).addToWorld();
 	world.createEntity(sphere2, material, [1.2, 0, 0]).addToWorld();
 
-	sphere1.deIndex();
-	sphere2.deIndex();
+	sphere0.deIndex();
+	// sphere2.deIndex();
 
 	V.process();
 });
