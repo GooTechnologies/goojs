@@ -21,7 +21,7 @@ require([
 	) {
 	'use strict';
 
-	V.describe('Alters all attributes but marks only position as dirty');
+	V.describe('Click any key to run deIndex() on the bottom row mesh datas. This converts the mesh into a vertex only mesh (no indices).');
 
 	var goo = V.initGoo({
 		showStats: true
@@ -36,17 +36,27 @@ require([
 		material.setTexture('DIFFUSE_MAP', texture);
 	});
 
-	var sphere0 = new Quad(1, 1);
-	// var sphere0 = new Sphere(3, 3);
+	var quad = new Quad(1, 1);
 	var sphere1 = new Sphere(100, 100);
 	var sphere2 = new Sphere(140, 140);
 
-	world.createEntity(sphere0, material, [-1.2, 0, 0]).addToWorld();
-	world.createEntity(sphere1, material, [0, 0, 0]).addToWorld();
-	world.createEntity(sphere2, material, [1.2, 0, 0]).addToWorld();
+	world.createEntity(quad, material, [-1.2, -0.8, 0]).addToWorld();
+	world.createEntity(sphere1, material, [0, -0.8, 0]).addToWorld();
+	world.createEntity(sphere2, material, [1.2, -0.8, 0]).addToWorld();
 
-	sphere0.deIndex();
-	// sphere2.deIndex();
+	world.createEntity(quad.clone(), material, [-1.2, 0.8, 0]).addToWorld();
+	world.createEntity(sphere1.clone(), material, [0, 0.8, 0]).addToWorld();
+	world.createEntity(sphere2.clone(), material, [1.2, 0.8, 0]).addToWorld();
+
+	document.addEventListener('keydown', function (evt) {
+		switch (evt.keyCode) {
+			default:
+				quad.deIndex();
+				sphere1.deIndex();
+				sphere2.deIndex();
+				break;
+		}
+	}, false);
 
 	V.process();
 });

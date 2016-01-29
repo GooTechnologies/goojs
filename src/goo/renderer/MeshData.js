@@ -159,6 +159,7 @@ define([
 			var indices = BufferUtils.createIndexBuffer(this.indexCount, this.vertexCount);
 			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		} else {
+			this.indexData = null;
 			this.indexLengths = null;
 			this.indexModes = ['Triangles'];
 		}
@@ -382,8 +383,6 @@ define([
 				}
 			}
 		}
-
-		console.log(data);
 
 		this.rebuildData(this.indexCount, 0);
 
