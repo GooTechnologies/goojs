@@ -30,16 +30,19 @@ define([
 
 		this.entities = [];
 		this._relativeTransform = new Matrix4();
-		this._camera = null;
 
-		this._settings = {
-			rolloffFactor: 0.4,
-			maxDistance: 100
-		};
 		this._pausedSounds = {};
+
+		this.rolloffFactor = 0.4:
+		this.maxDistance = 100;
+		this.dopplerFactor = 0.05;
+		this.volume = 1;
+		this.reverb = 0;
+		this.muted = false;
 
 		this.initialized = false;
 
+		this._camera = null;
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
 			that._camera = camConfig.camera;
@@ -114,6 +117,7 @@ define([
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
+	 * @param {boolean} [config.muted]
 	 */
 	SoundSystem.prototype.updateConfig = function (config) {
 		if (!AudioContext.isSupported()) {
@@ -121,20 +125,39 @@ define([
 			return;
 		}
 
+		if(config.maxDistance !== undefined){
+			this.maxDistance = config.maxDistance;
+		}
+		if(config.rolloffFactor !== undefined){
+			this.rolloffFactor = config.rolloffFactor;
+		}
+		if(config.dopplerFactor !== undefined){
+			this.dopplerFactor = config.dopplerFactor * 0.05; // 0.05 ??? I have no idea
+		}
+		if(config.volume !== undefined){
+			this.volume = MathUtils.clamp(config.volume, 0, 1);
+		}
+		if(config.reverb !== undefined){
+			this.reverb = MathUtils.clamp(config.reverb, 0, 1);
+		}
+		if(config.muted !== undefined){
+			this.muted = config.muted;
+		}
+		
+		this.update();
+	};
+
+	SoundSystem.prototype.update = function () {
+		var that = this;
 		this._scheduledUpdates.push(function () {
-			_.extend(this._settings, config);
 
-			if (!this.initialized) { this._initializeAudioNodes(); }
+			if (!that.initialized) {
+				that._initializeAudioNodes();
+			}
 
-			if (config.dopplerFactor !== undefined) {
-				this._listener.dopplerFactor = config.dopplerFactor * 0.05;
-			}
-			if (config.volume !== undefined) {
-				this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
-			}
-			if (config.reverb !== undefined) {
-				this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
-			}
+			that._listener.dopplerFactor = that.dopplerFactor;
+			that._outNode.gain.value = that.muted ? 0 : that.volume;
+			that._wetNode.gain.value = that.reverb;
 		});
 	};
 
@@ -179,6 +202,20 @@ define([
 				}
 			}
 		}
+	};
+
+	/**
+	 * Mute all sounds.
+	 */
+	SoundSystem.prototype.mute = function () {
+		this._muted = true;
+	};
+
+	/**
+	 * Unmute all sounds.
+	 */
+	SoundSystem.prototype.unmute = function () {
+		this._muted = false;
 	};
 
 	/**
@@ -251,10 +288,10 @@ define([
 			if (this._camera && !component._attachedToCamera) {
 				// Give the transform relative to the camera
 				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
-				component.process(this._settings, relativeTransform, tpf);
+				component.process(this, relativeTransform, tpf);
 			} else {
 				// Component is attached to camera.
-				component.process(this._settings, null, tpf);
+				component.process(this, null, tpf);
 			}
 		}
 	};
