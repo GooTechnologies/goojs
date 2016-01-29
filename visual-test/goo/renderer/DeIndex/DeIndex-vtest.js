@@ -48,7 +48,7 @@ require([
 	world.createEntity(sphere1.clone(), material, [0, 0.8, 0]).addToWorld();
 	world.createEntity(sphere2.clone(), material, [1.2, 0.8, 0]).addToWorld();
 
-	document.addEventListener('keydown', function (evt) {
+	var splitListener = function (evt) {
 		switch (evt.keyCode) {
 			default:
 				quad.deIndex();
@@ -56,7 +56,9 @@ require([
 				sphere2.deIndex();
 				break;
 		}
-	}, false);
+	};
+	document.addEventListener('keydown', splitListener, false);
+	document.addEventListener('touchstart', splitListener, false);
 
 	V.process();
 });
