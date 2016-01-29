@@ -59,6 +59,9 @@ define([
 	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
 	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
+	'goo/fsmpack/statemachine/actions/PlaySoundAction',
+	'goo/fsmpack/statemachine/actions/PauseSoundAction',
+	'goo/fsmpack/statemachine/actions/StopSoundAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
 
