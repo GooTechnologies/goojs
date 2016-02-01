@@ -29,15 +29,21 @@ define([
 		 * @type {Array<Sound>}
 		 */
 		this.sounds = [];
+
 		this._isPanned = true;
 		this._outDryNode = AudioContext.getContext().createGain();
 		this._outWetNode = AudioContext.getContext().createGain();
 		this.connectTo();
 		this._pannerNode = AudioContext.getContext().createPanner();
-
 		this._pannerNode.connect(this._outDryNode);
 		this._inNode = AudioContext.getContext().createGain();
 		this._inNode.connect(this._pannerNode);
+
+		// The 2D sounds are always in camera space
+		// Do we need another outDryNode for 2D?
+		this._inNode2d = AudioContext.getContext().createGain();
+		this._inNode2d.connect(this._outDryNode);
+
 		this._oldPosition = new Vector3();
 		this._position = new Vector3();
 		this._orientation = new Vector3();
@@ -60,7 +66,11 @@ define([
 	 */
 	SoundComponent.prototype.addSound = function (sound) {
 		if (this.sounds.indexOf(sound) === -1) {
-			sound.connectTo([this._inNode, this._outWetNode]);
+			if(sound.spatialize){
+				sound.connectTo([this._inNode, this._outWetNode]);
+			} else {
+				sound.connectTo([this._inNode2d]);
+			}
 			this.sounds.push(sound);
 		}
 	};
@@ -74,7 +84,12 @@ define([
 		if (idx > -1) {
 			sound.stop();
 			this.sounds.splice(idx, 1);
-			sound.disconnectFrom([this._inNode, this._outWetNode]);
+
+			if(sound.spatialize){
+				sound.disconnectFrom([this._inNode, this._outWetNode]);
+			} else {
+				sound.disconnectFrom([this._inNode2d]);
+			}
 		}
 	};
 
@@ -111,8 +126,8 @@ define([
 	/**
 	 * Updates the component valueas according to config
 	 * @param {Object} [config]
-	 * @param {number} config.volume
-	 * @param {number} config.reverb
+	 * @param {number} [config.volume] A number between 0 and 1.
+	 * @param {number} [config.reverb] A number between 0 and 1.
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
 		if (config.volume !== undefined) {

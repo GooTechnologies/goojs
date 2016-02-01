@@ -35,13 +35,19 @@ define([
 		this._outNode = AudioContext.getContext().createGain();
 		this.connectTo();
 
-		// Playback memory
+ 			// Playback memory
 		this._playStart = 0;
 		this._pausePos = 0;
 		//this._endTimer = null;
 		this._endPromise = null;
 
 		this._paused = false;
+
+		/**
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.spatialize = true;
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -203,6 +209,9 @@ define([
 			if (this._currentSource) {
 				this._currentSource.playbackRate.value = config.timeScale;
 			}
+		}
+		if (config.spatialize !== undefined) {
+			this.spatialize = config.spatialize;
 		}
 		if (this._buffer) {
 			this._clampInterval();
