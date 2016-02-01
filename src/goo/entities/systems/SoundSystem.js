@@ -1,28 +1,26 @@
 define([
 	'goo/entities/systems/System',
 	'goo/sound/AudioContext',
-	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtils',
 	'goo/math/Matrix4'
 ], function (
 	System,
 	AudioContext,
-	Vector3,
 	MathUtils,
 	SystemBus,
-	_,
 	Matrix4
 ) {
 	'use strict';
+	
 	/**
 	 * System responsible for sound.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
-	 * @extends {System}
+	 * @extends System
 	 */
 	function SoundSystem() {
-		if (!AudioContext.isSupported()) {
+		this._isSupported = AudioContext.isSupported();
+		if (!this._isSupported) {
 			console.warn('Cannot create SoundSystem, WebAudio not supported');
 			return;
 		}
@@ -32,17 +30,51 @@ define([
 		this._relativeTransform = new Matrix4();
 
 		this._pausedSounds = {};
-
-		this.rolloffFactor = 0.4:
-		this.maxDistance = 100;
-		this.dopplerFactor = 0.05;
-		this.volume = 1;
-		this.reverb = 0;
-		this.muted = false;
-
+		
 		this.initialized = false;
 
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.rolloffFactor = 0.4;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.maxDistance = 100;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.dopplerFactor = 0.05;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.volume = 1;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.reverb = 0;
+
+		/**
+		 * The muted state. To mute or unmute, see the mute() and unmute() methods.
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.muted = false;
+		this.reverbAudioBuffer = null;
+
+		this._reverbDirty = true;
+		this._dirty = true;
 		this._camera = null;
+
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
 			that._camera = camConfig.camera;
@@ -110,7 +142,7 @@ define([
 	};
 
 	/**
-	 * Update the environmental sound system properties. The settings are not applied immediately.
+	 * Update the environmental sound system properties. The settings are applied on the next process().
 	 * @param {Object} [config]
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
@@ -120,10 +152,7 @@ define([
 	 * @param {boolean} [config.muted]
 	 */
 	SoundSystem.prototype.updateConfig = function (config) {
-		if (!AudioContext.isSupported()) {
-			console.warn('WebAudio not supported');
-			return;
-		}
+		config = config || {};
 
 		if(config.maxDistance !== undefined){
 			this.maxDistance = config.maxDistance;
@@ -144,46 +173,16 @@ define([
 			this.muted = config.muted;
 		}
 		
-		this.update();
-	};
-
-	SoundSystem.prototype.update = function () {
-		var that = this;
-		this._scheduledUpdates.push(function () {
-
-			if (!that.initialized) {
-				that._initializeAudioNodes();
-			}
-
-			that._listener.dopplerFactor = that.dopplerFactor;
-			that._outNode.gain.value = that.muted ? 0 : that.volume;
-			that._wetNode.gain.value = that.reverb;
-		});
+		this._dirty = true;
 	};
 
 	/**
 	 * Set the reverb impulse response. The settings are not applied immediately.
-	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
+	 * @param {AudioBuffer|null} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function (audioBuffer) {
-		if (!AudioContext.isSupported()) {
-			console.warn('WebAudio not supported');
-			return;
-		}
-
-		this._scheduledUpdates.push(function () {
-			if (!this.initialized) {
-				this._initializeAudioNodes();
-			}
-
-			this._wetNode.disconnect();
-			if (!audioBuffer && this._wetNode) {
-				this._convolver.buffer = null;
-			} else {
-				this._convolver.buffer = audioBuffer;
-				this._wetNode.connect(this._outNode);
-			}
-		});
+		this.reverbAudioBuffer = audioBuffer;
+		this._reverbDirty = true;
 	};
 
 	/**
@@ -208,14 +207,16 @@ define([
 	 * Mute all sounds.
 	 */
 	SoundSystem.prototype.mute = function () {
-		this._muted = true;
+		this.muted = true;
+		this._dirty = true;
 	};
 
 	/**
 	 * Unmute all sounds.
 	 */
 	SoundSystem.prototype.unmute = function () {
-		this._muted = false;
+		this.muted = false;
+		this._dirty = true;
 	};
 
 	/**
@@ -256,20 +257,31 @@ define([
 	};
 
 	SoundSystem.prototype.process = function (entities, tpf) {
-		if (!AudioContext.isSupported()) {
-			// This should never happen because system shouldn't process
-			return;
-		}
-		if (entities.length === 0) {
+		if (!this._isSupported || entities.length === 0) {
 			return;
 		}
 
-		while (this._scheduledUpdates.length) {
-			var thunk = this._scheduledUpdates.shift();
-			thunk.call(this);
+		if (!this.initialized) {
+			this._initializeAudioNodes();
 		}
 
-		if (!this.initialized) { this._initializeAudioNodes(); }
+		if(this._reverbDirty){
+			this._wetNode.disconnect();
+			if (!this.reverbAudioBuffer && this._wetNode) {
+				this._convolver.buffer = null;
+			} else {
+				this._convolver.buffer = this.reverbAudioBuffer;
+				this._wetNode.connect(this._outNode);
+			}
+			this._reverbDirty = false;
+		}
+
+		if(this._dirty){
+			this._listener.dopplerFactor = this.dopplerFactor;
+			this._outNode.gain.value = this.muted ? 0 : this.volume;
+			this._wetNode.gain.value = this.reverb;
+			this._dirty = false;
+		}
 
 		this.entities = entities;
 		var relativeTransform = this._relativeTransform;
