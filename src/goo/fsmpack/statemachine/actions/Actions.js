@@ -84,6 +84,7 @@ define([
 	'goo/fsmpack/statemachine/actions/ApplyForceAction',
 	'goo/fsmpack/statemachine/actions/ApplyTorqueAction',
 
+	'goo/fsmpack/statemachine/actions/SetRigidBodyPositionAction',
 	'goo/fsmpack/statemachine/actions/SetRigidBodyVelocityAction',
 	'goo/fsmpack/statemachine/actions/SetRigidBodyAngularVelocityAction',
 
