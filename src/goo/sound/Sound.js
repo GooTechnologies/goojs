@@ -49,6 +49,13 @@ define([
 		 */
 		this.spatialize = true;
 
+		/**
+		 * If true, it will start playing when the SoundSystem runs play().
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.autoPlay = false;
+
 		// #ifdef DEBUG
 		Object.seal(this);
 		// #endif
@@ -212,6 +219,9 @@ define([
 		}
 		if (config.spatialize !== undefined) {
 			this.spatialize = config.spatialize;
+		}
+		if (config.autoPlay !== undefined) {
+			this.autoPlay = config.autoPlay;
 		}
 		if (this._buffer) {
 			this._clampInterval();

@@ -73,6 +73,8 @@ define([
 			loop: false,
 			audioRefs: {},
 			volume: 1.0,
+			spatialize: false,
+			autoPlay: false,
 			name: 'A Sound'
 		});
 	};

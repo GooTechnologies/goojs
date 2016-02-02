@@ -24,6 +24,8 @@ define([
 
 		this.type = 'SoundComponent';
 
+		this._system = null;
+
 		/**
 		 * Current sounds in the entity. Add a sound using {@link SoundComponent#addSound}.
 		 * @type {Array<Sound>}
@@ -49,6 +51,8 @@ define([
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
+		
+		this._autoPlayDirty = false;
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -72,6 +76,7 @@ define([
 				sound.connectTo([this._inNode2d]);
 			}
 			this.sounds.push(sound);
+			this._autoPlayDirty = true;
 		}
 	};
 
@@ -138,6 +143,16 @@ define([
 		}
 	};
 
+	SoundComponent.prototype._autoPlaySounds = function () {
+		var sounds = this.sounds;
+		for (var i = 0; i < sounds.length; i++) {
+			var sound = sounds[i];
+			if (sound.autoPlay) {
+				sound.play();
+			}
+		}
+	};
+
 	/**
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
@@ -149,6 +164,11 @@ define([
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
+
+		if (this._autoPlayDirty && this._system && !this._system.passive) {
+			this._autoPlaySounds();
+			this._autoPlayDirty = false;
+		}
 
 		if (this._attachedToCamera || !mvMat) {
 			// The component is attached to the current camera.

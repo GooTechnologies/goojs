@@ -69,6 +69,7 @@ define([
 		 * @readonly
 		 */
 		this.muted = false;
+		
 		this.reverbAudioBuffer = null;
 
 		this._reverbDirty = true;
@@ -123,6 +124,8 @@ define([
 			dry: this._outNode,
 			wet: this._convolver
 		});
+
+		entity.soundComponent._system = this;
 	};
 
 	/**
@@ -138,6 +141,7 @@ define([
 				sounds[i].stop();
 			}
 			entity.soundComponent.connectTo();
+			entity.soundComponent._system = null;
 		}
 	};
 
@@ -238,9 +242,12 @@ define([
 	};
 
 	/**
-	 * Resumes playing of all sounds that were paused; an alias for `.resume`
+	 * Resumes playing of all sounds that were paused.
 	 */
-	SoundSystem.prototype.play = SoundSystem.prototype.resume;
+	SoundSystem.prototype.play = function(){
+		this.resume();
+		this.passive = false;
+	};
 
 	/**
 	 * Stopping the sound system and all sounds in scene
@@ -254,6 +261,7 @@ define([
 			}
 		}
 		this._pausedSounds = null;
+		this.passive = true;
 	};
 
 	SoundSystem.prototype.process = function (entities, tpf) {
