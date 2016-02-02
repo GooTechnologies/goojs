@@ -93,6 +93,10 @@ define([
 	'goo/fsmpack/statemachine/actions/SetCounterAction',
 	'goo/fsmpack/statemachine/actions/IncrementCounterAction',
 
+	'goo/fsmpack/statemachine/actions/MuteAction',
+	'goo/fsmpack/statemachine/actions/UnmuteAction',
+	'goo/fsmpack/statemachine/actions/ToggleMuteAction',
+
 	'goo/fsmpack/statemachine/actions/StartTimelineAction',
 	'goo/fsmpack/statemachine/actions/PauseTimelineAction',
 	'goo/fsmpack/statemachine/actions/StopTimelineAction',
