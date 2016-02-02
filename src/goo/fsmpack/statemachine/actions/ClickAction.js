@@ -31,7 +31,7 @@ define([
 			});
 		};
 		this.upListener = function (evt) {
-			if (!this.selected) {
+			if (!that.selected) {
 				return;
 			}
 
