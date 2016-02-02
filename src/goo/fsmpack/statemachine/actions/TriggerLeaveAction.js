@@ -27,7 +27,7 @@ define([
 	TriggerLeaveAction.external = {
 		name: 'TriggerLeave',
 		type: 'collision',
-		description: 'Transitions when a collider is leaving the trigger volume.',
+		description: 'Transitions when a collider is leaving the entity trigger collider. This action only works if the entity has a Collider Component.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
