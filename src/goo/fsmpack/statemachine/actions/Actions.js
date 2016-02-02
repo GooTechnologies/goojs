@@ -90,7 +90,12 @@ define([
 	'goo/fsmpack/statemachine/actions/CompareCounterAction',
 	'goo/fsmpack/statemachine/actions/CompareCountersAction',
 	'goo/fsmpack/statemachine/actions/SetCounterAction',
-	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction',
+
+	'goo/fsmpack/statemachine/actions/StartTimelineAction',
+	'goo/fsmpack/statemachine/actions/PauseTimelineAction',
+	'goo/fsmpack/statemachine/actions/StopTimelineAction',
+	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction'
 ], function (
 	_ // placeholder // what for?
 ) {
