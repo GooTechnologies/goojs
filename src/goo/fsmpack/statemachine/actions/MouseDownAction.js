@@ -27,9 +27,9 @@ define([
 	MouseDownAction.prototype.constructor = MouseDownAction;
 
 	MouseDownAction.external = {
-		name: 'Mouse Down',
+		name: 'Mouse Down / Touch Start',
 		type: 'controls',
-		description: 'Listens for a mouse button press and performs a transition',
+		description: 'Listens for a mousedown event (or touchstart) and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{

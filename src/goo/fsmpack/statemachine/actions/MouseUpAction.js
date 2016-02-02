@@ -27,9 +27,9 @@ define([
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
-		name: 'Mouse Up',
+		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouse button release and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{

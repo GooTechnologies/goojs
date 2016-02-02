@@ -27,9 +27,9 @@ define([
 	MouseMoveAction.prototype.constructor = MouseMoveAction;
 
 	MouseMoveAction.external = {
-		name: 'Mouse Move',
+		name: 'Mouse / Touch Move',
 		type: 'controls',
-		description: 'Listens for mouse movement and performs a transition',
+		description: 'Listens for mouse movement (mousemove) or touch movement (touchmove) and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
