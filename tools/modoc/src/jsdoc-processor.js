@@ -135,6 +135,13 @@ var compileComment = function (rawComment) {
 		if (!hasParamData(comment.param)) {
 			comment.param = [];
 		}
+
+		for (var pkey in comment.param) {
+			var param = comment.param[pkey];
+			if (param.name.indexOf('.') === -1) {
+				param.isTop = true;
+			}
+		}
 	}
 
 	copyTags.forEach(function (copyTag) {
