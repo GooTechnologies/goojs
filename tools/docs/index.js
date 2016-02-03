@@ -16,6 +16,19 @@ function stripId(id){
 	if(!id) return id;
 	return id.replace('<anonymous>~','').replace('()','');
 }
+function parseParams(params){
+	return params && params.length ? params.map(function(param){
+		if(!param.type){
+			console.warn('Warning: Parameter type not set for "' + param.name + '". Using "any" instead.');
+		}
+		return {
+			name: param.name,
+			type: param.type ? param.type.names[0] : 'any',
+			optional: param.optional
+		};
+	}) : [];
+}
+
 
 console.log('Parsing...');
 parse({
@@ -47,6 +60,7 @@ parse({
 			methods: [],
 			params: [],
 			staticProperties: [],
+			staticMethods: [],
 			private: true
 		};
 	});
@@ -69,17 +83,8 @@ parse({
 			return;
 		}
 
-		constructorItem.params.forEach(function(param){
-			if(!param.type){
-				console.warn('Warning: Parameter type not set for "' + param.name + '" in constructor for "' + constructorItem.name + '". Using "any" instead.');
-			}
-			classObject.params.push({
-				name: param.name,
-				type: param.type ? param.type.names[0] : 'any',
-				optional: param.optional
-			});
-		});
-
+		classObject.examples = constructorItem.examples ? constructorItem.examples.slice(0) : [];
+		classObject.params = parseParams(constructorItem.params);
 		classObject.description = constructorItem.description;
 	});
 
@@ -107,10 +112,19 @@ parse({
 			console.error('Error: class "' + stripId(propertyItem.memberof) + '" not found for static property "' + propertyItem.name + '"');
 			return;
 		}
-		classObject.staticProperties.push({
-			name: propertyItem.name,
-			type: propertyItem.type ? propertyItem.type.names[0] : ''
-		});
+		if(propertyItem.params || propertyItem.returns){
+			// static method
+			classObject.staticMethods.push({
+				name: propertyItem.name,
+				params: parseParams(propertyItem.params)
+			});
+		} else {
+			// static property
+			classObject.staticProperties.push({
+				name: propertyItem.name,
+				type: propertyItem.type ? propertyItem.type.names[0] : ''
+			});
+		}
 	});
 
 	// instance methods
@@ -124,12 +138,7 @@ parse({
 		}
 		classObject.methods.push({
 			name: methodItem.name,
-			params: methodItem.params ? methodItem.params.sort(sortByNameProperty).map(function(param){
-				return {
-					name: param.name,
-					type: param.type
-				};
-			}) : []
+			params: parseParams(methodItem.params)
 		});
 	});
 

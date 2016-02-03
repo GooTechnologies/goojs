@@ -5,6 +5,13 @@
 	<h1><%=c.name%></h1>
 	<p><%=c.description%></p>
 
+	<% if(c.examples.length){ %>
+		<h2>Examples</h2>
+		<% for(var i=0; i<c.examples.length; i++){ %>
+			<p><code><%=c.examples[i];%></code></p>
+		<% } %>
+	<% } %>
+
 	<h2>Constructor</h2><%
 
 	var params = [];
@@ -43,17 +50,25 @@
 		 %></ul>
 	<% } %>
 
-
 	<% if(c.methods.length){ %>
 		<h2>Methods</h2>
 		<ul>
 		<% for(var methodId in c.methods){
 			var method = c.methods[methodId];
-			%>	<li>.<%=method.name%>()</li>
+			%>	<li>.<%=method.name%>( <%=method.params.map(function(param){ return param.name }).join(' , ')%> )</li>
 		<% }
 		 %></ul>
 	<% } %>
 
+	<% if(c.staticMethods.length){ %>
+		<h2>Static Methods</h2>
+		<ul>
+		<% for(var id in c.staticMethods){
+			var method = c.staticMethods[id];
+			%>	<li><%=c.name%>.<%=method.name%> ( <%=method.params.map(function(param){ return param.name }).join(' , ')%> )</li>
+		<% }
+		 %></ul>
+	<% } %>
 <% } %>
 </body>
 </html>

@@ -4867,6 +4867,7 @@
     "longname": "<anonymous>~Matrix4",
     "name": "Matrix4",
     "kind": "constructor",
+    "description": "Matrix with 4x4 components.",
     "memberof": "<anonymous>~Matrix4",
     "params": [
       {
@@ -55744,7 +55745,6 @@
     "augments": [
       "Matrix"
     ],
-    "description": "Matrix with 4x4 components.",
     "memberof": "<anonymous>",
     "meta": {
       "lineno": 18,

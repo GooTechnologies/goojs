@@ -4,6 +4,8 @@
 	<h1>AbstractAnimationChannel</h1>
 	<p></p>
 
+	
+
 	<h2>Constructor</h2>
 	<p>AbstractAnimationChannel ( blendType , channelName , times )</p>
 	<ul>
@@ -20,12 +22,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>AbstractColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AbstractColliderComponent ( [settings] )</p>
@@ -52,18 +56,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getBodyEntity()</li>
-			<li>.updateWorldCollider()</li>
+			<li>.getBodyEntity(  )</li>
+			<li>.updateWorldCollider(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>AbstractPhysicsSystem</h1>
 	<p>Base class for physics systems.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AbstractPhysicsSystem (  )</p>
@@ -80,17 +86,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setGravity()</li>
+			<li>.setGravity( gravityVector )</li>
 		</ul>
 	
 
+	
 
 	<h1>AbstractRigidBodyComponent</h1>
 	<p>Base class for rigid bodies.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AbstractRigidBodyComponent (  )</p>
@@ -107,24 +115,26 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addJoint()</li>
-			<li>.destroy()</li>
-			<li>.destroyJoint()</li>
-			<li>.emitInitialized()</li>
-			<li>.initialize()</li>
-			<li>.initializeJoint()</li>
-			<li>.removeJoint()</li>
-			<li>.traverseColliders()</li>
+			<li>.addJoint( joint )</li>
+			<li>.destroy(  )</li>
+			<li>.destroyJoint( joint )</li>
+			<li>.emitInitialized( entity )</li>
+			<li>.initialize(  )</li>
+			<li>.initializeJoint( entity , joint , system )</li>
+			<li>.removeJoint( joint )</li>
+			<li>.traverseColliders( callback , entity )</li>
 		</ul>
 	
 
+	
 
 	<h1>Action</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Action ( id , settings )</p>
@@ -140,12 +150,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Ajax</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Ajax ( options , rootPath )</p>
@@ -161,20 +173,28 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._loadImage()</li>
-			<li>.clear()</li>
-			<li>.load()</li>
-			<li>.prefill()</li>
+			<li>._loadImage( url )</li>
+			<li>.clear(  )</li>
+			<li>.load( path , reload )</li>
+			<li>.prefill( bundle , clear )</li>
 		</ul>
 	
 
+	
 
 	<h1>AmmoComponent</h1>
 	<p>Adds Ammo physics to a Goo entity. Ammo is a powerful physics engine converted from the C language project Bullet. Use Ammo.js if you need to support any 3D shape (trimesh). Also see {@link AmmoSystem}.</p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var entity = world.createEntity(new Box(20, 10, 1));
+entity.setComponent(new AmmoComponent({ mass: 5 }));</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>AmmoComponent ( [settings] )</p>
@@ -198,12 +218,20 @@
 
 	
 
+	
 
 	
 
-
 	<h1>AmmoSystem</h1>
 	<p>Handles integration with Ammo.js. Depends on the global Ammo object, so load ammo.small.js using a script tag before using this system. Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld. See also {@link AmmoComponent}</p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var ammoSystem = new AmmoSystem({stepFrequency: 60});
+goo.world.setSystem(ammoSystem);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>AmmoSystem ( settings )</p>
@@ -223,12 +251,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>AnimationClip</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationClip ( [channels] , name )</p>
@@ -244,19 +274,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addChannel()</li>
-			<li>.findChannelByName()</li>
-			<li>.removeChannel()</li>
+			<li>.addChannel( channel )</li>
+			<li>.findChannelByName( channelName )</li>
+			<li>.removeChannel( channel )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationClipHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationClipHandler ( getConfig , updateObject , world )</p>
@@ -274,17 +306,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._update()</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationClipInstance</h1>
 	<p>Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the instance, etc.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationClipInstance (  )</p>
@@ -296,18 +330,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getApplyTo()</li>
-			<li>.setTimeScale()</li>
+			<li>.getApplyTo( channel )</li>
+			<li>.setTimeScale( globalTime , scale )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationComponent ( pose )</p>
@@ -326,20 +362,22 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addLayer()</li>
-			<li>.getStates()</li>
-			<li>.getTransitions()</li>
-			<li>.transitionTo()</li>
+			<li>.addLayer( index , layer )</li>
+			<li>.getStates(  )</li>
+			<li>.getTransitions(  )</li>
+			<li>.transitionTo( allowDirectSwitch , callback , stateKey )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationComponentHandler ( getConfig , updateObject , world )</p>
@@ -357,17 +395,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationLayer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationLayer ( id , name )</p>
@@ -383,30 +423,32 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clearCurrentState()</li>
-			<li>.clone()</li>
-			<li>.getCurrentSourceData()</li>
-			<li>.getCurrentState()</li>
-			<li>.getStateById()</li>
-			<li>.getStateByName()</li>
-			<li>.getStates()</li>
-			<li>.getTransitions()</li>
-			<li>.setBlendWeight()</li>
-			<li>.setCurrentState()</li>
-			<li>.setCurrentStateById()</li>
-			<li>.setCurrentStateByName()</li>
-			<li>.setState()</li>
-			<li>.transitionTo()</li>
+			<li>.clearCurrentState(  )</li>
+			<li>.clone(  )</li>
+			<li>.getCurrentSourceData(  )</li>
+			<li>.getCurrentState(  )</li>
+			<li>.getStateById( id )</li>
+			<li>.getStateByName( name )</li>
+			<li>.getStates(  )</li>
+			<li>.getTransitions(  )</li>
+			<li>.setBlendWeight( weight )</li>
+			<li>.setCurrentState( finishCallback , globalTime , rewind , state )</li>
+			<li>.setCurrentStateById( callback , globalTime , id , rewind )</li>
+			<li>.setCurrentStateByName( globalTime , rewind , stateName )</li>
+			<li>.setState( state , stateKey )</li>
+			<li>.transitionTo( finishCallback , globalTime , state )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationLayersHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationLayersHandler ( getConfig , updateObject , world )</p>
@@ -424,18 +466,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._setInitialState()</li>
-			<li>._update()</li>
+			<li>._setInitialState( layer , name )</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationStateHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationStateHandler ( getConfig , updateObject , world )</p>
@@ -453,18 +497,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._parseClipSource()</li>
-			<li>._update()</li>
+			<li>._parseClipSource( clipSource , config )</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>AnimationSystem</h1>
 	<p>Processes all entities with animation components, updating the animations</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AnimationSystem (  )</p>
@@ -476,12 +522,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ArrayUtils</h1>
 	<p>Utilities for arrays and typed arrays</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ArrayUtils (  )</p>
@@ -493,20 +541,22 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.find()</li>
-			<li>.fromKeys()</li>
-			<li>.fromValues()</li>
-			<li>.getTypedArray()</li>
+			<li>.find( array , predicate )</li>
+			<li>.fromKeys( collection )</li>
+			<li>.fromValues( collection )</li>
+			<li>.getTypedArray( arrayBuffer , pointer )</li>
 		</ul>
 	
 
+	
 
 	<h1>AtlasNode</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AtlasNode ( h , w )</p>
@@ -522,12 +572,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>AxisAlignedCamControlScript</h1>
 	<p>Axis aligned camera control script</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>AxisAlignedCamControlScript (  )</p>
@@ -539,12 +591,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BallJoint</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BallJoint ( [settings] )</p>
@@ -571,12 +625,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>BasicControlScript</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BasicControlScript ( domElement )</p>
@@ -596,12 +652,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>BinaryLerpSource</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BinaryLerpSource ( blendKey , sourceA , sourceB )</p>
@@ -619,22 +677,24 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.blendFloatValues()</li>
-			<li>.combineSourceData()</li>
-			<li>.isActive()</li>
-			<li>.resetClips()</li>
-			<li>.setTime()</li>
-			<li>.setTimeScale()</li>
+			<li>.blendFloatValues( blendWeight , dataA , dataB , key , rVal )</li>
+			<li>.combineSourceData( blendWeight , sourceAData , sourceBData , store )</li>
+			<li>.isActive(  )</li>
+			<li>.resetClips( globalStartTime )</li>
+			<li>.setTime( globalTime )</li>
+			<li>.setTimeScale( timeScale )</li>
 		</ul>
 	
 
+	
 
 	<h1>BloomPass</h1>
 	<p>Bloom post effect.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BloomPass (  )</p>
@@ -646,12 +706,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BlurPass</h1>
 	<p>Blur post effect.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BlurPass (  )</p>
@@ -663,12 +725,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BoundingBox</h1>
 	<p>Defines an axis-aligned cube that defines a container for a group of vertices of a particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. A typical usage is to allow the class define the center and radius by calling either containAABB or averagePoints. A call to computeFramePoint in turn calls containAABB.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingBox (  )</p>
@@ -680,19 +744,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.containsPoint()</li>
-			<li>.copy()</li>
+			<li>.clone(  )</li>
+			<li>.containsPoint( point )</li>
+			<li>.copy( source )</li>
 		</ul>
 	
 
+	
 
 	<h1>BoundingSphere</h1>
 	<p>BoundingSphere defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This sphere defines a radius and a center. A typical usage is to allow the class define the center and radius by calling either containAABB or averagePoints. A call to computeFramePoint in turn calls containAABB.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingSphere (  )</p>
@@ -704,19 +770,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.containsPoint()</li>
-			<li>.copy()</li>
+			<li>.clone(  )</li>
+			<li>.containsPoint( point )</li>
+			<li>.copy( source )</li>
 		</ul>
 	
 
+	
 
 	<h1>BoundingSphereOcclusionChecker</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingSphereOcclusionChecker ( renderer )</p>
@@ -730,20 +798,22 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._isCoordinateInsideScreen()</li>
-			<li>._isOccluded()</li>
-			<li>._isSSAABBScanlineOccluded()</li>
-			<li>.occlusionCull()</li>
+			<li>._isCoordinateInsideScreen( coordinate )</li>
+			<li>._isOccluded( color , coordinate , nearestDepth )</li>
+			<li>._isSSAABBScanlineOccluded(  )</li>
+			<li>.occlusionCull( cameraNearZInWorld , cameraProjectionMatrix , cameraViewMatrix , entity )</li>
 		</ul>
 	
 
+	
 
 	<h1>BoundingTree</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingTree ( boundType )</p>
@@ -757,12 +827,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BoundingUpdateSystem</h1>
 	<p>Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingUpdateSystem (  )</p>
@@ -774,12 +846,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BoundingVolume</h1>
 	<p>Base class for boundings</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingVolume (  )</p>
@@ -796,17 +870,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.copy()</li>
+			<li>.copy( source )</li>
 		</ul>
 	
 
+	
 
 	<h1>BoundingVolumeMeshBuilder</h1>
 	<p>Provides methods for building bounding volume debug meshes</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoundingVolumeMeshBuilder (  )</p>
@@ -818,12 +894,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Box</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Box ( [height] , [length] , [textureMode] , [tileX] , [tileY] , [width] )</p>
@@ -862,18 +940,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Box2DComponent</h1>
 	<p>Box2DComponent.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Box2DComponent (  )</p>
@@ -885,12 +965,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Box2DSystem</h1>
 	<p>Physics simulation using Box2D. Depends on the global Box2D object. Load box2d.js using a &amp;lt;script&amp;gt; tag before using this system</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Box2DSystem (  )</p>
@@ -902,12 +984,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>BoxCollider</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BoxCollider ( [settings] )</p>
@@ -928,17 +1012,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>BufferData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BufferData ( data , target )</p>
@@ -954,19 +1040,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.destroy()</li>
-			<li>.setDataNeedsRefresh()</li>
-			<li>.setDataUsage()</li>
+			<li>.destroy( context )</li>
+			<li>.setDataNeedsRefresh(  )</li>
+			<li>.setDataUsage( dataUsage )</li>
 		</ul>
 	
 
+	
 
 	<h1>BufferUtils</h1>
 	<p>Utility for creating index buffers of appropriate type</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>BufferUtils (  )</p>
@@ -978,18 +1066,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.cloneTypedArray()</li>
-			<li>.createIndexBuffer()</li>
+			<li>.cloneTypedArray( source )</li>
+			<li>.createIndexBuffer( indexCount , vertexCount )</li>
 		</ul>
 	
 
+	
 
 	<h1>Bus</h1>
 	<p>A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Bus (  )</p>
@@ -1001,23 +1091,25 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addListener()</li>
-			<li>.emit()</li>
-			<li>.getLastMessageOn()</li>
-			<li>.removeAllOnChannel()</li>
-			<li>.removeChannelAndChildren()</li>
-			<li>.removeListener()</li>
-			<li>.removeListenerFromAllChannels()</li>
+			<li>.addListener( callback , channelName , retrieveLatestEmit )</li>
+			<li>.emit( channels , data , storeEmit )</li>
+			<li>.getLastMessageOn( channelName )</li>
+			<li>.removeAllOnChannel( channelName )</li>
+			<li>.removeChannelAndChildren( channelName )</li>
+			<li>.removeListener( callbackToRemove , channelName )</li>
+			<li>.removeListenerFromAllChannels( callbackToRemove )</li>
 		</ul>
 	
 
+	
 
 	<h1>ButtonScript</h1>
 	<p>Attaches mouse events to an entity.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ButtonScript (  )</p>
@@ -1029,12 +1121,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Camera</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Camera ( [aspect] , [far] , [fov] , [near] )</p>
@@ -1063,47 +1157,49 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.checkInverseModelView()</li>
-			<li>.checkInverseModelViewProjection()</li>
-			<li>.checkModelView()</li>
-			<li>.checkModelViewProjection()</li>
-			<li>.checkProjection()</li>
-			<li>.contains()</li>
-			<li>.copy()</li>
-			<li>.getFrustumCoordinates()</li>
-			<li>.getNormalizedDeviceCoordinates()</li>
-			<li>.getPickRay()</li>
-			<li>.getProjectionMatrix()</li>
-			<li>.getScreenCoordinates()</li>
-			<li>.getViewInverseMatrix()</li>
-			<li>.getViewMatrix()</li>
-			<li>.getViewProjectionInverseMatrix()</li>
-			<li>.getViewProjectionMatrix()</li>
-			<li>.getWorldCoordinates()</li>
-			<li>.getWorldPosition()</li>
-			<li>.lookAt()</li>
-			<li>.normalize()</li>
-			<li>.onFrameChange()</li>
-			<li>.onFrustumChange()</li>
-			<li>.pack()</li>
-			<li>.setFrame()</li>
-			<li>.setFrustum()</li>
-			<li>.setFrustumPerspective()</li>
-			<li>.setProjectionMode()</li>
-			<li>.setToObliqueMatrix()</li>
-			<li>.update()</li>
-			<li>.updateModelViewMatrix()</li>
-			<li>.updateProjectionMatrix()</li>
+			<li>.checkInverseModelView(  )</li>
+			<li>.checkInverseModelViewProjection(  )</li>
+			<li>.checkModelView(  )</li>
+			<li>.checkModelViewProjection(  )</li>
+			<li>.checkProjection(  )</li>
+			<li>.contains( bound )</li>
+			<li>.copy( source )</li>
+			<li>.getFrustumCoordinates( store , worldPos )</li>
+			<li>.getNormalizedDeviceCoordinates( store , worldPos )</li>
+			<li>.getPickRay( screenHeight , screenWidth , screenX , screenY , store )</li>
+			<li>.getProjectionMatrix(  )</li>
+			<li>.getScreenCoordinates( screenHeight , screenWidth , store , worldPos )</li>
+			<li>.getViewInverseMatrix(  )</li>
+			<li>.getViewMatrix(  )</li>
+			<li>.getViewProjectionInverseMatrix(  )</li>
+			<li>.getViewProjectionMatrix(  )</li>
+			<li>.getWorldCoordinates( screenHeight , screenWidth , screenX , screenY , store , zDepth )</li>
+			<li>.getWorldPosition( screenHeight , screenWidth , screenX , screenY , store , zDepth )</li>
+			<li>.lookAt( pos , worldUpVector )</li>
+			<li>.normalize(  )</li>
+			<li>.onFrameChange(  )</li>
+			<li>.onFrustumChange(  )</li>
+			<li>.pack( sceneBounds )</li>
+			<li>.setFrame( direction , left , location , up )</li>
+			<li>.setFrustum( bottom , far , left , near , right , top )</li>
+			<li>.setFrustumPerspective( aspect , far , fov , near )</li>
+			<li>.setProjectionMode( projectionMode )</li>
+			<li>.setToObliqueMatrix( clipPlane )</li>
+			<li>.update(  )</li>
+			<li>.updateModelViewMatrix(  )</li>
+			<li>.updateProjectionMatrix(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>CameraComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CameraComponent ( camera )</p>
@@ -1125,18 +1221,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setUpVector()</li>
-			<li>.updateCamera()</li>
+			<li>.setUpVector( axisId )</li>
+			<li>.updateCamera( transform )</li>
 		</ul>
 	
 
+	
 
 	<h1>CameraComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CameraComponentHandler ( getConfig , updateObject , world )</p>
@@ -1154,17 +1252,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>CameraSystem</h1>
 	<p>Updates cameras/cameracomponents with their transform component transforms</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CameraSystem (  )</p>
@@ -1176,17 +1276,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.findMainCamera()</li>
+			<li>.findMainCamera(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>CannonBoxColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonBoxColliderComponent ( [settings] )</p>
@@ -1202,12 +1304,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CannonCylinderColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonCylinderColliderComponent ( [settings] )</p>
@@ -1229,12 +1333,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CannonDistanceJointComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonDistanceJointComponent ( [settings] )</p>
@@ -1252,12 +1358,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CannonPlaneColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonPlaneColliderComponent ( [settings] )</p>
@@ -1271,12 +1379,28 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CannonRigidbodyComponent</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>world.setSystem(new CannonSystem());
+var entity = world.createEntity();
+var rigidBodyComponent = new CannonRigidBodyComponent({
+  mass: 1
+});
+entity.setComponent(rigidBodyComponent);
+var boxColliderComponent = new CannonBoxColliderComponent({
+  halfExtents: new Vector3(1, 1, 1)
+});
+entity.setComponent(boxColliderComponent);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>CannonRigidbodyComponent ( [settings] )</p>
@@ -1292,21 +1416,23 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getCollider()</li>
-			<li>.setAngularVelocity()</li>
-			<li>.setForce()</li>
-			<li>.setPosition()</li>
-			<li>.setVelocity()</li>
+			<li>.getCollider(  )</li>
+			<li>.setAngularVelocity( angularVelocity )</li>
+			<li>.setForce( force )</li>
+			<li>.setPosition( position )</li>
+			<li>.setVelocity( velocity )</li>
 		</ul>
 	
 
+	
 
 	<h1>CannonSphereColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonSphereColliderComponent ( [settings] )</p>
@@ -1322,12 +1448,23 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CannonSystem</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var cannonSystem = new CannonSystem({
+    stepFrequency: 60,
+    gravity: new Vector3(0, -10, 0)
+});
+goo.world.setSystem(cannonSystem);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>CannonSystem ( [settings] )</p>
@@ -1347,17 +1484,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setBroadphaseAlgorithm()</li>
+			<li>.setBroadphaseAlgorithm( algorithm )</li>
 		</ul>
 	
 
+	
 
 	<h1>CannonTerrainColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CannonTerrainColliderComponent ( [settings] )</p>
@@ -1375,12 +1514,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>CanvasUtils</h1>
 	<p>Provides useful canvas-related methods</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CanvasUtils (  )</p>
@@ -1392,20 +1533,22 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getMatrixFromCanvas()</li>
-			<li>.loadCanvasFromPath()</li>
-			<li>.renderSvgToCanvas()</li>
-			<li>.svgDataToImage()</li>
+			<li>.getMatrixFromCanvas( canvas )</li>
+			<li>.loadCanvasFromPath( callback , canvasPath , options , options.destHeight , options.destWidth , options.destX , options.destY , options.height , options.resizeToFit , options.sourceHeight , options.sourceWidth , options.sourceX , options.sourceY , options.width )</li>
+			<li>.renderSvgToCanvas( callback , options , svgSource )</li>
+			<li>.svgDataToImage( data )</li>
 		</ul>
 	
 
+	
 
 	<h1>Capabilities</h1>
 	<p>Enabled and stores webgl extensions and capabilities</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Capabilities (  )</p>
@@ -1417,18 +1560,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getCapabilitiesString()</li>
-			<li>.init()</li>
+			<li>.getCapabilitiesString(  )</li>
+			<li>.init( context )</li>
 		</ul>
 	
 
+	
 
 	<h1>ClipSource</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ClipSource ( [channelNames] , clip , [filter] )</p>
@@ -1446,18 +1591,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.setFilter()</li>
+			<li>.clone(  )</li>
+			<li>.setFilter( channelNames , filter )</li>
 		</ul>
 	
 
+	
 
 	<h1>Collider</h1>
 	<p>Base class for Colliders.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Collider (  )</p>
@@ -1469,17 +1616,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ColliderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ColliderComponent ( [settings] )</p>
@@ -1503,18 +1652,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.destroy()</li>
-			<li>.initialize()</li>
+			<li>.destroy(  )</li>
+			<li>.initialize(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ColliderComponentHandler</h1>
 	<p>For handling loading of collider components</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ColliderComponentHandler (  )</p>
@@ -1526,18 +1677,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._remove()</li>
-			<li>.update()</li>
+			<li>._remove( ref )</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>ColliderSystem</h1>
 	<p>Processes all entities with collider components, making sure they are up to date.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ColliderSystem (  )</p>
@@ -1549,12 +1702,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Component</h1>
 	<p>Base class/module for all components.See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Component (  )</p>
@@ -1571,12 +1726,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>ComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ComponentHandler ( getConfig , updateObject , world )</p>
@@ -1594,19 +1751,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._registerClass()</li>
-			<li>.getHandler()</li>
-			<li>.update()</li>
+			<li>._registerClass( klass , type )</li>
+			<li>.getHandler( type )</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>Composer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Composer ( renderTarget )</p>
@@ -1620,18 +1779,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.deallocateBuffers()</li>
-			<li>.destroy()</li>
+			<li>.deallocateBuffers( renderer )</li>
+			<li>.destroy( renderer )</li>
 		</ul>
 	
 
+	
 
 	<h1>Cone</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Cone ( [height] , [radialSamples] , [radius] )</p>
@@ -1649,18 +1810,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ConfigHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ConfigHandler ( getConfig , updateObject , world )</p>
@@ -1678,19 +1841,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._registerClass()</li>
-			<li>.getHandler()</li>
-			<li>.update()</li>
+			<li>._registerClass( klass , type )</li>
+			<li>.getHandler( type )</li>
+			<li>.update( config , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>ConstantCurve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ConstantCurve ( [options] )</p>
@@ -1711,12 +1876,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>CssTransformComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CssTransformComponent ( domElement , faceCamera )</p>
@@ -1739,12 +1906,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>Curve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Curve ( [options] )</p>
@@ -1768,23 +1937,25 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.getIntegralValueAt()</li>
-			<li>.getValueAt()</li>
-			<li>.getVec4IntegralValueAt()</li>
-			<li>.getVec4ValueAt()</li>
-			<li>.numberToGLSL()</li>
-			<li>.toGLSL()</li>
+			<li>.clone(  )</li>
+			<li>.getIntegralValueAt( lerpValue , t )</li>
+			<li>.getValueAt( lerpValue , t )</li>
+			<li>.getVec4IntegralValueAt( lerpValue , store , t )</li>
+			<li>.getVec4ValueAt( lerpValue , store , t )</li>
+			<li>.numberToGLSL( n )</li>
+			<li>.toGLSL( timeVariableName )</li>
 		</ul>
 	
 
+	
 
 	<h1>Cylinder</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Cylinder ( [height] , [radialSamples] , [radiusBottom] , [radiusTop] )</p>
@@ -1804,18 +1975,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>CylinderCollider</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>CylinderCollider ( [settings] )</p>
@@ -1839,17 +2012,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>DepthPass</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>DepthPass ( outShader , renderList )</p>
@@ -1865,12 +2040,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>DirectionalLight</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>DirectionalLight ( [color] )</p>
@@ -1889,12 +2066,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>Disk</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Disk ( [nSegments] , [pointiness] , [radius] )</p>
@@ -1912,18 +2091,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>DofPass</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>DofPass ( outShader , renderList )</p>
@@ -1939,12 +2120,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Dom3dComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Dom3dComponent ( domElement , settings )</p>
@@ -1965,12 +2148,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>Dom3dComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Dom3dComponentHandler ( getConfig , updateObject , world )</p>
@@ -1988,17 +2173,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>DoubleQuad</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>DoubleQuad ( [height] , [tileX] , [tileY] , [width] )</p>
@@ -2026,17 +2213,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuild()</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>DynamicLoader</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>DynamicLoader ( options )</p>
@@ -2056,21 +2245,23 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clear()</li>
-			<li>.getTypeForRef()</li>
-			<li>.load()</li>
-			<li>.preload()</li>
-			<li>.update()</li>
+			<li>.clear(  )</li>
+			<li>.getTypeForRef( ref )</li>
+			<li>.load( options , options.noCache , options.preloadBinaries , options.progressCallback , ref )</li>
+			<li>.preload( clear , configs )</li>
+			<li>.update( config , options , options.noCache , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>EdgeMap</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>EdgeMap ( edgeCount )</p>
@@ -2084,12 +2275,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Entity</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Entity ( [id] , [name] , world )</p>
@@ -2115,31 +2308,33 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addToWorld()</li>
-			<li>.clearAttribute()</li>
-			<li>.clearComponent()</li>
-			<li>.clearTag()</li>
-			<li>.getAttribute()</li>
-			<li>.getComponent()</li>
-			<li>.hasAttribute()</li>
-			<li>.hasComponent()</li>
-			<li>.hasTag()</li>
-			<li>.removeFromWorld()</li>
-			<li>.set()</li>
-			<li>.setAttribute()</li>
-			<li>.setComponent()</li>
-			<li>.setTag()</li>
-			<li>.toString()</li>
+			<li>.addToWorld( recursive )</li>
+			<li>.clearAttribute( attribute )</li>
+			<li>.clearComponent( type )</li>
+			<li>.clearTag( tag )</li>
+			<li>.getAttribute( attribute )</li>
+			<li>.getComponent( type )</li>
+			<li>.hasAttribute( attribute )</li>
+			<li>.hasComponent( type )</li>
+			<li>.hasTag( tag )</li>
+			<li>.removeFromWorld( recursive )</li>
+			<li>.set(  )</li>
+			<li>.setAttribute( attribute , value )</li>
+			<li>.setComponent( component )</li>
+			<li>.setTag( tag )</li>
+			<li>.toString(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>EntityCombiner</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>EntityCombiner ( gooWorld , [gridCount] , [keepEntities] , [removeOldData] )</p>
@@ -2159,17 +2354,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.combine()</li>
+			<li>.combine(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>EntityCounter</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>EntityCounter ( [skipFrames] )</p>
@@ -2183,17 +2380,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.inject()</li>
+			<li>.inject( goo )</li>
 		</ul>
 	
 
+	
 
 	<h1>EntityHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>EntityHandler ( getConfig , updateObject , world )</p>
@@ -2211,18 +2410,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._getHandler()</li>
-			<li>._update()</li>
+			<li>._getHandler( type )</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>EntityManager</h1>
 	<p>Main handler of all entities in the world.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>EntityManager (  )</p>
@@ -2239,24 +2440,26 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clear()</li>
-			<li>.containsEntity()</li>
-			<li>.getEntities()</li>
-			<li>.getEntityById()</li>
-			<li>.getEntityByIndex()</li>
-			<li>.getEntityByName()</li>
-			<li>.getTopEntities()</li>
-			<li>.size()</li>
+			<li>.clear(  )</li>
+			<li>.containsEntity( entity )</li>
+			<li>.getEntities(  )</li>
+			<li>.getEntityById( id )</li>
+			<li>.getEntityByIndex( index )</li>
+			<li>.getEntityByName( name )</li>
+			<li>.getTopEntities(  )</li>
+			<li>.size(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>FadeTransitionState</h1>
 	<p>A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start of the transition. This is best used with two clips that have similar motions.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FadeTransitionState (  )</p>
@@ -2268,18 +2471,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.postUpdate()</li>
-			<li>.update()</li>
+			<li>.postUpdate( layer )</li>
+			<li>.update( globalTime , layer )</li>
 		</ul>
 	
 
+	
 
 	<h1>FilledPolygon</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FilledPolygon ( indices , verts )</p>
@@ -2295,17 +2500,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuild()</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>FlatWaterRenderer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FlatWaterRenderer ( [settings] )</p>
@@ -2329,12 +2536,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>FrozenClipSource</h1>
 	<p>A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often for purposes of transitioning between two unrelated animations.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FrozenClipSource ( frozenTime , source )</p>
@@ -2350,22 +2559,24 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.getSourceData()</li>
-			<li>.isActive()</li>
-			<li>.resetClips()</li>
-			<li>.setTime()</li>
-			<li>.setTimeScale()</li>
+			<li>.clone(  )</li>
+			<li>.getSourceData(  )</li>
+			<li>.isActive(  )</li>
+			<li>.resetClips(  )</li>
+			<li>.setTime(  )</li>
+			<li>.setTimeScale(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>FrozenTransitionState</h1>
 	<p>A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target state moves forward in time during the blend as normal.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FrozenTransitionState (  )</p>
@@ -2377,19 +2588,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.postUpdate()</li>
-			<li>.resetClips()</li>
-			<li>.update()</li>
+			<li>.postUpdate( layer )</li>
+			<li>.resetClips( globalTime )</li>
+			<li>.update( globalTime )</li>
 		</ul>
 	
 
+	
 
 	<h1>FullscreenPass</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>FullscreenPass ( shader )</p>
@@ -2403,12 +2616,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>GamepadComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>GamepadComponent ( gamepadIndex )</p>
@@ -2422,12 +2637,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>GamepadData</h1>
 	<p>Used for storing derived data from gamepads</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>GamepadData (  )</p>
@@ -2439,17 +2656,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.calculateStickDirection()</li>
+			<li>.calculateStickDirection( dirVector , x , y )</li>
 		</ul>
 	
 
+	
 
 	<h1>GamepadSystem</h1>
 	<p>System for gamepads</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>GamepadSystem (  )</p>
@@ -2461,12 +2680,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Gizmo</h1>
 	<p>Gizmo.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Gizmo (  )</p>
@@ -2478,19 +2699,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setSnap()</li>
-			<li>.updateRenderableTransform()</li>
-			<li>.updateTransforms()</li>
+			<li>.setSnap( snap )</li>
+			<li>.updateRenderableTransform( renderable )</li>
+			<li>.updateTransforms(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>GooRunner</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>GooRunner ( [parameters] )</p>
@@ -2541,25 +2764,32 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addEventListener()</li>
-			<li>.clear()</li>
-			<li>.pick()</li>
-			<li>.pickSync()</li>
-			<li>.removeEventListener()</li>
-			<li>.startGameLoop()</li>
-			<li>.stopGameLoop()</li>
-			<li>.takeSnapshot()</li>
-			<li>.triggerEvent()</li>
+			<li>.addEventListener( callback , callback.event.depth , callback.event.domEvent , callback.event.entity , callback.event.id , callback.event.intersection , callback.event.type , callback.event.x , callback.event.y , type )</li>
+			<li>.clear(  )</li>
+			<li>.pick( callback , skipUpdateBuffer , x , y )</li>
+			<li>.pickSync( skipUpdateBuffer , x , y )</li>
+			<li>.removeEventListener( callback , type )</li>
+			<li>.startGameLoop(  )</li>
+			<li>.stopGameLoop(  )</li>
+			<li>.takeSnapshot( callback )</li>
+			<li>.triggerEvent( evt , evt.domEvent , evt.entity , evt.x , evt.y , type )</li>
 		</ul>
 	
 
+	
 
 	<h1>Grid</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var meshData = new Grid( 10, 10, 10, 10);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Grid ( [height] , [width] , [xSegments] , [ySegments] )</p>
@@ -2579,17 +2809,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>GridRenderSystem</h1>
 	<p>Renders entities/renderables using a configurable partitioner for culling</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>GridRenderSystem (  )</p>
@@ -2601,12 +2833,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>HeightMapBoundingScript</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>HeightMapBoundingScript ( matrixData )</p>
@@ -2620,17 +2854,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getMatrixData()</li>
+			<li>.getMatrixData(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>HingeJoint</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>HingeJoint ( [settings] )</p>
@@ -2660,12 +2896,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>HtmlComponent</h1>
 	<p>HTML Component.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>HtmlComponent (  )</p>
@@ -2684,12 +2922,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>HtmlComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>HtmlComponentHandler ( getConfig , updateObject , world )</p>
@@ -2707,17 +2947,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>InterpolatedFloatChannel</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>InterpolatedFloatChannel ( channelName , times , values )</p>
@@ -2735,17 +2977,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getData()</li>
+			<li>.getData( index , store )</li>
 		</ul>
 	
 
+	
 
 	<h1>Joint</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Joint ( name )</p>
@@ -2759,12 +3003,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>JointChannel</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>JointChannel ( jointIndex , jointName , rotations , scales , times , translations )</p>
@@ -2793,17 +3039,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getData()</li>
+			<li>.getData( index , store )</li>
 		</ul>
 	
 
+	
 
 	<h1>JointData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>JointData ( [source] )</p>
@@ -2817,18 +3065,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.blend()</li>
-			<li>.set()</li>
+			<li>.blend( blendTo , blendWeight , store )</li>
+			<li>.set( jointData )</li>
 		</ul>
 	
 
+	
 
 	<h1>LayerLerpBlender</h1>
 	<p>A layer blender that uses linear interpolation to merge the results of two layers.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LayerLerpBlender (  )</p>
@@ -2840,17 +3090,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getBlendedSourceData()</li>
+			<li>.getBlendedSourceData(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>LensFlareScript</h1>
 	<p>This script makes an entity shine with some lensflare effect.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LensFlareScript (  )</p>
@@ -2862,12 +3114,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>LerpCurve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LerpCurve ( [options] )</p>
@@ -2891,12 +3145,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>Light</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Light ( [color] )</p>
@@ -2921,12 +3177,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>LightComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LightComponent ( light )</p>
@@ -2946,12 +3204,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>LightComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LightComponentHandler ( getConfig , updateObject , world )</p>
@@ -2969,17 +3229,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>LineRenderSystem</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LineRenderSystem ( world )</p>
@@ -2998,20 +3260,22 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._drawAxisLine()</li>
-			<li>.drawAABox()</li>
-			<li>.drawCross()</li>
-			<li>.drawLine()</li>
+			<li>._drawAxisLine( color , endDataIndex , endPolarity , start , startDataIndex , startEndDelta , startPolarity , transformMatrix )</li>
+			<li>.drawAABox( color , max , min , transformMatrix )</li>
+			<li>.drawCross( color , position , size )</li>
+			<li>.drawLine( color , end , start )</li>
 		</ul>
 	
 
+	
 
 	<h1>LineRenderer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LineRenderer ( world )</p>
@@ -3025,21 +3289,23 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._addLine()</li>
-			<li>._clear()</li>
-			<li>._manageRenderList()</li>
-			<li>._remove()</li>
-			<li>._updateVertexData()</li>
+			<li>._addLine( color , end , start )</li>
+			<li>._clear(  )</li>
+			<li>._manageRenderList( renderList )</li>
+			<li>._remove(  )</li>
+			<li>._updateVertexData(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>LinearCurve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LinearCurve ( [options] )</p>
@@ -3063,17 +3329,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.fromStartEnd()</li>
+			<li>.fromStartEnd( endValue , startValue )</li>
 		</ul>
 	
 
+	
 
 	<h1>LogicComponent</h1>
 	<p>A component that embeds a LogicLayer and processes it every frame.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>LogicComponent (  )</p>
@@ -3085,12 +3353,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>MachineHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MachineHandler ( getConfig , updateObject , world )</p>
@@ -3108,12 +3378,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ManagedTransformSource</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ManagedTransformSource ( [sourceName] )</p>
@@ -3127,24 +3399,26 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.getRotation()</li>
-			<li>.getScale()</li>
-			<li>.getTranslation()</li>
-			<li>.initFromClip()</li>
-			<li>.setRotation()</li>
-			<li>.setScale()</li>
-			<li>.setTranslation()</li>
+			<li>.clone(  )</li>
+			<li>.getRotation( channelName , store )</li>
+			<li>.getScale( channelName , store )</li>
+			<li>.getTranslation( channelName , store )</li>
+			<li>.initFromClip( clip , jointIndices )</li>
+			<li>.setRotation( channelName , rotation )</li>
+			<li>.setScale( channelName , scale )</li>
+			<li>.setTranslation( channelName , translation )</li>
 		</ul>
 	
 
+	
 
 	<h1>MarkerComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MarkerComponent ( entity )</p>
@@ -3158,12 +3432,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Material</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Material ( [name] , [shaderDefinition] )</p>
@@ -3193,26 +3469,28 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clearShaderCache()</li>
-			<li>.clone()</li>
-			<li>.createShader()</li>
-			<li>.getRenderQueue()</li>
-			<li>.getTexture()</li>
-			<li>.getTextureEntries()</li>
-			<li>.getTextures()</li>
-			<li>.removeTexture()</li>
-			<li>.setRenderQueue()</li>
-			<li>.setTexture()</li>
+			<li>.clearShaderCache(  )</li>
+			<li>.clone( options , options.shareTextures , options.shareUniforms )</li>
+			<li>.createShader( name , shaderDefinition )</li>
+			<li>.getRenderQueue(  )</li>
+			<li>.getTexture( name )</li>
+			<li>.getTextureEntries(  )</li>
+			<li>.getTextures(  )</li>
+			<li>.removeTexture( name )</li>
+			<li>.setRenderQueue( queue )</li>
+			<li>.setTexture( name , texture )</li>
 		</ul>
 	
 
+	
 
 	<h1>MaterialHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MaterialHandler ( getConfig , updateObject , world )</p>
@@ -3230,17 +3508,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._update()</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>Matrix</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Matrix ( cols , rows )</p>
@@ -3252,18 +3532,6 @@
 	
 	</ul>
 
-	
-		<h2>Static Properties</h2>
-		<ul>
-			<li>Matrix.add : add</li>
-			<li>Matrix.combine : combine</li>
-			<li>Matrix.copy : copy</li>
-			<li>Matrix.div : div</li>
-			<li>Matrix.equals : equals</li>
-			<li>Matrix.mul : mul</li>
-			<li>Matrix.sub : sub</li>
-			<li>Matrix.transpose : transpose</li>
-		</ul>
 	
 
 	
@@ -3287,12 +3555,26 @@
 		</ul>
 	
 
-
 	
 
+	
+		<h2>Static Methods</h2>
+		<ul>
+			<li>Matrix.add ( lhs , rhs , target )</li>
+			<li>Matrix.combine ( lhs , rhs , target )</li>
+			<li>Matrix.copy ( source , target )</li>
+			<li>Matrix.div ( lhs , rhs , target )</li>
+			<li>Matrix.equals ( lhs , rhs )</li>
+			<li>Matrix.mul ( lhs , rhs , target )</li>
+			<li>Matrix.sub ( lhs , rhs , target )</li>
+			<li>Matrix.transpose ( source , target )</li>
+		</ul>
+	
 
 	<h1>Matrix2</h1>
 	<p>Matrix with 2x2 components.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Matrix2 (  )</p>
@@ -3321,33 +3603,50 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.clone()</li>
-			<li>.copy()</li>
-			<li>.determinant()</li>
-			<li>.equals()</li>
-			<li>.invert()</li>
-			<li>.invert()</li>
-			<li>.isNormal()</li>
-			<li>.isOrthogonal()</li>
-			<li>.isOrthonormal()</li>
-			<li>.mul()</li>
-			<li>.mul2()</li>
-			<li>.scale()</li>
-			<li>.setArray()</li>
-			<li>.setIdentity()</li>
-			<li>.sub()</li>
-			<li>.transpose()</li>
+			<li>.add( rhs )</li>
+			<li>.clone(  )</li>
+			<li>.copy( rhs )</li>
+			<li>.determinant(  )</li>
+			<li>.equals( rhs )</li>
+			<li>.invert( source , target )</li>
+			<li>.invert(  )</li>
+			<li>.isNormal(  )</li>
+			<li>.isOrthogonal(  )</li>
+			<li>.isOrthonormal(  )</li>
+			<li>.mul( rhs )</li>
+			<li>.mul2( lhs , rhs )</li>
+			<li>.scale( scalar )</li>
+			<li>.setArray( rhsData )</li>
+			<li>.setIdentity(  )</li>
+			<li>.sub( rhs )</li>
+			<li>.transpose(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Matrix3</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>// Passing in no arguments
+var m1 = new Matrix3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+// Passing in a number Array
+var m2 = new Matrix3([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+
+// Passing in numbers
+var m3 = new Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+// Passing in an existing Matrix3
+var m4 = new Matrix3(m1); // m4 == (1, 0, 0, 0, 1, 0, 0, 0, 1)</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Matrix3 ( arguments )</p>
@@ -3381,43 +3680,45 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.clone()</li>
-			<li>.copy()</li>
-			<li>.copyMatrix4()</li>
-			<li>.copyQuaternion()</li>
-			<li>.determinant()</li>
-			<li>.equals()</li>
-			<li>.fromAngleNormalAxis()</li>
-			<li>.fromAngles()</li>
-			<li>.invert()</li>
-			<li>.invert()</li>
-			<li>.isNormal()</li>
-			<li>.isOrthogonal()</li>
-			<li>.isOrthonormal()</li>
-			<li>.lookAt()</li>
-			<li>.mul()</li>
-			<li>.mul2()</li>
-			<li>.multiplyDiagonalPost()</li>
-			<li>.rotateX()</li>
-			<li>.rotateY()</li>
-			<li>.rotateZ()</li>
-			<li>.scale()</li>
-			<li>.setArray()</li>
-			<li>.setIdentity()</li>
-			<li>.sub()</li>
-			<li>.toAngles()</li>
-			<li>.transpose()</li>
+			<li>.add( rhs )</li>
+			<li>.clone(  )</li>
+			<li>.copy( rhs )</li>
+			<li>.copyMatrix4( rhs )</li>
+			<li>.copyQuaternion( quaternion )</li>
+			<li>.determinant(  )</li>
+			<li>.equals( rhs )</li>
+			<li>.fromAngleNormalAxis( angle , x , y , z )</li>
+			<li>.fromAngles( pitch , roll , yaw )</li>
+			<li>.invert( source , target )</li>
+			<li>.invert(  )</li>
+			<li>.isNormal(  )</li>
+			<li>.isOrthogonal(  )</li>
+			<li>.isOrthonormal(  )</li>
+			<li>.lookAt( direction , up )</li>
+			<li>.mul( rhs )</li>
+			<li>.mul2( lhs , rhs )</li>
+			<li>.multiplyDiagonalPost( result , vec )</li>
+			<li>.rotateX( rad , store )</li>
+			<li>.rotateY( rad , store )</li>
+			<li>.rotateZ( rad , store )</li>
+			<li>.scale( scalar )</li>
+			<li>.setArray( rhsData )</li>
+			<li>.setIdentity(  )</li>
+			<li>.sub( rhs )</li>
+			<li>.toAngles( Vector3 )</li>
+			<li>.transpose(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Matrix4</h1>
-	<p></p>
+	<p>Matrix with 4x4 components.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Matrix4 ( arguments )</p>
@@ -3452,40 +3753,42 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.clone()</li>
-			<li>.copy()</li>
-			<li>.determinant()</li>
-			<li>.equals()</li>
-			<li>.getRotation()</li>
-			<li>.getScale()</li>
-			<li>.getTranslation()</li>
-			<li>.invert()</li>
-			<li>.invert()</li>
-			<li>.isNormal()</li>
-			<li>.isOrthogonal()</li>
-			<li>.isOrthonormal()</li>
-			<li>.mul()</li>
-			<li>.mul2()</li>
-			<li>.scale()</li>
-			<li>.setArray()</li>
-			<li>.setIdentity()</li>
-			<li>.setRotationFromQuaternion()</li>
-			<li>.setRotationFromVector()</li>
-			<li>.setScale()</li>
-			<li>.setTranslation()</li>
-			<li>.sub()</li>
-			<li>.transpose()</li>
+			<li>.add( rhs )</li>
+			<li>.clone(  )</li>
+			<li>.copy( rhs )</li>
+			<li>.determinant(  )</li>
+			<li>.equals( rhs )</li>
+			<li>.getRotation( store )</li>
+			<li>.getScale( store )</li>
+			<li>.getTranslation( store )</li>
+			<li>.invert( source , target )</li>
+			<li>.invert(  )</li>
+			<li>.isNormal(  )</li>
+			<li>.isOrthogonal(  )</li>
+			<li>.isOrthonormal(  )</li>
+			<li>.mul( rhs )</li>
+			<li>.mul2( lhs , rhs )</li>
+			<li>.scale( scalar )</li>
+			<li>.setArray( rhsData )</li>
+			<li>.setIdentity(  )</li>
+			<li>.setRotationFromQuaternion( quaternion )</li>
+			<li>.setRotationFromVector( angles )</li>
+			<li>.setScale( scale )</li>
+			<li>.setTranslation( translation )</li>
+			<li>.sub( rhs )</li>
+			<li>.transpose(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>MeshCollider</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MeshCollider ( [settings] )</p>
@@ -3509,17 +3812,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>MeshData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MeshData ( attributeMap , indexCount , vertexCount )</p>
@@ -3559,27 +3864,29 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.applyFunction()</li>
-			<li>.applyTransform()</li>
-			<li>.buildFlatMeshData()</li>
-			<li>.buildWireframeData()</li>
-			<li>.clone()</li>
-			<li>.createAttribute()</li>
-			<li>.defaultMap()</li>
-			<li>.destroy()</li>
-			<li>.getNormalsMeshData()</li>
-			<li>.rebuildData()</li>
-			<li>.setVertexDataUpdated()</li>
+			<li>.applyFunction( attributeName , fun )</li>
+			<li>.applyTransform( attributeName , transform )</li>
+			<li>.buildFlatMeshData(  )</li>
+			<li>.buildWireframeData(  )</li>
+			<li>.clone(  )</li>
+			<li>.createAttribute( count , normalized , type )</li>
+			<li>.defaultMap( types )</li>
+			<li>.destroy( context )</li>
+			<li>.getNormalsMeshData( size )</li>
+			<li>.rebuildData( indexCount , saveOldData , vertexCount )</li>
+			<li>.setVertexDataUpdated(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>MeshDataComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MeshDataComponent ( meshData )</p>
@@ -3601,19 +3908,21 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.computeBoundFromPoints()</li>
-			<li>.setModelBound()</li>
+			<li>.clone( options , options.shareMeshData )</li>
+			<li>.computeBoundFromPoints(  )</li>
+			<li>.setModelBound( autoCompute , modelBound )</li>
 		</ul>
 	
 
+	
 
 	<h1>MeshDataComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MeshDataComponentHandler ( getConfig , updateObject , world )</p>
@@ -3631,18 +3940,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._remove()</li>
-			<li>.update()</li>
+			<li>._remove( ref )</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>MeshRendererComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>MeshRendererComponentHandler ( getConfig , updateObject , world )</p>
@@ -3660,17 +3971,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>OccludeeComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>OccludeeComponent ( meshData , useBoundingBox )</p>
@@ -3686,12 +3999,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>OccludeeTriangleData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>OccludeeTriangleData ( parameters )</p>
@@ -3705,18 +4020,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addIndices()</li>
-			<li>.clear()</li>
+			<li>.addIndices( triangleIndices )</li>
+			<li>.clear(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>OccluderComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>OccluderComponent ( meshData )</p>
@@ -3730,12 +4047,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>OccluderTriangleData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>OccluderTriangleData ( parameters )</p>
@@ -3749,19 +4068,33 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addIndices()</li>
-			<li>.addVertex()</li>
-			<li>.setCountersToNewEntity()</li>
+			<li>.addIndices( triangleIndices )</li>
+			<li>.addVertex( array )</li>
+			<li>.setCountersToNewEntity( positionCount )</li>
 		</ul>
 	
 
+	
 
 	<h1>P2Component</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var entity = goo.world.createEntity(new Box());
+var p2comp = new P2Component({
+    shapes:[{
+        type: &#39;circle&#39;,
+        radius: 1
+    }],
+});
+entity.setComponent(p2comp);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>P2Component ( [options] )</p>
@@ -3797,12 +4130,23 @@
 
 	
 
+	
 
 	
 
-
 	<h1>P2System</h1>
 	<p>Handles integration with p2.js. Depends on the global p2 object, so load p2.js using a script tag before using this system. See also {@link P2Component}.</p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var p2System = new P2System({
+    stepFrequency: 60,
+    gravity: [0, -10]
+});
+goo.world.setSystem(p2System);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>P2System ( [settings] )</p>
@@ -3820,12 +4164,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ParticleComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleComponent ( [settings] )</p>
@@ -3849,12 +4195,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ParticleData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleData ( particleComponent )</p>
@@ -3884,17 +4232,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getWorldPosition()</li>
+			<li>.getWorldPosition( store )</li>
 		</ul>
 	
 
+	
 
 	<h1>ParticleDebugRenderSystem</h1>
 	<p>Renders all ParticleSystemComponents in the scene.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleDebugRenderSystem (  )</p>
@@ -3912,12 +4262,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>ParticleEmitter</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleEmitter ( [options] )</p>
@@ -3949,17 +4301,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.CAMERA_BILLBOARD_FUNC()</li>
+			<li>.CAMERA_BILLBOARD_FUNC( particle )</li>
 		</ul>
 	
 
+	
 
 	<h1>ParticleInfluence</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleInfluence ( [settings] )</p>
@@ -3986,12 +4340,25 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>ParticleSystemComponent</h1>
 	<p>A Particle System component simulates things like clouds and flames by generating and animating large numbers of small 2D images in the scene.</p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var particleComponent = new ParticleSystemComponent({
+    loop: true,
+    preWarm: true,
+    shapeType: &#39;sphere&#39;,
+    sphereRadius: 0.5
+});
+var entity = world.createEntity([0, 0, 0], particleComponent).addToWorld();</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleSystemComponent ( [options] )</p>
@@ -4148,23 +4515,25 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.emitOne()</li>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.resume()</li>
-			<li>.setBoxExtents()</li>
-			<li>.stop()</li>
+			<li>.clone(  )</li>
+			<li>.emitOne( direction , position )</li>
+			<li>.pause(  )</li>
+			<li>.play(  )</li>
+			<li>.resume(  )</li>
+			<li>.setBoxExtents( extents )</li>
+			<li>.stop(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ParticleSystemComponentHandler</h1>
 	<p>Handler for ParticleSystemComponents</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleSystemComponentHandler (  )</p>
@@ -4176,17 +4545,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>ParticleSystemSystem</h1>
 	<p>System that runs all the ParticleSystemComponents.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ParticleSystemSystem (  )</p>
@@ -4198,19 +4569,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.resume()</li>
+			<li>.pause(  )</li>
+			<li>.play(  )</li>
+			<li>.resume(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Pass</h1>
 	<p>Base pass class</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Pass (  )</p>
@@ -4222,12 +4595,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>PhysicsBoxDebugShape</h1>
 	<p>A wireframe mesh indicating the position and orientation of a BoxCollider.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsBoxDebugShape (  )</p>
@@ -4239,18 +4614,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.buildWireframeData()</li>
-			<li>.rebuild()</li>
+			<li>.buildWireframeData(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PhysicsCylinderDebugShape</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsCylinderDebugShape ( [numSegments] )</p>
@@ -4264,18 +4641,25 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.buildWireframeData()</li>
-			<li>.rebuild()</li>
+			<li>.buildWireframeData(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PhysicsDebugRenderSystem</h1>
 	<p>Renders all ColliderComponents in the scene.</p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>world.setSystem(new PhysicsDebugRenderSystem());</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsDebugRenderSystem (  )</p>
@@ -4293,12 +4677,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>PhysicsJoint</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsJoint ( [settings] )</p>
@@ -4322,12 +4708,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>PhysicsMaterial</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsMaterial ( [settings] )</p>
@@ -4351,12 +4739,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>PhysicsPlaneDebugShape</h1>
 	<p>A wireframe mesh indicating the position and orientation of a PlaneCollider.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsPlaneDebugShape (  )</p>
@@ -4368,18 +4758,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.buildWireframeData()</li>
-			<li>.rebuild()</li>
+			<li>.buildWireframeData(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PhysicsSphereDebugShape</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsSphereDebugShape ( [numSegments] )</p>
@@ -4393,18 +4785,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.buildWireframeData()</li>
-			<li>.rebuild()</li>
+			<li>.buildWireframeData(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PhysicsSystem</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PhysicsSystem ( [settings] )</p>
@@ -4431,25 +4825,27 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getGravity()</li>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.raycastAll()</li>
-			<li>.raycastAny()</li>
-			<li>.raycastClosest()</li>
-			<li>.resume()</li>
-			<li>.setGravity()</li>
-			<li>.stop()</li>
+			<li>.getGravity( store )</li>
+			<li>.pause(  )</li>
+			<li>.play(  )</li>
+			<li>.raycastAll( callback , direction , maxDistance , options , options.collisionGroup , options.collisionMask , options.skipBackFaces , start )</li>
+			<li>.raycastAny( direction , maxDistance , options , options.collisionGroup , options.collisionMask , options.skipBackFaces , result , start )</li>
+			<li>.raycastClosest( direction , maxDistance , options , options.collisionGroup , options.collisionMask , options.skipBackFaces , result , start )</li>
+			<li>.resume(  )</li>
+			<li>.setGravity( gravityVector )</li>
+			<li>.stop(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Plane</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Plane ( constant , normal )</p>
@@ -4465,22 +4861,24 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.copy()</li>
-			<li>.pseudoDistance()</li>
-			<li>.rayIntersect()</li>
-			<li>.reflectVector()</li>
-			<li>.setPlanePoints()</li>
+			<li>.clone(  )</li>
+			<li>.copy( source )</li>
+			<li>.pseudoDistance( point )</li>
+			<li>.rayIntersect( precision , ray , store , suppressWarnings )</li>
+			<li>.reflectVector( store , unitVector )</li>
+			<li>.setPlanePoints( pointA , pointB , pointC )</li>
 		</ul>
 	
 
+	
 
 	<h1>PlaneCollider</h1>
 	<p>Plane collider, that faces in the Z direction.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PlaneCollider (  )</p>
@@ -4492,17 +4890,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PointLight</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PointLight ( [color] )</p>
@@ -4521,12 +4921,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>PolyBoundingScript</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PolyBoundingScript ( collidables )</p>
@@ -4546,20 +4948,22 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addCollidable()</li>
-			<li>.inside()</li>
-			<li>.removeAllAt()</li>
-			<li>.run()</li>
+			<li>.addCollidable( collidable , collidables[].bottom , collidables[].poly , collidables[].top )</li>
+			<li>.inside( x , y , z )</li>
+			<li>.removeAllAt( x , y , z )</li>
+			<li>.run( entity )</li>
 		</ul>
 	
 
+	
 
 	<h1>PolyCurve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PolyCurve ( [options] )</p>
@@ -4580,23 +4984,25 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.addSegment()</li>
-			<li>.getIntegralValueAt()</li>
-			<li>.getValueAt()</li>
-			<li>.integralToGLSL()</li>
-			<li>.removeSegment()</li>
-			<li>.sort()</li>
-			<li>.toGLSL()</li>
+			<li>.addSegment( curve )</li>
+			<li>.getIntegralValueAt( lerpValue , t )</li>
+			<li>.getValueAt( lerpValue , t )</li>
+			<li>.integralToGLSL( lerpVariableName , timeVariableName )</li>
+			<li>.removeSegment( i )</li>
+			<li>.sort(  )</li>
+			<li>.toGLSL( lerpVariableName , timeVariableName )</li>
 		</ul>
 	
 
+	
 
 	<h1>PolyLine</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PolyLine ( [closed] , [verts] )</p>
@@ -4612,23 +5018,42 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.concat()</li>
-			<li>.fromCubicBezier()</li>
-			<li>.fromCubicSpline()</li>
-			<li>.lathe()</li>
-			<li>.mul()</li>
-			<li>.pipe()</li>
-			<li>.rebuild()</li>
+			<li>.concat( closed , that )</li>
+			<li>.fromCubicBezier( nSegments , verts )</li>
+			<li>.fromCubicSpline( closed , nSegments , verts )</li>
+			<li>.lathe( nSegments )</li>
+			<li>.mul( rhs )</li>
+			<li>.pipe( options , options.scale , options.twist , that )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Pool</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var vectorPool = new Pool({
+    create: function () {
+        return new Vector3();
+    },
+    init: function (x, y, z){
+        this.set(x, y, z);
+    },
+    destroy: function (vector) {
+        vector.set(0, 0, 0);
+    }
+});
+var vector = vectorPool.get(1, 2, 3);
+vectorPool.release(vector);</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Pool ( [settings] )</p>
@@ -4648,19 +5073,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.get()</li>
-			<li>.release()</li>
-			<li>.resize()</li>
+			<li>.get(  )</li>
+			<li>.release( object )</li>
+			<li>.resize( size )</li>
 		</ul>
 	
 
+	
 
 	<h1>PortalComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PortalComponent ( camera , [height] , options , [overrideMaterial] )</p>
@@ -4692,17 +5119,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.requestUpdate()</li>
+			<li>.requestUpdate(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>PortalSystem</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PortalSystem ( renderSystem , renderer )</p>
@@ -4718,12 +5147,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>PosteffectsHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>PosteffectsHandler ( getConfig , updateObject , world )</p>
@@ -4741,19 +5172,21 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._remove()</li>
-			<li>._update()</li>
-			<li>._updateEffect()</li>
+			<li>._remove( ref )</li>
+			<li>._update( config , options , ref )</li>
+			<li>._updateEffect( config , options , posteffects )</li>
 		</ul>
 	
 
+	
 
 	<h1>ProjectedGrid</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ProjectedGrid ( [densityX] , [densityY] )</p>
@@ -4769,17 +5202,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuild()</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ProjectedGridWaterRenderer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ProjectedGridWaterRenderer ( [settings] )</p>
@@ -4795,12 +5230,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ProximitySystem</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ProximitySystem ( renderSystem , renderer )</p>
@@ -4816,12 +5253,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Quad</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Quad ( [height] , [tileX] , [tileY] , [width] )</p>
@@ -4849,18 +5288,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>QuadComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>QuadComponent ( [image] , [settings] )</p>
@@ -4896,18 +5337,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuildMeshData()</li>
-			<li>.setMaterial()</li>
+			<li>.rebuildMeshData(  )</li>
+			<li>.setMaterial( Material )</li>
 		</ul>
 	
 
+	
 
 	<h1>QuadComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>QuadComponentHandler ( getConfig , updateObject , world )</p>
@@ -4925,17 +5368,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>Quaternion</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Quaternion ( w , x , y , z )</p>
@@ -4982,31 +5427,33 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.conjugate()</li>
-			<li>.dot()</li>
-			<li>.fromAngleAxis()</li>
-			<li>.fromAngleNormalAxis()</li>
-			<li>.fromRotationMatrix()</li>
-			<li>.fromVectorToVector()</li>
-			<li>.invert()</li>
-			<li>.mul()</li>
-			<li>.negate()</li>
-			<li>.setDirect()</li>
-			<li>.slerp()</li>
-			<li>.slerp()</li>
-			<li>.toAngleAxis()</li>
-			<li>.toRotationMatrix()</li>
+			<li>.clone(  )</li>
+			<li>.conjugate(  )</li>
+			<li>.dot( rhs )</li>
+			<li>.fromAngleAxis( angle , axis )</li>
+			<li>.fromAngleNormalAxis( angle , axis )</li>
+			<li>.fromRotationMatrix( matrix )</li>
+			<li>.fromVectorToVector( from , to )</li>
+			<li>.invert(  )</li>
+			<li>.mul( rhs )</li>
+			<li>.negate(  )</li>
+			<li>.setDirect( w , x , y , z )</li>
+			<li>.slerp( changeAmount , endQuat )</li>
+			<li>.slerp( changeAmnt , endQuat , startQuat , workQuat )</li>
+			<li>.toAngleAxis( axisStore )</li>
+			<li>.toRotationMatrix( store )</li>
 		</ul>
 	
 
+	
 
 	<h1>RaycastResult</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>RaycastResult ( [settings] )</p>
@@ -5036,12 +5483,14 @@
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>Rectangle</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Rectangle ( h , w , x , y )</p>
@@ -5061,12 +5510,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>RenderTarget</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>RenderTarget ( height , options , width )</p>
@@ -5084,18 +5535,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.destroy()</li>
-			<li>.getSizeInMemory()</li>
+			<li>.destroy( context )</li>
+			<li>.getSizeInMemory(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Renderer</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Renderer ( parameters )</p>
@@ -5139,70 +5592,72 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._checkDualTransparency()</li>
-			<li>._deallocateMeshData()</li>
-			<li>._deallocateRenderTarget()</li>
-			<li>._deallocateShader()</li>
-			<li>._deallocateTexture()</li>
-			<li>._drawBuffers()</li>
-			<li>._override()</li>
-			<li>.bindData()</li>
-			<li>.bindTexture()</li>
-			<li>.bindVertexAttribute()</li>
-			<li>.callShaderProcessors()</li>
-			<li>.checkRescale()</li>
-			<li>.checkResize()</li>
-			<li>.clear()</li>
-			<li>.clearShaderCache()</li>
-			<li>.configureRenderInfo()</li>
-			<li>.drawArraysVBO()</li>
-			<li>.drawElementsVBO()</li>
-			<li>.establishContext()</li>
-			<li>.findOrCacheMaterialShader()</li>
-			<li>.finish()</li>
-			<li>.flush()</li>
-			<li>.loadCompressedTexture()</li>
-			<li>.onDebugError()</li>
-			<li>.pick()</li>
-			<li>.precompileShaders()</li>
-			<li>.preloadMaterials()</li>
-			<li>.preloadTexture()</li>
-			<li>.readPixels()</li>
-			<li>.readTexturePixels()</li>
-			<li>.render()</li>
-			<li>.renderMesh()</li>
-			<li>.renderMeshMaterial()</li>
-			<li>.renderToPick()</li>
-			<li>.setBoundBuffer()</li>
-			<li>.setClearColor()</li>
-			<li>.setRenderTarget()</li>
-			<li>.setSize()</li>
-			<li>.setViewport()</li>
-			<li>.setupDebugging()</li>
-			<li>.setupFrameBuffer()</li>
-			<li>.setupRenderBuffer()</li>
-			<li>.unbindTexture()</li>
-			<li>.updateAttributeData()</li>
-			<li>.updateBlending()</li>
-			<li>.updateCulling()</li>
-			<li>.updateDepthTest()</li>
-			<li>.updateLineAndPointSettings()</li>
-			<li>.updateOffset()</li>
-			<li>.updateRenderTargetMipmap()</li>
-			<li>.updateShadows()</li>
-			<li>.updateTexture()</li>
-			<li>.updateTextureParameters()</li>
-			<li>.updateTextures()</li>
+			<li>._checkDualTransparency( material , meshData )</li>
+			<li>._deallocateMeshData( meshData )</li>
+			<li>._deallocateRenderTarget( renderTarget )</li>
+			<li>._deallocateShader( shader )</li>
+			<li>._deallocateTexture( texture )</li>
+			<li>._drawBuffers( meshData )</li>
+			<li>._override( mat1 , mat2 , store )</li>
+			<li>.bindData( bufferData )</li>
+			<li>.bindTexture( context , record , texture , unit )</li>
+			<li>.bindVertexAttribute( attribIndex , attribute )</li>
+			<li>.callShaderProcessors( material , renderInfo )</li>
+			<li>.checkRescale( height , image , index , maxSize , texture , width )</li>
+			<li>.checkResize( camera )</li>
+			<li>.clear( color , depth , stencil )</li>
+			<li>.clearShaderCache(  )</li>
+			<li>.configureRenderInfo( flatOrWire , material , materialIndex , orMaterial , originalData , renderInfo )</li>
+			<li>.drawArraysVBO( indexLengths , indexModes )</li>
+			<li>.drawElementsVBO( indexLengths , indexModes , indices )</li>
+			<li>.establishContext(  )</li>
+			<li>.findOrCacheMaterialShader( material , renderInfo )</li>
+			<li>.finish(  )</li>
+			<li>.flush(  )</li>
+			<li>.loadCompressedTexture( context , imageData , target , texture )</li>
+			<li>.onDebugError( args , err , functionName )</li>
+			<li>.pick( camera , clientX , clientY , pickingStore )</li>
+			<li>.precompileShaders( lights , renderList )</li>
+			<li>.preloadMaterials( renderList )</li>
+			<li>.preloadTexture( context , texture )</li>
+			<li>.readPixels( height , store , width , x , y )</li>
+			<li>.readTexturePixels( height , store , texture , width , x , y )</li>
+			<li>.render( camera , clear , lights , overrideMaterials , renderList , renderTarget )</li>
+			<li>.renderMesh( renderInfo )</li>
+			<li>.renderMeshMaterial( flatOrWire , materialIndex , materials , originalData , renderInfo )</li>
+			<li>.renderToPick( camera , clear , clientX , clientY , customPickingMaterial , doScissor , renderList , skipOverride , skipUpdateBuffer )</li>
+			<li>.setBoundBuffer( buffer , target )</li>
+			<li>.setClearColor( a , b , g , r )</li>
+			<li>.setRenderTarget( renderTarget )</li>
+			<li>.setSize( fullHeight , fullWidth , height , width )</li>
+			<li>.setViewport( height , width , x , y )</li>
+			<li>.setupDebugging( parameters , parameters.validate )</li>
+			<li>.setupFrameBuffer( framebuffer , renderTarget , textureTarget )</li>
+			<li>.setupRenderBuffer( renderTarget , renderbuffer )</li>
+			<li>.unbindTexture( context , record , texture , unit )</li>
+			<li>.updateAttributeData( attributeData , offset )</li>
+			<li>.updateBlending( material )</li>
+			<li>.updateCulling( material )</li>
+			<li>.updateDepthTest( material )</li>
+			<li>.updateLineAndPointSettings( material )</li>
+			<li>.updateOffset( material )</li>
+			<li>.updateRenderTargetMipmap( renderTarget )</li>
+			<li>.updateShadows( entities , lights , partitioner )</li>
+			<li>.updateTexture( context , record , texture , unit )</li>
+			<li>.updateTextureParameters( isImagePowerOfTwo , texture )</li>
+			<li>.updateTextures( material )</li>
 		</ul>
 	
 
+	
 
 	<h1>RigidBodyComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>RigidBodyComponent ( [settings] )</p>
@@ -5260,35 +5715,37 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.applyForce()</li>
-			<li>.applyForceLocal()</li>
-			<li>.applyImpulse()</li>
-			<li>.applyImpulseLocal()</li>
-			<li>.applyTorque()</li>
-			<li>.applyTorqueLocal()</li>
-			<li>.clone()</li>
-			<li>.destroy()</li>
-			<li>.getAngularVelocity()</li>
-			<li>.getInterpolatedPosition()</li>
-			<li>.getInterpolatedQuaternion()</li>
-			<li>.getPosition()</li>
-			<li>.getQuaternion()</li>
-			<li>.getVelocity()</li>
-			<li>.initialize()</li>
-			<li>.setAngularVelocity()</li>
-			<li>.setPosition()</li>
-			<li>.setQuaternion()</li>
-			<li>.setVelocity()</li>
+			<li>.applyForce( force , relativePoint )</li>
+			<li>.applyForceLocal( force , relativePoint )</li>
+			<li>.applyImpulse( impulse , relativePoint )</li>
+			<li>.applyImpulseLocal( impulse , relativePoint )</li>
+			<li>.applyTorque( torque )</li>
+			<li>.applyTorqueLocal( torque )</li>
+			<li>.clone(  )</li>
+			<li>.destroy(  )</li>
+			<li>.getAngularVelocity( targetVector )</li>
+			<li>.getInterpolatedPosition( targetVector )</li>
+			<li>.getInterpolatedQuaternion( targetQuat )</li>
+			<li>.getPosition( targetVector )</li>
+			<li>.getQuaternion( targetQuat )</li>
+			<li>.getVelocity( targetVector )</li>
+			<li>.initialize(  )</li>
+			<li>.setAngularVelocity( angularVelocity )</li>
+			<li>.setPosition( position )</li>
+			<li>.setQuaternion( quaternion )</li>
+			<li>.setVelocity( velocity )</li>
 		</ul>
 	
 
+	
 
 	<h1>RigidBodyComponentHandler</h1>
 	<p>For handling loading of rigid body components</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>RigidBodyComponentHandler (  )</p>
@@ -5300,18 +5757,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._remove()</li>
-			<li>.update()</li>
+			<li>._remove( ref )</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>SceneHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SceneHandler ( getConfig , updateObject , world )</p>
@@ -5329,21 +5788,23 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._handleEntities()</li>
-			<li>._handleEnvironment()</li>
-			<li>._handlePosteffects()</li>
-			<li>._remove()</li>
-			<li>._update()</li>
+			<li>._handleEntities( config , options , scene )</li>
+			<li>._handleEnvironment( config , options , scene )</li>
+			<li>._handlePosteffects( config , options , scene )</li>
+			<li>._remove( ref )</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>ScriptComponent</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ScriptComponent ( [scripts] )</p>
@@ -5362,18 +5823,20 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.startScripts()</li>
-			<li>.stopScripts()</li>
+			<li>.startScripts(  )</li>
+			<li>.stopScripts(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>ScriptSystem</h1>
 	<p>Processes all entities with script components, running the scripts where applicable</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ScriptSystem (  )</p>
@@ -5385,12 +5848,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Shader</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Shader ( name , shaderDefinition )</p>
@@ -5418,17 +5883,19 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.investigateShader()</li>
+			<li>.investigateShader( source , target , target.attributeMapping , target.textureSlots , target.uniformMapping )</li>
 		</ul>
 	
 
+	
 
 	<h1>ShaderFragment</h1>
 	<p>Collection of useful shader fragments</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ShaderFragment (  )</p>
@@ -5440,12 +5907,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>ShaderHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ShaderHandler ( getConfig , updateObject , world )</p>
@@ -5463,17 +5932,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._update()</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>ShaderLibExtra</h1>
 	<p>Collection of additional useful shaders</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>ShaderLibExtra (  )</p>
@@ -5490,12 +5961,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>SimpleBox</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SimpleBox ( [height] , [length] , [width] )</p>
@@ -5513,18 +5986,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>SimplePartitioner</h1>
 	<p>Culls entities based on camera frustum and boundings</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SimplePartitioner (  )</p>
@@ -5536,12 +6011,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Skeleton</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Skeleton ( joints , name )</p>
@@ -5557,12 +6034,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>SkeletonHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SkeletonHandler ( getConfig , updateObject , world )</p>
@@ -5580,17 +6059,19 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._update()</li>
+			<li>._update( config , options , ref )</li>
 		</ul>
 	
 
+	
 
 	<h1>SkeletonPose</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SkeletonPose ( skeleton )</p>
@@ -5604,18 +6085,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setToBindPose()</li>
-			<li>.updateTransforms()</li>
+			<li>.setToBindPose(  )</li>
+			<li>.updateTransforms(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Skybox</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Skybox ( images , textureMode , type , yRotation )</p>
@@ -5635,12 +6118,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>Snow</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Snow ( gooRunner )</p>
@@ -5654,12 +6139,14 @@
 
 	
 
+	
 
 	
 
-
 	<h1>SoftwareRenderer</h1>
 	<p>A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SoftwareRenderer ( parameters )</p>
@@ -5673,31 +6160,33 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._calculateIntersectionRatio()</li>
-			<li>._categorizeVertices()</li>
-			<li>._clearDepthData()</li>
-			<li>._createEdgeData()</li>
-			<li>._fillPixels()</li>
-			<li>._horizontalLongEdgeCull()</li>
-			<li>._isBackFacingProjected()</li>
-			<li>._setupTriangleDataForEntity()</li>
-			<li>._verticalLongEdgeCull()</li>
-			<li>.copyDepthToColor()</li>
-			<li>.getColorData()</li>
-			<li>.getDepthData()</li>
-			<li>.isRenderedTriangleOccluded()</li>
-			<li>.performOcclusionCulling()</li>
-			<li>.render()</li>
+			<li>._calculateIntersectionRatio( near , origin , target )</li>
+			<li>._categorizeVertices( cameraNear )</li>
+			<li>._clearDepthData(  )</li>
+			<li>._createEdgeData(  )</li>
+			<li>._fillPixels(  )</li>
+			<li>._horizontalLongEdgeCull( longEdge , orientationData )</li>
+			<li>._isBackFacingProjected( v1 , v2 , v3 )</li>
+			<li>._setupTriangleDataForEntity( cameraProjectionMatrix , cameraViewMatrix , entity )</li>
+			<li>._verticalLongEdgeCull(  )</li>
+			<li>.copyDepthToColor(  )</li>
+			<li>.getColorData(  )</li>
+			<li>.getDepthData(  )</li>
+			<li>.isRenderedTriangleOccluded(  )</li>
+			<li>.performOcclusionCulling( renderList )</li>
+			<li>.render( renderList )</li>
 		</ul>
 	
 
+	
 
 	<h1>Sound</h1>
 	<p>A representation of a sound in the engine</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Sound (  )</p>
@@ -5717,23 +6206,25 @@
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.connectTo()</li>
-			<li>.disconnectFrom()</li>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.setAudioBuffer()</li>
-			<li>.stop()</li>
-			<li>.update()</li>
+			<li>.connectTo( nodes )</li>
+			<li>.disconnectFrom( nodes )</li>
+			<li>.pause(  )</li>
+			<li>.play( when )</li>
+			<li>.setAudioBuffer( buffer )</li>
+			<li>.stop( when )</li>
+			<li>.update( config , config.duration , config.loop , config.name , config.start , config.timeScale , config.volume )</li>
 		</ul>
 	
 
+	
 
 	<h1>SoundComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SoundComponentHandler ( getConfig , updateObject , world )</p>
@@ -5751,18 +6242,20 @@
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>._prepare()</li>
-			<li>.update()</li>
+			<li>._prepare( config )</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>SoundManager2Component</h1>
 	<p>SoundManager 2 component.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SoundManager2Component (  )</p>
@@ -5774,13 +6267,15 @@
 
 	
 
-
 	
 
+	
 
 	<h1>SoundManager2System</h1>
 	<p>Depends on the global soundManager object.
 Load soundmanager2 with a script tag before using this system.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SoundManager2System (  )</p>
@@ -5792,12 +6287,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>SparseHeightMapBoundingScript</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SparseHeightMapBoundingScript ( elevationData )</p>
@@ -5811,17 +6308,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getClosest()</li>
+			<li>.getClosest( x , z )</li>
 		</ul>
 	
 
+	
 
 	<h1>Sphere</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Sphere ( [radialSamples] , [radius] , [textureMode] , [zSamples] )</p>
@@ -5855,18 +6354,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>SphereCollider</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SphereCollider ( [settings] )</p>
@@ -5887,17 +6388,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
+			<li>.clone(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Spline</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Spline ( controlPoints )</p>
@@ -5911,19 +6414,21 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.cubicInterpolation()</li>
-			<li>.getPoint()</li>
-			<li>.quadraticInterpolation()</li>
+			<li>.cubicInterpolation( p0 , p1 , p2 , p3 , store , t )</li>
+			<li>.getPoint( store , t )</li>
+			<li>.quadraticInterpolation( p0 , p1 , p2 , store , t )</li>
 		</ul>
 	
 
+	
 
 	<h1>SplineWalker</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SplineWalker ( spline , [substepSize] )</p>
@@ -5939,18 +6444,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.advance()</li>
-			<li>.canWalk()</li>
+			<li>.advance( distance , store )</li>
+			<li>.canWalk(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>SpotLight</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SpotLight ( [color] )</p>
@@ -5973,12 +6480,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>SsaoPass</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SsaoPass ( renderList )</p>
@@ -5992,12 +6501,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>StateMachineComponent</h1>
 	<p>StateMachineComponent.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>StateMachineComponent (  )</p>
@@ -6009,22 +6520,24 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.cleanup()</li>
-			<li>.init()</li>
-			<li>.kill()</li>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.update()</li>
+			<li>.cleanup(  )</li>
+			<li>.init(  )</li>
+			<li>.kill(  )</li>
+			<li>.pause(  )</li>
+			<li>.play(  )</li>
+			<li>.update(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>StateMachineComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>StateMachineComponentHandler ( getConfig , updateObject , world )</p>
@@ -6042,17 +6555,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>StateMachineSystem</h1>
 	<p>Processes all entities with a FSM component</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>StateMachineSystem (  )</p>
@@ -6070,19 +6585,21 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.pause()</li>
-			<li>.play()</li>
-			<li>.stop()</li>
+			<li>.pause(  )</li>
+			<li>.play(  )</li>
+			<li>.stop(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>SteadyState</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SteadyState ( name )</p>
@@ -6096,17 +6613,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.setClipSource()</li>
+			<li>.setClipSource( clipSource )</li>
 		</ul>
 	
 
+	
 
 	<h1>Surface</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Surface ( [verticesPerLine] , verts )</p>
@@ -6122,19 +6641,21 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.createFromHeightMap()</li>
-			<li>.createTessellatedFlat()</li>
-			<li>.rebuild()</li>
+			<li>.createFromHeightMap( heightMap , xScale , yScale , zScale )</li>
+			<li>.createTessellatedFlat( xCount , xSize , zCount , zSize )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>SyncFadeTransitionState</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>SyncFadeTransitionState ( blendType , fadeTime , targetState )</p>
@@ -6152,12 +6673,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>System</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>System ( interests , type )</p>
@@ -6178,21 +6701,23 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.added()</li>
-			<li>.changed()</li>
-			<li>.cleanup()</li>
-			<li>.removed()</li>
-			<li>.setup()</li>
+			<li>.added( entity )</li>
+			<li>.changed( entity )</li>
+			<li>.cleanup(  )</li>
+			<li>.removed( entity )</li>
+			<li>.setup( world )</li>
 		</ul>
 	
 
+	
 
 	<h1>Terrain</h1>
 	<p>A terrain.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Terrain (  )</p>
@@ -6204,12 +6729,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>TerrainSurface</h1>
 	<p>A grid-like surface shape</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TerrainSurface ( heightMatrix , xWidth , yHeight , zWidth )</p>
@@ -6229,17 +6756,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuild()</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>TextComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TextComponentHandler ( getConfig , updateObject , world )</p>
@@ -6257,17 +6786,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>Texture</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Texture ( height , image , settings , width )</p>
@@ -6318,23 +6849,25 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.checkDataReady()</li>
-			<li>.checkNeedsUpdate()</li>
-			<li>.clone()</li>
-			<li>.destroy()</li>
-			<li>.getSizeInMemory()</li>
-			<li>.setImage()</li>
-			<li>.setNeedsUpdate()</li>
+			<li>.checkDataReady(  )</li>
+			<li>.checkNeedsUpdate(  )</li>
+			<li>.clone(  )</li>
+			<li>.destroy( context )</li>
+			<li>.getSizeInMemory(  )</li>
+			<li>.setImage( height , image , width )</li>
+			<li>.setNeedsUpdate(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>TextureCreator</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TextureCreator ( settings )</p>
@@ -6348,21 +6881,23 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clear()</li>
-			<li>.loadTexture2D()</li>
-			<li>.loadTextureCube()</li>
-			<li>.loadTextureVideo()</li>
-			<li>.loadTextureWebCam()</li>
+			<li>.clear(  )</li>
+			<li>.loadTexture2D( imageUrl , settings )</li>
+			<li>.loadTextureCube( imageDataArray , settings )</li>
+			<li>.loadTextureVideo( options , options.autoPlay , options.loop , options.wrapS , options.wrapT , videoURL )</li>
+			<li>.loadTextureWebCam(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>TextureGrid</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TextureGrid ( matrix , textureUnitsPerLine )</p>
@@ -6378,18 +6913,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Torus</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Torus ( [centerRadius] , [circleSamples] , [radialSamples] , [tubeRadius] )</p>
@@ -6414,18 +6951,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.clone()</li>
-			<li>.rebuild()</li>
+			<li>.clone(  )</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>TransformChannel</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TransformChannel ( channelName , rotations , scales , times , translations )</p>
@@ -6447,17 +6986,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.getData()</li>
+			<li>.getData( index , store )</li>
 		</ul>
 	
 
+	
 
 	<h1>TransformComponentHandler</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TransformComponentHandler ( getConfig , updateObject , world )</p>
@@ -6475,17 +7016,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.update()</li>
+			<li>.update( config , entity , options )</li>
 		</ul>
 	
 
+	
 
 	<h1>TransformData</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TransformData ( [source] )</p>
@@ -6499,18 +7042,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.blend()</li>
-			<li>.set()</li>
+			<li>.blend( blendTo , blendWeight , store )</li>
+			<li>.set( source )</li>
 		</ul>
 	
 
+	
 
 	<h1>Triangle</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Triangle ( verts )</p>
@@ -6524,17 +7069,19 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.rebuild()</li>
+			<li>.rebuild(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>TriggerChannel</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>TriggerChannel ( channelName , keys , times )</p>
@@ -6552,18 +7099,26 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.createStateDataObject()</li>
-			<li>.setCurrentSample()</li>
+			<li>.createStateDataObject(  )</li>
+			<li>.setCurrentSample( progressPercent , sampleIndex , value )</li>
 		</ul>
 	
 
+	
 
 	<h1>Vector2</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var v1 = new Vector2(); // v1 == (0, 0)
+var v2 = new Vector2(1, 2); // v2 == (1, 2)</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Vector2 ( x , y )</p>
@@ -6601,50 +7156,58 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.addDirect()</li>
-			<li>.applyPost()</li>
-			<li>.applyPre()</li>
-			<li>.clone()</li>
-			<li>.copyTo()</li>
-			<li>.distance()</li>
-			<li>.distanceSquared()</li>
-			<li>.div()</li>
-			<li>.divDirect()</li>
-			<li>.dot()</li>
-			<li>.dotDirect()</li>
-			<li>.equals()</li>
-			<li>.equalsDirect()</li>
-			<li>.fromAny()</li>
-			<li>.fromArray()</li>
-			<li>.getComponent()</li>
-			<li>.length()</li>
-			<li>.lengthSquared()</li>
-			<li>.lerp()</li>
-			<li>.mul()</li>
-			<li>.mulDirect()</li>
-			<li>.negate()</li>
-			<li>.normalize()</li>
-			<li>.reflect()</li>
-			<li>.scale()</li>
-			<li>.set()</li>
-			<li>.setArray()</li>
-			<li>.setComponent()</li>
-			<li>.setDirect()</li>
-			<li>.sub()</li>
-			<li>.subDirect()</li>
-			<li>.toArray()</li>
-			<li>.unsafeNormalize()</li>
+			<li>.add( rhs )</li>
+			<li>.addDirect( x , y )</li>
+			<li>.applyPost( matrix )</li>
+			<li>.applyPre( matrix )</li>
+			<li>.clone(  )</li>
+			<li>.copyTo( target )</li>
+			<li>.distance( rhs )</li>
+			<li>.distanceSquared( rhs )</li>
+			<li>.div( rhs )</li>
+			<li>.divDirect( x , y )</li>
+			<li>.dot( rhs )</li>
+			<li>.dotDirect( x , y )</li>
+			<li>.equals( rhs )</li>
+			<li>.equalsDirect( x , y )</li>
+			<li>.fromAny(  )</li>
+			<li>.fromArray( array )</li>
+			<li>.getComponent( index )</li>
+			<li>.length(  )</li>
+			<li>.lengthSquared(  )</li>
+			<li>.lerp( end , factor )</li>
+			<li>.mul( rhs )</li>
+			<li>.mulDirect( x , y )</li>
+			<li>.negate(  )</li>
+			<li>.normalize(  )</li>
+			<li>.reflect( normal )</li>
+			<li>.scale( factor )</li>
+			<li>.set( rhs )</li>
+			<li>.setArray( array )</li>
+			<li>.setComponent( index , value )</li>
+			<li>.setDirect( x , y )</li>
+			<li>.sub( rhs )</li>
+			<li>.subDirect( x , y )</li>
+			<li>.toArray(  )</li>
+			<li>.unsafeNormalize(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Vector3</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var v1 = new Vector3(); // v1 == (0, 0, 0)
+var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Vector3 ( x , y , z )</p>
@@ -6690,54 +7253,56 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.addDirect()</li>
-			<li>.applyPost()</li>
-			<li>.applyPostPoint()</li>
-			<li>.applyPostVector()</li>
-			<li>.applyPre()</li>
-			<li>.clone()</li>
-			<li>.copyTo()</li>
-			<li>.cross()</li>
-			<li>.crossDirect()</li>
-			<li>.distance()</li>
-			<li>.distanceSquared()</li>
-			<li>.div()</li>
-			<li>.divDirect()</li>
-			<li>.dot()</li>
-			<li>.dotDirect()</li>
-			<li>.equals()</li>
-			<li>.equalsDirect()</li>
-			<li>.fromAny()</li>
-			<li>.fromArray()</li>
-			<li>.getComponent()</li>
-			<li>.length()</li>
-			<li>.lengthSquared()</li>
-			<li>.lerp()</li>
-			<li>.mul()</li>
-			<li>.mulDirect()</li>
-			<li>.negate()</li>
-			<li>.normalize()</li>
-			<li>.reflect()</li>
-			<li>.scale()</li>
-			<li>.set()</li>
-			<li>.setArray()</li>
-			<li>.setComponent()</li>
-			<li>.setDirect()</li>
-			<li>.sub()</li>
-			<li>.subDirect()</li>
-			<li>.toArray()</li>
-			<li>.unsafeNormalize()</li>
+			<li>.add( rhs )</li>
+			<li>.addDirect( x , y , z )</li>
+			<li>.applyPost( matrix )</li>
+			<li>.applyPostPoint( matrix )</li>
+			<li>.applyPostVector( matrix )</li>
+			<li>.applyPre( matrix )</li>
+			<li>.clone(  )</li>
+			<li>.copyTo( target )</li>
+			<li>.cross( rhs )</li>
+			<li>.crossDirect( x , y , z )</li>
+			<li>.distance( rhs )</li>
+			<li>.distanceSquared( rhs )</li>
+			<li>.div( rhs )</li>
+			<li>.divDirect( x , y , z )</li>
+			<li>.dot( rhs )</li>
+			<li>.dotDirect( x , y , z )</li>
+			<li>.equals( rhs )</li>
+			<li>.equalsDirect( x , y , z )</li>
+			<li>.fromAny(  )</li>
+			<li>.fromArray( array )</li>
+			<li>.getComponent( index )</li>
+			<li>.length(  )</li>
+			<li>.lengthSquared(  )</li>
+			<li>.lerp( end , factor )</li>
+			<li>.mul( rhs )</li>
+			<li>.mulDirect( x , y , z )</li>
+			<li>.negate(  )</li>
+			<li>.normalize(  )</li>
+			<li>.reflect( normal )</li>
+			<li>.scale( factor )</li>
+			<li>.set( rhs )</li>
+			<li>.setArray( array )</li>
+			<li>.setComponent( index , value )</li>
+			<li>.setDirect( x , y , z )</li>
+			<li>.sub( rhs )</li>
+			<li>.subDirect( x , y , z )</li>
+			<li>.toArray(  )</li>
+			<li>.unsafeNormalize(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Vector3Curve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Vector3Curve ( [options] )</p>
@@ -6757,12 +7322,20 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>Vector4</h1>
 	<p></p>
+
+	
+		<h2>Examples</h2>
+		
+			<p><code>var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+var v2 = new Vector4(1, 2, 3, 4); // v2 == (1, 2, 3, 4)</code></p>
+		
+	
 
 	<h2>Constructor</h2>
 	<p>Vector4 ( w , x , y , z )</p>
@@ -6808,50 +7381,52 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.addDirect()</li>
-			<li>.applyPost()</li>
-			<li>.applyPre()</li>
-			<li>.clone()</li>
-			<li>.copyTo()</li>
-			<li>.distance()</li>
-			<li>.distanceSquared()</li>
-			<li>.div()</li>
-			<li>.divDirect()</li>
-			<li>.dot()</li>
-			<li>.dotDirect()</li>
-			<li>.equals()</li>
-			<li>.equalsDirect()</li>
-			<li>.fromAny()</li>
-			<li>.fromArray()</li>
-			<li>.getComponent()</li>
-			<li>.length()</li>
-			<li>.lengthSquared()</li>
-			<li>.lerp()</li>
-			<li>.mul()</li>
-			<li>.mulDirect()</li>
-			<li>.negate()</li>
-			<li>.normalize()</li>
-			<li>.reflect()</li>
-			<li>.scale()</li>
-			<li>.set()</li>
-			<li>.setArray()</li>
-			<li>.setComponent()</li>
-			<li>.setDirect()</li>
-			<li>.sub()</li>
-			<li>.subDirect()</li>
-			<li>.toArray()</li>
-			<li>.unsafeNormalize()</li>
+			<li>.add( rhs )</li>
+			<li>.addDirect( w , x , y , z )</li>
+			<li>.applyPost( matrix )</li>
+			<li>.applyPre( matrix )</li>
+			<li>.clone(  )</li>
+			<li>.copyTo( target )</li>
+			<li>.distance( rhs )</li>
+			<li>.distanceSquared( rhs )</li>
+			<li>.div( rhs )</li>
+			<li>.divDirect( w , x , y , z )</li>
+			<li>.dot( rhs )</li>
+			<li>.dotDirect( w , x , y , z )</li>
+			<li>.equals( rhs )</li>
+			<li>.equalsDirect( w , x , y , z )</li>
+			<li>.fromAny(  )</li>
+			<li>.fromArray( array )</li>
+			<li>.getComponent( index )</li>
+			<li>.length(  )</li>
+			<li>.lengthSquared(  )</li>
+			<li>.lerp( end , factor )</li>
+			<li>.mul( rhs )</li>
+			<li>.mulDirect( w , x , y , z )</li>
+			<li>.negate(  )</li>
+			<li>.normalize(  )</li>
+			<li>.reflect( normal )</li>
+			<li>.scale( factor )</li>
+			<li>.set( rhs )</li>
+			<li>.setArray( array )</li>
+			<li>.setComponent( index , value )</li>
+			<li>.setDirect( w , x , y , z )</li>
+			<li>.sub( rhs )</li>
+			<li>.subDirect( w , x , y , z )</li>
+			<li>.toArray(  )</li>
+			<li>.unsafeNormalize(  )</li>
 		</ul>
 	
 
+	
 
 	<h1>Vector4Curve</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>Vector4Curve ( [options] )</p>
@@ -6873,12 +7448,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
+	
 
 	
 
-
 	<h1>WaitAction</h1>
 	<p>Action that waits a given time before transitioning.</p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>WaitAction (  )</p>
@@ -6896,12 +7473,14 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
+	
 
 	
 
-
 	<h1>World</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>World ( gooRunner )</p>
@@ -6924,31 +7503,33 @@ Load soundmanager2 with a script tag before using this system.</p>
 		</ul>
 	
 
-
 	
 		<h2>Methods</h2>
 		<ul>
-			<li>.add()</li>
-			<li>.addEntity()</li>
-			<li>.changedEntity()</li>
-			<li>.clear()</li>
-			<li>.clearSystem()</li>
-			<li>.createEntity()</li>
-			<li>.getEntities()</li>
-			<li>.getManager()</li>
-			<li>.getSystem()</li>
-			<li>.process()</li>
-			<li>.processEntityChanges()</li>
-			<li>.registerComponent()</li>
-			<li>.removeEntity()</li>
-			<li>.setManager()</li>
-			<li>.setSystem()</li>
+			<li>.add( component , entity , manager , system )</li>
+			<li>.addEntity( entity , recursive )</li>
+			<li>.changedEntity( component , entity , eventType )</li>
+			<li>.clear(  )</li>
+			<li>.clearSystem( type )</li>
+			<li>.createEntity( camera , light , material , meshData , name )</li>
+			<li>.getEntities(  )</li>
+			<li>.getManager( type )</li>
+			<li>.getSystem( type )</li>
+			<li>.process(  )</li>
+			<li>.processEntityChanges(  )</li>
+			<li>.registerComponent( componentConstructor )</li>
+			<li>.removeEntity( entity , recursive )</li>
+			<li>.setManager( manager )</li>
+			<li>.setSystem( system )</li>
 		</ul>
 	
 
+	
 
 	<h1>WorldBy</h1>
 	<p></p>
+
+	
 
 	<h2>Constructor</h2>
 	<p>WorldBy ( world )</p>
@@ -6962,9 +7543,9 @@ Load soundmanager2 with a script tag before using this system.</p>
 
 	
 
-
 	
 
+	
 
 </body>
 </html>
