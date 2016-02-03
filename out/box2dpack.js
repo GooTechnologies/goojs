@@ -1,1 +1,210 @@
-goo.Box2DComponent=function(t,o){"use strict";function e(e){t.apply(this,arguments),this.type="Box2DComponent",this.body=null,this.world=null,this.mass=1,o.copyOptions(this,e,{shape:"box",width:1,height:1,radius:1,vertices:[0,1,2,2,0,2],movable:!0,friction:1,restitution:0,offsetX:0,offsetY:0})}return e.prototype=Object.create(t.prototype),e.prototype.constructor=e,e}(goo.Component,goo.ObjectUtil),goo.Box2DSystem=function(t){"use strict";function o(){t.call(this,"Box2DSystem",["Box2DComponent","MeshDataComponent"]),this.SCALE=.5,this.world=new Box2D.b2World(new Box2D.b2Vec2(0,-9.81)),this.sortVertexesClockWise=function(t,o){var e=Math.atan2(t.get_y(),t.get_x()),n=Math.atan2(o.get_y(),o.get_x());return e>n?1:-1},this.velocityIterations=8,this.positionIterations=3;var o=4;this.createPolygonShape=function(t){for(var e=new Box2D.b2PolygonShape,n=Box2D.allocate(t.length*o*2,"float",Box2D.ALLOC_STACK),r=0,s=0;s<t.length;s++)Box2D.setValue(n+r,t[s].get_x(),"float"),Box2D.setValue(n+(r+o),t[s].get_y(),"float"),r+=2*o;var i=Box2D.wrapPointer(n,Box2D.b2Vec2);return e.Set(i,t.length),e}}return o.prototype=Object.create(t.prototype),o.prototype.constructor=o,o.prototype.inserted=function(t){var o=t.box2DComponent,e=0,n=0,r=new Box2D.b2PolygonShape;if("box"===o.shape)r.SetAsBox(o.width*this.SCALE,o.height*this.SCALE);else if("circle"===o.shape)r=new Box2D.b2CircleShape,r.set_m_radius(o.radius);else if("mesh"===o.shape){for(var s=t.meshDataComponent.meshData,i=s.getAttributeBuffer("POSITION"),a=0,p=[],h=1/0,l=-(1/0),f=1/0,c=-(1/0);a<=i.length-3;){var y=i[a],m=i[++a];h>m&&(h=m),m>l&&(l=m),f>y&&(f=y),y>c&&(c=y),++a,t.transformComponent.updateWorldTransform();var d=new Box2D.b2Vec2(y,m);p.push(d)}r=this.createPolygonShape(p),e=l-h,n=c-f}else if("polygon"===o.shape){for(var p=[],a=0;a<=o.vertices.length-2;){var d=new Box2D.b2Vec2(o.vertices[a],o.vertices[++a]);p.push(d),++a}r=this.createPolygonShape(p)}var x=new Box2D.b2FixtureDef;x.set_shape(r),x.set_density(1),x.set_friction(o.friction),x.set_restitution(o.restitution);var u=new Box2D.b2BodyDef;o.movable===!0&&u.set_type(Box2D.b2_dynamicBody),u.set_position(new Box2D.b2Vec2(t.transformComponent.transform.translation.x+o.offsetX,t.transformComponent.transform.translation.y+o.offsetY));var g=t.transformComponent.transform.rotation.toAngles();u.set_angle(g.z);var D=this.world.CreateBody(u);D.CreateFixture(x),D.SetLinearDamping(.95),D.SetAngularDamping(.6),o.body=D,o.world=this.world,t.body=D,t.body.h=e,t.body.w=n},o.prototype.deleted=function(t){this.world.DestroyBody(t.body)},o.prototype.process=function(t,o){this.world.Step(o,this.velocityIterations,this.positionIterations);for(var e=0;e<t.length;e++){var n=t[e],r=n.transformComponent,s=r.transform,i=n.body.GetPosition(),a=i.get_x(),p=i.get_y();-10>p?n.removeFromWorld():(s.translation.x=a-n.box2DComponent.offsetX,s.translation.y=p-n.box2DComponent.offsetY,r.setRotation(0,0,n.body.GetAngle()),r.setUpdated())}},o}(goo.System),"function"==typeof require&&(define("goo/addons/box2dpack/components/Box2DComponent",[],function(){return goo.Box2DComponent}),define("goo/addons/box2dpack/systems/Box2DSystem",[],function(){return goo.Box2DSystem}));
+goo.Box2DSystem = (function (
+	System
+) {
+	'use strict';
+	/* global Box2D */
+
+	/**
+	 * Physics simulation using Box2D.
+	 * Depends on the global Box2D object. Load box2d.js using a &lt;script&gt; tag before using this system
+	 * @extends System
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
+	 */
+	function Box2DSystem() {
+		System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);
+
+		this.SCALE = 0.5;
+		this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
+
+		//! AT: vertices*; unused? why is it sitting here anyway?
+		this.sortVertexesClockWise = function (a, b) {
+			var aAngle = Math.atan2(a.get_y(), a.get_x());
+			var bAngle = Math.atan2(b.get_y(), b.get_x());
+			return aAngle > bAngle ? 1 : -1;
+		};
+
+		// Defaulted to recommended values 8 and 3
+		this.velocityIterations = 8;
+		this.positionIterations = 3;
+
+		var FLOAT_SIZE = 4;
+
+		this.createPolygonShape = function (vertices) {
+			var shape = new Box2D.b2PolygonShape();
+			var buffer = Box2D.allocate(vertices.length * FLOAT_SIZE * 2, 'float', Box2D.ALLOC_STACK);
+			var offset = 0;
+			for (var i = 0; i < vertices.length; i++) {
+				Box2D.setValue(buffer + (offset), vertices[i].get_x(), 'float');
+				Box2D.setValue(buffer + (offset + FLOAT_SIZE), vertices[i].get_y(), 'float');
+				offset += FLOAT_SIZE * 2;
+			}
+			var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
+			shape.Set(ptr_wrapped, vertices.length);
+			return shape;
+		};
+	}
+
+	Box2DSystem.prototype = Object.create(System.prototype);
+	Box2DSystem.prototype.constructor = Box2DSystem;
+
+	Box2DSystem.prototype.inserted = function (entity) {
+		var p = entity.box2DComponent;
+		var height = 0;
+		var width = 0;
+
+		var shape = new Box2D.b2PolygonShape();
+		if (p.shape === 'box') {
+			shape.SetAsBox(p.width * this.SCALE, p.height * this.SCALE);
+		} else if (p.shape === 'circle') {
+			shape = new Box2D.b2CircleShape();
+			shape.set_m_radius(p.radius);
+		} else if (p.shape === 'mesh') {
+			var meshData = entity.meshDataComponent.meshData;
+
+			var verts = meshData.getAttributeBuffer('POSITION');
+			var i = 0;
+			var polygon = [];
+			var minY = Infinity;
+			var maxY = -Infinity;
+			var minX = Infinity;
+			var maxX = -Infinity;
+			while (i <= verts.length - 3) {
+				var x = verts[i];
+				var y = verts[++i];
+
+				if (y < minY) {
+					minY = y;
+				}
+				if (y > maxY) {
+					maxY = y;
+				}
+				if (x < minX) {
+					minX = x;
+				}
+				if (x > maxX) {
+					maxX = x;
+				}
+
+				++i;
+
+				entity.transformComponent.updateWorldTransform();
+				var v = new Box2D.b2Vec2(x, y);
+				polygon.push(v);
+			}
+
+			//polygon.sort(this.sortVertexesClockWise)
+
+			shape = this.createPolygonShape(polygon);
+			height = maxY - minY;
+			width = maxX - minX;
+		} else if (p.shape === 'polygon') {
+			var polygon = [];
+			var i = 0;
+			while (i <= p.vertices.length - 2) {
+				var v = new Box2D.b2Vec2(p.vertices[i], p.vertices[++i]);
+				polygon.push(v);
+				++i;
+			}
+			shape = this.createPolygonShape(polygon);
+		}
+
+		var fd = new Box2D.b2FixtureDef(); // fd?
+		fd.set_shape(shape);
+		fd.set_density(1.0);
+		fd.set_friction(p.friction);
+		fd.set_restitution(p.restitution);
+
+		var bd = new Box2D.b2BodyDef();
+
+		if (p.movable === true) {
+			bd.set_type(Box2D.b2_dynamicBody);
+		}
+
+		bd.set_position(new Box2D.b2Vec2(entity.transformComponent.transform.translation.x + p.offsetX, entity.transformComponent.transform.translation.y + p.offsetY));
+		var rotAngles = entity.transformComponent.transform.rotation.toAngles();
+		bd.set_angle(rotAngles.z);
+		var body = this.world.CreateBody(bd);
+		body.CreateFixture(fd);
+		body.SetLinearDamping(0.95);
+		body.SetAngularDamping(0.6);
+
+		p.body = body;
+		p.world = this.world;
+		// should not be stored on the entity level
+		entity.body = body;
+		entity.body.h = height;
+		entity.body.w = width;
+	};
+
+	Box2DSystem.prototype.deleted = function (entity) {
+		this.world.DestroyBody(entity.body);
+	};
+
+	Box2DSystem.prototype.process = function (entities, tpf) {
+		// do physics steps in a Worker
+		this.world.Step(tpf, this.velocityIterations, this.positionIterations);
+
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			var transformComponent = entity.transformComponent;
+			var transform = transformComponent.transform;
+			var position = entity.body.GetPosition();
+			var posX = position.get_x();
+			var posY = position.get_y();
+			//! schteppe: This is ugly. Should at least be possile to turn off. A more general implementation would be a "P2KillerPlane" component
+			if (posY < -10) {
+				entity.removeFromWorld();
+				continue;
+			}
+			transform.translation.x = posX - entity.box2DComponent.offsetX;
+			transform.translation.y = posY - entity.box2DComponent.offsetY;
+			transformComponent.setRotation(0, 0, entity.body.GetAngle());
+			transformComponent.setUpdated();
+		}
+	};
+
+	return Box2DSystem;
+})(goo.System);
+goo.Box2DComponent = (function (
+	Component,
+	ObjectUtil
+) {
+	'use strict';
+
+	/**
+	 * Box2DComponent
+	 * @extends Component
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
+	 */
+	function Box2DComponent(options) {
+		Component.apply(this, arguments);
+
+		this.type = 'Box2DComponent';
+
+		this.body = null;
+		this.world = null;
+		this.mass = 1;
+
+		ObjectUtil.copyOptions(this, options, {
+			shape: 'box',
+			width: 1,
+			height: 1,
+			radius: 1,
+			vertices: [0, 1, 2, 2, 0, 2],
+			movable: true,
+			friction: 1,
+			restitution: 0,
+			offsetX: 0,
+			offsetY: 0
+		});
+	}
+
+	Box2DComponent.prototype = Object.create(Component.prototype);
+	Box2DComponent.prototype.constructor = Box2DComponent;
+
+	return Box2DComponent;
+})(goo.Component,goo.ObjectUtil);
+if (typeof require === "function") {
+define("goo/addons/box2dpack/systems/Box2DSystem", [], function () { return goo.Box2DSystem; });
+define("goo/addons/box2dpack/components/Box2DComponent", [], function () { return goo.Box2DComponent; });
+}
