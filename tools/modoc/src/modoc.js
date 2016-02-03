@@ -21,6 +21,17 @@ var indexBuilder = require('./index-builder');
 var util = require('./util');
 var trunk = require('./trunk');
 
+// handlebars.registerHelper("debug", function(optionalValue) {
+//   console.log("Current Context");
+//   console.log("====================");
+//   console.log(this);
+ 
+//   if (optionalValue) {
+//     console.log("Value");
+//     console.log("====================");
+//     console.log(optionalValue);
+//   }
+// });
 
 function processArguments() {
 	if (process.argv.length < 6) {
