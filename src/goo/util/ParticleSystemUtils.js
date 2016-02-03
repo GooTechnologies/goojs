@@ -14,6 +14,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Provides utility methods for particle systems
 	 */
 	function ParticleSystemUtils() {}

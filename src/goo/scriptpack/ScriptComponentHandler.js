@@ -22,6 +22,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @hidden
 	 */
 	function ScriptComponentHandler() {

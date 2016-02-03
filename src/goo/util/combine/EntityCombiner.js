@@ -18,6 +18,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Runs a mesh combine optimization on the whole scene, based on
 	 * material, components etc
 	 * @param {World} gooWorld An instance of a goo.world object

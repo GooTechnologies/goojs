@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * An abstract transition state that blends between two other states.
 	 * @extends AbstractState
 	 * @private

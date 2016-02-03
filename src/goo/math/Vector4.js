@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Vector with 4 components
 	 * @extends Vector
 	 * @param {number} x

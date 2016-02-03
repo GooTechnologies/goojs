@@ -5,6 +5,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @private
 	 */
 	function TgaLoader() {

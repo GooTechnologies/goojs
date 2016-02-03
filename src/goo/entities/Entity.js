@@ -8,11 +8,13 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * An Entity is a generic container of data.
 	 * This data is wrapped in [Components]{@link Component}, which usually provide isolated features (transforms, geometries, materials, scripts and so on).
 	 * By setting components to an entity, the entity will get the functionality provided by the components.
 	 * For example, an entity with a {@link TransformComponent} and a {@link LightComponent} will be a light source in 3D space.
 	 * Note that when attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
+	 * @class
 	 * @param {World} world The {@link World} this entity will be part of after calling .addToWorld().
 	 * @param {string} [name] Entity name.
 	 * @param {number} [id] Entity id.

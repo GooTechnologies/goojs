@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap

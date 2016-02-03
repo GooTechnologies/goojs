@@ -8,6 +8,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Renders to the texture of the host object<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example
 	 * @param {Camera} camera The camera used for rendering

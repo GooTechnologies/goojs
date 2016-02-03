@@ -32,9 +32,9 @@ define([
 	 * @param {number} args.maxAzimuth in degress
 	 * @param {boolean} args.clampAzimuth If true, min and max azimuth are used.
 	 * @param {number} args.lookAtDistance distance to the lookatpoint
-	 * @param {number[3]} args.lookAtPoint the point in space to look
+	 * @param {number[]} args.lookAtPoint the point in space to look
 	 * @deprecated
-	 * @param {number[3]} args.spherical The start position of the camera in [radius, azimuth, ascent] form, where 0 azimuth looks to -X
+	 * @param {number[]} args.spherical The start position of the camera in [radius, azimuth, ascent] form, where 0 azimuth looks to -X
 	 * @deprecated
 	 */
 	function setup(args, ctx) {

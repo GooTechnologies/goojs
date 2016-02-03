@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * P2 physics component.
 	 * P2 supports convex and primitive shapes.
 	 * See also {@link P2System}

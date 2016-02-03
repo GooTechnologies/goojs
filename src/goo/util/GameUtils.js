@@ -4,6 +4,7 @@ function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Shims for standard gaming features
 	 * Only used to define the class. Should never be instantiated.
 	 */

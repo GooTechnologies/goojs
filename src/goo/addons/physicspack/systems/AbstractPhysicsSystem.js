@@ -10,6 +10,7 @@ function (
 
 	/**
 	 * Base class for physics systems.
+	 * @class
 	 * @extends System
 	 */
 	function AbstractPhysicsSystem() {

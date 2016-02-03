@@ -3,6 +3,7 @@ define(function () {
 
 	/**
 	 * Utilities for arrays and typed arrays
+	 * @class
 	 */
 	function ArrayUtils() {}
 

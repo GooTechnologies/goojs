@@ -28,6 +28,7 @@ function (
 	var tmpTransform = new Transform();
 
 	/**
+	 * @class
 	 * A physics system using [Cannon.js]{@link http://github.com/schteppe/cannon.js}.
 	 * @extends AbstractPhysicsSystem
 	 * @param {Object} [settings]
@@ -268,7 +269,7 @@ function (
 	 * @param  {number} [options.collisionMask=-1]
 	 * @param  {number} [options.collisionGroup=-1]
 	 * @param  {number} [options.skipBackFaces=true]
-	 * @param  {function (result: RaycastResult) : boolean} callback
+	 * @param  {function} callback A callback that gets a RaycastResult as single argument and should return a boolean.
 	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, maxDistance, options, callback) {

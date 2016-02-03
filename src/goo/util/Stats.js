@@ -4,6 +4,7 @@ define(
 	'use strict';
 
 	/**
+	 * @class
 	 * Shows render statistics
 	 * @example
 	 * this.stats = new Stats();

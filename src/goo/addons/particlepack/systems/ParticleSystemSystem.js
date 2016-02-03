@@ -7,6 +7,7 @@ define([
 
 	/**
 	 * System that runs all the ParticleSystemComponents.
+	 * @class
 	 * @extends System
 	 */
 	function ParticleSystemSystem() {
@@ -44,7 +45,7 @@ define([
 	 * @param  {Component} component
 	 */
 	ParticleSystemSystem.prototype.removedComponent = function (/*entity, component*/) {};
-	
+
 	/**
 	 * Pause all ParticleSystemComponents.
 	 */

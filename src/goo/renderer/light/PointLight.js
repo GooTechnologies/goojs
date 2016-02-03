@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A omni-directional source of light. So far it has the same effect as {@link Light}<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends Light

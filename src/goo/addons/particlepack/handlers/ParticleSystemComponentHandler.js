@@ -30,6 +30,8 @@ define([
 	'use strict';
 
 	/**
+	 * Handler for ParticleSystemComponents
+	 * @class
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -174,7 +176,7 @@ define([
 			z: createCurve(configsZ)
 		});
 	}
-	
+
 	function createVec4Curve(configsX, configsY, configsZ, configsW){
 		return new Vector4Curve({
 			x: createCurve(configsX),
@@ -273,7 +275,7 @@ define([
 			} else {
 				component.texture = null;
 			}
-			
+
 			if(promises.length){
 				return RSVP.all(promises).then(function () {
 					return component;

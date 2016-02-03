@@ -13,6 +13,7 @@ define([
 
 	/**
 	 * A component that embeds a LogicLayer and processes it every frame.
+	 * @class
 	 * @private
 	 */
 	function LogicComponent(entity) {

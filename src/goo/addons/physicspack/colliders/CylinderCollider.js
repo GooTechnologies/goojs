@@ -7,6 +7,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * Cylinder collider, that extends along the Z axis.
 	 * @param {Object} [settings]
 	 * @param {number} [settings.radius=0.5]

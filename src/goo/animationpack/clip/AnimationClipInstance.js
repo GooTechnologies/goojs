@@ -6,8 +6,8 @@ define([
 	'use strict';
 
 	/**
-	 * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
-	 *        instance, etc.
+	 * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the instance, etc.
+	 * @class
 	 */
 	function AnimationClipInstance () {
 		this._active = true;

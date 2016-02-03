@@ -6,9 +6,9 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @param {string} id
 	 * @param {Object} settings
-	 * @private
 	 */
 	function Action(id, settings) {
 		this.id = id;

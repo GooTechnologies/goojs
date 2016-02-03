@@ -1,0 +1,6970 @@
+<html>
+<body>
+
+	<h1>AbstractAnimationChannel</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AbstractAnimationChannel ( blendType , channelName , times )</p>
+	<ul>
+	
+		<li>blendType : string</li>
+	
+		<li>channelName : string</li>
+	
+		<li>times : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>AbstractColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AbstractColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.collider : Collider</li>
+	
+		<li>settings.isTrigger : boolean</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.bodyEntity : Entity</li>
+			<li>.collider : Collider</li>
+			<li>.isTrigger : boolean</li>
+			<li>.material : PhysicsMaterial</li>
+			<li>.worldCollider : Collider</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getBodyEntity()</li>
+			<li>.updateWorldCollider()</li>
+		</ul>
+	
+
+
+	<h1>AbstractPhysicsSystem</h1>
+	<p>Base class for physics systems.</p>
+
+	<h2>Constructor</h2>
+	<p>AbstractPhysicsSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>._activeColliderEntities : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setGravity()</li>
+		</ul>
+	
+
+
+	<h1>AbstractRigidBodyComponent</h1>
+	<p>Base class for rigid bodies.</p>
+
+	<h2>Constructor</h2>
+	<p>AbstractRigidBodyComponent (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.joints : Array</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addJoint()</li>
+			<li>.destroy()</li>
+			<li>.destroyJoint()</li>
+			<li>.emitInitialized()</li>
+			<li>.initialize()</li>
+			<li>.initializeJoint()</li>
+			<li>.removeJoint()</li>
+			<li>.traverseColliders()</li>
+		</ul>
+	
+
+
+	<h1>Action</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Action ( id , settings )</p>
+	<ul>
+	
+		<li>id : string</li>
+	
+		<li>settings : Object</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Ajax</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Ajax ( options , rootPath )</p>
+	<ul>
+	
+		<li>options : Object</li>
+	
+		<li>rootPath : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._loadImage()</li>
+			<li>.clear()</li>
+			<li>.load()</li>
+			<li>.prefill()</li>
+		</ul>
+	
+
+
+	<h1>AmmoComponent</h1>
+	<p>Adds Ammo physics to a Goo entity. Ammo is a powerful physics engine converted from the C language project Bullet. Use Ammo.js if you need to support any 3D shape (trimesh). Also see {@link AmmoSystem}.</p>
+
+	<h2>Constructor</h2>
+	<p>AmmoComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.mass : number</li>
+	
+		<li>settings.showBounds : boolean</li>
+	
+		<li>settings.useBounds : boolean</li>
+	
+		<li>settings.useWorldBounds : boolean</li>
+	
+		<li>settings.useWorldTransform : boolean</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>AmmoSystem</h1>
+	<p>Handles integration with Ammo.js. Depends on the global Ammo object, so load ammo.small.js using a script tag before using this system. Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld. See also {@link AmmoComponent}</p>
+
+	<h2>Constructor</h2>
+	<p>AmmoSystem ( settings )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.gravity : number</li>
+	
+		<li>settings.maxSubSteps : number</li>
+	
+		<li>settings.stepFrequency : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>AnimationClip</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationClip ( [channels] , name )</p>
+	<ul>
+	
+		<li>channels : Array</li>
+	
+		<li>name : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addChannel()</li>
+			<li>.findChannelByName()</li>
+			<li>.removeChannel()</li>
+		</ul>
+	
+
+
+	<h1>AnimationClipHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationClipHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>AnimationClipInstance</h1>
+	<p>Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the instance, etc.</p>
+
+	<h2>Constructor</h2>
+	<p>AnimationClipInstance (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getApplyTo()</li>
+			<li>.setTimeScale()</li>
+		</ul>
+	
+
+
+	<h1>AnimationComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationComponent ( pose )</p>
+	<ul>
+	
+		<li>pose : SkeletonPose</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.layers : Array.&lt;AnimationLayer&gt;</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addLayer()</li>
+			<li>.getStates()</li>
+			<li>.getTransitions()</li>
+			<li>.transitionTo()</li>
+		</ul>
+	
+
+
+	<h1>AnimationComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>AnimationLayer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationLayer ( id , name )</p>
+	<ul>
+	
+		<li>id : string</li>
+	
+		<li>name : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clearCurrentState()</li>
+			<li>.clone()</li>
+			<li>.getCurrentSourceData()</li>
+			<li>.getCurrentState()</li>
+			<li>.getStateById()</li>
+			<li>.getStateByName()</li>
+			<li>.getStates()</li>
+			<li>.getTransitions()</li>
+			<li>.setBlendWeight()</li>
+			<li>.setCurrentState()</li>
+			<li>.setCurrentStateById()</li>
+			<li>.setCurrentStateByName()</li>
+			<li>.setState()</li>
+			<li>.transitionTo()</li>
+		</ul>
+	
+
+
+	<h1>AnimationLayersHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationLayersHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._setInitialState()</li>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>AnimationStateHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AnimationStateHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._parseClipSource()</li>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>AnimationSystem</h1>
+	<p>Processes all entities with animation components, updating the animations</p>
+
+	<h2>Constructor</h2>
+	<p>AnimationSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ArrayUtils</h1>
+	<p>Utilities for arrays and typed arrays</p>
+
+	<h2>Constructor</h2>
+	<p>ArrayUtils (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.find()</li>
+			<li>.fromKeys()</li>
+			<li>.fromValues()</li>
+			<li>.getTypedArray()</li>
+		</ul>
+	
+
+
+	<h1>AtlasNode</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>AtlasNode ( h , w )</p>
+	<ul>
+	
+		<li>h : any</li>
+	
+		<li>w : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>AxisAlignedCamControlScript</h1>
+	<p>Axis aligned camera control script</p>
+
+	<h2>Constructor</h2>
+	<p>AxisAlignedCamControlScript (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BallJoint</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BallJoint ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.collideConnected : boolean</li>
+	
+		<li>settings.connectedEntity : Entity</li>
+	
+		<li>settings.localPivot : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.autoConfigureConnectedPivot : boolean</li>
+			<li>.connectedLocalPivot : Vector3</li>
+			<li>.localPivot : Vector3</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>BasicControlScript</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BasicControlScript ( domElement )</p>
+	<ul>
+	
+		<li>domElement : Element</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.movementSpeed : number</li>
+			<li>.rollSpeed : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>BinaryLerpSource</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BinaryLerpSource ( blendKey , sourceA , sourceB )</p>
+	<ul>
+	
+		<li>blendKey : number</li>
+	
+		<li>sourceA : ClipSource</li>
+	
+		<li>sourceB : ClipSource</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.blendFloatValues()</li>
+			<li>.combineSourceData()</li>
+			<li>.isActive()</li>
+			<li>.resetClips()</li>
+			<li>.setTime()</li>
+			<li>.setTimeScale()</li>
+		</ul>
+	
+
+
+	<h1>BloomPass</h1>
+	<p>Bloom post effect.</p>
+
+	<h2>Constructor</h2>
+	<p>BloomPass (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BlurPass</h1>
+	<p>Blur post effect.</p>
+
+	<h2>Constructor</h2>
+	<p>BlurPass (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BoundingBox</h1>
+	<p>Defines an axis-aligned cube that defines a container for a group of vertices of a particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. A typical usage is to allow the class define the center and radius by calling either containAABB or averagePoints. A call to computeFramePoint in turn calls containAABB.</p>
+
+	<h2>Constructor</h2>
+	<p>BoundingBox (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.containsPoint()</li>
+			<li>.copy()</li>
+		</ul>
+	
+
+
+	<h1>BoundingSphere</h1>
+	<p>BoundingSphere defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This sphere defines a radius and a center. A typical usage is to allow the class define the center and radius by calling either containAABB or averagePoints. A call to computeFramePoint in turn calls containAABB.</p>
+
+	<h2>Constructor</h2>
+	<p>BoundingSphere (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.containsPoint()</li>
+			<li>.copy()</li>
+		</ul>
+	
+
+
+	<h1>BoundingSphereOcclusionChecker</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BoundingSphereOcclusionChecker ( renderer )</p>
+	<ul>
+	
+		<li>renderer : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._isCoordinateInsideScreen()</li>
+			<li>._isOccluded()</li>
+			<li>._isSSAABBScanlineOccluded()</li>
+			<li>.occlusionCull()</li>
+		</ul>
+	
+
+
+	<h1>BoundingTree</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BoundingTree ( boundType )</p>
+	<ul>
+	
+		<li>boundType : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BoundingUpdateSystem</h1>
+	<p>Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components</p>
+
+	<h2>Constructor</h2>
+	<p>BoundingUpdateSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BoundingVolume</h1>
+	<p>Base class for boundings</p>
+
+	<h2>Constructor</h2>
+	<p>BoundingVolume (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>BoundingVolume.Outside : Outside</li>
+		</ul>
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.copy()</li>
+		</ul>
+	
+
+
+	<h1>BoundingVolumeMeshBuilder</h1>
+	<p>Provides methods for building bounding volume debug meshes</p>
+
+	<h2>Constructor</h2>
+	<p>BoundingVolumeMeshBuilder (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Box</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Box ( [height] , [length] , [textureMode] , [tileX] , [tileY] , [width] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>length : number</li>
+	
+		<li>textureMode : Enum</li>
+	
+		<li>tileX : number</li>
+	
+		<li>tileY : number</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Box.TextureModes : TextureModes</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.textureMode : Enum</li>
+			<li>.tileX : number</li>
+			<li>.tileY : number</li>
+			<li>.xExtent : number</li>
+			<li>.yExtent : number</li>
+			<li>.zExtent : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>Box2DComponent</h1>
+	<p>Box2DComponent.</p>
+
+	<h2>Constructor</h2>
+	<p>Box2DComponent (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Box2DSystem</h1>
+	<p>Physics simulation using Box2D. Depends on the global Box2D object. Load box2d.js using a &amp;lt;script&amp;gt; tag before using this system</p>
+
+	<h2>Constructor</h2>
+	<p>Box2DSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>BoxCollider</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BoxCollider ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.halfExtents : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.halfExtents : Vector3</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>BufferData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>BufferData ( data , target )</p>
+	<ul>
+	
+		<li>data : ArrayBuffer</li>
+	
+		<li>target : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.destroy()</li>
+			<li>.setDataNeedsRefresh()</li>
+			<li>.setDataUsage()</li>
+		</ul>
+	
+
+
+	<h1>BufferUtils</h1>
+	<p>Utility for creating index buffers of appropriate type</p>
+
+	<h2>Constructor</h2>
+	<p>BufferUtils (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.cloneTypedArray()</li>
+			<li>.createIndexBuffer()</li>
+		</ul>
+	
+
+
+	<h1>Bus</h1>
+	<p>A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.</p>
+
+	<h2>Constructor</h2>
+	<p>Bus (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addListener()</li>
+			<li>.emit()</li>
+			<li>.getLastMessageOn()</li>
+			<li>.removeAllOnChannel()</li>
+			<li>.removeChannelAndChildren()</li>
+			<li>.removeListener()</li>
+			<li>.removeListenerFromAllChannels()</li>
+		</ul>
+	
+
+
+	<h1>ButtonScript</h1>
+	<p>Attaches mouse events to an entity.</p>
+
+	<h2>Constructor</h2>
+	<p>ButtonScript (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Camera</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Camera ( [aspect] , [far] , [fov] , [near] )</p>
+	<ul>
+	
+		<li>aspect : number</li>
+	
+		<li>far : number</li>
+	
+		<li>fov : number</li>
+	
+		<li>near : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Camera.Inside : Inside</li>
+			<li>Camera.Intersects : Intersects</li>
+			<li>Camera.Outside : Outside</li>
+			<li>Camera.Parallel : Parallel</li>
+			<li>Camera.Perspective : Perspective</li>
+		</ul>
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.checkInverseModelView()</li>
+			<li>.checkInverseModelViewProjection()</li>
+			<li>.checkModelView()</li>
+			<li>.checkModelViewProjection()</li>
+			<li>.checkProjection()</li>
+			<li>.contains()</li>
+			<li>.copy()</li>
+			<li>.getFrustumCoordinates()</li>
+			<li>.getNormalizedDeviceCoordinates()</li>
+			<li>.getPickRay()</li>
+			<li>.getProjectionMatrix()</li>
+			<li>.getScreenCoordinates()</li>
+			<li>.getViewInverseMatrix()</li>
+			<li>.getViewMatrix()</li>
+			<li>.getViewProjectionInverseMatrix()</li>
+			<li>.getViewProjectionMatrix()</li>
+			<li>.getWorldCoordinates()</li>
+			<li>.getWorldPosition()</li>
+			<li>.lookAt()</li>
+			<li>.normalize()</li>
+			<li>.onFrameChange()</li>
+			<li>.onFrustumChange()</li>
+			<li>.pack()</li>
+			<li>.setFrame()</li>
+			<li>.setFrustum()</li>
+			<li>.setFrustumPerspective()</li>
+			<li>.setProjectionMode()</li>
+			<li>.setToObliqueMatrix()</li>
+			<li>.update()</li>
+			<li>.updateModelViewMatrix()</li>
+			<li>.updateProjectionMatrix()</li>
+		</ul>
+	
+
+
+	<h1>CameraComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CameraComponent ( camera )</p>
+	<ul>
+	
+		<li>camera : Camera</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.camera : Camera</li>
+			<li>.dirVec : Vector3</li>
+			<li>.leftVec : Vector3</li>
+			<li>.upVec : Vector3</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setUpVector()</li>
+			<li>.updateCamera()</li>
+		</ul>
+	
+
+
+	<h1>CameraComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CameraComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>CameraSystem</h1>
+	<p>Updates cameras/cameracomponents with their transform component transforms</p>
+
+	<h2>Constructor</h2>
+	<p>CameraSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.findMainCamera()</li>
+		</ul>
+	
+
+
+	<h1>CannonBoxColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonBoxColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.halfExtents : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CannonCylinderColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonCylinderColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.height : number</li>
+	
+		<li>settings.numSegments : number</li>
+	
+		<li>settings.radiusBottom : number</li>
+	
+		<li>settings.radiusTop : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CannonDistanceJointComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonDistanceJointComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.connectedBody : CannonRigidbodyComponent</li>
+	
+		<li>settings.distance : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CannonPlaneColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonPlaneColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CannonRigidbodyComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonRigidbodyComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.mass : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getCollider()</li>
+			<li>.setAngularVelocity()</li>
+			<li>.setForce()</li>
+			<li>.setPosition()</li>
+			<li>.setVelocity()</li>
+		</ul>
+	
+
+
+	<h1>CannonSphereColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonSphereColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.radius : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CannonSystem</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonSystem ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.broadphase : string</li>
+	
+		<li>settings.gravity : Vector3</li>
+	
+		<li>settings.stepFrequency : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setBroadphaseAlgorithm()</li>
+		</ul>
+	
+
+
+	<h1>CannonTerrainColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CannonTerrainColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.data : Object</li>
+	
+		<li>settings.shapeOptions : Object</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>CanvasUtils</h1>
+	<p>Provides useful canvas-related methods</p>
+
+	<h2>Constructor</h2>
+	<p>CanvasUtils (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getMatrixFromCanvas()</li>
+			<li>.loadCanvasFromPath()</li>
+			<li>.renderSvgToCanvas()</li>
+			<li>.svgDataToImage()</li>
+		</ul>
+	
+
+
+	<h1>Capabilities</h1>
+	<p>Enabled and stores webgl extensions and capabilities</p>
+
+	<h2>Constructor</h2>
+	<p>Capabilities (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getCapabilitiesString()</li>
+			<li>.init()</li>
+		</ul>
+	
+
+
+	<h1>ClipSource</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ClipSource ( [channelNames] , clip , [filter] )</p>
+	<ul>
+	
+		<li>channelNames : Array.&lt;string&gt;</li>
+	
+		<li>clip : AnimationClip</li>
+	
+		<li>filter : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.setFilter()</li>
+		</ul>
+	
+
+
+	<h1>Collider</h1>
+	<p>Base class for Colliders.</p>
+
+	<h2>Constructor</h2>
+	<p>Collider (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>ColliderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ColliderComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.collider : Collider</li>
+	
+		<li>settings.isTrigger : boolean</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.cannonBody : CANNON.Body</li>
+			<li>.cannonShape : CANNON.Body</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.destroy()</li>
+			<li>.initialize()</li>
+		</ul>
+	
+
+
+	<h1>ColliderComponentHandler</h1>
+	<p>For handling loading of collider components</p>
+
+	<h2>Constructor</h2>
+	<p>ColliderComponentHandler (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._remove()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>ColliderSystem</h1>
+	<p>Processes all entities with collider components, making sure they are up to date.</p>
+
+	<h2>Constructor</h2>
+	<p>ColliderSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Component</h1>
+	<p>Base class/module for all components.See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.</p>
+
+	<h2>Constructor</h2>
+	<p>Component (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.enabled : boolean</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>ComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._registerClass()</li>
+			<li>.getHandler()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>Composer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Composer ( renderTarget )</p>
+	<ul>
+	
+		<li>renderTarget : RenderTarget</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.deallocateBuffers()</li>
+			<li>.destroy()</li>
+		</ul>
+	
+
+
+	<h1>Cone</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Cone ( [height] , [radialSamples] , [radius] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>radialSamples : number</li>
+	
+		<li>radius : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>ConfigHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ConfigHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._registerClass()</li>
+			<li>.getHandler()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>ConstantCurve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ConstantCurve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.value : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.value : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>CssTransformComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CssTransformComponent ( domElement , faceCamera )</p>
+	<ul>
+	
+		<li>domElement : domElement</li>
+	
+		<li>faceCamera : boolean</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.domElement : </li>
+			<li>.faceCamera : boolean</li>
+			<li>.scale : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Curve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Curve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.timeOffset : number</li>
+	
+		<li>options.type : string</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.timeOffset : Number</li>
+			<li>.type : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.getIntegralValueAt()</li>
+			<li>.getValueAt()</li>
+			<li>.getVec4IntegralValueAt()</li>
+			<li>.getVec4ValueAt()</li>
+			<li>.numberToGLSL()</li>
+			<li>.toGLSL()</li>
+		</ul>
+	
+
+
+	<h1>Cylinder</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Cylinder ( [height] , [radialSamples] , [radiusBottom] , [radiusTop] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>radialSamples : number</li>
+	
+		<li>radiusBottom : number</li>
+	
+		<li>radiusTop : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>CylinderCollider</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>CylinderCollider ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.height : number</li>
+	
+		<li>settings.radius : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.height : number</li>
+			<li>.radius : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>DepthPass</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>DepthPass ( outShader , renderList )</p>
+	<ul>
+	
+		<li>outShader : any</li>
+	
+		<li>renderList : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>DirectionalLight</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>DirectionalLight ( [color] )</p>
+	<ul>
+	
+		<li>color : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.direction : Vector3</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Disk</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Disk ( [nSegments] , [pointiness] , [radius] )</p>
+	<ul>
+	
+		<li>nSegments : number</li>
+	
+		<li>pointiness : number</li>
+	
+		<li>radius : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>DofPass</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>DofPass ( outShader , renderList )</p>
+	<ul>
+	
+		<li>outShader : any</li>
+	
+		<li>renderList : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Dom3dComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Dom3dComponent ( domElement , settings )</p>
+	<ul>
+	
+		<li>domElement : domElement</li>
+	
+		<li>settings : Object</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.hidden : boolean</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Dom3dComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Dom3dComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>DoubleQuad</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>DoubleQuad ( [height] , [tileX] , [tileY] , [width] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>tileX : number</li>
+	
+		<li>tileY : number</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.tileX : number</li>
+			<li>.tileY : number</li>
+			<li>.xExtent : number</li>
+			<li>.yExtent : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>DynamicLoader</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>DynamicLoader ( options )</p>
+	<ul>
+	
+		<li>options : Object</li>
+	
+		<li>options.ajax : Ajax</li>
+	
+		<li>options.rootPath : string</li>
+	
+		<li>options.world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clear()</li>
+			<li>.getTypeForRef()</li>
+			<li>.load()</li>
+			<li>.preload()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>EdgeMap</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>EdgeMap ( edgeCount )</p>
+	<ul>
+	
+		<li>edgeCount : Number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Entity</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Entity ( [id] , [name] , world )</p>
+	<ul>
+	
+		<li>id : number</li>
+	
+		<li>name : string</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.hidden : boolean</li>
+			<li>.isVisible : boolean</li>
+			<li>.skip : boolean</li>
+			<li>.static : boolean</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addToWorld()</li>
+			<li>.clearAttribute()</li>
+			<li>.clearComponent()</li>
+			<li>.clearTag()</li>
+			<li>.getAttribute()</li>
+			<li>.getComponent()</li>
+			<li>.hasAttribute()</li>
+			<li>.hasComponent()</li>
+			<li>.hasTag()</li>
+			<li>.removeFromWorld()</li>
+			<li>.set()</li>
+			<li>.setAttribute()</li>
+			<li>.setComponent()</li>
+			<li>.setTag()</li>
+			<li>.toString()</li>
+		</ul>
+	
+
+
+	<h1>EntityCombiner</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>EntityCombiner ( gooWorld , [gridCount] , [keepEntities] , [removeOldData] )</p>
+	<ul>
+	
+		<li>gooWorld : World</li>
+	
+		<li>gridCount : number</li>
+	
+		<li>keepEntities : boolean</li>
+	
+		<li>removeOldData : boolean</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.combine()</li>
+		</ul>
+	
+
+
+	<h1>EntityCounter</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>EntityCounter ( [skipFrames] )</p>
+	<ul>
+	
+		<li>skipFrames : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.inject()</li>
+		</ul>
+	
+
+
+	<h1>EntityHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>EntityHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._getHandler()</li>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>EntityManager</h1>
+	<p>Main handler of all entities in the world.</p>
+
+	<h2>Constructor</h2>
+	<p>EntityManager (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.by : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clear()</li>
+			<li>.containsEntity()</li>
+			<li>.getEntities()</li>
+			<li>.getEntityById()</li>
+			<li>.getEntityByIndex()</li>
+			<li>.getEntityByName()</li>
+			<li>.getTopEntities()</li>
+			<li>.size()</li>
+		</ul>
+	
+
+
+	<h1>FadeTransitionState</h1>
+	<p>A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start of the transition. This is best used with two clips that have similar motions.</p>
+
+	<h2>Constructor</h2>
+	<p>FadeTransitionState (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.postUpdate()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>FilledPolygon</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>FilledPolygon ( indices , verts )</p>
+	<ul>
+	
+		<li>indices : Array</li>
+	
+		<li>verts : Array</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>FlatWaterRenderer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>FlatWaterRenderer ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.divider : boolean</li>
+	
+		<li>settings.normalsTexture : boolean</li>
+	
+		<li>settings.normalsUrl : boolean</li>
+	
+		<li>settings.updateWaterPlaneFromEntity : boolean</li>
+	
+		<li>settings.useRefraction : boolean</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>FrozenClipSource</h1>
+	<p>A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often for purposes of transitioning between two unrelated animations.</p>
+
+	<h2>Constructor</h2>
+	<p>FrozenClipSource ( frozenTime , source )</p>
+	<ul>
+	
+		<li>frozenTime : number</li>
+	
+		<li>source : ClipSource</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.getSourceData()</li>
+			<li>.isActive()</li>
+			<li>.resetClips()</li>
+			<li>.setTime()</li>
+			<li>.setTimeScale()</li>
+		</ul>
+	
+
+
+	<h1>FrozenTransitionState</h1>
+	<p>A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target state moves forward in time during the blend as normal.</p>
+
+	<h2>Constructor</h2>
+	<p>FrozenTransitionState (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.postUpdate()</li>
+			<li>.resetClips()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>FullscreenPass</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>FullscreenPass ( shader )</p>
+	<ul>
+	
+		<li>shader : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>GamepadComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>GamepadComponent ( gamepadIndex )</p>
+	<ul>
+	
+		<li>gamepadIndex : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>GamepadData</h1>
+	<p>Used for storing derived data from gamepads</p>
+
+	<h2>Constructor</h2>
+	<p>GamepadData (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.calculateStickDirection()</li>
+		</ul>
+	
+
+
+	<h1>GamepadSystem</h1>
+	<p>System for gamepads</p>
+
+	<h2>Constructor</h2>
+	<p>GamepadSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Gizmo</h1>
+	<p>Gizmo.</p>
+
+	<h2>Constructor</h2>
+	<p>Gizmo (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setSnap()</li>
+			<li>.updateRenderableTransform()</li>
+			<li>.updateTransforms()</li>
+		</ul>
+	
+
+
+	<h1>GooRunner</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>GooRunner ( [parameters] )</p>
+	<ul>
+	
+		<li>parameters : Object</li>
+	
+		<li>parameters.alpha : boolean</li>
+	
+		<li>parameters.antialias : boolean</li>
+	
+		<li>parameters.canvas : HTMLCanvasElement</li>
+	
+		<li>parameters.debugKeys : boolean</li>
+	
+		<li>parameters.logo : boolean</li>
+	
+		<li>parameters.manuallyStartGameLoop : boolean</li>
+	
+		<li>parameters.premultipliedAlpha : boolean</li>
+	
+		<li>parameters.preserveDrawingBuffer : boolean</li>
+	
+		<li>parameters.showStats : boolean</li>
+	
+		<li>parameters.stencil : boolean</li>
+	
+		<li>parameters.tpfSmoothingCount : boolean</li>
+	
+		<li>parameters.useDevicePixelRatio : boolean</li>
+	
+		<li>parameters.useTryCatch : boolean</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.callbacks : Array</li>
+			<li>.callbacksNextFrame : Array</li>
+			<li>.callbacksPreProcess : Array</li>
+			<li>.callbacksPreRender : Array</li>
+			<li>.renderer : Renderer</li>
+			<li>.useTryCatch : boolean</li>
+			<li>.world : World</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addEventListener()</li>
+			<li>.clear()</li>
+			<li>.pick()</li>
+			<li>.pickSync()</li>
+			<li>.removeEventListener()</li>
+			<li>.startGameLoop()</li>
+			<li>.stopGameLoop()</li>
+			<li>.takeSnapshot()</li>
+			<li>.triggerEvent()</li>
+		</ul>
+	
+
+
+	<h1>Grid</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Grid ( [height] , [width] , [xSegments] , [ySegments] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>width : number</li>
+	
+		<li>xSegments : number</li>
+	
+		<li>ySegments : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>GridRenderSystem</h1>
+	<p>Renders entities/renderables using a configurable partitioner for culling</p>
+
+	<h2>Constructor</h2>
+	<p>GridRenderSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>HeightMapBoundingScript</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>HeightMapBoundingScript ( matrixData )</p>
+	<ul>
+	
+		<li>matrixData : Array</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getMatrixData()</li>
+		</ul>
+	
+
+
+	<h1>HingeJoint</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>HingeJoint ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.collideConnected : boolean</li>
+	
+		<li>settings.connectedEntity : Entity</li>
+	
+		<li>settings.localAxis : Vector3</li>
+	
+		<li>settings.localPivot : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.autoConfigureConnectedPivot : boolean</li>
+			<li>.connectedLocalPivot : Vector3</li>
+			<li>.localAxis : Vector3</li>
+			<li>.localPivot : Vector3</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>HtmlComponent</h1>
+	<p>HTML Component.</p>
+
+	<h2>Constructor</h2>
+	<p>HtmlComponent (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.domElement : </li>
+			<li>.hidden : boolean</li>
+			<li>.useTransformComponent : boolean</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>HtmlComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>HtmlComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>InterpolatedFloatChannel</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>InterpolatedFloatChannel ( channelName , times , values )</p>
+	<ul>
+	
+		<li>channelName : string</li>
+	
+		<li>times : Array.&lt;number&gt;</li>
+	
+		<li>values : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getData()</li>
+		</ul>
+	
+
+
+	<h1>Joint</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Joint ( name )</p>
+	<ul>
+	
+		<li>name : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>JointChannel</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>JointChannel ( jointIndex , jointName , rotations , scales , times , translations )</p>
+	<ul>
+	
+		<li>jointIndex : number</li>
+	
+		<li>jointName : string</li>
+	
+		<li>rotations : Array.&lt;number&gt;</li>
+	
+		<li>scales : Array.&lt;number&gt;</li>
+	
+		<li>times : Array.&lt;number&gt;</li>
+	
+		<li>translations : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>JointChannel.JOINT_CHANNEL_NAME : JOINT_CHANNEL_NAME</li>
+		</ul>
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getData()</li>
+		</ul>
+	
+
+
+	<h1>JointData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>JointData ( [source] )</p>
+	<ul>
+	
+		<li>source : JointData</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.blend()</li>
+			<li>.set()</li>
+		</ul>
+	
+
+
+	<h1>LayerLerpBlender</h1>
+	<p>A layer blender that uses linear interpolation to merge the results of two layers.</p>
+
+	<h2>Constructor</h2>
+	<p>LayerLerpBlender (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getBlendedSourceData()</li>
+		</ul>
+	
+
+
+	<h1>LensFlareScript</h1>
+	<p>This script makes an entity shine with some lensflare effect.</p>
+
+	<h2>Constructor</h2>
+	<p>LensFlareScript (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>LerpCurve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LerpCurve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.curveA : Curve</li>
+	
+		<li>options.curveB : Curve</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.curveA : Curve</li>
+			<li>.curveB : Curve</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Light</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Light ( [color] )</p>
+	<ul>
+	
+		<li>color : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.color : Vector3</li>
+			<li>.intensity : number</li>
+			<li>.lightCookie : null</li>
+			<li>.shadowCaster : boolean</li>
+			<li>.shadowSettings : Object</li>
+			<li>.specularIntensity : number</li>
+			<li>.translation : Vector3</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>LightComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LightComponent ( light )</p>
+	<ul>
+	
+		<li>light : Light</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.hidden : boolean</li>
+			<li>.light : </li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>LightComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LightComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>LineRenderSystem</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LineRenderSystem ( world )</p>
+	<ul>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.renderList : Object</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._drawAxisLine()</li>
+			<li>.drawAABox()</li>
+			<li>.drawCross()</li>
+			<li>.drawLine()</li>
+		</ul>
+	
+
+
+	<h1>LineRenderer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LineRenderer ( world )</p>
+	<ul>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._addLine()</li>
+			<li>._clear()</li>
+			<li>._manageRenderList()</li>
+			<li>._remove()</li>
+			<li>._updateVertexData()</li>
+		</ul>
+	
+
+
+	<h1>LinearCurve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>LinearCurve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.k : number</li>
+	
+		<li>options.m : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.k : number</li>
+			<li>.m : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.fromStartEnd()</li>
+		</ul>
+	
+
+
+	<h1>LogicComponent</h1>
+	<p>A component that embeds a LogicLayer and processes it every frame.</p>
+
+	<h2>Constructor</h2>
+	<p>LogicComponent (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>MachineHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MachineHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ManagedTransformSource</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ManagedTransformSource ( [sourceName] )</p>
+	<ul>
+	
+		<li>sourceName : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.getRotation()</li>
+			<li>.getScale()</li>
+			<li>.getTranslation()</li>
+			<li>.initFromClip()</li>
+			<li>.setRotation()</li>
+			<li>.setScale()</li>
+			<li>.setTranslation()</li>
+		</ul>
+	
+
+
+	<h1>MarkerComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MarkerComponent ( entity )</p>
+	<ul>
+	
+		<li>entity : Entity</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Material</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Material ( [name] , [shaderDefinition] )</p>
+	<ul>
+	
+		<li>name : string</li>
+	
+		<li>shaderDefinition : Object</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.blendState : Object</li>
+			<li>.cullState : Object</li>
+			<li>.depthState : Object</li>
+			<li>.dualTransparency : boolean</li>
+			<li>.name : string</li>
+			<li>.offsetState : Object</li>
+			<li>.renderQueue : number</li>
+			<li>.shader : Shader</li>
+			<li>.uniforms : Object</li>
+			<li>.wireframe : boolean</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clearShaderCache()</li>
+			<li>.clone()</li>
+			<li>.createShader()</li>
+			<li>.getRenderQueue()</li>
+			<li>.getTexture()</li>
+			<li>.getTextureEntries()</li>
+			<li>.getTextures()</li>
+			<li>.removeTexture()</li>
+			<li>.setRenderQueue()</li>
+			<li>.setTexture()</li>
+		</ul>
+	
+
+
+	<h1>MaterialHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MaterialHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>Matrix</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Matrix ( cols , rows )</p>
+	<ul>
+	
+		<li>cols : number</li>
+	
+		<li>rows : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Matrix.add : add</li>
+			<li>Matrix.combine : combine</li>
+			<li>Matrix.copy : copy</li>
+			<li>Matrix.div : div</li>
+			<li>Matrix.equals : equals</li>
+			<li>Matrix.mul : mul</li>
+			<li>Matrix.sub : sub</li>
+			<li>Matrix.transpose : transpose</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.add : </li>
+			<li>.clone : </li>
+			<li>.combine : </li>
+			<li>.copy : </li>
+			<li>.data : Float32Array</li>
+			<li>.div : </li>
+			<li>.equals : </li>
+			<li>.isNormal : </li>
+			<li>.isOrthogonal : </li>
+			<li>.isOrthonormal : </li>
+			<li>.mul : </li>
+			<li>.set : </li>
+			<li>.sub : </li>
+			<li>.toString : </li>
+			<li>.transpose : </li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Matrix2</h1>
+	<p>Matrix with 2x2 components.</p>
+
+	<h2>Constructor</h2>
+	<p>Matrix2 (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Matrix2.add : add</li>
+			<li>Matrix2.combine : combine</li>
+			<li>Matrix2.div : div</li>
+			<li>Matrix2.mul : mul</li>
+			<li>Matrix2.sub : sub</li>
+			<li>Matrix2.transpose : transpose</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.combine : </li>
+			<li>.div : </li>
+			<li>.set : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.clone()</li>
+			<li>.copy()</li>
+			<li>.determinant()</li>
+			<li>.equals()</li>
+			<li>.invert()</li>
+			<li>.invert()</li>
+			<li>.isNormal()</li>
+			<li>.isOrthogonal()</li>
+			<li>.isOrthonormal()</li>
+			<li>.mul()</li>
+			<li>.mul2()</li>
+			<li>.scale()</li>
+			<li>.setArray()</li>
+			<li>.setIdentity()</li>
+			<li>.sub()</li>
+			<li>.transpose()</li>
+		</ul>
+	
+
+
+	<h1>Matrix3</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Matrix3 ( arguments )</p>
+	<ul>
+	
+		<li>arguments : Matrix3</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Matrix3.IDENTITY : IDENTITY</li>
+			<li>Matrix3.add : add</li>
+			<li>Matrix3.combine : combine</li>
+			<li>Matrix3.div : div</li>
+			<li>Matrix3.mul : mul</li>
+			<li>Matrix3.sub : sub</li>
+			<li>Matrix3.transpose : transpose</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.applyPost : </li>
+			<li>.applyPre : </li>
+			<li>.combine : </li>
+			<li>.div : </li>
+			<li>.set : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.clone()</li>
+			<li>.copy()</li>
+			<li>.copyMatrix4()</li>
+			<li>.copyQuaternion()</li>
+			<li>.determinant()</li>
+			<li>.equals()</li>
+			<li>.fromAngleNormalAxis()</li>
+			<li>.fromAngles()</li>
+			<li>.invert()</li>
+			<li>.invert()</li>
+			<li>.isNormal()</li>
+			<li>.isOrthogonal()</li>
+			<li>.isOrthonormal()</li>
+			<li>.lookAt()</li>
+			<li>.mul()</li>
+			<li>.mul2()</li>
+			<li>.multiplyDiagonalPost()</li>
+			<li>.rotateX()</li>
+			<li>.rotateY()</li>
+			<li>.rotateZ()</li>
+			<li>.scale()</li>
+			<li>.setArray()</li>
+			<li>.setIdentity()</li>
+			<li>.sub()</li>
+			<li>.toAngles()</li>
+			<li>.transpose()</li>
+		</ul>
+	
+
+
+	<h1>Matrix4</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Matrix4 ( arguments )</p>
+	<ul>
+	
+		<li>arguments : Matrix4</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Matrix4.add : add</li>
+			<li>Matrix4.combine : combine</li>
+			<li>Matrix4.div : div</li>
+			<li>Matrix4.mul : mul</li>
+			<li>Matrix4.sub : sub</li>
+			<li>Matrix4.transpose : transpose</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.applyPost : </li>
+			<li>.applyPostPoint : </li>
+			<li>.applyPostVector : </li>
+			<li>.applyPre : </li>
+			<li>.combine : </li>
+			<li>.div : </li>
+			<li>.set : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.clone()</li>
+			<li>.copy()</li>
+			<li>.determinant()</li>
+			<li>.equals()</li>
+			<li>.getRotation()</li>
+			<li>.getScale()</li>
+			<li>.getTranslation()</li>
+			<li>.invert()</li>
+			<li>.invert()</li>
+			<li>.isNormal()</li>
+			<li>.isOrthogonal()</li>
+			<li>.isOrthonormal()</li>
+			<li>.mul()</li>
+			<li>.mul2()</li>
+			<li>.scale()</li>
+			<li>.setArray()</li>
+			<li>.setIdentity()</li>
+			<li>.setRotationFromQuaternion()</li>
+			<li>.setRotationFromVector()</li>
+			<li>.setScale()</li>
+			<li>.setTranslation()</li>
+			<li>.sub()</li>
+			<li>.transpose()</li>
+		</ul>
+	
+
+
+	<h1>MeshCollider</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MeshCollider ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.meshData : MeshData</li>
+	
+		<li>settings.scale : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.meshData : MeshData</li>
+			<li>.scale : Vector3</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>MeshData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MeshData ( attributeMap , indexCount , vertexCount )</p>
+	<ul>
+	
+		<li>attributeMap : Object</li>
+	
+		<li>indexCount : number</li>
+	
+		<li>vertexCount : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>MeshData.COLOR : COLOR</li>
+			<li>MeshData.JOINTIDS : JOINTIDS</li>
+			<li>MeshData.NORMAL : NORMAL</li>
+			<li>MeshData.POSITION : POSITION</li>
+			<li>MeshData.TANGENT : TANGENT</li>
+			<li>MeshData.TEXCOORD0 : TEXCOORD0</li>
+			<li>MeshData.TEXCOORD1 : TEXCOORD1</li>
+			<li>MeshData.TEXCOORD2 : TEXCOORD2</li>
+			<li>MeshData.TEXCOORD3 : TEXCOORD3</li>
+			<li>MeshData.WEIGHTS : WEIGHTS</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.indexCount : number</li>
+			<li>.indexLengths : Array.&lt;number&gt;</li>
+			<li>.indexModes : Array.&lt;string&gt;</li>
+			<li>.vertexCount : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.applyFunction()</li>
+			<li>.applyTransform()</li>
+			<li>.buildFlatMeshData()</li>
+			<li>.buildWireframeData()</li>
+			<li>.clone()</li>
+			<li>.createAttribute()</li>
+			<li>.defaultMap()</li>
+			<li>.destroy()</li>
+			<li>.getNormalsMeshData()</li>
+			<li>.rebuildData()</li>
+			<li>.setVertexDataUpdated()</li>
+		</ul>
+	
+
+
+	<h1>MeshDataComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MeshDataComponent ( meshData )</p>
+	<ul>
+	
+		<li>meshData : MeshData</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.autoCompute : boolean</li>
+			<li>.currentPose : SkeletonPose</li>
+			<li>.meshData : MeshData</li>
+			<li>.modelBound : BoundingVolume</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.computeBoundFromPoints()</li>
+			<li>.setModelBound()</li>
+		</ul>
+	
+
+
+	<h1>MeshDataComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MeshDataComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._remove()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>MeshRendererComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>MeshRendererComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>OccludeeComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>OccludeeComponent ( meshData , useBoundingBox )</p>
+	<ul>
+	
+		<li>meshData : any</li>
+	
+		<li>useBoundingBox : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>OccludeeTriangleData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>OccludeeTriangleData ( parameters )</p>
+	<ul>
+	
+		<li>parameters : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addIndices()</li>
+			<li>.clear()</li>
+		</ul>
+	
+
+
+	<h1>OccluderComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>OccluderComponent ( meshData )</p>
+	<ul>
+	
+		<li>meshData : MeshData</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>OccluderTriangleData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>OccluderTriangleData ( parameters )</p>
+	<ul>
+	
+		<li>parameters : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addIndices()</li>
+			<li>.addVertex()</li>
+			<li>.setCountersToNewEntity()</li>
+		</ul>
+	
+
+
+	<h1>P2Component</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>P2Component ( [options] )</p>
+	<ul>
+	
+		<li>options : Object</li>
+	
+		<li>options.angularDamping : number</li>
+	
+		<li>options.linearDamping : number</li>
+	
+		<li>options.mass : number</li>
+	
+		<li>options.offsetAngleX : number</li>
+	
+		<li>options.offsetAngleY : number</li>
+	
+		<li>options.offsetAngleZ : number</li>
+	
+		<li>options.offsetX : number</li>
+	
+		<li>options.offsetY : number</li>
+	
+		<li>options.offsetZ : number</li>
+	
+		<li>options.scale : number</li>
+	
+		<li>options.shapes : Array</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>P2System</h1>
+	<p>Handles integration with p2.js. Depends on the global p2 object, so load p2.js using a script tag before using this system. See also {@link P2Component}.</p>
+
+	<h2>Constructor</h2>
+	<p>P2System ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.gravity : Array.&lt;number&gt;</li>
+	
+		<li>settings.stepFrequency : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ParticleComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ParticleComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.emitters : Array</li>
+	
+		<li>settings.particleCount : number</li>
+	
+		<li>settings.timeline : Array</li>
+	
+		<li>settings.uRange : number</li>
+	
+		<li>settings.vRange : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ParticleData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ParticleData ( particleComponent )</p>
+	<ul>
+	
+		<li>particleComponent : ParticleSystemComponent</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.active : number</li>
+			<li>.component : number</li>
+			<li>.emitRandom : number</li>
+			<li>.emitTime : number</li>
+			<li>.index : number</li>
+			<li>.lifeTime : number</li>
+			<li>.loopAfter : number</li>
+			<li>.sortValue : number</li>
+			<li>.startAngle : number</li>
+			<li>.startDirection : Vector3</li>
+			<li>.startPosition : Vector3</li>
+			<li>.startSize : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getWorldPosition()</li>
+		</ul>
+	
+
+
+	<h1>ParticleDebugRenderSystem</h1>
+	<p>Renders all ParticleSystemComponents in the scene.</p>
+
+	<h2>Constructor</h2>
+	<p>ParticleDebugRenderSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.renderAll : boolean</li>
+			<li>.selection : EntitySelection</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>ParticleEmitter</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ParticleEmitter ( [options] )</p>
+	<ul>
+	
+		<li>options : Object</li>
+	
+		<li>options.emissionPoint : function</li>
+	
+		<li>options.getEmissionVelocity : function</li>
+	
+		<li>options.getParticleBillboardVectors : function</li>
+	
+		<li>options.influences : Array.&lt;ParticleInfluence&gt;</li>
+	
+		<li>options.maxLifetime : number</li>
+	
+		<li>options.minLifetime : number</li>
+	
+		<li>options.releaseRatePerSecond : number</li>
+	
+		<li>options.timeline : Array.&lt;{color, mass, uvIndex, color, size, spin}&gt;</li>
+	
+		<li>options.totalParticlesToSpawn : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.CAMERA_BILLBOARD_FUNC()</li>
+		</ul>
+	
+
+
+	<h1>ParticleInfluence</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ParticleInfluence ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.apply : function</li>
+	
+		<li>settings.enabled : boolean</li>
+	
+		<li>settings.prepare : function</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.apply : function</li>
+			<li>.enabled : boolean</li>
+			<li>.prepare : function</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>ParticleSystemComponent</h1>
+	<p>A Particle System component simulates things like clouds and flames by generating and animating large numbers of small 2D images in the scene.</p>
+
+	<h2>Constructor</h2>
+	<p>ParticleSystemComponent ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.billboard : boolean</li>
+	
+		<li>options.blending : number</li>
+	
+		<li>options.boxExtents : Vector3</li>
+	
+		<li>options.colorOverLifetime : Curve</li>
+	
+		<li>options.coneAngle : number</li>
+	
+		<li>options.coneEmitFrom : string</li>
+	
+		<li>options.coneLength : number</li>
+	
+		<li>options.coneRadius : number</li>
+	
+		<li>options.depthTest : boolean</li>
+	
+		<li>options.depthWrite : boolean</li>
+	
+		<li>options.discardThreshold : number</li>
+	
+		<li>options.duration : number</li>
+	
+		<li>options.gravity : Vector3</li>
+	
+		<li>options.localSpace : number</li>
+	
+		<li>options.localVelocityOverLifetime : Curve</li>
+	
+		<li>options.loop : boolean</li>
+	
+		<li>options.maxParticles : number</li>
+	
+		<li>options.paused : boolean</li>
+	
+		<li>options.preWarm : boolean</li>
+	
+		<li>options.randomDirection : boolean</li>
+	
+		<li>options.renderQueue : number</li>
+	
+		<li>options.rotationSpeedOverLifetime : Curve</li>
+	
+		<li>options.rotationSpeedScale : number</li>
+	
+		<li>options.seed : number</li>
+	
+		<li>options.shapeType : string</li>
+	
+		<li>options.sizeOverLifetime : Curve</li>
+	
+		<li>options.sphereEmitFromShell : boolean</li>
+	
+		<li>options.startAngle : Curve</li>
+	
+		<li>options.startAngleScale : number</li>
+	
+		<li>options.startColor : Curve</li>
+	
+		<li>options.startColorScale : Vector4</li>
+	
+		<li>options.startLifetime : Curve</li>
+	
+		<li>options.startSize : Curve</li>
+	
+		<li>options.startSizeScale : number</li>
+	
+		<li>options.startSpeed : Curve</li>
+	
+		<li>options.texture : number</li>
+	
+		<li>options.textureAnimationCycles : number</li>
+	
+		<li>options.textureFrameOverLifetime : Curve</li>
+	
+		<li>options.textureTilesX : number</li>
+	
+		<li>options.textureTilesY : number</li>
+	
+		<li>options.time : number</li>
+	
+		<li>options.worldVelocityOverLifetime : Curve</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>ParticleSystemComponent.SORT_CAMERA_DISTANCE : SORT_CAMERA_DISTANCE</li>
+			<li>ParticleSystemComponent.SORT_NONE : SORT_NONE</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.autoPlay : boolean</li>
+			<li>.billboard : boolean</li>
+			<li>.blending : string</li>
+			<li>.boxExtents : Vector3</li>
+			<li>.colorOverLifetime : Vector4Curve</li>
+			<li>.coneAngle : number</li>
+			<li>.coneEmitFrom : string</li>
+			<li>.coneLength : number</li>
+			<li>.coneRadius : number</li>
+			<li>.depthTest : boolean</li>
+			<li>.depthWrite : boolean</li>
+			<li>.discardThreshold : number</li>
+			<li>.duration : number</li>
+			<li>.emissionRate : Curve</li>
+			<li>.entity : Entity</li>
+			<li>.gravity : Vector3</li>
+			<li>.localSpace : boolean</li>
+			<li>.localVelocityOverLifetime : Vector3Curve</li>
+			<li>.loop : boolean</li>
+			<li>.maxParticles : number</li>
+			<li>.mesh : MeshData</li>
+			<li>.particles : Array.&lt;ParticleData&gt;</li>
+			<li>.particlesSorted : Array.&lt;ParticleData&gt;</li>
+			<li>.paused : boolean</li>
+			<li>.preWarm : boolean</li>
+			<li>.randomDirection : boolean</li>
+			<li>.renderQueue : number</li>
+			<li>.rotationSpeedOverLifetime : Curve</li>
+			<li>.rotationSpeedScale : number</li>
+			<li>.seed : number</li>
+			<li>.shapeType : string</li>
+			<li>.sizeOverLifetime : Curve</li>
+			<li>.sortMode : string</li>
+			<li>.sphereEmitFromShell : boolean</li>
+			<li>.startAngle : Curve</li>
+			<li>.startAngleScale : number</li>
+			<li>.startColor : Vector4Curve</li>
+			<li>.startColorScale : Vector4</li>
+			<li>.startLifetime : Curve</li>
+			<li>.startSize : Curve</li>
+			<li>.startSizeScale : number</li>
+			<li>.startSpeed : Curve</li>
+			<li>.texture : Texture</li>
+			<li>.textureAnimationCycles : number</li>
+			<li>.textureFrameOverLifetime : Curve</li>
+			<li>.textureTilesX : number</li>
+			<li>.textureTilesY : number</li>
+			<li>.time : number</li>
+			<li>.worldVelocityOverLifetime : Vector3Curve</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.emitOne()</li>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.resume()</li>
+			<li>.setBoxExtents()</li>
+			<li>.stop()</li>
+		</ul>
+	
+
+
+	<h1>ParticleSystemComponentHandler</h1>
+	<p>Handler for ParticleSystemComponents</p>
+
+	<h2>Constructor</h2>
+	<p>ParticleSystemComponentHandler (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>ParticleSystemSystem</h1>
+	<p>System that runs all the ParticleSystemComponents.</p>
+
+	<h2>Constructor</h2>
+	<p>ParticleSystemSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.resume()</li>
+		</ul>
+	
+
+
+	<h1>Pass</h1>
+	<p>Base pass class</p>
+
+	<h2>Constructor</h2>
+	<p>Pass (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>PhysicsBoxDebugShape</h1>
+	<p>A wireframe mesh indicating the position and orientation of a BoxCollider.</p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsBoxDebugShape (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.buildWireframeData()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>PhysicsCylinderDebugShape</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsCylinderDebugShape ( [numSegments] )</p>
+	<ul>
+	
+		<li>numSegments : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.buildWireframeData()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>PhysicsDebugRenderSystem</h1>
+	<p>Renders all ColliderComponents in the scene.</p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsDebugRenderSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.renderAll : boolean</li>
+			<li>.selection : EntitySelection</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>PhysicsJoint</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsJoint ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.collideConnected : boolean</li>
+	
+		<li>settings.connectedEntity : Entity</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.collideConnected : boolean</li>
+			<li>.connectedEntity : Entity</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>PhysicsMaterial</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsMaterial ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.friction : number</li>
+	
+		<li>settings.restitution : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.friction : number</li>
+			<li>.restitution : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>PhysicsPlaneDebugShape</h1>
+	<p>A wireframe mesh indicating the position and orientation of a PlaneCollider.</p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsPlaneDebugShape (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.buildWireframeData()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>PhysicsSphereDebugShape</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsSphereDebugShape ( [numSegments] )</p>
+	<ul>
+	
+		<li>numSegments : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.buildWireframeData()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>PhysicsSystem</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PhysicsSystem ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.gravity : Vector3</li>
+	
+		<li>settings.maxSubSteps : number</li>
+	
+		<li>settings.stepFrequency : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.cannonWorld : CANNON.World</li>
+			<li>.maxSubSteps : number</li>
+			<li>.stepFrequency : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getGravity()</li>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.raycastAll()</li>
+			<li>.raycastAny()</li>
+			<li>.raycastClosest()</li>
+			<li>.resume()</li>
+			<li>.setGravity()</li>
+			<li>.stop()</li>
+		</ul>
+	
+
+
+	<h1>Plane</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Plane ( constant , normal )</p>
+	<ul>
+	
+		<li>constant : number</li>
+	
+		<li>normal : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.copy()</li>
+			<li>.pseudoDistance()</li>
+			<li>.rayIntersect()</li>
+			<li>.reflectVector()</li>
+			<li>.setPlanePoints()</li>
+		</ul>
+	
+
+
+	<h1>PlaneCollider</h1>
+	<p>Plane collider, that faces in the Z direction.</p>
+
+	<h2>Constructor</h2>
+	<p>PlaneCollider (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>PointLight</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PointLight ( [color] )</p>
+	<ul>
+	
+		<li>color : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.range : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>PolyBoundingScript</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PolyBoundingScript ( collidables )</p>
+	<ul>
+	
+		<li>collidables : Array</li>
+	
+		<li>collidables[].bottom : number</li>
+	
+		<li>collidables[].poly : Array.&lt;number&gt;</li>
+	
+		<li>collidables[].top : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addCollidable()</li>
+			<li>.inside()</li>
+			<li>.removeAllAt()</li>
+			<li>.run()</li>
+		</ul>
+	
+
+
+	<h1>PolyCurve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PolyCurve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.segments : Array.&lt;Curve&gt;</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.segments : Array.&lt;Curve&gt;</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.addSegment()</li>
+			<li>.getIntegralValueAt()</li>
+			<li>.getValueAt()</li>
+			<li>.integralToGLSL()</li>
+			<li>.removeSegment()</li>
+			<li>.sort()</li>
+			<li>.toGLSL()</li>
+		</ul>
+	
+
+
+	<h1>PolyLine</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PolyLine ( [closed] , [verts] )</p>
+	<ul>
+	
+		<li>closed : boolean</li>
+	
+		<li>verts : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.concat()</li>
+			<li>.fromCubicBezier()</li>
+			<li>.fromCubicSpline()</li>
+			<li>.lathe()</li>
+			<li>.mul()</li>
+			<li>.pipe()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>Pool</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Pool ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.create : function</li>
+	
+		<li>settings.destroy : function</li>
+	
+		<li>settings.init : function</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.get()</li>
+			<li>.release()</li>
+			<li>.resize()</li>
+		</ul>
+	
+
+
+	<h1>PortalComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PortalComponent ( camera , [height] , options , [overrideMaterial] )</p>
+	<ul>
+	
+		<li>camera : Camera</li>
+	
+		<li>height : number</li>
+	
+		<li>options : Object</li>
+	
+		<li>options.alwaysRender : boolean</li>
+	
+		<li>options.autoUpdate : boolean</li>
+	
+		<li>options.preciseRecursion : boolean</li>
+	
+		<li>overrideMaterial : Material</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.camera : Camera</li>
+			<li>.target : RenderTarget</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.requestUpdate()</li>
+		</ul>
+	
+
+
+	<h1>PortalSystem</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PortalSystem ( renderSystem , renderer )</p>
+	<ul>
+	
+		<li>renderSystem : RenderSystem</li>
+	
+		<li>renderer : Renderer</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>PosteffectsHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>PosteffectsHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._remove()</li>
+			<li>._update()</li>
+			<li>._updateEffect()</li>
+		</ul>
+	
+
+
+	<h1>ProjectedGrid</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ProjectedGrid ( [densityX] , [densityY] )</p>
+	<ul>
+	
+		<li>densityX : number</li>
+	
+		<li>densityY : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>ProjectedGridWaterRenderer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ProjectedGridWaterRenderer ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.divider : boolean</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ProximitySystem</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ProximitySystem ( renderSystem , renderer )</p>
+	<ul>
+	
+		<li>renderSystem : RenderSystem</li>
+	
+		<li>renderer : Renderer</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Quad</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Quad ( [height] , [tileX] , [tileY] , [width] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>tileX : number</li>
+	
+		<li>tileY : number</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.tileX : number</li>
+			<li>.tileY : number</li>
+			<li>.xExtent : number</li>
+			<li>.yExtent : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>QuadComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>QuadComponent ( [image] , [settings] )</p>
+	<ul>
+	
+		<li>image : HTMLImageElement</li>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.height : number</li>
+	
+		<li>settings.preserveAspectRatio : number</li>
+	
+		<li>settings.tileX : number</li>
+	
+		<li>settings.tileY : number</li>
+	
+		<li>settings.width : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.height : </li>
+			<li>.material : Material</li>
+			<li>.preserveAspectRatio : </li>
+			<li>.tileX : </li>
+			<li>.tileY : </li>
+			<li>.width : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuildMeshData()</li>
+			<li>.setMaterial()</li>
+		</ul>
+	
+
+
+	<h1>QuadComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>QuadComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>Quaternion</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Quaternion ( w , x , y , z )</p>
+	<ul>
+	
+		<li>w : number</li>
+	
+		<li>x : number</li>
+	
+		<li>y : number</li>
+	
+		<li>z : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Quaternion.add : add</li>
+			<li>Quaternion.div : div</li>
+			<li>Quaternion.mul : mul</li>
+			<li>Quaternion.scalarAdd : scalarAdd</li>
+			<li>Quaternion.scalarDiv : scalarDiv</li>
+			<li>Quaternion.scalarMul : scalarMul</li>
+			<li>Quaternion.scalarSub : scalarSub</li>
+			<li>Quaternion.sub : sub</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.add : </li>
+			<li>.div : </li>
+			<li>.magnitude : </li>
+			<li>.magnitudeSquared : </li>
+			<li>.scalarAdd : </li>
+			<li>.scalarDiv : </li>
+			<li>.scalarMul : </li>
+			<li>.scalarSub : </li>
+			<li>.setArray : </li>
+			<li>.setVector : </li>
+			<li>.sub : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.conjugate()</li>
+			<li>.dot()</li>
+			<li>.fromAngleAxis()</li>
+			<li>.fromAngleNormalAxis()</li>
+			<li>.fromRotationMatrix()</li>
+			<li>.fromVectorToVector()</li>
+			<li>.invert()</li>
+			<li>.mul()</li>
+			<li>.negate()</li>
+			<li>.setDirect()</li>
+			<li>.slerp()</li>
+			<li>.slerp()</li>
+			<li>.toAngleAxis()</li>
+			<li>.toRotationMatrix()</li>
+		</ul>
+	
+
+
+	<h1>RaycastResult</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>RaycastResult ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.distance : number</li>
+	
+		<li>settings.entity : Entity</li>
+	
+		<li>settings.normal : Vector3</li>
+	
+		<li>settings.point : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.distance : number</li>
+			<li>.entity : Entity</li>
+			<li>.normal : Vector3</li>
+			<li>.point : Vector3</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>Rectangle</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Rectangle ( h , w , x , y )</p>
+	<ul>
+	
+		<li>h : number</li>
+	
+		<li>w : number</li>
+	
+		<li>x : number</li>
+	
+		<li>y : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>RenderTarget</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>RenderTarget ( height , options , width )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>options : Object</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.destroy()</li>
+			<li>.getSizeInMemory()</li>
+		</ul>
+	
+
+
+	<h1>Renderer</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Renderer ( parameters )</p>
+	<ul>
+	
+		<li>parameters : Object</li>
+	
+		<li>parameters.alpha : boolean</li>
+	
+		<li>parameters.antialias : boolean</li>
+	
+		<li>parameters.canvas : canvas</li>
+	
+		<li>parameters.onError : function</li>
+	
+		<li>parameters.premultipliedAlpha : boolean</li>
+	
+		<li>parameters.preserveDrawingBuffer : boolean</li>
+	
+		<li>parameters.stencil : boolean</li>
+	
+		<li>parameters.useDevicePixelRatio : boolean</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.context : WebGLRenderingContext</li>
+			<li>.currentHeight : number</li>
+			<li>.currentWidth : number</li>
+			<li>.devicePixelRatio : number</li>
+			<li>.rendererRecord : RendererRecord</li>
+			<li>.shaderPrecision : string</li>
+			<li>.viewportHeight : number</li>
+			<li>.viewportWidth : number</li>
+			<li>.viewportX : number</li>
+			<li>.viewportY : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._checkDualTransparency()</li>
+			<li>._deallocateMeshData()</li>
+			<li>._deallocateRenderTarget()</li>
+			<li>._deallocateShader()</li>
+			<li>._deallocateTexture()</li>
+			<li>._drawBuffers()</li>
+			<li>._override()</li>
+			<li>.bindData()</li>
+			<li>.bindTexture()</li>
+			<li>.bindVertexAttribute()</li>
+			<li>.callShaderProcessors()</li>
+			<li>.checkRescale()</li>
+			<li>.checkResize()</li>
+			<li>.clear()</li>
+			<li>.clearShaderCache()</li>
+			<li>.configureRenderInfo()</li>
+			<li>.drawArraysVBO()</li>
+			<li>.drawElementsVBO()</li>
+			<li>.establishContext()</li>
+			<li>.findOrCacheMaterialShader()</li>
+			<li>.finish()</li>
+			<li>.flush()</li>
+			<li>.loadCompressedTexture()</li>
+			<li>.onDebugError()</li>
+			<li>.pick()</li>
+			<li>.precompileShaders()</li>
+			<li>.preloadMaterials()</li>
+			<li>.preloadTexture()</li>
+			<li>.readPixels()</li>
+			<li>.readTexturePixels()</li>
+			<li>.render()</li>
+			<li>.renderMesh()</li>
+			<li>.renderMeshMaterial()</li>
+			<li>.renderToPick()</li>
+			<li>.setBoundBuffer()</li>
+			<li>.setClearColor()</li>
+			<li>.setRenderTarget()</li>
+			<li>.setSize()</li>
+			<li>.setViewport()</li>
+			<li>.setupDebugging()</li>
+			<li>.setupFrameBuffer()</li>
+			<li>.setupRenderBuffer()</li>
+			<li>.unbindTexture()</li>
+			<li>.updateAttributeData()</li>
+			<li>.updateBlending()</li>
+			<li>.updateCulling()</li>
+			<li>.updateDepthTest()</li>
+			<li>.updateLineAndPointSettings()</li>
+			<li>.updateOffset()</li>
+			<li>.updateRenderTargetMipmap()</li>
+			<li>.updateShadows()</li>
+			<li>.updateTexture()</li>
+			<li>.updateTextureParameters()</li>
+			<li>.updateTextures()</li>
+		</ul>
+	
+
+
+	<h1>RigidBodyComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>RigidBodyComponent ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.angularDamping : number</li>
+	
+		<li>settings.angularVelocity : Vector3</li>
+	
+		<li>settings.isKinematic : boolean</li>
+	
+		<li>settings.linearDamping : number</li>
+	
+		<li>settings.mass : number</li>
+	
+		<li>settings.velocity : Vector3</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>RigidBodyComponent.FREEZE_ALL : FREEZE_ALL</li>
+			<li>RigidBodyComponent.FREEZE_NONE : FREEZE_NONE</li>
+			<li>RigidBodyComponent.FREEZE_POSITION : FREEZE_POSITION</li>
+			<li>RigidBodyComponent.FREEZE_POSITION_X : FREEZE_POSITION_X</li>
+			<li>RigidBodyComponent.FREEZE_POSITION_Y : FREEZE_POSITION_Y</li>
+			<li>RigidBodyComponent.FREEZE_POSITION_Z : FREEZE_POSITION_Z</li>
+			<li>RigidBodyComponent.FREEZE_ROTATION : FREEZE_ROTATION</li>
+			<li>RigidBodyComponent.FREEZE_ROTATION_X : FREEZE_ROTATION_X</li>
+			<li>RigidBodyComponent.FREEZE_ROTATION_Y : FREEZE_ROTATION_Y</li>
+			<li>RigidBodyComponent.FREEZE_ROTATION_Z : FREEZE_ROTATION_Z</li>
+			<li>RigidBodyComponent.INTERPOLATE : INTERPOLATE</li>
+			<li>RigidBodyComponent.NONE : NONE</li>
+			<li>RigidBodyComponent.numCylinderSegments : numCylinderSegments</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>._colliderEntities : Array</li>
+			<li>._constraints : number</li>
+			<li>.angularDamping : number</li>
+			<li>.cannonBody : CANNON.Body</li>
+			<li>.constraints : number</li>
+			<li>.interpolation : number</li>
+			<li>.isKinematic : number</li>
+			<li>.linearDamping : number</li>
+			<li>.mass : number</li>
+			<li>.sleepingThreshold : number</li>
+			<li>.sleepingTimeLimit : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.applyForce()</li>
+			<li>.applyForceLocal()</li>
+			<li>.applyImpulse()</li>
+			<li>.applyImpulseLocal()</li>
+			<li>.applyTorque()</li>
+			<li>.applyTorqueLocal()</li>
+			<li>.clone()</li>
+			<li>.destroy()</li>
+			<li>.getAngularVelocity()</li>
+			<li>.getInterpolatedPosition()</li>
+			<li>.getInterpolatedQuaternion()</li>
+			<li>.getPosition()</li>
+			<li>.getQuaternion()</li>
+			<li>.getVelocity()</li>
+			<li>.initialize()</li>
+			<li>.setAngularVelocity()</li>
+			<li>.setPosition()</li>
+			<li>.setQuaternion()</li>
+			<li>.setVelocity()</li>
+		</ul>
+	
+
+
+	<h1>RigidBodyComponentHandler</h1>
+	<p>For handling loading of rigid body components</p>
+
+	<h2>Constructor</h2>
+	<p>RigidBodyComponentHandler (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._remove()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>SceneHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SceneHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._handleEntities()</li>
+			<li>._handleEnvironment()</li>
+			<li>._handlePosteffects()</li>
+			<li>._remove()</li>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>ScriptComponent</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ScriptComponent ( [scripts] )</p>
+	<ul>
+	
+		<li>scripts : Object</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.scripts : Array</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.startScripts()</li>
+			<li>.stopScripts()</li>
+		</ul>
+	
+
+
+	<h1>ScriptSystem</h1>
+	<p>Processes all entities with script components, running the scripts where applicable</p>
+
+	<h2>Constructor</h2>
+	<p>ScriptSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Shader</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Shader ( name , shaderDefinition )</p>
+	<ul>
+	
+		<li>name : string</li>
+	
+		<li>shaderDefinition : ShaderDefinition</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.attributeIndexMapping : Object.&lt;string, number&gt;</li>
+			<li>.attributeMapping : Object.&lt;string, object&gt;</li>
+			<li>.name : string</li>
+			<li>.renderQueue : number</li>
+			<li>.renderer : WebGLRenderingContext</li>
+			<li>.textureSlots : Array</li>
+			<li>.uniformCallMapping : Object.&lt;string, ShaderCall&gt;</li>
+			<li>.uniformMapping : Object.&lt;string, object&gt;</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.investigateShader()</li>
+		</ul>
+	
+
+
+	<h1>ShaderFragment</h1>
+	<p>Collection of useful shader fragments</p>
+
+	<h2>Constructor</h2>
+	<p>ShaderFragment (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>ShaderHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>ShaderHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>ShaderLibExtra</h1>
+	<p>Collection of additional useful shaders</p>
+
+	<h2>Constructor</h2>
+	<p>ShaderLibExtra (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>ShaderLibExtra.differenceOfGaussians : differenceOfGaussians</li>
+		</ul>
+	
+
+	
+
+
+	
+
+
+	<h1>SimpleBox</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SimpleBox ( [height] , [length] , [width] )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>length : number</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>SimplePartitioner</h1>
+	<p>Culls entities based on camera frustum and boundings</p>
+
+	<h2>Constructor</h2>
+	<p>SimplePartitioner (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Skeleton</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Skeleton ( joints , name )</p>
+	<ul>
+	
+		<li>joints : Array.&lt;Joint&gt;</li>
+	
+		<li>name : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>SkeletonHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SkeletonHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._update()</li>
+		</ul>
+	
+
+
+	<h1>SkeletonPose</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SkeletonPose ( skeleton )</p>
+	<ul>
+	
+		<li>skeleton : Skeleton</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setToBindPose()</li>
+			<li>.updateTransforms()</li>
+		</ul>
+	
+
+
+	<h1>Skybox</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Skybox ( images , textureMode , type , yRotation )</p>
+	<ul>
+	
+		<li>images : any</li>
+	
+		<li>textureMode : any</li>
+	
+		<li>type : any</li>
+	
+		<li>yRotation : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Snow</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Snow ( gooRunner )</p>
+	<ul>
+	
+		<li>gooRunner : GooRunner</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>SoftwareRenderer</h1>
+	<p>A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.</p>
+
+	<h2>Constructor</h2>
+	<p>SoftwareRenderer ( parameters )</p>
+	<ul>
+	
+		<li>parameters : Object</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._calculateIntersectionRatio()</li>
+			<li>._categorizeVertices()</li>
+			<li>._clearDepthData()</li>
+			<li>._createEdgeData()</li>
+			<li>._fillPixels()</li>
+			<li>._horizontalLongEdgeCull()</li>
+			<li>._isBackFacingProjected()</li>
+			<li>._setupTriangleDataForEntity()</li>
+			<li>._verticalLongEdgeCull()</li>
+			<li>.copyDepthToColor()</li>
+			<li>.getColorData()</li>
+			<li>.getDepthData()</li>
+			<li>.isRenderedTriangleOccluded()</li>
+			<li>.performOcclusionCulling()</li>
+			<li>.render()</li>
+		</ul>
+	
+
+
+	<h1>Sound</h1>
+	<p>A representation of a sound in the engine</p>
+
+	<h2>Constructor</h2>
+	<p>Sound (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.autoPlay : boolean</li>
+			<li>.id : string</li>
+			<li>.name : string</li>
+			<li>.spatialize : boolean</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.connectTo()</li>
+			<li>.disconnectFrom()</li>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.setAudioBuffer()</li>
+			<li>.stop()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>SoundComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SoundComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>._prepare()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>SoundManager2Component</h1>
+	<p>SoundManager 2 component.</p>
+
+	<h2>Constructor</h2>
+	<p>SoundManager2Component (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>SoundManager2System</h1>
+	<p>Depends on the global soundManager object.
+Load soundmanager2 with a script tag before using this system.</p>
+
+	<h2>Constructor</h2>
+	<p>SoundManager2System (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>SparseHeightMapBoundingScript</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SparseHeightMapBoundingScript ( elevationData )</p>
+	<ul>
+	
+		<li>elevationData : Array.&lt;Number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getClosest()</li>
+		</ul>
+	
+
+
+	<h1>Sphere</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Sphere ( [radialSamples] , [radius] , [textureMode] , [zSamples] )</p>
+	<ul>
+	
+		<li>radialSamples : number</li>
+	
+		<li>radius : number</li>
+	
+		<li>textureMode : Enum</li>
+	
+		<li>zSamples : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Sphere.TextureModes : TextureModes</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.radialSamples : number</li>
+			<li>.radius : number</li>
+			<li>.textureMode : Enum</li>
+			<li>.viewInside : boolean</li>
+			<li>.zSamples : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>SphereCollider</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SphereCollider ( [settings] )</p>
+	<ul>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.radius : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.radius : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+		</ul>
+	
+
+
+	<h1>Spline</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Spline ( controlPoints )</p>
+	<ul>
+	
+		<li>controlPoints : Array.&lt;Vector&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.cubicInterpolation()</li>
+			<li>.getPoint()</li>
+			<li>.quadraticInterpolation()</li>
+		</ul>
+	
+
+
+	<h1>SplineWalker</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SplineWalker ( spline , [substepSize] )</p>
+	<ul>
+	
+		<li>spline : Spline</li>
+	
+		<li>substepSize : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.advance()</li>
+			<li>.canWalk()</li>
+		</ul>
+	
+
+
+	<h1>SpotLight</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SpotLight ( [color] )</p>
+	<ul>
+	
+		<li>color : Vector3</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.angle : number</li>
+			<li>.direction : Vector3</li>
+			<li>.exponent : number</li>
+			<li>.penumbra : number</li>
+			<li>.range : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>SsaoPass</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SsaoPass ( renderList )</p>
+	<ul>
+	
+		<li>renderList : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>StateMachineComponent</h1>
+	<p>StateMachineComponent.</p>
+
+	<h2>Constructor</h2>
+	<p>StateMachineComponent (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.cleanup()</li>
+			<li>.init()</li>
+			<li>.kill()</li>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>StateMachineComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>StateMachineComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>StateMachineSystem</h1>
+	<p>Processes all entities with a FSM component</p>
+
+	<h2>Constructor</h2>
+	<p>StateMachineSystem (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.resume : </li>
+			<li>.time : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.pause()</li>
+			<li>.play()</li>
+			<li>.stop()</li>
+		</ul>
+	
+
+
+	<h1>SteadyState</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SteadyState ( name )</p>
+	<ul>
+	
+		<li>name : string</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.setClipSource()</li>
+		</ul>
+	
+
+
+	<h1>Surface</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Surface ( [verticesPerLine] , verts )</p>
+	<ul>
+	
+		<li>verticesPerLine : number</li>
+	
+		<li>verts : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.createFromHeightMap()</li>
+			<li>.createTessellatedFlat()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>SyncFadeTransitionState</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>SyncFadeTransitionState ( blendType , fadeTime , targetState )</p>
+	<ul>
+	
+		<li>blendType : StateBlendType</li>
+	
+		<li>fadeTime : any</li>
+	
+		<li>targetState : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>System</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>System ( interests , type )</p>
+	<ul>
+	
+		<li>interests : Array.&lt;String&gt;</li>
+	
+		<li>type : string</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.priority : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.added()</li>
+			<li>.changed()</li>
+			<li>.cleanup()</li>
+			<li>.removed()</li>
+			<li>.setup()</li>
+		</ul>
+	
+
+
+	<h1>Terrain</h1>
+	<p>A terrain.</p>
+
+	<h2>Constructor</h2>
+	<p>Terrain (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>TerrainSurface</h1>
+	<p>A grid-like surface shape</p>
+
+	<h2>Constructor</h2>
+	<p>TerrainSurface ( heightMatrix , xWidth , yHeight , zWidth )</p>
+	<ul>
+	
+		<li>heightMatrix : array</li>
+	
+		<li>xWidth : number</li>
+	
+		<li>yHeight : number</li>
+	
+		<li>zWidth : number</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>TextComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TextComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>Texture</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Texture ( height , image , settings , width )</p>
+	<ul>
+	
+		<li>height : number</li>
+	
+		<li>image : Image</li>
+	
+		<li>settings : Object</li>
+	
+		<li>settings.anisotropy : number</li>
+	
+		<li>settings.flipY : boolean</li>
+	
+		<li>settings.format : string</li>
+	
+		<li>settings.generateMipmaps : boolean</li>
+	
+		<li>settings.magFilter : string</li>
+	
+		<li>settings.minFilter : string</li>
+	
+		<li>settings.offset : Array</li>
+	
+		<li>settings.premultiplyAlpha : boolean</li>
+	
+		<li>settings.repeat : Array</li>
+	
+		<li>settings.type : string</li>
+	
+		<li>settings.unpackAlignment : number</li>
+	
+		<li>settings.wrapS : string</li>
+	
+		<li>settings.wrapT : string</li>
+	
+		<li>width : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.anisotropy : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.checkDataReady()</li>
+			<li>.checkNeedsUpdate()</li>
+			<li>.clone()</li>
+			<li>.destroy()</li>
+			<li>.getSizeInMemory()</li>
+			<li>.setImage()</li>
+			<li>.setNeedsUpdate()</li>
+		</ul>
+	
+
+
+	<h1>TextureCreator</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TextureCreator ( settings )</p>
+	<ul>
+	
+		<li>settings : Settings</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clear()</li>
+			<li>.loadTexture2D()</li>
+			<li>.loadTextureCube()</li>
+			<li>.loadTextureVideo()</li>
+			<li>.loadTextureWebCam()</li>
+		</ul>
+	
+
+
+	<h1>TextureGrid</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TextureGrid ( matrix , textureUnitsPerLine )</p>
+	<ul>
+	
+		<li>matrix : any</li>
+	
+		<li>textureUnitsPerLine : any</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>Torus</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Torus ( [centerRadius] , [circleSamples] , [radialSamples] , [tubeRadius] )</p>
+	<ul>
+	
+		<li>centerRadius : number</li>
+	
+		<li>circleSamples : number</li>
+	
+		<li>radialSamples : number</li>
+	
+		<li>tubeRadius : number</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.viewInside : boolean</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.clone()</li>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>TransformChannel</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TransformChannel ( channelName , rotations , scales , times , translations )</p>
+	<ul>
+	
+		<li>channelName : any</li>
+	
+		<li>rotations : Array</li>
+	
+		<li>scales : Array</li>
+	
+		<li>times : Array</li>
+	
+		<li>translations : Array</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.getData()</li>
+		</ul>
+	
+
+
+	<h1>TransformComponentHandler</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TransformComponentHandler ( getConfig , updateObject , world )</p>
+	<ul>
+	
+		<li>getConfig : function</li>
+	
+		<li>updateObject : function</li>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.update()</li>
+		</ul>
+	
+
+
+	<h1>TransformData</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TransformData ( [source] )</p>
+	<ul>
+	
+		<li>source : TransformData</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.blend()</li>
+			<li>.set()</li>
+		</ul>
+	
+
+
+	<h1>Triangle</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Triangle ( verts )</p>
+	<ul>
+	
+		<li>verts : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.rebuild()</li>
+		</ul>
+	
+
+
+	<h1>TriggerChannel</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>TriggerChannel ( channelName , keys , times )</p>
+	<ul>
+	
+		<li>channelName : string</li>
+	
+		<li>keys : Array.&lt;string&gt;</li>
+	
+		<li>times : Array.&lt;number&gt;</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.createStateDataObject()</li>
+			<li>.setCurrentSample()</li>
+		</ul>
+	
+
+
+	<h1>Vector2</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Vector2 ( x , y )</p>
+	<ul>
+	
+		<li>x : number</li>
+	
+		<li>y : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Vector2.ONE : ONE</li>
+			<li>Vector2.UNIT_X : UNIT_X</li>
+			<li>Vector2.UNIT_Y : UNIT_Y</li>
+			<li>Vector2.ZERO : ZERO</li>
+			<li>Vector2.add : add</li>
+			<li>Vector2.div : div</li>
+			<li>Vector2.dot : dot</li>
+			<li>Vector2.mul : mul</li>
+			<li>Vector2.sub : sub</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.addVector : </li>
+			<li>.copy : </li>
+			<li>.dotVector : </li>
+			<li>.mulVector : </li>
+			<li>.subVector : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.addDirect()</li>
+			<li>.applyPost()</li>
+			<li>.applyPre()</li>
+			<li>.clone()</li>
+			<li>.copyTo()</li>
+			<li>.distance()</li>
+			<li>.distanceSquared()</li>
+			<li>.div()</li>
+			<li>.divDirect()</li>
+			<li>.dot()</li>
+			<li>.dotDirect()</li>
+			<li>.equals()</li>
+			<li>.equalsDirect()</li>
+			<li>.fromAny()</li>
+			<li>.fromArray()</li>
+			<li>.getComponent()</li>
+			<li>.length()</li>
+			<li>.lengthSquared()</li>
+			<li>.lerp()</li>
+			<li>.mul()</li>
+			<li>.mulDirect()</li>
+			<li>.negate()</li>
+			<li>.normalize()</li>
+			<li>.reflect()</li>
+			<li>.scale()</li>
+			<li>.set()</li>
+			<li>.setArray()</li>
+			<li>.setComponent()</li>
+			<li>.setDirect()</li>
+			<li>.sub()</li>
+			<li>.subDirect()</li>
+			<li>.toArray()</li>
+			<li>.unsafeNormalize()</li>
+		</ul>
+	
+
+
+	<h1>Vector3</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Vector3 ( x , y , z )</p>
+	<ul>
+	
+		<li>x : number</li>
+	
+		<li>y : number</li>
+	
+		<li>z : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Vector3.ONE : ONE</li>
+			<li>Vector3.UNIT_X : UNIT_X</li>
+			<li>Vector3.UNIT_Y : UNIT_Y</li>
+			<li>Vector3.UNIT_Z : UNIT_Z</li>
+			<li>Vector3.ZERO : ZERO</li>
+			<li>Vector3.add : add</li>
+			<li>Vector3.cross : cross</li>
+			<li>Vector3.distance : distance</li>
+			<li>Vector3.distanceSquared : distanceSquared</li>
+			<li>Vector3.div : div</li>
+			<li>Vector3.dot : dot</li>
+			<li>Vector3.mul : mul</li>
+			<li>Vector3.sub : sub</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.addVector : </li>
+			<li>.copy : </li>
+			<li>.dotVector : </li>
+			<li>.invert : </li>
+			<li>.mulVector : </li>
+			<li>.setVector : </li>
+			<li>.subVector : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.addDirect()</li>
+			<li>.applyPost()</li>
+			<li>.applyPostPoint()</li>
+			<li>.applyPostVector()</li>
+			<li>.applyPre()</li>
+			<li>.clone()</li>
+			<li>.copyTo()</li>
+			<li>.cross()</li>
+			<li>.crossDirect()</li>
+			<li>.distance()</li>
+			<li>.distanceSquared()</li>
+			<li>.div()</li>
+			<li>.divDirect()</li>
+			<li>.dot()</li>
+			<li>.dotDirect()</li>
+			<li>.equals()</li>
+			<li>.equalsDirect()</li>
+			<li>.fromAny()</li>
+			<li>.fromArray()</li>
+			<li>.getComponent()</li>
+			<li>.length()</li>
+			<li>.lengthSquared()</li>
+			<li>.lerp()</li>
+			<li>.mul()</li>
+			<li>.mulDirect()</li>
+			<li>.negate()</li>
+			<li>.normalize()</li>
+			<li>.reflect()</li>
+			<li>.scale()</li>
+			<li>.set()</li>
+			<li>.setArray()</li>
+			<li>.setComponent()</li>
+			<li>.setDirect()</li>
+			<li>.sub()</li>
+			<li>.subDirect()</li>
+			<li>.toArray()</li>
+			<li>.unsafeNormalize()</li>
+		</ul>
+	
+
+
+	<h1>Vector3Curve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Vector3Curve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.x : Curve</li>
+	
+		<li>options.y : Curve</li>
+	
+		<li>options.z : Curve</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>Vector4</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Vector4 ( w , x , y , z )</p>
+	<ul>
+	
+		<li>w : number</li>
+	
+		<li>x : number</li>
+	
+		<li>y : number</li>
+	
+		<li>z : number</li>
+	
+	</ul>
+
+	
+		<h2>Static Properties</h2>
+		<ul>
+			<li>Vector4.ONE : ONE</li>
+			<li>Vector4.UNIT_W : UNIT_W</li>
+			<li>Vector4.UNIT_X : UNIT_X</li>
+			<li>Vector4.UNIT_Y : UNIT_Y</li>
+			<li>Vector4.UNIT_Z : UNIT_Z</li>
+			<li>Vector4.ZERO : ZERO</li>
+			<li>Vector4.add : add</li>
+			<li>Vector4.div : div</li>
+			<li>Vector4.dot : dot</li>
+			<li>Vector4.mul : mul</li>
+			<li>Vector4.sub : sub</li>
+		</ul>
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.addVector : </li>
+			<li>.copy : </li>
+			<li>.dotVector : </li>
+			<li>.mulVector : </li>
+			<li>.setVector : </li>
+			<li>.setVector : </li>
+			<li>.subVector : </li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.addDirect()</li>
+			<li>.applyPost()</li>
+			<li>.applyPre()</li>
+			<li>.clone()</li>
+			<li>.copyTo()</li>
+			<li>.distance()</li>
+			<li>.distanceSquared()</li>
+			<li>.div()</li>
+			<li>.divDirect()</li>
+			<li>.dot()</li>
+			<li>.dotDirect()</li>
+			<li>.equals()</li>
+			<li>.equalsDirect()</li>
+			<li>.fromAny()</li>
+			<li>.fromArray()</li>
+			<li>.getComponent()</li>
+			<li>.length()</li>
+			<li>.lengthSquared()</li>
+			<li>.lerp()</li>
+			<li>.mul()</li>
+			<li>.mulDirect()</li>
+			<li>.negate()</li>
+			<li>.normalize()</li>
+			<li>.reflect()</li>
+			<li>.scale()</li>
+			<li>.set()</li>
+			<li>.setArray()</li>
+			<li>.setComponent()</li>
+			<li>.setDirect()</li>
+			<li>.sub()</li>
+			<li>.subDirect()</li>
+			<li>.toArray()</li>
+			<li>.unsafeNormalize()</li>
+		</ul>
+	
+
+
+	<h1>Vector4Curve</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>Vector4Curve ( [options] )</p>
+	<ul>
+	
+		<li>options : object</li>
+	
+		<li>options.w : Curve</li>
+	
+		<li>options.x : Curve</li>
+	
+		<li>options.y : Curve</li>
+	
+		<li>options.z : Curve</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+	<h1>WaitAction</h1>
+	<p>Action that waits a given time before transitioning.</p>
+
+	<h2>Constructor</h2>
+	<p>WaitAction (  )</p>
+	<ul>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.currentTime : number</li>
+			<li>.totalWait : number</li>
+		</ul>
+	
+
+
+	
+
+
+	<h1>World</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>World ( gooRunner )</p>
+	<ul>
+	
+		<li>gooRunner : GooRunner</li>
+	
+	</ul>
+
+	
+
+	
+		<h2>Properties</h2>
+		<ul>
+			<li>.by : WorldBy</li>
+			<li>.entityManager : EntityManager</li>
+			<li>.gooRunner : GooRunner</li>
+			<li>.time : number</li>
+			<li>.tpf : number</li>
+		</ul>
+	
+
+
+	
+		<h2>Methods</h2>
+		<ul>
+			<li>.add()</li>
+			<li>.addEntity()</li>
+			<li>.changedEntity()</li>
+			<li>.clear()</li>
+			<li>.clearSystem()</li>
+			<li>.createEntity()</li>
+			<li>.getEntities()</li>
+			<li>.getManager()</li>
+			<li>.getSystem()</li>
+			<li>.process()</li>
+			<li>.processEntityChanges()</li>
+			<li>.registerComponent()</li>
+			<li>.removeEntity()</li>
+			<li>.setManager()</li>
+			<li>.setSystem()</li>
+		</ul>
+	
+
+
+	<h1>WorldBy</h1>
+	<p></p>
+
+	<h2>Constructor</h2>
+	<p>WorldBy ( world )</p>
+	<ul>
+	
+		<li>world : World</li>
+	
+	</ul>
+
+	
+
+	
+
+
+	
+
+
+</body>
+</html>

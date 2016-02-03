@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @param {string} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')

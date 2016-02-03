@@ -24,6 +24,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * @extends System
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/Dom3dComponent/Dom3dComponent-vtest.html Working example
 	 */

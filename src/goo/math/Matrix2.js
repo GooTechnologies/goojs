@@ -11,8 +11,8 @@ define([
 
 	/**
 	 * Matrix with 2x2 components.
+	 * @class
 	 * @extends Matrix
-	 * @param {number...} arguments Initial values for the matrix components.
 	 */
 	function Matrix2() {
 		Matrix.call(this, 2, 2);

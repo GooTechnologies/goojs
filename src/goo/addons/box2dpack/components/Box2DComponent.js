@@ -8,7 +8,8 @@ define([
 	'use strict';
 
 	/**
-	 * Box2DComponent
+	 * Box2DComponent.
+	 * @class
 	 * @extends Component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
 	 */

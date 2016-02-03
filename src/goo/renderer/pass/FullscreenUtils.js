@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
 	 */
 	function FullscreenUtils() {}

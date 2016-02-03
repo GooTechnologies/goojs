@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A polygonal line
 	 * @param {Array<number>} [verts] The vertices data array
 	 * @param {boolean} [closed=false] True if its ends should be connected
@@ -108,8 +109,8 @@ define([
 		 * Extrudes and rotates a PolyLine along another PolyLine.
 		 * @param {PolyLine} that The PolyLine to extrude; should be bidimensional and defined on the XY plane.
 		 * @param {Object} [options]
-		 * @param {function (number) : number} [options.scale] Takes values between 0 and 1; the returned value is used to scale the extruded PolyLine
-		 * @param {function (number) : number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
+		 * @param {function} [options.scale] Takes values between 0 and 1; the returned value is a number used to scale the extruded PolyLine
+		 * @param {function} [options.twist] Takes values between 0 and 1; the returned value is a number used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
 		 * @returns {Surface} The resulting surface
 		 */
 		PolyLine.prototype.pipe = function (that, options) {

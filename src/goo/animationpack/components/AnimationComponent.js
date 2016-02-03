@@ -16,6 +16,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Holds the animation data.
 	 * @extends Component
 	 * @param {SkeletonPose} pose pose

@@ -21,6 +21,7 @@ define([
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
+	 * @class
 	 * Stores all buffers for geometric data and similar attributes
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer
@@ -33,7 +34,7 @@ define([
 		 * @type {number}
 		 */
 		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
-		
+
 		/** The total number of indices in the buffer.
 		 * @type {number}
 		 */

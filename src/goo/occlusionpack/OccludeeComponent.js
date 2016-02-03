@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @param meshData
 	 * @param useBoundingBox
 	 */

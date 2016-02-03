@@ -27,6 +27,7 @@ define([
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling
+	 * @class
 	 * @property {boolean} doRender Only render if set to true
 	 * @extends System
 	 */

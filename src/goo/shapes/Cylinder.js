@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A 3D object representing a cylinder.
 	 * @extends MeshData
 	 * @param {number} [radialSamples=8] Number of slices

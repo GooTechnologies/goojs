@@ -12,8 +12,10 @@ define([
 	Matrix4
 ) {
 	'use strict';
-	
+
 	/**
+	 * @class
+	 * @class
 	 * System responsible for sound.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends System
@@ -30,7 +32,7 @@ define([
 		this._relativeTransform = new Matrix4();
 
 		this._pausedSounds = {};
-		
+
 		this.initialized = false;
 
 		/**
@@ -69,7 +71,7 @@ define([
 		 * @readonly
 		 */
 		this.muted = false;
-		
+
 		this.reverbAudioBuffer = null;
 
 		this._reverbDirty = true;
@@ -176,7 +178,7 @@ define([
 		if(config.muted !== undefined){
 			this.muted = config.muted;
 		}
-		
+
 		this._dirty = true;
 	};
 

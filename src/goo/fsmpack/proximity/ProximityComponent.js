@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @private
 	 */
 	function ProximityComponent(tag) {

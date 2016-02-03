@@ -3,6 +3,7 @@ define(function () {
 
 	/**
 	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
+	 * @class
 	 */
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: new Map() };
@@ -136,6 +137,7 @@ define(function () {
 	 * Sets element to null if it's present in the provided array
 	 * @param {Array} array
 	 * @param {*} element
+	 * @hidden
 	 */
 	function nullifyElement(array, element) {
 		var index = array.indexOf(element);

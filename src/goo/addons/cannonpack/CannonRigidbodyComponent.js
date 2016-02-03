@@ -22,6 +22,7 @@ define([
 	/* global CANNON */
 
 	/**
+	 * @class
 	 * Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.
 	 * @extends Component
 	 * @param {Object} [settings]

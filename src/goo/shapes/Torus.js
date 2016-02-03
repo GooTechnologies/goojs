@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A donut-shaped model.
 	 * @extends MeshData
 	 * @param {number} [circleSamples=8] Number of segments.

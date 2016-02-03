@@ -8,6 +8,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Provides ways for the entity to display text
 	 * @extends Component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example

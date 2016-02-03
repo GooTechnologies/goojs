@@ -9,6 +9,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Holds configuration data for renderable objects.
 	 */
 

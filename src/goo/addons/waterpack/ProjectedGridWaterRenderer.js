@@ -30,6 +30,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @param {Object} [settings] Water settings passed in a JSON object
 	 * @param {boolean} [settings.divider=1] Resolution divider for reflection/refraction

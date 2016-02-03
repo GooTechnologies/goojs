@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * An animation channel consisting of a series of transforms interpolated over time.
 	 * @param channelName our name.
 	 * @param {Array} times our time offset values.

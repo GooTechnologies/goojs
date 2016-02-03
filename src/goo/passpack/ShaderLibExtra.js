@@ -17,7 +17,7 @@ define([
 
 	/**
 	 * Collection of additional useful shaders
-	 * Details of each can be printed using console.log().
+	 * @class
 	 */
 	function ShaderLibExtra() {}
 

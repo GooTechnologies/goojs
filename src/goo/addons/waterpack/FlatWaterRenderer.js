@@ -28,6 +28,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example
 	 * @param {Object} [settings] Water settings passed in a JSON object
@@ -94,7 +96,7 @@ define([
 		var width = Math.floor(renderer.viewportWidth / this.divider);
 		var height = Math.floor(renderer.viewportHeight / this.divider);
 		if (width === this.width && height === this.height) {
-			return;			
+			return;
 		}
 		this.width = width;
 		this.height = height;

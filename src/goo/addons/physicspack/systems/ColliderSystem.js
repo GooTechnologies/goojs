@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Processes all entities with collider components, making sure they are up to date.
+	 * @class
 	 * @extends System
 	 */
 	function ColliderSystem() {

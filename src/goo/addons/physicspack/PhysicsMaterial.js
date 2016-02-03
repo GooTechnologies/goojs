@@ -2,6 +2,7 @@ define([], function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * @param {Object} [settings]
 	 * @param {number} [settings.friction=0.3]
 	 * @param {number} [settings.restitution=0]

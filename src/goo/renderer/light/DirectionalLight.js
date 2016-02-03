@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A directional light
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends Light

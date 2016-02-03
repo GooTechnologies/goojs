@@ -17,6 +17,7 @@ define([
 
 	/**
 	 * Base class for rigid bodies.
+	 * @class
 	 * @extends Component
 	 */
 	function AbstractRigidBodyComponent() {

@@ -25,6 +25,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * Depth pass
 	 * @param renderList
 	 * @param outShader

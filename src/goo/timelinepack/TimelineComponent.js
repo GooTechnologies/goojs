@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Timeline component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
 	 */

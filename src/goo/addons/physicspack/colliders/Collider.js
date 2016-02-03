@@ -4,6 +4,7 @@ function () {
 
 	/**
 	 * Base class for Colliders.
+	 * @class
 	 */
 	function Collider() {}
 

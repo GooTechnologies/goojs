@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Used for storing derived data from gamepads
+	 * @class
 	 */
 	function GamepadData() {
 		this.leftStickDirection = new Vector2();

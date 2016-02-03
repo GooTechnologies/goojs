@@ -5,6 +5,7 @@ function () {
 
 	/**
 	 * Collection of useful shader fragments
+	 * @class
 	 */
 	function ShaderFragment() {
 	}

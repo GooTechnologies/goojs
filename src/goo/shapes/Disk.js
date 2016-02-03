@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A disk shape
 	 * @extends MeshData
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example

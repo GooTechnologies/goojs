@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A collection of Curve instances. Used to connect different types curves, joining them at their given time offsets.
 	 * @constructor
 	 * @extends Curve
@@ -26,7 +27,7 @@ define([
 	}
 
 	PolyCurve.prototype = {
-		
+
 		clone: function () {
 			return new PolyCurve(this);
 		},
@@ -38,14 +39,14 @@ define([
 			this.segments.push(curve);
 			this.sort();
 		},
-		
+
 		/**
 		 * @param {number} i
 		 */
 		removeSegment: function (i) {
 			this.segments.splice(i, 1);
 		},
-		
+
 		/**
 		 * Sorts the segments depending on their timeOffset.
 		 */

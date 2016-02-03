@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Processes all entities with meshrenderer components.
 	 * A SimplePartitioner is used to first view frustum cull the entities.
 	 * Each of the view frustum culled entities are then added to an occluderList if it has an OccluderComponent.

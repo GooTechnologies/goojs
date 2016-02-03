@@ -5,6 +5,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * Abstract pool class for object pooling.
 	 * @param {Object} [settings]
 	 * @param {Function} [settings.init]

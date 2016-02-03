@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param {AnimationClip} clip the clip to use.
 	 * @param {string} [filter] 'Exclude' or 'Include'

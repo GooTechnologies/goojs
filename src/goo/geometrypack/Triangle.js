@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
 	 * @param {Array<number>} verts array with 9 elements. These 9 elements must be 3 x, y, z positions.
 	 */

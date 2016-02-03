@@ -2,6 +2,7 @@ define([], function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Bounds the host entity to a height map computed from a set of terrain points
 	 * @param {Array<Number>} elevationData The array of height points given as a flat array
 	 */

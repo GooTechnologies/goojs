@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
 	 * @extends MeshData
 	 * @param {number} [width=1] Total width of box.

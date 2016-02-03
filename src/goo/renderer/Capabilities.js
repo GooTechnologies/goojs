@@ -3,8 +3,7 @@ define(function () {
 
 	/**
 	 * Enabled and stores webgl extensions and capabilities
-
-	 * Extensions
+	 * @class
 	 * @property {Object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
 	 * @property {Object} TextureFloat Floating point textures, OES_texture_float
 	 * @property {Object} TextureFloatLinear Linear filtering of floating point textures, OES_texture_float_linear
@@ -20,8 +19,6 @@ define(function () {
 	 * @property {Object} ShaderTextureLod ShaderTextureLod, EXT_shader_texture_lod
 	 * @property {Object} VertexArrayObject VertexArrayObject, OES_vertex_array_object
 	 * @property {Object} DrawBuffers Multiple rendertargets, WEBGL_draw_buffers
-
-	 * Properties
 	 * @property {number} maxTexureSize Maximum 2D texture size
 	 * @property {number} maxCubemapSize Maximum cubemap size
 	 * @property {number} maxRenderbufferSize Maximum renderbuffer size

@@ -6,6 +6,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Processes all entities with a portal component, a mesh renderer component and a mesh data component
 	 * @extends System
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example

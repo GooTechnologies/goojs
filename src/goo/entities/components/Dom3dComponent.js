@@ -13,6 +13,8 @@ function (
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Connects a domElement to an entity and applies the transforms of the entity to the domElement with CSS3 3D transforms.
 	 * @param {domElement} domElement
 	 * @param {Object} settings

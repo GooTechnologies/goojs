@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Curve that can lerp between two other curves.
 	 * @class
 	 * @constructor
@@ -25,7 +26,7 @@ define([
 		 * @type {Curve}
 		 */
 		this.curveA = options.curveA !== undefined ? options.curveA.clone() : null;
-		
+
 		/**
 		 * @type {Curve}
 		 */

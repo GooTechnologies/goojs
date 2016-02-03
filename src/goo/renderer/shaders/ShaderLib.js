@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Collection of useful shaders<br>
 	 * Details of each can be printed like this for example: console.log(ShaderLib.texturedLit).<br>
 	 * There are more special purpose shaders in {@link ShaderLibExtra}

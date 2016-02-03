@@ -14,6 +14,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * For handling loading of transform component
 	 * @extends ComponentHandler
 	 * @param {World} world The goo world

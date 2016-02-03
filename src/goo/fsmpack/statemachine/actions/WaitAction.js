@@ -6,6 +6,8 @@ define([
 	'use strict';
 
 	/**
+	 * Action that waits a given time before transitioning.
+	 * @class
 	 * @private
 	 * @extends Action
 	 */

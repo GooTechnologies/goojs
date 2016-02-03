@@ -4,6 +4,7 @@ function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Holds the renderer's state
 	 * @hidden
 	 */

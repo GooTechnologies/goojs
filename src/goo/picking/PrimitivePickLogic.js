@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Primitive pick logic
 	 */
 	function PrimitivePickLogic () {}

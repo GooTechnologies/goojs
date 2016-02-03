@@ -7,6 +7,9 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * @class
+	 */
 	function ValueChannel(id, options) {
 		AbstractTimelineChannel.call(this, id);
 
@@ -25,7 +28,7 @@ define([
 	 * @param id
 	 * @param time Start time
 	 * @param value
-	 * @param {function (number)} easingFunction
+	 * @param {function} easingFunction
 	 */
 	ValueChannel.prototype.addKeyframe = function (id, time, value, easingFunction) {
 		var newKeyframe = {

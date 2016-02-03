@@ -4,10 +4,10 @@ function () {
 	'use strict';
 
 	/**
-	 * A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
-	 *        for purposes of transitioning between two unrelated animations.
-	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} source Our sub source.
+	 * A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often for purposes of transitioning between two unrelated animations.
+	 * @param {ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource} source Our sub source.
 	 * @param {number} frozenTime The time we are frozen at.
+	 * @class
 	 */
 	function FrozenClipSource (source, frozenTime) {
 		this._source = source;

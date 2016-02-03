@@ -7,6 +7,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * A wireframe mesh indicating the position and orientation of a CylinderCollider.
 	 * @param {number} [numSegments=32]
 	 * @extends MeshData

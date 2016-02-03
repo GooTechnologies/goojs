@@ -12,6 +12,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Holds the transform of an entity. It also allows for a scene graph to be created,
 	 * in which transforms are inherited down the tree.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
@@ -218,7 +220,7 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverse method
-		 * @param {function (entity: Entity, level: number) : boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
+		 * @param {function} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
 		 * @param {number} [level=0]
 		 * @returns {Entity} Self to allow chaining
 		 */
@@ -240,7 +242,7 @@ define([
 		 * Traversal can be stopped if the function returns 'false'.
 		 * Injected on entities with a transformComponent
 		 * @target-class Entity traverseUp method
-		 * @param {function (entity: Entity) : boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
+		 * @param {function} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
 		 * @returns {Entity} Self to allow chaining
 		 */
 		traverseUp: function (callback) {

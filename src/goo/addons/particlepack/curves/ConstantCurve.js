@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A curve with a constant value.
 	 * @class
 	 * @constructor

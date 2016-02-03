@@ -7,6 +7,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * Structure used to get information back from a raycast.
 	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.normal]

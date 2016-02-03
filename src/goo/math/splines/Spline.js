@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Describes a cubic spline
 	 * @param {Array<Vector>} controlPoints
 	 */

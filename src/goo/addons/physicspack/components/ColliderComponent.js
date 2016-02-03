@@ -26,6 +26,7 @@ define([
 	/* global CANNON */
 
 	/**
+	 * @class
 	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidBodyComponent}, the collider is added to the physics world.
 	 * @param {Object} [settings]
 	 * @param {Collider} [settings.collider]

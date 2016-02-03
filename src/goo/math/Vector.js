@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Abstract vector class
 	 */
 	function Vector(size) {

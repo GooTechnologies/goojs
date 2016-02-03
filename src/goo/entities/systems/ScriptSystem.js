@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Processes all entities with script components, running the scripts where applicable
+	 * @class
 	 * @extends System
 	 */
 	function ScriptSystem(world) {

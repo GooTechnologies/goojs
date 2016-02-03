@@ -20,6 +20,7 @@ define([
 	//! AT: shouldn't this stay in util?
 
 	/**
+	 * @class
 	 * Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */

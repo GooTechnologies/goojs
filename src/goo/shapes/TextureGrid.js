@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Meshdata for a grid; useful for displaying tiles
 	 * @extends MeshData
 	 * @param matrix

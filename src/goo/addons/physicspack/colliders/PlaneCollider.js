@@ -8,6 +8,7 @@ function (
 
 	/**
 	 * Plane collider, that faces in the Z direction.
+	 * @class
 	 * @extends Collider
 	 */
 	function PlaneCollider() {

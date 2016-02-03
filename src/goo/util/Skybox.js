@@ -18,6 +18,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Skybox
 	 * @param type
 	 * @param images

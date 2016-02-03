@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Provides promise-related utility methods
 	 */
 	function PromiseUtils() {}

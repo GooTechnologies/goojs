@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
 	 * Combination is currently limited to 65536 vertices.
 	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.

@@ -10,8 +10,10 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Utilities for entity creation etc
 	 * Only used to define the class. Should never be instantiated.
+	 * @class
 	 */
 	function EntityUtils() {}
 
@@ -20,6 +22,7 @@ define([
 	 * clone multiple instances of the same SkeletonPose.
 	 * @param {SkeletonPose} skeletonPose
 	 * @param {Object} settings
+	 * @hidden
 	 */
 	function cloneSkeletonPose(skeletonPose, settings) {
 		settings.skeletonMap = settings.skeletonMap || {
@@ -118,7 +121,7 @@ define([
 	 * @param {boolean} [settings.shareMaterials=false] Cloning entities clones their materials by default
 	 * @param {boolean} [settings.shareUniforms=false] Cloning entities clones their materials' uniforms by default
 	 * @param {boolean} [settings.shareTextures=false] Cloning entities clones their materials' textures by default
-	 * @param {function (entity: Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+	 * @param {function} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 	 * @returns {Entity} The cloned entity.
 	 */
 	EntityUtils.clone = function (world, entity, settings) {

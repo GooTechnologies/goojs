@@ -6,8 +6,10 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A specialised selection object for entities
 	 * @extends Selection
+	 * @class
 	 */
 	function EntitySelection() {
 		Selection.apply(this, arguments);

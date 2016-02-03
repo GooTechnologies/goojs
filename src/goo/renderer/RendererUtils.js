@@ -11,6 +11,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Renderer-related utilities
 	 */
 	function RendererUtils() {}

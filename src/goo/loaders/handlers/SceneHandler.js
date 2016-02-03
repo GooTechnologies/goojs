@@ -14,6 +14,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Handler for loading scene into engine
 	 * @extends ConfigHandler
 	 * @param {World} world

@@ -1,6 +1,9 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * @class
+	 */
 	function ObjectUtils() {}
 
 	/**

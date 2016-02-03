@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Cone mesh data
 	 * @extends MeshData
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example

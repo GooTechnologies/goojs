@@ -7,6 +7,7 @@ define([
 
 	/**
 	 * Utility for creating index buffers of appropriate type
+	 * @class
 	 */
 	function BufferUtils() {}
 

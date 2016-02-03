@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Matrix with RxC components.
 	 * @param {number} rows Number of rows.
 	 * @param {number} cols Number of columns.

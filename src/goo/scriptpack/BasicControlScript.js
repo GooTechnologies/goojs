@@ -2,6 +2,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 	'use strict';
 
 	/**
+	 * @class
 	 * Make an entity controllable via mouse and keyboard. WASD keys move the entity towards the back, left,
 	 * front and right respectively. Shift causes speed to drop to a tenth. R and F move it up or down. Q and E roll it
 	 * towards the left or right. The arrow keys cause the entity to rotate, as does dragging with the mouse.

@@ -8,6 +8,7 @@ function (
 
 	/**
 	 * HTML Component.
+	 * @class
 	 * @extends Component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */

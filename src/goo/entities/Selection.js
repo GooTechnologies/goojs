@@ -2,7 +2,9 @@ define([], function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Generic selection class
+	 * @class
 	 */
 	function Selection() {
 		this.stack = [];

@@ -10,6 +10,7 @@ define([
 
 	/**
 	 * Processes all entities with a FSM component
+	 * @class
 	 * @private
 	 */
 	function StateMachineSystem(engine) {

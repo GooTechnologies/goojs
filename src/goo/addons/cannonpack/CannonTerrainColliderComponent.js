@@ -8,6 +8,7 @@ define([
 	/* global CANNON */
 
 	/**
+	 * @class
 	 * Terrain collider. Attach to an entity with a {@link CannonRigidbodyComponent}.
 	 * @param {Object} [settings]
 	 * @param {Object} [settings.data]

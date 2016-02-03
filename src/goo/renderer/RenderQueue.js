@@ -2,6 +2,7 @@ define(['goo/math/Vector3'], function (Vector3) {
 	'use strict';
 
 	/**
+	 * @class
 	 * The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.
 	 * Entities within the opaque buckets are sorted front to back and entities within the transparent buckets are sorted
 	 * back to front.

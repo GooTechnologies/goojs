@@ -58,9 +58,10 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * The main class that updates the world and calls the renderers.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
-	 *
+	 * @class
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
 	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.
 	 * @param {boolean} [parameters.premultipliedAlpha=true] Enables or disables premultiplication of color by alpha
@@ -128,26 +129,26 @@ define([
 
 		/**
 		 * A list of callbacks to call every frame, before the world is processed.
-		 * @type {Array<function (tpf: number)>}
+		 * @type {Array}
 		 */
 		this.callbacksPreProcess = [];
 
 		/**
 		 * A list of callbacks to call every frame, after the world is processed and before the rendering is done.
-		 * @type {Array<function (tpf: number)>}
+		 * @type {Array}
 		 */
 		this.callbacksPreRender = [];
 
 		/**
 		 * A list of callbacks to call every frame, after the rendering is done.
-		 * @type {Array<function (tpf: number)>}
+		 * @type {Array}
 		 */
 		this.callbacks = [];
 
 		/**
 		 * A list of callbacks to call once, in the following frame, before the world is processed.
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
-		 * @type {Array<function (tpf: number)>}
+		 * @type {Array}
 		 */
 		this.callbacksNextFrame = [];
 
@@ -601,7 +602,7 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param  {function (event)} callback Callback function.
+	 * @param  {function} callback Callback function.
 	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
 	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
 	 * @param {number} callback.event.depth Depth of pick ray intersection.
@@ -635,7 +636,7 @@ define([
 	 * Removes an event listener from the GooRunner.
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param {function (event)} callback Callback to remove from event listener.
+	 * @param {function} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if (!this._eventListeners[type]) {

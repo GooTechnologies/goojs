@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Stores a font and handles the text mesh on an entity
 	 * Depends on opentype.js
 	 */

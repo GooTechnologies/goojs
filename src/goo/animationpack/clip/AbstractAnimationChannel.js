@@ -6,12 +6,12 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Base class for animation channels. An animation channel describes a single element of an animation (such as the movement of a single
 	 *        joint, or the play back of a specific sound, etc.) These channels are grouped together in an {@link AnimationClip} to describe a full animation.
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param {Array<number>} times our time indices. Copied into the channel.
 	 * @param {string} blendType the blendtype between transform keyframes of the channel. Defaults to AbstractAnimationChannel.BLENDTYPES.LINEAR
-	 * @private
 	 */
 	function AbstractAnimationChannel (channelName, times, blendType) {
 		this._blendType = blendType || AbstractAnimationChannel.BLENDTYPES.LINEAR;

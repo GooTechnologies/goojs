@@ -17,6 +17,7 @@ define([
 
 	/**
 	 * This script makes an entity shine with some lensflare effect.
+	 * @class
 	 */
 	function LensFlareScript() {
 		var lightEntity;

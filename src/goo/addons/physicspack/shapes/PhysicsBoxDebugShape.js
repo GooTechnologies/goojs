@@ -8,6 +8,7 @@ function (
 
 	/**
 	 * A wireframe mesh indicating the position and orientation of a BoxCollider.
+	 * @class
 	 * @extends MeshData
 	 */
 	function PhysicsBoxDebugShape() {

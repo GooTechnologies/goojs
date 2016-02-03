@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * This component contains the triangle mesh which forms an occluder shape for the
 	 * entity which this component is attached to. The occluder geometry is used for rendering
 	 * a depth buffer during occlusion culling.

@@ -18,15 +18,9 @@ define([
 	'use strict';
 
 	/**
+	 * Bloom post effect.
+	 * @class
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
-	 * <pre>
-	 * settings: {
-	 *     strength: 1.0,
-	 *     sigma: 4.0,
-	 *     sizeX: 256,
-	 *     sizeY: 256
-	 * }
-	 * </pre>
 	 */
 	function BloomPass(settings) {
 		settings = settings || {};

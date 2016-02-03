@@ -14,6 +14,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Provides a simple way to load sounds
 	 */
 	function SoundCreator() {

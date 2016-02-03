@@ -4,6 +4,7 @@ function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Makes sure shader calls are not done when already set
 	 */
 	function ShaderCall(context, uniform, type) {

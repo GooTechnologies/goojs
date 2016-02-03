@@ -16,15 +16,8 @@ define([
 	'use strict';
 
 	/**
-	 * <pre>
-	 * settings: {
-	 *     target: null,
-	 *     strength: 1.0,
-	 *     sigma: 4.0,
-	 *     sizeX: 256,
-	 *     sizeY: 256
-	 * }
-	 * </pre>
+	 * Blur post effect.
+	 * @class
 	 */
 	function BlurPass(settings) {
 		settings = settings || {};

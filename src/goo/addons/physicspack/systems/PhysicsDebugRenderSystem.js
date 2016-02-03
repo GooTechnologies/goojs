@@ -48,6 +48,7 @@ function (
 
 	/**
 	 * Renders all ColliderComponents in the scene.
+	 * @class
 	 * @extends System
 	 * @example
 	 * world.setSystem(new PhysicsDebugRenderSystem());

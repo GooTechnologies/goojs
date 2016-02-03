@@ -56,48 +56,49 @@ define([
 	 * A Particle System component simulates things like clouds and flames by generating and animating large numbers of small 2D images in the scene.
 	 * @class
 	 * @constructor
- 	 * @param {boolean} [billboard=true]
- 	 * @param {boolean} [depthTest=true]
- 	 * @param {boolean} [depthWrite=true]
- 	 * @param {boolean} [loop=true]
- 	 * @param {boolean} [paused=false]
- 	 * @param {boolean} [preWarm=false]
- 	 * @param {boolean} [randomDirection=false]
- 	 * @param {boolean} [sphereEmitFromShell=false]
- 	 * @param {Curve} [colorOverLifetime]
- 	 * @param {Curve} [localVelocityOverLifetime]
- 	 * @param {Curve} [rotationSpeedOverLifetime]
- 	 * @param {Curve} [sizeOverLifetime]
- 	 * @param {Curve} [startAngle]
- 	 * @param {Curve} [startColor]
- 	 * @param {Curve} [startLifetime]
- 	 * @param {Curve} [startSize]
- 	 * @param {Curve} [startSpeed]
- 	 * @param {Curve} [textureFrameOverLifetime]
- 	 * @param {Curve} [worldVelocityOverLifetime]
- 	 * @param {number} [blending='NoBlending']
- 	 * @param {number} [coneAngle] Default is pi/8
- 	 * @param {number} [coneLength=1]
- 	 * @param {number} [coneRadius=1]
- 	 * @param {number} [discardThreshold=0]
- 	 * @param {number} [duration=5]
- 	 * @param {number} [localSpace=true]
- 	 * @param {number} [maxParticles=100]
- 	 * @param {number} [renderQueue=3010]
- 	 * @param {number} [rotationSpeedScale=1]
- 	 * @param {number} [seed=-1]
- 	 * @param {number} [startAngleScale=1]
- 	 * @param {number} [startSizeScale=1]
- 	 * @param {number} [texture]
- 	 * @param {number} [textureAnimationCycles=1]
- 	 * @param {number} [textureTilesX=1]
- 	 * @param {number} [textureTilesY=1]
- 	 * @param {number} [time=0]
- 	 * @param {string} [coneEmitFrom='base']
- 	 * @param {string} [shapeType='cone']
- 	 * @param {Vector3} [boxExtents] Default is new Vector3(1,1,1)
- 	 * @param {Vector3} [gravity]  Default is zero
- 	 * @param {Vector4} [startColorScale] Default is new Vector4(1,1,1,1)
+ 	 * @param {object} [options]
+ 	 * @param {boolean} [options.billboard=true]
+ 	 * @param {boolean} [options.depthTest=true]
+ 	 * @param {boolean} [options.depthWrite=true]
+ 	 * @param {boolean} [options.loop=true]
+ 	 * @param {boolean} [options.paused=false]
+ 	 * @param {boolean} [options.preWarm=false]
+ 	 * @param {boolean} [options.randomDirection=false]
+ 	 * @param {boolean} [options.sphereEmitFromShell=false]
+ 	 * @param {Curve} [options.colorOverLifetime]
+ 	 * @param {Curve} [options.localVelocityOverLifetime]
+ 	 * @param {Curve} [options.rotationSpeedOverLifetime]
+ 	 * @param {Curve} [options.sizeOverLifetime]
+ 	 * @param {Curve} [options.startAngle]
+ 	 * @param {Curve} [options.startColor]
+ 	 * @param {Curve} [options.startLifetime]
+ 	 * @param {Curve} [options.startSize]
+ 	 * @param {Curve} [options.startSpeed]
+ 	 * @param {Curve} [options.textureFrameOverLifetime]
+ 	 * @param {Curve} [options.worldVelocityOverLifetime]
+ 	 * @param {number} [options.blending='NoBlending']
+ 	 * @param {number} [options.coneAngle] Default is pi/8
+ 	 * @param {number} [options.coneLength=1]
+ 	 * @param {number} [options.coneRadius=1]
+ 	 * @param {number} [options.discardThreshold=0]
+ 	 * @param {number} [options.duration=5]
+ 	 * @param {number} [options.localSpace=true]
+ 	 * @param {number} [options.maxParticles=100]
+ 	 * @param {number} [options.renderQueue=3010]
+ 	 * @param {number} [options.rotationSpeedScale=1]
+ 	 * @param {number} [options.seed=-1]
+ 	 * @param {number} [options.startAngleScale=1]
+ 	 * @param {number} [options.startSizeScale=1]
+ 	 * @param {number} [options.texture]
+ 	 * @param {number} [options.textureAnimationCycles=1]
+ 	 * @param {number} [options.textureTilesX=1]
+ 	 * @param {number} [options.textureTilesY=1]
+ 	 * @param {number} [options.time=0]
+ 	 * @param {string} [options.coneEmitFrom='base']
+ 	 * @param {string} [options.shapeType='cone']
+ 	 * @param {Vector3} [options.boxExtents] Default is new Vector3(1,1,1)
+ 	 * @param {Vector3} [options.gravity]  Default is zero
+ 	 * @param {Vector4} [options.startColorScale] Default is new Vector4(1,1,1,1)
 	 * @example
 	 * var particleComponent = new ParticleSystemComponent({
 	 *     loop: true,
@@ -353,7 +354,7 @@ define([
 		 * @readonly
 		 */
 		this.time = options.time || 0;
-		
+
 		/**
 		 * Force that makes particles fall.
 		 * @type {Vector3}
@@ -366,7 +367,7 @@ define([
 		 * @readonly
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
-		
+
 		/**
 		 * Acts as a scale on the color curve. Should be used at runtime.
 		 * @type {Vector4}
@@ -422,7 +423,7 @@ define([
 	/**
 	 * No sorting of particles.
 	 * @type {number}
-	 * @readonly	 
+	 * @readonly
 	 */
 	ParticleSystemComponent.SORT_NONE = 1;
 
@@ -437,7 +438,7 @@ define([
 
 		/**
 		 * If set to true, the particles will always face the camera.
-		 * @target-class ParticleSystemComponent billboard member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		billboard: {
@@ -456,7 +457,7 @@ define([
 
 		/**
 		 * What type of blending to use for the particle mesh.
-		 * @target-class ParticleSystemComponent blending member
+		 * @memberof ParticleSystemComponent#
 		 * @type {string}
 		 */
 		blending: {
@@ -470,7 +471,7 @@ define([
 
 		/**
 		 * Color of particles, as a curve over their life time.
-		 * @target-class ParticleSystemComponent colorOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Vector4Curve|null}
 		 */
 		colorOverLifetime: {
@@ -482,10 +483,10 @@ define([
 				this.material.shader.setDefine('COLOR_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.COLOR_CURVE_CODE);
 			}
 		},
-		
+
 		/**
 		 * Angle of the cone, if cone shape is used.
-		 * @target-class ParticleSystemComponent coneAngle member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		coneAngle: {
@@ -500,7 +501,7 @@ define([
 
 		/**
 		 * Where to emit from, if using the cone shape. Set to 'base', 'volume' or 'volumeshell'.
-		 * @target-class ParticleSystemComponent coneEmitFrom member
+		 * @memberof ParticleSystemComponent#
 		 * @type {string}
 		 */
 		coneEmitFrom: {
@@ -515,7 +516,7 @@ define([
 
 		/**
 		 * Length of the cone, if cone shape is used.
-		 * @target-class ParticleSystemComponent coneLength member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		coneLength: {
@@ -530,7 +531,7 @@ define([
 
 		/**
 		 * Radius of the cone, if cone shape is used.
-		 * @target-class ParticleSystemComponent coneRadius member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		coneRadius: {
@@ -544,7 +545,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleSystemComponent depthTest member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		depthTest: {
@@ -557,7 +558,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleSystemComponent depthWrite member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		depthWrite: {
@@ -571,7 +572,7 @@ define([
 
 		/**
 		 * At what alpha threshold should the fragments be discarded?
-		 * @target-class ParticleSystemComponent discardThreshold member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		discardThreshold: {
@@ -585,7 +586,7 @@ define([
 
 		/**
 		 * The time for a full animation cycle of the emission.
-		 * @target-class ParticleSystemComponent duration member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		duration: {
@@ -599,7 +600,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleSystemComponent emissionRate member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve}
 		 */
 		emissionRate: {
@@ -614,7 +615,7 @@ define([
 
 		/**
 		 * If set to true, the partiles will be simulated in local entity space. If set to false, world space is used.
-		 * @target-class ParticleSystemComponent localSpace member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		localSpace: {
@@ -633,7 +634,7 @@ define([
 
 		/**
 		 * The velocity of particles in local particle space.
-		 * @target-class ParticleSystemComponent localVelocityOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Vector3Curve|null}
 		 */
 		localVelocityOverLifetime: {
@@ -648,7 +649,7 @@ define([
 
 		/**
 		 * Whether to loop the particle emission after one duration cycle.
-		 * @target-class ParticleSystemComponent loop member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		loop: {
@@ -663,7 +664,7 @@ define([
 
 		/**
 		 * Maximum number of particles visible at the same time.
-		 * @target-class ParticleSystemComponent maxParticles member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		maxParticles: {
@@ -687,7 +688,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleSystemComponent mesh member
+		 * @memberof ParticleSystemComponent#
 		 * @type {MeshData}
 		 */
 		mesh: {
@@ -708,7 +709,7 @@ define([
 
 		/**
 		 * Pre-warm the emission (fast forward time one duration). Not available if looping is on.
-		 * @target-class ParticleSystemComponent preWarm member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		preWarm: {
@@ -723,7 +724,7 @@ define([
 
 		/**
 		 * Emit in random directions, instead of in the emitter volume direction.
-		 * @target-class ParticleSystemComponent randomDirection member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		randomDirection: {
@@ -737,7 +738,7 @@ define([
 		},
 
 		/**
-		 * @target-class ParticleSystemComponent renderQueue member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		renderQueue: {
@@ -751,7 +752,7 @@ define([
 
 		/**
 		 * The rotation speed in radians per second, specified using a curve over the particle life time.
-		 * @target-class ParticleSystemComponent rotationSpeedOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		rotationSpeedOverLifetime: {
@@ -766,7 +767,7 @@ define([
 
 		/**
 		 * Acts as a scale on the rotationSpeed curve.
-		 * @target-class ParticleSystemComponent rotationSpeedScale member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		rotationSpeedScale: {
@@ -780,7 +781,7 @@ define([
 
 		/**
 		 * Randomization seed.
-		 * @target-class ParticleSystemComponent seed member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		seed: {
@@ -797,7 +798,7 @@ define([
 
 		/**
 		 * Emitter volume. Set to 'sphere', 'cone', or 'box'.
-		 * @target-class ParticleSystemComponent shapeType member
+		 * @memberof ParticleSystemComponent#
 		 * @type {string}
 		 */
 		shapeType: {
@@ -812,7 +813,7 @@ define([
 
 		/**
 		 * This curve alters the size of particles over their life time.
-		 * @target-class ParticleSystemComponent sizeOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		sizeOverLifetime: {
@@ -824,9 +825,9 @@ define([
 				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.SIZE_CURVE_CODE);
 			}
 		},
-		
+
 		/**
-		 * @target-class ParticleSystemComponent sortMode member
+		 * @memberof ParticleSystemComponent#
 		 * @type {string}
 		 */
 		sortMode: {
@@ -847,7 +848,7 @@ define([
 
 		/**
 		 * Whether to emit from the sphere shell, if sphere shape is used.
-		 * @target-class ParticleSystemComponent sphereEmitFromShell member
+		 * @memberof ParticleSystemComponent#
 		 * @type {boolean}
 		 */
 		sphereEmitFromShell: {
@@ -862,7 +863,7 @@ define([
 
 		/**
 		 * The initial angle of particles, as a curve over the emitter duration.
-		 * @target-class ParticleSystemComponent startAngle member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		startAngle: {
@@ -877,7 +878,7 @@ define([
 
 		/**
 		 * Acts as a scale on the startAngle curve.
-		 * @target-class ParticleSystemComponent startAngleScale member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		startAngleScale: {
@@ -891,7 +892,7 @@ define([
 
 		/**
 		 * The initial color of particles as a color curve over the emitter duration.
-		 * @target-class ParticleSystemComponent startColor member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Vector4Curve|null}
 		 */
 		startColor: {
@@ -906,7 +907,7 @@ define([
 
 		/**
 		 * Initial life time of particles, as a curve over the emitter duration.
-		 * @target-class ParticleSystemComponent startLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		startLifetime: {
@@ -921,7 +922,7 @@ define([
 
 		/**
 		 * Initial size of particles, as a curve over the emitter duration.
-		 * @target-class ParticleSystemComponent startSize member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		startSize: {
@@ -936,7 +937,7 @@ define([
 
 		/**
 		 * Acts as a scale on the startSize curve.
-		 * @target-class ParticleSystemComponent startSizeScale member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 * @todo should this be .scale?
 		 */
@@ -951,7 +952,7 @@ define([
 
 		/**
 		 * Initial speed of the particles, described by a curve over the emitter duration.
-		 * @target-class ParticleSystemComponent startSpeed member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		startSpeed: {
@@ -966,7 +967,7 @@ define([
 
 		/**
 		 * A texture for the particles.
-		 * @target-class ParticleSystemComponent texture member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Texture|null}
 		 */
 		texture: {
@@ -988,7 +989,7 @@ define([
 
 		/**
 		 * How fast the texture animation should cycle. Acts as a scale on the textureFrameOverLifetime curve.
-		 * @target-class ParticleSystemComponent textureAnimationCycles member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		textureAnimationCycles: {
@@ -1002,7 +1003,7 @@ define([
 
 		/**
 		 * The current texture frame, given by a curve over the particle life time.
-		 * @target-class ParticleSystemComponent textureFrameOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Curve|null}
 		 */
 		textureFrameOverLifetime: {
@@ -1017,7 +1018,7 @@ define([
 
 		/**
 		 * Texture tiling in the X direction.
-		 * @target-class ParticleSystemComponent textureTilesX member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		textureTilesX: {
@@ -1031,7 +1032,7 @@ define([
 
 		/**
 		 * Texture tiling in the Y direction.
-		 * @target-class ParticleSystemComponent textureTilesY member
+		 * @memberof ParticleSystemComponent#
 		 * @type {number}
 		 */
 		textureTilesY: {
@@ -1045,7 +1046,7 @@ define([
 
 		/**
 		 * Velocity of particles in world space.
-		 * @target-class ParticleSystemComponent worldVelocityOverLifetime member
+		 * @memberof ParticleSystemComponent#
 		 * @type {Vector3Curve|null}
 		 */
 		worldVelocityOverLifetime: {
@@ -1513,7 +1514,7 @@ define([
 		var r = this.boundsRadius;
 		bounds.xExtent = bounds.yExtent = bounds.zExtent = r * 2;
 	};
-	
+
 	var tmpWorldPos = new Vector3();
 
 	/**
@@ -1669,7 +1670,7 @@ define([
 
 		var meshRendererComponent = new MeshRendererComponent(this.material);
 		meshRendererComponent.castShadows = meshRendererComponent.receiveShadows = meshRendererComponent.isPickable = meshRendererComponent.isReflectable = false;
-		
+
 		var meshEntity = this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
 			.set(meshRendererComponent)
 			.addToWorld();
@@ -1688,7 +1689,7 @@ define([
 		this.meshEntity.removeFromWorld();
 		this.entity = this.meshEntity = null;
 	};
-	
+
 	/**
 	 * @private
 	 * @param obj

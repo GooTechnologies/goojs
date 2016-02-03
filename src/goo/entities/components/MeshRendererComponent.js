@@ -8,6 +8,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/components/MeshRendererComponent/MeshRendererComponent-example.html Working example
 	 * @extends Component

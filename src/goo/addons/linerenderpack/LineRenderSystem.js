@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Updates all of it's LineRenderers and exposes methods for drawing primitive line shapes.
 	 * @param {World} world the world this system exists in.
 	 */

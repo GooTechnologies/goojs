@@ -15,6 +15,7 @@ define([
 	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
 
 	/**
+	 * @class
 	 * Component that adds sound to an entity.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {Component}
@@ -51,7 +52,7 @@ define([
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
-		
+
 		this._autoPlayDirty = false;
 
 		// #ifdef DEBUG

@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A base class for procedural noise functions.
 	 * Only used to define the class. Should never be instantiated.
 	 */

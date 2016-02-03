@@ -2,6 +2,7 @@ define(function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Rectangle
 	 * @hidden
 	 * @param {number} x

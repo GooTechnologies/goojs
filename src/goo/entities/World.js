@@ -5,7 +5,8 @@ define([
 	'goo/entities/managers/Manager',
 	'goo/entities/systems/System',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
+	'goo/entities/EntitySelection',
+	'goo/entities/WorldBy'
 ], function (
 	Entity,
 	EntityManager,
@@ -13,15 +14,18 @@ define([
 	Manager,
 	System,
 	Component,
-	EntitySelection
+	EntitySelection,
+	WorldBy
 ) {
 	'use strict';
 
 	/**
+	 * @class
 	 * Main handler for an entity world. The World keeps track of managers and systems,
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
+	 * @class
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
 	function World(gooRunner) {
@@ -37,8 +41,10 @@ define([
 		this._changedEntities = [];
 		this._removedEntities = [];
 
-		this.by = {};
-		this._installDefaultSelectors();
+		/**
+		 * @type {WorldBy}
+		 */
+		this.by = new WorldBy(this);
 
 		/** Main keeper of entities.
 		 * @type {EntityManager}
@@ -62,50 +68,6 @@ define([
 	//! AT: these need to go
 	World.time = 0.0;
 	World.tpf = 1.0;
-
-
-	/** Entity selector. Its methods return an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
-	 * <br><i>Will get additional methods when an {@link EntityManager} is attached.</i>
-	 * @member by
-	 * @memberOf World.prototype
-	 * @example
-	 * var bySystem = gooRunner.world.by.system("RenderSystem").toArray();
-	 * var byComponent = gooRunner.world.by.component("cameraComponent").toArray();
-	 * var byTag = gooRunner.world.by.tag("monster").toArray()
-	 * var byAttribute = gooRunner.world.by.attribute("hit-points").toArray();
-	 */
-	World.prototype._installDefaultSelectors = function () {
-		this.by.system = function (systemType) {
-			var system = this.getSystem(systemType);
-			return new EntitySelection(system._activeEntities);
-		}.bind(this);
-
-		this.by.component = function (componentType) {
-			var entities = this.entityManager.getEntities();
-
-			return new EntitySelection(entities.filter(function (entity) {
-				return entity.hasComponent(componentType);
-			}));
-		}.bind(this);
-
-		//! AT: this will be relocated into the Tag Manager once it gets implemented
-		this.by.tag = function (tag) {
-			var entities = this.entityManager.getEntities();
-
-			return new EntitySelection(entities.filter(function (entity) {
-				return entity.hasTag(tag);
-			}));
-		}.bind(this);
-
-		//! AT: this will be relocated into the Attribute Manager once it gets implemented
-		this.by.attribute = function (attribute) {
-			var entities = this.entityManager.getEntities();
-
-			return new EntitySelection(entities.filter(function (entity) {
-				return entity.hasAttribute(attribute);
-			}));
-		}.bind(this);
-	};
 
 	/**
 	 * Universal shorthand for adding managers, systems, entities and registering components.

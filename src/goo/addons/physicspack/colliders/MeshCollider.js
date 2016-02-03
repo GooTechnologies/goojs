@@ -9,6 +9,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * Physics mesh collider.
 	 * @param {Object} [settings]
 	 * @param {MeshData} [settings.meshData]

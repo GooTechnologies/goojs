@@ -33,6 +33,7 @@ define([
 	var tmpCannonVec2;
 
 	/**
+	 * @class
 	 * Adds rigid body dynamics the entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they are added as collision shapes to the rigid body.
 	 * @param {Object} [settings]
 	 * @param {number} [settings.mass=1]
@@ -441,7 +442,7 @@ define([
 	Object.defineProperties(RigidBodyComponent.prototype, {
 
 		/**
-		 * @target-class RigidBodyComponent linearDamping member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		linearDamping: {
@@ -457,7 +458,7 @@ define([
 		},
 
 		/**
-		 * @target-class RigidBodyComponent angularDamping member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		angularDamping: {
@@ -473,7 +474,7 @@ define([
 		},
 
 		/**
-		 * @target-class RigidBodyComponent isKinematic member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		isKinematic: {
@@ -490,7 +491,7 @@ define([
 		},
 
 		/**
-		 * @target-class RigidBodyComponent sleepingThreshold member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		sleepingThreshold: {
@@ -506,7 +507,7 @@ define([
 		},
 
 		/**
-		 * @target-class RigidBodyComponent mass member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		mass: {
@@ -523,7 +524,7 @@ define([
 		},
 
 		/**
-		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		sleepingTimeLimit: {
@@ -540,7 +541,7 @@ define([
 
 		/**
 		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
-		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @memberof RigidBodyComponent#
 		 * @type {number}
 		 */
 		constraints: {

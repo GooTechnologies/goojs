@@ -3,6 +3,7 @@ define([], function () {
 
 	/**
 	 * Base pass class
+	 * @class
 	 */
 	function Pass() {}
 

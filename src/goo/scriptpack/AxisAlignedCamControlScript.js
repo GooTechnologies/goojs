@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * Axis aligned camera control script
+	 * @class
 	 * @returns {{setup: setup, update: update, cleanup: cleanup}}
 	 */
 	function AxisAlignedCamControlScript() {

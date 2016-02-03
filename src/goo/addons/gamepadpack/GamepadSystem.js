@@ -8,6 +8,8 @@ define([
 	'use strict';
 
 	/**
+	 * System for gamepads
+	 * @class
 	 * @extends System
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example
 	 */

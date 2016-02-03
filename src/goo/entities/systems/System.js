@@ -4,6 +4,8 @@ function () {
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Creates a new System
 	 *
 	 * Base class for all entity systems

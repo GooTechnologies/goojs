@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Stores the edges to render.
 	 * @param {Number} edgeCount The number of edges needed during runtime
 	 * @constructor

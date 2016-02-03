@@ -3,6 +3,7 @@ define(function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * Provides string manipulation methods
 	 */
 	function StringUtils() {}

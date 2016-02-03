@@ -16,6 +16,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Handler for loading skeletons into engine
 	 * @extends ConfigHandler
 	 * @param {World} world

@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Regular polygon mesh
 	 */
 	function RegularPolygon(nSegments, radius) {

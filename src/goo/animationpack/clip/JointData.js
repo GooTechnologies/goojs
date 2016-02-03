@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Describes transform of a joint.
 	 * @param {JointData} [source] source to copy
 	 */

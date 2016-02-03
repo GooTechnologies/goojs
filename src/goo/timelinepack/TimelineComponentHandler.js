@@ -20,6 +20,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @hidden
 	 */
 	function TimelineComponentHandler() {

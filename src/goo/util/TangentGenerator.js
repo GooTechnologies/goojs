@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * The TangentGenerator can generate and add a buffer with tangent information to a MeshData
 	 */
 	function TangentGenerator() {}

@@ -9,6 +9,7 @@ define([
 
 		/**
 		 * A grid-like surface shape
+		 * @class
 		 * @param {array} heightMatrix The height data by x and z axis.
 		 * @param {number} xWidth x axis size in units
          * @param {number} yHeight y axis size in units

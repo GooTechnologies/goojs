@@ -6,6 +6,8 @@ define([
 	'use strict';
 
 	/**
+	 * SoundManager 2 component.
+	 * @class
 	 * @extends Component
 	 * @deprecated Deprecated since 0.10.x and scheduled for removal in 0.12.0
 	 */

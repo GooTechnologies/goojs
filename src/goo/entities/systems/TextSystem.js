@@ -10,6 +10,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Processes all entities with a text component<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 * @extends System

@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Provides a way to interpolate on a spline with constant speed
 	 * @param {Spline} spline Spline to interpolate across
 	 * @param {number} [substepSize=0.01] substepSize The size of the substep used to approximate movement across the spline.

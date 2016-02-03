@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * Updates cameras/cameracomponents with their transform component transforms
+	 * @class
 	 * @extends System
 	 */
 	function CameraSystem() {

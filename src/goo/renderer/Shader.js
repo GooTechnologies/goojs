@@ -20,6 +20,7 @@ define([
 	/* global WebGLRenderingContext */
 
 	/**
+	 * @class
 	 * Defines vertex and fragment shader and uniforms to shader callbacks
 	 * @param {string} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data

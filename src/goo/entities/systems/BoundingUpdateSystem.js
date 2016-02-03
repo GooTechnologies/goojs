@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
+	 * @class
 	 * @extends System
 	 */
 	function BoundingUpdateSystem () {

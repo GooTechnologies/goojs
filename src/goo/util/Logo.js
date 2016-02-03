@@ -3,6 +3,7 @@ define(
 function () {
 	'use strict';
 	/**
+	 * @class
 	 * Get logo svg in different formats
 	 * Only used to define the class. Should never be instantiated.
 	 */

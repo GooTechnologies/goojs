@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * MeshData for a Grid.
 	 * @extends MeshData
 	 * @param {number} [xSegments=10] Number of columns.

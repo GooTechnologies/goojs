@@ -28,6 +28,8 @@ define([
 	'use strict';
 
 	/**
+	 * Gizmo.
+	 * @class
 	 * @hidden
 	 */
 	function Gizmo(name) {

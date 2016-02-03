@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Container for particle data in the ParticleSystemComponent.
 	 * @class
 	 * @constructor
@@ -86,7 +87,7 @@ define([
 	 */
 	ParticleData.prototype.getWorldPosition = function (store) {
 		if(!this.active) return store;
-		
+
 		var component = this.component;
 
 		// pos + dir * t + 0.5 * t * t * g

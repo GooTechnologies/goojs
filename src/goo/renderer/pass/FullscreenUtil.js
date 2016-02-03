@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Fullscreen-related utilities
 	 * @target-class FullscreenUtil FullscreenUtil constructor
 	 * @require-path goo/renderer/pass/FullscreenUtil

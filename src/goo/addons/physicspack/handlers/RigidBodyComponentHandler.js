@@ -19,6 +19,7 @@ define([
 
 	/**
 	 * For handling loading of rigid body components
+	 * @class
 	 * @extends ComponentHandler
 	 * @hidden
 	 */

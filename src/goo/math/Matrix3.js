@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * Creates a new Matrix3 by passing in either a current Matrix3, number Array, or a set of 9 numbers.
 	 * @extends Matrix

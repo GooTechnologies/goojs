@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Bounding tree node
 	 * @param boundType
 	 */

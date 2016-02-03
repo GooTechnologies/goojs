@@ -12,6 +12,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component

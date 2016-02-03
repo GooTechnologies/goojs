@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * A grid-like surface shape
 	 * @param {Array<number>} verts The vertices data array
 	 * @param {number} [verticesPerLine=2] The number of vertices

@@ -6,7 +6,8 @@ define([
 	'use strict';
 
 	/**
-	 * <code>BoundingVolume</code> Base class for boundings
+	 * Base class for boundings
+	 * @class
 	 */
 	function BoundingVolume(center) {
 		//! AT: this is one of the few classes that's cloning its input

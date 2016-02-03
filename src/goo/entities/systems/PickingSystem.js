@@ -2,6 +2,8 @@ define(['goo/entities/systems/System'], function (System) {
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Helps gather pickable entities
 	 * @extends System
 	 */

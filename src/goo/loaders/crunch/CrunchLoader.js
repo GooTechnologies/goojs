@@ -34,6 +34,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * @private
 	 */
 	function CrunchLoader() {

@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Constructs a new ray with an origin at (0, 0, 0) and a direction of (0, 0, 1).
 	 */
 	function Ray(origin, direction) {

@@ -7,6 +7,7 @@ define([
 
 	/**
 	 * A layer blender that uses linear interpolation to merge the results of two layers.
+	 * @class
 	 */
 	function LayerLerpBlender() {
 		this._blendWeight = null;

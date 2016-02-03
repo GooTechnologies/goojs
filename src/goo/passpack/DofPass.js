@@ -28,6 +28,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Deph of field pass
 	 * @param renderList
 	 * @param outShader

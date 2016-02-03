@@ -8,6 +8,7 @@ define([
 	var numUpdates;
 
 	/**
+	 * @class
 	 * Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends System

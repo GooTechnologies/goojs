@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Three scalar curves. Can be converted to a vec4-valued expression in GLSL code.
 	 * @class
 	 * @constructor

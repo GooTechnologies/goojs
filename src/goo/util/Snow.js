@@ -20,6 +20,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Snow
 	 * @param {GooRunner} gooRunner
 	 */

@@ -7,6 +7,7 @@ define([
 
 	/**
 	 * @class
+	 * @class
 	 * @constructor
 	 * @extends Curve
 	 * @param {object} [options]

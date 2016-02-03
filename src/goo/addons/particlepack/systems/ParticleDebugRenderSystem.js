@@ -24,6 +24,7 @@ function (
 
 	/**
 	 * Renders all ParticleSystemComponents in the scene.
+	 * @class
 	 * @extends System
 	 */
 	function ParticleDebugRenderSystem() {
@@ -83,7 +84,7 @@ function (
 			if(meshEntity){
 				if(entity.isVisiblyHidden())
 					meshEntity.meshRendererComponent.hidden = true;
-				else 
+				else
 					meshEntity.meshRendererComponent.hidden = !this._shouldRenderDebugForEntity(entity);
 			}
 		}

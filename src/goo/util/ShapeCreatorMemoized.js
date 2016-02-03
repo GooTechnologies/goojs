@@ -20,6 +20,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Factory for shape creation.
 	 * Only used to define the class. Should never be instantiated.
 	 */

@@ -19,6 +19,9 @@ define([
 		})();
 	})();
 
+	/**
+	 * @class
+	 */
 	function TaskScheduler() {}
 
 	TaskScheduler.maxTimePerFrame = 50;

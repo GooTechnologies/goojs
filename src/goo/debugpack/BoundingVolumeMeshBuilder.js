@@ -15,6 +15,7 @@ define([
 
 	/**
 	 * Provides methods for building bounding volume debug meshes
+	 * @class
 	 */
 	function BoundingVolumeMeshBuilder() {}
 

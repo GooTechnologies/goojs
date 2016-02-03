@@ -2,6 +2,7 @@ define([], function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * A curve that has a time-dependent value (time is always between 0 and 1), and can be translated into GLSL code.
 	 * @constructor
 	 * @param {object} [options]

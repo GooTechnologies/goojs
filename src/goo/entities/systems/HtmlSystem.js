@@ -14,6 +14,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * @extends System
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */

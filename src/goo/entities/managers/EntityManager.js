@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Main handler of all entities in the world.
+	 * @class
 	 * @extends Manager
 	 */
 	function EntityManager() {

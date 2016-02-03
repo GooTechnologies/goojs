@@ -26,6 +26,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Screen Space Ambient Occlusion pass
 	 * @param renderList
 	 * @hidden

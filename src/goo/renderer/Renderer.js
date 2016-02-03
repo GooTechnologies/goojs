@@ -47,6 +47,7 @@ define([
 	var STUB_METHOD = function () {};
 
 	/**
+	 * @class
 	 * The renderer handles displaying of graphics data to a render context.
 	 * It accepts an object containing the settings for the renderer.
 	 *
@@ -58,7 +59,7 @@ define([
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
 	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc).
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas.
-	 * @param {function(string)} [parameters.onError] Called with message when error occurs.
+	 * @param {function} [parameters.onError] Called with message when error occurs. Provides a string argument.
 	 */
 	function Renderer(parameters) {
 		parameters = parameters || {};
@@ -1195,7 +1196,7 @@ define([
 
 		var shaderCache = this.rendererRecord.shaderCache;
 		var cachedShader = shaderCache.get(defineKey);
-	
+
 		// Check if the shader cache is invalid
 		if (cachedShader && cachedShader.defineKey !== defineKey) {
 			shaderCache.delete(defineKey);

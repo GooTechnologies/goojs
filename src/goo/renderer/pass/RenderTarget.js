@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Creates a new RenderTarget object
 	 *
 	 * Post processing handler

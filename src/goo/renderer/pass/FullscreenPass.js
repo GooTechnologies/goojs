@@ -12,6 +12,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Fullscreen pass
 	 * @param shader
 	 */

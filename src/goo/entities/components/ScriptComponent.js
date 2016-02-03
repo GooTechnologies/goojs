@@ -12,6 +12,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Contains scripts to be executed each frame when set on an active entity.
 	 * @param {(Object|Array<Object>)} [scripts] A script-object or an array of script-objects to attach to the
 	 * entity.

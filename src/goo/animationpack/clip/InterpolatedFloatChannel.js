@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for
 	 *        this channel include extracting and using forward motion from walk animations, animating colors or texture coordinates, etc.
 	 * @param {string} channelName the name of this channel.

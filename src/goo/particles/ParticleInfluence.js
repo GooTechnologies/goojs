@@ -2,6 +2,7 @@ define(function () {
 	'use strict';
 
 	/**
+	 * @class
 	 * A Particle influence modifies particles in some way over time.
 	 * @param {Object} [settings]
 	 * @param {Function} [settings.prepare] <code>prepare({@link Entity} particleEntity, {@link ParticleEmitter} emitter)</code>.

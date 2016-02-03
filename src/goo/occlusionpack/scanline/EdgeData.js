@@ -2,6 +2,7 @@ define(function () {
 	'use strict';
 
 	/**
+	 * @class
 	 *
 	 * @constructor
 	 */

@@ -5,6 +5,9 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * @class
+	 */
 	function EventChannel(id) {
 		AbstractTimelineChannel.call(this, id);
 

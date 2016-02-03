@@ -14,6 +14,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Used internally to render a batch of lines all with the same color.
 	 * @param {World} world The world lines are rendered in.
 	 */

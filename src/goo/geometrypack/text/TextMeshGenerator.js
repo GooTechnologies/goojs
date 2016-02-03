@@ -17,6 +17,7 @@ define([
 	 * Serializes an svg path command
 	 * @param {Object} command
 	 * @returns {string}
+	 * @hidden
 	 */
 	function serializeCommand(command) {
 		var str = command.type;
@@ -39,6 +40,7 @@ define([
 	 * @param {string} serializedPath
 	 * @param {number} stepLength Lower values result in more detail
 	 * @returns {Array<{ x: number, y: number }>} Aa array of point-like objects
+	 * @hidden
 	 */
 	function getPathPoints(serializedPath, stepLength) {
 		var svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -60,6 +62,7 @@ define([
 	 * @param {{ x: number, y: number }} point1
 	 * @param {{ x: number, y: number }} point2
 	 * @returns {number}
+	 * @hidden
 	 */
 	function distance(point1, point2) {
 		return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
@@ -70,6 +73,7 @@ define([
 	 * @param {Array<{ x: number, y: number }>} points
 	 * @param {number} stepLength
 	 * @returns {Array<Array<{ x: number, y: number }>>}
+	 * @hidden
 	 */
 	function groupPoints(points, stepLength) {
 		var groups = [];
@@ -100,6 +104,7 @@ define([
 	 * Simplifies a polygon by collapsing collinear adjacent points
 	 * @param {Array<{ x: number, y: number }>} polygon
 	 * @returns {Array<{ x: number, y: number }>}
+	 * @hidden
 	 */
 	function simplifyPath(polygon) {
 		var simplePolygon = [];
@@ -129,6 +134,7 @@ define([
 	 * Computes the 2D bounding box of a poygon
 	 * @param {Array<{ x: number, y: number }>} polygon
 	 * @returns {{ min: Vector2, max: Vector2 }}
+	 * @hidden
 	 */
 	function getBoundingVolume(polygon) {
 		var min = new Vector2(polygon[0].x, polygon[0].y);
@@ -161,6 +167,7 @@ define([
 	 * @param a
 	 * @param b
 	 * @returns {boolean}
+	 * @hidden
 	 */
 	function containsBox(a, b) {
 		return a.min.x < b.min.x && a.max.x > b.max.x &&
@@ -178,6 +185,7 @@ define([
 	 * Groups polygons in contours with holes
 	 * @param {Array<{ x: number, y: number }>} polygons
 	 * @returns {{ polygon, holes }}
+	 * @hidden
 	 */
 	function getHierarchy(polygons) {
 		// most characters have 1 polygon
@@ -246,6 +254,7 @@ define([
 	/**
 	 * Adds indices to the vertices of a polygon
 	 * @param polygons
+	 * @hidden
 	 */
 	function addIndices(polygons) {
 		var counter = 0;
@@ -261,6 +270,7 @@ define([
 	 * Extracts the indices of a triangulation computed by the triangulation library
 	 * @param triangles
 	 * @returns {Array}
+	 * @hidden
 	 */
 	function getIndices(triangles) {
 		var indices = [];
@@ -278,6 +288,7 @@ define([
 	 * Flattens an array of points defined as objects { x, y } into an array
 	 * @param {Array<{ x: number, y: number }>} points
 	 * @returns {Array<number>}
+	 * @hidden
 	 */
 	function getVerts(points) {
 		// use an inverse map from indices to _indices
@@ -295,6 +306,7 @@ define([
 	 * @param contour
 	 * @param holes
 	 * @returns {*}
+	 * @hidden
 	 */
 	function triangulate(contour, holes) {
 		var swctx = new poly2tri.SweepContext(contour.slice(0));
@@ -314,6 +326,7 @@ define([
 	 * @param {number} [options.fontSize=48]
 	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
 	 * @returns {{surfaceIndices: Array, surfaceVerts: Array, extrusions: Array}}
+	 * @hidden
 	 */
 	function dataForGlyph(glyph, options) {
 		options = options || {};
@@ -367,6 +380,7 @@ define([
 	 * @param {number} [options.fontSize=48]
 	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
 	 * @returns {Array<MeshData>}
+	 * @hidden
 	 */
 	function meshesForText(text, font, options) {
 		options = options || {};

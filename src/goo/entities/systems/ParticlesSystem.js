@@ -6,6 +6,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Manages and reacts to particle components on entities.
 	 * @extends System
 	 */

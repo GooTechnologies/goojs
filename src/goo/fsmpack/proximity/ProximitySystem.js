@@ -10,10 +10,10 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Processes all entities with a proximity component
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
-	 * @private
 	 * @extends System
 	 */
 	function ProximitySystem() {

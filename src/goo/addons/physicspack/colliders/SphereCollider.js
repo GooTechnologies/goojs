@@ -7,6 +7,7 @@ function (
 	'use strict';
 
 	/**
+	 * @class
 	 * @param {Object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 * @extends Collider

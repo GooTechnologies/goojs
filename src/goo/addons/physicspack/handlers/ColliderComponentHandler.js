@@ -27,6 +27,7 @@ define([
 
 	/**
 	 * For handling loading of collider components
+	 * @class
 	 * @extends ComponentHandler
 	 * @hidden
 	 */

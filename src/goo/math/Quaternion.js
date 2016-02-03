@@ -17,6 +17,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Quaternions provide a convenient mathematical notation for
 	 * representing orientations and rotations of objects in three dimensions.
 	 * Compared to Euler angles, Quaternions are simpler to compose and can help avoid the problem of gimbal lock.

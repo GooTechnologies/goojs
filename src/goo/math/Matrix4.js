@@ -10,6 +10,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Matrix with 4x4 components.
 	 * @extends Matrix
 	 * @param {(Matrix4|Array<number>)} arguments Initial values for the components.

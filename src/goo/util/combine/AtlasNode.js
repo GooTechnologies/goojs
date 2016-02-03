@@ -6,6 +6,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Atlas node
 	 * @hidden
 	 * @param w

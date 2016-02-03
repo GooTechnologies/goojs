@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * Provides useful canvas-related methods
+	 * @class
 	 */
 	function CanvasUtils() {}
 

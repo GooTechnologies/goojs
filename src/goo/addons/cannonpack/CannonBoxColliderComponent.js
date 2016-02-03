@@ -12,6 +12,7 @@ define([
 	/* global CANNON */
 
 	/**
+	 * @class
 	 * Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @param {Object} [settings]

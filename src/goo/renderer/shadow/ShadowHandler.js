@@ -26,6 +26,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Handles shadow techniques
 	 */
 	function ShadowHandler() {

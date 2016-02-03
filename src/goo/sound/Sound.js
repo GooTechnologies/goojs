@@ -13,6 +13,7 @@ define([
 
 	/**
 	 * A representation of a sound in the engine
+	 * @class
 	 */
 	function Sound() {
 		/** @type {string}

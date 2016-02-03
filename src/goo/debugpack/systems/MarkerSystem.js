@@ -16,6 +16,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Processes all entities with a marker component
 	 * @extends System
 	 */

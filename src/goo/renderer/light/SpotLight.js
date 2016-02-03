@@ -8,6 +8,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * The SpotLight can be viewed as two cones with their apexes located at the light's location.
 	 * The properties angle sets the angle (in degrees) for which the outer cone
 	 * deviates from the light's direction. The exponent property sets the angle for the inner cone.

@@ -14,6 +14,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * @extends System
 	 */
 	function CssTransformSystem(renderer) {

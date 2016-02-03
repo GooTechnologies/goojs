@@ -38,6 +38,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * Renders transform gizmos<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example
 	 * @property {boolean} doRender Only render if set to true

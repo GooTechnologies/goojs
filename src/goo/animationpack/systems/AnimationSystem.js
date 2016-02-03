@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Processes all entities with animation components, updating the animations
+	 * @class
 	 * @extends System
 	 */
 	function AnimationSystem() {

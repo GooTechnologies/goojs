@@ -12,11 +12,8 @@ define([
 	'use strict';
 
 	/**
-	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
-	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
-	 *        <br>
-	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
-	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
+	 * Defines an axis-aligned cube that defines a container for a group of vertices of a particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. A typical usage is to allow the class define the center and radius by calling either containAABB or averagePoints. A call to computeFramePoint in turn calls containAABB.
+	 * @class
 	 */
 	function BoundingBox(center, xExtent, yExtent, zExtent) {
 		BoundingVolume.call(this, center);

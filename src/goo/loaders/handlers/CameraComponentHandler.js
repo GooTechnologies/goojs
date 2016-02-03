@@ -16,6 +16,7 @@ define([
 	'use strict';
 
 	/**
+	 * @class
 	 * For handling loading of camera components
 	 * @param {World} world The goo world
 	 * @param {Function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.

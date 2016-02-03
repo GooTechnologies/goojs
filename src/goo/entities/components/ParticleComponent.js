@@ -12,6 +12,8 @@ define([
 	'use strict';
 
 	/**
+	 * @class
+	 * @class
 	 * Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
 	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
 	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
