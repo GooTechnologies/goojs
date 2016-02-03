@@ -15,6 +15,7 @@ define([
 
 	/**
 	 * Vector with 2 components
+	 * @constructor
 	 * @extends Vector
 	 * @param {number} x
 	 * @param {number} y

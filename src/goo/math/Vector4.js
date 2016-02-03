@@ -11,6 +11,8 @@ define([
 
 	/**
 	 * Vector with 4 components
+	 * @constructor
+	 * @memberof module:math
 	 * @extends Vector
 	 * @param {number} x
 	 * @param {number} y
@@ -708,7 +710,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.setVector = ObjectUtils.warnOnce('The setVector method of Vector4 is deprecated. Please use the set method instead.', function (rhs) {
@@ -716,7 +718,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.add = ObjectUtils.warnOnce('Vector4.add is deprecated. Use Vector4.prototype.add instead.', function (lhs, rhs, target) {
@@ -744,7 +746,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.sub = ObjectUtils.warnOnce('Vector4.sub is deprecated. Use Vector4.prototype.sub instead.', function (lhs, rhs, target) {
@@ -772,7 +774,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.mul = ObjectUtils.warnOnce('Vector4.mul is deprecated. Use Vector4.prototype.mul instead.', function (lhs, rhs, target) {
@@ -800,7 +802,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.div = ObjectUtils.warnOnce('Vector4.div is deprecated. Use Vector4.prototype.div instead.', function (lhs, rhs, target) {
@@ -828,7 +830,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.dot = ObjectUtils.warnOnce('Vector4.dot is deprecated. Use Vector4.prototype.dot instead.', function (lhs, rhs) {
@@ -850,7 +852,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.addVector = ObjectUtils.warnOnce('Vector4.prototype.addVector is deprecated. Use .add instead.', function (vector) {
@@ -863,7 +865,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.dotVector = ObjectUtils.warnOnce('Vector4.prototype.dotVector is deprecated. Use .dot instead.', function (rhs) {
@@ -877,7 +879,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.mulVector = ObjectUtils.warnOnce('Vector4.prototype.mulVector is deprecated. Use .mul instead.', function (vector) {
@@ -890,7 +892,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.setVector = ObjectUtils.warnOnce('Vector4.prototype.setVector is deprecated. Use .set instead.', function (vector) {
@@ -903,7 +905,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector4.prototype.subVector = ObjectUtils.warnOnce('Vector4.prototype.subVector is deprecated. Use .sub instead.', function (vector) {

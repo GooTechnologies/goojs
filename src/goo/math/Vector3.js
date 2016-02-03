@@ -11,16 +11,18 @@ define([
 ) {
 	'use strict';
 
-	/**
-	 * Vector with 3 components
-	 * @extends Vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)
-	 */
+	 /**
+	  * Vector with 3 components
+	  * @constructor
+	  * @memberof module:math
+	  * @extends Vector
+	  * @param {number} x
+	  * @param {number} y
+	  * @param {number} z
+	  * @example
+	  * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	  * var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)
+	  */
 	function Vector3(x, y, z) {
 		// #ifdef DEBUG
 		this._x = 0;
@@ -762,7 +764,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.setVector = ObjectUtils.warnOnce('The setVector method of Vector3 is deprecated. Please use the set method instead.', function (rhs) {
@@ -770,7 +772,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.add = ObjectUtils.warnOnce('Vector3.add is deprecated. Use Vector3.prototype.add instead.', function (lhs, rhs, target) {
@@ -797,7 +799,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.cross = ObjectUtils.warnOnce('Vector3.cross is deprecated. Use Vector3.prototype.cross instead.', function (lhs, rhs, target) {
@@ -820,7 +822,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.distance = ObjectUtils.warnOnce('Vector3.distance is deprecated. Use Vector3.prototype.distance instead.', function (lhs, rhs) {
@@ -828,7 +830,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.distanceSquared = ObjectUtils.warnOnce('Vector3.distanceSquared is deprecated. Use Vector3.prototype.distanceSquared instead.', function (lhs, rhs) {
@@ -839,7 +841,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.div = ObjectUtils.warnOnce('Vector3.div is deprecated. Use Vector3.prototype.div instead.', function (lhs, rhs, target) {
@@ -873,7 +875,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.dot = ObjectUtils.warnOnce('Vector3.dot is deprecated. Use Vector3.prototype.dot instead.', function (lhs, rhs) {
@@ -894,7 +896,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.mul = ObjectUtils.warnOnce('Vector3.mul is deprecated. Use Vector3.prototype.mul instead.', function (lhs, rhs, target) {
@@ -927,7 +929,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.addVector = ObjectUtils.warnOnce('Vector3.prototype.addVector is deprecated. Use Vector3.prototype.add instead.', function (vector) {
@@ -939,7 +941,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.mulVector = ObjectUtils.warnOnce('Vector3.prototype.mulVector is deprecated. Use .mul instead.', function (vec3) {
@@ -951,7 +953,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.dotVector = ObjectUtils.warnOnce('Vector3.prototype.dotVector is deprecated. Use .dot instead.', function (rhs) {
@@ -964,7 +966,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.invert = ObjectUtils.warnOnce('Vector3.prototype.invert is deprecated. Use .negate instead.', function () {
@@ -976,7 +978,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.prototype.subVector = ObjectUtils.warnOnce('Vector3.prototype.subVector is deprecated. Use .sub instead.', function (vector) {
@@ -988,7 +990,7 @@ define([
 	});
 
 	/**
-	 * @hidden
+	 * @ignore
 	 * @deprecated
 	 */
 	Vector3.sub = ObjectUtils.warnOnce('Vector3.sub is deprecated. Use Vector3.prototype.sub instead.', function (lhs, rhs, target) {

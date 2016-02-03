@@ -128,8 +128,19 @@ module.exports = function (grunt) {
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}
 		},
+		jsdoc: {
+			dist: {
+				src: ['src', 'README.md'],
+				options: {
+					destination: 'out-doc2',
+					template : "node_modules/ink-docstrap/template",
+					configure : "tools/jsdoc.conf.json",
+					recurse: true
+				}
+			}
+		},
 		shell: {
-			jsdoc: {
+			modoc: {
 				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
 			},
 			tern: {
@@ -176,10 +187,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-keepalive');
 	grunt.loadNpmTasks('grunt-eslint');
+	grunt.loadNpmTasks('grunt-jsdoc');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('modoc',		 ['shell:modoc']);
 	grunt.registerTask('tern',		 ['shell:tern']);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
