@@ -314,7 +314,7 @@ define([
 
 		/**
 		 * The entity which the component is attached on. Will be set when the component is attached to the entity.
-		 * @type {Entity|null}
+		 * @type {(Entity|null)}
 		 * @readonly
 		 */
 		this.entity = null;
@@ -472,7 +472,7 @@ define([
 		/**
 		 * Color of particles, as a curve over their life time.
 		 * @target-class ParticleSystemComponent colorOverLifetime member
-		 * @type {Vector4Curve|null}
+		 * @type {(Vector4Curve|null)}
 		 */
 		colorOverLifetime: {
 			get: function () {
@@ -635,7 +635,7 @@ define([
 		/**
 		 * The velocity of particles in local particle space.
 		 * @target-class ParticleSystemComponent localVelocityOverLifetime member
-		 * @type {Vector3Curve|null}
+		 * @type {(Vector3Curve|null)}
 		 */
 		localVelocityOverLifetime: {
 			get: function () {
@@ -753,7 +753,7 @@ define([
 		/**
 		 * The rotation speed in radians per second, specified using a curve over the particle life time.
 		 * @target-class ParticleSystemComponent rotationSpeedOverLifetime member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		rotationSpeedOverLifetime: {
 			get: function () {
@@ -814,7 +814,7 @@ define([
 		/**
 		 * This curve alters the size of particles over their life time.
 		 * @target-class ParticleSystemComponent sizeOverLifetime member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		sizeOverLifetime: {
 			get: function () {
@@ -864,7 +864,7 @@ define([
 		/**
 		 * The initial angle of particles, as a curve over the emitter duration.
 		 * @target-class ParticleSystemComponent startAngle member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		startAngle: {
 			get: function () {
@@ -893,7 +893,7 @@ define([
 		/**
 		 * The initial color of particles as a color curve over the emitter duration.
 		 * @target-class ParticleSystemComponent startColor member
-		 * @type {Vector4Curve|null}
+		 * @type {(Vector4Curve|null)}
 		 */
 		startColor: {
 			get: function () {
@@ -908,7 +908,7 @@ define([
 		/**
 		 * Initial life time of particles, as a curve over the emitter duration.
 		 * @target-class ParticleSystemComponent startLifetime member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		startLifetime: {
 			get: function () {
@@ -923,7 +923,7 @@ define([
 		/**
 		 * Initial size of particles, as a curve over the emitter duration.
 		 * @target-class ParticleSystemComponent startSize member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		startSize: {
 			get: function () {
@@ -953,7 +953,7 @@ define([
 		/**
 		 * Initial speed of the particles, described by a curve over the emitter duration.
 		 * @target-class ParticleSystemComponent startSpeed member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		startSpeed: {
 			get: function () {
@@ -968,7 +968,7 @@ define([
 		/**
 		 * A texture for the particles.
 		 * @target-class ParticleSystemComponent texture member
-		 * @type {Texture|null}
+		 * @type {(Texture|null)}
 		 */
 		texture: {
 			get: function () {
@@ -1004,7 +1004,7 @@ define([
 		/**
 		 * The current texture frame, given by a curve over the particle life time.
 		 * @target-class ParticleSystemComponent textureFrameOverLifetime member
-		 * @type {Curve|null}
+		 * @type {(Curve|null)}
 		 */
 		textureFrameOverLifetime: {
 			get: function () {
@@ -1047,7 +1047,7 @@ define([
 		/**
 		 * Velocity of particles in world space.
 		 * @target-class ParticleSystemComponent worldVelocityOverLifetime member
-		 * @type {Vector3Curve|null}
+		 * @type {(Vector3Curve|null)}
 		 */
 		worldVelocityOverLifetime: {
 			get: function () {
