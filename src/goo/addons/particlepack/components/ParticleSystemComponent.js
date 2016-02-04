@@ -56,7 +56,7 @@ define([
 	 * A Particle System component simulates things like clouds and flames by generating and animating large numbers of small 2D images in the scene.
 	 * @class
 	 * @constructor
-	 * @param {Object} options Particle options
+	 * @param {Object} [options] Particle options
  	 * @param {boolean} [options.billboard=true]
  	 * @param {boolean} [options.depthTest=true]
  	 * @param {boolean} [options.depthWrite=true]
