@@ -116,12 +116,20 @@ define([
 		} else {
 			this.shaderPrecision = 'lowp';
 		}
-		//console.log('Shader precision: ' + this.shaderPrecision);
 
+		/**
+		 * Used to scale down/up the pixels in the canvas. If you set downScale=2, you will get half the number of pixels in X and Y. Default is 1.
+		 * @type {number}
+		 */
 		this.downScale = parameters.downScale || 1;
-
+		
 		//! AT: why are there 2 clear colors?
 		// Default setup
+		/**
+		 * Current clear color of the scene. Use .setClearColor() to set it.
+		 * @type {Vector4}
+		 * @readonly
+		 */
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
 		this._clearColor = new Vector4();
