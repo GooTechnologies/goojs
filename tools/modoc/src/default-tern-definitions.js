@@ -35,6 +35,10 @@ module.exports = {
 			"activeCameraEntity": {
 				"!type": "+goo.Entity",
 				"!doc": "A quick way to get a hold of the camera entity which is currently used."
+			},
+			"playTime": {
+				"!type": "number",
+				"!doc": "Current playing time in seconds, starting from 0 when the scene starts."
 			}
 		}
 	},

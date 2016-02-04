@@ -450,7 +450,7 @@ define([
 	 * @param {object} config
 	 *        The configuration object which is to be checked.
 	 *
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	function isEngineScript(config) {
 		return Boolean(config.className);
@@ -463,7 +463,7 @@ define([
 	 * @param {object} config
 	 *        The configuration object which is to be checked.
 	 *
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	function isCustomScript(config) {
 		return !isEngineScript(config) && config.body !== undefined;

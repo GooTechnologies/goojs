@@ -61,7 +61,6 @@ var processType = _.compose(linkTypes, escapeType, translateType);
 
 var link = function (comment) {
 	if (!comment) { return; }
-
 	comment.description = linkUrls(expandIcons(comment.description));
 
 	if (comment.param) {

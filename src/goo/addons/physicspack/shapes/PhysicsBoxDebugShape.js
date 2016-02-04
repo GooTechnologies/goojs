@@ -27,7 +27,7 @@ function (
 	};
 
 	/**
-	 * @return {PhysicsBoxDebugShape} self for chaining
+	 * @returns {PhysicsBoxDebugShape} self for chaining
 	 */
 	PhysicsBoxDebugShape.prototype.rebuild = function () {
 		var verts = [];

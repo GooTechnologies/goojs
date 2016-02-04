@@ -182,7 +182,7 @@ define([
 
 	/**
 	 * Set the reverb impulse response. The settings are not applied immediately.
-	 * @param {AudioBuffer|null} [audioBuffer] if empty will also empty existing reverb
+	 * @param {?AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function (audioBuffer) {
 		this.reverbAudioBuffer = audioBuffer;
