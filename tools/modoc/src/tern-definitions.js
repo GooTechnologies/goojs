@@ -166,8 +166,7 @@ function compileFunction(fun, urlParameter) {
 			ternDefinition['!type'] = compileTypelessFunction(fun.params);
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;
@@ -189,8 +188,7 @@ function compileMember(member, urlParameter) {
 			}
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;
@@ -210,8 +208,7 @@ function compileProperty(property, urlParameter) {
 			ternDefinition['!type'] = convert(property.type);
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;

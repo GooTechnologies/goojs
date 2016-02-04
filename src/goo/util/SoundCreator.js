@@ -43,7 +43,7 @@ define([
 	 * Load a sound.
 	 * @param  {string}   url
 	 * @param  {Object}   settings
-	 * @return {RSVP.Promise}
+	 * @returns {RSVP.Promise}
 	 */
 	SoundCreator.prototype.loadSound = function (url, settings) {
 		if (!AudioContext.isSupported()) {

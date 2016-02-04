@@ -46,7 +46,7 @@ define([
 		this.dataViews = {};
 
 		/** The number of indices used by each segment, or null to indicate only one segment that uses the whole index buffer.
-		 * @type {Array<number>|null}
+		 * @type {?Array<number>}
 		 */
 		this.indexLengths = null;
 

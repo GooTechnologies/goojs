@@ -5,13 +5,9 @@ define(function () {
 
 	/**
 	 * Gets whether the specified array contains the specified value.
-	 *
-	 * @param {Array} array
-	 *        The array which is to be checked.
-	 * @param {*} value
-	 *        The value which is to be found.
-	 *
-	 * @return {boolean}
+	 * @param {Array} array The array which is to be checked.
+	 * @param {*} value The value which is to be found.
+	 * @returns {boolean}
 	 *         True if the value exists in the array and false otherwise.
 	 */
 	ObjectUtils.contains = function (array, value) {
@@ -117,12 +113,12 @@ define(function () {
 	 * iteratee. The iteratee is bound to context and invoked with three
 	 * arguments: (value, index|key, collection).
 	 *
-	 * @param {Array|Object|string} collection
+	 * @param {(Array|Object|string)} collection
 	 * @param {Function} iteratee
 	 * @param {*} context
 	 * @param {string} sortProp
 	 *
-	 * @return {Array}
+	 * @returns {Array}
 	 */
 	ObjectUtils.map = function (collection, iteratee, context, sortProp) {
 		var result = [];
@@ -217,10 +213,9 @@ define(function () {
 	/**
 	 * Creates a function which returns the provided value.
 	 *
-	 * @param {*} value
-	 *        Value which is to be returned by the created function.
+	 * @param {*} value Value which is to be returned by the created function.
 	 *
-	 * @return {Function}
+	 * @returns {Function}
 	 */
 	ObjectUtils.constant = function (value) {
 		return function () { return value; };
@@ -230,11 +225,9 @@ define(function () {
 	 * Creates a function which returns the specified property of any object
 	 * passed to it.
 	 *
-	 * @param {string} propName
-	 *        Name of the property whose value is to be returned by the created
-	 *        function
+	 * @param {string} propName Name of the property whose value is to be returned by the created function
 	 *
-	 * @return {Function}
+	 * @returns {Function}
 	 */
 	ObjectUtils.property = function (propName) {
 		return function (obj) { return obj[propName]; };
@@ -243,11 +236,9 @@ define(function () {
 	/**
 	 * Gets whether the specified value is an object.
 	 *
-	 * @param {*} value
-	 *        Value which is to be tested.
+	 * @param {*} value Value which is to be tested.
 	 *
-	 * @return {boolean}
-	 *         True if the value is an object and false otherwise.
+	 * @returns {boolean} True if the value is an object and false otherwise.
 	 */
 	ObjectUtils.isObject = function (value) {
 		return value === Object(value);
@@ -256,11 +247,9 @@ define(function () {
 	/**
 	 * Gets whether the specified value is a string.
 	 *
-	 * @param {*} value
-	 *        Value which is to be tested.
+	 * @param {*} value Value which is to be tested.
 	 *
-	 * @return {boolean}
-	 *         True if the value is a string and false otherwise.
+	 * @returns {boolean} True if the value is a string and false otherwise.
 	 */
 	ObjectUtils.isString = function (value) {
 		return typeof value === 'string';
@@ -269,11 +258,9 @@ define(function () {
 	/**
 	 * Gets whether the specified value is an boolean value.
 	 *
-	 * @param {*} value
-	 *        Value which is to be tested.
+	 * @param {*} value Value which is to be tested.
 	 *
-	 * @return {boolean}
-	 *         True if the value is a boolean and false otherwise.
+	 * @returns {boolean} True if the value is a boolean and false otherwise.
 	 */
 	ObjectUtils.isBoolean = function (value) {
 		return value === true || value === false;
@@ -282,11 +269,9 @@ define(function () {
 	/**
 	 * Gets whether the specified value is a number.
 	 *
-	 * @param {*} value
-	 *        Value which is to be tested.
+	 * @param {*} value Value which is to be tested.
 	 *
-	 * @return {boolean}
-	 *         True if the value is a number and false otherwise.
+	 * @returns {boolean} True if the value is a number and false otherwise.
 	 */
 	ObjectUtils.isNumber = function (value) {
 		return typeof value === 'number';
@@ -295,11 +280,9 @@ define(function () {
 	/**
 	 * Gets whether the specified value is an integer number.
 	 *
-	 * @param {*} value
-	 *        Value which is to be tested.
+	 * @param {*} value Value which is to be tested.
 	 *
-	 * @return {boolean}
-	 *         True if the value is an integer number and false otherwise.
+	 * @returns {boolean} True if the value is an integer number and false otherwise.
 	 */
 	ObjectUtils.isInteger = function (value) {
 		return ObjectUtils.isNumber(value) && value % 1 === 0;
@@ -309,10 +292,9 @@ define(function () {
 	 * Gets the extension of the specified string. The extension is anything
 	 * after the last '.'
 	 *
-	 * @param {*} value
-	 *        Value whose extension is to be returned.
+	 * @param {*} value Value whose extension is to be returned.
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	ObjectUtils.getExtension = function (value) {
 		if (ObjectUtils.isString(value)) {
