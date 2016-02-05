@@ -588,6 +588,7 @@ define([
 			zDepth = ((zDepth - this.near) / (this.far - this.near));
 		} else {
 			// http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+			zDepth = MathUtils.clamp(zDepth, this.near, this.far);
 			zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
 		}
 		return this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, zDepth, store);

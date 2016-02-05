@@ -9,6 +9,7 @@ define([
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
 	'goo/fsmpack/statemachine/actions/ClickAction',
+	'goo/fsmpack/statemachine/actions/HoverEnterAction',
 	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
