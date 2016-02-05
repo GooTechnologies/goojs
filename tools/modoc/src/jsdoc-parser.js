@@ -23,10 +23,10 @@ var partition = function (doc) {
 
 	var partial = [];
 	lines.forEach(function (line) {
-		line = line.trim();
-		if (line.length === 0) {
-			return;
-		}
+		// line = line.trim();
+		// if (line.length === 0) {
+		// 	return;
+		// }
 		if (line[0] === '@') {
 			tags[currentTag].push(partial);
 
@@ -51,7 +51,7 @@ var partition = function (doc) {
 
 	Object.keys(tags).forEach(function (tagName) {
 		tags[tagName] = tags[tagName].map(function (lines) {
-			return lines.join(' ');
+			return lines.join('\n');
 		});
 	});
 
