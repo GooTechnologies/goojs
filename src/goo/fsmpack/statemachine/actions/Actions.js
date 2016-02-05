@@ -41,6 +41,7 @@ define([
 
 	'goo/fsmpack/statemachine/actions/AddLightAction',
 	'goo/fsmpack/statemachine/actions/RemoveLightAction',
+	'goo/fsmpack/statemachine/actions/SetLightPropertiesAction',
 	'goo/fsmpack/statemachine/actions/TweenLightColorAction',
 
 	'goo/fsmpack/statemachine/actions/SetClearColorAction',
