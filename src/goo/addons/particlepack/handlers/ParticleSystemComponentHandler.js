@@ -47,20 +47,16 @@ define([
 		return [{
 			type: 'constant',
 			offset: 0,
-			options: {
-				value: value
-			}
+			value: value
 		}];
 	}
 
-	function linearCurve(k,m){
+	function linearCurve(k, m){
 		return [{
 			type: 'linear',
 			offset: 0,
-			options: {
-				k: k,
-				m: m
-			}
+			k: k,
+			m: m
 		}];
 	}
 
@@ -83,13 +79,13 @@ define([
 			coneRadius: 1,
 			coneAngle: 10,
 			coneLength: 1,
-			startColor: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
-			colorOverLifetime: [constantCurve(1),constantCurve(1),constantCurve(1),constantCurve(1)],
+			startColor: [constantCurve(1), constantCurve(1), constantCurve(1), constantCurve(1)],
+			colorOverLifetime: [constantCurve(1), constantCurve(1), constantCurve(1), constantCurve(1)],
 			duration: 5,
 			localSpace: true,
 			startSpeed: constantCurve(5),
-			localVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
-			worldVelocityOverLifetime: [constantCurve(0),constantCurve(0),constantCurve(0)],
+			localVelocityOverLifetime: [constantCurve(0), constantCurve(0), constantCurve(0)],
+			worldVelocityOverLifetime: [constantCurve(0), constantCurve(0), constantCurve(0)],
 			maxParticles: 100,
 			emissionRate: constantCurve(10),
 			startLifetime: constantCurve(5),
@@ -103,7 +99,7 @@ define([
 			textureTilesX: 1,
 			textureTilesY: 1,
 			textureAnimationCycles: 1,
-			textureFrameOverLifetime: linearCurve(1,0),
+			textureFrameOverLifetime: linearCurve(1, 0),
 			startSize: constantCurve(1),
 			sortMode: 'none',
 			billboard: true,
@@ -116,12 +112,11 @@ define([
 	};
 
 	/**
-	 * @returns {ParticleSystemComponent} the created component object
+	 * @returns {Component} the created component object
 	 * @private
 	 */
 	ParticleSystemComponentHandler.prototype._create = function () {
-		var component = new ParticleSystemComponent();
-		return component;
+		return new ParticleSystemComponent();
 	};
 
 	/**
@@ -137,28 +132,27 @@ define([
 
 		var curve = new PolyCurve();
 
-		for(var i=0; i<configs.length; i++){
+		for(var i = 0; i < configs.length; i++){
 			var config = configs[i];
-			var options = config.options;
-			switch(config.type){
+			switch (config.type) {
 			case 'linear':
 				curve.addSegment(new LinearCurve({
 					timeOffset: config.offset,
-					k: options.k * multiplier,
-					m: options.m * multiplier
+					k: config.k * multiplier,
+					m: config.m * multiplier
 				}));
 				break;
 			case 'constant':
 				curve.addSegment(new ConstantCurve({
 					timeOffset: config.offset,
-					value: options.value * multiplier
+					value: config.value * multiplier
 				}));
 				break;
 			case 'lerp':
 				curve.addSegment(new LerpCurve({
 					timeOffset: config.offset,
-					curveA: createCurve(options.curveA, multiplier),
-					curveB: createCurve(options.curveB, multiplier)
+					curveA: createCurve(config.curveA, multiplier),
+					curveB: createCurve(config.curveB, multiplier)
 				}));
 				break;
 			}
@@ -167,20 +161,20 @@ define([
 		return curve;
 	}
 
-	function createVec3Curve(configsX, configsY, configsZ){
+	function createVec3Curve(vector){
 		return new Vector3Curve({
-			x: createCurve(configsX),
-			y: createCurve(configsY),
-			z: createCurve(configsZ)
+			x: createCurve(vector[0]),
+			y: createCurve(vector[1]),
+			z: createCurve(vector[2])
 		});
 	}
-	
-	function createVec4Curve(configsX, configsY, configsZ, configsW){
+
+	function createVec4Curve(vector){
 		return new Vector4Curve({
-			x: createCurve(configsX),
-			y: createCurve(configsY),
-			z: createCurve(configsZ),
-			w: createCurve(configsW)
+			x: createCurve(vector[0]),
+			y: createCurve(vector[1]),
+			z: createCurve(vector[2]),
+			w: createCurve(vector[3])
 		});
 	}
 
@@ -206,13 +200,13 @@ define([
 			component.coneRadius = config.coneRadius;
 			component.coneAngle = config.coneAngle * MathUtils.DEG_TO_RAD;
 			component.coneLength = config.coneLength;
-			component.startColor = createVec4Curve(config.startColor[0], config.startColor[1], config.startColor[2], config.startColor[3]);
-			component.colorOverLifetime = createVec4Curve(config.colorOverLifetime[0], config.colorOverLifetime[1], config.colorOverLifetime[2], config.colorOverLifetime[3]);
+			component.startColor = createVec4Curve(config.startColor);
+			component.colorOverLifetime = createVec4Curve(config.colorOverLifetime);
 			component.duration = config.duration;
 			component.localSpace = config.localSpace;
 			component.startSpeed = createCurve(config.startSpeed);
-			component.localVelocityOverLifetime = createVec3Curve(config.localVelocityOverLifetime[0], config.localVelocityOverLifetime[1], config.localVelocityOverLifetime[2]);
-			component.worldVelocityOverLifetime = createVec3Curve(config.worldVelocityOverLifetime[0], config.worldVelocityOverLifetime[1], config.worldVelocityOverLifetime[2]);
+			component.localVelocityOverLifetime = createVec3Curve(config.localVelocityOverLifetime);
+			component.worldVelocityOverLifetime = createVec3Curve(config.worldVelocityOverLifetime);
 			component.maxParticles = config.maxParticles;
 			component.emissionRate = createCurve(config.emissionRate);
 			component.startLifetime = createCurve(config.startLifetime);
@@ -259,21 +253,21 @@ define([
 					throw new Error('Error loading texture: ' + textureRef + ' - ' + err);
 				}));
 			} else if(config.texturePreset === 'Flare') {
-				cachedTextures.Flare = cachedTextures.Flare || ParticleSystemUtils.createFlareTexture(32)
+				cachedTextures.Flare = cachedTextures.Flare || ParticleSystemUtils.createFlareTexture(32);
 				component.texture = cachedTextures.Flare;
 			} else if(config.texturePreset === 'Splash') {
-				cachedTextures.Splash = cachedTextures.Splash || ParticleSystemUtils.createSplashTexture(32)
+				cachedTextures.Splash = cachedTextures.Splash || ParticleSystemUtils.createSplashTexture(32);
 				component.texture = cachedTextures.Splash;
 			} else if(config.texturePreset === 'Plankton') {
-				cachedTextures.Plankton = cachedTextures.Plankton || ParticleSystemUtils.createPlanktonTexture(32)
+				cachedTextures.Plankton = cachedTextures.Plankton || ParticleSystemUtils.createPlanktonTexture(32);
 				component.texture = cachedTextures.Plankton;
 			} else if(config.texturePreset === 'Snowflake') {
-				cachedTextures.Snowflake = cachedTextures.Snowflake || ParticleSystemUtils.createSnowflakeTexture(32)
+				cachedTextures.Snowflake = cachedTextures.Snowflake || ParticleSystemUtils.createSnowflakeTexture(32);
 				component.texture = cachedTextures.Snowflake;
 			} else {
 				component.texture = null;
 			}
-			
+
 			if(promises.length){
 				return RSVP.all(promises).then(function () {
 					return component;
