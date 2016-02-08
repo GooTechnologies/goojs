@@ -12,14 +12,12 @@ define([
 	}
 
 	MultiplyVariableAction.prototype = Object.create(Action.prototype);
-
-	MultiplyVariableAction.prototype.configure = function (settings) {
-		this.everyFrame = !!settings.everyFrame;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
-	};
+	MultiplyVariableAction.prototype.constructor = MultiplyVariableAction;
 
 	MultiplyVariableAction.external = {
+		name: 'Multiply Variable',
+		type: 'variables',
+		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',

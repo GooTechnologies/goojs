@@ -6,6 +6,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	}
 
 	SetLightPropertiesAction.prototype = Object.create(Action.prototype);
+	SetLightPropertiesAction.prototype.constructor = SetLightPropertiesAction;
 
 	SetLightPropertiesAction.external = {
 		name: 'Set Light Properties',
@@ -39,13 +40,13 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 			key: 'range',
 			type: 'number',
 			description: 'Light range (for point/spot lights)',
-			'default': 1
+			'default': 100
 		}],
 		transitions: []
 	};
 
 	SetLightPropertiesAction.prototype._run = function (fsm) {
-		var entity = fsm.getOwnerEntity();
+		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity &&
 			entity.lightComponent &&
 			entity.lightComponent.light) {

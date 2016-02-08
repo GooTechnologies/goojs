@@ -6,6 +6,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	}
 
 	SetLightRangeAction.prototype = Object.create(Action.prototype);
+	SetLightRangeAction.prototype.constructor = SetLightRangeAction;
 
 	SetLightRangeAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;

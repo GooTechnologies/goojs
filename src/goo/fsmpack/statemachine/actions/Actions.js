@@ -101,7 +101,12 @@ define([
 	'goo/fsmpack/statemachine/actions/StartTimelineAction',
 	'goo/fsmpack/statemachine/actions/PauseTimelineAction',
 	'goo/fsmpack/statemachine/actions/StopTimelineAction',
-	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction'
+	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction',
+
+	'goo/fsmpack/statemachine/actions/SetVariableAction',
+	'goo/fsmpack/statemachine/actions/AddVariableAction',
+	'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
+	'goo/fsmpack/statemachine/actions/CopyVariableAction'
 ], function (
 	_ // placeholder // what for?
 ) {
