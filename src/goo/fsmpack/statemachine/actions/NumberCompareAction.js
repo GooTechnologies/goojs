@@ -12,6 +12,7 @@ define([
 	}
 
 	NumberCompareAction.prototype = Object.create(Action.prototype);
+	NumberCompareAction.prototype.constructor = NumberCompareAction;
 
 	NumberCompareAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;

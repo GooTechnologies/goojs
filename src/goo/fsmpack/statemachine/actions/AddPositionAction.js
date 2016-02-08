@@ -12,6 +12,7 @@ define([
 	}
 
 	AddPositionAction.prototype = Object.create(Action.prototype);
+	AddPositionAction.prototype.constructor = AddPositionAction;
 
 	AddPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;

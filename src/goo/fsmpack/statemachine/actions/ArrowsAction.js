@@ -21,6 +21,7 @@ define([
 	}
 
 	ArrowsAction.prototype = Object.create(Action.prototype);
+	ArrowsAction.prototype.constructor = ArrowsAction;
 
 	ArrowsAction.prototype.configure = function (settings) {
 		this.everyFrame = true;

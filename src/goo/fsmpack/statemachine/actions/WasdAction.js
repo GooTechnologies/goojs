@@ -21,6 +21,7 @@ define([
 	}
 
 	WasdAction.prototype = Object.create(Action.prototype);
+	WasdAction.prototype.constructor = WasdAction;
 
 	WasdAction.prototype.configure = function (settings) {
 		this.everyFrame = true;

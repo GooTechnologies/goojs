@@ -10,6 +10,7 @@ define([
 	}
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
+	GetPositionAction.prototype.constructor = GetPositionAction;
 
 	GetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
