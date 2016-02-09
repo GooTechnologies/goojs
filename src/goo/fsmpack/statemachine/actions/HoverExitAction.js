@@ -7,7 +7,7 @@ define([
 ) {
 	'use strict';
 
-	function HoverEnterAction(/*id, settings*/) {
+	function HoverExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.everyFrame = true;
@@ -24,17 +24,21 @@ define([
 				return;
 			}
 
+			if (that.currentEntity === that.ownerEntity && event.entity !== that.currentEntity) {
+				this.updated = true;
+			}
+
 			if (!event.entity) {
 				that.currentEntity = null;
 				return;
 			}
 
-			event.entity.traverseUp(function (entity) {
-				if (entity === that.ownerEntity && that.currentEntity !== that.ownerEntity) {
-					that.updated = true;
-					return false;
-				}
-			});
+			// event.entity.traverseUp(function (entity) {
+			// 	if (entity === that.ownerEntity && that.currentEntity !== that.ownerEntity) {
+			// 		that.updated = true;
+			// 		return false;
+			// 	}
+			// });
 
 			that.currentEntity = event.entity;
 		};
@@ -52,34 +56,27 @@ define([
 			}
 
 			var camera = that.goo.renderSystem.camera;
+			var pickList = BoundingPicker.pick(that.goo.world, camera, x, y);
 			var pickResult = { entity: null };
-
-			if (this.type === HoverEnterAction.types.slow) {
-				var pickingStore = this.pickSync(x, y);
-				pickResult.entity = this.world.entityManager.getEntityByIndex(pickingStore.id);
-			} else {
-				var pickList = BoundingPicker.pick(that.goo.world, camera, x, y);
-				if (pickList.length > 0) {
-					pickResult.entity = pickList[0].entity;
-				}
+			if (pickList.length > 0) {
+				pickResult.entity = pickList[0].entity;
 			}
-			
 			that.moveListener(pickResult);
 		};
 	}
 
-	HoverEnterAction.prototype = Object.create(Action.prototype);
-	HoverEnterAction.prototype.constructor = HoverEnterAction;
+	HoverExitAction.prototype = Object.create(Action.prototype);
+	HoverExitAction.prototype.constructor = HoverExitAction;
 
-	HoverEnterAction.types = {
+	HoverExitAction.types = {
 		fast: 'Bounding (Fast)',
 		slow: 'Per pixel (Slow)',
 	};
 
-	HoverEnterAction.external = {
-		name: 'Hover Enter',
+	HoverExitAction.external = {
+		name: 'Hover Exit',
 		type: 'controls',
-		description: 'Listens for a hover enter event on the entity and performs a transition',
+		description: 'Listens for a hover exit event on the entity and performs a transition',
 		canTransition: true,
 		parameters: [{
 			name: 'Accuracy',
@@ -87,51 +84,51 @@ define([
 			type: 'string',
 			control: 'dropdown',
 			description: 'Hover accuracy/performance selection',
-			'default': HoverEnterAction.types.fast,
-			options: [HoverEnterAction.types.fast, HoverEnterAction.types.slow]
+			'default': HoverExitAction.types.fast,
+			options: [HoverExitAction.types.fast, HoverExitAction.types.slow]
 		}],
 		transitions: [{
-			key: 'enter',
-			name: 'On Enter',
-			description: 'State to transition to when entity is entered'
+			key: 'exit',
+			name: 'On Exit',
+			description: 'State to transition to when entity is exited'
 		}]
 	};
 
-	HoverEnterAction.prototype._setup = function (fsm) {
+	HoverExitAction.prototype._setup = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 
-		// if (this.type === HoverEnterAction.types.slow) {
-		// 	this.goo.addEventListener('mousemove', this.moveListener);
-		// 	this.goo.addEventListener('touchmove', this.moveListener);
-		// } else {
+		if (this.type === HoverExitAction.types.slow) {
+			this.goo.addEventListener('mousemove', this.moveListener);
+			this.goo.addEventListener('touchmove', this.moveListener);
+		} else {
 			document.addEventListener('mousemove', this.moveListenerBounds);
 			document.addEventListener('touchmove', this.moveListenerBounds);
-		// }
+		}
 		
 		this.updated = false;
 		this.first = true;
 		this.currentEntity = null;
 	};
 
-	HoverEnterAction.prototype._run = function (fsm) {
+	HoverExitAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
-			fsm.send(this.transitions.enter);
+			fsm.send(this.transitions.exit);
 		}
 	};
 
-	HoverEnterAction.prototype.exit = function () {
+	HoverExitAction.prototype.exit = function () {
 		if (this.goo) {
-			// if (this.type === HoverEnterAction.types.slow) {
-			// 	this.goo.removeEventListener('mousemove', this.moveListener);
-			// 	this.goo.removeEventListener('touchmove', this.moveListener);
-			// } else {
+			if (this.type === HoverExitAction.types.slow) {
+				this.goo.removeEventListener('mousemove', this.moveListener);
+				this.goo.removeEventListener('touchmove', this.moveListener);
+			} else {
 				document.removeEventListener('mousemove', this.moveListenerBounds);
 				document.removeEventListener('touchmove', this.moveListenerBounds);
-			// }
+			}
 		}
 	};
 
-	return HoverEnterAction;
+	return HoverExitAction;
 });
