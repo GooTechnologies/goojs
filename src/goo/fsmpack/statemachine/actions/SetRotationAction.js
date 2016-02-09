@@ -12,6 +12,7 @@ define([
 	}
 
 	SetRotationAction.prototype = Object.create(Action.prototype);
+	SetRotationAction.prototype.constructor = SetRotationAction;
 
 	SetRotationAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;

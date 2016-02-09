@@ -25,7 +25,7 @@ define([
 
 	describe('ParticleSystemComponentHandler', function () {
 		var loader;
-		
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -33,7 +33,7 @@ define([
 				rootPath: window.__karma__ ? './' : 'loaders/res'
 			});
 		});
-		
+
 		it('loads an entity with a ParticleSystemComponent', function (done) {
 			var config = Configs.entity(['transform', 'particleSystem']);
 
@@ -41,9 +41,7 @@ define([
 				return [{
 					type: 'constant',
 					offset: 0,
-					options: {
-						value: value
-					}
+					value: value
 				}];
 			}
 
@@ -100,7 +98,7 @@ define([
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
 				expect(entity.particleSystemComponent).toEqual(jasmine.any(ParticleSystemComponent));
-				
+
 				function newConstantPolyCurve(value){
 					return new PolyCurve({ segments: [new ConstantCurve({ value: value })] });
 				}

@@ -42,6 +42,9 @@ var convertParameters = function (parameters) {
 
 		var type = parameter.rawType ? convert(parameter.rawType) : '?';
 
+		// remove bad \n
+		decoratedName = decoratedName.replace('\n', '');
+
 		return decoratedName + ': ' + type;
 	}).join(', ');
 };

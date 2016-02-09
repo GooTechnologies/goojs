@@ -245,27 +245,37 @@ define([
 	};
 
 	/**
-	 * Apply a force to a point on the body in world space.
+	 * Apply a world-oriented force to a world point.
 	 * @param {Vector3} force The force vector, oriented in world space.
-	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
+	 * @param {Vector3} worldPoint Where to apply the force, in world space.
+	 * @example
+     * var direction = new Vector3();
+     * direction
+     *     .copy(entity.transformComponent.worldTransform.translation)
+	 *     .sub(bombEntity.transformComponent.worldTransform.translation)
+	 *     .normalize()
+	 *     .scale(100);
+     * entity.applyForceWorld(direction, entity.transformComponent.worldTransform.translation);
 	 */
-	RigidBodyComponent.prototype.applyForce = function (force, relativePoint) {
+	RigidBodyComponent.prototype.applyForceWorld = function (force, worldPoint) {
 		var cannonForce = tmpCannonVec;
 		cannonForce.copy(force);
 
-		var cannonPoint = CANNON.Vec3.ZERO;
-		if (relativePoint) {
-			cannonPoint = tmpCannonVec2;
-			cannonPoint.copy(relativePoint);
-		}
+		var cannonPoint = tmpCannonVec2;
+		cannonPoint.copy(worldPoint);
+		cannonPoint.vsub(this.cannonBody.position, cannonPoint);
 
 		this.cannonBody.applyForce(cannonForce, cannonPoint);
 	};
 
 	/**
-	 * Apply a force to the body in local body space.
+	 * Apply a local force to the body in local body space.
 	 * @param {Vector3} force The force vector, oriented in local space.
-	 * @param {Vector3} [relativePoint] Where to apply the force. Defaults to the zero vector (the center of mass).
+	 * @param {Vector3} [relativePoint] Where to apply the force. This point is relative to the Body, oriented in local space. Defaults to the zero vector (the center of mass).
+	 * @example
+	 * var localThrusterForce = new Vector3(0, 0, 1); // Thrust in forward direction of ship
+	 * var localPosition = new Vector3(0, 0, -1); // Applies to the back part of the ship
+	 * shapeShip.rigidBodyComponent.applyForce(localThrusterForce, localPosition);
 	 */
 	RigidBodyComponent.prototype.applyForceLocal = function (force, relativePoint) {
 		var cannonForce = tmpCannonVec;
@@ -284,6 +294,24 @@ define([
 		body.vectorToWorldFrame(cannonPoint, cannonPoint);
 
 		body.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a force to a point on the body in world space.
+	 * @param {Vector3} force The force vector, oriented in world space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. This point is relative to the Body, oriented in World space. Defaults to the zero vector (the center of mass).
+	 */
+	RigidBodyComponent.prototype.applyForce = function (force, relativePoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = CANNON.Vec3.ZERO;
+		if (relativePoint) {
+			cannonPoint = tmpCannonVec2;
+			cannonPoint.copy(relativePoint);
+		}
+
+		this.cannonBody.applyForce(cannonForce, cannonPoint);
 	};
 
 	/**

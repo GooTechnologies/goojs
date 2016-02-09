@@ -707,6 +707,13 @@ define([
 		it('emits substep events', function () {
 			var substeps = 0;
 
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var ccA = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			world.createEntity(rbcA, ccA, [0, 0, 0]).addToWorld();
+			rbcA.initialize();
+
 			var listeners = {
 				'goo.physics.substep': function () {
 					substeps++;

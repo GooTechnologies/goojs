@@ -35,7 +35,7 @@ define([
 		}],
 		transitions: [{
 			key: 'transition',
-			name: 'To',
+			name: 'On Message',
 			description: 'State to transition to'
 		}]
 	};
