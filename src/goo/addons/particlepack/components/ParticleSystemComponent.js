@@ -1271,14 +1271,16 @@ define([
 				}
 			}
 			while(particleIndex < maxParticles){
-				particles[particleIndex++].emitTime = 2 * duration; // ???
+				var particle = particles[particleIndex];
+				particle.emitTime = 2 * duration; // ???
+				particle.active = 0;
+				particleIndex++;
 			}
 		}
 		var preWarm = this.preWarm;
 		var loop = this.loop;
 		for (i = 0; i < maxParticles; i++) {
 			var particle = particles[i];
-			particle.active = 1;
 
 			var rand = particle.emitRandom = this._random();
 			var t = mod(particle.emitTime / duration, 1);
@@ -1597,6 +1599,9 @@ define([
 			var duration = this.duration;
 			var normalizedTime = mod(time / duration, 1);
 			var numToEmit = Math.floor(time * emissionRate.getValueAt(normalizedTime, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(normalizedTime, this._random()));
+			if(!loop && time > duration){
+				numToEmit = 0;
+			}
 			for (var i = 0; i < numToEmit; i++) {
 
 				if(loop){

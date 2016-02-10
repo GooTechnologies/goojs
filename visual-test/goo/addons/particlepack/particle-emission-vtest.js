@@ -32,7 +32,7 @@ require([
 	world.setSystem(new HtmlSystem(goo.renderer));
 
 	V.addLights();
-	V.addOrbitCamera(new Vector3(100, Math.PI / 2, 0.3));
+	V.addOrbitCamera(new Vector3(150, Math.PI / 2, 0.3));
 
 	var optionsObjects = [
 
@@ -112,6 +112,22 @@ require([
 		localSpace: true,
 		maxParticles: 10,
 		emissionRate: new LinearCurve({ m: 10, k: 0 })
+	},
+
+	// Make it run out of particles with looping off
+	{
+		label: 'loop:false<br>duration: 1<br>localSpace: false',
+		duration: 1,
+		loop: false,
+		localSpace: false,
+		maxParticles: 100
+	},
+	{
+		label: 'loop: false<br>duration: 1<br>localSpace: true',
+		duration: 1,
+		loop: false,
+		localSpace: true,
+		maxParticles: 100
 	}
 
 	];
