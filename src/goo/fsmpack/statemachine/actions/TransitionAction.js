@@ -20,7 +20,7 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'To',
+			name: 'On Transition',
 			description: 'State to transition to'
 		}]
 	};

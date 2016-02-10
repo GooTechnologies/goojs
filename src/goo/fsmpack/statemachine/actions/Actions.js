@@ -9,6 +9,8 @@ define([
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
 	'goo/fsmpack/statemachine/actions/ClickAction',
+	'goo/fsmpack/statemachine/actions/HoverEnterAction',
+	'goo/fsmpack/statemachine/actions/HoverExitAction',
 	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
@@ -101,7 +103,14 @@ define([
 	'goo/fsmpack/statemachine/actions/StartTimelineAction',
 	'goo/fsmpack/statemachine/actions/PauseTimelineAction',
 	'goo/fsmpack/statemachine/actions/StopTimelineAction',
-	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction'
+	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction',
+
+	// 'goo/fsmpack/statemachine/actions/SetVariableAction',
+	// 'goo/fsmpack/statemachine/actions/AddVariableAction',
+	// 'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
+	// 'goo/fsmpack/statemachine/actions/CopyVariableAction',
+
+	'goo/fsmpack/statemachine/actions/SetHtmlTextAction'
 ], function (
 	_ // placeholder // what for?
 ) {

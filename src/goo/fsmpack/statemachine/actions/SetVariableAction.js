@@ -12,14 +12,12 @@ define([
 	}
 
 	SetVariableAction.prototype = Object.create(Action.prototype);
-
-	SetVariableAction.prototype.configure = function (settings) {
-		this.everyFrame = settings.everyFrame !== false;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 0;
-	};
+	SetVariableAction.prototype.constructor = SetVariableAction;
 
 	SetVariableAction.external = {
+		name: 'Set Variable',
+		type: 'variables',
+		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
