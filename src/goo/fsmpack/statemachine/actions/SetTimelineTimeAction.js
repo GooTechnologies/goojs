@@ -14,7 +14,7 @@ define([
 
 	SetTimelineTimeAction.external = {
 		name: 'Set Timeline Time',
-		type: 'fx',
+		type: 'timeline',
 		description: 'Sets the current time of the timeline.',
 		canTransition: true,
 		parameters: [{

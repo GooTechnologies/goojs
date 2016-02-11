@@ -14,7 +14,7 @@ define([
 
 	StartTimelineAction.external = {
 		name: 'Start Timeline',
-		type: 'fx',
+		type: 'timeline',
 		description: 'Starts or resumes the timeline.',
 		canTransition: true,
 		parameters: [],

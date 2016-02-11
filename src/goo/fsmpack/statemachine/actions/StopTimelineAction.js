@@ -14,7 +14,7 @@ define([
 
 	StopTimelineAction.external = {
 		name: 'Stop Timeline',
-		type: 'fx',
+		type: 'timeline',
 		description: 'Stops the timeline.',
 		canTransition: true,
 		parameters: [],
