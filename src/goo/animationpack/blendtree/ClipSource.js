@@ -1,9 +1,11 @@
 define([
 	'goo/math/MathUtils',
-	'goo/animationpack/clip/AnimationClipInstance'
+	'goo/animationpack/clip/AnimationClipInstance',
+	'goo/animationpack/blendtree/Source'
 ], function (
 	MathUtils,
-	AnimationClipInstance
+	AnimationClipInstance,
+	Source
 ) {
 	'use strict';
 
@@ -12,8 +14,10 @@ define([
 	 * @param {AnimationClip} clip the clip to use.
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {Array<string>} [channelNames]
+	 * @extends Source
 	 */
 	function ClipSource(clip, filter, channelNames) {
+		Source.call(this);
 		this._clip = clip;
 		this._clipInstance = new AnimationClipInstance();
 

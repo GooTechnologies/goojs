@@ -4,14 +4,16 @@ define([
 	'goo/animationpack/clip/JointChannel',
 	'goo/animationpack/clip/JointData',
 	'goo/math/Vector3',
-	'goo/math/Quaternion'
+	'goo/math/Quaternion',
+	'goo/animationpack/blendtree/Source'
 ], function (
 	JointChannel,
 	JointData,
 	TransformChannel,
 	TransformData,
 	Vector3,
-	Quaternion
+	Quaternion,
+	Source
 ) {
 	'use strict';
 
@@ -19,8 +21,10 @@ define([
 	 * This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically.
 	 * @param {string} [sourceName] Name of source we were initialized from, if given.
+	 * @extends Source
 	 */
 	function ManagedTransformSource(sourceName) {
+		Source.call(this);
 		this._sourceName = sourceName ? sourceName : null;
 		this._data = {};
 	}
@@ -136,30 +140,6 @@ define([
 				}
 			}
 		}
-	};
-
-	/*
-	 * This has no effect on clip source, but will be called by owning {@link SteadyState}
-	 */
-	ManagedTransformSource.prototype.resetClips = function () {
-	};
-
-	ManagedTransformSource.prototype.setTimeScale = function () {
-	};
-
-	/*
-	 * This has no effect, but will be called by owning {@link SteadyState}
-	 * @returns true to stay active
-	 */
-	ManagedTransformSource.prototype.setTime = function () {
-		return true;
-	};
-
-	/*
-	 * ManagedTransformSource is always active
-	 */
-	ManagedTransformSource.prototype.isActive = function () {
-		return true;
 	};
 
 	ManagedTransformSource.prototype.getChannelData = function (channelName) {
