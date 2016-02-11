@@ -23,14 +23,12 @@ define([
 	 *			<li>'MirroredRepeat' = Repeat with reversed direction on odd integer part of texture coords
 	 *			<li>'EdgeClamp' = Clamp texture coord range to 0..1 and use edge color
 	 *		</ul>
-	 * 		Note that the texture repeat is automatically set to EdgeClamp if the texture size is not a power of 2: <a href="https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences">https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences</a>
 	 * @param {string} [settings.wrapT='Repeat'] possible values:
 	 *		<ul>
 	 *			<li>'Repeat' = Repeat texture (ignore integer part of texture coords)
 	 *			<li>'MirroredRepeat' = Repeat with reversed direction on odd integer part of texture coords
 	 *			<li>'EdgeClamp' = Clamp texture coord range to 0..1 and use edge color
 	 *		</ul>
-	 * 		Note that the texture repeat is automatically set to EdgeClamp if the texture size is not a power of 2: <a href="https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences">https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences</a>
 	 * @param {string} [settings.magFilter='Bilinear'] possible values:
 	 *		<ul>
 	 *			<li>'NearestNeighbor' =
