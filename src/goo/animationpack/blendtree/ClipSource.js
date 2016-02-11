@@ -27,6 +27,8 @@ define([
 
 		this._startTime = -Infinity;
 		this._endTime = Infinity;
+
+		this.currentLoop = 0;
 	}
 
 	/**
@@ -76,27 +78,26 @@ define([
 
 			// Check for looping
 			if (maxTime !== 0) {
+				this.currentLoop = Math.floor(clockTime / duration);
 				if (instance._loopCount === -1) {
 					if (clockTime < 0) {
 						clockTime *= -1;
 						clockTime %= duration;
 						clockTime = duration - clockTime;
-						clockTime += minTime;
 					} else {
 						clockTime %= duration;
-						clockTime += minTime;
 					}
+					clockTime += minTime;
 				} else if (instance._loopCount > 0 && duration * instance._loopCount >= Math.abs(clockTime)) {
 					// probably still the same?
 					if (clockTime < 0) {
 						clockTime *= -1;
 						clockTime %= duration;
 						clockTime = duration - clockTime;
-						clockTime += minTime;
 					} else {
 						clockTime %= duration;
-						clockTime += minTime;
 					}
+					clockTime += minTime;
 				}
 
 				if (clockTime > maxTime || clockTime < minTime) {
