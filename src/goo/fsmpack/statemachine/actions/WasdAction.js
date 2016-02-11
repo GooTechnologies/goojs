@@ -57,11 +57,11 @@ define([
 		};
 	})();
 
-	WasdAction.prototype._setup = function () {
+	WasdAction.prototype.enter = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	WasdAction.prototype._run = function (fsm) {
+	WasdAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			//var keyKeys = _.keys(WasdAction._keys); // unused

@@ -69,7 +69,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenLookAtAction.prototype._setup = function () {
+	TweenLookAtAction.prototype.enter = function () {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -79,7 +79,7 @@ define([
 		}
 	};
 
-	TweenLookAtAction.prototype._run = function (fsm) {
+	TweenLookAtAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;

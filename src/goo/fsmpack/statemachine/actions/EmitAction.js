@@ -29,7 +29,7 @@ define([
 		transitions: []
 	};
 
-	EmitAction.prototype._run = function (/*fsm*/) {
+	EmitAction.prototype.update = function (/*fsm*/) {
 		SystemBus.emit(this.channel, this.data);
 	};
 

@@ -75,7 +75,7 @@ define([
 		}]
 	};
 
-	CompareDistanceAction.prototype._run = function (fsm) {
+	CompareDistanceAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 		var delta;

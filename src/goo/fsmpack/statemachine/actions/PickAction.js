@@ -41,14 +41,14 @@ define([
 		}]
 	};
 
-	PickAction.prototype._setup = function (fsm) {
+	PickAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.goo.addEventListener('click', this.eventListener);
 		this.goo.addEventListener('touchstart', this.eventListener);
 	};
 
-	PickAction.prototype._run = function (fsm) {
+	PickAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.pick);

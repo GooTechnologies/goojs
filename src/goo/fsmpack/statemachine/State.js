@@ -92,6 +92,12 @@ define([
 	State.prototype.requestTransition = function (target) {
 		if (this.isCurrentState()) {
 			this.transitionTarget = target;
+
+			console.log('----- request transition:', this.parent._states[target].name);
+			if (target && this.parent.contains(target)) {
+				this.parent.currentState.kill();
+				this.parent.setState(this.parent._states[target]);
+			}
 		}
 	};
 
@@ -106,12 +112,13 @@ define([
 	State.prototype.update = function () {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
+			// console.log('updating', this._actions[i]);
 			this._actions[i].update(this.proxy);
-			if (this.transitionTarget) {
-				var tmp = this.transitionTarget;
-				this.transitionTarget = null;
-				return tmp;
-			}
+			// if (this.transitionTarget) {
+			// 	var tmp = this.transitionTarget;
+			// 	this.transitionTarget = null;
+			// 	return tmp;
+			// }
 		}
 
 		var jump;
@@ -136,6 +143,7 @@ define([
 			this._machines[i].kill();
 		}
 		for (var i = 0; i < this._actions.length; i++) {
+			// console.log('exiting', this._actions[i]);
 			this._actions[i].exit(this.proxy);
 		}
 	};
@@ -161,12 +169,23 @@ define([
 	State.prototype.enter = function () {
 		// on enter of self
 		for (var i = 0; i < this._actions.length; i++) {
+			// console.log('entering', this._actions[i]);
 			this._actions[i].enter(this.proxy);
+			// if (this.transitionTarget) {
+			// 	var tmp = this.transitionTarget;
+			// 	this.transitionTarget = null;
+			// 	return tmp;
+			// }
 		}
 
 		// propagate on enter
+		var jump;
 		for (var i = 0; i < this._machines.length; i++) {
-			this._machines[i].enter();
+			var machine = this._machines[i];
+			jump = machine.enter();
+			if (jump) {
+				return jump;
+			}
 		}
 	};
 

@@ -61,7 +61,7 @@ define([
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
 	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
-	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
+	'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
 	'goo/fsmpack/statemachine/actions/PlaySoundAction',
 	'goo/fsmpack/statemachine/actions/PauseSoundAction',

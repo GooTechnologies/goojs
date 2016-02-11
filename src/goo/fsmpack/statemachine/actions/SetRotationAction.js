@@ -56,7 +56,7 @@ define([
 		transitions: []
 	};
 
-	SetRotationAction.prototype._run = function (fsm) {
+	SetRotationAction.prototype.update = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.setRotationXYZ(
 				FsmUtils.getValue(this.amountX, fsm),

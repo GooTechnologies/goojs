@@ -56,12 +56,12 @@ define([
 		}]
 	};
 
-	WaitAction.prototype._setup = function () {
+	WaitAction.prototype.enter = function () {
 		this.currentTime = 0;
 		this.totalWait = parseFloat(this.waitTime) + Math.random() * parseFloat(this.randomTime);
 	};
 
-	WaitAction.prototype._run = function (fsm) {
+	WaitAction.prototype.update = function (fsm) {
 		this.currentTime += fsm.getTpf() * 1000;
 		if (this.currentTime >= this.totalWait) {
 			fsm.send(this.transitions.timeUp);

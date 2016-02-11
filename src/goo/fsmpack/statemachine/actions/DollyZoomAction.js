@@ -75,7 +75,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	DollyZoomAction.prototype._setup = function (fsm) {
+	DollyZoomAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
 		var entity = fsm.getOwnerEntity();
 
@@ -94,7 +94,7 @@ define([
 		}
 	};
 
-	DollyZoomAction.prototype._run = function (fsm) {
+	DollyZoomAction.prototype.update = function (fsm) {
 		if (this.eyeTargetScale) {
 			var entity = fsm.getOwnerEntity();
 			var transformComponent = entity.transformComponent;

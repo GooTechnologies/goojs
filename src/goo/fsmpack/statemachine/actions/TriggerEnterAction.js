@@ -37,7 +37,7 @@ define([
 		}]
 	};
 
-	TriggerEnterAction.prototype._setup = function (fsm) {
+	TriggerEnterAction.prototype.enter = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
 		this.entered = false;
 		SystemBus.addListener('goo.physics.triggerEnter', this.listener);
@@ -52,7 +52,7 @@ define([
 		this.entered = false;
 	};
 
-	TriggerEnterAction.prototype._run = function (fsm) {
+	TriggerEnterAction.prototype.update = function (fsm) {
 		if (this.entered) {
 			fsm.send(this.transitions.enter);
 			this.entered = false;

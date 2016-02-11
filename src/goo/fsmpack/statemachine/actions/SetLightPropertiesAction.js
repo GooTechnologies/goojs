@@ -45,7 +45,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		transitions: []
 	};
 
-	SetLightPropertiesAction.prototype._run = function (fsm) {
+	SetLightPropertiesAction.prototype.update = function (fsm) {
 		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity &&
 			entity.lightComponent &&

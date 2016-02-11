@@ -51,12 +51,12 @@ define([
 		}]
 	};
 
-	MouseUpAction.prototype._setup = function () {
+	MouseUpAction.prototype.enter = function () {
 		document.addEventListener('mouseup', this.mouseEventListener);
 		document.addEventListener('touchend', this.touchEventListener);
 	};
 
-	MouseUpAction.prototype._run = function (fsm) {
+	MouseUpAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.button === 'touch') {

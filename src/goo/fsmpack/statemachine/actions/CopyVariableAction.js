@@ -40,7 +40,7 @@ define([
 		transitions: []
 	};
 
-	CopyVariableAction.prototype._run = function (fsm) {
+	CopyVariableAction.prototype.update = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
 		if (this.variableTarget && ownerEntity) {
 			try {

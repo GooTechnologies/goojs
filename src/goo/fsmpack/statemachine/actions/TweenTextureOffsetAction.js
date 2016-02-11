@@ -80,7 +80,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenTextureOffsetAction.prototype._setup = function () {
+	TweenTextureOffsetAction.prototype.enter = function () {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -90,7 +90,7 @@ define([
 		}
 	};
 
-	TweenTextureOffsetAction.prototype._run = function (fsm) {
+	TweenTextureOffsetAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
 			var meshRendererComponent = entity.meshRendererComponent;

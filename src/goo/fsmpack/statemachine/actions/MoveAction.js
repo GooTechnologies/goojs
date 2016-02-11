@@ -46,7 +46,7 @@ define([
 		transitions: []
 	};
 
-	MoveAction.prototype._setup = function (fsm) {
+	MoveAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		this.forward = Vector3.fromArray(this.translation);
@@ -54,7 +54,7 @@ define([
 		this.forward.applyPost(orientation);
 	};
 
-	MoveAction.prototype._run = function (fsm) {
+	MoveAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		var translation = transform.translation;

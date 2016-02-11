@@ -51,12 +51,12 @@ define([
 		}]
 	};
 
-	MouseDownAction.prototype._setup = function () {
+	MouseDownAction.prototype.enter = function () {
 		document.addEventListener('mousedown', this.mouseEventListener);
 		document.addEventListener('touchstart', this.touchEventListener);
 	};
 
-	MouseDownAction.prototype._run = function (fsm) {
+	MouseDownAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.button === 'touch') {

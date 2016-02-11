@@ -50,7 +50,7 @@ define([
 		}
 	};
 
-	CollidesAction.prototype._run = function (fsm) {
+	CollidesAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 		var proximitySystem = world.getSystem('ProximitySystem');

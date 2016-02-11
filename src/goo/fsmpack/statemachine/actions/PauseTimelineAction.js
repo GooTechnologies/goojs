@@ -21,7 +21,7 @@ define([
 		transitions: []
 	};
 
-	PauseTimelineAction.prototype._run = function (fsm) {
+	PauseTimelineAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (!entity.hasComponent('TimelineComponent')) { return; }

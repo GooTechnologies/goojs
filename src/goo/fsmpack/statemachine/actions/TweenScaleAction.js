@@ -75,7 +75,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenScaleAction.prototype._setup = function () {
+	TweenScaleAction.prototype.enter = function () {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -85,7 +85,7 @@ define([
 		}
 	};
 
-	TweenScaleAction.prototype._run = function (fsm) {
+	TweenScaleAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;

@@ -47,7 +47,7 @@ define([
 		'Ambient': 'materialAmbient'
 	};
 
-	SetMaterialColorAction.prototype._run = function (fsm) {
+	SetMaterialColorAction.prototype.enter = function (fsm) {
 		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity && entity.meshRendererComponent) {
 			var material = entity.meshRendererComponent.materials[0];

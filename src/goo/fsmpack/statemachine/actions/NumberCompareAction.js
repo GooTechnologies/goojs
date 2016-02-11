@@ -57,7 +57,7 @@ define([
 		}]
 	};
 
-	NumberCompareAction.prototype._run = function (fsm) {
+	NumberCompareAction.prototype.update = function (fsm) {
 		var leftHand = FsmUtils.getValue(this.leftHand, fsm);
 		var rightHand = FsmUtils.getValue(this.rightHand, fsm);
 		var diff = rightHand - leftHand;

@@ -98,7 +98,7 @@ define([
 	StateMachineComponent.prototype.doEnter = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
-			machine.enter();
+			var jump = machine.enter();
 		}
 	};
 

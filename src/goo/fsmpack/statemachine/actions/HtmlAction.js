@@ -31,7 +31,7 @@ define([
 		}]
 	};
 
-	HtmlAction.prototype._setup = function (fsm) {
+	HtmlAction.prototype.enter = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
 		if (ownerEntity.htmlComponent) {
 			this.domElement = ownerEntity.htmlComponent.domElement;
@@ -39,7 +39,7 @@ define([
 		}
 	};
 
-	HtmlAction.prototype._run = function (fsm) {
+	HtmlAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.pick);

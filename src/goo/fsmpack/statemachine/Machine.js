@@ -23,14 +23,7 @@ define([], function (
 
 	Machine.prototype.update = function () {
 		if (this.currentState) {
-			var jump = this.currentState.update();
-
-			if (jump && this.contains(jump)) {
-				this.currentState.kill();
-				this.setState(this._states[jump]);
-			}
-
-			return jump;
+			this.currentState.update();
 		}
 	};
 
@@ -39,6 +32,8 @@ define([], function (
 	};
 
 	Machine.prototype.setState = function (state) {
+		console.log('set state', state.name);
+
 		// change state
 		this.currentState = state;
 
@@ -46,6 +41,7 @@ define([], function (
 		this.currentState.reset();
 
 		// do on enter of new state
+		console.log('set state.enter');
 		this.currentState.enter();
 	};
 

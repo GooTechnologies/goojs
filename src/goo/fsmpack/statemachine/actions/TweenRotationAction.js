@@ -80,7 +80,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenRotationAction.prototype._setup = function () {
+	TweenRotationAction.prototype.enter = function () {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -90,7 +90,7 @@ define([
 		}
 	};
 
-	TweenRotationAction.prototype._run = function (fsm) {
+	TweenRotationAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var rotation = transformComponent.transform.rotation;

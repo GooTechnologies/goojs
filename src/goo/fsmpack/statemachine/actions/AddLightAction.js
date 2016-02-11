@@ -70,7 +70,7 @@ define([
 		transitions: []
 	};
 
-	AddLightAction.prototype._run = function (fsm) {
+	AddLightAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.lightComponent) {
 			this._untouched = true;

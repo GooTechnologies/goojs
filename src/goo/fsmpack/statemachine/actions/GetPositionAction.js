@@ -43,7 +43,7 @@ define([
 		transitions: []
 	};
 
-	GetPositionAction.prototype._run = function (fsm) {
+	GetPositionAction.prototype.update = function (fsm) {
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined

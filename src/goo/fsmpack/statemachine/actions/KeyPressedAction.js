@@ -52,12 +52,12 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyPressedAction.prototype._setup = function () {
+	KeyPressedAction.prototype.enter = function () {
 		document.addEventListener('keydown', this.eventListenerDown);
 		document.addEventListener('keyup', this.eventListenerUp);
 	};
 
-	KeyPressedAction.prototype._run = function (fsm) {
+	KeyPressedAction.prototype.update = function (fsm) {
 		if (this.keyIsDown) {
 			fsm.send(this.transitions.keydown);
 		}

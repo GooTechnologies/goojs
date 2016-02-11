@@ -35,7 +35,7 @@ define([
 		this._camera = Renderer.mainCamera;
 	};
 
-	SwitchCameraAction.prototype._run = function (fsm) {
+	SwitchCameraAction.prototype.update = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {

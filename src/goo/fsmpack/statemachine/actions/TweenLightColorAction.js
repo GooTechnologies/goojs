@@ -67,7 +67,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenLightColorAction.prototype._setup = function (/*fsm*/) {
+	TweenLightColorAction.prototype.enter = function (/*fsm*/) {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -77,7 +77,7 @@ define([
 		}
 	};
 
-	TweenLightColorAction.prototype._run = function (fsm) {
+	TweenLightColorAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.lightComponent) {
 			var lightComponent = entity.lightComponent;

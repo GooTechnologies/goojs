@@ -68,7 +68,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenOpacityAction.prototype._setup = function (fsm) {
+	TweenOpacityAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var meshRendererComponent = entity.meshRendererComponent;
 
@@ -103,7 +103,7 @@ define([
 		}
 	};
 
-	TweenOpacityAction.prototype._run = function (fsm) {
+	TweenOpacityAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent) {
 			var uniforms = this.material.uniforms;

@@ -75,7 +75,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenMoveAction.prototype._setup = function (/*fsm*/) {
+	TweenMoveAction.prototype.enter = function (/*fsm*/) {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -85,7 +85,7 @@ define([
 		}
 	};
 
-	TweenMoveAction.prototype._run = function (fsm) {
+	TweenMoveAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;

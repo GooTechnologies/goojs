@@ -40,11 +40,11 @@ define([
 		}]
 	};
 
-	TransitionOnMessageAction.prototype._setup = function (/*fsm*/) {
+	TransitionOnMessageAction.prototype.enter = function (/*fsm*/) {
 		SystemBus.addListener(this.channel, this.eventListener, false);
 	};
 
-	TransitionOnMessageAction.prototype._run = function (fsm) {
+	TransitionOnMessageAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.transition);

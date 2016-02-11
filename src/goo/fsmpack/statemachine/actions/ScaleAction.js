@@ -44,7 +44,7 @@ define([
 		transitions: []
 	};
 
-	ScaleAction.prototype._run = function (fsm) {
+	ScaleAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {

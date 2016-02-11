@@ -76,7 +76,7 @@ define([
 		transitions: []
 	};
 
-	PickAndExitAction.prototype._setup = function (fsm) {
+	PickAndExitAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.canvasElement = this.goo.renderer.domElement;
@@ -89,7 +89,7 @@ define([
 		this.domElement.addEventListener('touchend', this.eventListener, false); // window.open does not work in touchstart for iOS9
 	};
 
-	PickAndExitAction.prototype._run = function () {
+	PickAndExitAction.prototype.update = function () {
 		// Don't really need it.
 	};
 

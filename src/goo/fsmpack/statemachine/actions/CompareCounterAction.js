@@ -51,7 +51,7 @@ define([
 		}]
 	};
 
-	CompareCounterAction.prototype._run = function (fsm) {
+	CompareCounterAction.prototype.update = function (fsm) {
 		var value1 = +fsm.getFsm().getVariable(this.name);
 		var value2 = +this.value;
 

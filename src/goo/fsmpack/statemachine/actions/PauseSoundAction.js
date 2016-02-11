@@ -27,7 +27,7 @@ define([
 		transitions: []
 	};
 
-	PauseSoundAction.prototype._run = function (fsm) {
+	PauseSoundAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('SoundComponent')) {
 			var sound = entity.soundComponent.getSoundById(this.sound);

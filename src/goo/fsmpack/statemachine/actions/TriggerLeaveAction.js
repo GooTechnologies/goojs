@@ -37,7 +37,7 @@ define([
 		}]
 	};
 
-	TriggerLeaveAction.prototype._setup = function (fsm) {
+	TriggerLeaveAction.prototype.enter = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
 		this.leaved = false;
 		SystemBus.addListener('goo.physics.triggerExit', this.listener);
@@ -52,7 +52,7 @@ define([
 		this.leaved = false;
 	};
 
-	TriggerLeaveAction.prototype._run = function (fsm) {
+	TriggerLeaveAction.prototype.update = function (fsm) {
 		if (this.leaved) {
 			fsm.send(this.transitions.leave);
 			this.leaved = false;

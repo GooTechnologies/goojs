@@ -38,7 +38,7 @@ define([
 		transitions: []
 	};
 
-	IncrementCounterAction.prototype._run = function (fsm) {
+	IncrementCounterAction.prototype.incrementCounter = function (fsm) {
 		var increment = +this.increment;
 
 		if (fsm.getFsm().vars[this.name] === undefined) {
@@ -49,6 +49,18 @@ define([
 		fsm.getFsm().applyOnVariable(this.name, function (oldValue) {
 			return oldValue + increment;
 		});
+	};
+
+	IncrementCounterAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.incrementCounter(fsm);
+		}
+	};
+
+	IncrementCounterAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.incrementCounter(fsm);
+		}
 	};
 
 	IncrementCounterAction.prototype.cleanup = function (fsm) {

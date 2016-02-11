@@ -40,7 +40,7 @@ define([
 		transitions: []
 	};
 
-	RotateAction.prototype._run = function (fsm) {
+	RotateAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		var transform = entity.transformComponent.transform;

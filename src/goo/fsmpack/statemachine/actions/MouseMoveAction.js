@@ -43,12 +43,12 @@ define([
 		}]
 	};
 
-	MouseMoveAction.prototype._setup = function () {
+	MouseMoveAction.prototype.enter = function () {
 		document.addEventListener('mousemove', this.mouseEventListener);
 		document.addEventListener('touchmove', this.touchEventListener);
 	};
 
-	MouseMoveAction.prototype._run = function (fsm) {
+	MouseMoveAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.mouseOrTouch === 'mouse') {
