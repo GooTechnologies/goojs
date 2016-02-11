@@ -1615,6 +1615,7 @@ define([
 			texrecord.minFilter = minFilter;
 		}
 
+		// repeating NPOT textures are not supported in webgl https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
 			var glwrapS = RendererUtils.getGLWrap(context, wrapS);
