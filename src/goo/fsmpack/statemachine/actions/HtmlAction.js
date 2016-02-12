@@ -7,12 +7,6 @@ define([
 
 	function HtmlAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function () {
-			this.updated = true;
-		}.bind(this);
 	}
 
 	HtmlAction.prototype = Object.create(Action.prototype);
@@ -34,20 +28,17 @@ define([
 	HtmlAction.prototype.enter = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
 		if (ownerEntity.htmlComponent) {
+			this.eventListener = function () {
+				fsm.send(this.transitions.pick);
+			}.bind(this);
 			this.domElement = ownerEntity.htmlComponent.domElement;
 			this.domElement.addEventListener('click', this.eventListener);
 		}
 	};
 
-	HtmlAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.pick);
-		}
-	};
-
-	HtmlAction.prototype.exit = function () {
-		if (this.domElement) {
+	HtmlAction.prototype.exit = function (fsm) {
+		var ownerEntity = fsm.getOwnerEntity();
+		if (ownerEntity.htmlComponent && this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
 		}
 	};

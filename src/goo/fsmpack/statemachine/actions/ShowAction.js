@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	ShowAction.prototype.update = function (fsm) {
+	ShowAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.show();
 	};

@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	HideAction.prototype.update = function (fsm) {
+	HideAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.hide();
 	};

@@ -36,7 +36,7 @@ define([
 		transitions: []
 	};
 
-	SetVariableAction.prototype.update = function (fsm) {
+	SetVariableAction.prototype.enter = function (fsm) {
 		if (this.variable) {
 			fsm.applyOnVariable(this.variable, function () {
 				return FsmUtils.getValue(this.amount, fsm);
