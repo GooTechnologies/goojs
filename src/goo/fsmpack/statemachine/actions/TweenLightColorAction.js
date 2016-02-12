@@ -67,17 +67,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenLightColorAction.prototype.enter = function (/*fsm*/) {
+	TweenLightColorAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	TweenLightColorAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	TweenLightColorAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.lightComponent) {
 			var lightComponent = entity.lightComponent;
@@ -100,6 +92,12 @@ define([
 			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
+		}
+	};
+
+	TweenLightColorAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
 		}
 	};
 

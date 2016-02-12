@@ -27,7 +27,7 @@ define([
 		transitions: []
 	};
 
-	SetTimeScale.prototype.update = function (fsm) {
+	SetTimeScale.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.animationComponent) {
 			entity.animationComponent.setTimeScale(this.scale);

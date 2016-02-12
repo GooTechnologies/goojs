@@ -80,17 +80,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenRotationAction.prototype.enter = function () {
+	TweenRotationAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	TweenRotationAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	TweenRotationAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var rotation = transformComponent.transform.rotation;
@@ -111,6 +103,12 @@ define([
 		}).onComplete(function () {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
+	};
+
+	TweenRotationAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
 	};
 
 	return TweenRotationAction;

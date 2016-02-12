@@ -56,7 +56,7 @@ define([
 		transitions: []
 	};
 
-	SetRotationAction.prototype.update = function (fsm) {
+	SetRotationAction.prototype.setRotation = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.setRotationXYZ(
 				FsmUtils.getValue(this.amountX, fsm),
@@ -64,6 +64,18 @@ define([
 				FsmUtils.getValue(this.amountZ, fsm)
 			);
 			this.entity.transformComponent.setUpdated();
+		}
+	};
+
+	SetRotationAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.setRotation(fsm);
+		}
+	};
+
+	SetRotationAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.setRotation(fsm);
 		}
 	};
 
