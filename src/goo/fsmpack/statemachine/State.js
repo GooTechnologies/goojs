@@ -96,8 +96,8 @@ define([
 	State.prototype.requestTransition = function (target) {
 		if (this.isCurrentState()) {
 			this.depth++;
-			if (this.depth > 1000) {
-				console.warn('exceeded maximum depth, 1000');
+			if (this.depth > this.parent.maxLoopDepth) {
+				console.warn('exceeded maximum loop depth:', this.parent.maxLoopDepth);
 				return;
 			}
 

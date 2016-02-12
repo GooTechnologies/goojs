@@ -10,6 +10,7 @@ define([], function (
 		this.initialState = 'entry';
 		this.currentState = null;
 		this.parent = null;
+		this.maxLoopDepth = 1000;
 	}
 
 	Machine.prototype.setRefs = function (parentFSM) {
