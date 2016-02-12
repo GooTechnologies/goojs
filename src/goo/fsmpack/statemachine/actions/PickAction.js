@@ -7,22 +7,6 @@ define([
 
 	function PickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		var that = this;
-		this.eventListener = function (evt) {
-			if (!evt.entity) {
-				return;
-			}
-
-			evt.entity.traverseUp(function (entity) {
-				if (entity === that.ownerEntity) {
-					that.updated = true;
-					return false;
-				}
-			});
-		};
 	}
 
 	PickAction.prototype = Object.create(Action.prototype);
@@ -44,15 +28,23 @@ define([
 	PickAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
+
+		var that = this;
+		this.eventListener = function (evt) {
+			if (!evt.entity) {
+				return;
+			}
+
+			evt.entity.traverseUp(function (entity) {
+				if (entity === that.ownerEntity) {
+					fsm.send(that.transitions.pick);
+					return false;
+				}
+			});
+		};
+
 		this.goo.addEventListener('click', this.eventListener);
 		this.goo.addEventListener('touchstart', this.eventListener);
-	};
-
-	PickAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.pick);
-		}
 	};
 
 	PickAction.prototype.exit = function () {

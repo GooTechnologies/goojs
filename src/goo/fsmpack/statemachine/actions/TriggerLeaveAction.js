@@ -9,16 +9,6 @@ define([
 
 	function TriggerLeaveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.leaved = false;
-		this.everyFrame = true;
-
-		var that = this;
-		this.listener = function (endContactEvent) {
-			if (endContactEvent.entityA === that.entity || endContactEvent.entityB === that.entity) {
-				that.leaved = true;
-			}
-		};
 	}
 
 	TriggerLeaveAction.prototype = Object.create(Action.prototype);
@@ -39,24 +29,20 @@ define([
 
 	TriggerLeaveAction.prototype.enter = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
-		this.leaved = false;
-		SystemBus.addListener('goo.physics.triggerExit', this.listener);
-	};
 
-	TriggerLeaveAction.prototype._cleanup = function () {
-		this.entity = null;
+		var that = this;
+		this.listener = function (endContactEvent) {
+			console.trace();
+			if (that.entity && endContactEvent.entityA === that.entity || endContactEvent.entityB === that.entity) {
+				that.entity = null;
+				fsm.send(that.transitions.leave);
+			}
+		};
+		SystemBus.addListener('goo.physics.triggerExit', this.listener);
 	};
 
 	TriggerLeaveAction.prototype.exit = function (/*fsm*/) {
 		SystemBus.removeListener('goo.physics.triggerExit', this.listener);
-		this.leaved = false;
-	};
-
-	TriggerLeaveAction.prototype.update = function (fsm) {
-		if (this.leaved) {
-			fsm.send(this.transitions.leave);
-			this.leaved = false;
-		}
 	};
 
 	return TriggerLeaveAction;

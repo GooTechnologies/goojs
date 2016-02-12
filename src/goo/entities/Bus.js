@@ -64,14 +64,17 @@ define(function () {
 	};
 
 	function emitToListeners(node, data, channelName, bus) {
-		for (var i = 0; i < node.listeners.length; i++) {
+		var l = node.listeners.length;
+		for (var i = 0; i < l; i++) {
 			var listener = node.listeners[i];
 			if (listener) {
 				listener(data, channelName, bus);
-			} else {
-				// some listeners may be set to null by the removeListener & co methods
-				// the array is compacted here and not in the removeListener methods
-				// because a listener itself can remove listeners
+			}
+		}
+
+		for (var i = 0; i < node.listeners.length; i++) {
+			var listener = node.listeners[i];
+			if (!listener) {
 				node.listeners.splice(i, 1);
 				i--;
 			}

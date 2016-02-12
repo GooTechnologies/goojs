@@ -38,7 +38,7 @@ define([], function (
 	};
 
 	Machine.prototype.setState = function (state) {
-		console.log('set state', state.name);
+		console.log(this.name, ' - ', state.name);
 
 		// change state
 		this.currentState = state;

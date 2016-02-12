@@ -9,12 +9,6 @@ define([
 
 	function TransitionOnMessageAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (/*data*/) {
-			this.updated = true;
-		}.bind(this);
 	}
 
 	TransitionOnMessageAction.prototype = Object.create(Action.prototype);
@@ -40,15 +34,11 @@ define([
 		}]
 	};
 
-	TransitionOnMessageAction.prototype.enter = function (/*fsm*/) {
-		SystemBus.addListener(this.channel, this.eventListener, false);
-	};
-
-	TransitionOnMessageAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
+	TransitionOnMessageAction.prototype.enter = function (fsm) {
+		this.eventListener = function (/*data*/) {
 			fsm.send(this.transitions.transition);
-		}
+		}.bind(this);
+		SystemBus.addListener(this.channel, this.eventListener, false);
 	};
 
 	TransitionOnMessageAction.prototype.exit = function (/*fsm*/) {
