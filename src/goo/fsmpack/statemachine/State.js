@@ -13,8 +13,8 @@ define([
 		this._machines = [];
 		this._transitions = {};
 		this.vars = {};
-
-		this.transitionTarget = null;
+		this.depth = 0;
+		this.skipUpdate = false;
 
 		this.proxy = {
 			getTpf: function () {
@@ -85,15 +85,22 @@ define([
 		}
 	};
 
+	State.prototype.resetDepth = function () {
+		this.depth = 0;
+	};
+
 	State.prototype.isCurrentState = function () {
 		return this === this.parent.getCurrentState();
 	};
 
 	State.prototype.requestTransition = function (target) {
 		if (this.isCurrentState()) {
-			this.transitionTarget = target;
+			this.depth++;
+			if (this.depth > 1000) {
+				console.warn('exceeded maximum depth, 1000');
+				return;
+			}
 
-			console.log('----- request transition:', this.parent._states[target].name);
 			if (target && this.parent.contains(target)) {
 				this.parent.currentState.kill();
 				this.parent.setState(this.parent._states[target]);
@@ -110,15 +117,17 @@ define([
 	};
 
 	State.prototype.update = function () {
+		if (this.skipUpdate) {
+			this.skipUpdate = false;
+			return;
+		}
 		// do on update of self
+		var depth = this.depth;
 		for (var i = 0; i < this._actions.length; i++) {
-			// console.log('updating', this._actions[i]);
 			this._actions[i].update(this.proxy);
-			// if (this.transitionTarget) {
-			// 	var tmp = this.transitionTarget;
-			// 	this.transitionTarget = null;
-			// 	return tmp;
-			// }
+			if (this.depth > depth) {
+				return;
+			}
 		}
 
 		var jump;
@@ -143,7 +152,6 @@ define([
 			this._machines[i].kill();
 		}
 		for (var i = 0; i < this._actions.length; i++) {
-			// console.log('exiting', this._actions[i]);
 			this._actions[i].exit(this.proxy);
 		}
 	};
@@ -167,15 +175,16 @@ define([
 	};
 
 	State.prototype.enter = function () {
+		this.skipUpdate = true;
+
 		// on enter of self
+		var depth = this.depth;
 		for (var i = 0; i < this._actions.length; i++) {
-			// console.log('entering', this._actions[i]);
 			this._actions[i].enter(this.proxy);
-			// if (this.transitionTarget) {
-			// 	var tmp = this.transitionTarget;
-			// 	this.transitionTarget = null;
-			// 	return tmp;
-			// }
+			if (this.depth > depth) {
+				return;
+			}
+			this._actions[i].update(this.proxy);
 		}
 
 		// propagate on enter

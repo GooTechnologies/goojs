@@ -22,6 +22,11 @@ define([], function (
 	};
 
 	Machine.prototype.update = function () {
+		var keys = Object.keys(this._states);
+		for (var i = 0; i < keys.length; i++) {
+			var state = this._states[keys[i]];
+			state.resetDepth();
+		}
 		if (this.currentState) {
 			this.currentState.update();
 		}
@@ -41,7 +46,6 @@ define([], function (
 		this.currentState.reset();
 
 		// do on enter of new state
-		console.log('set state.enter');
 		this.currentState.enter();
 	};
 
@@ -78,6 +82,11 @@ define([], function (
 	};
 
 	Machine.prototype.enter = function () {
+		var keys = Object.keys(this._states);
+		for (var i = 0; i < keys.length; i++) {
+			var state = this._states[keys[i]];
+			state.resetDepth();
+		}
 		if (this.currentState) {
 			this.currentState.enter();
 		}

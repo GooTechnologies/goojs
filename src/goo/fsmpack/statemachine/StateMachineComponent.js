@@ -73,8 +73,8 @@ define([
 	};
 
 	StateMachineComponent.prototype.addMachine = function (machine) {
-		machine._fsm = this;
 		machine.parent = this;
+		machine.setRefs(this);
 		this._machines.push(machine);
 	};
 
@@ -98,7 +98,7 @@ define([
 	StateMachineComponent.prototype.doEnter = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
-			var jump = machine.enter();
+			machine.enter();
 		}
 	};
 
