@@ -11,8 +11,6 @@ define([
 
 	function CollidesAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
 	}
 
 	CollidesAction.prototype = Object.create(Action.prototype);

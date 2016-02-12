@@ -54,7 +54,7 @@ define([
 		transitions: []
 	};
 
-	AddPositionAction.prototype.update = function (fsm) {
+	AddPositionAction.prototype.addPosition = function (fsm) {
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
@@ -69,6 +69,18 @@ define([
 			);
 
 			this.entity.transformComponent.setUpdated();
+		}
+	};
+
+	AddPositionAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.addPosition(fsm);
+		}
+	};
+
+	AddPositionAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.addPosition(fsm);
 		}
 	};
 
