@@ -39,7 +39,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		transitions: []
 	};
 
-	SetLightRangeAction.prototype.update = function (/*fsm*/) {
+	SetLightRangeAction.prototype.enter = function (/*fsm*/) {
 		if (this.entity &&
 			this.entity.lightComponent &&
 			this.entity.lightComponent.light) {

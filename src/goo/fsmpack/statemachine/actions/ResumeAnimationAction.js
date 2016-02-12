@@ -26,7 +26,7 @@ define([
 		transitions: []
 	};
 
-	ResumeAnimationAction.prototype.update = function (fsm) {
+	ResumeAnimationAction.prototype.enter = function (fsm) {
 		if (this.onAll) {
 			var world = fsm.getWorld();
 			var animationSystem = world.getSystem('AnimationSystem');

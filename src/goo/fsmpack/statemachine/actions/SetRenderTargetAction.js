@@ -50,7 +50,7 @@ define([
 		}
 	};
 
-	SetRenderTargetAction.prototype.update = function (fsm) {
+	SetRenderTargetAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 

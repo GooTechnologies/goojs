@@ -27,7 +27,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		}]
 	};
 
-	SetAnimationAction.prototype.update = function (fsm) {
+	SetAnimationAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var that = this;
 		if (typeof this.animation === 'string' && entity.animationComponent) {

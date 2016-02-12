@@ -26,7 +26,7 @@ define([
 		transitions: []
 	};
 
-	RemoveAction.prototype.update = function (fsm) {
+	RemoveAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.removeFromWorld(this.recursive);
 	};

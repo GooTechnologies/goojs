@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	RemoveParticlesAction.prototype.update = function (fsm) {
+	RemoveParticlesAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.children().each(function (child) {
 			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
