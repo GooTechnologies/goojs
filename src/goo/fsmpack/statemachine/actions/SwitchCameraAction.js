@@ -32,10 +32,10 @@ define([
 	};
 
 	SwitchCameraAction.prototype.ready = function (/*fsm*/) {
-		this._camera = Renderer.mainCamera;
+		this._camera = Renderer.mainCamera; // make this into get activeCamera
 	};
 
-	SwitchCameraAction.prototype.update = function (fsm) {
+	SwitchCameraAction.prototype.enter = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {
@@ -44,9 +44,6 @@ define([
 				entity: cameraEntity
 			});
 		}
-	};
-
-	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
 	};
 
 	return SwitchCameraAction;

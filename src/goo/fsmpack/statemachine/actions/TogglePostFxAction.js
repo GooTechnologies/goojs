@@ -26,7 +26,7 @@ define([
 		transitions: []
 	};
 
-	TogglePostFxAction.prototype.update = function (fsm) {
+	TogglePostFxAction.prototype.enter = function (fsm) {
 		var renderSystem = fsm.getWorld().gooRunner.renderSystem;
 		if (renderSystem) {
 			renderSystem.enableComposers(this.enabled);

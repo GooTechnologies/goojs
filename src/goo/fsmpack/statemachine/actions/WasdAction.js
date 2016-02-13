@@ -7,24 +7,12 @@ define([
 
 	function WasdAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.updated = false;
-		this.keysPressed = {};
-
-		this.eventListener = function (event) {
-			var keyname = WasdAction._keys[event.which];
-			if (keyname !== undefined) {
-				this.updated = true;
-				this.keysPressed[keyname] = true;
-			}
-		}.bind(this);
 	}
 
 	WasdAction.prototype = Object.create(Action.prototype);
 	WasdAction.prototype.constructor = WasdAction;
 
 	WasdAction.prototype.configure = function (settings) {
-		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
@@ -57,23 +45,18 @@ define([
 		};
 	})();
 
-	WasdAction.prototype.enter = function () {
-		document.addEventListener('keydown', this.eventListener);
-	};
-
-	WasdAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			//var keyKeys = _.keys(WasdAction._keys); // unused
-
-			for (var keyname in this.keysPressed) {
+	WasdAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			var keyname = WasdAction._keys[event.which];
+			if (keyname) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
 					fsm.send(target);
 				}
 			}
-			this.keysPressed = [];
-		}
+		}.bind(this);
+
+		document.addEventListener('keydown', this.eventListener);
 	};
 
 	WasdAction.prototype.exit = function () {

@@ -80,17 +80,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenTextureOffsetAction.prototype.enter = function () {
+	TweenTextureOffsetAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	TweenTextureOffsetAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
 			var meshRendererComponent = entity.meshRendererComponent;
@@ -108,6 +100,12 @@ define([
 			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);
+		}
+	};
+
+	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
 		}
 	};
 

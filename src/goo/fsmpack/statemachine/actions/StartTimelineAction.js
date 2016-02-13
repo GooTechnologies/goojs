@@ -21,7 +21,7 @@ define([
 		transitions: []
 	};
 
-	StartTimelineAction.prototype.update = function (fsm) {
+	StartTimelineAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (!entity.hasComponent('TimelineComponent')) { return; }

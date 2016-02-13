@@ -12,8 +12,6 @@ define([
 	function WaitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
-		this.everyFrame = true;
-
 		/**
 		 * Current time, in milliseconds.
 		 * @type {number}

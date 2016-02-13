@@ -37,7 +37,7 @@ define([
 		}]
 	};
 
-	SoundFadeOutAction.prototype.update = function (fsm) {
+	SoundFadeOutAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('SoundComponent')) {
 			var sound = entity.soundComponent.getSoundById(this.sound);
