@@ -68,7 +68,7 @@ define([
 				}
 			}
 		} else {
-			transform.scale.set(this.scale);
+			transform.scale.setArray(this.scale);
 		}
 
 		entity.transformComponent.setUpdated();
