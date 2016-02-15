@@ -52,15 +52,7 @@ define([
 		}]
 	};
 
-	InFrustumAction.prototype.enter = function (fsm) {
-		if (!this.current) {
-			var world = fsm.getOwnerEntity()._world;
-			var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
-			this.camera = cameraEntity.cameraComponent.camera;
-		}
-	};
-
-	InFrustumAction.prototype.update = function (fsm) {
+	InFrustumAction.prototype.checkFrustum = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (this.current) {
@@ -76,6 +68,24 @@ define([
 			} else {
 				fsm.send(this.transitions.inside);
 			}
+		}
+	};
+
+	InFrustumAction.prototype.enter = function (fsm) {
+		if (!this.current) {
+			var world = fsm.getOwnerEntity()._world;
+			var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
+			this.camera = cameraEntity.cameraComponent.camera;
+		}
+
+		if (!this.everyFrame) {
+			this.checkFrustum(fsm);
+		}
+	};
+
+	InFrustumAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.checkFrustum(fsm);
 		}
 	};
 

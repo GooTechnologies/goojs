@@ -75,7 +75,7 @@ define([
 		}]
 	};
 
-	CompareDistanceAction.prototype.update = function (fsm) {
+	CompareDistanceAction.prototype.compare = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 		var delta;
@@ -100,6 +100,18 @@ define([
 			fsm.send(this.transitions.less);
 		} else {
 			fsm.send(this.transitions.greater);
+		}
+	};
+
+	CompareDistanceAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	CompareDistanceAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 
