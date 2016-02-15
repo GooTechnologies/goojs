@@ -48,7 +48,7 @@ define([
 
 	var forceVector = new Vector3();
 	var applyPoint = new Vector3();
-	ApplyForceAction.prototype._setup = function (fsm) {
+	ApplyForceAction.prototype.enter = function (fsm) {
 		SystemBus.addListener('goo.physics.substep', this.substepListener = function () {
 			var entity = fsm.getOwnerEntity();
 			if (!entity || !entity.rigidBodyComponent) { return; }

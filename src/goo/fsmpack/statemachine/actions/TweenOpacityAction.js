@@ -68,7 +68,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenOpacityAction.prototype._setup = function (fsm) {
+	TweenOpacityAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var meshRendererComponent = entity.meshRendererComponent;
 
@@ -90,22 +90,7 @@ define([
 			if (this.material.uniforms.opacity === undefined) {
 				this.material.uniforms.opacity = 1;
 			}
-		}
-	};
 
-	TweenOpacityAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-
-			this.material.blendState.blending = this.oldBlending;
-			this.material.renderQueue = this.oldQueue;
-			this.material.uniforms.opacity = this.oldOpacity;
-		}
-	};
-
-	TweenOpacityAction.prototype._run = function (fsm) {
-		var entity = fsm.getOwnerEntity();
-		if (entity.meshRendererComponent) {
 			var uniforms = this.material.uniforms;
 
 			var time = entity._world.time * 1000;
@@ -122,6 +107,16 @@ define([
 			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);
+		}
+	};
+
+	TweenOpacityAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+
+			this.material.blendState.blending = this.oldBlending;
+			this.material.renderQueue = this.oldQueue;
+			this.material.uniforms.opacity = this.oldOpacity;
 		}
 	};
 

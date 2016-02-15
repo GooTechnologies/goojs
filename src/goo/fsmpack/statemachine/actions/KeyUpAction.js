@@ -47,11 +47,11 @@ define([
 		this.transitions = { keyup: settings.transitions.keyup };
 	};
 
-	KeyUpAction.prototype._setup = function () {
+	KeyUpAction.prototype.enter = function () {
 		document.addEventListener('keyup', this.eventListener);
 	};
 
-	KeyUpAction.prototype._run = function (fsm) {
+	KeyUpAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.keyup);

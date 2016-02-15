@@ -64,7 +64,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	ShakeAction.prototype._setup = function () {
+	ShakeAction.prototype.enter = function () {
 		this.tween = new TWEEN.Tween();
 	};
 
@@ -74,7 +74,7 @@ define([
 		}
 	};
 
-	ShakeAction.prototype._run = function (fsm) {
+	ShakeAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;

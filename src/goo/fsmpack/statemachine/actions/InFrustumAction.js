@@ -52,7 +52,7 @@ define([
 		}]
 	};
 
-	InFrustumAction.prototype._setup = function (fsm) {
+	InFrustumAction.prototype.enter = function (fsm) {
 		if (!this.current) {
 			var world = fsm.getOwnerEntity()._world;
 			var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
@@ -60,7 +60,7 @@ define([
 		}
 	};
 
-	InFrustumAction.prototype._run = function (fsm) {
+	InFrustumAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (this.current) {

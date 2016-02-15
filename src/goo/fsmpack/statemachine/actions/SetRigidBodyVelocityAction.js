@@ -29,7 +29,7 @@ define([
 	};
 
 	var tmpVector = new Vector3();
-	SetRigidBodyVelocityAction.prototype._setup = function (fsm) {
+	SetRigidBodyVelocityAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (!entity || !entity.rigidBodyComponent) { return; }
 		tmpVector.setArray(this.velocity);

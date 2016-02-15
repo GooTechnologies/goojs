@@ -49,11 +49,11 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyDownAction.prototype._setup = function () {
+	KeyDownAction.prototype.enter = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	KeyDownAction.prototype._run = function (fsm) {
+	KeyDownAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.keydown);

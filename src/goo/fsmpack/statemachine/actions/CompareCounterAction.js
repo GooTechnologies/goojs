@@ -51,7 +51,7 @@ define([
 		}]
 	};
 
-	CompareCounterAction.prototype._run = function (fsm) {
+	CompareCounterAction.prototype.compare = function (fsm) {
 		var value1 = +fsm.getFsm().getVariable(this.name);
 		var value2 = +this.value;
 
@@ -61,6 +61,18 @@ define([
 			fsm.send(this.transitions.equal);
 		} else {
 			fsm.send(this.transitions.less);
+		}
+	};
+
+	CompareCounterAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	CompareCounterAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 

@@ -75,17 +75,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenScaleAction.prototype._setup = function () {
+	TweenScaleAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	TweenScaleAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;
@@ -114,6 +106,12 @@ define([
 			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
+		}
+	};
+
+	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
 		}
 	};
 

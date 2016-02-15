@@ -31,8 +31,16 @@ define([
 		transitions: []
 	};
 
-	LogMessageAction.prototype._run = function (/*fsm*/) {
-		console.log(this.message);
+	LogMessageAction.prototype.enter = function (/*fsm*/) {
+		if (!this.everyFrame) {
+			console.log(this.message);
+		}
+	};
+
+	LogMessageAction.prototype.update = function (/*fsm*/) {
+		if (this.everyFrame) {
+			console.log(this.message);
+		}
 	};
 
 	return LogMessageAction;

@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	MuteAction.prototype._setup = function (fsm) {
+	MuteAction.prototype.enter = function (fsm) {
 		var world = fsm.getWorld();
 		if (!world) { return; }
 

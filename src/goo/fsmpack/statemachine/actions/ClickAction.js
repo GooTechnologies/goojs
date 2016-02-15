@@ -8,13 +8,28 @@ define([
 	function ClickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
-		this.everyFrame = true;
-		this.updated = false;
-
 		this.selected = false;
 		this.x = 0;
 		this.y = 0;
+	}
 
+	ClickAction.prototype = Object.create(Action.prototype);
+	ClickAction.prototype.constructor = ClickAction;
+
+	ClickAction.external = {
+		name: 'Click/Tap',
+		type: 'controls',
+		description: 'Listens for a click/tap event on the entity and performs a transition',
+		canTransition: true,
+		parameters: [], // but not farther than some value
+		transitions: [{
+			key: 'click',
+			name: 'On Click/Tap',
+			description: 'State to transition to when entity is clicked'
+		}]
+	};
+
+	ClickAction.prototype.enter = function (fsm) {
 		var that = this;
 		this.downListener = function (evt) {
 			if (!evt.entity) {
@@ -48,45 +63,19 @@ define([
 
 			evt.entity.traverseUp(function (entity) {
 				if (entity === that.ownerEntity) {
-					that.updated = true;
+					fsm.send(that.transitions.click);
 					return false;
 				}
 			});
 		};
-	}
-
-	ClickAction.prototype = Object.create(Action.prototype);
-	ClickAction.prototype.constructor = ClickAction;
-
-	ClickAction.external = {
-		name: 'Click/Tap',
-		type: 'controls',
-		description: 'Listens for a click/tap event on the entity and performs a transition',
-		canTransition: true,
-		parameters: [], // but not farther than some value
-		transitions: [{
-			key: 'click',
-			name: 'On Click/Tap',
-			description: 'State to transition to when entity is clicked'
-		}]
-	};
-
-	ClickAction.prototype._setup = function (fsm) {
+		
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.goo.addEventListener('mousedown', this.downListener);
 		this.goo.addEventListener('touchstart', this.downListener);
 		this.goo.addEventListener('mouseup', this.upListener);
 		this.goo.addEventListener('touchend', this.upListener);
-		this.updated = false;
 		this.selected = false;
-	};
-
-	ClickAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.click);
-		}
 	};
 
 	ClickAction.prototype.exit = function () {

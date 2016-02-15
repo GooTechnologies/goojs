@@ -32,7 +32,7 @@ define([
 		transitions: []
 	};
 
-	SetCounterAction.prototype._run = function (fsm) {
+	SetCounterAction.prototype.enter = function (fsm) {
 		fsm.getFsm().defineVariable(this.name, +this.value);
 	};
 

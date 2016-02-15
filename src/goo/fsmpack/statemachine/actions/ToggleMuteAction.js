@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	UnmuteAction.prototype._setup = function (fsm) {
+	UnmuteAction.prototype.enter = function (fsm) {
 		var world = fsm.getWorld();
 		if (!world) { return; }
 

@@ -57,7 +57,7 @@ define([
 		}]
 	};
 
-	NumberCompareAction.prototype._run = function (fsm) {
+	NumberCompareAction.prototype.compare = function (fsm) {
 		var leftHand = FsmUtils.getValue(this.leftHand, fsm);
 		var rightHand = FsmUtils.getValue(this.rightHand, fsm);
 		var diff = rightHand - leftHand;
@@ -68,6 +68,18 @@ define([
 			if (this.lessThanEvent.channel) { fsm.send(this.lessThanEvent.channel); }
 		} else {
 			if (this.greaterThanEvent.channel) { fsm.send(this.greaterThanEvent.channel); }
+		}
+	};
+
+	NumberCompareAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	NumberCompareAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 

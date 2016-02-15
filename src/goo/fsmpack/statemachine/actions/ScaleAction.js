@@ -44,7 +44,7 @@ define([
 		transitions: []
 	};
 
-	ScaleAction.prototype._run = function (fsm) {
+	ScaleAction.prototype.applyScale = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
@@ -70,8 +70,20 @@ define([
 		} else {
 			transform.scale.setArray(this.scale);
 		}
-
+	
 		entity.transformComponent.setUpdated();
+	};
+
+	ScaleAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.applyScale(fsm);
+		}
+	};
+
+	ScaleAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyScale(fsm);
+		}
 	};
 
 	return ScaleAction;

@@ -45,7 +45,7 @@ define([
 		}]
 	};
 
-	SoundFadeInAction.prototype._run = function (fsm) {
+	SoundFadeInAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (!entity.hasComponent('SoundComponent')) { return; }

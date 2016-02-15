@@ -14,15 +14,6 @@ define([
 	AddPositionAction.prototype = Object.create(Action.prototype);
 	AddPositionAction.prototype.constructor = AddPositionAction;
 
-	AddPositionAction.prototype.configure = function (settings) {
-		this.everyFrame = settings.everyFrame !== false;
-		this.entity = settings.entity || null;
-		this.amountX = settings.amountX || 0;
-		this.amountY = settings.amountY || 0;
-		this.amountZ = settings.amountZ || 0;
-		this.speed = settings.speed || 1;
-	};
-
 	AddPositionAction.external = {
 		parameters: [{
 			name: 'Entity',
@@ -63,7 +54,7 @@ define([
 		transitions: []
 	};
 
-	AddPositionAction.prototype._run = function (fsm) {
+	AddPositionAction.prototype.addPosition = function (fsm) {
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
@@ -78,6 +69,18 @@ define([
 			);
 
 			this.entity.transformComponent.setUpdated();
+		}
+	};
+
+	AddPositionAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.addPosition(fsm);
+		}
+	};
+
+	AddPositionAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.addPosition(fsm);
 		}
 	};
 

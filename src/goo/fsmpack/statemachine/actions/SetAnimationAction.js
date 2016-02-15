@@ -5,7 +5,6 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 
 	function SetAnimationAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-		this.everyFrame = true;
 		this._transitioned = false;
 		this._loopAtStart = null;
 		this._previousLoop = 0;
@@ -36,7 +35,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		}]
 	};
 
-	SetAnimationAction.prototype._run = function (fsm) {
+	SetAnimationAction.prototype.update = function (fsm) {
 		// If we already made the transition, bail
 		if(this._transitioned) {
 			return;

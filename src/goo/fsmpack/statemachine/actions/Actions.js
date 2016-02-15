@@ -32,6 +32,7 @@ define([
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
 	'goo/fsmpack/statemachine/actions/TransitionAction',
+	'goo/fsmpack/statemachine/actions/NextFrameAction',
 	'goo/fsmpack/statemachine/actions/RandomTransitionAction',
 	'goo/fsmpack/statemachine/actions/EmitAction',
 	'goo/fsmpack/statemachine/actions/TransitionOnMessageAction',
@@ -61,7 +62,7 @@ define([
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
 	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
-	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
+	'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
 	'goo/fsmpack/statemachine/actions/PlaySoundAction',
 	'goo/fsmpack/statemachine/actions/PauseSoundAction',
@@ -105,10 +106,10 @@ define([
 	'goo/fsmpack/statemachine/actions/StopTimelineAction',
 	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction',
 
-	// 'goo/fsmpack/statemachine/actions/SetVariableAction',
-	// 'goo/fsmpack/statemachine/actions/AddVariableAction',
-	// 'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
-	// 'goo/fsmpack/statemachine/actions/CopyVariableAction',
+	'goo/fsmpack/statemachine/actions/SetVariableAction',
+	'goo/fsmpack/statemachine/actions/AddVariableAction',
+	'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
+	'goo/fsmpack/statemachine/actions/CopyVariableAction',
 
 	'goo/fsmpack/statemachine/actions/SetHtmlTextAction'
 ], function (

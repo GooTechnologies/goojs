@@ -39,7 +39,7 @@ define([
 		transitions: []
 	};
 
-	SetHtmlTextAction.prototype._run = function (fsm) {
+	SetHtmlTextAction.prototype.update = function (fsm) {
 		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity && entity.htmlComponent && this.selector.length > 0) {
 			var element = entity.htmlComponent.domElement.querySelector(this.selector);

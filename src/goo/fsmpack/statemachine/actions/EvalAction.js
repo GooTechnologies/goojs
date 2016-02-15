@@ -27,12 +27,12 @@ define([
 		transitions: []
 	};
 
-	EvalAction.prototype._setup = function () {
+	EvalAction.prototype.enter = function () {
 		/* jshint evil: true */
 		this.expressionFunction = new Function('goo', this.expression);
 	};
 
-	EvalAction.prototype._run = function (fsm) {
+	EvalAction.prototype.update = function (fsm) {
 		/* jshint evil: true */
 		if (this.expressionFunction) {
 			try {

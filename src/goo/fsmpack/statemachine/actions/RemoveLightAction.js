@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	RemoveLightAction.prototype._run = function (fsm) {
+	RemoveLightAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('LightComponent')) {
 			entity.clearComponent('LightComponent');

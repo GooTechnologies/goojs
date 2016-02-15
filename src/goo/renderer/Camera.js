@@ -44,6 +44,7 @@ define([
 		this._direction = new Vector3(0, 0, -1);
 
 		// These need an onFrustumChange() after being modified
+		this.size = 0.5; // hack
 		this._frustumNear = this.near = 1.0;
 		this._frustumFar = this.far = 2.0;
 		this._frustumLeft = this.left = -0.5;

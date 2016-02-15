@@ -24,7 +24,6 @@ define([
 	ArrowsAction.prototype.constructor = ArrowsAction;
 
 	ArrowsAction.prototype.configure = function (settings) {
-		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
@@ -57,11 +56,11 @@ define([
 		};
 	})();
 
-	ArrowsAction.prototype._setup = function () {
+	ArrowsAction.prototype.enter = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	ArrowsAction.prototype._run = function (fsm) {
+	ArrowsAction.prototype.update = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 

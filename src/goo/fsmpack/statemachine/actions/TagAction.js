@@ -30,7 +30,7 @@ define([
 		transitions: []
 	};
 
-	TagAction.prototype._run = function (fsm) {
+	TagAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.proximityComponent) {
 			if (entity.proximityComponent.tag !== this.tag) {

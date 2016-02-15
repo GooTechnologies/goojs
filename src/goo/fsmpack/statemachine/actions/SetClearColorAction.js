@@ -37,7 +37,7 @@ define([
 		this._oldClearColor[3] = goo.renderer._clearColor.w;
 	};
 
-	SetClearColorAction.prototype._run = function (fsm) {
+	SetClearColorAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var goo = entity._world.gooRunner;
 		goo.renderer.setClearColor(this.color[0], this.color[1], this.color[2], 1);

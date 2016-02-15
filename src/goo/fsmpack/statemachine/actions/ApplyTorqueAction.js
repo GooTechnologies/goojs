@@ -41,7 +41,7 @@ define([
 	};
 
 	var torqueVector = new Vector3();
-	ApplyTorqueAction.prototype._setup = function (fsm) {
+	ApplyTorqueAction.prototype.enter = function (fsm) {
 		SystemBus.addListener('goo.physics.substep', this.substepListener = function () {
 			var entity = fsm.getOwnerEntity();
 			if (!entity || !entity.rigidBodyComponent) { return; }

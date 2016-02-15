@@ -7,20 +7,6 @@ define([
 
 	function MouseDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.button = null;
-
-		this.mouseEventListener = function (event) {
-			this.button = event.button;
-			this.updated = true;
-		}.bind(this);
-
-		this.touchEventListener = function (event) {
-			this.button = 'touch';
-			this.updated = true;
-		}.bind(this);
 	}
 
 	MouseDownAction.prototype = Object.create(Action.prototype);
@@ -51,24 +37,29 @@ define([
 		}]
 	};
 
-	MouseDownAction.prototype._setup = function () {
-		document.addEventListener('mousedown', this.mouseEventListener);
-		document.addEventListener('touchstart', this.touchEventListener);
-	};
-
-	MouseDownAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			if (this.button === 'touch') {
+	MouseDownAction.prototype.enter = function (fsm) {
+		var update = function (button) {
+			if (button === 'touch') {
 				fsm.send(this.transitions.touchDown);
 			} else {
 				fsm.send([
 					this.transitions.mouseLeftDown,
 					this.transitions.middleMouseDown,
 					this.transitions.rightMouseDown
-				][this.button]);
+				][button]);
 			}
-		}
+		}.bind(this);
+
+		this.mouseEventListener = function (event) {
+			update(event.button);
+		}.bind(this);
+
+		this.touchEventListener = function () {
+			update('touch');
+		}.bind(this);
+
+		document.addEventListener('mousedown', this.mouseEventListener);
+		document.addEventListener('touchstart', this.touchEventListener);
 	};
 
 	MouseDownAction.prototype.exit = function () {

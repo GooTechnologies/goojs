@@ -11,8 +11,6 @@ define([
 
 	function CollidesAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
 	}
 
 	CollidesAction.prototype = Object.create(Action.prototype);
@@ -50,7 +48,7 @@ define([
 		}
 	};
 
-	CollidesAction.prototype._run = function (fsm) {
+	CollidesAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 		var proximitySystem = world.getSystem('ProximitySystem');

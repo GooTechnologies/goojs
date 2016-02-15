@@ -33,7 +33,7 @@ define([
 		}]
 	};
 
-	PlaySoundAction.prototype._run = function (fsm) {
+	PlaySoundAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (!entity.hasComponent('SoundComponent')) { return; }
