@@ -46,7 +46,7 @@ define([
 		transitions: []
 	};
 
-	FireAction.prototype.update = function (fsm) {
+	FireAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity.transformComponent) !== -1) {
 			return;

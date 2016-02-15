@@ -41,7 +41,7 @@ define([
 		transitions: []
 	};
 
-	SmokeAction.prototype.update = function (fsm) {
+	SmokeAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (this.smokeEntity && entity.transformComponent.children.indexOf(this.smokeEntity.transformComponent) !== -1) {
 			return;
