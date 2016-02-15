@@ -44,7 +44,7 @@ define([
 		transitions: []
 	};
 
-	ScaleAction.prototype.update = function (fsm) {
+	ScaleAction.prototype.applyScale = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
@@ -68,10 +68,22 @@ define([
 				}
 			}
 		} else {
-			transform.scale.set(this.scale);
+			transform.scale.setDirect(this.scale[0], this.scale[1], this.scale[2]);
 		}
-
+	
 		entity.transformComponent.setUpdated();
+	};
+
+	ScaleAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.applyScale(fsm);
+		}
+	};
+
+	ScaleAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyScale(fsm);
+		}
 	};
 
 	return ScaleAction;

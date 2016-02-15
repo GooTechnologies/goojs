@@ -52,9 +52,19 @@ define([
 		this.forward = Vector3.fromArray(this.translation);
 		var orientation = transform.rotation;
 		this.forward.applyPost(orientation);
+
+		if (!this.everyFrame) {
+			this.applyMove(fsm);
+		}
 	};
 
 	MoveAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyMove(fsm);
+		}
+	};
+
+	MoveAction.prototype.applyMove = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		var translation = transform.translation;

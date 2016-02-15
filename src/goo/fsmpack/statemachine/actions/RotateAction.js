@@ -40,9 +40,8 @@ define([
 		transitions: []
 	};
 
-	RotateAction.prototype.update = function (fsm) {
+	RotateAction.prototype.applyRotation = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
 			if (this.everyFrame) {
@@ -73,6 +72,18 @@ define([
 		}
 
 		entity.transformComponent.setUpdated();
+	};
+
+	RotateAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.applyRotation(fsm);
+		}
+	};
+
+	RotateAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyRotation(fsm);
+		}
 	};
 
 	return RotateAction;
