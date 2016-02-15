@@ -9,16 +9,6 @@ define([
 
 	function KeyDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (event) {
-			if (this.key) {
-				if (event.which === +this.key) {
-					this.updated = true;
-				}
-			}
-		}.bind(this);
 	}
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
@@ -49,15 +39,15 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyDownAction.prototype.enter = function () {
+	KeyDownAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			if (this.key) {
+				if (event.which === +this.key) {
+					fsm.send(this.transitions.keydown);
+				}
+			}
+		}.bind(this);
 		document.addEventListener('keydown', this.eventListener);
-	};
-
-	KeyDownAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.keydown);
-		}
 	};
 
 	KeyDownAction.prototype.exit = function () {
