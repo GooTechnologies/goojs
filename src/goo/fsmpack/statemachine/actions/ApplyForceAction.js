@@ -17,7 +17,8 @@ define([
 	ApplyForceAction.prototype.constructor = ApplyForceAction;
 
 	ApplyForceAction.external = {
-		name: 'ApplyForce',
+		key: 'ApplyForce',
+		name: 'Apply force on rigid body',
 		type: 'physics',
 		description: 'Apply a force to the attached rigid body.',
 		canTransition: false,

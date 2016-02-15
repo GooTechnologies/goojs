@@ -15,7 +15,8 @@ define([
 	ApplyImpulseAction.prototype.constructor = ApplyImpulseAction;
 
 	ApplyImpulseAction.external = {
-		name: 'ApplyImpulse',
+		key: 'ApplyImpulse',
+		name: 'Apply impulse on rigid body',
 		type: 'physics',
 		description: 'Apply an impulse to the attached rigid body.',
 		canTransition: false,

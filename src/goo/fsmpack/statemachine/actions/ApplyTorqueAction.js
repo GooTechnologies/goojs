@@ -17,7 +17,8 @@ define([
 	ApplyTorqueAction.prototype.constructor = ApplyTorqueAction;
 
 	ApplyTorqueAction.external = {
-		name: 'ApplyTorque',
+		key: 'ApplyTorque',
+		name: 'Apply torque on rigid body',
 		type: 'physics',
 		description: 'Apply a torque to the attached rigid body.',
 		canTransition: false,
