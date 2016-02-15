@@ -42,6 +42,18 @@ define([
 	};
 
 	/**
+	 * Preparing sound config by populating it with defaults.
+	 * @param {Object} config
+	 * @private
+	 */
+	MachineHandler.prototype._prepare = function (config) {
+		_.defaults(config, {
+			maxLoopDepth: 100,
+			asyncMode: true
+		});
+	};
+
+	/**
 	 * Adds/updates/removes a machine
 	 * @param {string} ref
 	 * @param {Object} config
@@ -54,6 +66,10 @@ define([
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (machine) {
 			if (!machine) { return; }
 			machine.name = config.name;
+			machine.maxLoopDepth = config.maxLoopDepth;
+			machine.asyncMode = config.asyncMode;
+
+			console.log(machine.name, machine.maxLoopDepth, machine.asyncMode);
 
 			// Remove old states
 			for (var key in machine._states) {

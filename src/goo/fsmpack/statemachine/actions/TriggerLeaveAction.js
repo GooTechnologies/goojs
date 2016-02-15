@@ -32,7 +32,6 @@ define([
 
 		var that = this;
 		this.listener = function (endContactEvent) {
-			console.trace();
 			if (that.entity && endContactEvent.entityA === that.entity || endContactEvent.entityB === that.entity) {
 				that.entity = null;
 				fsm.send(that.transitions.leave);

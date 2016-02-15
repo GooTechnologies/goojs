@@ -1,7 +1,9 @@
 define([
-	'goo/util/ArrayUtils'
+	'goo/util/ArrayUtils',
+	'goo/entities/SystemBus'
 ], function (
-	ArrayUtils
+	ArrayUtils,
+	SystemBus
 ) {
 	'use strict';
 
@@ -95,15 +97,19 @@ define([
 
 	State.prototype.requestTransition = function (target) {
 		if (this.isCurrentState()) {
-			this.depth++;
-			if (this.depth > this.parent.maxLoopDepth) {
-				console.warn('exceeded maximum loop depth:', this.parent.maxLoopDepth);
-				return;
-			}
+			if (!this.parent.asyncMode) {
+				this.depth++;
+				if (this.depth > this.parent.maxLoopDepth) {
+					console.warn('exceeded maximum loop depth:', this.parent.maxLoopDepth);
+					return;
+				}
 
-			if (target && this.parent.contains(target)) {
-				this.parent.currentState.kill();
-				this.parent.setState(this.parent._states[target]);
+				if (target && this.parent.contains(target)) {
+					this.parent.currentState.kill();
+					this.parent.setState(this.parent._states[target]);
+				}
+			} else {
+				this.transitionTarget = target;
 			}
 		}
 	};
@@ -116,34 +122,62 @@ define([
 		delete this._transitions[eventName];
 	};
 
+	State.prototype.enter = function () {
+		SystemBus.emit('goo.fsm.enter', {
+			entityId: this._fsm.entity.id,
+			machineName: this.parent.name,
+			stateId: this.uuid
+		});
+
+		this.skipUpdate = true;
+
+		// on enter of self
+		var depth = this.depth;
+		for (var i = 0; i < this._actions.length; i++) {
+			this._actions[i].enter(this.proxy);
+			if (this.depth > depth) {
+				return;
+			}
+			this._actions[i].update(this.proxy);
+		}
+
+		// propagate on enter
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].enter();
+		}
+	};
+
 	State.prototype.update = function () {
 		if (this.skipUpdate) {
 			this.skipUpdate = false;
 			return;
 		}
+
 		// do on update of self
 		var depth = this.depth;
-		for (var i = 0; i < this._actions.length; i++) {
-			this._actions[i].update(this.proxy);
-			if (this.depth > depth) {
-				return;
+
+		if (!this.parent.asyncMode) {
+			for (var i = 0; i < this._actions.length; i++) {
+				this._actions[i].update(this.proxy);
+				if (this.depth > depth) {
+					return;
+				}
+			}
+		} else {
+			// old async mode
+			for (var i = 0; i < this._actions.length; i++) {
+				this._actions[i].update(this.proxy);
+				if (this.transitionTarget) {
+					var tmp = this.transitionTarget;
+					this.transitionTarget = null;
+					return tmp;
+				}
 			}
 		}
 
-		var jump;
 		// propagate on update
 		for (var i = 0; i < this._machines.length; i++) {
-			var machine = this._machines[i];
-			jump = machine.update();
-			if (jump) {
-				return jump;
-			}
-		}
-	};
-
-	State.prototype.reset = function () {
-		for (var i = 0; i < this._machines.length; i++) {
-			this._machines[i].reset();
+			this._machines[i].update();
 		}
 	};
 
@@ -153,6 +187,12 @@ define([
 		}
 		for (var i = 0; i < this._actions.length; i++) {
 			this._actions[i].exit(this.proxy);
+		}
+	};
+
+	State.prototype.reset = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].reset();
 		}
 	};
 
@@ -171,30 +211,6 @@ define([
 		}
 		for (var i = 0; i < this._actions.length; i++) {
 			this._actions[i].cleanup(this.proxy);
-		}
-	};
-
-	State.prototype.enter = function () {
-		this.skipUpdate = true;
-
-		// on enter of self
-		var depth = this.depth;
-		for (var i = 0; i < this._actions.length; i++) {
-			this._actions[i].enter(this.proxy);
-			if (this.depth > depth) {
-				return;
-			}
-			this._actions[i].update(this.proxy);
-		}
-
-		// propagate on enter
-		var jump;
-		for (var i = 0; i < this._machines.length; i++) {
-			var machine = this._machines[i];
-			jump = machine.enter();
-			if (jump) {
-				return jump;
-			}
 		}
 	};
 

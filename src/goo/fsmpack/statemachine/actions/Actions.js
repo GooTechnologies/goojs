@@ -32,6 +32,7 @@ define([
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
 	'goo/fsmpack/statemachine/actions/TransitionAction',
+	'goo/fsmpack/statemachine/actions/NextFrameAction',
 	'goo/fsmpack/statemachine/actions/RandomTransitionAction',
 	'goo/fsmpack/statemachine/actions/EmitAction',
 	'goo/fsmpack/statemachine/actions/TransitionOnMessageAction',
