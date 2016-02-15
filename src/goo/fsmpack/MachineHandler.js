@@ -69,8 +69,6 @@ define([
 			machine.maxLoopDepth = config.maxLoopDepth;
 			machine.asyncMode = config.asyncMode;
 
-			console.log(machine.name, machine.maxLoopDepth, machine.asyncMode);
-
 			// Remove old states
 			for (var key in machine._states) {
 				if (!config.states[key]) {
