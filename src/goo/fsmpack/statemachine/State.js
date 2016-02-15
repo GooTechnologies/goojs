@@ -124,8 +124,8 @@ define([
 
 	State.prototype.enter = function () {
 		SystemBus.emit('goo.fsm.enter', {
-			entityId: this._fsm.entity.id,
-			machineName: this.parent.name,
+			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+			machineName: this.parent ? this.parent.name : '',
 			stateId: this.uuid
 		});
 
@@ -138,7 +138,9 @@ define([
 			if (this.depth > depth) {
 				return;
 			}
-			this._actions[i].update(this.proxy);
+			if (!this.parent.asyncMode) {
+				this._actions[i].update(this.proxy);
+			}
 		}
 
 		// propagate on enter
@@ -148,10 +150,16 @@ define([
 	};
 
 	State.prototype.update = function () {
-		if (this.skipUpdate) {
+		if (!this.parent.asyncMode && this.skipUpdate) {
 			this.skipUpdate = false;
 			return;
 		}
+
+		SystemBus.emit('goo.fsm.update', {
+			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+			machineName: this.parent ? this.parent.name : '',
+			stateId: this.uuid
+		});
 
 		// do on update of self
 		var depth = this.depth;
@@ -163,6 +171,11 @@ define([
 					return;
 				}
 			}
+
+			// propagate on update
+			for (var i = 0; i < this._machines.length; i++) {
+				this._machines[i].update();
+			}
 		} else {
 			// old async mode
 			for (var i = 0; i < this._actions.length; i++) {
@@ -173,15 +186,26 @@ define([
 					return tmp;
 				}
 			}
-		}
 
-		// propagate on update
-		for (var i = 0; i < this._machines.length; i++) {
-			this._machines[i].update();
+			var jump;
+			// propagate on update
+			for (var i = 0; i < this._machines.length; i++) {
+				var machine = this._machines[i];
+				jump = machine.update();
+				if (jump) {
+					return jump;
+				}
+			}
 		}
 	};
 
 	State.prototype.kill = function () {
+		SystemBus.emit('goo.fsm.exit', {
+			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+			machineName: this.parent ? this.parent.name : '',
+			stateId: this.uuid
+		});
+
 		for (var i = 0; i < this._machines.length; i++) {
 			this._machines[i].kill();
 		}

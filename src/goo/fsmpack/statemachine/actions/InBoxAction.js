@@ -81,7 +81,7 @@ define([
 		return inside;
 	}
 
-	InBoxAction.prototype.update = function (fsm) {
+	InBoxAction.prototype.checkInside = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 
@@ -91,6 +91,18 @@ define([
 			fsm.send(this.transitions.inside);
 		} else {
 			fsm.send(this.transitions.outside);
+		}
+	};
+
+	InBoxAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.checkInside(fsm);
+		}
+	};
+
+	InBoxAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.checkInside(fsm);
 		}
 	};
 
