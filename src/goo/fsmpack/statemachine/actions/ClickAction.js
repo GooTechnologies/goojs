@@ -31,37 +31,64 @@ define([
 
 	ClickAction.prototype.enter = function (fsm) {
 		var that = this;
-		this.downListener = function (evt) {
-			if (!evt.entity) {
+		this.downListener = function (event) {
+			var x, y;
+			var domTarget = that.goo.renderer.domElement;
+			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
+				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
+				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+			} else {
+				var rect = domTarget.getBoundingClientRect();
+				x = event.clientX - rect.left;
+				y = event.clientY - rect.top;
+			}
+			var pickingStore = that.goo.pickSync(x, y);
+			var pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
+
+			if (!pickedEntity) {
 				return;
 			}
 
-			evt.entity.traverseUp(function (entity) {
+			pickedEntity.traverseUp(function (entity) {
 				if (entity === that.ownerEntity) {
-					that.x = evt.x;
-					that.y = evt.y;
+					that.x = x;
+					that.y = y;
 					that.selected = true;
 					return false;
 				}
 			});
 		};
-		this.upListener = function (evt) {
+		this.upListener = function (event) {
 			if (!that.selected) {
 				return;
 			}
 
 			that.selected = false;
-			if (!evt.entity) {
+
+			var x, y;
+			var domTarget = that.goo.renderer.domElement;
+			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
+				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
+				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+			} else {
+				var rect = domTarget.getBoundingClientRect();
+				x = event.clientX - rect.left;
+				y = event.clientY - rect.top;
+			}
+			var pickingStore = that.goo.pickSync(x, y);
+			var pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
+
+			if (!pickedEntity) {
 				return;
 			}
 
-			var diffx = that.x - evt.x;
-			var diffy = that.y - evt.y;
+			var diffx = that.x - x;
+			var diffy = that.y - y;
 			if (Math.abs(diffx) > 10 || Math.abs(diffy) > 10) {
 				return;
 			}
 
-			evt.entity.traverseUp(function (entity) {
+			pickedEntity.traverseUp(function (entity) {
 				if (entity === that.ownerEntity) {
 					fsm.send(that.transitions.click);
 					return false;
@@ -71,20 +98,20 @@ define([
 		
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
-		this.goo.addEventListener('mousedown', this.downListener);
-		this.goo.addEventListener('touchstart', this.downListener);
-		this.goo.addEventListener('mouseup', this.upListener);
-		this.goo.addEventListener('touchend', this.upListener);
+
+		document.addEventListener('mousedown', this.downListener);
+		document.addEventListener('touchstart', this.downListener);
+		document.addEventListener('mouseup', this.upListener);
+		document.addEventListener('touchend', this.upListener);
+
 		this.selected = false;
 	};
 
 	ClickAction.prototype.exit = function () {
-		if (this.goo) {
-			this.goo.removeEventListener('mousedown', this.downListener);
-			this.goo.removeEventListener('touchstart', this.downListener);
-			this.goo.removeEventListener('mouseup', this.upListener);
-			this.goo.removeEventListener('touchend', this.upListener);
-		}
+		document.removeEventListener('mousedown', this.downListener);
+		document.removeEventListener('touchstart', this.downListener);
+		document.removeEventListener('mouseup', this.upListener);
+		document.removeEventListener('touchend', this.upListener);
 	};
 
 	return ClickAction;
