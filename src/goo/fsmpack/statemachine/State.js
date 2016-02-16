@@ -16,7 +16,6 @@ define([
 		this._transitions = {};
 		this.vars = {};
 		this.depth = 0;
-		this.skipUpdate = false;
 
 		this.proxy = {
 			getTpf: function () {
@@ -126,10 +125,9 @@ define([
 		SystemBus.emit('goo.fsm.enter', {
 			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
 			machineName: this.parent ? this.parent.name : '',
-			stateId: this.uuid
+			stateId: this.uuid,
+			stateName: this.name
 		});
-
-		this.skipUpdate = true;
 
 		// on enter of self
 		var depth = this.depth;
@@ -137,9 +135,6 @@ define([
 			this._actions[i].enter(this.proxy);
 			if (this.depth > depth) {
 				return;
-			}
-			if (!this.parent.asyncMode) {
-				this._actions[i].update(this.proxy);
 			}
 		}
 
@@ -150,15 +145,11 @@ define([
 	};
 
 	State.prototype.update = function () {
-		if (!this.parent.asyncMode && this.skipUpdate) {
-			this.skipUpdate = false;
-			return;
-		}
-
 		SystemBus.emit('goo.fsm.update', {
 			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
 			machineName: this.parent ? this.parent.name : '',
-			stateId: this.uuid
+			stateId: this.uuid,
+			stateName: this.name
 		});
 
 		// do on update of self
@@ -203,7 +194,8 @@ define([
 		SystemBus.emit('goo.fsm.exit', {
 			entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
 			machineName: this.parent ? this.parent.name : '',
-			stateId: this.uuid
+			stateId: this.uuid,
+			stateName: this.name
 		});
 
 		for (var i = 0; i < this._machines.length; i++) {
