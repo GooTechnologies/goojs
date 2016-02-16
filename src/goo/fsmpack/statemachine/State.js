@@ -100,6 +100,13 @@ define([
 				this.depth++;
 				if (this.depth > this.parent.maxLoopDepth) {
 					console.warn('exceeded maximum loop depth:', this.parent.maxLoopDepth);
+					SystemBus.emit('goo.fsm.error', {
+						entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+						machineName: this.parent ? this.parent.name : '',
+						stateId: this.uuid,
+						stateName: this.name,
+						error: 'exceeded maximum loop depth: ' + this.parent.maxLoopDepth
+					});
 					return;
 				}
 
