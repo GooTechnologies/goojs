@@ -155,7 +155,7 @@ define([
 		this._outNode.gain.cancelScheduledValues(AudioContext.getContext().currentTime);
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		return PromiseUtil.delay(time * 1000);
+		return PromiseUtil.delay(volume, time * 1000);
 	};
 
 	Sound.prototype.isPlaying = function () {
