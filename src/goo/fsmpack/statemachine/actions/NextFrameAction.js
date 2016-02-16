@@ -7,7 +7,6 @@ define([
 
 	function NextFrameAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-		this.firstFrame = true;
 	}
 
 	NextFrameAction.prototype = Object.create(Action.prototype);
@@ -28,15 +27,9 @@ define([
 	};
 
 	NextFrameAction.prototype.enter = function () {
-		this.firstFrame = true;
 	};
 
 	NextFrameAction.prototype.update = function (fsm) {
-		if (this.firstFrame) {
-			this.firstFrame = false;
-			return;
-		}
-		
 		fsm.send(this.transitions.transition);
 	};
 
