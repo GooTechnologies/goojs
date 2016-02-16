@@ -147,10 +147,12 @@ define([
 	};
 
 	Sound.prototype.fadeOut = function (time) {
+		this._outNode.gain.value = this._volume;
 		return this.fade(0, time);
 	};
 
 	Sound.prototype.fade = function (volume, time) {
+		this._outNode.gain.cancelScheduledValues(AudioContext.getContext().currentTime);
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
 		return PromiseUtil.delay(time * 1000);
