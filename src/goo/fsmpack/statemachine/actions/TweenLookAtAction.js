@@ -1,16 +1,22 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3',
+	'goo/math/Quaternion',
 	'goo/util/TWEEN'
 ], function (
 	Action,
 	Vector3,
+	Quaternion,
 	TWEEN
 ) {
 	'use strict';
 
 	function TweenLookAtAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.quatFrom = new Quaternion();
+		this.quatTo = new Quaternion();
+		this.quatFinal = new Quaternion();
 	}
 
 	TweenLookAtAction.prototype = Object.create(Action.prototype);
@@ -57,51 +63,41 @@ define([
 		}]
 	};
 
-	TweenLookAtAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenLookAtAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenLookAtAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
-
 		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent;
-		var transform = transformComponent.transform;
+		var transform = entity.transformComponent.transform;
 
-		var distance = Vector3.fromArray(this.to).distance(transform.translation);
-		var time = entity._world.time * 1000;
+		this.startTime = fsm.getTime();
 
-		var initialLookAt = new Vector3(0, 0, 1);
-		var orientation = transform.rotation;
-		initialLookAt.applyPost(orientation);
-		initialLookAt.scale(distance);
+		this.quatFrom.fromRotationMatrix(transform.rotation);
 
-		var fakeFrom = { x: initialLookAt.x, y: initialLookAt.y, z: initialLookAt.z };
-		var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
-		var tmpVec3 = new Vector3();
-
-		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-			tmpVec3.x = this.x;
-			tmpVec3.y = this.y;
-			tmpVec3.z = this.z;
-			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
-			transformComponent.setUpdated();
-		}).onComplete(function () {
-			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(time);
+		var dir = Vector3.fromArray(this.to).sub(transform.translation);
+		this.rot = transform.rotation.clone();
+		this.rot.lookAt(dir, Vector3.UNIT_Y);
+		this.quatTo.fromRotationMatrix(this.rot);
 	};
 
-	TweenLookAtAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+	TweenLookAtAction.prototype.update = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var transform = entity.transformComponent.transform;
+
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var l = this.easing(t);
+		Quaternion.slerp(this.quatFrom, this.quatTo, l, this.quatFinal);
+
+		this.quatFinal.toRotationMatrix(transform.rotation);
+		entity.transformComponent.setUpdated();
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
 		}
 	};
 
