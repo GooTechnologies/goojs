@@ -55,12 +55,12 @@ define([
 
 		var endPromise;
 		try {
-			sound.fadeIn(this.time / 1000);
+			endPromise = sound.fadeIn(this.time / 1000);
 
 			if (this.onSoundEnd) {
 				endPromise = sound.play();
 			} else {
-				endPromise = PromiseUtil.delay(null, this.time);
+				// endPromise = PromiseUtil.delay(null, this.time);
 			}
 		} catch (e) {
 			console.warn('Could not play sound: ' + e);
