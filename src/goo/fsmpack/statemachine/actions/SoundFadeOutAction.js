@@ -39,15 +39,15 @@ define([
 
 	SoundFadeOutAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity.hasComponent('SoundComponent')) {
-			var sound = entity.soundComponent.getSoundById(this.sound);
+		var soundComponent = entity.soundComponent;
+		if (soundComponent) {
+			var sound = soundComponent.getSoundById(this.sound);
 			if (sound) {
 				sound.fadeOut(this.time / 1000).then(function () {
 					fsm.send(this.transitions.complete);
 				}.bind(this));
 			}
 		}
-		// if howler's fade out method is not behaving nice then we can switch to tweening the volume 'manually'
 	};
 
 	return SoundFadeOutAction;

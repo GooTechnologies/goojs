@@ -55,7 +55,7 @@ define([
 
 		var endPromise;
 		try {
-			endPromise = sound.fadeIn(this.time / 1000);
+			endPromise = sound.fadeIn(this.time / 1000, false);
 
 			if (this.onSoundEnd) {
 				endPromise = sound.play();

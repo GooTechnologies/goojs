@@ -137,25 +137,38 @@ define([
 		}
 	};
 
-	Sound.prototype.fadeIn = function (time) {
-		this.stop();
-		var volume = this._volume;
-		this._outNode.gain.value = 0;
-		var p = this.fade(volume, time);
-		this.play();
+	Sound.prototype.fadeIn = function (time, restart) {
+		restart = restart === undefined ? true : restart;
+		var p;
+		if (restart) {
+			// Old behavior: restart the sound.
+			this.stop();
+			var volume = this._volume;
+			this._outNode.gain.value = 0;
+			p = this.fade(volume, time);
+			this.play();
+		} else {
+			// New behavior: just fade
+			//this._outNode.gain.value = this._volume;
+			p = this.fade(this._volume, time);
+		}
 		return p;
 	};
 
 	Sound.prototype.fadeOut = function (time) {
-		this._outNode.gain.value = this._volume;
 		return this.fade(0, time);
 	};
 
 	Sound.prototype.fade = function (volume, time) {
-		this._outNode.gain.cancelScheduledValues(AudioContext.getContext().currentTime);
-		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
-		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		return PromiseUtil.delay(volume, time * 1000);
+		var that = this;
+		var t = AudioContext.getContext().currentTime;
+		var gainNode = this._outNode.gain;
+		gainNode.cancelScheduledValues(t);
+		gainNode.setValueAtTime(gainNode.value, t);
+		gainNode.linearRampToValueAtTime(volume, t + time);
+		return PromiseUtil.delay(volume, time * 1000).then(function(){
+			gainNode.value = that._volume = volume;
+		});
 	};
 
 	Sound.prototype.isPlaying = function () {
