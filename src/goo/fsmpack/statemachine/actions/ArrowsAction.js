@@ -5,19 +5,15 @@ define([
 ) {
 	'use strict';
 
+	var keys = {
+		38: 'up',
+		37: 'left',
+		40: 'down',
+		39: 'right'
+	};
+
 	function ArrowsAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.updated = false;
-		this.keysPressed = {};
-
-		this.eventListener = function (event) {
-			var keyname = ArrowsAction._keys[event.which];
-			if (keyname !== undefined) {
-				this.updated = true;
-				this.keysPressed[keyname] = true;
-			}
-		}.bind(this);
 	}
 
 	ArrowsAction.prototype = Object.create(Action.prototype);
@@ -27,51 +23,41 @@ define([
 		this.targets = settings.transitions;
 	};
 
-	ArrowsAction._keys = {
-		38: 'up',
-		37: 'left',
-		40: 'down',
-		39: 'right'
+	ArrowsAction.external = {
+		key: 'Arrow Keys Listener',
+		name: 'Arrow Keys',
+		type: 'controls',
+		description: 'Transitions to other states when arrow keys are pressed (keydown)',
+		canTransition: true,
+		parameters: [],
+		transitions: [{
+			name: 'Key UP',
+			key: 'up',
+			description: "Key up pressed"
+		}, {
+			name: 'Key LEFT',
+			key: 'left',
+			description: "Key left pressed"
+		}, {
+			name: 'Key DOWN',
+			key: 'down',
+			description: "Key down pressed"
+		}, {
+			name: 'Key RIGHT',
+			key: 'right',
+			description: "Key right pressed"
+		}]
 	};
 
-	ArrowsAction.external = (function () {
-		var transitions = [];
-		for (var keycode in ArrowsAction._keys) {
-			var keyname = ArrowsAction._keys[keycode];
-			transitions.push({
-				name: 'Key ' + keyname.toUpperCase(),
-				key: keyname,
-				description: "Key '" + keyname + "' pressed"
-			});
-		}
-
-		return {
-			key: 'Arrow Keys Listener',
-			name: 'Arrow Keys',
-			type: 'controls',
-			description: 'Transitions to other states when arrow keys are pressed',
-			canTransition: true,
-			parameters: [],
-			transitions: transitions
-		};
-	})();
-
-	ArrowsAction.prototype.enter = function () {
-		document.addEventListener('keydown', this.eventListener);
-	};
-
-	ArrowsAction.prototype.update = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-
-			for (var keyname in this.keysPressed) {
-				var target = this.targets[keyname];
-				if (typeof target === 'string') {
-					fsm.send(target);
-				}
+	ArrowsAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			var keyname = keys[event.which];
+			var target = this.targets[keyname];
+			if (target) {
+				fsm.send(target);
 			}
-			this.keysPressed = {};
-		}
+		}.bind(this);
+		document.addEventListener('keydown', this.eventListener);
 	};
 
 	ArrowsAction.prototype.exit = function () {
