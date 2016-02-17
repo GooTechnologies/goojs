@@ -44,7 +44,7 @@ define([
 			name: 'Tolerance',
 			key: 'tolerance',
 			type: 'number',
-			'default': 0.1
+			'default': 0
 		}, {
 			name: 'Type',
 			key: 'distanceType',
