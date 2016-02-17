@@ -15,7 +15,7 @@ define([
 	MouseUpAction.external = {
 		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouseup event (or touchend) and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{

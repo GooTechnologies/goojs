@@ -15,7 +15,7 @@ define([
 	MouseDownAction.external = {
 		name: 'Mouse Down / Touch Start',
 		type: 'controls',
-		description: 'Listens for a mousedown event (or touchstart) and performs a transition',
+		description: 'Listens for a mousedown event (or touchstart) on the canvas and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{

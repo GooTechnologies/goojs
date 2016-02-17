@@ -17,7 +17,8 @@ define([
 	ClickAction.prototype.constructor = ClickAction;
 
 	ClickAction.external = {
-		name: 'Click/Tap',
+		key: 'Click/Tap',
+		name: 'Click/Tap on entity',
 		type: 'controls',
 		description: 'Listens for a click/tap event on the entity and performs a transition',
 		canTransition: true,

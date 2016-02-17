@@ -23,7 +23,8 @@ define([
 	};
 
 	HoverExitAction.external = {
-		name: 'Hover Exit',
+		key: 'Hover Exit',
+		name: 'Entity Hover Exit',
 		type: 'controls',
 		description: 'Listens for a hover exit event on the entity and performs a transition',
 		canTransition: true,

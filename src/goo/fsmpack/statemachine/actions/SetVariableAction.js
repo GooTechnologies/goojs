@@ -19,11 +19,11 @@ define([
 		type: 'variables',
 		description: '',
 		parameters: [{
-			name: 'Variable',
+			name: 'Variable name',
 			key: 'variable',
 			type: 'identifier'
 		}, {
-			name: 'Amount',
+			name: 'Value',
 			key: 'amount',
 			type: 'float'
 		}, {

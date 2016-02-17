@@ -18,9 +18,9 @@ define([
 
 	CollidesAction.external = {
 		key: 'Collides',
-		name: 'Collision',
+		name: 'Collision (Bounding volume intersection)',
 		type: 'collision',
-		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag entities via the entity panel or using the \'Tag\' action.',
+		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag your entities.',
 		canTransition: true,
 		parameters: [{
 			name: 'Tag',
