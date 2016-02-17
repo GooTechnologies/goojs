@@ -76,7 +76,7 @@ define([
 				forward.applyPost(orientation);
 
 				if (this.everyFrame) {
-					forward.scale(fsm.getTpf() * 10);
+					forward.scale(fsm.getTpf());
 					translation.add(forward);
 				} else {
 					translation.add(forward);
@@ -87,7 +87,7 @@ define([
 		} else {
 			if (this.relative) {
 				if (this.everyFrame) {
-					var tpf = fsm.getTpf() * 10;
+					var tpf = fsm.getTpf();
 					translation.addDirect(this.translation[0] * tpf, this.translation[1] * tpf, this.translation[2] * tpf);
 				} else {
 					translation.addDirect(this.translation[0], this.translation[1], this.translation[2]);
