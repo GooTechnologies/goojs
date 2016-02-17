@@ -46,7 +46,7 @@ define([
 
 	var impulseVector = new Vector3();
 	var applyPoint = new Vector3();
-	ApplyImpulseAction.prototype.update = function (fsm) {
+	ApplyImpulseAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (!entity.rigidBodyComponent) { return; }
 
