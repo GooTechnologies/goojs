@@ -20,12 +20,12 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'To',
+			name: 'On Transition',
 			description: 'State to transition to'
 		}]
 	};
 
-	TransitionAction.prototype._run = function (fsm) {
+	TransitionAction.prototype.enter = function (fsm) {
 		fsm.send(this.transitions.transition);
 	};
 

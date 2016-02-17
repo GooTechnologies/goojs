@@ -60,7 +60,7 @@ function (
 
 	/**
 	 * Get the closest parent (or self) entity that has a RigidBodyComponent. Returns undefined if none was found.
-	 * @return {Entity}
+	 * @returns {Entity}
 	 */
 	AbstractColliderComponent.prototype.getBodyEntity = function () {
 		var bodyEntity;

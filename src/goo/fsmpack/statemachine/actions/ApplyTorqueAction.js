@@ -17,7 +17,8 @@ define([
 	ApplyTorqueAction.prototype.constructor = ApplyTorqueAction;
 
 	ApplyTorqueAction.external = {
-		name: 'ApplyTorque',
+		key: 'ApplyTorque',
+		name: 'Apply torque on rigid body',
 		type: 'physics',
 		description: 'Apply a torque to the attached rigid body.',
 		canTransition: false,
@@ -40,7 +41,7 @@ define([
 	};
 
 	var torqueVector = new Vector3();
-	ApplyTorqueAction.prototype._setup = function (fsm) {
+	ApplyTorqueAction.prototype.enter = function (fsm) {
 		SystemBus.addListener('goo.physics.substep', this.substepListener = function () {
 			var entity = fsm.getOwnerEntity();
 			if (!entity || !entity.rigidBodyComponent) { return; }

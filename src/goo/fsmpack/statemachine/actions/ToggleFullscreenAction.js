@@ -22,7 +22,7 @@ define([
 		transitions: []
 	};
 
-	ToggleFullscreenAction.prototype._run = function (/*fsm*/) {
+	ToggleFullscreenAction.prototype.enter = function (/*fsm*/) {
 		GameUtils.toggleFullScreen();
 	};
 

@@ -1,17 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/TextureCreator',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ], function (
-	Action,
-	Material,
-	ShaderLib,
-	TextureCreator,
-	ParticleLib,
-	ParticleSystemUtils
+	Action
 ) {
 	'use strict';
 
@@ -71,13 +61,13 @@ define([
 		}
 	};
 
-	ScriptAction.prototype._setup = function () {
+	ScriptAction.prototype.enter = function () {
 		if (this.script && this.script.enter) {
 			this.script.enter(this.args, this.ctx);
 		}
 	};
 
-	ScriptAction.prototype._run = function () {
+	ScriptAction.prototype.update = function () {
 		if (this.script) {
 			this.script.update(this.args, this.ctx);
 		}

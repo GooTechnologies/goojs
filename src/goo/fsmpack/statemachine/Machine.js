@@ -10,6 +10,9 @@ define([], function (
 		this.initialState = 'entry';
 		this.currentState = null;
 		this.parent = null;
+
+		this.maxLoopDepth = 100;
+		this.asyncMode = false;
 	}
 
 	Machine.prototype.setRefs = function (parentFSM) {
@@ -18,19 +21,6 @@ define([], function (
 		for (var i = 0; i < keys.length; i++) {
 			var state = this._states[keys[i]];
 			state.setRefs(parentFSM);
-		}
-	};
-
-	Machine.prototype.update = function () {
-		if (this.currentState) {
-			var jump = this.currentState.update();
-
-			if (jump && this.contains(jump)) {
-				this.currentState.kill();
-				this.setState(this._states[jump]);
-			}
-
-			return jump;
 		}
 	};
 
@@ -59,12 +49,6 @@ define([], function (
 		}
 	};
 
-	Machine.prototype.kill = function () {
-		if (this.currentState) {
-			this.currentState.kill();
-		}
-	};
-
 	Machine.prototype.ready = function () {
 		var keys = Object.keys(this._states);
 		for (var i = 0; i < keys.length; i++) {
@@ -82,8 +66,42 @@ define([], function (
 	};
 
 	Machine.prototype.enter = function () {
+		var keys = Object.keys(this._states);
+		for (var i = 0; i < keys.length; i++) {
+			var state = this._states[keys[i]];
+			state.resetDepth();
+		}
 		if (this.currentState) {
 			this.currentState.enter();
+		}
+	};
+
+	Machine.prototype.update = function () {
+		var keys = Object.keys(this._states);
+		for (var i = 0; i < keys.length; i++) {
+			var state = this._states[keys[i]];
+			state.resetDepth();
+		}
+		if (this.currentState) {
+			if (!this.asyncMode) {
+				this.currentState.update();
+			} else {
+				// old async mode
+				var jump = this.currentState.update();
+
+				if (jump && this.contains(jump)) {
+					this.currentState.kill();
+					this.setState(this._states[jump]);
+				}
+
+				return jump;
+			}
+		}
+	};
+
+	Machine.prototype.kill = function () {
+		if (this.currentState) {
+			this.currentState.kill();
 		}
 	};
 

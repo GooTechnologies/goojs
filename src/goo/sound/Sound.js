@@ -35,13 +35,26 @@ define([
 		this._outNode = AudioContext.getContext().createGain();
 		this.connectTo();
 
-		// Playback memory
+ 			// Playback memory
 		this._playStart = 0;
 		this._pausePos = 0;
 		//this._endTimer = null;
 		this._endPromise = null;
 
 		this._paused = false;
+
+		/**
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.spatialize = true;
+
+		/**
+		 * If true, it will start playing when the SoundSystem runs play().
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.autoPlay = false;
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -134,13 +147,15 @@ define([
 	};
 
 	Sound.prototype.fadeOut = function (time) {
+		this._outNode.gain.value = this._volume;
 		return this.fade(0, time);
 	};
 
 	Sound.prototype.fade = function (volume, time) {
+		this._outNode.gain.cancelScheduledValues(AudioContext.getContext().currentTime);
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
-		return PromiseUtil.delay(time * 1000);
+		return PromiseUtil.delay(volume, time * 1000);
 	};
 
 	Sound.prototype.isPlaying = function () {
@@ -203,6 +218,12 @@ define([
 			if (this._currentSource) {
 				this._currentSource.playbackRate.value = config.timeScale;
 			}
+		}
+		if (config.spatialize !== undefined) {
+			this.spatialize = config.spatialize;
+		}
+		if (config.autoPlay !== undefined) {
+			this.autoPlay = config.autoPlay;
 		}
 		if (this._buffer) {
 			this._clampInterval();

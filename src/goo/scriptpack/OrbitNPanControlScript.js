@@ -15,6 +15,7 @@ define([
 		var orbitScript = Scripts.create(OrbitCamControlScript);
 		var panScript = Scripts.create(PanCamControlScript);
 		function setup(parameters, environment, goo) {
+			parameters.touchMode = 'Double'; // should alaways be 2 touch mode for panning
 			orbitScript.setup(parameters, environment, goo);
 			panScript.setup(parameters, environment, goo);
 		}

@@ -75,17 +75,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenMoveAction.prototype._setup = function (/*fsm*/) {
+	TweenMoveAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	TweenMoveAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	TweenMoveAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -149,6 +141,12 @@ define([
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 			}
+		}
+	};
+
+	TweenMoveAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
 		}
 	};
 

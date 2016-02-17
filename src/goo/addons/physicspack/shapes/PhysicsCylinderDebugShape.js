@@ -30,7 +30,7 @@ function (
 	};
 
 	/**
-	 * @return {PhysicsCylinderDebugShape} self for chaining
+	 * @returns {PhysicsCylinderDebugShape} self for chaining
 	 */
 	PhysicsCylinderDebugShape.prototype.rebuild = function () {
 		var verts = [];

@@ -1,3 +1,22 @@
+v0.15.30 --- 2016-01-15
+
+### Fixes
+
+  * Added reflectivity type multiply, for materials
+
+v0.15.29 --- 2016-01-15
+
+### Fixes
+
+  * SoundSystem now executes scheduledUpdates in the order they came in.
+
+v0.15.28 --- 2016-01-11
+
+### Fixes
+
+  * Fix problem with script dependencies that happens if a script has no body
+  * Minor code optimization in PhysicsSystem.js
+
 v0.15.27 --- 2015-12-17
 
 ### Fixes

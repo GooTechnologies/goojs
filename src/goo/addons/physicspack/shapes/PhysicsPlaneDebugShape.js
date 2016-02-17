@@ -27,7 +27,7 @@ function (
 	};
 
 	/**
-	 * @return {PhysicsPlaneDebugShape} self for chaining
+	 * @returns {PhysicsPlaneDebugShape} self for chaining
 	 */
 	PhysicsPlaneDebugShape.prototype.rebuild = function () {
 		var verts = [];

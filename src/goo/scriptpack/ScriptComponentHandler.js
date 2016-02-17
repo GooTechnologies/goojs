@@ -99,7 +99,7 @@ define([
 	 *        "scriptRef" property which refers to the script which is to be
 	 *        loaded.
 	 *
-	 * @return {Promise}
+	 * @returns {Promise}
 	 *         A promise which is resolved with the referenced script.
 	 *
 	 * @private

@@ -8,6 +8,9 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
 	'goo/fsmpack/statemachine/actions/PickAndExitAction',
+	'goo/fsmpack/statemachine/actions/ClickAction',
+	'goo/fsmpack/statemachine/actions/HoverEnterAction',
+	'goo/fsmpack/statemachine/actions/HoverExitAction',
 	'goo/fsmpack/statemachine/actions/WasdAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',
@@ -29,6 +32,7 @@ define([
 	'goo/fsmpack/statemachine/actions/WaitAction',
 
 	'goo/fsmpack/statemachine/actions/TransitionAction',
+	'goo/fsmpack/statemachine/actions/NextFrameAction',
 	'goo/fsmpack/statemachine/actions/RandomTransitionAction',
 	'goo/fsmpack/statemachine/actions/EmitAction',
 	'goo/fsmpack/statemachine/actions/TransitionOnMessageAction',
@@ -40,6 +44,7 @@ define([
 
 	'goo/fsmpack/statemachine/actions/AddLightAction',
 	'goo/fsmpack/statemachine/actions/RemoveLightAction',
+	'goo/fsmpack/statemachine/actions/SetLightPropertiesAction',
 	'goo/fsmpack/statemachine/actions/TweenLightColorAction',
 
 	'goo/fsmpack/statemachine/actions/SetClearColorAction',
@@ -57,9 +62,11 @@ define([
 	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
 	'goo/fsmpack/statemachine/actions/TogglePostFxAction',
-	// 'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
-	'goo/fsmpack/statemachine/actions/ScriptAction',
+	'goo/fsmpack/statemachine/actions/ToggleFullscreenAction',
 
+	'goo/fsmpack/statemachine/actions/PlaySoundAction',
+	'goo/fsmpack/statemachine/actions/PauseSoundAction',
+	'goo/fsmpack/statemachine/actions/StopSoundAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
 	'goo/fsmpack/statemachine/actions/SoundFadeOutAction',
 
@@ -81,10 +88,32 @@ define([
 	'goo/fsmpack/statemachine/actions/ApplyForceAction',
 	'goo/fsmpack/statemachine/actions/ApplyTorqueAction',
 
+	'goo/fsmpack/statemachine/actions/SetRigidBodyPositionAction',
+	'goo/fsmpack/statemachine/actions/SetRigidBodyVelocityAction',
+	'goo/fsmpack/statemachine/actions/SetRigidBodyAngularVelocityAction',
+
 	'goo/fsmpack/statemachine/actions/CompareCounterAction',
 	'goo/fsmpack/statemachine/actions/CompareCountersAction',
 	'goo/fsmpack/statemachine/actions/SetCounterAction',
-	'goo/fsmpack/statemachine/actions/IncrementCounterAction'
+	'goo/fsmpack/statemachine/actions/IncrementCounterAction',
+
+	'goo/fsmpack/statemachine/actions/MuteAction',
+	'goo/fsmpack/statemachine/actions/UnmuteAction',
+	'goo/fsmpack/statemachine/actions/ToggleMuteAction',
+
+	'goo/fsmpack/statemachine/actions/StartTimelineAction',
+	'goo/fsmpack/statemachine/actions/PauseTimelineAction',
+	'goo/fsmpack/statemachine/actions/StopTimelineAction',
+	'goo/fsmpack/statemachine/actions/SetTimelineTimeAction',
+
+	// 'goo/fsmpack/statemachine/actions/SetVariableAction',
+	// 'goo/fsmpack/statemachine/actions/AddVariableAction',
+	// 'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
+	// 'goo/fsmpack/statemachine/actions/CopyVariableAction',
+
+	'goo/fsmpack/statemachine/actions/ScriptAction',
+
+	'goo/fsmpack/statemachine/actions/SetHtmlTextAction'
 ], function (
 	_ // placeholder // what for?
 ) {

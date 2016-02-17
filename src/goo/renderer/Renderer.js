@@ -116,12 +116,20 @@ define([
 		} else {
 			this.shaderPrecision = 'lowp';
 		}
-		//console.log('Shader precision: ' + this.shaderPrecision);
 
+		/**
+		 * Used to scale down/up the pixels in the canvas. If you set downScale=2, you will get half the number of pixels in X and Y. Default is 1.
+		 * @type {number}
+		 */
 		this.downScale = parameters.downScale || 1;
-
+		
 		//! AT: why are there 2 clear colors?
 		// Default setup
+		/**
+		 * Current clear color of the scene. Use .setClearColor() to set it.
+		 * @type {Vector4}
+		 * @readonly
+		 */
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
 		this._clearColor = new Vector4();
@@ -1188,12 +1196,19 @@ define([
 	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
+
 		var shader = material.shader;
 		var defineKey = shader.getDefineKey(this._definesIndices);
 		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
 		var cachedShader = shaderCache.get(defineKey);
+	
+		// Check if the shader cache is invalid
+		if (cachedShader && cachedShader.defineKey !== defineKey) {
+			shaderCache.delete(defineKey);
+			cachedShader = undefined;
+		}
 
 		if (cachedShader) {
 			if (cachedShader !== material.shader) {
@@ -1600,6 +1615,7 @@ define([
 			texrecord.minFilter = minFilter;
 		}
 
+		// repeating NPOT textures are not supported in webgl https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
 			var glwrapS = RendererUtils.getGLWrap(context, wrapS);
@@ -1760,7 +1776,7 @@ define([
 				context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
 					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+				if (!image.isCompressed && (texture.generateMipmaps || texture.wrapS !== 'EdgeClamp' || texture.wrapT !== 'EdgeClamp' || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}

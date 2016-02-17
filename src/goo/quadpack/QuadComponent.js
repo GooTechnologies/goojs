@@ -101,7 +101,7 @@ define([
 
 		// Set the material as current
 		var material = this.material;
-		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		material.blendState.blending = 'TransparencyBlending';	// Needed if the quad has transparency
 		material.renderQueue = 2000;
 		material.uniforms.discardThreshold = 0.1;
 		this.setMaterial(material);

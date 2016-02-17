@@ -84,8 +84,10 @@ define([
 					env.mouseState.y = touches[0].pageY - rect.top;
 					onMouseEvent(params, env, 'touchstart');
 				},
-				touchend: function (/*event*/) {
+				touchend: function (event) {
 					if (!params.whenUsed) { return; }
+					event.preventDefault();
+					event.stopPropagation();
 					env.mouseState.down = false;
 					onMouseEvent(params, env, 'touchend');
 				}
@@ -142,7 +144,7 @@ define([
 				if (type === 'mousedown' || type === 'touchstart') {
 					env.mouseState.downOnEntity = true;
 				}
-				if (params.linkUrl && (type === 'click' || type === 'touchstart')) {
+				if (params.linkUrl && (type === 'click' || type === 'touchend')) {
 					window.open(params.linkUrl, params.linkTarget);
 				}
 			}

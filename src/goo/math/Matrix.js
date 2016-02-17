@@ -110,12 +110,11 @@ define([
 	/**
 	 * Performs a component-wise addition.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
 	 */
-
 	Matrix.add = ObjectUtils.warnOnce(
 		'Matrix.add is deprecated. Use Matrix3.prototype.add, Matrix2.prototype.add or Matrix4.prototype.add instead.',
 		function (lhs, rhs, target) {
@@ -142,7 +141,7 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
@@ -158,7 +157,7 @@ define([
 	/**
 	 * Performs a component-wise subtraction.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
@@ -190,7 +189,7 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
@@ -206,12 +205,11 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
 	 */
-
 	Matrix.mul = ObjectUtils.warnOnce(
 		'Matrix.mul is deprecated. Use Matrix3.prototype.mul, Matrix2.prototype.mul or Matrix4.prototype.mul instead.',
 		function (lhs, rhs, target) {
@@ -238,11 +236,10 @@ define([
 
 	/**
 	 * Performs a component-wise multiplication.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.mul = ObjectUtils.warnOnce(
 		'Matrix.prototype.mul is deprecated. Use Matrix3.prototype.mul, Matrix2.prototype.mul or Matrix4.prototype.mul instead.',
 		function (rhs) {
@@ -255,12 +252,11 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
 	 */
-
 	Matrix.div = ObjectUtils.warnOnce(
 		'Matrix.div is deprecated. Use Matrix3.prototype.div, Matrix2.prototype.div or Matrix4.prototype.div instead.',
 		function (lhs, rhs, target) {
@@ -289,11 +285,10 @@ define([
 
 	/**
 	 * Performs a component-wise division.
-	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
+	 * @param {(Matrix|number)} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.div = ObjectUtils.warnOnce(
 		'Matrix.prototype.div is deprecated. Use Matrix3.prototype.div, Matrix2.prototype.div or Matrix4.prototype.div instead.',
 		function (rhs) {
@@ -350,7 +345,6 @@ define([
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.combine = ObjectUtils.warnOnce(
 		'Matrix.prototype.combine is deprecated. Use Matrix2/3/4.prototype.mul or Matrix2/3/4.prototype.mul2 instead.',
 		function (rhs) {
@@ -367,7 +361,6 @@ define([
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
 	 */
-
 	Matrix.transpose = ObjectUtils.warnOnce(
 		'Matrix.transpose is deprecated. Use Matrix2/3/4.prototype.transpose instead.',
 		function (source, target) {
@@ -399,7 +392,6 @@ define([
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.transpose = ObjectUtils.warnOnce(
 		'Matrix.prototype.transpose is deprecated. Use Matrix2/3/4.prototype.transpose instead.',
 		function () {
@@ -416,7 +408,6 @@ define([
 	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 * @deprecated
 	 */
-
 	Matrix.copy = ObjectUtils.warnOnce(
 		'Matrix.copy is deprecated. Use Matrix2/3/4.prototype.copy instead.',
 		function (source, target) {
@@ -439,7 +430,6 @@ define([
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.copy = ObjectUtils.warnOnce(
 		'Matrix.prototype.copy is deprecated. Use Matrix2/3/4.prototype.copy instead.',
 		function (source) {
@@ -456,7 +446,6 @@ define([
 	 * @returns {boolean} True if equal.
 	 * @deprecated
 	 */
-
 	Matrix.equals = ObjectUtils.warnOnce(
 		'Matrix.equals is deprecated. Use Matrix2/3/4.prototype.equals instead.',
 		function (lhs, rhs) {
@@ -484,7 +473,6 @@ define([
 	 * @returns {boolean} True if equal.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.equals = ObjectUtils.warnOnce(
 		'Matrix.prototype.equals is deprecated. Use Matrix2/3/4.prototype.equals instead.',
 		function (rhs) {
@@ -499,7 +487,6 @@ define([
 	 * @returns {boolean} True if orthogonal.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.isOrthogonal = ObjectUtils.warnOnce(
 		'Matrix.prototype.isOrthogonal is deprecated. Use Matrix2/3/4.prototype.isOrthogonal instead.',
 		function () {
@@ -530,7 +517,6 @@ define([
 	 * @returns {boolean} True if normal.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.isNormal = ObjectUtils.warnOnce(
 		'Matrix.prototype.isNormal is deprecated. Use Matrix2/3/4.prototype.isNormal instead.',
 		function () {
@@ -558,7 +544,6 @@ define([
 	 * @returns {boolean} True if orthonormal.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.isOrthonormal = ObjectUtils.warnOnce(
 		'Matrix.prototype.isOrthonormal is deprecated. Use Matrix2/3/4.prototype.isOrthonormal instead.',
 		function () {
@@ -573,7 +558,6 @@ define([
 	 * @returns {Matrix} Clone of self.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.clone = ObjectUtils.warnOnce(
 		'Matrix.prorotype.clone is deprecated. Use Matrix2/3/4.prototype.clone instead.',
 		function () {
@@ -585,11 +569,10 @@ define([
 
 	/**
 	 * Sets the components of the matrix.
-	 * @param {Matrix|number[]|...number} arguments Component values.
+	 * @param {(Matrix|number[]|...number)} arguments Component values.
 	 * @returns {Matrix} Self for chaining.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.set = ObjectUtils.warnOnce(
 		'Matrix.prototype.set is deprecated. Use Matrix2/3/4.prototype.set instead.',
 		function () {
@@ -616,7 +599,6 @@ define([
 	 * @returns {string} String of component values.
 	 * @deprecated
 	 */
-
 	Matrix.prototype.toString = ObjectUtils.warnOnce(
 		'Matrix.prorotype.toString is deprecated.',
 		function () {

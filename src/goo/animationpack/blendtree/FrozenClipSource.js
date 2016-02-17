@@ -1,6 +1,8 @@
-define(
-
-function () {
+define([
+	'goo/animationpack/blendtree/Source'
+], function (
+	Source
+) {
 	'use strict';
 
 	/**
@@ -8,8 +10,10 @@ function () {
 	 *        for purposes of transitioning between two unrelated animations.
 	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} source Our sub source.
 	 * @param {number} frozenTime The time we are frozen at.
+	 * @extends Source
 	 */
 	function FrozenClipSource (source, frozenTime) {
+		Source.call(this);
 		this._source = source;
 		this._time = frozenTime;
 	}
@@ -35,18 +39,6 @@ function () {
 		this._source.setTime(this._time);
 		return true;
 	};
-
-	/**
-	 * A FrozenTreeSource is always active
-	 */
-	FrozenClipSource.prototype.isActive = function () {
-		return true;
-	};
-
-	/**
-	* Set time scale
-	*/
-	FrozenClipSource.prototype.setTimeScale = function () {};
 
 	/**
 	 * @returns {FrozenClipSource}

@@ -64,17 +64,9 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	ShakeAction.prototype._setup = function () {
+	ShakeAction.prototype.enter = function (fsm) {
 		this.tween = new TWEEN.Tween();
-	};
 
-	ShakeAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
-
-	ShakeAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -112,6 +104,12 @@ define([
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
+	};
+
+	ShakeAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
 	};
 
 	return ShakeAction;

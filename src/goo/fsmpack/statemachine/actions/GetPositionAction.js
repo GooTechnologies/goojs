@@ -10,6 +10,7 @@ define([
 	}
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
+	GetPositionAction.prototype.constructor = GetPositionAction;
 
 	GetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
@@ -42,7 +43,7 @@ define([
 		transitions: []
 	};
 
-	GetPositionAction.prototype._run = function (fsm) {
+	GetPositionAction.prototype.update = function (fsm) {
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined

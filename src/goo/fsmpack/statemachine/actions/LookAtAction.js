@@ -34,12 +34,24 @@ define([
 		transitions: []
 	};
 
-	LookAtAction.prototype._run = function (fsm) {
+	LookAtAction.prototype.doLookAt = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 
 		transformComponent.transform.lookAt(new Vector3(this.lookAt), Vector3.UNIT_Y);
 		transformComponent.setUpdated();
+	};
+
+	LookAtAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.doLookAt(fsm);
+		}
+	};
+
+	LookAtAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.doLookAt(fsm);
+		}
 	};
 
 	return LookAtAction;

@@ -7,8 +7,12 @@ define([
 
 	function PickAndExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
+				
 		this.eventListener = function (event) {
+			// To prevent touch + click event firing multiple times on touch devices
+			event.stopPropagation();
+			event.preventDefault();
+
 			var htmlCmp = this.ownerEntity.getComponent('HtmlComponent');
 			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(event.target));
 			if (clickedHtmlCmp) {
@@ -21,14 +25,17 @@ define([
 			}
 
 			var x, y;
-			if (event.touches) {
+			if (event.touches && event.touches.length) {
 				x = event.touches[0].clientX;
 				y = event.touches[0].clientY;
+			} else if(event.changedTouches && event.changedTouches.length){
+				x = event.changedTouches[0].pageX;
+				y = event.changedTouches[0].pageY;
 			} else {
 				x = event.offsetX;
 				y = event.offsetY;
 			}
-
+			
 			var pickResult = this.goo.pickSync(x, y);
 			if (pickResult.id === -1) {
 				return;
@@ -69,7 +76,7 @@ define([
 		transitions: []
 	};
 
-	PickAndExitAction.prototype._setup = function (fsm) {
+	PickAndExitAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.canvasElement = this.goo.renderer.domElement;
@@ -79,10 +86,10 @@ define([
 		//
 		this.domElement = this.canvasElement.parentNode;
 		this.domElement.addEventListener('click', this.eventListener, false);
-		this.domElement.addEventListener('touchstart', this.eventListener, false);
+		this.domElement.addEventListener('touchend', this.eventListener, false); // window.open does not work in touchstart for iOS9
 	};
 
-	PickAndExitAction.prototype._run = function () {
+	PickAndExitAction.prototype.update = function () {
 		// Don't really need it.
 	};
 
@@ -97,7 +104,7 @@ define([
 	PickAndExitAction.prototype.exit = function () {
 		if (this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
-			this.domElement.removeEventListener('touchstart', this.eventListener);
+			this.domElement.removeEventListener('touchend', this.eventListener);
 		}
 	};
 

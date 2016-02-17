@@ -20,6 +20,7 @@ define([
 
 			// set up machine 1
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			stateMachineComponent.addMachine(machine1);
 
 			var state1 = new State('entry');
@@ -35,6 +36,7 @@ define([
 
 			// set up machine 2
 			var machine2 = new Machine();
+			machine2.asyncMode = true;
 			stateMachineComponent.addMachine(machine2);
 
 			var state2 = new State('entry');
@@ -61,6 +63,7 @@ define([
 
 			// set up machine 1
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 
 			var state1 = new State('first');
 			state1.addAction({
@@ -104,6 +107,7 @@ define([
 			});
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 
 
@@ -116,6 +120,7 @@ define([
 				update: function () { gotData2 += 234; }
 			});
 			var machine2 = new Machine();
+			machine2.asyncMode = true;
 			machine2.addState(state2);
 
 			stateMachineComponent.addMachine(machine1);
@@ -137,6 +142,7 @@ define([
 
 			// set up machine 1
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 
 			var state1 = new State('entry');
 			machine1.addState(state1);
@@ -205,11 +211,13 @@ define([
 			});
 
 			var machine11 = new Machine();
+			machine11.asyncMode = true;
 			machine11.addState(state21);
 
 			state2.addMachine(machine11);
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 			machine1.addState(state2);
 
@@ -253,7 +261,6 @@ define([
 				update: function () {}
 			});
 
-
 			var state21 = new State('third');
 			state21.addAction({
 				ready: function () {},
@@ -264,11 +271,13 @@ define([
 			state21.setTransition('toEntry', 'entry');
 
 			var machine11 = new Machine();
+			machine11.asyncMode = true;
 			machine11.addState(state21);
 
 			state2.addMachine(machine11);
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 			machine1.addState(state2);
 
@@ -324,6 +333,7 @@ define([
 			});
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 			machine1.addState(state2);
 
@@ -385,14 +395,17 @@ define([
 			});
 
 			var machine111 = new Machine();
+			machine111.asyncMode = true;
 			machine111.addState(state211);
 			state21.addMachine(machine111);
 
 			var machine11 = new Machine();
+			machine11.asyncMode = true;
 			machine11.addState(state21);
 			state2.addMachine(machine11);
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 			machine1.addState(state2);
 
@@ -456,14 +469,17 @@ define([
 			state211.setTransition('toEntry', 'entry');
 
 			var machine111 = new Machine();
+			machine111.asyncMode = true;
 			machine111.addState(state211);
 			state21.addMachine(machine111);
 
 			var machine11 = new Machine();
+			machine11.asyncMode = true;
 			machine11.addState(state21);
 			state2.addMachine(machine11);
 
 			var machine1 = new Machine();
+			machine1.asyncMode = true;
 			machine1.addState(state1);
 			machine1.addState(state2);
 

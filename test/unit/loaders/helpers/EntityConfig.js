@@ -71,6 +71,66 @@ define([
 					poseRef: this.skeleton().id
 				};
 			},
+			particleSystem: function () {
+				function particleCurve() {
+					return [{
+						type: 'linear',
+						offset: 0,
+						options: {
+							m: 0,
+							k: 1
+						}
+					}];
+				}
+				return {
+					seed: -1,
+					shapeType: 'cone',
+					sphereRadius: 1,
+					sphereEmitFromShell: false,
+					randomDirection: false,
+					coneEmitFrom: 'base',
+					boxExtents: [1, 1, 1],
+					coneRadius: 1,
+					coneAngle: 10,
+					coneLength: 1,
+					startColorR: particleCurve(),
+					startColorG: particleCurve(),
+					startColorB: particleCurve(),
+					startColorA: particleCurve(),
+					colorR: particleCurve(),
+					colorG: particleCurve(),
+					colorB: particleCurve(),
+					colorA: particleCurve(),
+					duration: 5,
+					localSpace: true,
+					startSpeed: particleCurve(),
+					localVelocityX: particleCurve(),
+					localVelocityY: particleCurve(),
+					localVelocityZ: particleCurve(),
+					worldVelocityX: particleCurve(),
+					worldVelocityY: particleCurve(),
+					worldVelocityZ: particleCurve(),
+					maxParticles: 100,
+					emissionRate: particleCurve(),
+					startLifeTime: 5,
+					renderQueue: 3010,
+					alphakill: 0.5,
+					loop: false,
+					blending: 'TransparencyBlending',
+					depthWrite: true,
+					depthTest: true,
+					textureTilesX: 1,
+					textureTilesY: 1,
+					textureAnimationSpeed: 1,
+					startSize: particleCurve(),
+					sortMode: 'none',
+					billboard: true,
+					sizeCurve: particleCurve(),
+					startAngle: particleCurve(),
+					rotationSpeed: particleCurve(),
+					textureRef: this.texture().id
+				};
+			},
 			meshRenderer: function () {
 				var config = {
 					cullMode: 'Dynamic',

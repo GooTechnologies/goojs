@@ -9,20 +9,6 @@ define([
 
 	function KeyPressedAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.keyIsDown = false;
-		this.eventListenerDown = function (event) {
-			if (event.which === +this.key) {
-				this.keyIsDown = true;
-			}
-		}.bind(this);
-		this.eventListenerUp = function (event) {
-			if (event.which === +this.key) {
-				document.removeEventListener('keydown', this.eventListenerUp);
-				this.keyIsDown = false;
-			}
-		}.bind(this);
 	}
 
 	KeyPressedAction.prototype = Object.create(Action.prototype);
@@ -52,15 +38,19 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyPressedAction.prototype._setup = function () {
+	KeyPressedAction.prototype.enter = function (fsm) {
+		this.eventListenerDown = function (event) {
+			if (event.which === +this.key) {
+				fsm.send(this.transitions.keydown);
+			}
+		}.bind(this);
+		this.eventListenerUp = function (event) {
+			if (event.which === +this.key) {
+				document.removeEventListener('keyup', this.eventListenerUp);
+			}
+		}.bind(this);
 		document.addEventListener('keydown', this.eventListenerDown);
 		document.addEventListener('keyup', this.eventListenerUp);
-	};
-
-	KeyPressedAction.prototype._run = function (fsm) {
-		if (this.keyIsDown) {
-			fsm.send(this.transitions.keydown);
-		}
 	};
 
 	KeyPressedAction.prototype.exit = function () {

@@ -36,8 +36,10 @@ define([
 	 * @returns {TextComponent} Self for chaining
 	 */
 	TextComponent.prototype.setText = function (text) {
-		this.text = text;
-		this.dirty = true;
+		if (this.text !== text) {
+			this.text = text;
+			this.dirty = true;
+		}
 		return this;
 	};
 

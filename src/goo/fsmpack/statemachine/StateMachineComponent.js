@@ -73,8 +73,8 @@ define([
 	};
 
 	StateMachineComponent.prototype.addMachine = function (machine) {
-		machine._fsm = this;
 		machine.parent = this;
+		machine.setRefs(this);
 		this._machines.push(machine);
 	};
 

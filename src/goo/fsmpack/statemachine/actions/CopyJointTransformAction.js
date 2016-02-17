@@ -29,7 +29,7 @@ function (
 		transitions: []
 	};
 
-	CopyJointTransformAction.prototype._run = function (fsm) {
+	CopyJointTransformAction.prototype.update = function (fsm) {
 		if (this.jointIndex === null) { return; }
 
 		var entity = fsm.getOwnerEntity();

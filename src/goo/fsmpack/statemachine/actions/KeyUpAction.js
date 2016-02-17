@@ -9,14 +9,6 @@ define([
 
 	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (event) {
-			if (!this.key || event.which === +this.key) {
-				this.updated = true;
-			}
-		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
@@ -47,15 +39,13 @@ define([
 		this.transitions = { keyup: settings.transitions.keyup };
 	};
 
-	KeyUpAction.prototype._setup = function () {
+	KeyUpAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			if (!this.key || event.which === +this.key) {
+				fsm.send(this.transitions.keyup);
+			}
+		}.bind(this);
 		document.addEventListener('keyup', this.eventListener);
-	};
-
-	KeyUpAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.keyup);
-		}
 	};
 
 	KeyUpAction.prototype.exit = function () {

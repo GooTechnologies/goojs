@@ -126,7 +126,7 @@ define([
 	/**
 	 * Create a CANNON.Shape given a Collider. A BoxCollider yields a CANNON.Box and so on.
 	 * @param {Collider} collider
-	 * @return {CANNON.Shape}
+	 * @returns {CANNON.Shape}
 	 * @hidden
 	 */
 	ColliderComponent.getCannonShape = function (collider) {

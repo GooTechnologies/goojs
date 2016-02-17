@@ -30,7 +30,7 @@ function (
 	};
 
 	/**
-	 * @return {PhysicsSphereDebugShape} self for chaining
+	 * @returns {PhysicsSphereDebugShape} self for chaining
 	 */
 	PhysicsSphereDebugShape.prototype.rebuild = function () {
 		var verts = [];

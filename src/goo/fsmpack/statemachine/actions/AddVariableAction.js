@@ -12,14 +12,12 @@ define([
 	}
 
 	AddVariableAction.prototype = Object.create(Action.prototype);
-
-	AddVariableAction.prototype.configure = function (settings) {
-		this.everyFrame = !!settings.everyFrame;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
-	};
+	AddVariableAction.prototype.constructor = AddVariableAction;
 
 	AddVariableAction.external = {
+		name: 'Add Variable',
+		type: 'variables',
+		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
@@ -38,7 +36,7 @@ define([
 		transitions: []
 	};
 
-	AddVariableAction.prototype._run = function (fsm) {
+	AddVariableAction.prototype.update = function (fsm) {
 		fsm.applyOnVariable(this.variable, function (v) {
 			return v + FsmUtils.getValue(this.amount, fsm);
 		}.bind(this));

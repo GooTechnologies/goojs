@@ -44,6 +44,7 @@ define([
 		this._direction = new Vector3(0, 0, -1);
 
 		// These need an onFrustumChange() after being modified
+		this.size = 0.5; // hack
 		this._frustumNear = this.near = 1.0;
 		this._frustumFar = this.far = 2.0;
 		this._frustumLeft = this.left = -0.5;
@@ -588,6 +589,7 @@ define([
 			zDepth = ((zDepth - this.near) / (this.far - this.near));
 		} else {
 			// http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+			zDepth = MathUtils.clamp(zDepth, this.near, this.far);
 			zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
 		}
 		return this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, zDepth, store);

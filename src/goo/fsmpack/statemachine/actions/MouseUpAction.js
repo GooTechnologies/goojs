@@ -7,29 +7,15 @@ define([
 
 	function MouseUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.button = null;
-
-		this.mouseEventListener = function (event) {
-			this.button = event.button;
-			this.updated = true;
-		}.bind(this);
-
-		this.touchEventListener = function (event) {
-			this.button = 'touch';
-			this.updated = true;
-		}.bind(this);
 	}
 
 	MouseUpAction.prototype = Object.create(Action.prototype);
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
-		name: 'Mouse Up',
+		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouse button release and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) and performs a transition',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
@@ -51,24 +37,29 @@ define([
 		}]
 	};
 
-	MouseUpAction.prototype._setup = function () {
-		document.addEventListener('mouseup', this.mouseEventListener);
-		document.addEventListener('touchend', this.touchEventListener);
-	};
-
-	MouseUpAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			if (this.button === 'touch') {
+	MouseUpAction.prototype.enter = function (fsm) {
+		var update = function (button) {
+			if (button === 'touch') {
 				fsm.send(this.transitions.touchUp);
 			} else {
 				fsm.send([
 					this.transitions.mouseLeftUp,
 					this.transitions.middleMouseUp,
 					this.transitions.rightMouseUp
-				][this.button]);
+				][button]);
 			}
-		}
+		}.bind(this);
+
+		this.mouseEventListener = function (event) {
+			update(event.button);
+		}.bind(this);
+
+		this.touchEventListener = function () {
+			update('touch');
+		}.bind(this);
+
+		document.addEventListener('mouseup', this.mouseEventListener);
+		document.addEventListener('touchend', this.touchEventListener);
 	};
 
 	MouseUpAction.prototype.exit = function () {

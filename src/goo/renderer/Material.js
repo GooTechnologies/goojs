@@ -118,18 +118,29 @@ define([
 			units: 1
 		};
 
-		/** Render the mesh twice with front/back-facing for double transparency rendering
+		/** Render the mesh twice with front/back-facing for double transparency rendering. Default is false.
 		 * @type {boolean}
-		 * @default
+		 * @default false
 		 */
 		this.dualTransparency = false;
 
-		/** Show wireframe on this material
+		/** Show wireframe on this material. Default is false.
 		 * @type {boolean}
-		 * @default
+		 * @default false
 		 */
 		this.wireframe = false;
+
+		/** Use flat rendering mode for this material. Default is false.
+		 * @type {boolean}
+		 * @default false
+		 */
 		this.flat = false;
+
+		/** Width of lines, if line rendering / wireframe is enabled. Default is 1.
+		 * @type {number}
+		 * @default 1
+		 */
+		this.lineWidth = 1;
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>

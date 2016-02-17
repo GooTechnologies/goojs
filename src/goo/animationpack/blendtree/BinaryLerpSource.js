@@ -1,22 +1,23 @@
 define([
 	'goo/math/MathUtils',
-	'goo/animationpack/clip/TransformData'
+	'goo/animationpack/clip/TransformData',
+	'goo/animationpack/blendtree/Source'
 ], function (
 	MathUtils,
-	TransformData
+	TransformData,
+	Source
 ) {
 	'use strict';
 
 	/**
-	 * Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
-	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not
-	 *        combined, rather A's value will always be used unless it is null.
+	 * Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not combined, rather A's value will always be used unless it is null.
 	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} sourceA our first source.
 	 * @param {(ClipSource|BinaryLerpSource|FrozenClipSource|ManagedTransformSource)} sourceB our second source.
 	 * @param {number} blendKey A key into the related AnimationManager's values store for pulling blend weighting.
-	 * @private
+	 * @extends Source
 	 */
 	function BinaryLerpSource(sourceA, sourceB, blendWeight) {
+		Source.call(this);
 		this._sourceA = sourceA ? sourceA : null;
 		this._sourceB = sourceB ? sourceB : null;
 		this.blendWeight = blendWeight ? blendWeight : null;

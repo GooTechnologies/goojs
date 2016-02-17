@@ -14,8 +14,8 @@ define([
 		this.everyFrame = true;
 
 		var that = this;
-		this.listener = function (beginContactEvent) {
-			if (beginContactEvent.entityA === that.entity || beginContactEvent.entityB === that.entity) {
+		this.listener = function (triggerEnterEvent) {
+			if (triggerEnterEvent.entityA === that.entity || triggerEnterEvent.entityB === that.entity) {
 				that.entered = true;
 			}
 		};
@@ -27,7 +27,7 @@ define([
 	TriggerEnterAction.external = {
 		name: 'TriggerEnter',
 		type: 'collision',
-		description: 'Transitions when a trigger volume is entered.',
+		description: 'Transitions when the trigger collider is entered. This action only works if the entity has a Collider Component.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
@@ -37,7 +37,7 @@ define([
 		}]
 	};
 
-	TriggerEnterAction.prototype._setup = function (fsm) {
+	TriggerEnterAction.prototype.enter = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
 		this.entered = false;
 		SystemBus.addListener('goo.physics.triggerEnter', this.listener);
@@ -52,7 +52,7 @@ define([
 		this.entered = false;
 	};
 
-	TriggerEnterAction.prototype._run = function (fsm) {
+	TriggerEnterAction.prototype.update = function (fsm) {
 		if (this.entered) {
 			fsm.send(this.transitions.enter);
 			this.entered = false;

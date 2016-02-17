@@ -6,6 +6,7 @@ var _ = require('underscore');
 
 module.exports = function (grunt) {
 	var packs = {
+		particlepack: 'goo/addons/particlepack',
 		fsmpack: 'goo/fsmpack',
 		geometrypack: 'goo/geometrypack',
 		quadpack: 'goo/quadpack',

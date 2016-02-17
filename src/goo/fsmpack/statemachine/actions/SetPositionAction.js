@@ -12,6 +12,7 @@ define([
 	}
 
 	SetPositionAction.prototype = Object.create(Action.prototype);
+	SetPositionAction.prototype.constructor = SetPositionAction;
 
 	SetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
@@ -55,7 +56,7 @@ define([
 		transitions: []
 	};
 
-	SetPositionAction.prototype._run = function (fsm) {
+	SetPositionAction.prototype.update = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.translation.setDirect(
 				FsmUtils.getValue(this.amountX, fsm),
