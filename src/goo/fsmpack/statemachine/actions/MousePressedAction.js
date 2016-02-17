@@ -7,15 +7,15 @@ define([
 ) {
 	'use strict';
 
-	function KeyPressedAction(/*id, settings*/) {
+	function MousePressedAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	KeyPressedAction.prototype = Object.create(Action.prototype);
-	KeyPressedAction.prototype.constructor = KeyPressedAction;
+	MousePressedAction.prototype = Object.create(Action.prototype);
+	MousePressedAction.prototype.constructor = MousePressedAction;
 
-	KeyPressedAction.external = {
-		name: 'Key Pressed',
+	MousePressedAction.external = {
+		name: 'Mouse Button Pressed',
 		type: 'controls',
 		description: 'Listens for a key press event and performs a transition. Works over transition boundaries.',
 		canTransition: true,
@@ -33,22 +33,22 @@ define([
 		}]
 	};
 
-	KeyPressedAction.prototype.configure = function (settings) {
+	MousePressedAction.prototype.configure = function (settings) {
 		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyPressedAction.prototype.enter = function (fsm) {
+	MousePressedAction.prototype.enter = function (fsm) {
 		if (fsm.getInputState(this.key)) {
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	KeyPressedAction.prototype.update = function (fsm) {
+	MousePressedAction.prototype.update = function (fsm) {
 		if (fsm.getInputState(this.key)) {
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	return KeyPressedAction;
+	return MousePressedAction;
 });
