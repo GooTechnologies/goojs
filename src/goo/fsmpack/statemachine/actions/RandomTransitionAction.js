@@ -38,12 +38,12 @@ define([
 		}]
 	};
 
-	RandomTransitionAction.prototype.update = function (fsm) {
-		if (Math.random() < +this.skewness) {
-			fsm.send(this.transitions.transition1);
-		} else {
-			fsm.send(this.transitions.transition2);
-		}
+	RandomTransitionAction.prototype.enter = function (fsm) {
+		var transitions = this.transitions;
+		var a = transitions.transition1;
+		var b = transitions.transition2;
+		var transition = Math.random() < this.skewness ? a : b;
+		fsm.send(transition);
 	};
 
 	return RandomTransitionAction;
