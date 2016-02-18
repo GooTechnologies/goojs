@@ -39,22 +39,15 @@ define([
 	};
 
 	KeyPressedAction.prototype.enter = function (fsm) {
-		this.eventListenerDown = function (event) {
-			if (event.which === +this.key) {
-				fsm.send(this.transitions.keydown);
-			}
-		}.bind(this);
-		this.eventListenerUp = function (event) {
-			if (event.which === +this.key) {
-				document.removeEventListener('keyup', this.eventListenerUp);
-			}
-		}.bind(this);
-		document.addEventListener('keydown', this.eventListenerDown);
-		document.addEventListener('keyup', this.eventListenerUp);
+		if (fsm.getInputState(this.key)) {
+			fsm.send(this.transitions.keydown);
+		}
 	};
 
-	KeyPressedAction.prototype.exit = function () {
-		document.removeEventListener('keydown', this.eventListenerDown);
+	KeyPressedAction.prototype.update = function (fsm) {
+		if (fsm.getInputState(this.key)) {
+			fsm.send(this.transitions.keydown);
+		}
 	};
 
 	return KeyPressedAction;

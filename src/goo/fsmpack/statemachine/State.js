@@ -18,6 +18,9 @@ define([
 		this.depth = 0;
 
 		this.proxy = {
+			getInputState: function (key) {
+				return this._fsm.system.getInputState(key);
+			}.bind(this),
 			getTpf: function () {
 				return this._fsm.entity._world.tpf;
 			}.bind(this),

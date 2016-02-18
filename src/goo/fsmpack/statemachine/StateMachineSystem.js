@@ -35,9 +35,31 @@ define([
 
 		// actions triggered by this system typically need to run after all other systems do their job
 		this.priority = 1000;
+
+		// Input handling
+		var buttonNames = ['Left', 'Middle', 'Right'];
+		this._inputStates = new Set();
+		this._listeners = {
+			keydown: function (event) {
+				this._inputStates.add(event.which);
+			}.bind(this),
+			keyup: function (event) {
+				this._inputStates.delete(event.which);
+			}.bind(this),
+			mousedown: function (event) {
+				this._inputStates.add(buttonNames[event.button]);
+			}.bind(this),
+			mouseup: function (event) {
+				this._inputStates.delete(buttonNames[event.button]);
+			}.bind(this)
+		};
 	}
 
 	StateMachineSystem.prototype = Object.create(System.prototype);
+
+	StateMachineSystem.prototype.getInputState = function (key) {
+		return this._inputStates.has(key);
+	};
 
 	StateMachineSystem.prototype.process = function (entities, tpf) {
 		var component;
@@ -96,6 +118,11 @@ define([
 				var component = entities[i].stateMachineComponent;
 				component.entered = false;
 			}
+
+			for (var key in this._listeners) {
+				document.addEventListener(key, this._listeners[key]);
+			}
+			this._inputStates.clear();
 		}
 		this.paused = false;
 	};
@@ -120,6 +147,10 @@ define([
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;
+
+		for (var key in this._listeners) {
+			document.removeEventListener(key, this._listeners[key]);
+		}
 	};
 
 	return StateMachineSystem;

@@ -3,6 +3,7 @@ define([
 	'goo/fsmpack/statemachine/actions/MouseUpAction',
 	'goo/fsmpack/statemachine/actions/MouseDownAction',
 	'goo/fsmpack/statemachine/actions/MouseMoveAction',
+	'goo/fsmpack/statemachine/actions/MousePressedAction',
 	'goo/fsmpack/statemachine/actions/KeyUpAction',
 	'goo/fsmpack/statemachine/actions/KeyDownAction',
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
