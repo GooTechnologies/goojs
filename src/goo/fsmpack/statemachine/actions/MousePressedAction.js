@@ -1,9 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ], function (
-	Action,
-	FsmUtils
+	Action
 ) {
 	'use strict';
 
@@ -17,36 +15,33 @@ define([
 	MousePressedAction.external = {
 		name: 'Mouse Button Pressed',
 		type: 'controls',
-		description: 'Listens for a key press event and performs a transition. Works over transition boundaries.',
+		description: 'Listens for a mouse button press event and performs a transition. Works over transition boundaries.',
 		canTransition: true,
 		parameters: [{
-			name: 'Key',
-			key: 'key',
+			name: 'Button',
+			key: 'button',
 			type: 'string',
-			control: 'key',
-			description: 'Key to listen for'
+			control: 'dropdown',
+			description: 'Mouse Button to listen for',
+			'default': 'Left',
+			options: ['Left', 'Middle', 'Right']
 		}],
 		transitions: [{
-			key: 'keydown',
-			name: 'Key pressed',
-			description: 'State to transition to when the key is pressed'
+			key: 'mousedown',
+			name: 'Button Pressed',
+			description: 'State to transition to when the mouse button is pressed'
 		}]
 	};
 
-	MousePressedAction.prototype.configure = function (settings) {
-		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
-		this.transitions = { keydown: settings.transitions.keydown };
-	};
-
 	MousePressedAction.prototype.enter = function (fsm) {
-		if (fsm.getInputState(this.key)) {
-			fsm.send(this.transitions.keydown);
+		if (fsm.getInputState(this.button)) {
+			fsm.send(this.transitions.mousedown);
 		}
 	};
 
 	MousePressedAction.prototype.update = function (fsm) {
-		if (fsm.getInputState(this.key)) {
-			fsm.send(this.transitions.keydown);
+		if (fsm.getInputState(this.button)) {
+			fsm.send(this.transitions.mousedown);
 		}
 	};
 
