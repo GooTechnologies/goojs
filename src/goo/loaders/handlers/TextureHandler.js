@@ -220,10 +220,14 @@ define([
 			if (!texture) { return; }
 			var ret;
 
-			// Texture settings
+			// Wrap
+			if (texture.wrapS !== config.wrapS || texture.wrapT !== config.wrapT) {
+				texture.setNeedsUpdate();
+			}
 			texture.wrapS = config.wrapS;
 			texture.wrapT = config.wrapT;
 
+			// SH: Why do we need to check this?
 			if (TextureHandler.magFilters.indexOf(config.magFilter) !== -1) {
 				texture.magFilter = config.magFilter;
 			}
