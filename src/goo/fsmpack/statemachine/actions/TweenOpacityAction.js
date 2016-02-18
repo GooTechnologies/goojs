@@ -1,8 +1,10 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/math/MathUtils',
 	'goo/util/TWEEN'
 ], function (
 	Action,
+	MathUtils,
 	TWEEN
 ) {
 	'use strict';
@@ -40,7 +42,7 @@ define([
 			control: 'dropdown',
 			description: 'Easing type',
 			'default': 'Linear',
-			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Bounce']
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
 			name: 'Direction',
 			key: 'easing2',
@@ -57,66 +59,52 @@ define([
 		}]
 	};
 
-	TweenOpacityAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenOpacityAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenOpacityAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var meshRendererComponent = entity.meshRendererComponent;
-
-		if (meshRendererComponent) {
-			this.tween = new TWEEN.Tween();
-
-			this.material = meshRendererComponent.materials[0];
-			this.oldBlending = this.material.blendState.blending;
-			this.oldQueue = this.material.renderQueue;
-			this.oldOpacity = this.material.uniforms.opacity;
-
-			if (this.material.blendState.blending === 'NoBlending') {
-				this.material.blendState.blending = 'TransparencyBlending';
-			}
-			if (this.material.renderQueue < 2000) {
-				this.material.renderQueue = 2000;
-			}
-
-			if (this.material.uniforms.opacity === undefined) {
-				this.material.uniforms.opacity = 1;
-			}
-
-			var uniforms = this.material.uniforms;
-
-			var time = entity._world.time * 1000;
-
-			var fakeFrom = { opacity: uniforms.opacity };
-			var fakeTo = { opacity: this.to };
-
-			var old = { opacity: fakeFrom.opacity };
-
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				uniforms.opacity += this.opacity - old.opacity;
-
-				old.opacity = this.opacity;
-			}).onComplete(function () {
-				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+		if (!meshRendererComponent) {
+			return;
 		}
+
+		this.startTime = fsm.getTime();
+
+		this.material = meshRendererComponent.materials[0];
+		if (this.material.blendState.blending === 'NoBlending') {
+			this.material.blendState.blending = 'TransparencyBlending';
+		}
+		if (this.material.renderQueue < 2000) {
+			this.material.renderQueue = 2000;
+		}
+		if (this.material.uniforms.opacity === undefined) {
+			this.material.uniforms.opacity = 1;
+		}
+
+		this.uniforms = this.material.uniforms;
+		this.from = this.uniforms.opacity;
 	};
 
-	TweenOpacityAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+	TweenOpacityAction.prototype.update = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var meshRendererComponent = entity.meshRendererComponent;
+		if (!meshRendererComponent) {
+			return;
+		}
 
-			this.material.blendState.blending = this.oldBlending;
-			this.material.renderQueue = this.oldQueue;
-			this.material.uniforms.opacity = this.oldOpacity;
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
+
+		this.uniforms.opacity = MathUtils.lerp(fT, this.from, this.to);
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
 		}
 	};
 
