@@ -11,6 +11,9 @@ define([
 
 	function TweenScaleAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.fromScale = new Vector3();
+		this.toScale = new Vector3();
 	}
 
 	TweenScaleAction.prototype = Object.create(Action.prototype);
@@ -63,55 +66,37 @@ define([
 		}]
 	};
 
-	TweenScaleAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenScaleAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenScaleAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
-
-		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent;
-		var scale = transformComponent.transform.scale;
-		var initialScale = scale.clone();
-
-		var fakeFrom = { x: initialScale.x, y: initialScale.y, z: initialScale.z };
-		var fakeTo;
-		var time = entity._world.time * 1000;
-
+		var transformComponent = fsm.getOwnerEntity().transformComponent;
+		
+		this.fromScale.set(transformComponent.transform.scale);
+		this.toScale.setDirect(this.to[0], this.to[1], this.to[2]);
 		if (this.relative) {
-			var to = Vector3.fromArray(this.to).add(initialScale);
-			fakeTo = { x: to.x, y: to.y, z: to.z };
-
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				scale.setDirect(this.x, this.y, this.z);
-				transformComponent.setUpdated();
-			}).onComplete(function () {
-					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(time);
-		} else {
-			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
-
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				scale.setDirect(this.x, this.y, this.z);
-				transformComponent.setUpdated();
-			}).onComplete(function () {
-					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(time);
+			this.toScale.mul(this.fromScale);
 		}
+
+		this.startTime = fsm.getTime();
 	};
 
-	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+	TweenScaleAction.prototype.update = function (fsm) {
+		var transformComponent = fsm.getOwnerEntity().transformComponent;
+
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
+
+		transformComponent.transform.scale.set(this.fromScale).lerp(this.toScale, fT);
+		transformComponent.setUpdated();
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
 		}
 	};
 

@@ -1,14 +1,19 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/math/Vector2',
 	'goo/util/TWEEN'
 ], function (
 	Action,
+	Vector2,
 	TWEEN
 ) {
 	'use strict';
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.fromOffset = new Vector2();
+		this.toOffset = new Vector2();
 	}
 
 	TweenTextureOffsetAction.prototype = Object.create(Action.prototype);
@@ -68,44 +73,48 @@ define([
 		}]
 	};
 
-	TweenTextureOffsetAction.prototype.configure = function (settings) {
-		this.toX = +settings.toX;
-		this.toY = +settings.toY;
-		this.time = +settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenTextureOffsetAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenTextureOffsetAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
-
 		var entity = fsm.getOwnerEntity();
-		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
-			var meshRendererComponent = entity.meshRendererComponent;
-			var material = meshRendererComponent.materials[0];
-			var texture = material.getTexture('DIFFUSE_MAP');
-			if (!texture) { return; }
-			var initialOffset = texture.offset;
-			var time = entity._world.time * 1000;
-
-			var fakeFrom = { x: initialOffset.x, y: initialOffset.y };
-			var fakeTo = { x: this.toX, y: this.toY };
-
-			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function () {
-				texture.offset.setDirect(this.x, this.y);
-			}).onComplete(function () {
-				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+		var meshRendererComponent = entity.meshRendererComponent;
+		this.texture = null;
+		if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
+			return;
 		}
+		var material = meshRendererComponent.materials[0];
+		this.texture = material.getTexture('DIFFUSE_MAP');
+		if (!this.texture) {
+			return;
+		}
+		
+		this.fromOffset.set(this.texture.offset);
+		this.toOffset.setDirect(this.toX, this.toY);
+		if (this.relative) {
+			this.toOffset.add(this.fromOffset);
+		}
+
+		this.startTime = fsm.getTime();
 	};
 
-	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+	TweenTextureOffsetAction.prototype.update = function (fsm) {
+		if (!this.texture) {
+			return;
+		}
+
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
+
+		this.texture.offset.set(this.fromOffset).lerp(this.toOffset, fT);
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
 		}
 	};
 
