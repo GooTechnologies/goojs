@@ -1206,7 +1206,12 @@ define([
 	
 		// Check if the shader cache is invalid
 		if (cachedShader && cachedShader.defineKey !== defineKey) {
-			shaderCache.delete(defineKey);
+			console.log('\n' + defineKey + ' !== ' + cachedShader.defineKey);
+			// shaderCache.delete(defineKey);
+			// defineKey = cachedShader.defineKey;
+			// cachedShader = cachedShader.clone();
+			shaderCache.set(cachedShader.defineKey, cachedShader);
+
 			cachedShader = undefined;
 		}
 
@@ -1229,6 +1234,8 @@ define([
 			}
 			shader = shader.clone();
 			shaderCache.set(defineKey, shader);
+			console.log('storing', defineKey);
+
 			material.shader = shader;
 		}
 	};

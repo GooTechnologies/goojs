@@ -123,13 +123,14 @@ define([
 		 */
 		this.renderQueue = RenderQueue.OPAQUE;
 
-		// this._id = Shader.id++;
-		if (Shader.cache.has(shaderDefinition)) {
-			this._id = Shader.cache.get(shaderDefinition);
-		} else {
-			this._id = Shader.cache.size;
-			Shader.cache.set(shaderDefinition, this._id);
-		}
+		this._id = Shader.id++;
+		console.log(this._id, this.name);
+		// if (Shader.cache.has(shaderDefinition)) {
+		// 	this._id = Shader.cache.get(shaderDefinition);
+		// } else {
+		// 	this._id = Shader.cache.size;
+		// 	Shader.cache.set(shaderDefinition, this._id);
+		// }
 		// console.log('creating shader', this._id, shaderDefinition);
 
 		this.errorOnce = false;
@@ -142,8 +143,8 @@ define([
 		// #endif
 	}
 
-	// Shader.id = 0;
-	Shader.cache = new Map();
+	Shader.id = 0;
+	// Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
 		return new Shader(this.name, ObjectUtils.deepClone({
