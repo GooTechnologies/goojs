@@ -15,7 +15,7 @@ function (
 	 *     create: function () {
 	 *         return new Vector3();
 	 *     },
-	 *     init: function (x, y, z){
+	 *     init: function (x, y, z) {
 	 *         this.set(x, y, z);
 	 *     },
 	 *     destroy: function (vector) {

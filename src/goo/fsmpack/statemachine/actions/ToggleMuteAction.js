@@ -26,7 +26,7 @@ define([
 
 		var soundSystem = world.getSystem('SoundSystem');
 		if (soundSystem) {
-			if(soundSystem.muted){
+			if (soundSystem.muted) {
 				soundSystem.unmute();
 			} else {
 				soundSystem.mute();

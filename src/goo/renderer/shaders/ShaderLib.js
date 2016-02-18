@@ -781,7 +781,7 @@ define([
 				// 'imageCoord += uImageIncrement * size;',
 			// '}',
 			// Hack for Android, who seems to crash on int looping
-			'for(float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
+			'for (float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
 				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[int(i)];',
 				'imageCoord += uImageIncrement * size;',
 			'}',

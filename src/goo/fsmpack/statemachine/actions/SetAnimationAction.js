@@ -37,7 +37,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 
 	SetAnimationAction.prototype.update = function (fsm) {
 		// If we already made the transition, bail
-		if(this._transitioned) {
+		if (this._transitioned) {
 			return;
 		}
 
@@ -47,13 +47,13 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		if (this.animation && entity.animationComponent) {
 			var currentState;
 
-			if(this._loopAtStart === null){ // First enter!
+			if (this._loopAtStart === null) { // First enter!
 				// Set the animation
 				entity.animationComponent.transitionTo(this.animation, true);
 
 				// Get the current loop number and store it
 				currentState = entity.animationComponent.getCurrentState();
-				if(currentState){
+				if (currentState) {
 					this._loopAtStart = currentState.getCurrentLoop();
 				}
 			}
@@ -62,7 +62,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 			var shouldTransition = false;
 
 			// Transition if the loop number was reached.
-			if(currentState){
+			if (currentState) {
 				// Current state found - animation is still running
 				shouldTransition = shouldTransition || (currentState.getCurrentLoop() - this._loopAtStart === this.loops);
 				this._previousLoop = currentState.getCurrentLoop();
@@ -72,7 +72,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 				shouldTransition = shouldTransition || (this._previousLoop === this.loops - 1);
 			}
 
-			if(shouldTransition){
+			if (shouldTransition) {
 				fsm.send(that.transitions.complete);
 				this._transitioned = true;
 			}

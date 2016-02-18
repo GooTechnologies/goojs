@@ -77,11 +77,11 @@ function (
 	 * @param  {array} entities
 	 */
 	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {
-		for(var i=0; i<entities.length; i++){
+		for (var i=0; i<entities.length; i++) {
 			var entity = entities[i];
 			var meshEntity = entity.particleSystemComponent.meshEntity;
-			if(meshEntity){
-				if(entity.isVisiblyHidden())
+			if (meshEntity) {
+				if (entity.isVisiblyHidden())
 					meshEntity.meshRendererComponent.hidden = true;
 				else 
 					meshEntity.meshRendererComponent.hidden = !this._shouldRenderDebugForEntity(entity);
@@ -114,7 +114,7 @@ function (
 			}
 
 			var renderable;
-			switch(entity.particleSystemComponent.shapeType){
+			switch (entity.particleSystemComponent.shapeType) {
 			case 'sphere':
 				renderable = this.sphereRenderable;
 				var radius = entity.particleSystemComponent.sphereRadius;
@@ -140,7 +140,7 @@ function (
 				break;
 			}
 
-			if(renderable){
+			if (renderable) {
 				renderable.meshData.indexModes = ['Lines'];
 
 				var transform = renderable.transform;
@@ -169,7 +169,7 @@ function (
 	ParticleDebugRenderSystem.prototype.update = function () {
 		var entities = this._activeEntities;
 		var l = entities.length;
-		while(l--){
+		while (l--) {
 			var entity = entities[l];
 
 			if (this._shouldRenderDebugForEntity(entity)) {

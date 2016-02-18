@@ -1465,8 +1465,8 @@ define([
 
 			'void main() {',
 			'vec3 result = vec3(0.0);',
-			'for(int x=-1; x<=1; x++) {',
-			'for(int y=-1; y<=1; y++) {',
+			'for (int x=-1; x<=1; x++) {',
+			'for (int y=-1; y<=1; y++) {',
 			'result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
 			'}',
 			'}',

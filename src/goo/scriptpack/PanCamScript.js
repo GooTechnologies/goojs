@@ -197,7 +197,7 @@ define([
 				calcVector2.set(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
-				//if (parameters.screenMove){
+				//if (parameters.screenMove) {
 					// In the case of screenMove, we normalize the camera movement
 					// to the near plane instead of using pixels. This makes the parallel
 					// camera map mouse world movement to camera movement 1-1
@@ -209,7 +209,7 @@ define([
 				//}
 				calcVector.add(calcVector2);
 				calcVector.applyPost(transform.rotation);
-				//if (!parameters.screenMove){
+				//if (!parameters.screenMove) {
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 				if (camera.projectionMode === Camera.Perspective) {
 					// RB: I know, very arbitrary but looks ok

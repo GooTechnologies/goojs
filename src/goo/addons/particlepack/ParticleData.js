@@ -85,7 +85,9 @@ define([
 	 * @param {Vector3} store
 	 */
 	ParticleData.prototype.getWorldPosition = function (store) {
-		if(!this.active) return store;
+		if (!this.active) {
+			return store;
+		}
 		
 		var component = this.component;
 
@@ -101,14 +103,14 @@ define([
 		store.copy(this.startPosition).add(dirDelta).add(gravityDelta);
 
 		// Add velocity over lifetime
-		if(component.localVelocityOverLifetime){
+		if (component.localVelocityOverLifetime) {
 			var unitAge = age / this.loopAfter;
 			component.localVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
 			localVelocityDelta.applyPost(component._localToWorldRotation);
 			store.add(localVelocityDelta);
 		}
 
-		if(component.worldVelocityOverLifetime){
+		if (component.worldVelocityOverLifetime) {
 			var unitAge = age / this.loopAfter;
 			component.worldVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
 			worldVelocityDelta.applyPost(component._worldToLocalRotation);

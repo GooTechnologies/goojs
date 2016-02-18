@@ -158,22 +158,22 @@ define([
 	SoundSystem.prototype.updateConfig = function (config) {
 		config = config || {};
 
-		if(config.maxDistance !== undefined){
+		if (config.maxDistance !== undefined) {
 			this.maxDistance = config.maxDistance;
 		}
-		if(config.rolloffFactor !== undefined){
+		if (config.rolloffFactor !== undefined) {
 			this.rolloffFactor = config.rolloffFactor;
 		}
-		if(config.dopplerFactor !== undefined){
+		if (config.dopplerFactor !== undefined) {
 			this.dopplerFactor = config.dopplerFactor * 0.05; // 0.05 ??? I have no idea
 		}
-		if(config.volume !== undefined){
+		if (config.volume !== undefined) {
 			this.volume = MathUtils.clamp(config.volume, 0, 1);
 		}
-		if(config.reverb !== undefined){
+		if (config.reverb !== undefined) {
 			this.reverb = MathUtils.clamp(config.reverb, 0, 1);
 		}
-		if(config.muted !== undefined){
+		if (config.muted !== undefined) {
 			this.muted = config.muted;
 		}
 		
@@ -244,7 +244,7 @@ define([
 	/**
 	 * Resumes playing of all sounds that were paused.
 	 */
-	SoundSystem.prototype.play = function(){
+	SoundSystem.prototype.play = function() {
 		this.resume();
 		this.passive = false;
 	};
@@ -273,7 +273,7 @@ define([
 			this._initializeAudioNodes();
 		}
 
-		if(this._reverbDirty){
+		if (this._reverbDirty) {
 			this._wetNode.disconnect();
 			if (!this.reverbAudioBuffer && this._wetNode) {
 				this._convolver.buffer = null;
@@ -284,7 +284,7 @@ define([
 			this._reverbDirty = false;
 		}
 
-		if(this._dirty){
+		if (this._dirty) {
 			this._listener.dopplerFactor = this.dopplerFactor;
 			this._outNode.gain.value = this.muted ? 0 : this.volume;
 			this._wetNode.gain.value = this.reverb;

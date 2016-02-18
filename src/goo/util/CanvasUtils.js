@@ -125,7 +125,7 @@ define([
 	 *     resizeToFit:true,
 	 *     width:100,
 	 *     height:100
-	 * }, function (canvas){
+	 * }, function (canvas) {
 	 *     // canvas is an HTMLCanvasElement
 	 * });
 	 */

@@ -43,7 +43,7 @@ define([
 	ParticleSystemComponentHandler.prototype.constructor = ParticleSystemComponentHandler;
 	ComponentHandler._registerClass('particleSystem', ParticleSystemComponentHandler);
 
-	function constantCurve(value){
+	function constantCurve(value) {
 		return [{
 			type: 'constant',
 			offset: 0,
@@ -51,7 +51,7 @@ define([
 		}];
 	}
 
-	function linearCurve(k, m){
+	function linearCurve(k, m) {
 		return [{
 			type: 'linear',
 			offset: 0,
@@ -127,12 +127,12 @@ define([
 		entity.clearComponent('ParticleSystemComponent');
 	};
 
-	function createCurve(configs, multiplier){
+	function createCurve(configs, multiplier) {
 		multiplier = multiplier !== undefined ? multiplier : 1;
 
 		var curve = new PolyCurve();
 
-		for(var i = 0; i < configs.length; i++){
+		for (var i = 0; i < configs.length; i++) {
 			var config = configs[i];
 			switch (config.type) {
 			case 'linear':
@@ -161,7 +161,7 @@ define([
 		return curve;
 	}
 
-	function createVec3Curve(vector){
+	function createVec3Curve(vector) {
 		return new Vector3Curve({
 			x: createCurve(vector[0]),
 			y: createCurve(vector[1]),
@@ -169,7 +169,7 @@ define([
 		});
 	}
 
-	function createVec4Curve(vector){
+	function createVec4Curve(vector) {
 		return new Vector4Curve({
 			x: createCurve(vector[0]),
 			y: createCurve(vector[1]),
@@ -232,11 +232,11 @@ define([
 			component.rotationSpeedOverLifetime = createCurve(config.rotationSpeedOverLifetime, MathUtils.DEG_TO_RAD);
 			component.autoPlay = config.autoPlay;
 
-			if(!component.paused){
+			if (!component.paused) {
 				component.stop();
 			}
 
-			if(component.autoPlay){
+			if (component.autoPlay) {
 				component.play();
 			}
 
@@ -245,30 +245,30 @@ define([
 			var cachedTextures = that._cachedPresetTextures;
 
 			var textureRef = config.texture && config.texture.enabled && config.texture.textureRef;
-			if(textureRef && config.texturePreset === 'Custom'){
+			if (textureRef && config.texturePreset === 'Custom') {
 				promises.push(that._load(textureRef, options).then(function (texture) {
 					component.texture = texture;
 					return component;
 				}).then(null, function (err) {
 					throw new Error('Error loading texture: ' + textureRef + ' - ' + err);
 				}));
-			} else if(config.texturePreset === 'Flare') {
+			} else if (config.texturePreset === 'Flare') {
 				cachedTextures.Flare = cachedTextures.Flare || ParticleSystemUtils.createFlareTexture(32);
 				component.texture = cachedTextures.Flare;
-			} else if(config.texturePreset === 'Splash') {
+			} else if (config.texturePreset === 'Splash') {
 				cachedTextures.Splash = cachedTextures.Splash || ParticleSystemUtils.createSplashTexture(32);
 				component.texture = cachedTextures.Splash;
-			} else if(config.texturePreset === 'Plankton') {
+			} else if (config.texturePreset === 'Plankton') {
 				cachedTextures.Plankton = cachedTextures.Plankton || ParticleSystemUtils.createPlanktonTexture(32);
 				component.texture = cachedTextures.Plankton;
-			} else if(config.texturePreset === 'Snowflake') {
+			} else if (config.texturePreset === 'Snowflake') {
 				cachedTextures.Snowflake = cachedTextures.Snowflake || ParticleSystemUtils.createSnowflakeTexture(32);
 				component.texture = cachedTextures.Snowflake;
 			} else {
 				component.texture = null;
 			}
 
-			if(promises.length){
+			if (promises.length) {
 				return RSVP.all(promises).then(function () {
 					return component;
 				});

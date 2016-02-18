@@ -33,7 +33,7 @@ define([
 
 	function mod(a,b) {
 	    return ((a % b) + b) % b;
-	};
+	}
 
 	function hasParent(entity) {
 		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
@@ -50,7 +50,7 @@ define([
 		VELOCITY_CURVE_CODE: 'vec3(0.0)',
 		WORLD_VELOCITY_CURVE_CODE: 'vec3(0.0)',
 		TEXTURE_FRAME_CODE: 't'
-	}
+	};
 
 	/**
 	 * A Particle System component simulates things like clouds and flames by generating and animating large numbers of small 2D images in the scene.
@@ -171,47 +171,47 @@ define([
 				'varying vec4 color;',
 				'varying vec2 coords;',
 
-				'vec3 getVelocityCurveIntegral(float t, float emitRandom){',
+				'vec3 getVelocityCurveIntegral(float t, float emitRandom) {',
 				'    return VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getWorldVelocityCurveIntegral(float t, float emitRandom){',
+				'vec3 getWorldVelocityCurveIntegral(float t, float emitRandom) {',
 				'    return WORLD_VELOCITY_CURVE_CODE;',
 				'}',
 
-				'vec3 getPosition(mat3 invWorldRotation, mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom, float duration){',
+				'vec3 getPosition(mat3 invWorldRotation, mat3 worldRotation, float t, vec3 pos, vec3 vel, vec3 g, float emitRandom, float duration) {',
 				'    return pos + vel * t + 0.5 * t * t * g + worldRotation * getVelocityCurveIntegral(t / duration, emitRandom) + invWorldRotation * getWorldVelocityCurveIntegral(t / duration, emitRandom);',
 				'}',
 
-				'float getScale(float t, float emitRandom){',
+				'float getScale(float t, float emitRandom) {',
 				'    return SIZE_CURVE_CODE;',
 				'}',
 
-				'float getStartSize(float t, float emitRandom){',
+				'float getStartSize(float t, float emitRandom) {',
 				'    return START_SIZE_CODE;',
 				'}',
 
-				'float getTextureFrame(float t, float emitRandom){',
+				'float getTextureFrame(float t, float emitRandom) {',
 				'    return TEXTURE_FRAME_CODE;',
 				'}',
 
-				'float getAngle(float t, float emitRandom){',
+				'float getAngle(float t, float emitRandom) {',
 				'    return ROTATION_CURVE_CODE;',
 				'}',
 
-				'vec4 getColor(float t, float emitRandom){',
+				'vec4 getColor(float t, float emitRandom) {',
 				'    return COLOR_CURVE_CODE;',
 				'}',
 
-				'vec4 getStartColor(float t, float emitRandom){',
+				'vec4 getStartColor(float t, float emitRandom) {',
 				'    return START_COLOR_CODE;',
 				'}',
 
-				'float getStartAngle(float t, float emitRandom){',
+				'float getStartAngle(float t, float emitRandom) {',
 				'    return START_ROTATION_CURVE_CODE;',
 				'}',
 
-				'mat4 rotationMatrix(vec3 axis, float angle){',
+				'mat4 rotationMatrix(vec3 axis, float angle) {',
 				'    axis = normalize(axis);',
 				'    float s = sin(angle);',
 				'    float c = cos(angle);',
@@ -284,7 +284,7 @@ define([
 				'varying vec4 color;',
 				'varying vec2 coords;',
 
-				'void main(void){',
+				'void main(void) {',
 				'#ifdef PARTICLE_TEXTURE',
 				'    vec4 col = color * texture2D(particleTexture, coords);',
 				'#else',
@@ -624,7 +624,7 @@ define([
 			},
 			set: function (value) {
 				this._localSpace = value;
-				if(this.meshEntity){
+				if (this.meshEntity) {
 					var transformComponent = this.meshEntity.transformComponent;
 					transformComponent.transform.setIdentity();
 					transformComponent.setUpdated();
@@ -698,7 +698,7 @@ define([
 			set: function (mesh) {
 				this._mesh = mesh;
 				var meshData = this.meshData;
-				if(meshData){
+				if (meshData) {
 					meshData.vertexCount = this.maxParticles * mesh.vertexCount;
 					meshData.indexCount = this.maxParticles * mesh.indexCount;
 					meshData.rebuildData(meshData.vertexCount, meshData.indexCount);
@@ -789,7 +789,7 @@ define([
 				return this._initSeed;
 			},
 			set: function (value) {
-				if(value !== this._initSeed){
+				if (value !== this._initSeed) {
 					this._initSeed = value;
 					this._vertexDataDirty = true;
 				}
@@ -839,7 +839,7 @@ define([
 
 				var meshData = this.meshData;
 				var mesh = this.mesh;
-				if(!meshData || !mesh){
+				if (!meshData || !mesh) {
 					return;
 				}
 				this._updateIndexBuffer(this.particles);
@@ -1087,7 +1087,7 @@ define([
 		var worldToLocalRotation = this._worldToLocalRotation;
 		var localToWorldRotation = this._localToWorldRotation;
 
-		if(this.localSpace){
+		if (this.localSpace) {
 			// In local space:
 			// 1. Need to multiply the worldVelocity with the inverse rotation, to get local velocity
 			// 2. World velocity is good as it is
@@ -1108,7 +1108,7 @@ define([
 		g[1] = localGravity.y;
 		g[2] = localGravity.z;
 
-		for(var i=0; i<9; i++){
+		for (var i=0; i<9; i++) {
 			uniforms.invWorldRotation[i] = worldToLocalRotation.data[i]; // will be multiplied with the world velocity
 			uniforms.worldRotation[i] = localToWorldRotation.data[i]; // will be multiplied with the local velocity
 		}
@@ -1236,14 +1236,14 @@ define([
 		if (!this.localSpace) {
 			material.shader.removeDefine('LOOP');
 		} else {
-			if(this._loop){
+			if (this._loop) {
 				material.shader.setDefine('LOOP', true);
 			} else {
 				material.shader.removeDefine('LOOP');
 			}
 		}
 
-		if(this.preWarm){
+		if (this.preWarm) {
 			material.shader.removeDefine('HIDE_IF_EMITTED_BEFORE_ZERO');
 		} else {
 			material.shader.setDefine('HIDE_IF_EMITTED_BEFORE_ZERO', true);
@@ -1252,25 +1252,25 @@ define([
 		// Time info
 		var timeInfo = meshData.getAttributeBuffer('TIME_INFO');
 		var emissionRate = this.emissionRate;
-		if(this.localSpace){
+		if (this.localSpace) {
 			var steps = Math.min(Math.ceil(duration * 60), 1e5); // Should not need to emit more precise than 60Hz
 			var sum = 0;
 			var lastIntegral = 0;
 			var particleIndex = 0;
 			var fullIntegral = emissionRate.getIntegralValueAt(1);
-			for(var i=0; sum < maxParticles &&  i < steps; i++){
+			for (var i=0; sum < maxParticles &&  i < steps; i++) {
 				var currentIntegral = (Math.floor(i / steps) * fullIntegral + emissionRate.getIntegralValueAt((i / steps) % 1)) * duration;
 				var numToEmit = Math.floor(currentIntegral - sum);
 				lastIntegral = currentIntegral;
 				sum += numToEmit;
-				while(particleIndex < sum && particleIndex < maxParticles){
+				while (particleIndex < sum && particleIndex < maxParticles) {
 					particles[particleIndex++].emitTime = i / steps * duration;
 				}
-				if(particleIndex >= maxParticles){
+				if (particleIndex >= maxParticles) {
 					break;
 				}
 			}
-			while(particleIndex < maxParticles){
+			while (particleIndex < maxParticles) {
 				var particle = particles[particleIndex];
 				particle.emitTime = 2 * duration; // ???
 				particle.active = 0;
@@ -1288,14 +1288,14 @@ define([
 
 			if (this.localSpace) {
 
-				if(preWarm && loop){
+				if (preWarm && loop) {
 					// Already emitted, shift emit time back
 					particle.emitTime -= duration;
 				}
 
 				if (loop) {
 					var emitTime = particle.emitTime;
-					if(((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= duration && !preWarm))){
+					if (((!preWarm && emitTime >= 0) || preWarm) && ((emitTime <= 0 && preWarm) || (emitTime <= duration && !preWarm))) {
 						particle.active = 1;
 					} else {
 						particle.active = 0;
@@ -1360,7 +1360,7 @@ define([
 			var theta = Math.acos(2 * this._random() - 1);
 			var phi = 2 * pi * this._random();
 			var r = this.sphereRadius;
-			if(!this.sphereEmitFromShell){
+			if (!this.sphereEmitFromShell) {
 				r *= Math.cbrt(this._random());
 			}
 			position.setDirect(
@@ -1380,7 +1380,7 @@ define([
 			var coneLength = this.coneLength;
 			var y = yrand * coneLength;
 			var rad = this.coneRadius * Math.sqrt(this._random()) * yrand;
-			switch(this.coneEmitFrom){
+			switch (this.coneEmitFrom) {
 			case 'base':
 				// Somewhere in the base
 				var ra = Math.sqrt(this._random());
@@ -1412,7 +1412,7 @@ define([
 					r2 * cos(phi),
 					this.coneLength,
 					r2 * sin(phi)
-				)
+				);
 				position.lerp(direction, this._random());
 				direction.sub(position);
 				break;
@@ -1441,7 +1441,7 @@ define([
 			).mul(this.boxExtents);
 			direction.setDirect(0, 1, 0);
 		}
-		if(this.randomDirection){
+		if (this.randomDirection) {
 			var theta = Math.acos(2 * this._random() - 1);
 			var phi = 2 * pi * this._random();
 			direction.setDirect(
@@ -1508,7 +1508,7 @@ define([
 	 * @private
 	 */
 	ParticleSystemComponent.prototype._updateBounds = function () {
-		if(!this.meshEntity || !this.meshEntity.meshRendererComponent.worldBound){
+		if (!this.meshEntity || !this.meshEntity.meshRendererComponent.worldBound) {
 			return;
 		}
 		var bounds = this.meshEntity.meshRendererComponent.worldBound;
@@ -1530,7 +1530,7 @@ define([
 
 		// Update sort values
 		var l = particles.length;
-		while(l--){
+		while (l--) {
 			var particle = particles[l];
 			particle.sortValue = -particle.getWorldPosition(tmpWorldPos).dot(Renderer.mainCamera._direction);
 		}
@@ -1555,7 +1555,7 @@ define([
 	var tmpPos = new Vector3();
 	var tmpDir = new Vector3();
 
-	function copyPositionAndRotation(destTransform, srcTransform){
+	function copyPositionAndRotation(destTransform, srcTransform) {
 		destTransform.rotation.copy(srcTransform.rotation);
 		destTransform.translation.copy(srcTransform.translation);
 		destTransform.update();
@@ -1566,14 +1566,16 @@ define([
 	 * @param entity
 	 */
 	ParticleSystemComponent.prototype.process = function (tpf) {
-		if(this._vertexDataDirty){
+		if (this._vertexDataDirty) {
 			this._updateVertexData();
 			this._vertexDataDirty = false;
 		}
 
 		this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
 
-		if(this.paused) return;
+		if (this.paused) {
+			return;
+		}
 
 		this._lastTime = this.time;
 		this.time += tpf;
@@ -1584,7 +1586,7 @@ define([
 		var particles = this.particles;
 		var maxParticles = this.maxParticles;
 
-		if(this.localSpace){
+		if (this.localSpace) {
 
 			// Copy the parent mesh translation and rotation.
 			var meshEntity = this.meshEntity;
@@ -1599,14 +1601,14 @@ define([
 			var duration = this.duration;
 			var normalizedTime = mod(time / duration, 1);
 			var numToEmit = Math.floor(time * emissionRate.getValueAt(normalizedTime, this._random())) - Math.floor(this._lastTime * emissionRate.getValueAt(normalizedTime, this._random()));
-			if(!loop && time > duration){
+			if (!loop && time > duration) {
 				numToEmit = 0;
 			}
 			for (var i = 0; i < numToEmit; i++) {
 
-				if(loop){
+				if (loop) {
 					var particle = this._findGoodParticle();
-					if(!particle){
+					if (!particle) {
 						continue;
 					} else {
 						this._nextEmitParticleIndex = particle.index;
@@ -1614,7 +1616,7 @@ define([
 				} else {
 					var particle = particles[this._nextEmitParticleIndex];
 					var age = time - particle.emitTime;
-					if(particle.active){
+					if (particle.active) {
 						continue;
 					}
 				}
@@ -1642,10 +1644,10 @@ define([
 		var time = this.time;
 		var duration = this.duration;
 		var particles = this.particles;
-		for(var i=this._nextEmitParticleIndex; i<this._nextEmitParticleIndex + particles.length; i++){
+		for (var i=this._nextEmitParticleIndex; i<this._nextEmitParticleIndex + particles.length; i++) {
 			var particle = particles[i % particles.length];
 			var age = time - particle.emitTime;
-			if(age > particle.lifeTime){
+			if (age > particle.lifeTime) {
 				return particle;
 			}
 		}

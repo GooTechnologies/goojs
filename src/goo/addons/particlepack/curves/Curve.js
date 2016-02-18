@@ -80,7 +80,7 @@ define([], function () {
 		/**
 		 * @returns {Curve}
 		 */
-		clone: function(){
+		clone: function() {
 			return new this.constructor(this);
 		}
 	};

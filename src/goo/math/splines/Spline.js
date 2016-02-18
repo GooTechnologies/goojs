@@ -52,7 +52,7 @@ define([
 			var it = 1 - t;
 			var it2 = it * it;
 
-			if(store instanceof Vector4){
+			if (store instanceof Vector4) {
 				p0.copyTo(term0_v4);
 				term0_v4.scale(it2);
 
@@ -63,7 +63,7 @@ define([
 				term2_v4.scale(t2);
 
 				store.set(term0_v4).add(term1_v4).add(term2_v4);
-			} else if(store instanceof Vector3){
+			} else if (store instanceof Vector3) {
 				p0.copyTo(term0_v3);
 				term0_v3.scale(it2);
 
@@ -74,7 +74,7 @@ define([
 				term2_v3.scale(t2);
 
 				store.set(term0_v3).add(term1_v3).add(term2_v3);
-			} else if(store instanceof Vector2){
+			} else if (store instanceof Vector2) {
 				p0.copyTo(term0_v2);
 				term0_v2.scale(it2);
 
@@ -129,7 +129,7 @@ define([
 			var it2 = it * it;
 			var it3 = it2 * it;
 
-			if(store instanceof Vector4){
+			if (store instanceof Vector4) {
 				p0.copyTo(term0_v4);
 				term0_v4.scale(it3);
 
@@ -143,7 +143,7 @@ define([
 				term3_v4.scale(t3);
 
 				store.set(term0_v4).add(term1_v4).add(term2_v4).add(term3_v4);
-			} else if(store instanceof Vector3){
+			} else if (store instanceof Vector3) {
 				p0.copyTo(term0_v3);
 				term0_v3.scale(it3);
 
@@ -157,7 +157,7 @@ define([
 				term3_v3.scale(t3);
 
 				store.set(term0_v3).add(term1_v3).add(term2_v3).add(term3_v3);
-			} else if(store instanceof Vector2){
+			} else if (store instanceof Vector2) {
 				p0.copyTo(term0_v2);
 				term0_v2.scale(it3);
 

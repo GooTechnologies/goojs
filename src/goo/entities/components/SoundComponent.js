@@ -70,7 +70,7 @@ define([
 	 */
 	SoundComponent.prototype.addSound = function (sound) {
 		if (this.sounds.indexOf(sound) === -1) {
-			if(sound.spatialize){
+			if (sound.spatialize) {
 				sound.connectTo([this._inNode, this._outWetNode]);
 			} else {
 				sound.connectTo([this._inNode2d]);
@@ -90,7 +90,7 @@ define([
 			sound.stop();
 			this.sounds.splice(idx, 1);
 
-			if(sound.spatialize){
+			if (sound.spatialize) {
 				sound.disconnectFrom([this._inNode, this._outWetNode]);
 			} else {
 				sound.disconnectFrom([this._inNode2d]);

@@ -39,11 +39,11 @@ define([
 	Vector4Curve.prototype.constructor = Vector4Curve;
 
 	Vector4Curve.prototype.toGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c){ return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
+		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c) { return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector4Curve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
-		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c){ return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
+		return 'vec4(' + [this.x, this.y, this.z, this.w].map(function(c) { return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 	};
 
 	Vector4Curve.prototype.getVec4ValueAt = function (t, lerpValue, store) {

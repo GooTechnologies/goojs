@@ -28,7 +28,7 @@ define([
 			if (event.touches && event.touches.length) {
 				x = event.touches[0].clientX;
 				y = event.touches[0].clientY;
-			} else if(event.changedTouches && event.changedTouches.length){
+			} else if (event.changedTouches && event.changedTouches.length) {
 				x = event.changedTouches[0].pageX;
 				y = event.changedTouches[0].pageY;
 			} else {
