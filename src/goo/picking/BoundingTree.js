@@ -182,7 +182,7 @@ define([
 			for (var i = this.start; i < this.end; i++) {
 				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
 				for (var t = 0; t < vertices.length; t++) {
-					worldTransform.matrix.applyPostPoint(vertices[t]);
+					vertices[t].applyPostPoint(worldTransform.matrix);
 				}
 				if (ray.intersects(vertices, false, vecStore)) {
 					result.distances = result.distances || [];
