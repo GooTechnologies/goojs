@@ -90,8 +90,8 @@ define([
 		var transform = entity.transformComponent.transform;
 
 		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
-		var l = this.easing(t);
-		Quaternion.slerp(this.quatFrom, this.quatTo, l, this.quatFinal);
+		var fT = this.easing(t);
+		Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
 
 		this.quatFinal.toRotationMatrix(transform.rotation);
 		entity.transformComponent.setUpdated();

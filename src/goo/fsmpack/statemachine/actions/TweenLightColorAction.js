@@ -1,14 +1,19 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/math/Vector3',
 	'goo/util/TWEEN'
 ], function (
 	Action,
+	Vector3,
 	TWEEN
 ) {
 	'use strict';
 
 	function TweenLightColorAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.fromCol = new Vector3();
+		this.toCol = new Vector3();
 	}
 
 	TweenLightColorAction.prototype = Object.create(Action.prototype);
@@ -56,48 +61,40 @@ define([
 		}]
 	};
 
-	TweenLightColorAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenLightColorAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	TweenLightColorAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
-
 		var entity = fsm.getOwnerEntity();
-		if (entity.lightComponent) {
-			var lightComponent = entity.lightComponent;
-			var color = lightComponent.light.color;
-			var time = entity._world.time * 1000;
-
-			var fakeFrom = { x: color.x, y: color.y, z: color.z };
-			var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
-
-			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
-
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				color.x += this.x - old.x;
-				color.y += this.y - old.y;
-				color.z += this.z - old.z;
-
-				old.x = this.x;
-				old.y = this.y;
-				old.z = this.z;
-			}).onComplete(function () {
-					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(time);
+		if (!entity.lightComponent) {
+			return;
 		}
+
+		this.fromCol.set(entity.lightComponent.light.color);
+		this.toCol.setDirect(this.to[0], this.to[1], this.to[2]);
+
+		this.startTime = fsm.getTime();
 	};
 
-	TweenLightColorAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+	TweenLightColorAction.prototype.update = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		if (!entity.lightComponent) {
+			return;
+		}
+
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
+
+		var color = entity.lightComponent.light.color;
+		color.set(this.fromCol).lerp(this.toCol, fT);
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
 		}
 	};
 
