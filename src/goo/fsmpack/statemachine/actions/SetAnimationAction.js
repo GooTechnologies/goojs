@@ -80,5 +80,11 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		}
 	};
 
+	SetAnimationAction.prototype.exit = function (fsm) {
+		this._transitioned = false;
+		this._loopAtStart = null;
+		this._previousLoop = 0;
+	};
+
 	return SetAnimationAction;
 });
