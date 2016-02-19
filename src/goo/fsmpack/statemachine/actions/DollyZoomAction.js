@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/math/MathUtils',
 	'goo/math/Vector3',
 	'goo/util/TWEEN'
 ], function (
 	Action,
+	MathUtils,
 	Vector3,
 	TWEEN
 ) {
@@ -11,6 +13,9 @@ define([
 
 	function DollyZoomAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.from = new Vector3();
+		this.to = new Vector3();
 	}
 
 	DollyZoomAction.prototype = Object.create(Action.prototype);
@@ -62,35 +67,40 @@ define([
 		}]
 	};
 
-	DollyZoomAction.prototype.configure = function (settings) {
-		this.forward = settings.forward;
-		this.lookAt = settings.lookAt;
-		this.time = settings.time;
-
-		if (settings.easing1 === 'Linear') {
+	DollyZoomAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
-		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
 	DollyZoomAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
 		var entity = fsm.getOwnerEntity();
 
 		if (entity.cameraComponent && entity.cameraComponent.camera) {
+			var transformComponent = entity.transformComponent;
+			var translation = transformComponent.transform.translation;
 			var camera = entity.cameraComponent.camera;
-			this.initialDistance = new Vector3(this.lookAt).distance(camera.translation);
-			this.eyeTargetScale = Math.tan(camera.fov * (Math.PI / 180) / 2) * this.initialDistance;
+
+			this.fromDistance = new Vector3(this.lookAt).distance(camera.translation);
+			this.toDistance = this.fromDistance - this.forward;
+
+			this.eyeTargetScale = Math.tan(camera.fov * (Math.PI / 180) / 2) * this.fromDistance;
+
+			var initialTranslation = new Vector3().copy(translation);
+			var toVec = Vector3.fromArray(this.lookAt)
+				.sub(initialTranslation)
+				.normalize()
+				.scale(this.forward)
+				.add(initialTranslation);
+
+			this.from.set(initialTranslation.x, initialTranslation.y, initialTranslation.z);
+			this.to.setDirect(toVec.x, toVec.y, toVec.z);
+
+			this.startTime = fsm.getTime();
 		} else {
 			this.eyeTargetScale = null;
-		}
-	};
-
-	DollyZoomAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
 		}
 	};
 
@@ -98,39 +108,21 @@ define([
 		if (this.eyeTargetScale) {
 			var entity = fsm.getOwnerEntity();
 			var transformComponent = entity.transformComponent;
-			var translation = transformComponent.transform.translation;
-			var initialTranslation = new Vector3().copy(translation);
 			var camera = entity.cameraComponent.camera;
-			var time = entity._world.time * 1000;
 
-			var to = Vector3.fromArray(this.lookAt)
-				.sub(initialTranslation)
-				.normalize()
-				.scale(this.forward)
-				.add(initialTranslation);
+			var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+			var fT = this.easing(t);
 
-			var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z, d: this.initialDistance };
-			var fakeTo = { x: to.x, y: to.y, z: to.z, d: +this.initialDistance - +this.forward };
+			transformComponent.transform.translation.set(this.from).lerp(this.to, fT);
+			transformComponent.setUpdated();
 
-			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
-			var that = this;
+			var d = MathUtils.lerp(fT, this.fromDistance, this.toDistance);
+			var fov = (180 / Math.PI) * 2 * Math.atan(this.eyeTargetScale / d);
+			camera.setFrustumPerspective(fov);
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				translation.x += this.x - old.x;
-				translation.y += this.y - old.y;
-				translation.z += this.z - old.z;
-
-				old.x = this.x;
-				old.y = this.y;
-				old.z = this.z;
-
-				transformComponent.setUpdated();
-
-				var fov = (180 / Math.PI) * 2 * Math.atan(that.eyeTargetScale / this.d);
-				camera.setFrustumPerspective(fov);
-			}).onComplete(function () {
-				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+			if (t >= 1) {
+				fsm.send(this.transitions.complete);
+			}
 		}
 	};
 
