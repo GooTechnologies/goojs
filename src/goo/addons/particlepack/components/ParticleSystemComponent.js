@@ -1370,10 +1370,7 @@ define([
 				sin(phi) * sin(theta)
 			);
 		} else if (shapeType === 'cone') {
-
 			var phi = 2 * pi * this._random();
-			var yrand = this._random();
-			var coneLength = this.coneLength;
 			switch (this.coneEmitFrom) {
 			case 'base':
 				// Somewhere in the base

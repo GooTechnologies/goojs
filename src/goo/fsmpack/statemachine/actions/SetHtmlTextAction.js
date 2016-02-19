@@ -1,9 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ], function (
-	Action,
-	FsmUtils
+	Action
 ) {
 	'use strict';
 
