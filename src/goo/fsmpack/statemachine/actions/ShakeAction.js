@@ -1,9 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
+	'goo/math/MathUtils',
 	'goo/math/Vector3',
 	'goo/util/TWEEN'
 ], function (
 	Action,
+	MathUtils,
 	Vector3,
 	TWEEN
 ) {
@@ -11,6 +13,10 @@ define([
 
 	function ShakeAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.oldVal = new Vector3();
+		this.target = new Vector3();
+		this.vel = new Vector3();
 	}
 
 	ShakeAction.prototype = Object.create(Action.prototype);
@@ -61,54 +67,52 @@ define([
 		this.time = settings.time;
 		this.speed = { 'Fast': 1, 'Medium': 2, 'Slow': 4 }[settings.speed];
 		this.easing = TWEEN.Easing.Quadratic.InOut;
-		this.eventToEmit = { channel: settings.transitions.complete };
+		this.eventToEmit = settings.transitions.complete;
 	};
 
 	ShakeAction.prototype.enter = function (fsm) {
-		this.tween = new TWEEN.Tween();
+		this.oldVal.set(Vector3.ZERO);
+		this.target.set(Vector3.ZERO);
+		this.vel.set(Vector3.ZERO);
+		this.iter = 0;
+		this.startTime = fsm.getTime();
+	};
 
+	ShakeAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var time = entity._world.time * 1000;
 
-		var oldVal = new Vector3();
-		var target = new Vector3();
-		var vel = new Vector3();
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
 
-		var that = this;
-		var iter = 0;
-		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function () {
-			iter++;
-			if (iter > that.speed) {
-				iter = 0;
+		var level = MathUtils.lerp(fT, this.startLevel, this.endLevel);
 
-				target.setDirect(
-					-oldVal.x + (Math.random() - 0.5) * this.level * 2,
-					-oldVal.y + (Math.random() - 0.5) * this.level * 2,
-					-oldVal.z + (Math.random() - 0.5) * this.level * 2
-				);
-			}
+		this.iter++;
+		if (this.iter > this.speed) {
+			this.iter = 0;
 
-			vel.setDirect(
-				vel.x * 0.98 + (target.x) * 0.1,
-				vel.y * 0.98 + (target.y) * 0.1,
-				vel.z * 0.98 + (target.z) * 0.1
+			this.target.setDirect(
+				-this.oldVal.x + (Math.random() - 0.5) * level * 2,
+				-this.oldVal.y + (Math.random() - 0.5) * level * 2,
+				-this.oldVal.z + (Math.random() - 0.5) * level * 2
 			);
+		}
 
-			translation.add(vel).sub(oldVal);
-			oldVal.copy(vel);
-			transformComponent.setUpdated();
-		}).onComplete(function () {
-			translation.sub(oldVal);
-			transformComponent.setUpdated();
-			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(time);
-	};
+		this.vel.setDirect(
+			this.vel.x * 0.98 + (this.target.x) * 0.1,
+			this.vel.y * 0.98 + (this.target.y) * 0.1,
+			this.vel.z * 0.98 + (this.target.z) * 0.1
+		);
 
-	ShakeAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+		translation.add(this.vel).sub(this.oldVal);
+		this.oldVal.copy(this.vel);
+		transformComponent.setUpdated();
+
+		if (t >= 1) {
+			translation.sub(this.oldVal);
+			transformComponent.setUpdated();
+			fsm.send(this.eventToEmit);
 		}
 	};
 
