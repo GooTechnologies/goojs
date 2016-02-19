@@ -12,14 +12,19 @@ define([
 	'use strict';
 
 	/**
-	 * Vector with 3 components
+	 * Vector with 3 components.
 	 * @extends Vector
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)
+	 * var zero = new Vector3();
+	 * var a = new Vector3(1, 2, 3);
+	 * var b = new Vector3([1, 2, 3]); // Create from array
+	 * var c = new Vector3(otherVector); // Create from other Vector3
+	 *
+	 * // Methods return the self object and allows for chaining:
+	 * a.add(b).sub(c); // a = a + b - c
 	 */
 	function Vector3(x, y, z) {
 		// #ifdef DEBUG
@@ -130,9 +135,9 @@ define([
 	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * v1.add(v2); // v1 == (5, 7, 9)
+	 * var a = new Vector3(1, 2, 3);
+	 * var b = new Vector3(4, 5, 6);
+	 * a.add(b); // a == (5, 7, 9)
 	 */
 	Vector3.prototype.add = function (rhs) {
 		if (rhs instanceof Vector3) {
@@ -184,9 +189,9 @@ define([
 	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(4, 5, 6);
-	 * var v2 = new Vector3(1, 2, 3);
-	 * v1.sub(v2); // v1 == (3, 3, 3)
+	 * var a = new Vector3(4, 5, 6);
+	 * var b = new Vector3(1, 2, 3);
+	 * a.sub(b); // a == (3, 3, 3)
 	 */
 	Vector3.prototype.sub = function (rhs) {
 		this.x -= rhs.x;
@@ -231,9 +236,9 @@ define([
 	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(4, 5, 6);
-	 * var v2 = new Vector3(1, 2, 3);
-	 * v1.mul(v2); // v1 == (4, 10, 18)
+	 * var a = new Vector3(4, 5, 6);
+	 * var b = new Vector3(1, 2, 3);
+	 * a.mul(b); // a == (4, 10, 18)
 	 */
 	Vector3.prototype.mul = function (rhs) {
 		if (typeof (rhs) === 'number') {
@@ -272,6 +277,9 @@ define([
 	 * Scales the vector by a factor
 	 * @param {number} factor
 	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v = new Vector3(1, 2, 3);
+	 * v.scale(2); // v == (2, 4, 6)
 	 */
 	Vector3.prototype.scale = function (factor) {
 		this.x *= factor;
@@ -326,6 +334,10 @@ define([
 	 * Computes the dot product between the current vector and another vector
 	 * @param {Vector3} rhs
 	 * @returns {number}
+	 * @example
+	 * var a = new Vector3(1, 0, 0);
+	 * var b = new Vector3(0, 1, 0);
+	 * a.dot(b) === 0; // true
 	 */
 	Vector3.prototype.dot = function (rhs) {
 		return this.x * rhs.x +
@@ -352,9 +364,10 @@ define([
 	 * @returns {boolean}
 	 */
 	Vector3.prototype.equals = function (rhs) {
-		return (Math.abs(this.x - rhs.x) <= MathUtils.EPSILON) &&
-			(Math.abs(this.y - rhs.y) <= MathUtils.EPSILON) &&
-			(Math.abs(this.z - rhs.z) <= MathUtils.EPSILON);
+		var eps = MathUtils.EPSILON;
+		return (Math.abs(this.x - rhs.x) <= eps) &&
+			(Math.abs(this.y - rhs.y) <= eps) &&
+			(Math.abs(this.z - rhs.z) <= eps);
 	};
 
 	/**
@@ -365,9 +378,10 @@ define([
 	 * @returns {boolean}
 	 */
 	Vector3.prototype.equalsDirect = function (x, y, z) {
-		return (Math.abs(this.x - x) <= MathUtils.EPSILON) &&
-			(Math.abs(this.y - y) <= MathUtils.EPSILON) &&
-			(Math.abs(this.z - z) <= MathUtils.EPSILON);
+		var eps = MathUtils.EPSILON;
+		return (Math.abs(this.x - x) <= eps) &&
+			(Math.abs(this.y - y) <= eps) &&
+			(Math.abs(this.z - z) <= eps);
 	};
 
 	/**
@@ -375,9 +389,9 @@ define([
 	 * @param {Vector3} rhs
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(0, 1, 0);
-	 * var v2 = new Vector3(0, 0, -1);
-	 * v1.cross(v2); // v1 == (-1, 0, 0)
+	 * var a = new Vector3(0, 1, 0);
+	 * var b = new Vector3(0, 0, -1);
+	 * a.cross(b); // a == (-1, 0, 0)
 	 */
 	Vector3.prototype.cross = function (rhs) {
 		var x = this.x;
@@ -398,9 +412,9 @@ define([
 	 * @param {number} z
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(0, 1, 0);
-	 * var v2 = new Vector3(0, 0, -1);
-	 * v1.cross(v2); // v1 == (-1, 0, 0)
+	 * var a = new Vector3(0, 1, 0);
+	 * var b = new Vector3(0, 0, -1);
+	 * a.cross(b); // a == (-1, 0, 0)
 	 */
 	Vector3.prototype.crossDirect = function (x, y, z) {
 		var thisX = this.x;
@@ -550,9 +564,9 @@ define([
 	 * @param {Vector3} rhs Vector3
 	 * @returns {number} distance squared
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(0, 9, 0);
-	 * v1.distanceSquared(v2); // 81
+	 * var a = new Vector3(); // a == (0, 0, 0)
+	 * var b = new Vector3(0, 9, 0);
+	 * a.distanceSquared(b); // 81
 	 */
 	Vector3.prototype.distanceSquared = function (rhs) {
 		var deltaX = this.x - rhs.x;
@@ -569,9 +583,9 @@ define([
 	 * @param {Vector3} rhs Vector3
 	 * @returns {number} distance
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(0, 9, 0);
-	 * v1.distance(v2); // 9
+	 * var a = new Vector3(); // a == (0, 0, 0)
+	 * var b = new Vector3(0, 9, 0);
+	 * a.distance(b); // 9
 	 */
 	Vector3.prototype.distance = function (rhs) {
 		return Math.sqrt(this.distanceSquared(rhs));

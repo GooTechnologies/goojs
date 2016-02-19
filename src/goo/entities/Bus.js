@@ -3,6 +3,18 @@ define(function () {
 
 	/**
 	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
+	 * @example
+	 * // Listen to an event on the global system bus
+	 * function listener() {
+	 *     console.log('caught message!');
+	 * }
+	 * SystemBus.addListener('eventName', listener);
+	 * 
+	 * // Emit an event on the bus
+	 * SystemBus.emit('eventName');
+	 *
+	 * // Remove the listener after you're done with it
+	 * SystemBus.removeListener('eventName', listener);
 	 */
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: new Map() };
@@ -14,6 +26,10 @@ define(function () {
 	 * @param {(string | Array<string>)} channels channel(s) addressed
 	 * @param {Object} data
 	 * @param {boolean} [storeEmit=false] Store the emit data for transmitting to future listeners
+	 * @example
+	 * bus.emit('emptyEvent');
+	 * bus.emit('eventWithData', data);
+	 * bus.emit(['channel1', 'channel2'], data);
 	 */
 	Bus.prototype.emit = function (channels, data, storeEmit) {
 		storeEmit = !!storeEmit;
@@ -27,17 +43,6 @@ define(function () {
 		}
 
 		return this;
-	};
-
-	/**
-	 * Retrieves the last message sent on a channel. This will only work if message preservation is enabled when emitting.
-	 * @param channelName
-	 */
-	Bus.prototype.getLastMessageOn = function (channelName) {
-		var node = this._getNode(channelName);
-		if (node) {
-			return node.latestData;
-		}
 	};
 
 	Bus.prototype._getNode = function (channelName, storeEmit) {
@@ -106,6 +111,10 @@ define(function () {
 	 * @param {string} channelName
 	 * @param {Function} callback function (data)
 	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
+	 * @example
+	 * bus.addListener('channel', function(data){
+	 *     console.log('Received message with data:', data);
+	 * });
 	 */
 	Bus.prototype.addListener = function (channelName, callback, retrieveLatestEmit) {
 		retrieveLatestEmit = !!retrieveLatestEmit;
@@ -149,13 +158,26 @@ define(function () {
 
 	/**
 	 * Remove a listener from a channel but not from its children
-	 * @param channelName
-	 * @param callbackToRemove
+	 * @param {string} channelName
+	 * @param {function} callbackToRemove
+	 * @example
+	 * bus.removeListener('channel', listener);
 	 */
 	Bus.prototype.removeListener = function (channelName, callbackToRemove) {
 		var node = this._getNode(channelName);
 		if (node) { nullifyElement(node.listeners, callbackToRemove); }
 		return this;
+	};
+
+	/**
+	 * Retrieves the last message sent on a channel. This will only work if message preservation is enabled when emitting.
+	 * @param channelName
+	 */
+	Bus.prototype.getLastMessageOn = function (channelName) {
+		var node = this._getNode(channelName);
+		if (node) {
+			return node.latestData;
+		}
 	};
 
 	/**
