@@ -45,7 +45,7 @@
 				</span>
 			{{/constructor.comment.extends}}
 		</h1>
-		<span class="path">goo/{{requirePath}}</span>
+		<span class="path">goo/{{requirePath}}{{#pack}} (requires {{.}}.js){{/pack}}</span>
 		<div class="class-description roboto">
 			<div>{{{constructor.comment.description}}}</div>
 

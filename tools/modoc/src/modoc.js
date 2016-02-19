@@ -78,6 +78,22 @@ function resolveRequirePaths(classes, index) {
 	});
 }
 
+function resolvePacks(classes, index) {
+	index.forEach(function (group) {
+		group.classes.forEach(function (entry) {
+			var className = entry.name;
+			var class_ = classes[className];
+
+			if (!class_.pack) {
+				var m = entry.requirePath.match(/([a-zA-Z\d]+pack)\//);
+				if(m && m.length >= 2){
+					class_.pack = m[1];
+				}
+			}
+		});
+	});
+}
+
 function buildClasses(classes) {
 	var classTemplate = fs.readFileSync(
 		args.templatesPath + util.PATH_SEPARATOR + 'class.handlebars', { encoding: 'utf8' });
@@ -193,6 +209,7 @@ copyStaticFiles(function () {
 	var classes = trunk.compileDoc(files);
 	var index = indexBuilder.getIndex(classes, 'goo');
 	resolveRequirePaths(classes, index);
+	resolvePacks(classes, index);
 
 	buildClasses(classes);
 	buildIndex(index);
