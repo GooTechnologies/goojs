@@ -194,6 +194,14 @@ define([
 		this.vertexData._dataNeedsRefresh = true;
 	};
 
+	/**
+	 * Should be called if an attribute was updated during runtime.
+	 * @example
+	 * // Updating the vertex position during runtime
+	 * var data = meshData.getAttributeBuffer(MeshData.POSITION);
+	 * data.set([-1,-1,0, -1,1,0, 1,1,0, 1,-1,0]);
+	 * meshData.setAttributeDataUpdated(MeshData.POSITION);
+	 */
 	MeshData.prototype.setAttributeDataUpdated = function (name) {
 		this._dirtyAttributeNames.add(name);
 		this._attributeDataNeedsRefresh = true;
