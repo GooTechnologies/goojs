@@ -30,7 +30,7 @@ define([
 		return Curve.numberToGLSL(this.value);
 	};
 
-	ConstantCurve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
+	ConstantCurve.prototype.integralToGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
 		var value = Curve.numberToGLSL(this.value);
 		return '(' + value + '*' + timeVariableName + ')';
 	};
