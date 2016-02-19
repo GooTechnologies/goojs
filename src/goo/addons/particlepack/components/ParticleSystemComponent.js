@@ -35,10 +35,6 @@ define([
 	    return ((a % b) + b) % b;
 	}
 
-	function hasParent(entity) {
-		return !!(entity.transformComponent.parent && entity.transformComponent.parent.entity.name !== 'root');
-	}
-
 	var defines = {
 		START_LIFETIME_CODE: '5.0',
 		START_SIZE_CODE: '1.0',
@@ -1374,12 +1370,7 @@ define([
 				sin(phi) * sin(theta)
 			);
 		} else if (shapeType === 'cone') {
-
 			var phi = 2 * pi * this._random();
-			var yrand = this._random();
-			var coneLength = this.coneLength;
-			var y = yrand * coneLength;
-			var rad = this.coneRadius * Math.sqrt(this._random()) * yrand;
 			switch (this.coneEmitFrom) {
 			case 'base':
 				// Somewhere in the base
@@ -1584,7 +1575,6 @@ define([
 		var entity = this.entity;
 		var worldTransform = entity.transformComponent.worldTransform;
 		var particles = this.particles;
-		var maxParticles = this.maxParticles;
 
 		if (this.localSpace) {
 
@@ -1615,7 +1605,6 @@ define([
 					}
 				} else {
 					var particle = particles[this._nextEmitParticleIndex];
-					var age = time - particle.emitTime;
 					if (particle.active) {
 						continue;
 					}
@@ -1642,7 +1631,6 @@ define([
 
 	ParticleSystemComponent.prototype._findGoodParticle = function () {
 		var time = this.time;
-		var duration = this.duration;
 		var particles = this.particles;
 		for (var i=this._nextEmitParticleIndex; i<this._nextEmitParticleIndex + particles.length; i++) {
 			var particle = particles[i % particles.length];
@@ -1678,7 +1666,7 @@ define([
 		var meshRendererComponent = new MeshRendererComponent(this.material);
 		meshRendererComponent.castShadows = meshRendererComponent.receiveShadows = meshRendererComponent.isPickable = meshRendererComponent.isReflectable = false;
 		
-		var meshEntity = this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
+		this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
 			.set(meshRendererComponent)
 			.addToWorld();
 

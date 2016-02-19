@@ -76,15 +76,16 @@ function (
 	 * @private
 	 * @param  {array} entities
 	 */
-	ParticleDebugRenderSystem.prototype.process = function (entities, tpf) {
+	ParticleDebugRenderSystem.prototype.process = function (entities) {
 		for (var i=0; i<entities.length; i++) {
 			var entity = entities[i];
 			var meshEntity = entity.particleSystemComponent.meshEntity;
 			if (meshEntity) {
-				if (entity.isVisiblyHidden())
+				if (entity.isVisiblyHidden()) {
 					meshEntity.meshRendererComponent.hidden = true;
-				else 
+				} else {
 					meshEntity.meshRendererComponent.hidden = !this._shouldRenderDebugForEntity(entity);
+				}
 			}
 		}
 	};
