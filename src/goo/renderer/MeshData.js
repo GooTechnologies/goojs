@@ -25,6 +25,28 @@ define([
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer
 	 * @param {number} indexCount Number of indices in buffer
+	 * @example
+	 * // Constructing a quad entity
+	 * var attributes = [MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0];
+	 * var attributeMap = MeshData.defaultMap(attributes);
+	 * var vertexCount = 4;
+	 * var indexCount = 6;
+	 * var meshData = new MeshData(attributeMap, vertexCount, indexCount);
+	 * meshData.getAttributeBuffer(MeshData.POSITION).set([
+	 *     -1, -1, 0, // 0
+	 *     -1, 1, 0,  // 1
+	 *      1, 1, 0,  // 2
+	 *      1, -1, 0  // 3
+	 * ]);
+	 * meshData.getAttributeBuffer(MeshData.NORMAL).set([
+	 *     0,0,1,  0,0,1,  0,0,1,  0,0,1
+	 * ]);
+	 * meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
+	 *     0,0,  0,1,  1,1,  1,0
+	 * ]);
+	 * meshData.getIndexBuffer().set([0,3,1, 1,3,2]);
+	 * 
+	 * var quadEntity = world.createEntity(meshData, new Material(ShaderLib.textured)).addToWorld();
 	 */
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
