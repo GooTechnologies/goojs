@@ -207,10 +207,16 @@ define([
 		this._attributeDataNeedsRefresh = true;
 	};
 
+	/**
+	 * @returns {number}
+	 */
 	MeshData.prototype.getSectionCount = function () {
 		return this.indexLengths ? this.indexLengths.length : 1;
 	};
 
+	/**
+	 * @returns {number}
+	 */
 	MeshData.prototype.getPrimitiveCount = function (section) {
 		if (section >= 0 && section < this.primitiveCounts.length) {
 			return this.primitiveCounts[section];
@@ -218,6 +224,12 @@ define([
 		return 0;
 	};
 
+	/**
+	 * @param {number} primitiveIndex
+	 * @param {number} section
+	 * @param {array} store
+	 * @returns {array}
+	 */
 	MeshData.prototype.getPrimitiveVertices = function (primitiveIndex, section, store) {
 		var count = this.getPrimitiveCount(section);
 		if (primitiveIndex >= count || primitiveIndex < 0) {
@@ -297,7 +309,10 @@ define([
 		return index;
 	};
 
-	//! AT: unused
+	/**
+	 * Get the total primitive count. Note that you need to run .updatePrimitiveCounts() before use.
+	 * @returns {number}
+	 */
 	MeshData.prototype.getTotalPrimitiveCount = function () {
 		var count = 0;
 		for (var i = 0, max = this.primitiveCounts.length; i < max; i++) {
