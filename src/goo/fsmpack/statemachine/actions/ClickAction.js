@@ -96,7 +96,7 @@ define([
 				}
 			});
 		};
-		
+
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 

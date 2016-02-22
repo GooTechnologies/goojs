@@ -40,17 +40,29 @@ define([
 		transitions: []
 	};
 
+	CopyVariableAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.copy(fsm);
+		}
+	};
+
 	CopyVariableAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.copy(fsm);
+		}
+	};
+
+	CopyVariableAction.prototype.copy = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
 		if (this.variableTarget && ownerEntity) {
 			try {
+				var val;
 				if (this.variableSource) {
-					var val = FsmUtils.getValue(this.variableSource, fsm);
-					eval('ownerEntity.'+this.variableTarget+'='+val);
+					val = FsmUtils.getValue(this.variableSource, fsm);
 				} else {
-					var val = FsmUtils.getValue(this.value, fsm);
-					eval('ownerEntity.'+this.variableTarget+'='+val);
+					val = FsmUtils.getValue(this.value, fsm);
 				}
+				ownerEntity[this.variableTarget] = val;
 			} catch (err) {
 				console.warn(err);
 			}

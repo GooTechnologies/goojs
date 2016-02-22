@@ -36,10 +36,22 @@ define([
 		transitions: []
 	};
 
-	AddVariableAction.prototype.update = function (fsm) {
+	AddVariableAction.prototype.add = function (fsm) {
 		fsm.applyOnVariable(this.variable, function (v) {
 			return v + FsmUtils.getValue(this.amount, fsm);
 		}.bind(this));
+	};
+
+	AddVariableAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.add(fsm);
+		}
+	};
+
+	AddVariableAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.add(fsm);
+		}
 	};
 
 	return AddVariableAction;
