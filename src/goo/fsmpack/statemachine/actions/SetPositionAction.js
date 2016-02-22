@@ -64,14 +64,6 @@ define([
 				FsmUtils.getValue(this.amountZ, fsm)
 			);
 			this.entity.transformComponent.setUpdated();
-
-			/*
-			// Hack for box2d physics, tmp
-			if (this.entity.body) {
-				var translation = this.entity.transformComponent.transform.translation;
-				this.entity.body.SetTransform(new window.Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
-			}
-			*/
 		}
 	};
 

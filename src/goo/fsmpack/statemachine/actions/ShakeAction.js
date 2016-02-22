@@ -65,7 +65,7 @@ define([
 		this.startLevel = settings.startLevel;
 		this.endLevel = settings.endLevel;
 		this.time = settings.time;
-		this.speed = { 'Fast': 1, 'Medium': 2, 'Slow': 4 }[settings.speed];
+		this.speed = { Fast: 1, Medium: 2, Slow: 4 }[settings.speed];
 		this.easing = TWEEN.Easing.Quadratic.InOut;
 		this.eventToEmit = settings.transitions.complete;
 	};
@@ -76,9 +76,13 @@ define([
 		this.vel.set(Vector3.ZERO);
 		this.iter = 0;
 		this.startTime = fsm.getTime();
+		this.completed = false;
 	};
 
 	ShakeAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -113,6 +117,7 @@ define([
 			translation.sub(this.oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit);
+			this.completed = true;
 		}
 	};
 

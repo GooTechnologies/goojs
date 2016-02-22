@@ -40,18 +40,18 @@ define([
 		transitions: []
 	};
 
-	SetMaterialColorAction.MAPPING = {
-		'Diffuse': 'materialDiffuse',
-		'Emissive': 'materialEmissive',
-		'Specular': 'materialSpecular',
-		'Ambient': 'materialAmbient'
+	var MAPPING = {
+		Diffuse: 'materialDiffuse',
+		Emissive: 'materialEmissive',
+		Specular: 'materialSpecular',
+		Ambient: 'materialAmbient'
 	};
 
 	SetMaterialColorAction.prototype.enter = function (fsm) {
 		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity && entity.meshRendererComponent) {
 			var material = entity.meshRendererComponent.materials[0];
-			var typeName = SetMaterialColorAction.MAPPING[this.type];
+			var typeName = MAPPING[this.type];
 			material.uniforms[typeName] = material.uniforms[typeName] || [1, 1, 1, 1];
 			var col = material.uniforms[typeName];
 			col[0] = this.color[0];
