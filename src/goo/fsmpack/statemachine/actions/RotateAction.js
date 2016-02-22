@@ -40,33 +40,41 @@ define([
 		transitions: []
 	};
 
+	var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
+
 	RotateAction.prototype.applyRotation = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
+
+		var rotationX = this.rotation[0];
+		var rotationY = this.rotation[1];
+		var rotationZ = this.rotation[2];
+
 		if (this.relative) {
+			var rotationMatrix = transform.rotation;
 			if (this.everyFrame) {
 				var tpf = fsm.getTpf();
-				transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD * tpf);
-				transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD * tpf);
-				transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD * tpf);
+				rotationMatrix.rotateX(rotationX * DEG_TO_RAD * tpf);
+				rotationMatrix.rotateY(rotationY * DEG_TO_RAD * tpf);
+				rotationMatrix.rotateZ(rotationZ * DEG_TO_RAD * tpf);
 			} else {
-				transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD);
-				transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD);
-				transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD);
+				rotationMatrix.rotateX(rotationX * DEG_TO_RAD);
+				rotationMatrix.rotateY(rotationY * DEG_TO_RAD);
+				rotationMatrix.rotateZ(rotationZ * DEG_TO_RAD);
 			}
 		} else {
 			if (this.everyFrame) {
 				var tpf = fsm.getTpf();
 				transform.setRotationXYZ(
-					this.rotation[0] * MathUtils.DEG_TO_RAD * tpf,
-					this.rotation[1] * MathUtils.DEG_TO_RAD * tpf,
-					this.rotation[2] * MathUtils.DEG_TO_RAD * tpf
+					rotationX * DEG_TO_RAD * tpf,
+					rotationY * DEG_TO_RAD * tpf,
+					rotationZ * DEG_TO_RAD * tpf
 				);
 			} else {
 				transform.setRotationXYZ(
-					this.rotation[0] * MathUtils.DEG_TO_RAD,
-					this.rotation[1] * MathUtils.DEG_TO_RAD,
-					this.rotation[2] * MathUtils.DEG_TO_RAD
+					rotationX * DEG_TO_RAD,
+					rotationY * DEG_TO_RAD,
+					rotationZ * DEG_TO_RAD
 				);
 			}
 		}

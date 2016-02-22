@@ -74,8 +74,9 @@ define([
 			var x, y;
 			var domTarget = that.goo.renderer.domElement;
 			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
-				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
-				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+				var rect = domTarget.getBoundingClientRect();
+				x = event.changedTouches[0].pageX - rect.left;
+				y = event.changedTouches[0].pageY - rect.top;
 			} else {
 				var rect = domTarget.getBoundingClientRect();
 				x = event.clientX - rect.left;
@@ -103,7 +104,7 @@ define([
 
 		document.addEventListener('mousemove', this.moveListener);
 		document.addEventListener('touchmove', this.moveListener);
-		
+
 		this.first = true;
 		this.hit = false;
 	};

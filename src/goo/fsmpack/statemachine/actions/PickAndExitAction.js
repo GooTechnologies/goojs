@@ -7,7 +7,7 @@ define([
 
 	function PickAndExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-				
+
 		this.eventListener = function (event) {
 			// To prevent touch + click event firing multiple times on touch devices
 			event.stopPropagation();
@@ -35,7 +35,7 @@ define([
 				x = event.offsetX;
 				y = event.offsetY;
 			}
-			
+
 			var pickResult = this.goo.pickSync(x, y);
 			if (pickResult.id === -1) {
 				return;
@@ -87,10 +87,6 @@ define([
 		this.domElement = this.canvasElement.parentNode;
 		this.domElement.addEventListener('click', this.eventListener, false);
 		this.domElement.addEventListener('touchend', this.eventListener, false); // window.open does not work in touchstart for iOS9
-	};
-
-	PickAndExitAction.prototype.update = function () {
-		// Don't really need it.
 	};
 
 	PickAndExitAction.prototype.handleExit = function () {

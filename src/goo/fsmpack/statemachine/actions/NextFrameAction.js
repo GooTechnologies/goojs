@@ -26,9 +26,6 @@ define([
 		}]
 	};
 
-	NextFrameAction.prototype.enter = function () {
-	};
-
 	NextFrameAction.prototype.update = function (fsm) {
 		fsm.send(this.transitions.transition);
 	};

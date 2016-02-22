@@ -30,7 +30,7 @@ define([
 	};
 
 	EmitAction.prototype.enter = function (/*fsm*/) {
-		SystemBus.emit(this.channel, this.data);
+		SystemBus.emit(this.channel, this.data); // data is unused?
 	};
 
 	return EmitAction;

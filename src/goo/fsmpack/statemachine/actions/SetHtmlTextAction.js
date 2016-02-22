@@ -15,34 +15,45 @@ define([
 	SetHtmlTextAction.external = {
 		name: 'Set Html Text',
 		type: 'fx',
-		description: 'Sets the text of an html component',
+		description: 'Sets the contents of an HTML element',
 		parameters: [{
 			name: 'Entity (optional)',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity that has an html component'
+			description: 'Entity that has an HTML component'
 		}, {
 			name: 'Html element selector',
 			key: 'selector',
 			type: 'string',
-			description: 'Element id to set text on',
+			description: 'Element selector to set text on',
 			'default': 'p'
 		}, {
-			name: 'Text',
-			key: 'text',
+			name: 'Content',
+			key: 'content',
 			type: 'string',
-			description: 'Text to set',
+			description: 'Content to set',
 			'default': 'Hello'
+		}, {
+			name: 'Allow HTML',
+			key: 'html',
+			type: 'boolean',
+			description: 'Set to true if the content contains HTML. This will make the action use .innerHTML instead of .innerText',
+			'default': false
 		}],
 		transitions: []
 	};
 
-	SetHtmlTextAction.prototype.update = function (fsm) {
+	SetHtmlTextAction.prototype.enter = function (fsm) {
 		var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 		if (entity && entity.htmlComponent && this.selector.length > 0) {
-			var element = entity.htmlComponent.domElement.querySelector(this.selector);
-			if (element) {
-				element.innerHTML = this.text;
+			var elements = entity.htmlComponent.domElement.querySelectorAll(this.selector);
+			for(var i=0; i<elements.length; i++){
+				var element = elements[i];
+				if(this.html){
+					element.innerHTML = this.content;
+				} else {
+					element.innerText = this.content;
+				}
 			}
 		}
 	};
