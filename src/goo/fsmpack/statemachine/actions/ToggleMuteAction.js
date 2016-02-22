@@ -5,13 +5,13 @@ define([
 ) {
 	'use strict';
 
-	function UnmuteAction(/*id, settings*/) {
+	function ToggleMuteAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-	UnmuteAction.prototype = Object.create(Action.prototype);
-	UnmuteAction.prototype.constructor = UnmuteAction;
+	ToggleMuteAction.prototype = Object.create(Action.prototype);
+	ToggleMuteAction.prototype.constructor = ToggleMuteAction;
 
-	UnmuteAction.external = {
+	ToggleMuteAction.external = {
 		name: 'Toggle mute sounds',
 		type: 'sound',
 		description: 'Toggles mute of all sounds globally.',
@@ -20,7 +20,7 @@ define([
 		transitions: []
 	};
 
-	UnmuteAction.prototype.enter = function (fsm) {
+	ToggleMuteAction.prototype.enter = function (fsm) {
 		var world = fsm.getWorld();
 		if (!world) { return; }
 
@@ -34,5 +34,5 @@ define([
 		}
 	};
 
-	return UnmuteAction;
+	return ToggleMuteAction;
 });

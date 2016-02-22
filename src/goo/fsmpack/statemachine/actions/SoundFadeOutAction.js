@@ -47,7 +47,6 @@ define([
 				}.bind(this));
 			}
 		}
-		// if howler's fade out method is not behaving nice then we can switch to tweening the volume 'manually'
 	};
 
 	return SoundFadeOutAction;
