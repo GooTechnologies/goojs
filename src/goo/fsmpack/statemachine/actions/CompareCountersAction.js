@@ -50,7 +50,7 @@ define([
 		}]
 	};
 
-	CompareCountersAction.prototype.update = function (fsm) {
+	CompareCountersAction.prototype.compare = function (fsm) {
 		var value1 = fsm.getFsm().getVariable(this.name1);
 		var value2 = fsm.getFsm().getVariable(this.name2);
 
@@ -64,6 +64,18 @@ define([
 			fsm.send(this.transitions.equal);
 		} else {
 			fsm.send(this.transitions.less);
+		}
+	};
+
+	CompareCountersAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	CompareCountersAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 
