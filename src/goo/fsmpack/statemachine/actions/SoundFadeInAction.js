@@ -28,7 +28,7 @@ define([
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Time it takes for the fading to complete',
 			'default': 1000
 		}, {

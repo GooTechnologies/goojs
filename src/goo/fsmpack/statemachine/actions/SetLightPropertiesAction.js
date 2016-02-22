@@ -26,19 +26,19 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		}, {
 			name: 'Intensity',
 			key: 'intensity',
-			type: 'number',
+			type: 'float',
 			description: 'Light intensity',
 			'default': 1
 		}, {
 			name: 'Specular Intensity',
 			key: 'specularIntensity',
-			type: 'number',
+			type: 'float',
 			description: 'Specular light intensity',
 			'default': 1
 		}, {
 			name: 'Range',
 			key: 'range',
-			type: 'number',
+			type: 'float',
 			description: 'Light range (for point/spot lights)',
 			'default': 100
 		}],

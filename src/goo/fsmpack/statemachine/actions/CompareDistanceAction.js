@@ -37,13 +37,13 @@ define([
 		}, {
 			name: 'Value',
 			key: 'value',
-			type: 'number',
+			type: 'float',
 			description: 'Value to compare to',
 			'default': 0
 		}, {
 			name: 'Tolerance',
 			key: 'tolerance',
-			type: 'number',
+			type: 'float',
 			'default': 0
 		}, {
 			name: 'Type',

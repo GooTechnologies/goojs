@@ -45,7 +45,7 @@ define([
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Time it takes for this movement to complete',
 			'default': 1000
 		}, {

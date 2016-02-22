@@ -25,7 +25,7 @@ define([
 		}, {
 			name: 'Value',
 			key: 'value',
-			type: 'number',
+			type: 'float',
 			description: 'Value to set the counter to',
 			'default': 0
 		}],

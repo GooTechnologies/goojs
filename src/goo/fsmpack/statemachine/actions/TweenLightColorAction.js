@@ -34,7 +34,7 @@ define([
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Time it takes for the transition to complete',
 			'default': 1000
 		}, {

@@ -20,7 +20,7 @@ define([
 		parameters: [{
 			name: 'Time',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Timeline time to set',
 			'default': 0
 		}],

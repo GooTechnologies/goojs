@@ -28,7 +28,7 @@ define([
 		parameters: [{
 			name: 'Forward',
 			key: 'forward',
-			type: 'number',
+			type: 'float',
 			description: 'Number of units to move towards the focus point. Enter negative values to move away.',
 			'default': 100
 		}, {
@@ -40,7 +40,7 @@ define([
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Time',
 			'default': 10000
 		}, {

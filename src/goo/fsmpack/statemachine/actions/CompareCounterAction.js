@@ -26,7 +26,7 @@ define([
 		}, {
 			name: 'Value',
 			key: 'value',
-			type: 'number',
+			type: 'float',
 			description: 'Value to compare the counter with',
 			'default': 0
 		}, {
@@ -52,8 +52,11 @@ define([
 	};
 
 	CompareCounterAction.prototype.compare = function (fsm) {
-		var value1 = +fsm.getFsm().getVariable(this.name);
-		var value2 = +this.value;
+		var value1 = fsm.getFsm().getVariable(this.name);
+		if (value1 === undefined) {
+			return;
+		}
+		var value2 = this.value;
 
 		if (value1 > value2) {
 			fsm.send(this.transitions.greater);

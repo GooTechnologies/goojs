@@ -37,13 +37,13 @@ define([
 		parameters: [{
 			name: 'Time (ms)',
 			key: 'waitTime',
-			type: 'number',
+			type: 'float',
 			description: 'Base time in milliseconds before transition fires',
 			'default': 5000
 		}, {
 			name: 'Random (ms)',
 			key: 'randomTime',
-			type: 'number',
+			type: 'float',
 			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
 			'default': 0
 		}],

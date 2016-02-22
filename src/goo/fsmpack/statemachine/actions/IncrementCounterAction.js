@@ -25,7 +25,7 @@ define([
 		}, {
 			name: 'Increment',
 			key: 'increment',
-			type: 'number',
+			type: 'float',
 			description: 'Value to increment the counter with',
 			'default': 1
 		}, {

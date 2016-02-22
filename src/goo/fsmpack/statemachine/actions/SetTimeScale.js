@@ -20,7 +20,7 @@ define([
 		parameters: [{
 			name: 'Scale',
 			key: 'scale',
-			type: 'number',
+			type: 'float',
 			description: 'Scale factor for the animation timer',
 			'default': 1
 		}],
