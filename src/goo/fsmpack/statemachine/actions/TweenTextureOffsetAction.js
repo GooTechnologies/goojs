@@ -14,6 +14,7 @@ define([
 
 		this.fromOffset = new Vector2();
 		this.toOffset = new Vector2();
+		this.completed = false;
 	}
 
 	TweenTextureOffsetAction.prototype = Object.create(Action.prototype);
@@ -93,7 +94,7 @@ define([
 		if (!this.texture) {
 			return;
 		}
-		
+
 		this.fromOffset.set(this.texture.offset);
 		this.toOffset.setDirect(this.toX, this.toY);
 		if (this.relative) {
@@ -101,9 +102,13 @@ define([
 		}
 
 		this.startTime = fsm.getTime();
+		this.completed = false;
 	};
 
 	TweenTextureOffsetAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		if (!this.texture) {
 			return;
 		}
@@ -115,6 +120,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

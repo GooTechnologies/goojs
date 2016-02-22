@@ -14,6 +14,7 @@ define([
 
 		this.fromScale = new Vector3();
 		this.toScale = new Vector3();
+		this.completed = false;
 	}
 
 	TweenScaleAction.prototype = Object.create(Action.prototype);
@@ -76,7 +77,7 @@ define([
 
 	TweenScaleAction.prototype.enter = function (fsm) {
 		var transformComponent = fsm.getOwnerEntity().transformComponent;
-		
+
 		this.fromScale.set(transformComponent.transform.scale);
 		this.toScale.setDirect(this.to[0], this.to[1], this.to[2]);
 		if (this.relative) {
@@ -84,9 +85,13 @@ define([
 		}
 
 		this.startTime = fsm.getTime();
+		this.completed = false;
 	};
 
 	TweenScaleAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		var transformComponent = fsm.getOwnerEntity().transformComponent;
 
 		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
@@ -97,6 +102,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

@@ -17,6 +17,7 @@ define([
 		this.quatFrom = new Quaternion();
 		this.quatTo = new Quaternion();
 		this.quatFinal = new Quaternion();
+		this.completed = false;
 	}
 
 	TweenLookAtAction.prototype = Object.create(Action.prototype);
@@ -83,9 +84,14 @@ define([
 		this.rot = transform.rotation.clone();
 		this.rot.lookAt(dir, Vector3.UNIT_Y);
 		this.quatTo.fromRotationMatrix(this.rot);
+
+		this.completed = false;
 	};
 
 	TweenLookAtAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 
@@ -98,6 +104,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

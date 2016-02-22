@@ -19,6 +19,7 @@ define([
 		this.quatFrom = new Quaternion();
 		this.quatTo = new Quaternion();
 		this.quatFinal = new Quaternion();
+		this.completed = false;
 	}
 
 	TweenRotationAction.prototype = Object.create(Action.prototype);
@@ -91,9 +92,13 @@ define([
 		if (this.relative) {
 			this.quatTo.mul(this.quatFrom);
 		}
+		this.completed = false;
 	};
 
 	TweenRotationAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 
@@ -106,6 +111,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

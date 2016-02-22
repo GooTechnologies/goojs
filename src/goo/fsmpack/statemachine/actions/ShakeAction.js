@@ -17,6 +17,7 @@ define([
 		this.oldVal = new Vector3();
 		this.target = new Vector3();
 		this.vel = new Vector3();
+		this.completed = false;
 	}
 
 	ShakeAction.prototype = Object.create(Action.prototype);

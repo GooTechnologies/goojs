@@ -16,6 +16,7 @@ define([
 
 		this.from = new Vector3();
 		this.to = new Vector3();
+		this.completed = false;
 	}
 
 	DollyZoomAction.prototype = Object.create(Action.prototype);
@@ -77,6 +78,7 @@ define([
 
 	DollyZoomAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
+		this.completed = false;
 
 		if (entity.cameraComponent && entity.cameraComponent.camera) {
 			var transformComponent = entity.transformComponent;
@@ -105,6 +107,10 @@ define([
 	};
 
 	DollyZoomAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
+
 		if (this.eyeTargetScale) {
 			var entity = fsm.getOwnerEntity();
 			var transformComponent = entity.transformComponent;
@@ -122,6 +128,7 @@ define([
 
 			if (t >= 1) {
 				fsm.send(this.transitions.complete);
+				this.completed = true;
 			}
 		}
 	};

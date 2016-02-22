@@ -11,6 +11,7 @@ define([
 
 	function TweenOpacityAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+		this.completed = false;
 	}
 
 	TweenOpacityAction.prototype = Object.create(Action.prototype);
@@ -89,9 +90,13 @@ define([
 
 		this.uniforms = this.material.uniforms;
 		this.from = this.uniforms.opacity;
+		this.completed = false;
 	};
 
 	TweenOpacityAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
 		var entity = fsm.getOwnerEntity();
 		var meshRendererComponent = entity.meshRendererComponent;
 		if (!meshRendererComponent) {
@@ -105,6 +110,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

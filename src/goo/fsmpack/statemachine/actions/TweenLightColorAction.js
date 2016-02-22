@@ -14,6 +14,7 @@ define([
 
 		this.fromCol = new Vector3();
 		this.toCol = new Vector3();
+		this.completed = false;
 	}
 
 	TweenLightColorAction.prototype = Object.create(Action.prototype);
@@ -79,9 +80,15 @@ define([
 		this.toCol.setDirect(this.to[0], this.to[1], this.to[2]);
 
 		this.startTime = fsm.getTime();
+
+		this.completed = false;
 	};
 
 	TweenLightColorAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
+
 		var entity = fsm.getOwnerEntity();
 		if (!entity.lightComponent) {
 			return;
@@ -95,6 +102,7 @@ define([
 
 		if (t >= 1) {
 			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 
