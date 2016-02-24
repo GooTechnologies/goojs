@@ -298,7 +298,7 @@ define([
 					uniform[ind + 0] = translationData.x;
 					uniform[ind + 1] = translationData.y;
 					uniform[ind + 2] = translationData.z;
-					uniform[ind + 3] = light.shadowSettings.offset;
+					uniform[ind + 3] = light.shadowSettings.shadowOffset;
 
 					uniform[ind + 4] = shadowData.cameraScale;
 					uniform[ind + 5] = light.shadowSettings.darkness;

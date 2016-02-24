@@ -65,7 +65,7 @@ define([
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y.clone(),
 			darkness: 1.0,
-			offset: 0.96,
+			shadowOffset: 0.96,
 			shadowType: 'VSM'
 		};
 		//! AT: please extract this in its own class
