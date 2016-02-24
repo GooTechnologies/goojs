@@ -495,7 +495,14 @@ define([
 				}
 				if (shadowIndex > 0) {
 					prefragment.push(
-						'uniform vec4 shadowData[' + (shadowIndex * 2) + '];'
+						'uniform vec4 shadowData[' + (shadowIndex * 2) + '];',
+						'float unpackDepth(const in vec4 rgba_depth) {',
+							'const vec4 bit_shift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);',
+							'return dot(rgba_depth, bit_shift);',
+						'}',
+						'float texture2DCompare(sampler2D depths, vec2 uv, float compare) {',
+							'return step(compare, unpackDepth(texture2D(depths, uv)));',
+						'}'
 					);
 				}
 
@@ -585,6 +592,18 @@ define([
 									'float dy1 = 1.25 * yPixelOffset;',
 
 									'float fDepth = 0.0;',
+
+									return (
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, dy0 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( 0.0, dy0 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, dy0 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, 0.0 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy, shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, 0.0 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, dy1 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( 0.0, dy1 ), shadowCoord.z ) +
+										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, dy1 ), shadowCoord.z )
+									) * ( 1.0 / 9.0 );
 
 									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
 									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
