@@ -70,7 +70,8 @@ define([
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
-				darkness: 0.5
+				darkness: 0.5,
+				offset: 0.96
 			});
 
 			var settings = config.shadowSettings;

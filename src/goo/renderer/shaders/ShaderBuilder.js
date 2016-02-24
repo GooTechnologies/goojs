@@ -298,7 +298,7 @@ define([
 					uniform[ind + 0] = translationData.x;
 					uniform[ind + 1] = translationData.y;
 					uniform[ind + 2] = translationData.z;
-					uniform[ind + 3] = 0; // padding
+					uniform[ind + 3] = light.shadowSettings.offset;
 
 					uniform[ind + 4] = shadowData.cameraScale;
 					uniform[ind + 5] = light.shadowSettings.darkness;
@@ -535,6 +535,7 @@ define([
 							);
 							fragment.push(
 								'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
+								'float shadowOffset' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].w;',
 								'float cameraScales' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].x;',
 								'float shadowDarkness' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].y;'
 							);
@@ -572,7 +573,7 @@ define([
 							);
 							if (light.shadowSettings.shadowType === 'PCF') {
 								fragment.push(
-									'depth.z *= 0.96;',
+									'depth.z *= shadowOffset' + i + ';',
 									'float shadowPcf = 0.0;',
 									'const float shadowDelta = 1.0 / 9.0;',
 									'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
@@ -616,7 +617,7 @@ define([
 								);
 							} else {
 								fragment.push(
-									'depth.z *= 0.96;',
+									'depth.z *= shadowOffset' + i + ';',
 									'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
 									'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness' + i + ';'
 								);

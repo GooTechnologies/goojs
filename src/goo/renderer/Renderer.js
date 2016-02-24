@@ -1205,10 +1205,10 @@ define([
 		var cachedShader = shaderCache.get(defineKey);
 	
 		// Check if the shader cache is invalid
-		if (cachedShader && cachedShader.defineKey !== defineKey) {
-			shaderCache.delete(defineKey);
-			cachedShader = undefined;
-		}
+		// if (cachedShader && cachedShader.defineKey !== defineKey) {
+		// 	shaderCache.delete(defineKey);
+		// 	cachedShader = undefined;
+		// }
 
 		if (cachedShader) {
 			if (cachedShader !== material.shader) {
