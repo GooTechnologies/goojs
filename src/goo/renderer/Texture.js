@@ -116,6 +116,10 @@ define([
 			this.setImage(image, width, height, settings);
 		}
 
+		/**
+		 * If the Texture was set to load lazily in the TextureHandler, then this method can be used to load the image at a later point. This function returns a promise that resolves when the image was loaded.
+		 * @type {Function}
+		 */
 		this.loadImage = PromiseUtils.resolve.bind(null, this);
 
 		this.textureRecord = {};

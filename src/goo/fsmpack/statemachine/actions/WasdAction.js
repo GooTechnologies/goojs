@@ -16,7 +16,7 @@ define([
 		this.targets = settings.transitions;
 	};
 
-	WasdAction._keys = {
+	var keys = {
 		87: 'w',
 		65: 'a',
 		83: 's',
@@ -25,8 +25,8 @@ define([
 
 	WasdAction.external = (function () {
 		var transitions = [];
-		for (var keycode in WasdAction._keys) {
-			var keyname = WasdAction._keys[keycode];
+		for (var keycode in keys) {
+			var keyname = keys[keycode];
 			transitions.push({
 				key: keyname,
 				name: 'Key ' + keyname.toUpperCase(),
@@ -47,7 +47,7 @@ define([
 
 	WasdAction.prototype.enter = function (fsm) {
 		this.eventListener = function (event) {
-			var keyname = WasdAction._keys[event.which];
+			var keyname = keys[event.which];
 			if (keyname) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
