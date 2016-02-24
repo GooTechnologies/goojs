@@ -4,6 +4,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/Texture',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
@@ -13,6 +14,7 @@ define([
 	PointLight,
 	DirectionalLight,
 	SpotLight,
+	ShaderFragment,
 	Texture,
 	MathUtils,
 	TangentGenerator
@@ -495,11 +497,9 @@ define([
 				}
 				if (shadowIndex > 0) {
 					prefragment.push(
+						ShaderFragment.methods.unpackDepth,
+						ShaderFragment.methods.unpackDepth16,
 						'uniform vec4 shadowData[' + (shadowIndex * 2) + '];',
-						'float unpackDepth(const in vec4 rgba_depth) {',
-							'const vec4 bit_shift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);',
-							'return dot(rgba_depth, bit_shift);',
-						'}',
 						'float texture2DCompare(sampler2D depths, vec2 uv, float compare) {',
 							'return step(compare, unpackDepth(texture2D(depths, uv)));',
 						'}'
@@ -581,8 +581,6 @@ define([
 							if (light.shadowSettings.shadowType === 'PCF') {
 								fragment.push(
 									'depth.z *= shadowOffset' + i + ';',
-									'float shadowPcf = 0.0;',
-									'const float shadowDelta = 1.0 / 9.0;',
 									'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
 									'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
 
@@ -591,45 +589,24 @@ define([
 									'float dx1 = 1.25 * xPixelOffset;',
 									'float dy1 = 1.25 * yPixelOffset;',
 
-									'float fDepth = 0.0;',
-
-									return (
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, dy0 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( 0.0, dy0 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, dy0 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, 0.0 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy, shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, 0.0 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx0, dy1 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( 0.0, dy1 ), shadowCoord.z ) +
-										texture2DCompare( shadowMap, shadowCoord.xy + vec2( dx1, dy1 ), shadowCoord.z )
-									) * ( 1.0 / 9.0 );
-
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth =  texture2D(shadowMaps' + i + ', depth.xy).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1)).r;',
-									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'float shadowPcf = (',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy, depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1), depth.z) +',
+										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1), depth.z)',
+									') * (1.0 / 9.0);',
 									'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
-									//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness' + i + ') + shadowDarkness' + i + ';'
 								);
 							} else if (light.shadowSettings.shadowType === 'VSM') {
 								fragment.push(
 									'vec4 texel = texture2D(shadowMaps' + i + ', depth.xy);',
-									'vec2 moments = vec2(texel.x, texel.y);',
+									// 'vec2 moments = vec2(texel.x, texel.y);',
+									'vec2 moments = unpackDepth16(texel);',
 									'shadow = ChebychevInequality(moments, depth.z);',
 									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
 									'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
@@ -637,8 +614,10 @@ define([
 							} else {
 								fragment.push(
 									'depth.z *= shadowOffset' + i + ';',
-									'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
-									'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness' + i + ';'
+									'float shadowDepth = texture2DCompare(shadowMaps' + i + ', depth.xy, depth.z);',
+									'shadow = 1.0 - shadowDarkness' + i + ' * shadowDepth;'
+									// 'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
+									// 'if (depth.z > shadowDepth) shadow = 1.0 - shadowDarkness' + i + ';'
 								);
 							}
 							fragment.push(
