@@ -101,15 +101,18 @@ define([
 		if (this.isCurrentState()) {
 			if (!this.parent.asyncMode) {
 				this.depth++;
+				var fsm = this._fsm;
 				if (this.depth > this.parent.maxLoopDepth) {
-					console.warn('exceeded maximum loop depth:', this.parent.maxLoopDepth);
-					SystemBus.emit('goo.fsm.error', {
-						entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+					var data = {
+						entityId: fsm && fsm.entity ? fsm.entity.id : '',
+						entityName: fsm && fsm.entity ? fsm.entity.name : '',
 						machineName: this.parent ? this.parent.name : '',
 						stateId: this.uuid,
-						stateName: this.name,
-						error: 'exceeded maximum loop depth: ' + this.parent.maxLoopDepth
-					});
+						stateName: this.name
+					};
+					data.error = 'Exceeded max loop depth (' + this.parent.maxLoopDepth + ') in "' + [data.entityName, data.machineName, data.stateName].join('" / "') + '"';
+					console.warn(data.error);
+					SystemBus.emit('goo.fsm.error', data);
 					return;
 				}
 
