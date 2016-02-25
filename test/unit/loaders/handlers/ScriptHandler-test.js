@@ -30,17 +30,19 @@ define([
 			it('returns an error object if the key is missing or is a non-string', function () {
 				expect(validateParameter({
 					type: 'float'
-				})).toEqual({ message: 'Property "key" must be a non-empty string' });
+				})).toEqual({ message: 'Property "key" must be of type string' });
 
 				expect(validateParameter({
 					key: 123,
 					type: 'float'
-				})).toEqual({ message: 'Property "key" must be a non-empty string' });
+				})).toEqual({ message: 'Property "key" must be of type string' });
+			});
 
+			it('returns an error object if the key is an empty string', function () {
 				expect(validateParameter({
 					key: '',
 					type: 'float'
-				})).toEqual({ message: 'Property "key" must be a non-empty string' });
+				})).toEqual({ message: 'Property "key" must be longer than 0' });
 			});
 
 			it('returns an error object if the type is missing or bad', function () {
