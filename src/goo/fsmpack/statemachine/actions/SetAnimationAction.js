@@ -26,6 +26,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 			key: 'loops',
 			description: 'How many times to loop before transitioning.',
 			type: 'int',
+			min: 1,
 			'default': 1
 		}],
 		transitions: [{
