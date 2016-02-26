@@ -428,7 +428,7 @@ define([
 				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
-					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
+				// 	'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
 				// '}',
 
 				'float ChebychevInequality(in vec2 moments, in float t) {',
@@ -498,7 +498,6 @@ define([
 				if (shadowIndex > 0) {
 					prefragment.push(
 						ShaderFragment.methods.unpackDepth,
-						ShaderFragment.methods.unpackDepth16,
 						'uniform vec4 shadowData[' + (shadowIndex * 2) + '];',
 						'float texture2DCompare(sampler2D depths, vec2 uv, float compare) {',
 							'return step(compare, unpackDepth(texture2D(depths, uv)));',
@@ -536,9 +535,6 @@ define([
 						if (light.shadowCaster) {
 							prefragment.push(
 								'uniform sampler2D shadowMaps' + i + ';'
-								// 'uniform vec3 shadowLightPositions' + i + ';',
-								// 'uniform float cameraScales' + i + ';',
-								// 'uniform float shadowDarkness' + i + ';'
 							);
 							fragment.push(
 								'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
@@ -552,42 +548,37 @@ define([
 								'uniform sampler2D lightCookie' + i + ';'
 							);
 						}
-						//TODO!!!
 
 						prefragment.push(
 							'varying vec4 shadowLightDepths' + i + ';'
 						);
 
 						if (light.shadowCaster && light.shadowSettings.shadowType === 'PCF') {
-							// prefragment.push(
-							// 	'uniform vec2 shadowMapSizes' + i + ';'
-							// );
 							fragment.push(
 								'vec2 shadowMapSizes' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].zw;'
 							);
 						}
 
 						fragment.push(
-							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;'
+							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;',
+							'depth.z *= shadowOffset' + i + ';'
 						);
 
 						if (light.shadowCaster) {
 							shadowIndex++;
 							fragment.push(
-								'depth.z = length(vWorldPos.xyz - shadowLightPositions' + i + ') * cameraScales' + i + ';',
-
 								'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths' + i + '.z >= 0.0 && depth.z <= 1.0) {'
 							);
 							if (light.shadowSettings.shadowType === 'PCF') {
 								fragment.push(
-									'depth.z *= shadowOffset' + i + ';',
 									'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
 									'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
+									'float shadowRadius = 1.25;',
 
-									'float dx0 = -1.25 * xPixelOffset;',
-									'float dy0 = -1.25 * yPixelOffset;',
-									'float dx1 = 1.25 * xPixelOffset;',
-									'float dy1 = 1.25 * yPixelOffset;',
+									'float dx0 = -shadowRadius * xPixelOffset;',
+									'float dy0 = -shadowRadius * yPixelOffset;',
+									'float dx1 = shadowRadius * xPixelOffset;',
+									'float dy1 = shadowRadius * yPixelOffset;',
 
 									'float shadowPcf = (',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0), depth.z) +',
@@ -600,27 +591,26 @@ define([
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1), depth.z) +',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1), depth.z)',
 									') * (1.0 / 9.0);',
-									'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
+									'shadow = shadowDarkness' + i + ' * shadowPcf;'
 								);
 							} else if (light.shadowSettings.shadowType === 'VSM') {
 								fragment.push(
+									'depth.z = length(vWorldPos.xyz - shadowLightPositions' + i + ') * cameraScales' + i + ';',
 									'vec4 texel = texture2D(shadowMaps' + i + ', depth.xy);',
-									// 'vec2 moments = vec2(texel.x, texel.y);',
-									'vec2 moments = unpackDepth16(texel);',
+									'vec2 moments = vec2(texel.x, texel.y);',
 									'shadow = ChebychevInequality(moments, depth.z);',
-									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
+									// 'shadow = VsmFixLightBleed(shadow, 0.5);'
 									'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
 								);
 							} else {
 								fragment.push(
-									'depth.z *= shadowOffset' + i + ';',
 									'float shadowDepth = texture2DCompare(shadowMaps' + i + ', depth.xy, depth.z);',
-									'shadow = 1.0 - shadowDarkness' + i + ' * shadowDepth;'
-									// 'float shadowDepth = texture2D(shadowMaps' + i + ', depth.xy).x;',
-									// 'if (depth.z > shadowDepth) shadow = 1.0 - shadowDarkness' + i + ';'
+									'shadow = shadowDarkness' + i + ' * shadowDepth;'
 								);
 							}
 							fragment.push(
+								'} else {',
+									'shadow = 1.0;',
 								'}',
 								'shadow = clamp(shadow, 0.0, 1.0);'
 							);

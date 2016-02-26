@@ -1057,22 +1057,23 @@ define([
 		'}'
 		].join('\n'),
 		fshader: [
-		'uniform float cameraScale;',
+		'#if SHADOW_TYPE == 2',
+			'uniform float cameraScale;',
+		'#endif',
 
 		'varying vec4 worldPosition;',
 
 		ShaderFragment.methods.packDepth,
-		ShaderFragment.methods.packDepth16,
 
 		'void main(void)',
 		'{',
-			'float linearDepth = length(worldPosition) * cameraScale;',
 			'#if SHADOW_TYPE == 0',
-				'gl_FragColor = packDepth(linearDepth);',
+				'gl_FragColor = packDepth(gl_FragCoord.z);',
 			'#elif SHADOW_TYPE == 1',
-				'gl_FragColor = packDepth(linearDepth);',
+				'gl_FragColor = packDepth(gl_FragCoord.z);',
 			'#elif SHADOW_TYPE == 2',
-				'gl_FragColor = vec4(packDepth16(linearDepth), packDepth16(linearDepth * linearDepth));',
+				'float linearDepth = length(worldPosition) * cameraScale;',
+				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',
 		'}'
 		].join('\n')

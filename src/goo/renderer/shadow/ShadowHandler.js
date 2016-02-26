@@ -65,16 +65,11 @@ define([
 			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);
 		}
 
-		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
-				type: 'Float',
-				magFilter: 'NearestNeighbor',
-				minFilter: 'NearestNeighborNoMipMaps'
-			});
-		shadowSettings.shadowData.shadowResult = null;
-
 		if (shadowSettings.shadowType === 'VSM') {
+			var floatType = Capabilities.TextureHalfFloat ? 'HalfFloat' : 'Float';
+			console.log('float type: ' + floatType);
 			var type = {
-				type: 'Float'
+				type: floatType
 			};
 			if (!linearFloat) {
 				type.magFilter = 'NearestNeighbor';
@@ -88,7 +83,20 @@ define([
 				renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowBlurred);
 			}
 			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, type);
+
+			shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
+				type: floatType,
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps'
+			});
+		} else {
+			shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps'
+			});
 		}
+
+		shadowSettings.shadowData.shadowResult = null;
 
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;

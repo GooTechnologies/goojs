@@ -130,7 +130,7 @@ define([
 			this._id = Shader.cache.size;
 			Shader.cache.set(shaderDefinition, this._id);
 		}
-		// console.log('creating shader', this._id, shaderDefinition);
+		// console.log('creating shader', this._id, this.name);
 
 		this.errorOnce = false;
 
@@ -329,7 +329,9 @@ define([
 			this.stringType(shaderInfo, name, mapping, defValue);
 		} else {
 			var value = type === 'function' ? defValue(shaderInfo) : defValue;
-			mapping.call(value);
+			if (value !== undefined) {
+				mapping.call(value);
+			}
 		}
 	};
 
@@ -395,7 +397,7 @@ define([
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;
-		}
+		} 
 
 		return this.defineKey;
 	};
@@ -503,11 +505,6 @@ define([
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
-				// more corpses!
-				// if (this.attributes[key]) {
-					// delete this.attributes[key];
-				// }
-				// console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -518,10 +515,6 @@ define([
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
-				// if (this.uniforms[key]) {
-					// delete this.uniforms[key];
-				// }
-
 				var l = this.textureSlots.length;
 				for (var i = 0; i < l; i++) {
 					var slot = this.textureSlots[i];
@@ -534,7 +527,6 @@ define([
 						break;
 					}
 				}
-				// console.warn('Uniform [' + this.uniformMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -542,52 +534,22 @@ define([
 		}
 
 		if (this.attributes) {
-			// corpse!
-		// 	for (var name in this.attributeIndexMapping) {
-		// 		var mapping = this.attributes[name];
-		// 		if (mapping === undefined) {
-		// 			console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
-		// 		}
-		// 	}
-
 			this.attributeKeys = Object.keys(this.attributes);
 		}
 
 		if (this.uniforms) {
-			// Fix links ($link)
-			if (this.uniforms.$link) {
-				var links = this.uniforms.$link instanceof Array ? this.uniforms.$link : [this.uniforms.$link];
-				for (var i = 0; i < links.length; i++) {
-					var link = links[i];
-					for (var key in link) {
-						this.uniforms[key] = link[key];
-					}
-				}
-				delete this.uniforms.$link;
-			}
-
 			this.matchedUniforms = [];
 			for (var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (mapping !== undefined) {
 					this.matchedUniforms.push(name);
 				}
-				// else {
-					// console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-				// }
 
 				var value = this.uniforms[name];
 				if (this.defaultCallbacks[value]) {
 					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
-
-			// for (var name in this.uniformCallMapping) {
-			// 	var mapping = this.uniforms[name];
-			// 	if (mapping === undefined) {
-			// 		console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
-			// 	}
-			// }
 		}
 	};
 
