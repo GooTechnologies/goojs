@@ -1210,12 +1210,14 @@ define([
 
 		if (cachedShader) {
 			cachedShader.defines = {};
-			var keys = Object.keys(material.shader.defines);
-			for (var i = 0, l = keys.length; i < l; i++) {
-				var key = keys[i];
-				cachedShader.defines[key] = material.shader.defines[key];
+			if (material.shader.defines) {
+				var keys = Object.keys(material.shader.defines);
+				for (var i = 0, l = keys.length; i < l; i++) {
+					var key = keys[i];
+					cachedShader.defines[key] = material.shader.defines[key];
+				}
+				cachedShader.defineKey = material.shader.defineKey;
 			}
-			cachedShader.defineKey = material.shader.defineKey;
 
 			var uniforms = material.shader.uniforms;
 			var keys = Object.keys(uniforms);
