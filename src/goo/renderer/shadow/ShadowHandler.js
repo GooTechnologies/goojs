@@ -67,7 +67,6 @@ define([
 
 		if (shadowSettings.shadowType === 'VSM') {
 			var floatType = Capabilities.TextureHalfFloat ? 'HalfFloat' : 'Float';
-			console.log('float type: ' + floatType);
 			var type = {
 				type: floatType
 			};
