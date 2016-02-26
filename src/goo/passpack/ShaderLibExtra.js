@@ -351,9 +351,7 @@ define([
 		attributes: ShaderLib.copy.attributes,
 		uniforms: {
 			tDiffuse: Shader.DIFFUSE_MAP,
-			time: function () {
-				return World.time;
-			},
+			time: Shader.TIME,
 			// noise effect intensity value (0 = no effect, 1 = full effect)
 			nIntensity: 0.5,
 			// scanlines effect intensity value (0 = no effect, 1 = full effect)
@@ -361,7 +359,10 @@ define([
 			// scanlines effect count value (0 = no effect, 4096 = full effect)
 			sCount: 1024,
 			grayscale: 0,
-			$link: ShaderLib.copy.uniforms
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		vshader: ShaderLib.copy.vshader,
 		fshader: [
@@ -400,7 +401,10 @@ define([
 			// noise effect intensity value (0 = no effect, 1 = full effect)
 			nIntensity: 0.5,
 			grayscale: 0,
-			$link: ShaderLib.copy.uniforms
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		vshader: ShaderLib.copy.vshader,
 		fshader: [

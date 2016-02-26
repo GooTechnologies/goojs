@@ -1198,28 +1198,32 @@ define([
 		// replace with cache version and copy over uniforms.
 
 		var shader = material.shader;
-		var defineKey = shader.getDefineKey(this._definesIndices);
+		var shaderCache = this.rendererRecord.shaderCache;
 		shader.endFrame();
 
-		var shaderCache = this.rendererRecord.shaderCache;
+		var defineKey = shader.getDefineKey(this._definesIndices);
+
 		var cachedShader = shaderCache.get(defineKey);
-	
-		// Check if the shader cache is invalid
-		// if (cachedShader && cachedShader.defineKey !== defineKey) {
-		// 	shaderCache.delete(defineKey);
-		// 	cachedShader = undefined;
-		// }
+		if (cachedShader === material.shader) {
+			return;
+		}
 
 		if (cachedShader) {
-			if (cachedShader !== material.shader) {
-				var uniforms = material.shader.uniforms;
-				var keys = Object.keys(uniforms);
-				for (var i = 0, l = keys.length; i < l; i++) {
-					var key = keys[i];
-					var origUniform = cachedShader.uniforms[key] = uniforms[key];
-					if (origUniform instanceof Array) {
-						cachedShader.uniforms[key] = origUniform.slice(0);
-					}
+			cachedShader.defines = {};
+			var keys = Object.keys(material.shader.defines);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var key = keys[i];
+				cachedShader.defines[key] = material.shader.defines[key];
+			}
+			cachedShader.defineKey = material.shader.defineKey;
+
+			var uniforms = material.shader.uniforms;
+			var keys = Object.keys(uniforms);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var key = keys[i];
+				var origUniform = cachedShader.uniforms[key] = uniforms[key];
+				if (origUniform instanceof Array) {
+					cachedShader.uniforms[key] = origUniform.slice(0);
 				}
 			}
 			material.shader = cachedShader;
@@ -1227,6 +1231,7 @@ define([
 			if (shader.builder) {
 				shader.builder(shader, renderInfo);
 			}
+
 			shader = shader.clone();
 			shaderCache.set(defineKey, shader);
 			material.shader = shader;
