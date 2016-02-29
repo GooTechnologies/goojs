@@ -1,10 +1,13 @@
 define([
 	'goo/entities/systems/System',
 	'goo/util/TWEEN',
-	'goo/fsmpack/statemachine/actions/Actions'
+	'goo/fsmpack/statemachine/actions/Actions',
+	'goo/util/ParameterUtils'
 ], function (
 	System,
-	TWEEN
+	TWEEN,
+	Actions,
+	ParameterUtils
 ) {
 	'use strict';
 
@@ -54,11 +57,11 @@ define([
 			}.bind(this)
 		};
 
-		/**
-		 * System-global variables: maps id string to variable instance
-		 * @type {Map}
-		 */
-		this._variables = new Map();
+		// Same conventions as script "parameters" array
+		this._variableDefinitions = [];
+
+		// Same conventions as script "args" object
+		this._variableValues = {};
 	}
 	StateMachineSystem.prototype = Object.create(System.prototype);
 
@@ -67,7 +70,7 @@ define([
 	 * @return {?Variable}
 	 */
 	StateMachineSystem.prototype.getVariable = function (id) {
-		return this._variables.get(id);
+		return this._variableValues[id];
 	};
 
 	/**
@@ -75,8 +78,13 @@ define([
 	 * @param {Variable} variable
 	 * @return {?Variable}
 	 */
-	StateMachineSystem.prototype.setVariable = function (id, variable) {
-		return this._variables.set(id, variable);
+	StateMachineSystem.prototype.setVariable = function (id, value) {
+		this._variableValues[id] = value;
+		return this;
+	};
+
+	StateMachineSystem.prototype.setVariableDefaults = function () {
+		ParameterUtils.fillDefaultValues(this._variableValues, this._variableDefinitions);
 	};
 
 	StateMachineSystem.prototype.getInputState = function (key) {
@@ -132,6 +140,8 @@ define([
 	 * Resumes updating the entities
 	 */
 	StateMachineSystem.prototype.play = function () {
+		this.setVariableDefaults();
+
 		this.passive = false;
 		if (!this.paused) {
 			// Un-enter entered components

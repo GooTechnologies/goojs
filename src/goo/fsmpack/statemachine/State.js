@@ -8,16 +8,19 @@ define([
 	'use strict';
 
 	function State(uuid) {
-		this.uuid = uuid;
-		this._fsm = null;
-		this.parent = null;
+		this.uuid = uuid; // todo: rename to id
+		this._fsm = null; // todo: rename to component
+		this.parent = null; // todo: rename to machine
 		this._actions = [];
 		this._machines = [];
 		this._transitions = {};
-		this.vars = {};
 		this.depth = 0;
 
+		// TODO: use machine directly
 		this.proxy = {
+			setVariable: function(id, value){
+				this._fsm.setVariable(id, value);
+			}.bind(this),
 			getInputState: function (key) {
 				return this._fsm.system.getInputState(key);
 			}.bind(this),
@@ -54,26 +57,6 @@ define([
 			}.bind(this),
 			removeListener: function (channelName, callback) {
 				this._fsm._bus.removeListener(channelName, callback);
-			}.bind(this),
-			defineVariable: function (name, initialValue) {
-				this.vars[name] = initialValue;
-			}.bind(this),
-			removeVariable: function (name) {
-				delete this.vars[name];
-			}.bind(this),
-			getVariable: function (name) {
-				if (this.vars[name] !== undefined) {
-					return this.vars[name];
-				} else {
-					return this._fsm.getVariable(name);
-				}
-			}.bind(this),
-			applyOnVariable: function (name, fun) {
-				if (this.vars[name] !== undefined) {
-					this.vars[name] = fun(this.vars[name]);
-				} else {
-					this._fsm.applyOnVariable(name, fun);
-				}
 			}.bind(this),
 			getEvalProxy: function () {
 				return this._fsm.system.evalProxy;

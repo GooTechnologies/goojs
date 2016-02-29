@@ -1,16 +1,13 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ], function (
-	Action,
-	FsmUtils
+	Action
 ) {
 	'use strict';
 
 	function SetVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-
 	SetVariableAction.prototype = Object.create(Action.prototype);
 	SetVariableAction.prototype.constructor = SetVariableAction;
 
@@ -19,9 +16,9 @@ define([
 		type: 'variables',
 		description: '',
 		parameters: [{
-			name: 'Variable name',
+			name: 'Variable',
 			key: 'variable',
-			type: 'identifier'
+			type: 'identifier' // todo: add to ParameterUtils
 		}, {
 			name: 'Value',
 			key: 'amount',
@@ -38,9 +35,7 @@ define([
 
 	SetVariableAction.prototype.enter = function (fsm) {
 		if (this.variable) {
-			fsm.applyOnVariable(this.variable, function () {
-				return FsmUtils.getValue(this.amount, fsm);
-			}.bind(this));
+			fsm.setVariable(this.variable, this.amount);
 		}
 	};
 

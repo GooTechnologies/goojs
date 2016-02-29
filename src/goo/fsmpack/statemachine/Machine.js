@@ -1,5 +1,7 @@
-define([], function (
-
+define([
+	'goo/util/ParameterUtils'
+], function (
+	ParameterUtils
 ) {
 	'use strict';
 
@@ -15,24 +17,33 @@ define([], function (
 		this.maxLoopDepth = 100;
 		this.asyncMode = false;
 
-		this._variables = new Map();
+		// Same conventions as script "parameters"
+		this._variableDefinitions = [];
+
+		// Same conventions as script "args" object
+		this._variableValues = {};
 	}
 
 	/**
-	 * @param  {string} id
-	 * @return {?Variable}
+	 * @param {string} id
+	 * @returns {?Variable}
 	 */
 	Machine.prototype.getVariable = function (id) {
-		return this._variables.get(id);
+		return this._variables[id];
 	};
 
 	/**
 	 * @param {string} id
 	 * @param {Variable} variable
-	 * @return {?Variable}
+	 * @returns {Machine} self object
 	 */
 	Machine.prototype.setVariable = function (id, variable) {
-		return this._variables.set(id, variable);
+		this._variables.set(id, variable);
+		return this;
+	};
+
+	Machine.prototype.setVariableDefaults = function () {
+		ParameterUtils.fillDefaultValues(this._variableValues, this._variableDefinitions);
 	};
 
 	Machine.prototype.setRefs = function (parentFSM) {
@@ -60,6 +71,8 @@ define([], function (
 	};
 
 	Machine.prototype.reset = function () {
+		this.setVariableDefaults();
+
 		// reset self
 		this.currentState = this._states[this.initialState];
 

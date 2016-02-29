@@ -7,7 +7,7 @@ define([
 	'goo/entities/SystemBus',
 
 	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils'
+	'goo/util/ParameterUtils'
 ], function (
 	ComponentHandler,
 	ScriptComponent,
@@ -17,7 +17,7 @@ define([
 	SystemBus,
 
 	Scripts,
-	ScriptUtils
+	ParameterUtils
 ) {
 	'use strict';
 
@@ -69,7 +69,7 @@ define([
 			}
 
 			if (script.externals && script.externals.parameters) {
-				ScriptUtils.fillDefaultValues(newParameters, script.externals.parameters);
+				ParameterUtils.fillDefaultValues(newParameters, script.externals.parameters);
 			}
 
 			// We need to duplicate the script so we can have multiple
@@ -211,7 +211,7 @@ define([
 
 		function getInvalidParam() {
 			if (external.default === undefined) {
-				return _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[type]);
+				return _.deepClone(ParameterUtils.DEFAULTS_BY_TYPE[type]);
 			} else {
 				return _.deepClone(external.default);
 			}
@@ -229,7 +229,7 @@ define([
 			return that._load(ref, options).then(setParam);
 		}
 
-		if (!ScriptUtils.TYPE_VALIDATORS[type](config)) {
+		if (!ParameterUtils.TYPE_VALIDATORS[type](config)) {
 			return setParam(getInvalidParam());
 		} else if (type === 'entity') {
 			// For entities, because they can depend on themselves, we don't
@@ -237,7 +237,7 @@ define([
 			// and the parameter will be set.
 			setRefParam();
 			return Promise.resolve();
-		} else if (ScriptUtils.isRefType(type)) {
+		} else if (ParameterUtils.isRefType(type)) {
 			return setRefParam();
 		} else {
 			return setParam(_.clone(config));
