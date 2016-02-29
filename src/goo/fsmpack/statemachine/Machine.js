@@ -3,7 +3,8 @@ define([], function (
 ) {
 	'use strict';
 
-	function Machine(name) {
+	function Machine(id, name) {
+		this.id = id;
 		this.name = name;
 		this._states = {};
 		this._fsm = null;

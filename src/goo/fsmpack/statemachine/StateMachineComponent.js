@@ -19,6 +19,7 @@ define([
 		this.type = 'StateMachineComponent';
 
 		this._machines = [];
+		this._machinesById = {};
 		this.entity = null;
 		this.vars = {};
 		this.system = null;
@@ -76,11 +77,27 @@ define([
 		machine.parent = this;
 		machine.setRefs(this);
 		this._machines.push(machine);
+		this._machinesById[machine.id] = machine;
 	};
 
 	StateMachineComponent.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
 		ArrayUtils.remove(this._machines, machine);
+		delete this._machinesById[machine.id];
+	};
+
+	/**
+	 * Gets the state machine with the specified identifier.
+	 *
+	 * @param {string} id
+	 *        The identifier of the machine which is to be returned.
+	 *
+	 * @return {Machine}
+	 *         The state machine which was found or null if the specified state
+	 *         machine is not in the component.
+	 */
+	StateMachineComponent.prototype.getMachineById = function (id) {
+		return this._machinesById[id] || null;
 	};
 
 	/**
