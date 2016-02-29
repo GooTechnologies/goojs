@@ -38,15 +38,15 @@ define([
 	};
 
 	TimelineComponentHandler.tweenMap = {
-		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'x'),
-		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'y'),
-		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'z'),
-		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'x'),
-		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'y'),
-		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'z'),
-		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
-		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
-		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2)
+		translationX: ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'x'),
+		translationY: ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'y'),
+		translationZ: ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 'z'),
+		scaleX: ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'x'),
+		scaleY: ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'y'),
+		scaleZ: ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'z'),
+		rotationX: ValueChannel.getRotationTweener.bind(null, 0),
+		rotationY: ValueChannel.getRotationTweener.bind(null, 1),
+		rotationZ: ValueChannel.getRotationTweener.bind(null, 2)
 	};
 
 	//! AT: requires TWEEN
