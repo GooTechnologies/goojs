@@ -14,7 +14,26 @@ define([], function (
 
 		this.maxLoopDepth = 100;
 		this.asyncMode = false;
+
+		this._variables = new Map();
 	}
+
+	/**
+	 * @param  {string} id
+	 * @return {?Variable}
+	 */
+	Machine.prototype.getVariable = function (id) {
+		return this._variables.get(id);
+	};
+
+	/**
+	 * @param {string} id
+	 * @param {Variable} variable
+	 * @return {?Variable}
+	 */
+	Machine.prototype.setVariable = function (id, variable) {
+		return this._variables.set(id, variable);
+	};
 
 	Machine.prototype.setRefs = function (parentFSM) {
 		this._fsm = parentFSM;

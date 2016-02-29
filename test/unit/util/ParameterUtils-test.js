@@ -1,11 +1,11 @@
 define([
-	'goo/scripts/ScriptUtils'
+	'goo/util/ParameterUtils'
 ], function (
-	ScriptUtil
+	ParameterUtils
 ) {
 	'use strict';
 
-	describe('ScriptUtil', function () {
+	describe('ParameterUtils', function () {
 		it('defaults missing keys', function () {
 			var parametersDefinition = [{
 				key: 'a',
@@ -19,7 +19,7 @@ define([
 
 			var parametersValues = {};
 
-			ScriptUtil.fillDefaultValues(parametersValues, parametersDefinition);
+			ParameterUtils.fillDefaultValues(parametersValues, parametersDefinition);
 
 			var expected = {
 				'a': 123,
@@ -55,7 +55,7 @@ define([
 
 			var parametersValues = {};
 
-			ScriptUtil.fillDefaultValues(parametersValues, parametersDefinition);
+			ParameterUtils.fillDefaultValues(parametersValues, parametersDefinition);
 
 			var expected = {
 				'a': 0,

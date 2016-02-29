@@ -53,9 +53,31 @@ define([
 				this._inputStates.delete(buttonNames[event.button]);
 			}.bind(this)
 		};
-	}
 
+		/**
+		 * System-global variables: maps id string to variable instance
+		 * @type {Map}
+		 */
+		this._variables = new Map();
+	}
 	StateMachineSystem.prototype = Object.create(System.prototype);
+
+	/**
+	 * @param  {string} id
+	 * @return {?Variable}
+	 */
+	StateMachineSystem.prototype.getVariable = function (id) {
+		return this._variables.get(id);
+	};
+
+	/**
+	 * @param {string} id
+	 * @param {Variable} variable
+	 * @return {?Variable}
+	 */
+	StateMachineSystem.prototype.setVariable = function (id, variable) {
+		return this._variables.set(id, variable);
+	};
 
 	StateMachineSystem.prototype.getInputState = function (key) {
 		return this._inputStates.has(key);

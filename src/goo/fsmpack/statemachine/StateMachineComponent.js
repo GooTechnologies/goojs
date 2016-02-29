@@ -21,7 +21,6 @@ define([
 		this._machines = [];
 		this._machinesById = {};
 		this.entity = null;
-		this.vars = {};
 		this.system = null;
 		this.time = 0;
 		this.entered = false;
@@ -30,48 +29,6 @@ define([
 	}
 
 	StateMachineComponent.prototype = Object.create(Component.prototype);
-
-	StateMachineComponent.vars = {};
-
-	StateMachineComponent.getVariable = function (name) {
-		return StateMachineComponent.vars[name];
-	};
-
-	StateMachineComponent.prototype.getVariable = function (name) {
-		if (this.vars[name] !== undefined) {
-			return this.vars[name];
-		} else {
-			return StateMachineComponent.getVariable(name);
-		}
-	};
-
-	StateMachineComponent.applyOnVariable = function (name, fun) {
-		StateMachineComponent.vars[name] = fun(StateMachineComponent.vars[name]);
-	};
-
-	StateMachineComponent.prototype.applyOnVariable = function (name, fun) {
-		if (this.vars[name] !== undefined) {
-			this.vars[name] = fun(this.vars[name]);
-		} else {
-			StateMachineComponent.applyOnVariable(name, fun);
-		}
-	};
-
-	StateMachineComponent.prototype.defineVariable = function (name, initialValue) {
-		this.vars[name] = initialValue;
-	};
-
-	StateMachineComponent.prototype.removeVariable = function (name) {
-		delete this.vars[name];
-	};
-
-	StateMachineComponent.applyOnVariable = function (name, fun) {
-		if (this.vars[name]) {
-			this.vars[name] = fun(this.vars[name]);
-		} else if (StateMachineComponent.vars[name]) {
-			StateMachineComponent.applyOnVariable(name, fun);
-		}
-	};
 
 	StateMachineComponent.prototype.addMachine = function (machine) {
 		machine.parent = this;

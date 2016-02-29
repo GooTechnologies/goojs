@@ -1,9 +1,11 @@
 define([
 	'goo/scripts/ScriptUtils',
-	'goo/util/ObjectUtils'
+	'goo/util/ObjectUtils',
+	'goo/util/ParameterUtils'
 ], function (
 	ScriptUtils,
-	ObjectUtils
+	ObjectUtils,
+	ParameterUtils
 ) {
 	'use strict';
 
@@ -20,13 +22,13 @@ define([
 			return;
 		}
 		//! AT: this will modify the external object but that's ok
-		ScriptUtils.fillDefaultNames(factoryFunction.externals.parameters);
+		ParameterUtils.fillDefaultNames(factoryFunction.externals.parameters);
 		_scripts[key] = factoryFunction;
 	};
 
 	Scripts.addClass = ObjectUtils.warnOnce(
 		'Scripts.addClass is deprecated; please consider using the global goo object instead',
-		function (name, klass) {
+		function (/*name, klass*/) {
 			// deprecated as of v0.15.3 and scheduled for removal in version 0.17.0
 		}
 	);
@@ -59,8 +61,8 @@ define([
 		script.externals = factoryFunction.externals;
 
 		if (factoryFunction.externals) {
-			ScriptUtils.fillDefaultNames(script.externals.parameters);
-			ScriptUtils.fillDefaultValues(script.parameters, factoryFunction.externals.parameters);
+			ParameterUtils.fillDefaultNames(script.externals.parameters);
+			ParameterUtils.fillDefaultValues(script.parameters, factoryFunction.externals.parameters);
 		}
 
 		if (options) {

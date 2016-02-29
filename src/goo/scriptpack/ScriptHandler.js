@@ -12,6 +12,7 @@ define([
 	'goo/entities/SystemBus',
 
 	'goo/scripts/ScriptUtils',
+	'goo/util/ParameterUtils',
 	'goo/scripts/Scripts'
 ], function (
 	ConfigHandler,
@@ -27,6 +28,7 @@ define([
 	SystemBus,
 
 	ScriptUtils,
+	ParameterUtils,
 	Scripts
 ) {
 	'use strict';
@@ -190,7 +192,7 @@ define([
 		}
 		// generate names from external variable names
 		if (script.externals) {
-			ScriptUtils.fillDefaultNames(script.externals.parameters);
+			ParameterUtils.fillDefaultNames(script.externals.parameters);
 		}
 
 		return script;
@@ -314,7 +316,7 @@ define([
 			script.enabled = false;
 
 			// generate names from external variable names
-			ScriptUtils.fillDefaultNames(script.externals.parameters);
+			ParameterUtils.fillDefaultNames(script.externals.parameters);
 		}
 
 		return script;
