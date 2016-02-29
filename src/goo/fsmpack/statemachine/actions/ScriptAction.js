@@ -49,13 +49,13 @@ define([
 			fsm: fsm
 		};
 
-		if (this.script) {
+		if (this.script && this.script.setup) {
 			this.script.setup(this.args, this.ctx);
 		}
 	};
 
 	ScriptAction.prototype.cleanup = function () {
-		if (this.script) {
+		if (this.script && this.script.cleanup) {
 			this.script.cleanup(this.args, this.ctx);
 			this.script = null;
 		}
@@ -68,7 +68,7 @@ define([
 	};
 
 	ScriptAction.prototype.update = function () {
-		if (this.script) {
+		if (this.script && this.script.update) {
 			this.script.update(this.args, this.ctx);
 		}
 	};

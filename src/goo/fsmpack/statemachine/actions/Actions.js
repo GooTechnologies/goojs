@@ -112,7 +112,7 @@ define([
 	// 'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
 	// 'goo/fsmpack/statemachine/actions/CopyVariableAction',
 
-	'goo/fsmpack/statemachine/actions/ScriptAction',
+	// 'goo/fsmpack/statemachine/actions/ScriptAction',
 
 	'goo/fsmpack/statemachine/actions/SetHtmlTextAction'
 ], function (
