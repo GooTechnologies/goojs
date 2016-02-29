@@ -561,7 +561,7 @@ define([
 
 						fragment.push(
 							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;',
-							'depth.z *= shadowOffset' + i + ';'
+							'depth.z += shadowOffset' + i + ';'
 						);
 
 						if (light.shadowCaster) {
