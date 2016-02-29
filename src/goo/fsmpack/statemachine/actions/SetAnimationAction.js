@@ -1,6 +1,8 @@
-define(['goo/fsmpack/statemachine/actions/Action'], function (
+define([
+	'goo/fsmpack/statemachine/actions/Action'
+], function (
 	Action
-	) {
+) {
 	'use strict';
 
 	function SetAnimationAction(/*id, settings*/) {
@@ -34,6 +36,12 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 			name: 'On completion',
 			description: 'State to transition to when the target animation completes. If the animation loops forever, the transition will be done when the next loop starts.'
 		}]
+	};
+
+	SetAnimationAction.prototype.enter = function () {
+		this._transitioned = false;
+		this._loopAtStart = null;
+		this._previousLoop = 0;
 	};
 
 	SetAnimationAction.prototype.update = function (fsm) {
@@ -81,7 +89,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (
 		}
 	};
 
-	SetAnimationAction.prototype.exit = function (fsm) {
+	SetAnimationAction.prototype.exit = function () {
 		this._transitioned = false;
 		this._loopAtStart = null;
 		this._previousLoop = 0;
