@@ -30,8 +30,8 @@ define([
 	 */
 	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');
-		this.depthMaterial.cullState.cullFace = 'Back';
-		this.depthMaterial.fullOverride = true;
+		// this.depthMaterial.cullState.cullFace = 'Back';
+		// this.depthMaterial.fullOverride = true;
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 

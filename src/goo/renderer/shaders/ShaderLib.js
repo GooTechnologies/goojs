@@ -1026,6 +1026,8 @@ define([
 			ShaderBuilder.animation.processor
 		],
 		defines: {
+			TEXCOORD0: true,
+			DIFFUSE_MAP: true,
 			SHADOW_TYPE: 0,
 			WEIGHTS: true,
 			JOINTIDS: true
