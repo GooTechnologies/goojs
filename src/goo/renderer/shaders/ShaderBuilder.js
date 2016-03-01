@@ -345,7 +345,9 @@ define([
 				totalAmbient[2] = materialAmbient[2] + ShaderBuilder.GLOBAL_AMBIENT[2];
 			}
 
-			var receiveShadows = shaderInfo.renderable.meshRendererComponent && shaderInfo.renderable.meshRendererComponent.receiveShadows;
+			var receiveShadows = shaderInfo.renderable &&
+				shaderInfo.renderable.meshRendererComponent &&
+				shaderInfo.renderable.meshRendererComponent.receiveShadows;
 			if (receiveShadows) {
 				shader.setDefine('RECEIVE_SHADOW', true);
 			} else {
