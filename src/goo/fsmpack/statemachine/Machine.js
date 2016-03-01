@@ -29,7 +29,7 @@ define([
 	 * @returns {?Variable}
 	 */
 	Machine.prototype.getVariable = function (id) {
-		return this._variables[id];
+		return this._variableValues[id];
 	};
 
 	/**
@@ -38,7 +38,7 @@ define([
 	 * @returns {Machine} self object
 	 */
 	Machine.prototype.setVariable = function (id, variable) {
-		this._variables.set(id, variable);
+		this._variableValues[id] = variable;
 		return this;
 	};
 

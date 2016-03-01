@@ -19,7 +19,10 @@ define([
 		// TODO: use machine directly
 		this.proxy = {
 			setVariable: function(id, value){
-				this._fsm.setVariable(id, value);
+				this.parent.setVariable(id, value);
+			}.bind(this),
+			getVariable: function(id){
+				return this.parent.getVariable(id);
 			}.bind(this),
 			getInputState: function (key) {
 				return this._fsm.system.getInputState(key);
