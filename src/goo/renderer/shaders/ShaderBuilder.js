@@ -537,11 +537,19 @@ define([
 								'uniform sampler2D shadowMaps' + i + ';'
 							);
 							fragment.push(
-								'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
 								'float shadowOffset' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].w;',
-								'float cameraScales' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].x;',
 								'float shadowDarkness' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].y;'
 							);
+							if (light.shadowSettings.shadowType === 'PCF') {
+								fragment.push(
+									'vec2 shadowMapSizes' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].zw;'
+								);
+							} else if (light.shadowSettings.shadowType === 'VSM') {
+								fragment.push(
+									'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
+									'float cameraScales' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].x;'
+								);
+							}
 						}
 						if (useLightCookie) {
 							prefragment.push(
@@ -553,20 +561,14 @@ define([
 							'varying vec4 shadowLightDepths' + i + ';'
 						);
 
-						if (light.shadowCaster && light.shadowSettings.shadowType === 'PCF') {
-							fragment.push(
-								'vec2 shadowMapSizes' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].zw;'
-							);
-						}
-
 						fragment.push(
-							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;',
-							'depth.z += shadowOffset' + i + ';'
+							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;'
 						);
 
 						if (light.shadowCaster) {
 							shadowIndex++;
 							fragment.push(
+								'depth.z += shadowOffset' + i + ';',
 								'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths' + i + '.z >= 0.0 && depth.z <= 1.0) {'
 							);
 							if (light.shadowSettings.shadowType === 'PCF') {
