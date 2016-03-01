@@ -131,6 +131,17 @@ define([
 				}
 			}
 
+			// Patch color uniforms
+			if (material.uniforms.materialDiffuse !== undefined) {
+				material.uniforms.materialDiffuse[3] = 1;
+			}
+			if (material.uniforms.materialAmbient !== undefined) {
+				material.uniforms.materialAmbient[3] = 1;
+			}
+			if (material.uniforms.materialEmissive !== undefined) {
+				material.uniforms.materialEmissive[3] = 1;
+			}
+
 			// TODO: This is a temporary hack until we fully moved shininess into the last entry of specular [r, g, b, spec_power]
 			if (material.uniforms.materialSpecular !== undefined && material.uniforms.materialSpecularPower !== undefined) {
 				material.uniforms.materialSpecular[3] = material.uniforms.materialSpecularPower;

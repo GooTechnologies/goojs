@@ -282,15 +282,13 @@ define([
 		},
 		shadows: function (light, uniforms, i, shader, shaderInfo, shadowIndex) {
 			var useLightCookie = light.lightCookie instanceof Texture;
-			if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-				shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
+	
+			if ((useLightCookie || light.shadowCaster) && light.shadowSettings.shadowData) {
 				var shadowData = light.shadowSettings.shadowData;
 
 				if (light.shadowCaster) {
 					uniforms['shadowMaps' + i] = 'SHADOW_MAP' + i;
 					shaderInfo.material.setTexture('SHADOW_MAP' + i, shadowData.shadowResult);
-
-
 
 					var uniform = uniforms.shadowData = uniforms.shadowData || [];
 
@@ -347,13 +345,20 @@ define([
 				totalAmbient[2] = materialAmbient[2] + ShaderBuilder.GLOBAL_AMBIENT[2];
 			}
 
+			var receiveShadows = shaderInfo.renderable.meshRendererComponent && shaderInfo.renderable.meshRendererComponent.receiveShadows;
+			if (receiveShadows) {
+				shader.setDefine('RECEIVE_SHADOW', true);
+			} else {
+				shader.removeDefine('RECEIVE_SHADOW');
+			}
+
 			if (!shader.frameStart) {
 				var lights = shaderInfo.lights;
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
 					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
+
+					if ((useLightCookie || light.shadowCaster) && light.shadowSettings.shadowData) {
 						var shadowData = light.shadowSettings.shadowData;
 
 						if (light.shadowCaster) {
@@ -364,6 +369,7 @@ define([
 						}
 					} else {
 						shaderInfo.material.removeTexture('SHADOW_MAP' + i);
+						shaderInfo.material.removeTexture('LIGHT_COOKIE' + i);
 					}
 				}
 
@@ -417,14 +423,11 @@ define([
 			);
 
 			prefragment.push(
-				// 'uniform vec4 materialAmbient;',
-				// 'uniform vec3 globalAmbient;',
 				'uniform vec3 totalAmbient;',
 
 				'uniform vec4 materialEmissive;',
 				'uniform vec4 materialDiffuse;',
 				'uniform vec4 materialSpecular;',
-				// 'uniform float materialSpecularPower;',
 				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
@@ -472,11 +475,7 @@ define([
 						spotIndex++;
 					}
 
-					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster &&
-						shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows))
-					) {
+					if (light.lightCookie instanceof Texture || light.shadowCaster) {
 						shadowIndex++;
 					}
 				}
@@ -519,10 +518,7 @@ define([
 					);
 
 					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster &&
-						shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows))
-					) {
+					if (light.shadowCaster || useLightCookie) {
 						prevertex.push(
 							'uniform mat4 shadowLightMatrices' + i + ';',
 							'varying vec4 shadowLightDepths' + i + ';'
@@ -568,6 +564,7 @@ define([
 						if (light.shadowCaster) {
 							shadowIndex++;
 							fragment.push(
+								'#ifdef RECEIVE_SHADOW',
 								'depth.z += shadowOffset' + i + ';',
 								'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths' + i + '.z >= 0.0 && depth.z <= 1.0) {'
 							);
@@ -612,7 +609,8 @@ define([
 								'} else {',
 									'shadow = 1.0;',
 								'}',
-								'shadow = clamp(shadow, 0.0, 1.0);'
+								'shadow = clamp(shadow, 0.0, 1.0);',
+								'#endif'
 							);
 						}
 					}
