@@ -31,6 +31,11 @@ function (
 		 */
 		this.useTransformComponent = true;
 
+		/**
+		 * @type {boolean}
+		 */
+		this.pixelPerfect = true;
+
 		// #ifdef DEBUG
 		Object.seal(this);
 		// #endif
