@@ -122,7 +122,7 @@ define([
 		 * @type {number}
 		 */
 		this.downScale = parameters.downScale || 1;
-		
+
 		//! AT: why are there 2 clear colors?
 		// Default setup
 		/**
@@ -1783,7 +1783,7 @@ define([
 				context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
 					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || texture.wrapS !== 'EdgeClamp' || texture.wrapT !== 'EdgeClamp' || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+				if (!(image instanceof HTMLVideoElement) && !image.isCompressed && (texture.generateMipmaps || texture.wrapS !== 'EdgeClamp' || texture.wrapT !== 'EdgeClamp' || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}
