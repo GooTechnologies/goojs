@@ -721,7 +721,7 @@ define([
 						);
 						if (useLightCookie) {
 							fragment.push(
-								'cookie = texture2D(lightCookie' + i + ', depth.xy).rgb;',
+								'vec4 cookieTex = texture2D(lightCookie' + i + ', depth.xy);',
 								'cookie = cookieTex.rgb * cookieTex.a;'
 							);
 						}
