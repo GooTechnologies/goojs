@@ -723,6 +723,7 @@ define([
 			return;
 		}
 		outScript.externals.parameters = [];
+		var duplicateChecker = {};
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var parameter = externals.parameters[i];
 
@@ -732,9 +733,16 @@ define([
 			}
 
 			// create cares about this, in order to build the control panel for the script
-			if (parameter.default === null || parameter.default === undefined) {
-				parameter.default = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
+			if (parameter['default'] === null || parameter['default'] === undefined) {
+				parameter['default'] = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
 			}
+
+			if(parameter.key && duplicateChecker[parameter.key]){
+				errors.push({
+					message: 'Duplicate parameter key: "' + parameter.key + '"'
+				});
+			}
+			duplicateChecker[parameter.key] = true;
 
 			outScript.externals.parameters.push(parameter);
 		}

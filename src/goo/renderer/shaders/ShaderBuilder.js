@@ -282,15 +282,13 @@ define([
 		},
 		shadows: function (light, uniforms, i, shader, shaderInfo, shadowIndex) {
 			var useLightCookie = light.lightCookie instanceof Texture;
-			if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-				shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
+	
+			if ((useLightCookie || light.shadowCaster) && light.shadowSettings.shadowData) {
 				var shadowData = light.shadowSettings.shadowData;
 
 				if (light.shadowCaster) {
 					uniforms['shadowMaps' + i] = 'SHADOW_MAP' + i;
 					shaderInfo.material.setTexture('SHADOW_MAP' + i, shadowData.shadowResult);
-
-
 
 					var uniform = uniforms.shadowData = uniforms.shadowData || [];
 
@@ -347,13 +345,22 @@ define([
 				totalAmbient[2] = materialAmbient[2] + ShaderBuilder.GLOBAL_AMBIENT[2];
 			}
 
+			var receiveShadows = shaderInfo.renderable &&
+				shaderInfo.renderable.meshRendererComponent &&
+				shaderInfo.renderable.meshRendererComponent.receiveShadows;
+			if (receiveShadows) {
+				shader.setDefine('RECEIVE_SHADOW', true);
+			} else {
+				shader.removeDefine('RECEIVE_SHADOW');
+			}
+
 			if (!shader.frameStart) {
 				var lights = shaderInfo.lights;
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
 					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
+
+					if ((useLightCookie || light.shadowCaster) && light.shadowSettings.shadowData) {
 						var shadowData = light.shadowSettings.shadowData;
 
 						if (light.shadowCaster) {
@@ -364,6 +371,7 @@ define([
 						}
 					} else {
 						shaderInfo.material.removeTexture('SHADOW_MAP' + i);
+						shaderInfo.material.removeTexture('LIGHT_COOKIE' + i);
 					}
 				}
 
@@ -417,14 +425,11 @@ define([
 			);
 
 			prefragment.push(
-				// 'uniform vec4 materialAmbient;',
-				// 'uniform vec3 globalAmbient;',
 				'uniform vec3 totalAmbient;',
 
 				'uniform vec4 materialEmissive;',
 				'uniform vec4 materialDiffuse;',
 				'uniform vec4 materialSpecular;',
-				// 'uniform float materialSpecularPower;',
 				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
@@ -472,11 +477,7 @@ define([
 						spotIndex++;
 					}
 
-					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster &&
-						shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows))
-					) {
+					if (light.lightCookie instanceof Texture || light.shadowCaster) {
 						shadowIndex++;
 					}
 				}
@@ -500,7 +501,7 @@ define([
 						ShaderFragment.methods.unpackDepth,
 						'uniform vec4 shadowData[' + (shadowIndex * 2) + '];',
 						'float texture2DCompare(sampler2D depths, vec2 uv, float compare) {',
-							'return step(compare, unpackDepth(texture2D(depths, uv)));',
+							'return step(unpackDepth(texture2D(depths, uv)), compare);',
 						'}'
 					);
 				}
@@ -519,10 +520,7 @@ define([
 					);
 
 					var useLightCookie = light.lightCookie instanceof Texture;
-					if ((useLightCookie || (light.shadowCaster &&
-						shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows))
-					) {
+					if (light.shadowCaster || useLightCookie) {
 						prevertex.push(
 							'uniform mat4 shadowLightMatrices' + i + ';',
 							'varying vec4 shadowLightDepths' + i + ';'
@@ -537,11 +535,19 @@ define([
 								'uniform sampler2D shadowMaps' + i + ';'
 							);
 							fragment.push(
-								'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
 								'float shadowOffset' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].w;',
-								'float cameraScales' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].x;',
 								'float shadowDarkness' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].y;'
 							);
+							if (light.shadowSettings.shadowType === 'PCF') {
+								fragment.push(
+									'vec2 shadowMapSizes' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].zw;'
+								);
+							} else if (light.shadowSettings.shadowType === 'VSM') {
+								fragment.push(
+									'vec3 shadowLightPositions' + i + ' = shadowData[' + (shadowIndex * 2 + 0) + '].xyz;',
+									'float cameraScales' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].x;'
+								);
+							}
 						}
 						if (useLightCookie) {
 							prefragment.push(
@@ -553,20 +559,15 @@ define([
 							'varying vec4 shadowLightDepths' + i + ';'
 						);
 
-						if (light.shadowCaster && light.shadowSettings.shadowType === 'PCF') {
-							fragment.push(
-								'vec2 shadowMapSizes' + i + ' = shadowData[' + (shadowIndex * 2 + 1) + '].zw;'
-							);
-						}
-
 						fragment.push(
-							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;',
-							'depth.z += shadowOffset' + i + ';'
+							'vec3 depth = shadowLightDepths' + i + '.xyz / shadowLightDepths' + i + '.w;'
 						);
 
 						if (light.shadowCaster) {
 							shadowIndex++;
 							fragment.push(
+								'#ifdef RECEIVE_SHADOW',
+								'depth.z += shadowOffset' + i + ';',
 								'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths' + i + '.z >= 0.0 && depth.z <= 1.0) {'
 							);
 							if (light.shadowSettings.shadowType === 'PCF') {
@@ -580,7 +581,7 @@ define([
 									'float dx1 = shadowRadius * xPixelOffset;',
 									'float dy1 = shadowRadius * yPixelOffset;',
 
-									'float shadowPcf = (',
+									'shadow = 1.0 - (',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0), depth.z) +',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0), depth.z) +',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0), depth.z) +',
@@ -590,8 +591,7 @@ define([
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1), depth.z) +',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1), depth.z) +',
 										'texture2DCompare(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1), depth.z)',
-									') * (1.0 / 9.0);',
-									'shadow = shadowDarkness' + i + ' * shadowPcf;'
+									') * (shadowDarkness' + i + ' / 9.0);'
 								);
 							} else if (light.shadowSettings.shadowType === 'VSM') {
 								fragment.push(
@@ -604,15 +604,15 @@ define([
 								);
 							} else {
 								fragment.push(
-									'float shadowDepth = texture2DCompare(shadowMaps' + i + ', depth.xy, depth.z);',
-									'shadow = shadowDarkness' + i + ' * shadowDepth;'
+									'shadow = 1.0 - texture2DCompare(shadowMaps' + i + ', depth.xy, depth.z) * shadowDarkness' + i + ';'
 								);
 							}
 							fragment.push(
 								'} else {',
 									'shadow = 1.0;',
 								'}',
-								'shadow = clamp(shadow, 0.0, 1.0);'
+								'shadow = clamp(shadow, 0.0, 1.0);',
+								'#endif'
 							);
 						}
 					}
@@ -721,7 +721,8 @@ define([
 						);
 						if (useLightCookie) {
 							fragment.push(
-								'cookie = texture2D(lightCookie' + i + ', depth.xy).rgb;'
+								'vec4 cookieTex = texture2D(lightCookie' + i + ', depth.xy);',
+								'cookie = cookieTex.rgb * cookieTex.a;'
 							);
 						}
 						fragment.push(

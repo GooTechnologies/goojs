@@ -282,6 +282,8 @@ define([
 					// '#endif',
 					'#endif',
 
+					'N = N * (-1.0 + 2.0 * float(gl_FrontFacing));',
+
 					ShaderBuilder.light.fragment,
 				'#endif',
 
