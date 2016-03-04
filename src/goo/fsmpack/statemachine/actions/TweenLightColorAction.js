@@ -57,9 +57,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the light tween was completed'
 		}]
+	};
+
+	TweenLightColorAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Light Complete' : undefined;
 	};
 
 	TweenLightColorAction.prototype.ready = function () {

@@ -29,9 +29,12 @@ define([
 		}],
 		transitions: [{
 			key: 'keydown',
-			name: 'Key down',
 			description: 'State to transition to when the key is pressed'
 		}]
+	};
+
+	KeyDownAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return 'Key ' + actionConfig.options.key + ' down';
 	};
 
 	KeyDownAction.prototype.configure = function (settings) {

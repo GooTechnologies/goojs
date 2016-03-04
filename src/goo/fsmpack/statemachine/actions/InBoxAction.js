@@ -39,15 +39,21 @@ define([
 		}],
 		transitions: [{
 			key: 'inside',
-			name: 'Inside',
 			description: 'State to transition to if the entity is inside the box'
 		}, {
 			key: 'outside',
-			name: 'Outside',
 			description: 'State to transition to if the entity is outside the box'
 		}]
 	};
 
+	var labels = {
+		inside: 'Inside Box',
+		outside: 'Outside Box'
+	};
+
+	InBoxAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
 
 	// TODO: Find this in some Util class
 	function checkInside(pos, pt1, pt2) {

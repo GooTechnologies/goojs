@@ -22,9 +22,12 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'leave',
-			name: 'On leave',
 			description: 'State to transition to when leave occurs'
 		}]
+	};
+
+	TriggerLeaveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'leave' ? 'On Trigger Leave' : undefined;
 	};
 
 	TriggerLeaveAction.prototype.enter = function (fsm) {

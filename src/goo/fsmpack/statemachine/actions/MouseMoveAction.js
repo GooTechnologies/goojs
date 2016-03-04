@@ -20,13 +20,20 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'mousemove',
-			name: 'Mouse move',
 			description: 'State to transition to on mouse movement'
 		}, {
 			key: 'touchmove',
-			name: 'Touch move',
 			description: 'State to transition to on touch movement'
 		}]
+	};
+
+	var labels = {
+		mousemove: 'Mouse move',
+		touchmove: 'Touch move'
+	};
+
+	MouseMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MouseMoveAction.prototype.enter = function (fsm) {

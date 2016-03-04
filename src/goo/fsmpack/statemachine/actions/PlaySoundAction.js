@@ -28,9 +28,16 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the sound finishes playing'
 		}]
+	};
+
+	var labels = {
+		complete: 'On Sound End'
+	};
+
+	PlaySoundAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	PlaySoundAction.prototype.enter = function (fsm) {

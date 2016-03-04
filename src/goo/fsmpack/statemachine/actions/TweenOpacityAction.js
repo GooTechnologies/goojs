@@ -55,9 +55,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the transition completes'
 		}]
+	};
+
+	TweenOpacityAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Opacity Complete' : undefined;
 	};
 
 	TweenOpacityAction.prototype.ready = function () {

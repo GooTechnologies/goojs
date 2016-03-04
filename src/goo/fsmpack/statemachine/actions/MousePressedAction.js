@@ -28,9 +28,16 @@ define([
 		}],
 		transitions: [{
 			key: 'mousedown',
-			name: 'Button Pressed',
 			description: 'State to transition to when the mouse button is pressed'
 		}]
+	};
+
+	var labels = {
+		mousedown: 'Mouse Button Pressed'
+	};
+
+	MousePressedAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MousePressedAction.prototype.enter = function (fsm) {

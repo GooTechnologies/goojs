@@ -46,15 +46,25 @@ define([
 			'default': true
 		}],
 		transitions: [{
-			name: 'less',
+			key: 'less',
 			description: 'Event fired if left hand argument is smaller than right hand argument'
 		}, {
-			name: 'equal',
+			key: 'equal',
 			description: 'Event fired if both sides are approximately equal'
 		}, {
-			name: 'greater',
+			key: 'greater',
 			description: 'Event fired if left hand argument is greater than right hand argument'
 		}]
+	};
+
+	var labels = {
+		less: 'X < Y',
+		equal: 'X == Y',
+		greater: 'X > Y'
+	};
+
+	NumberCompareAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	NumberCompareAction.prototype.compare = function (fsm) {

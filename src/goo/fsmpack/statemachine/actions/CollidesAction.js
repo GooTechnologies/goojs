@@ -31,13 +31,20 @@ define([
 		}],
 		transitions: [{
 			key: 'collides',
-			name: 'On Collision',
 			description: 'State to transition to when a collision occurs'
 		}, {
 			key: 'notCollides',
-			name: 'On Divergence',
 			description: 'State to transition to when a collision is not occurring'
 		}]
+	};
+
+	var labels = {
+		collides: 'Bounds Overlap',
+		notCollides: 'Bounds Separate'
+	};
+
+	CollidesAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	CollidesAction.prototype.ready = function (fsm) {

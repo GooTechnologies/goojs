@@ -37,6 +37,14 @@ define([
 		}]
 	};
 
+	var labels = {
+		complete: 'Sound Fade Out Complete'
+	};
+
+	SoundFadeOutAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
 	SoundFadeOutAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('SoundComponent')) {

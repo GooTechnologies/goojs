@@ -39,9 +39,12 @@ define([
 		}],
 		transitions: [{
 			key: 'exit',
-			name: 'On Exit',
 			description: 'State to transition to when entity is exited'
 		}]
+	};
+
+	HoverExitAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'Hover Exit';
 	};
 
 	HoverExitAction.prototype.enter = function (fsm) {
@@ -103,7 +106,7 @@ define([
 
 		document.addEventListener('mousemove', this.moveListener);
 		document.addEventListener('touchmove', this.moveListener);
-		
+
 		this.first = true;
 		this.hit = false;
 	};

@@ -25,6 +25,14 @@ define([
 		}]
 	};
 
+	var labels = {
+		pick: 'Pick entity'
+	};
+
+	PickAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
 	PickAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;

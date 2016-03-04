@@ -43,13 +43,20 @@ define([
 		}],
 		transitions: [{
 			key: 'inside',
-			name: 'Inside',
 			description: 'State to transition to if entity is in the frustum'
 		}, {
 			key: 'outside',
-			name: 'Outside',
 			description: 'State to transition to if entity is outside the frustum'
 		}]
+	};
+
+	var labels = {
+		inside: 'Inside Frustum',
+		outside: 'Outside Frustum'
+	};
+
+	InFrustumAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	InFrustumAction.prototype.checkFrustum = function (fsm) {

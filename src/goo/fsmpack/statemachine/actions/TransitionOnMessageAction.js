@@ -29,9 +29,12 @@ define([
 		}],
 		transitions: [{
 			key: 'transition',
-			name: 'On Message',
 			description: 'State to transition to'
 		}]
+	};
+
+	TransitionOnMessageAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return transitionKey === 'transition' ? 'On "' + actionConfig.options.config + '" event' : 'On Message';
 	};
 
 	TransitionOnMessageAction.prototype.enter = function (fsm) {

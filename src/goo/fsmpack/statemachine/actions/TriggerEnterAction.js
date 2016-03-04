@@ -32,9 +32,12 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'enter',
-			name: 'On enter',
 			description: 'State to transition to when enter occurs'
 		}]
+	};
+
+	TriggerEnterAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'enter' ? 'On Trigger Enter' : undefined;
 	};
 
 	TriggerEnterAction.prototype.enter = function (fsm) {

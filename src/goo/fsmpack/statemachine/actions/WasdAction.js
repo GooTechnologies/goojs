@@ -45,6 +45,17 @@ define([
 		};
 	})();
 
+	var labels = {
+		w: 'Key W Pressed',
+		a: 'Key A Pressed',
+		s: 'Key S Pressed',
+		d: 'Key D Pressed'
+	};
+
+	WasdAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
 	WasdAction.prototype.enter = function (fsm) {
 		this.eventListener = function (event) {
 			var keyname = keys[event.which];
