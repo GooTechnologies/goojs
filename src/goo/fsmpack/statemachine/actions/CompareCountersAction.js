@@ -8,7 +8,6 @@ define([
 	function CompareCountersAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-
 	CompareCountersAction.prototype = Object.create(Action.prototype);
 	CompareCountersAction.prototype.constructor = CompareCountersAction;
 
@@ -37,17 +36,24 @@ define([
 		}],
 		transitions: [{
 			key: 'less',
-			name: 'Less',
 			description: 'State to transition to if the first counter is smaller than the second counter'
 		}, {
 			key: 'equal',
-			name: 'Equal',
 			description: 'State to transition to if the first counter is the same as the second counter'
 		}, {
 			key: 'greater',
-			name: 'Greater',
 			description: 'State to transition to if the first counter is greater than the second counter'
 		}]
+	};
+
+	var labels = {
+		less : 'Counter1 < Counter2',
+		equal : 'Counter1 == Counter2',
+		great : 'Counter1 > Counter2'
+	};
+
+	CompareCountersAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	CompareCountersAction.prototype.compare = function (fsm) {

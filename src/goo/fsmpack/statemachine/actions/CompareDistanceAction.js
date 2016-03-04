@@ -12,7 +12,6 @@ define([
 	function CompareDistanceAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-
 	CompareDistanceAction.prototype = Object.create(Action.prototype);
 	CompareDistanceAction.prototype.constructor = CompareDistanceAction;
 
@@ -62,17 +61,24 @@ define([
 		}],
 		transitions: [{
 			key: 'less',
-			name: 'Less',
 			description: 'State to transition to if the measured distance is smaller than the specified value'
 		}, {
 			key: 'equal',
-			name: 'Equal',
 			description: 'State to transition to if the measured distance is about the same as the specified value'
 		}, {
 			key: 'greater',
-			name: 'Greater',
 			description: 'State to transition to if the measured distance is greater than the specified value'
 		}]
+	};
+
+	var labels = {
+		less: 'Distance < X',
+		equal: 'Distance == X',
+		greater: 'Distance > X'
+	};
+
+	CompareDistanceAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	CompareDistanceAction.prototype.compare = function (fsm) {
