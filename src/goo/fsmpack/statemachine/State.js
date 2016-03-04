@@ -24,6 +24,9 @@ define([
 			getVariable: function(id){
 				return this.parent.getVariable(id);
 			}.bind(this),
+			getVariableType: function(id){
+				return this.parent.getVariableType(id);
+			}.bind(this),
 			getInputState: function (key) {
 				return this._fsm.system.getInputState(key);
 			}.bind(this),
@@ -41,6 +44,9 @@ define([
 			}.bind(this),
 			getFsm: function () {
 				return this._fsm;
+			}.bind(this),
+			getMachine: function () {
+				return this.parent;
 			}.bind(this),
 			getOwnerEntity: function () {
 				return this._fsm && this._fsm.entity;

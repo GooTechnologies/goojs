@@ -19,6 +19,7 @@ define([
 
 		// Same conventions as script "parameters"
 		this._variableDefinitions = [];
+		this._variableTypes = {};
 
 		// Same conventions as script "args" object
 		this._variableValues = {};
@@ -26,7 +27,7 @@ define([
 
 	/**
 	 * @param {string} id
-	 * @returns {?Variable}
+	 * @returns {*}
 	 */
 	Machine.prototype.getVariable = function (id) {
 		return this._variableValues[id];
@@ -34,16 +35,46 @@ define([
 
 	/**
 	 * @param {string} id
-	 * @param {Variable} variable
+	 * @returns {string}
+	 */
+	Machine.prototype.getVariableType = function (id) {
+		return this._variableTypes[id];
+	};
+
+	/**
+	 * @param {string} id
+	 * @param {*} variable
 	 * @returns {Machine} self object
 	 */
-	Machine.prototype.setVariable = function (id, variable) {
-		this._variableValues[id] = variable;
+	Machine.prototype.setVariable = function (id, value) {
+		if(this._variableTypes[id]){ // Don't do anything if it's not defined yet.
+			this._variableValues[id] = value;
+		}
 		return this;
 	};
 
+	/**
+	 * Wipe all old and define new variables in the machine.
+	 * @param {array} definitions
+	 * @returns {Machine} self object
+	 */
+	Machine.prototype.setVariableDefinitions = function (definitions) {
+		var types = this._variableTypes = {};
+		this._variableDefinitions = definitions;
+		for (var i = 0; i < definitions.length; i++) {
+			var def = definitions[i];
+			types[def.key] = def.type;
+		}
+		return this;
+	};
+
+	/**
+	 * Set all variables to their default values.
+	 * @returns {Machine} self object
+	 */
 	Machine.prototype.setVariableDefaults = function () {
 		ParameterUtils.fillDefaultValues(this._variableValues, this._variableDefinitions);
+		return this;
 	};
 
 	Machine.prototype.setRefs = function (parentFSM) {

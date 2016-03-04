@@ -1,9 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ], function (
-	Action,
-	FsmUtils
+	Action
 ) {
 	'use strict';
 
@@ -21,7 +19,7 @@ define([
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
-			type: 'identifier'
+			type: 'string' // Todo: should be "variable" reference
 		}, {
 			name: 'Amount',
 			key: 'amount',
@@ -37,9 +35,31 @@ define([
 	};
 
 	AddVariableAction.prototype.add = function (fsm) {
-		fsm.applyOnVariable(this.variable, function (v) {
-			return v + FsmUtils.getValue(this.amount, fsm);
-		}.bind(this));
+		var variableId = this.variable;
+		var variable = fsm.getVariable(variableId);
+		var type = fsm.getVariableType(variableId);
+		var amount = this.amount;
+		switch(type){
+			case 'float':
+				variable += amount;
+				break;
+			case 'vec2':
+				variable[0] += amount;
+				variable[1] += amount;
+				break;
+			case 'vec3':
+				variable[0] += amount;
+				variable[1] += amount;
+				variable[2] += amount;
+				break;
+			case 'vec4':
+				variable[0] += amount;
+				variable[1] += amount;
+				variable[2] += amount;
+				variable[3] += amount;
+				break;
+		}
+		fsm.setVariable(variableId, variable);
 	};
 
 	AddVariableAction.prototype.enter = function (fsm) {
