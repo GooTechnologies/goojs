@@ -130,6 +130,7 @@ define([
 			domElement.prevStyle = config.style;
 
 			component.useTransformComponent = config.useTransformComponent !== false;
+			component.pixelPerfect = config.pixelPerfect !== undefined ? config.pixelPerfect : true;
 
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtils.resolve();
