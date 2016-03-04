@@ -48,13 +48,15 @@ define([
 	};
 
 	var labels = {
-		less: 'Counter < X',
-		equal: 'Counter == X',
-		greater: 'Counter > X'
+		less: ' < X',
+		equal: ' == X',
+		greater: ' > X'
 	};
 
-	CompareCounterAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
-		return labels[transitionKey];
+	CompareCounterAction.getTransitionLabel = function(transitionKey, actionConfig){
+		if(labels[transitionKey]){
+			return actionConfig.options.name + labels[transitionKey];
+		}
 	};
 
 	CompareCounterAction.prototype.compare = function (fsm) {

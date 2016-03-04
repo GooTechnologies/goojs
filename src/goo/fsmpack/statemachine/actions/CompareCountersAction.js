@@ -46,14 +46,16 @@ define([
 		}]
 	};
 
-	var labels = {
-		less : 'Counter1 < Counter2',
-		equal : 'Counter1 == Counter2',
-		great : 'Counter1 > Counter2'
+	var operators = {
+		less: '<',
+		equal: '==',
+		great: '>'
 	};
 
-	CompareCountersAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
-		return labels[transitionKey];
+	CompareCountersAction.getTransitionLabel = function(transitionKey, actionConfig){
+		if (operators[transitionKey]) {
+			return actionConfig.options.name1 + ' ' + operators[transitionKey] + ' ' + actionConfig.options.name2;
+		}
 	};
 
 	CompareCountersAction.prototype.compare = function (fsm) {

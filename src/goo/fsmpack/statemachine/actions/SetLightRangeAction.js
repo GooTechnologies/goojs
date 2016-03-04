@@ -40,10 +40,11 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	};
 
 	SetLightRangeAction.prototype.enter = function (/*fsm*/) {
-		if (this.entity &&
-			this.entity.lightComponent &&
-			this.entity.lightComponent.light) {
-			this.entity.lightComponent.light.range = this.range;
+		var entity = this.entity;
+		if (entity &&
+			entity.lightComponent &&
+			entity.lightComponent.light) {
+			entity.lightComponent.light.range = this.range;
 		}
 	};
 

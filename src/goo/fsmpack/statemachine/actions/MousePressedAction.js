@@ -36,8 +36,10 @@ define([
 		mousedown: 'Mouse Button Pressed'
 	};
 
-	MousePressedAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
-		return labels[transitionKey];
+	MousePressedAction.getTransitionLabel = function(transitionKey, actionConfig){
+		if (labels[transitionKey]) {
+			return actionConfig.options.button + ' ' + labels[transitionKey];
+		}
 	};
 
 	MousePressedAction.prototype.enter = function (fsm) {

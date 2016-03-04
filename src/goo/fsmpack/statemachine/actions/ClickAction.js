@@ -30,7 +30,7 @@ define([
 	};
 
 	ClickAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
-		return 'On Click/Tap';
+		return 'On Click/Tap Entity';
 	};
 
 	ClickAction.prototype.enter = function (fsm) {
