@@ -15,7 +15,7 @@ define([
 	RandomTransitionAction.external = {
 		name: 'Random Transition',
 		type: 'transitions',
-		description: 'Performs a random transition',
+		description: 'Performs a random transition. Will choose one of the two transitions randomly and transition immediately.',
 		canTransition: true,
 		parameters: [{
 			name: 'Probability A',
@@ -29,13 +29,20 @@ define([
 		}],
 		transitions: [{
 			key: 'transition1',
-			name: 'Destination A',
 			description: 'First choice'
 		}, {
 			key: 'transition2',
-			name: 'Destination B',
 			description: 'Second choice'
 		}]
+	};
+
+	var labels = {
+		transition1: 'Random outcome A',
+		transition2: 'Random outcome B'
+	};
+
+	RandomTransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	RandomTransitionAction.prototype.enter = function (fsm) {

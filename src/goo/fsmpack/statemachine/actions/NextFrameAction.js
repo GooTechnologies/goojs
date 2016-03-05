@@ -26,6 +26,14 @@ define([
 		}]
 	};
 
+	var labels = {
+		transition: 'On Next Frame'
+	};
+
+	NextFrameAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
 	NextFrameAction.prototype.update = function (fsm) {
 		fsm.send(this.transitions.transition);
 	};

@@ -59,9 +59,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On completion',
 			description: 'State to transition to when the transition completes'
 		}]
+	};
+
+	TweenLookAtAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween LookAt Complete' : undefined;
 	};
 
 	TweenLookAtAction.prototype.ready = function () {

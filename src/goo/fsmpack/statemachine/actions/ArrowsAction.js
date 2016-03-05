@@ -31,22 +31,29 @@ define([
 		canTransition: true,
 		parameters: [],
 		transitions: [{
-			name: 'Key UP',
 			key: 'up',
 			description: "Key up pressed"
 		}, {
-			name: 'Key LEFT',
 			key: 'left',
 			description: "Key left pressed"
 		}, {
-			name: 'Key DOWN',
 			key: 'down',
 			description: "Key down pressed"
 		}, {
-			name: 'Key RIGHT',
 			key: 'right',
 			description: "Key right pressed"
 		}]
+	};
+
+	var labels = {
+		up: 'Key UP',
+		left: 'Key LEFT',
+		down: 'Key DOWN',
+		right: 'Key RIGHT'
+	};
+
+	ArrowsAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	ArrowsAction.prototype.enter = function (fsm) {

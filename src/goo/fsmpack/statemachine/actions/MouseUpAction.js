@@ -20,21 +20,28 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftUp',
-			name: 'Left mouse up',
 			description: 'State to transition to when the left mouse button is released'
 		}, {
 			key: 'middleMouseUp',
-			name: 'Middle mouse up',
 			description: 'State to transition to when the middle mouse button is released'
 		}, {
 			key: 'rightMouseUp',
-			name: 'Right mouse up',
 			description: 'State to transition to when the right mouse button is released'
 		}, {
 			key: 'touchUp',
-			name: 'Touch release',
 			description: 'State to transition to when the touch event ends'
 		}]
+	};
+
+	var labels = {
+		mouseLeftUp: 'Left mouse up',
+		middleMouseUp: 'Middle mouse up',
+		rightMouseUp: 'Right mouse up',
+		touchUp: 'Touch release'
+	};
+
+	MouseUpAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MouseUpAction.prototype.enter = function (fsm) {

@@ -57,9 +57,16 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the shake completes'
 		}]
+	};
+
+	var labels = {
+		complete: 'Shake Complete'
+	};
+
+	ShakeAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	ShakeAction.prototype.configure = function (settings) {

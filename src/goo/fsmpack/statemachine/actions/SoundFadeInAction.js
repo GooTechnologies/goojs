@@ -45,6 +45,14 @@ define([
 		}]
 	};
 
+	var labels = {
+		complete: 'Sound Fade In Complete'
+	};
+
+	SoundFadeInAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
 	SoundFadeInAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 

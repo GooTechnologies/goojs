@@ -33,8 +33,16 @@ define([
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'State to transition to when the movement completes'
+			description: 'State to transition to when the sound fade completes'
 		}]
+	};
+
+	var labels = {
+		complete: 'Sound Fade Out Complete'
+	};
+
+	SoundFadeOutAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	SoundFadeOutAction.prototype.enter = function (fsm) {

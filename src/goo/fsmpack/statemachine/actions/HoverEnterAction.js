@@ -39,9 +39,12 @@ define([
 		}],
 		transitions: [{
 			key: 'enter',
-			name: 'On Enter',
 			description: 'State to transition to when entity is entered'
 		}]
+	};
+
+	HoverEnterAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'Entity Hover Enter';
 	};
 
 	HoverEnterAction.prototype.enter = function (fsm) {

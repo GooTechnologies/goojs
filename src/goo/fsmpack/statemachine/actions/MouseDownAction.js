@@ -20,21 +20,28 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftDown',
-			name: 'Left mouse down',
 			description: 'State to transition to when the left mouse button is pressed'
 		}, {
 			key: 'middleMouseDown',
-			name: 'Middle mouse down',
 			description: 'State to transition to when the middle mouse button is pressed'
 		}, {
 			key: 'rightMouseDown',
-			name: 'Right mouse down',
 			description: 'State to transition to when the right mouse button is pressed'
 		}, {
 			key: 'touchDown',
-			name: 'Touch begin',
 			description: 'State to transition to when the touch event begins'
 		}]
+	};
+
+	var labels = {
+		mouseLeftDown: 'Left mouse down',
+		middleMouseDown: 'Middle mouse down',
+		rightMouseDown: 'Right mouse down',
+		touchDown: 'Touch begin'
+	};
+
+	MouseDownAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MouseDownAction.prototype.enter = function (fsm) {

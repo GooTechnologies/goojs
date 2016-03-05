@@ -62,9 +62,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the scaling completes'
 		}]
+	};
+
+	TweenScaleAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Scale Complete' : undefined;
 	};
 
 	TweenScaleAction.prototype.ready = function () {

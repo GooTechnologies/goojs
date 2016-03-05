@@ -49,9 +49,12 @@ define([
 		}],
 		transitions: [{
 			key: 'timeUp',
-			name: 'Time up',
 			description: 'State to transition to when time up'
 		}]
+	};
+
+	WaitAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'timeUp' ? 'On Wait End' : undefined;
 	};
 
 	WaitAction.prototype.enter = function () {

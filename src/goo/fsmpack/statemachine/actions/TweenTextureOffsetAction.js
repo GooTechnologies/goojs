@@ -69,9 +69,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the transition completes'
 		}]
+	};
+
+	TweenTextureOffsetAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On UV Tween Complete' : undefined;
 	};
 
 	TweenTextureOffsetAction.prototype.ready = function () {

@@ -34,6 +34,10 @@ define([
 		}]
 	};
 
+	KeyUpAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return 'Key ' + actionConfig.options.key + ' up';
+	};
+
 	KeyUpAction.prototype.configure = function (settings) {
 		this.key = settings.key ? FsmUtils.getKey(settings.key) : null;
 		this.transitions = { keyup: settings.transitions.keyup };

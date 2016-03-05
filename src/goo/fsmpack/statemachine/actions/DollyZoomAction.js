@@ -63,9 +63,12 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the transition completes'
 		}]
+	};
+
+	DollyZoomAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'Dolly Zoom Complete';
 	};
 
 	DollyZoomAction.prototype.ready = function () {

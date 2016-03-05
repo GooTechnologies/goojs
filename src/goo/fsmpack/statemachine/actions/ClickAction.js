@@ -25,9 +25,12 @@ define([
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'click',
-			name: 'On Click/Tap',
 			description: 'State to transition to when entity is clicked'
 		}]
+	};
+
+	ClickAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'On Click/Tap Entity';
 	};
 
 	ClickAction.prototype.enter = function (fsm) {

@@ -67,6 +67,10 @@ define([
 		}]
 	};
 
+	TweenMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Move Complete' : undefined;
+	};
+
 	TweenMoveAction.prototype.ready = function () {
 		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;

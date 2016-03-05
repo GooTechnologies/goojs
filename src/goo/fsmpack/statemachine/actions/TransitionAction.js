@@ -20,9 +20,16 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'On Transition',
 			description: 'State to transition to'
 		}]
+	};
+
+	var labels = {
+		transition: 'On Enter'
+	};
+
+	TransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	TransitionAction.prototype.enter = function (fsm) {
