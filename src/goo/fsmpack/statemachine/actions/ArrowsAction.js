@@ -27,21 +27,21 @@ define([
 		key: 'Arrow Keys Listener',
 		name: 'Arrow Keys',
 		type: 'controls',
-		description: 'Transitions to other states when arrow keys are pressed (keydown)',
+		description: 'Transitions to other states when arrow keys are pressed (keydown).',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'up',
-			description: "Key up pressed"
+			description: "On key up pressed."
 		}, {
 			key: 'left',
-			description: "Key left pressed"
+			description: "On key left pressed."
 		}, {
 			key: 'down',
-			description: "Key down pressed"
+			description: "On key down pressed."
 		}, {
 			key: 'right',
-			description: "Key right pressed"
+			description: "On key right pressed."
 		}]
 	};
 

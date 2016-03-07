@@ -21,18 +21,18 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to fade out.',
 			'default': 0
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for the fading to complete',
+			description: 'Time it takes for the fading to complete.',
 			'default': 1000
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the sound fade completes'
+			description: 'State to transition to when the sound fade completes.'
 		}]
 	};
 

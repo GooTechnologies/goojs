@@ -32,20 +32,20 @@ define([
 			name: 'Position',
 			key: 'to',
 			type: 'position',
-			description: 'Look at point',
+			description: 'Look at point.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for this movement to complete',
+			description: 'Time it takes for this movement to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -53,13 +53,13 @@ define([
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the transition completes.'
 		}]
 	};
 

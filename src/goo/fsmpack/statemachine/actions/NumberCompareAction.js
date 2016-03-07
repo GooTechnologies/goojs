@@ -42,18 +42,18 @@ define([
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'less',
-			description: 'Event fired if left hand argument is smaller than right hand argument'
+			description: 'Event fired if left hand argument is smaller than right hand argument.'
 		}, {
 			key: 'equal',
-			description: 'Event fired if both sides are approximately equal'
+			description: 'Event fired if both sides are approximately equal.'
 		}, {
 			key: 'greater',
-			description: 'Event fired if left hand argument is greater than right hand argument'
+			description: 'Event fired if left hand argument is greater than right hand argument.'
 		}]
 	};
 

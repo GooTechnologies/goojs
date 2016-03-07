@@ -29,10 +29,10 @@ define([
 		}],
 		transitions: [{
 			key: 'transition1',
-			description: 'First choice'
+			description: 'First choice.'
 		}, {
 			key: 'transition2',
-			description: 'Second choice'
+			description: 'Second choice.'
 		}]
 	};
 

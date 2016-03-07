@@ -31,25 +31,24 @@ define([
 	WaitAction.external = {
 		name: 'Wait',
 		type: 'animation',
-		description: 'Performs a transition after a specified amount of time. ' +
-			'A random time can be set, this will add between 0 and the set random time to the specified wait time.',
+		description: 'Performs a transition after a specified amount of time. A random time can be set, this will add between 0 and the set random time to the specified wait time.',
 		canTransition: true,
 		parameters: [{
 			name: 'Time (ms)',
 			key: 'waitTime',
 			type: 'float',
-			description: 'Base time in milliseconds before transition fires',
+			description: 'Base time in milliseconds before transition fires.',
 			'default': 5000
 		}, {
 			name: 'Random (ms)',
 			key: 'randomTime',
 			type: 'float',
-			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
+			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time.',
 			'default': 0
 		}],
 		transitions: [{
 			key: 'timeUp',
-			description: 'State to transition to when time up'
+			description: 'State to transition to when time up.'
 		}]
 	};
 

@@ -26,15 +26,15 @@ define([
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
-			description: 'Checks for collisions with other objects having this tag',
+			description: 'Checks for collisions with other objects having this tag.',
 			'default': 'red'
 		}],
 		transitions: [{
 			key: 'collides',
-			description: 'State to transition to when a collision occurs'
+			description: 'State to transition to when a collision occurs.'
 		}, {
 			key: 'notCollides',
-			description: 'State to transition to when a collision is not occurring'
+			description: 'State to transition to when a collision is not occurring.'
 		}]
 	};
 

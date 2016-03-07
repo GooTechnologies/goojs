@@ -15,15 +15,15 @@ define([
 	MouseMoveAction.external = {
 		name: 'Mouse / Touch Move',
 		type: 'controls',
-		description: 'Listens for mouse movement (mousemove) or touch movement (touchmove) on the canvas and performs a transition',
+		description: 'Listens for mouse movement (mousemove) or touch movement (touchmove) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mousemove',
-			description: 'State to transition to on mouse movement'
+			description: 'State to transition to on mouse movement.'
 		}, {
 			key: 'touchmove',
-			description: 'State to transition to on touch movement'
+			description: 'State to transition to on touch movement.'
 		}]
 	};
 

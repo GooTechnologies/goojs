@@ -22,7 +22,7 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'leave',
-			description: 'State to transition to when leave occurs'
+			description: 'State to transition to when leave occurs.'
 		}]
 	};
 

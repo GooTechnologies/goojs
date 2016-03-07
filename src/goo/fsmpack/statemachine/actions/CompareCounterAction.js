@@ -15,35 +15,35 @@ define([
 		key: 'Compare Counter',
 		name: 'Compare Counter',
 		type: 'transitions',
-		description: 'Compares a counter with a value',
+		description: 'Compares a counter with a value.',
 		canTransition: true,
 		parameters: [{
 			name: 'Name',
 			key: 'name',
 			type: 'string',
-			description: 'Counter name'
+			description: 'Counter name.'
 		}, {
 			name: 'Value',
 			key: 'value',
 			type: 'float',
-			description: 'Value to compare the counter with',
+			description: 'Value to compare the counter with.',
 			'default': 0
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'less',
-			description: 'State to transition to if the counter is smaller than the specified value'
+			description: 'State to transition to if the counter is smaller than the specified value.'
 		}, {
 			key: 'equal',
-			description: 'State to transition to if the counter is the same as the specified value'
+			description: 'State to transition to if the counter is the same as the specified value.'
 		}, {
 			key: 'greater',
-			description: 'State to transition to if the counter is greater than the specified value'
+			description: 'State to transition to if the counter is greater than the specified value.'
 		}]
 	};
 

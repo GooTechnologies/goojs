@@ -22,19 +22,19 @@ define([
 			name: 'Rotation',
 			key: 'rotation',
 			type: 'rotation',
-			description: 'Rotate',
+			description: 'Rotatation.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add to current rotation',
+			description: 'If true add to current rotation.',
 			'default': true
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []

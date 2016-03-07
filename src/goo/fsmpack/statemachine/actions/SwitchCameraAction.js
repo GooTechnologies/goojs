@@ -20,12 +20,12 @@ define([
 	SwitchCameraAction.external = {
 		name: 'Switch Camera',
 		type: 'camera',
-		description: 'Switches to a selected camera',
+		description: 'Switches to a selected camera.',
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'camera',
-			description: 'Camera to switch to',
+			description: 'Camera to switch to.',
 			'default': null
 		}],
 		transitions: []

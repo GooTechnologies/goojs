@@ -15,21 +15,21 @@ define([
 	MouseUpAction.external = {
 		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftUp',
-			description: 'State to transition to when the left mouse button is released'
+			description: 'State to transition to when the left mouse button is released.'
 		}, {
 			key: 'middleMouseUp',
-			description: 'State to transition to when the middle mouse button is released'
+			description: 'State to transition to when the middle mouse button is released.'
 		}, {
 			key: 'rightMouseUp',
-			description: 'State to transition to when the right mouse button is released'
+			description: 'State to transition to when the right mouse button is released.'
 		}, {
 			key: 'touchUp',
-			description: 'State to transition to when the touch event ends'
+			description: 'State to transition to when the touch event ends.'
 		}]
 	};
 

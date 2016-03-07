@@ -17,18 +17,18 @@ define([
 	PlaySoundAction.external = {
 		name: 'Play Sound',
 		type: 'sound',
-		description: 'Plays a sound. NOTE: will not work on iOS devices.',
+		description: 'Plays a sound.',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to play.',
 			'default': 0
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the sound finishes playing'
+			description: 'State to transition to when the sound finishes playing.'
 		}]
 	};
 

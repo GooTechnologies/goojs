@@ -18,7 +18,7 @@ define([
 	SetAnimationAction.external = {
 		name: 'Set Animation',
 		type: 'animation',
-		description: 'Transitions to a selected animation',
+		description: 'Transitions to a selected animation.',
 		parameters: [{
 			name: 'Animation',
 			key: 'animation',

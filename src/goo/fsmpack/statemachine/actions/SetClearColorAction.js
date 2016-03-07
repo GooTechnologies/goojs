@@ -15,13 +15,13 @@ define([
 	SetClearColorAction.external = {
 		key: 'Set Clear Color',
 		name: 'Background Color',
-		description: 'Sets the clear color',
+		description: 'Sets the clear color.',
 		parameters: [{
 			name: 'Color',
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color',
+			description: 'Color.',
 			'default': [1, 1, 1]
 		}],
 		transitions: []

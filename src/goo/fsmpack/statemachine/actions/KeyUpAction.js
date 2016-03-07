@@ -17,20 +17,19 @@ define([
 	KeyUpAction.external = {
 		name: 'Key Up',
 		type: 'controls',
-		description: 'Listens for a key release and performs a transition',
+		description: 'Listens for a key release and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for',
+			description: 'Key to listen for.',
 			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keyup',
-			name: 'Key up',
-			description: 'State to transition to when the key is released'
+			description: 'State to transition to when the key is released.'
 		}]
 	};
 

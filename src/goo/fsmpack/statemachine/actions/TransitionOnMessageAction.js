@@ -18,18 +18,18 @@ define([
 		key: 'Transition on Message',
 		name: 'Listen',
 		type: 'transitions',
-		description: 'Performs a transition on receiving a system bus message (event) on a specific channel',
+		description: 'Performs a transition on receiving a system bus message (event) on a specific channel.',
 		canTransition: true,
 		parameters: [{
 			name: 'Message channel',
 			key: 'channel',
 			type: 'string',
-			description: 'Channel to listen to',
+			description: 'Channel to listen to.',
 			'default': ''
 		}],
 		transitions: [{
 			key: 'transition',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
 	};
 

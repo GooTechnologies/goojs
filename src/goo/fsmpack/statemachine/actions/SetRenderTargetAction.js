@@ -29,12 +29,12 @@ define([
 	SetRenderTargetAction.external = {
 		name: 'Set Render Target',
 		type: 'texture',
-		description: 'Renders what a camera sees on the current entity\'s texture',
+		description: 'Renders what a camera sees on the current entity\'s texture.',
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'camera',
-			description: 'Camera to use as source',
+			description: 'Camera to use as source.',
 			'default': null
 		}],
 		transitions: []

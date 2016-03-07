@@ -29,8 +29,8 @@ define([
 			var keyname = keys[keycode];
 			transitions.push({
 				key: keyname,
-				name: 'Key ' + keyname.toUpperCase(),
-				description: "Key '" + keyname + "' pressed"
+				name: 'On key ' + keyname.toUpperCase(),
+				description: "On key '" + keyname + "' pressed."
 			});
 		}
 
@@ -38,7 +38,7 @@ define([
 			key: 'WASD Keys Listener',
 			name: 'WASD Keys',
 			type: 'controls',
-			description: 'Transitions to other states when the WASD keys are pressed',
+			description: 'Transitions to other states when the WASD keys are pressed.',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions

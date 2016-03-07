@@ -23,24 +23,24 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to fade.',
 			'default': 0
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for the fading to complete',
+			description: 'Time it takes for the fading to complete.',
 			'default': 1000
 		}, {
 			name: 'On Sound End',
 			key: 'onSoundEnd',
 			type: 'boolean',
-			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time',
+			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time.',
 			'default': false
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the time expires or when the sound finishes playing'
+			description: 'State to transition to when the time expires or when the sound finishes playing.'
 		}]
 	};
 

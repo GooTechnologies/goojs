@@ -21,27 +21,27 @@ define([
 		key: 'Tween Opacity',
 		name: 'Tween Material Opacity',
 		type: 'texture',
-		description: 'Tweens the opacity of a material',
+		description: 'Tweens the opacity of a material.',
 		parameters: [{
 			name: 'Opacity',
 			key: 'to',
 			type: 'float',
 			control: 'spinner',
-			description: 'Opacity',
+			description: 'Opacity.',
 			'default': 1
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
 			control: 'spinner',
-			description: 'Time it takes for the transition to complete',
+			description: 'Time it takes for the transition to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -49,13 +49,13 @@ define([
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the transition completes.'
 		}]
 	};
 

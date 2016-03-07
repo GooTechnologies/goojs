@@ -26,20 +26,20 @@ define([
 		key: 'Hover Enter',
 		name: 'Entity Hover Enter',
 		type: 'controls',
-		description: 'Listens for a hover enter event on the entity and performs a transition',
+		description: 'Listens for a hover enter event on the entity and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Accuracy',
 			key: 'type',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Hover accuracy/performance selection',
+			description: 'Hover accuracy/performance selection.',
 			'default': HoverEnterAction.types.fast,
 			options: [HoverEnterAction.types.fast, HoverEnterAction.types.slow]
 		}],
 		transitions: [{
 			key: 'enter',
-			description: 'State to transition to when entity is entered'
+			description: 'State to transition to when entity is entered.'
 		}]
 	};
 

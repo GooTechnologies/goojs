@@ -15,34 +15,34 @@ define([
 		key: 'Compare 2 Counters',
 		name: 'Compare 2 Counters',
 		type: 'transitions',
-		description: 'Compares the value of 2 counters',
+		description: 'Compares the value of 2 counters.',
 		canTransition: true,
 		parameters: [{
 			name: 'First counter',
 			key: 'name1',
 			type: 'string',
-			description: 'First counter name'
+			description: 'First counter name.'
 		}, {
 			name: 'Second counter',
 			key: 'name2',
 			type: 'string',
-			description: 'Second counter name'
+			description: 'Second counter name.'
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'less',
-			description: 'State to transition to if the first counter is smaller than the second counter'
+			description: 'State to transition to if the first counter is smaller than the second counter.'
 		}, {
 			key: 'equal',
-			description: 'State to transition to if the first counter is the same as the second counter'
+			description: 'State to transition to if the first counter is the same as the second counter.'
 		}, {
 			key: 'greater',
-			description: 'State to transition to if the first counter is greater than the second counter'
+			description: 'State to transition to if the first counter is greater than the second counter.'
 		}]
 	};
 

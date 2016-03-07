@@ -15,12 +15,12 @@ define([
 	TransitionAction.external = {
 		name: 'Transition',
 		type: 'transitions',
-		description: 'Transition to a selected state',
+		description: 'Transition to a selected state.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
 	};
 

@@ -20,12 +20,12 @@ define([
 		key: 'Click/Tap',
 		name: 'Click/Tap on entity',
 		type: 'controls',
-		description: 'Listens for a click/tap event on the entity and performs a transition',
+		description: 'Listens for a click/tap event on the entity and performs a transition.',
 		canTransition: true,
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'click',
-			description: 'State to transition to when entity is clicked'
+			description: 'State to transition to when entity is clicked.'
 		}]
 	};
 

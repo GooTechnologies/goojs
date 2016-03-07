@@ -16,7 +16,7 @@ define([
 		key: 'Script',
 		name: 'Script Action',
 		type: 'fx',
-		description: 'Runs a script',
+		description: 'Runs a script.',
 		parameters: [{
 			name: 'Script Name',
 			key: 'scriptName',

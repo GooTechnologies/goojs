@@ -20,7 +20,7 @@ define([
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'pick',
-			description: 'State to transition to when the HTML entity is picked'
+			description: 'State to transition to when the HTML entity is picked.'
 		}]
 	};
 

@@ -16,23 +16,23 @@ define([
 		key: 'Increment Counter',
 		name: 'Increment Counter',
 		type: 'transitions',
-		description: 'Increments a counter with a value',
+		description: 'Increments a counter with a value.',
 		parameters: [{
 			name: 'Name',
 			key: 'name',
 			type: 'string',
-			description: 'Counter name'
+			description: 'Counter name.'
 		}, {
 			name: 'Increment',
 			key: 'increment',
 			type: 'float',
-			description: 'Value to increment the counter with',
+			description: 'Value to increment the counter with.',
 			'default': 1
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []

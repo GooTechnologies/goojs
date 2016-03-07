@@ -58,13 +58,13 @@ define([
 	PickAndExitAction.external = {
 		name: 'Pick and Exit',
 		type: 'controls',
-		description: 'Listens for a picking event on the entity and opens a new browser window',
+		description: 'Listens for a picking event on the entity and opens a new browser window.',
 		canTransition: true,
 		parameters: [{
 			name: 'URL',
 			key: 'url',
 			type: 'string',
-			description: 'URL to open',
+			description: 'URL to open.',
 			'default': 'http://www.goocreate.com/'
 		}, {
 			name: 'Exit name',

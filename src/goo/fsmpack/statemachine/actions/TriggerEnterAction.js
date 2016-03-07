@@ -32,7 +32,7 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'enter',
-			description: 'State to transition to when enter occurs'
+			description: 'State to transition to when enter occurs.'
 		}]
 	};
 

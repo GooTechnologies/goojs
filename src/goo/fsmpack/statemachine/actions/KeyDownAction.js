@@ -17,20 +17,19 @@ define([
 	KeyDownAction.external = {
 		name: 'Key Down',
 		type: 'controls',
-		description: 'Listens for a key press and performs a transition',
+		description: 'Listens for a key press and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for',
+			description: 'Key to listen for.',
 			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
-			name: 'Key down',
-			description: 'State to transition to when the key is pressed'
+			description: 'State to transition to when the key is pressed.'
 		}]
 	};
 

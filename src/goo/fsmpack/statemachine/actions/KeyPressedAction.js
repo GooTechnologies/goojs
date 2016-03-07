@@ -24,12 +24,12 @@ define([
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for',
+			description: 'Key to listen for.',
 			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
-			description: 'State to transition to when the key is pressed'
+			description: 'State to transition to when the key is pressed.'
 		}]
 	};
 

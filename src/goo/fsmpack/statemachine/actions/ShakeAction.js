@@ -32,32 +32,32 @@ define([
 			name: 'Start level',
 			key: 'startLevel',
 			type: 'float',
-			description: 'Shake amount at start',
+			description: 'Shake amount at start.',
 			'default': 0
 		}, {
 			name: 'End level',
 			key: 'endLevel',
 			type: 'float',
-			description: 'Shake amount at the end',
+			description: 'Shake amount at the end.',
 			'default': 10
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Shake time amount',
+			description: 'Shake time amount.',
 			'default': 1000
 		}, {
 			name: 'Speed',
 			key: 'speed',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Speed of shaking',
+			description: 'Speed of shaking.',
 			'default': 'Fast',
 			options: ['Fast', 'Medium', 'Slow']
 		}],
 		transitions: [{
 			key: 'complete',
-			description: 'State to transition to when the shake completes'
+			description: 'State to transition to when the shake completes.'
 		}]
 	};
 
