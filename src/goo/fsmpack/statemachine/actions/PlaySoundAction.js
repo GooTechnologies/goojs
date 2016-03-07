@@ -17,7 +17,7 @@ define([
 	PlaySoundAction.external = {
 		name: 'Play Sound',
 		type: 'sound',
-		description: 'Plays a sound.',
+		description: 'Plays a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',

@@ -17,7 +17,7 @@ define([
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
 		type: 'sound',
-		description: 'Fades in a sound. NOTE: will not work on iOS devices.',
+		description: 'Fades in a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
