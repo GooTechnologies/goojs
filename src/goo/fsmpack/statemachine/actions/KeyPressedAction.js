@@ -34,7 +34,7 @@ define([
 	};
 
 	KeyPressedAction.getTransitionLabel = function(transitionKey, actionConfig){
-		return 'Key ' + (actionConfig.options.key || '') + ' pressed';
+		return 'On Key ' + (actionConfig.options.key || '') + ' pressed';
 	};
 
 	KeyPressedAction.prototype.configure = function (settings) {

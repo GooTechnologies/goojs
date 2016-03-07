@@ -44,7 +44,7 @@ define([
 	};
 
 	HoverEnterAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
-		return 'Entity Hover Enter';
+		return 'On Entity Hover Enter';
 	};
 
 	HoverEnterAction.prototype.enter = function (fsm) {

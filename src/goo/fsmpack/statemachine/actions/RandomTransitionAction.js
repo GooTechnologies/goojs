@@ -37,8 +37,8 @@ define([
 	};
 
 	var labels = {
-		transition1: 'Random outcome A',
-		transition2: 'Random outcome B'
+		transition1: 'On random outcome A',
+		transition2: 'On random outcome B'
 	};
 
 	RandomTransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

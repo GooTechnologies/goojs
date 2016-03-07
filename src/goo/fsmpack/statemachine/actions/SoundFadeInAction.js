@@ -45,7 +45,7 @@ define([
 	};
 
 	var labels = {
-		complete: 'Sound Fade In Complete'
+		complete: 'On Sound Fade In Complete'
 	};
 
 	SoundFadeInAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

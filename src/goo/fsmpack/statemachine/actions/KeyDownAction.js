@@ -34,7 +34,7 @@ define([
 	};
 
 	KeyDownAction.getTransitionLabel = function(transitionKey, actionConfig){
-		return 'Key ' + actionConfig.options.key + ' down';
+		return 'On Key ' + (actionConfig.options.key || '') + ' down';
 	};
 
 	KeyDownAction.prototype.configure = function (settings) {

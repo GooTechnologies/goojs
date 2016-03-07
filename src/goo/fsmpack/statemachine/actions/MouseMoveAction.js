@@ -28,8 +28,8 @@ define([
 	};
 
 	var labels = {
-		mousemove: 'Mouse move',
-		touchmove: 'Touch move'
+		mousemove: 'On mouse move',
+		touchmove: 'On touch move'
 	};
 
 	MouseMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

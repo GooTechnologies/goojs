@@ -26,7 +26,7 @@ define([
 	};
 
 	var labels = {
-		pick: 'Pick entity'
+		pick: 'On pick entity'
 	};
 
 	PickAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

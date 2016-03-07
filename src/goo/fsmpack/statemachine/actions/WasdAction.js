@@ -46,10 +46,10 @@ define([
 	})();
 
 	var labels = {
-		w: 'Key W Pressed',
-		a: 'Key A Pressed',
-		s: 'Key S Pressed',
-		d: 'Key D Pressed'
+		w: 'On Key W Pressed',
+		a: 'On Key A Pressed',
+		s: 'On Key S Pressed',
+		d: 'On Key D Pressed'
 	};
 
 	WasdAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

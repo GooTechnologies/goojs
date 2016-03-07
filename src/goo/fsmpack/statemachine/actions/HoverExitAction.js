@@ -44,7 +44,7 @@ define([
 	};
 
 	HoverExitAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
-		return 'Entity Hover Exit';
+		return 'On Entity Hover Exit';
 	};
 
 	HoverExitAction.prototype.enter = function (fsm) {

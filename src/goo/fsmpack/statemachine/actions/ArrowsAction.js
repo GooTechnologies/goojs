@@ -46,10 +46,10 @@ define([
 	};
 
 	var labels = {
-		up: 'Key UP',
-		left: 'Key LEFT',
-		down: 'Key DOWN',
-		right: 'Key RIGHT'
+		up: 'On key UP',
+		left: 'On key LEFT',
+		down: 'On key DOWN',
+		right: 'On key RIGHT'
 	};
 
 	ArrowsAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

@@ -39,8 +39,8 @@ define([
 	};
 
 	var labels = {
-		collides: 'Bounds Overlap',
-		notCollides: 'Bounds Separate'
+		collides: 'On bounds Overlap',
+		notCollides: 'On bounds Separate'
 	};
 
 	CollidesAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

@@ -34,10 +34,10 @@ define([
 	};
 
 	var labels = {
-		mouseLeftDown: 'Left mouse down',
-		middleMouseDown: 'Middle mouse down',
-		rightMouseDown: 'Right mouse down',
-		touchDown: 'Touch begin'
+		mouseLeftDown: 'On left mouse down',
+		middleMouseDown: 'On middle mouse down',
+		rightMouseDown: 'On right mouse down',
+		touchDown: 'On touch start'
 	};
 
 	MouseDownAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

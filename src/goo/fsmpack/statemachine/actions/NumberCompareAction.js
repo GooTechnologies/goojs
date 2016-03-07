@@ -58,9 +58,9 @@ define([
 	};
 
 	var labels = {
-		less: 'X < Y',
-		equal: 'X == Y',
-		greater: 'X > Y'
+		less: 'On X < Y',
+		equal: 'On X == Y',
+		greater: 'On X > Y'
 	};
 
 	NumberCompareAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

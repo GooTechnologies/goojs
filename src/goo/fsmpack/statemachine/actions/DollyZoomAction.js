@@ -68,7 +68,7 @@ define([
 	};
 
 	DollyZoomAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
-		return 'Dolly Zoom Complete';
+		return 'On Dolly Zoom Complete';
 	};
 
 	DollyZoomAction.prototype.ready = function () {

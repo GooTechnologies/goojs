@@ -34,10 +34,10 @@ define([
 	};
 
 	var labels = {
-		mouseLeftUp: 'Left mouse up',
-		middleMouseUp: 'Middle mouse up',
-		rightMouseUp: 'Right mouse up',
-		touchUp: 'Touch release'
+		mouseLeftUp: 'On left mouse up',
+		middleMouseUp: 'On middle mouse up',
+		rightMouseUp: 'On right mouse up',
+		touchUp: 'On touch end'
 	};
 
 	MouseUpAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

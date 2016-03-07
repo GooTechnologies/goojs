@@ -54,7 +54,7 @@ define([
 
 	CompareCountersAction.getTransitionLabel = function(transitionKey, actionConfig){
 		if (operators[transitionKey]) {
-			return (actionConfig.options.name1 || 'Counter1') + ' ' + operators[transitionKey] + ' ' + (actionConfig.options.name2 || 'counter2');
+			return 'On ' + (actionConfig.options.name1 || 'Counter1') + ' ' + operators[transitionKey] + ' ' + (actionConfig.options.name2 || 'counter2');
 		}
 	};
 

@@ -72,9 +72,9 @@ define([
 	};
 
 	var labels = {
-		less: 'Camera Distance < X',
-		equal: 'Camera Distance == X',
-		greater: 'Camera Distance > X'
+		less: 'On camera distance < X',
+		equal: 'On camera distance == X',
+		greater: 'On camera distance > X'
 	};
 
 	CompareDistanceAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

@@ -46,8 +46,8 @@ define([
 	};
 
 	var labels = {
-		inside: 'Inside Box',
-		outside: 'Outside Box'
+		inside: 'On Inside Box',
+		outside: 'On Outside Box'
 	};
 
 	InBoxAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

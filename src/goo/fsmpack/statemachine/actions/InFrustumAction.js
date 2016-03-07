@@ -51,8 +51,8 @@ define([
 	};
 
 	var labels = {
-		inside: 'Inside Frustum',
-		outside: 'Outside Frustum'
+		inside: 'On Inside Frustum',
+		outside: 'On Outside Frustum'
 	};
 
 	InFrustumAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){

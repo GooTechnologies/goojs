@@ -25,7 +25,7 @@ define([
 	};
 
 	HtmlAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
-		return 'HTML Pick';
+		return 'On HTML Pick';
 	};
 
 	HtmlAction.prototype.enter = function (fsm) {

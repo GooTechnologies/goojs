@@ -38,7 +38,7 @@ define([
 
 	MousePressedAction.getTransitionLabel = function(transitionKey, actionConfig){
 		if (labels[transitionKey]) {
-			return actionConfig.options.button + ' ' + labels[transitionKey];
+			return 'On ' + actionConfig.options.button + ' ' + labels[transitionKey];
 		}
 	};
 

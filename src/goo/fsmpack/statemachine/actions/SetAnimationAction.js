@@ -38,7 +38,7 @@ define([
 	};
 
 	var labels = {
-		complete: 'Animation Complete'
+		complete: 'On animation complete'
 	};
 
 	SetAnimationAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){

@@ -62,7 +62,7 @@ define([
 	};
 
 	var labels = {
-		complete: 'Shake Complete'
+		complete: 'On Shake Complete'
 	};
 
 	ShakeAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
