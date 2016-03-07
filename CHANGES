@@ -1,3 +1,18 @@
+v0.15.31 --- 2016-03-07
+
+### Additions
+
+  + New Particle System
+  + 
+  + Automatic deindexing for MeshDataHandler if ElementIndexUInt not supported
+  + 
+
+### Fixes
+
+  * 
+  * 
+  * Using TransparencyBlending instead of CustomBlending everywhere
+
 v0.15.30 --- 2016-01-15
 
 ### Fixes
