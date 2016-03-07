@@ -24,7 +24,8 @@ define([
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for'
+			description: 'Key to listen for',
+			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
@@ -33,7 +34,7 @@ define([
 	};
 
 	KeyPressedAction.getTransitionLabel = function(transitionKey, actionConfig){
-		return 'Key ' + actionConfig.options.key + ' pressed';
+		return 'Key ' + (actionConfig.options.key || '') + ' pressed';
 	};
 
 	KeyPressedAction.prototype.configure = function (settings) {

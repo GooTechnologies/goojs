@@ -32,7 +32,6 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the sound fade completes'
 		}]
 	};

@@ -29,6 +29,7 @@ define([
 		}],
 		transitions: [{
 			key: 'keydown',
+			name: 'Key down',
 			description: 'State to transition to when the key is pressed'
 		}]
 	};

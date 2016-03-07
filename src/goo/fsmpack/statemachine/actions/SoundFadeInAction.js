@@ -40,7 +40,6 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
 			description: 'State to transition to when the time expires or when the sound finishes playing'
 		}]
 	};

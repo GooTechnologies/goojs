@@ -34,7 +34,8 @@ define([
 	};
 
 	TransitionOnMessageAction.getTransitionLabel = function(transitionKey, actionConfig){
-		return transitionKey === 'transition' ? 'On "' + actionConfig.options.config + '" event' : 'On Message';
+		var label = actionConfig.options.channel ? '"' + actionConfig.options.channel + '"' : '';
+		return transitionKey === 'transition' ? 'On ' + label + ' event' : 'On Message';
 	};
 
 	TransitionOnMessageAction.prototype.enter = function (fsm) {

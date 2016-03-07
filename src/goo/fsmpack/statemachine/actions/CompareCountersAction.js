@@ -49,12 +49,12 @@ define([
 	var operators = {
 		less: '<',
 		equal: '==',
-		great: '>'
+		greater: '>'
 	};
 
 	CompareCountersAction.getTransitionLabel = function(transitionKey, actionConfig){
 		if (operators[transitionKey]) {
-			return actionConfig.options.name1 + ' ' + operators[transitionKey] + ' ' + actionConfig.options.name2;
+			return (actionConfig.options.name1 || 'Counter1') + ' ' + operators[transitionKey] + ' ' + (actionConfig.options.name2 || 'counter2');
 		}
 	};
 

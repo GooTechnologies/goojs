@@ -55,7 +55,7 @@ define([
 
 	CompareCounterAction.getTransitionLabel = function(transitionKey, actionConfig){
 		if(labels[transitionKey]){
-			return actionConfig.options.name + labels[transitionKey];
+			return (actionConfig.options.name || 'Counter') + labels[transitionKey];
 		}
 	};
 

@@ -35,7 +35,7 @@ define([
 	};
 
 	KeyUpAction.getTransitionLabel = function(transitionKey, actionConfig){
-		return 'Key ' + actionConfig.options.key + ' up';
+		return 'Key ' + (actionConfig.options.key || '') + ' up';
 	};
 
 	KeyUpAction.prototype.configure = function (settings) {
