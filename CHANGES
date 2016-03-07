@@ -1,17 +1,43 @@
+v0.15.32 --- 2016-03-07
 v0.15.31 --- 2016-03-07
 
 ### Additions
 
   + New Particle System
-  + 
+  + Synchronized state machine
   + Automatic deindexing for MeshDataHandler if ElementIndexUInt not supported
-  + 
+  + Sounds now have 2d/3d modes and autoplay
+  + Shadows are now packed and works on mobile
+  + Added shadow offset (bias)
+  + Added support for dynamic transition labels in state machine
+  + Added play/pause/stop sound actions
+  + Added ClickAction
+  + Added SetRigidBodyPositionAction
+  + Added play/pause/stop/set timeline actions
+  + Added mute/toggle/unmute global sound actions
+  + Added SetLightPropertiesAction
+  + Added HoverEnter and HoverExit actions
+  + Added state machine input handler and working key/mouse pressed actions
+  + Lots of API documentation additions
+  + Improved examples and visual-tests
 
 ### Fixes
 
-  * 
-  * 
   * Using TransparencyBlending instead of CustomBlending everywhere
+  * Improved jsdoc (modoc) API documentation generation
+  * Fix OrbitNPanControlScript - parameter not set for pan
+  * Don't process physics if no physics components
+  * Bugfixes in TextGrid
+  * Use scaled canvas element if NPOT texture + repeat
+  * Set default probability in RandomTransitionAction to 0.5
+  * Fixed TweenLookAt action
+  * ArrowsAction now transitions on the keydown event, not on the next frame
+  * Don't multiply by 10 in move action
+  * Set texture dirty if changing wrapping
+  * Fixed shake action
+  * Fixed bug in shader cache handling
+  * Fixed lightcookie bug for spotlights
+  * Don't canvas-resize video elements
 
 v0.15.30 --- 2016-01-15
 
