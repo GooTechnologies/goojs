@@ -261,6 +261,18 @@ function () {
 
 		if (!elementPrototype.requestFullScreen) {
 			elementPrototype.requestFullScreen = (function () {
+				if (elementPrototype.msRequestFullscreen) {
+					return function () {
+						this.msRequestFullscreen();
+					};
+				}
+
+				if (elementPrototype.webkitRequestFullscreen) {
+					return function () {
+						this.webkitRequestFullscreen(global.Element.ALLOW_KEYBOARD_INPUT);
+					};
+				}
+
 				if (elementPrototype.webkitRequestFullScreen) {
 					return function () {
 						this.webkitRequestFullScreen(global.Element.ALLOW_KEYBOARD_INPUT);
@@ -273,8 +285,7 @@ function () {
 					};
 				}
 
-				return function () {
-				};
+				return function () {};
 			})();
 		}
 
