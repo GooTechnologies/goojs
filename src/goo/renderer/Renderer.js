@@ -1496,7 +1496,10 @@ define([
 			}
 			record.write = depthState.write;
 		}
-		// this.context.depthFunc(this.context.LEQUAL);
+		if (record.depthFunc !== depthState.depthFunc) {
+			this.context.depthFunc(RendererUtils.getGLDepthFunc(this.context, depthState.depthFunc));
+			record.depthFunc = depthState.depthFunc;
+		}
 	};
 
 	/**

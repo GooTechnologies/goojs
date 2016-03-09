@@ -492,6 +492,43 @@ define([
 		return glMode;
 	};
 
+	RendererUtils.getGLDepthFunc = function (context, depthFunc) {
+		var glDepthFunc;
+
+		switch (depthFunc) {
+			case 'Never':
+				glDepthFunc = context.NEVER;
+				break;
+			case 'Always':
+				glDepthFunc = context.ALWAYS;
+				break;
+			case 'Less':
+				glDepthFunc = context.LESS;
+				break;
+			case 'LessEqual':
+				glDepthFunc = context.LEQUAL;
+				break;
+			case 'Equal':
+				glDepthFunc = context.EQUAL;
+				break;
+			case 'GreaterEqual':
+				glDepthFunc = context.GEQUAL;
+				break;
+			case 'Greater':
+				glDepthFunc = context.GREATER;
+				break;
+			case 'NotEqual':
+				glDepthFunc = context.NOTEQUAL;
+				break;
+
+			default:
+				glDepthFunc = context.LEQUAL;
+				break;
+		}
+
+		return glDepthFunc;
+	};
+
 	RendererUtils.getGLBlendParam = function (context, param) {
 		var glBlendParam;
 
