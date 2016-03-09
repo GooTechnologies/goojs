@@ -34,7 +34,7 @@ require([
 	// Create boxes with various depth functions
 	function addBox(depthFunc, pos) {
 		var material = new Material(ShaderLib.simpleColored);
-		material.uniforms.color = [Math.random(), Math.random(), Math.random()];
+		material.uniforms.color = [V.rng.nextFloat(), V.rng.nextFloat(), V.rng.nextFloat()];
 		material.depthState.write = false;
 		material.depthState.depthFunc = depthFunc;
 
@@ -65,7 +65,7 @@ require([
 	addBox('Greater', [-2, -2, 0]);
 	addBox('NotEqual', [0, -2, 0]);
 
-	var camEntity = V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0));
 
 	V.process();
 });
