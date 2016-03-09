@@ -16,34 +16,35 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 
 	SetLightRangeAction.external = {
 		name: 'Set Light Range',
-		description: 'Sets the range of a light',
+		description: 'Sets the range of a light.',
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
-			description: 'Light entity'
+			description: 'Light entity.'
 		}, {
 			name: 'Range',
 			key: 'range',
 			type: 'real',
-			description: 'Light range',
+			description: 'Light range.',
 			'default': 100,
 			min: 0
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
 	SetLightRangeAction.prototype.enter = function (/*fsm*/) {
-		if (this.entity &&
-			this.entity.lightComponent &&
-			this.entity.lightComponent.light) {
-			this.entity.lightComponent.light.range = this.range;
+		var entity = this.entity;
+		if (entity &&
+			entity.lightComponent &&
+			entity.lightComponent.light) {
+			entity.lightComponent.light.range = this.range;
 		}
 	};
 

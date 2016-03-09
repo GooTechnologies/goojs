@@ -24,26 +24,26 @@ define([
 		key: 'Tween Light Color',
 		name: 'Tween Light',
 		type: 'light',
-		description: 'Tweens the color of the light',
+		description: 'Tweens the color of the light.',
 		parameters: [{
 			name: 'Color',
 			key: 'to',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color of the light',
+			description: 'Color of the light.',
 			'default': [1, 1, 1]
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for the transition to complete',
+			description: 'Time it takes for the transition to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -51,15 +51,18 @@ define([
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the light tween was completed.'
 		}]
+	};
+
+	TweenLightColorAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Light Complete' : undefined;
 	};
 
 	TweenLightColorAction.prototype.ready = function () {

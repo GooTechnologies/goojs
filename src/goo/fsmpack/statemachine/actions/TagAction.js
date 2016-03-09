@@ -17,13 +17,13 @@ define([
 	TagAction.external = {
 		name: 'Tag',
 		type: 'collision',
-		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action',
+		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action.',
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Checks for collisions with other objects having this tag',
+			description: 'Checks for collisions with other objects having this tag.',
 			'default': 'red',
 			options: ['red', 'blue', 'green', 'yellow']
 		}],

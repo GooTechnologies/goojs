@@ -15,12 +15,12 @@ define([
 	TogglePostFxAction.external = {
 		name: 'Toggle Post FX',
 		type: 'fx',
-		description: 'Enabled/disables post fx globally',
+		description: 'Enabled/disables post fx globally.',
 		parameters: [{
 			name: 'Set Post FX state',
 			key: 'enabled',
 			type: 'boolean',
-			description: 'Set Post FX on/off',
+			description: 'Set Post FX on/off.',
 			'default': true
 		}],
 		transitions: []

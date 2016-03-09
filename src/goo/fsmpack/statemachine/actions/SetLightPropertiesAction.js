@@ -15,31 +15,31 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 			name: 'Entity (optional)',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity that has a light'
+			description: 'Entity that has a light.'
 		}, {
 			name: 'Color',
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Light color',
+			description: 'Light color.',
 			'default': [1, 1, 1]
 		}, {
 			name: 'Intensity',
 			key: 'intensity',
 			type: 'float',
-			description: 'Light intensity',
+			description: 'Light intensity.',
 			'default': 1
 		}, {
 			name: 'Specular Intensity',
 			key: 'specularIntensity',
 			type: 'float',
-			description: 'Specular light intensity',
+			description: 'Specular light intensity.',
 			'default': 1
 		}, {
 			name: 'Range',
 			key: 'range',
 			type: 'float',
-			description: 'Light range (for point/spot lights)',
+			description: 'Light range (for point/spot lights).',
 			'default': 100
 		}],
 		transitions: []

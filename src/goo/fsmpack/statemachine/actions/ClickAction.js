@@ -20,22 +20,26 @@ define([
 		key: 'Click/Tap',
 		name: 'Click/Tap on entity',
 		type: 'controls',
-		description: 'Listens for a click/tap event on the entity and performs a transition',
+		description: 'Listens for a click/tap event on the entity and performs a transition.',
 		canTransition: true,
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'click',
-			name: 'On Click/Tap',
-			description: 'State to transition to when entity is clicked'
+			description: 'State to transition to when entity is clicked.'
 		}]
+	};
+
+	ClickAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'On Click/Tap Entity';
 	};
 
 	ClickAction.prototype.enter = function (fsm) {
 		var that = this;
 		this.downListener = function (event) {
 			var x, y;
-			var domTarget = that.goo.renderer.domElement;
-			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
+			var gooRunner = that.gooRunner;
+			var domTarget = gooRunner.renderer.domElement;
+			if (event.type === 'touchstart' || event.type === 'touchend') {
 				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
 				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
 			} else {
@@ -43,8 +47,8 @@ define([
 				x = event.clientX - rect.left;
 				y = event.clientY - rect.top;
 			}
-			var pickingStore = that.goo.pickSync(x, y);
-			var pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
+			var pickingStore = gooRunner.pickSync(x, y);
+			var pickedEntity = gooRunner.world.entityManager.getEntityByIndex(pickingStore.id);
 
 			if (!pickedEntity) {
 				return;
@@ -67,25 +71,27 @@ define([
 			that.selected = false;
 
 			var x, y;
-			var domTarget = that.goo.renderer.domElement;
-			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
-				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
-				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+			var gooRunner = that.gooRunner;
+			var domTarget = gooRunner.renderer.domElement;
+			var rect = domTarget.getBoundingClientRect();
+			if (event.type === 'touchstart' || event.type === 'touchend') {
+				x = event.changedTouches[0].pageX - rect.left;
+				y = event.changedTouches[0].pageY - rect.top;
 			} else {
-				var rect = domTarget.getBoundingClientRect();
 				x = event.clientX - rect.left;
 				y = event.clientY - rect.top;
-			}
-			var pickingStore = that.goo.pickSync(x, y);
-			var pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
-
-			if (!pickedEntity) {
-				return;
 			}
 
 			var diffx = that.x - x;
 			var diffy = that.y - y;
 			if (Math.abs(diffx) > 10 || Math.abs(diffy) > 10) {
+				return;
+			}
+
+			var pickingStore = gooRunner.pickSync(x, y);
+			var pickedEntity = gooRunner.world.entityManager.getEntityByIndex(pickingStore.id);
+
+			if (!pickedEntity) {
 				return;
 			}
 
@@ -98,7 +104,7 @@ define([
 		};
 
 		this.ownerEntity = fsm.getOwnerEntity();
-		this.goo = this.ownerEntity._world.gooRunner;
+		this.gooRunner = this.ownerEntity._world.gooRunner;
 
 		document.addEventListener('mousedown', this.downListener);
 		document.addEventListener('touchstart', this.downListener);

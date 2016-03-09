@@ -9,16 +9,7 @@ define([
 
 	function TriggerEnterAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.entered = false;
-		this.everyFrame = true;
-
-		var that = this;
-		this.listener = function (triggerEnterEvent) {
-			if (triggerEnterEvent.entityA === that.entity || triggerEnterEvent.entityB === that.entity) {
-				that.entered = true;
-			}
-		};
+		this.entity = null;
 	}
 
 	TriggerEnterAction.prototype = Object.create(Action.prototype);
@@ -32,31 +23,30 @@ define([
 		parameters: [],
 		transitions: [{
 			key: 'enter',
-			name: 'On enter',
-			description: 'State to transition to when enter occurs'
+			description: 'State to transition to when enter occurs.'
 		}]
+	};
+
+	TriggerEnterAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'enter' ? 'On Trigger Enter' : undefined;
 	};
 
 	TriggerEnterAction.prototype.enter = function (fsm) {
 		this.entity = fsm.getOwnerEntity();
-		this.entered = false;
+		var that = this;
+		this.listener = function (triggerEnterEvent) {
+			if (that.entity && triggerEnterEvent.entityA === that.entity || triggerEnterEvent.entityB === that.entity) {
+				that.entity = null;
+				// TODO: should this happen on postStep instead? Maybe the user will remove the entity here...
+				fsm.send(that.transitions.enter);
+			}
+		};
 		SystemBus.addListener('goo.physics.triggerEnter', this.listener);
-	};
-
-	TriggerEnterAction.prototype._cleanup = function () {
-		this.entity = null;
 	};
 
 	TriggerEnterAction.prototype.exit = function (/*fsm*/) {
 		SystemBus.removeListener('goo.physics.triggerEnter', this.listener);
-		this.entered = false;
-	};
-
-	TriggerEnterAction.prototype.update = function (fsm) {
-		if (this.entered) {
-			fsm.send(this.transitions.enter);
-			this.entered = false;
-		}
+		this.entity = null;
 	};
 
 	return TriggerEnterAction;

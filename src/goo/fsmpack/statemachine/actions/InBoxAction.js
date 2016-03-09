@@ -15,39 +15,44 @@ define([
 	InBoxAction.external = {
 		name: 'In Box',
 		type: 'collision',
-		description: 'Performs a transition based on whether an entity is inside a user defined box volume or not.' +
-			'The volume is defined by setting two points which, when connected, form a diagonal through the box volume.',
+		description: 'Performs a transition based on whether an entity is inside a user defined box volume or not. The volume is defined by setting two points which, when connected, form a diagonal through the box volume.',
 		canTransition: true,
 		parameters: [{
 			name: 'Point1',
 			key: 'point1',
 			type: 'position',
-			description: 'First box point',
+			description: 'First box point.',
 			'default': [-1, -1, -1]
 		}, {
 			name: 'Point2',
 			key: 'point2',
 			type: 'position',
-			description: 'Second box point',
+			description: 'Second box point.',
 			'default': [1, 1, 1]
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'inside',
-			name: 'Inside',
-			description: 'State to transition to if the entity is inside the box'
+			description: 'State to transition to if the entity is inside the box.'
 		}, {
 			key: 'outside',
-			name: 'Outside',
-			description: 'State to transition to if the entity is outside the box'
+			description: 'State to transition to if the entity is outside the box.'
 		}]
 	};
 
+	var labels = {
+		inside: 'On Inside Box',
+		outside: 'On Outside Box'
+	};
+
+	InBoxAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
 
 	// TODO: Find this in some Util class
 	function checkInside(pos, pt1, pt2) {

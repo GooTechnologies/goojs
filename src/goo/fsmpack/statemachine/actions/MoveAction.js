@@ -17,30 +17,30 @@ define([
 	MoveAction.external = {
 		name: 'Move',
 		type: 'animation',
-		description: 'Moves the entity',
+		description: 'Moves the entity.',
 		parameters: [{
 			name: 'Translation',
 			key: 'translation',
 			type: 'position',
-			description: 'Move',
+			description: 'Move.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Oriented',
 			key: 'oriented',
 			type: 'boolean',
-			description: 'If true translate with rotation',
+			description: 'If true translate with rotation.',
 			'default': true
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add to current translation',
+			description: 'If true add to current translation.',
 			'default': true
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []

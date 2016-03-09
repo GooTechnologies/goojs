@@ -15,30 +15,30 @@ define([
 	ScaleAction.external = {
 		name: 'Scale',
 		type: 'animation',
-		description: 'Scales the entity',
+		description: 'Scales the entity.',
 		parameters: [{
 			name: 'Scale',
 			key: 'scale',
 			type: 'position',
-			description: 'Scale',
+			description: 'Scale.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true, add/multiply the current scaling',
+			description: 'If true, add/multiply the current scaling.',
 			'default': true
 		}, {
 			name: 'Multiply',
 			key: 'multiply',
 			type: 'boolean',
-			description: 'If true multiply, otherwise add',
+			description: 'If true multiply, otherwise add.',
 			'default': false
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': false
 		}],
 		transitions: []
@@ -70,7 +70,7 @@ define([
 		} else {
 			transform.scale.setArray(this.scale);
 		}
-	
+
 		entity.transformComponent.setUpdated();
 	};
 

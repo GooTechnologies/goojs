@@ -35,7 +35,7 @@ define([
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Smoke color',
+			description: 'Smoke color.',
 			'default': [0, 0, 0]
 		}],
 		transitions: []

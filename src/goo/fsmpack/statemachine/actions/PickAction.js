@@ -15,14 +15,22 @@ define([
 	PickAction.external = {
 		name: 'Pick',
 		type: 'controls',
-		description: 'Listens for a picking event on the entity and performs a transition',
+		description: 'Listens for a picking event on the entity and performs a transition.',
 		canTransition: true,
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'pick',
 			name: 'Pick',
-			description: 'State to transition to when entity is picked'
+			description: 'State to transition to when entity is picked.'
 		}]
+	};
+
+	var labels = {
+		pick: 'On pick entity'
+	};
+
+	PickAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	PickAction.prototype.enter = function (fsm) {

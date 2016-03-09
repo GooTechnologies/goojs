@@ -20,9 +20,12 @@ define([
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'pick',
-			name: 'Pick',
-			description: 'State to transition to when the HTML entity is picked'
+			description: 'State to transition to when the HTML entity is picked.'
 		}]
+	};
+
+	HtmlAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'On HTML Pick';
 	};
 
 	HtmlAction.prototype.enter = function (fsm) {

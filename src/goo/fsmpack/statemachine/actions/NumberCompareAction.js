@@ -42,19 +42,29 @@ define([
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
-			name: 'less',
-			description: 'Event fired if left hand argument is smaller than right hand argument'
+			key: 'less',
+			description: 'Event fired if left hand argument is smaller than right hand argument.'
 		}, {
-			name: 'equal',
-			description: 'Event fired if both sides are approximately equal'
+			key: 'equal',
+			description: 'Event fired if both sides are approximately equal.'
 		}, {
-			name: 'greater',
-			description: 'Event fired if left hand argument is greater than right hand argument'
+			key: 'greater',
+			description: 'Event fired if left hand argument is greater than right hand argument.'
 		}]
+	};
+
+	var labels = {
+		less: 'On X < Y',
+		equal: 'On X == Y',
+		greater: 'On X > Y'
+	};
+
+	NumberCompareAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	NumberCompareAction.prototype.compare = function (fsm) {

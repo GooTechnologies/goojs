@@ -15,14 +15,21 @@ define([
 	TransitionAction.external = {
 		name: 'Transition',
 		type: 'transitions',
-		description: 'Transition to a selected state',
+		description: 'Transition to a selected state.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'On Transition',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
+	};
+
+	var labels = {
+		transition: 'On Enter'
+	};
+
+	TransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	TransitionAction.prototype.enter = function (fsm) {

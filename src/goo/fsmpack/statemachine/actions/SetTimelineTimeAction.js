@@ -21,7 +21,7 @@ define([
 			name: 'Time',
 			key: 'time',
 			type: 'float',
-			description: 'Timeline time to set',
+			description: 'Timeline time to set.',
 			'default': 0
 		}],
 		transitions: []

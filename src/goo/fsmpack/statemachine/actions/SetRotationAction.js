@@ -27,30 +27,30 @@ define([
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity to move'
+			description: 'Entity to move.'
 		}, {
 			name: 'Amount X',
 			key: 'amountX',
 			type: 'float',
-			description: 'Amount to rotate on the X axis',
+			description: 'Amount to rotate on the X axis.',
 			'default': 0
 		}, {
 			name: 'Amount Y',
 			key: 'amountY',
 			type: 'float',
-			description: 'Amount to rotate on the Y axis',
+			description: 'Amount to rotate on the Y axis.',
 			'default': 0
 		}, {
 			name: 'Amount Z',
 			key: 'amountZ',
 			type: 'float',
-			description: 'Amount to rotate on the Z axis',
+			description: 'Amount to rotate on the Z axis.',
 			'default': 0
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []

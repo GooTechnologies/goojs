@@ -15,26 +15,33 @@ define([
 	MouseDownAction.external = {
 		name: 'Mouse Down / Touch Start',
 		type: 'controls',
-		description: 'Listens for a mousedown event (or touchstart) on the canvas and performs a transition',
+		description: 'Listens for a mousedown event (or touchstart) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftDown',
-			name: 'Left mouse down',
-			description: 'State to transition to when the left mouse button is pressed'
+			description: 'State to transition to when the left mouse button is pressed.'
 		}, {
 			key: 'middleMouseDown',
-			name: 'Middle mouse down',
-			description: 'State to transition to when the middle mouse button is pressed'
+			description: 'State to transition to when the middle mouse button is pressed.'
 		}, {
 			key: 'rightMouseDown',
-			name: 'Right mouse down',
-			description: 'State to transition to when the right mouse button is pressed'
+			description: 'State to transition to when the right mouse button is pressed.'
 		}, {
 			key: 'touchDown',
-			name: 'Touch begin',
-			description: 'State to transition to when the touch event begins'
+			description: 'State to transition to when the touch event begins.'
 		}]
+	};
+
+	var labels = {
+		mouseLeftDown: 'On left mouse down',
+		middleMouseDown: 'On middle mouse down',
+		rightMouseDown: 'On right mouse down',
+		touchDown: 'On touch start'
+	};
+
+	MouseDownAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MouseDownAction.prototype.enter = function (fsm) {

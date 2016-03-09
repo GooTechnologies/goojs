@@ -18,7 +18,7 @@ define([
 	SetAnimationAction.external = {
 		name: 'Set Animation',
 		type: 'animation',
-		description: 'Transitions to a selected animation',
+		description: 'Transitions to a selected animation.',
 		parameters: [{
 			name: 'Animation',
 			key: 'animation',
@@ -33,9 +33,16 @@ define([
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On completion',
 			description: 'State to transition to when the target animation completes. If the animation loops forever, the transition will be done when the next loop starts.'
 		}]
+	};
+
+	var labels = {
+		complete: 'On animation complete'
+	};
+
+	SetAnimationAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	SetAnimationAction.prototype.enter = function () {
