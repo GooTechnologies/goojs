@@ -3,6 +3,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/entities/components/HtmlComponent',
+	'goo/entities/systems/HtmlSystem',
 	'goo/shapes/Box',
 	'lib/V'
 ], function (
@@ -10,16 +11,17 @@ require([
 	ShaderLib,
 	Vector3,
 	HtmlComponent,
+	HtmlSystem,
 	Box,
 	V
-	) {
+) {
 	'use strict';
 
 	V.describe('Boxes with different depth functions');
 
 	var goo = V.initGoo();
 	var world = goo.world;
-
+	world.setSystem(new HtmlSystem(goo.renderer));
 	var box = new Box(1, 1, 1);
 
 	// Create background box
@@ -37,9 +39,10 @@ require([
 		material.depthState.depthFunc = depthFunc;
 
 		var htmlElement = document.createElement('p');
-		// htmlElement.style.position = 'absolute';
+		htmlElement.style.position = 'absolute';
 		htmlElement.style['-webkit-user-select'] = 'none';
 		htmlElement.style.color = 'white';
+		htmlElement.style['pointer-events'] = 'none';
 		htmlElement.innerHTML = depthFunc;
 		document.body.appendChild(htmlElement);
 		var htmlComponent = new HtmlComponent(htmlElement);
