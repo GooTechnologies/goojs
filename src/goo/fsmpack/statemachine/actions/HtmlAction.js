@@ -13,6 +13,7 @@ define([
 	HtmlAction.prototype.constructor = HtmlAction;
 
 	HtmlAction.external = {
+		key: 'HTMLPick',
 		name: 'HTMLPick',
 		type: 'controls',
 		description: 'Listens for a picking event and performs a transition. Can only be used on HTML entities.',

@@ -15,6 +15,7 @@ function (
 	CopyJointTransformAction.prototype.constructor = CopyJointTransformAction;
 
 	CopyJointTransformAction.external = {
+		key: 'Copy Joint Transform',
 		name: 'Copy Joint Transform',
 		type: 'animation',
 		description: 'Copies a joint\'s transform from another entity, and applies it to this entity. This entity must be a child of an entity with an animation component.',

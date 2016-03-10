@@ -15,6 +15,7 @@ define([
 	RotateAction.prototype.constructor = RotateAction;
 
 	RotateAction.external = {
+		key: 'Rotate',
 		name: 'Rotate',
 		type: 'animation',
 		description: 'Rotates the entity with the set angles (in degrees).',

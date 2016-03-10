@@ -15,6 +15,7 @@ define([
 	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		key: 'Key Up',
 		name: 'Key Up',
 		type: 'controls',
 		description: 'Listens for a key release and performs a transition.',

@@ -13,6 +13,7 @@ define([
 	SetHtmlTextAction.prototype.constructor = SetHtmlTextAction;
 
 	SetHtmlTextAction.external = {
+		key: 'Set Html Text',
 		name: 'Set Html Text',
 		type: 'fx',
 		description: 'Sets the contents of an HTML element.',

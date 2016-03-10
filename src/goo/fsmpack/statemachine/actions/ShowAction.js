@@ -13,6 +13,7 @@ define([
 	ShowAction.prototype.constructor = ShowAction;
 
 	ShowAction.external = {
+		key: 'Show',
 		name: 'Show',
 		type: 'display',
 		description: 'Makes an entity visible.',

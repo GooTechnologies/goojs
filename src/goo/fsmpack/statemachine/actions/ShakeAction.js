@@ -24,6 +24,7 @@ define([
 	ShakeAction.prototype.constructor = ShakeAction;
 
 	ShakeAction.external = {
+		key: 'Shake',
 		name: 'Shake',
 		type: 'animation',
 		description: 'Shakes the entity. Optionally performs a transition.',

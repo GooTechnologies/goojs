@@ -13,6 +13,7 @@ define([
 	PauseTimelineAction.prototype.constructor = PauseTimelineAction;
 
 	PauseTimelineAction.external = {
+		key: 'Pause Timeline',
 		name: 'Pause Timeline',
 		type: 'timeline',
 		description: 'Pauses the timeline.',

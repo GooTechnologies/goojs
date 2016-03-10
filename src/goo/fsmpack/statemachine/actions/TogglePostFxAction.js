@@ -13,6 +13,7 @@ define([
 	TogglePostFxAction.prototype.constructor = TogglePostFxAction;
 
 	TogglePostFxAction.external = {
+		key: 'Toggle Post FX',
 		name: 'Toggle Post FX',
 		type: 'fx',
 		description: 'Enabled/disables post fx globally.',

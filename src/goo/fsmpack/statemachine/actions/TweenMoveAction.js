@@ -21,6 +21,7 @@ define([
 	TweenMoveAction.prototype.constructor = TweenMoveAction;
 
 	TweenMoveAction.external = {
+		key: 'Tween Move',
 		name: 'Tween Move',
 		type: 'animation',
 		description: 'Transition to the set location.',

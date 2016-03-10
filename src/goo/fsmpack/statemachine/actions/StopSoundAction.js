@@ -13,6 +13,7 @@ define([
 	StopSoundAction.prototype.constructor = StopSoundAction;
 
 	StopSoundAction.external = {
+		key: 'Stop Sound',
 		name: 'Stop Sound',
 		type: 'sound',
 		description: 'Stops a sound.',

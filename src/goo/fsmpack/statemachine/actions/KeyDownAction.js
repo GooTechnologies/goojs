@@ -15,6 +15,7 @@ define([
 	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		key: 'Key Down',
 		name: 'Key Down',
 		type: 'controls',
 		description: 'Listens for a key press and performs a transition.',

@@ -12,6 +12,7 @@ define([
 	MuteAction.prototype.constructor = MuteAction;
 
 	MuteAction.external = {
+		key: 'Mute sounds',
 		name: 'Mute sounds',
 		type: 'sound',
 		description: 'Mute all sounds globally.',

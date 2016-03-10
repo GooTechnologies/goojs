@@ -18,6 +18,7 @@ define([
 	SwitchCameraAction.prototype.constructor = SwitchCameraAction;
 
 	SwitchCameraAction.external = {
+		key: 'Switch Camera',
 		name: 'Switch Camera',
 		type: 'camera',
 		description: 'Switches to a selected camera.',

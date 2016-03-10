@@ -14,6 +14,7 @@ define([
 	SetRigidBodyPositionAction.prototype.constructor = SetRigidBodyPositionAction;
 
 	SetRigidBodyPositionAction.external = {
+		key: 'Set Rigid Body Position',
 		name: 'Set Rigid Body Position',
 		type: 'physics',
 		description: 'Set the position of the rigid body.',

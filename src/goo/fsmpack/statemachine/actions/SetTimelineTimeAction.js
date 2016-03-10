@@ -13,6 +13,7 @@ define([
 	SetTimelineTimeAction.prototype.constructor = SetTimelineTimeAction;
 
 	SetTimelineTimeAction.external = {
+		key: 'Set Timeline Time',
 		name: 'Set Timeline Time',
 		type: 'timeline',
 		description: 'Sets the current time of the timeline.',

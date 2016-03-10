@@ -169,7 +169,7 @@ define([
 		var actionsStartIndex = 0;
 		for (var i = actionsStartIndex; i < args.length; i++) {
 			var arg = args[i];
-			Actions.register(arg.external.key || arg.external.name, arg);
+			Actions.register(arg.external.key, arg);
 		}
 	}
 

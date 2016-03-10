@@ -15,6 +15,7 @@ define([
 	KeyPressedAction.prototype.constructor = KeyPressedAction;
 
 	KeyPressedAction.external = {
+		key: 'Key Pressed',
 		name: 'Key Pressed',
 		type: 'controls',
 		description: 'Listens for a key press event and performs a transition. Works over transition boundaries.',

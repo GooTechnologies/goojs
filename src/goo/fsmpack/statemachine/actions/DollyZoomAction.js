@@ -23,6 +23,7 @@ define([
 	DollyZoomAction.prototype.constructor = DollyZoomAction;
 
 	DollyZoomAction.external = {
+		key: 'Dolly Zoom',
 		name: 'Dolly Zoom',
 		type: 'camera',
 		description: 'Performs dolly zoom.',

@@ -15,6 +15,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	};
 
 	SetLightRangeAction.external = {
+		key: 'Set Light Range',
 		name: 'Set Light Range',
 		description: 'Sets the range of a light.',
 		parameters: [{

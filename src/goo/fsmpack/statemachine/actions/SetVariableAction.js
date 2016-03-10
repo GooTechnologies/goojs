@@ -15,6 +15,7 @@ define([
 	SetVariableAction.prototype.constructor = SetVariableAction;
 
 	SetVariableAction.external = {
+		key: 'Set Variable',
 		name: 'Set Variable',
 		type: 'variables',
 		description: '',

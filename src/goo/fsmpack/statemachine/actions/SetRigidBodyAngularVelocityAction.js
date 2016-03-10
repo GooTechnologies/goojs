@@ -14,6 +14,7 @@ define([
 	SetRigidBodyAngularVelocityAction.prototype.constructor = SetRigidBodyAngularVelocityAction;
 
 	SetRigidBodyAngularVelocityAction.external = {
+		key: 'Set Rigid Body Angular Velocity',
 		name: 'Set Rigid Body Angular Velocity',
 		type: 'physics',
 		description: 'Set the angular velocity of the rigid body component.',

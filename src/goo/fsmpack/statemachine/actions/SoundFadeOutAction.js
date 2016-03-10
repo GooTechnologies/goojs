@@ -13,6 +13,7 @@ define([
 	SoundFadeOutAction.prototype.constructor = SoundFadeOutAction;
 
 	SoundFadeOutAction.external = {
+		key: 'Sound Fade Out',
 		name: 'Sound Fade Out',
 		type: 'sound',
 		description: 'Fades out a sound and stops it.',

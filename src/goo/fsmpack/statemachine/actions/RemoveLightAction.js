@@ -13,6 +13,7 @@ define([
 	RemoveLightAction.prototype.constructor = RemoveLightAction;
 
 	RemoveLightAction.external = {
+		key: 'Remove Light',
 		name: 'Remove Light',
 		type: 'light',
 		description: 'Removes the light attached to the entity.',

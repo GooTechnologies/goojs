@@ -14,6 +14,7 @@ define([
 	SetTimeScale.prototype.constructor = SetTimeScale;
 
 	SetTimeScale.external = {
+		key: 'Set Animation Time Scale',
 		name: 'Set Animation Time Scale',
 		type: 'animation',
 		description: 'Sets the time scale for the current animation.',

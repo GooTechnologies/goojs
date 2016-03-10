@@ -13,6 +13,7 @@ define([
 	InBoxAction.prototype.constructor = InBoxAction;
 
 	InBoxAction.external = {
+		key: 'In Box',
 		name: 'In Box',
 		type: 'collision',
 		description: 'Performs a transition based on whether an entity is inside a user defined box volume or not. The volume is defined by setting two points which, when connected, form a diagonal through the box volume.',

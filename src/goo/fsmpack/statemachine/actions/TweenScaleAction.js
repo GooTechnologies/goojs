@@ -21,6 +21,7 @@ define([
 	TweenScaleAction.prototype.constructor = TweenScaleAction;
 
 	TweenScaleAction.external = {
+		key: 'Tween Scale',
 		name: 'Tween Scale',
 		type: 'animation',
 		description: 'Transition to the set scale.',

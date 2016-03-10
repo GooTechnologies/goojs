@@ -15,6 +15,7 @@ define([
 	ToggleFullscreenAction.prototype.constructor = ToggleFullscreenAction;
 
 	ToggleFullscreenAction.external = {
+		key: 'Toggle Fullscreen',
 		name: 'Toggle Fullscreen',
 		type: 'display',
 		description: 'Toggles fullscreen on/off.',

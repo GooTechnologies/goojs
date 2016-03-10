@@ -13,6 +13,7 @@ define([
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
+		key: 'Mouse Up / Touch end',
 		name: 'Mouse Up / Touch end',
 		type: 'controls',
 		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition.',

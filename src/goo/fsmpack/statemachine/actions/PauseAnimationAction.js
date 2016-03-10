@@ -13,6 +13,7 @@ define([
 	PauseAnimationAction.prototype.constructor = PauseAnimationAction;
 
 	PauseAnimationAction.external = {
+		key: 'Pause Animation',
 		name: 'Pause Animation',
 		type: 'animation',
 		description: 'Pauses skeleton animations.',

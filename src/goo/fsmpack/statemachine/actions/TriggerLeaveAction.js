@@ -16,6 +16,7 @@ define([
 	TriggerLeaveAction.prototype.constructor = TriggerLeaveAction;
 
 	TriggerLeaveAction.external = {
+		key: 'TriggerLeave',
 		name: 'TriggerLeave',
 		type: 'collision',
 		description: 'Transitions when a collider is leaving the entity trigger collider. This action only works if the entity has a Collider Component.',

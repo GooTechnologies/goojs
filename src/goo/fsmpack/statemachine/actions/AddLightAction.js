@@ -21,6 +21,7 @@ define([
 	AddLightAction.prototype.constructor = AddLightAction;
 
 	AddLightAction.external = {
+		key: 'Add Light',
 		name: 'Add Light',
 		description: 'Adds a point light to the entity.',
 		type: 'light',

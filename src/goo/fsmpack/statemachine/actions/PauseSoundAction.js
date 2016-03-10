@@ -13,6 +13,7 @@ define([
 	PauseSoundAction.prototype.constructor = PauseSoundAction;
 
 	PauseSoundAction.external = {
+		key: 'Pause Sound',
 		name: 'Pause Sound',
 		type: 'sound',
 		description: 'Pauses a sound.',

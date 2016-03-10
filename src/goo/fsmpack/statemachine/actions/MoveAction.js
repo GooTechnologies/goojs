@@ -15,6 +15,7 @@ define([
 	MoveAction.prototype.constructor = MoveAction;
 
 	MoveAction.external = {
+		key: 'Move',
 		name: 'Move',
 		type: 'animation',
 		description: 'Moves the entity.',

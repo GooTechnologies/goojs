@@ -13,6 +13,7 @@ define([
 	HideAction.prototype.constructor = HideAction;
 
 	HideAction.external = {
+		key: 'Hide',
 		name: 'Hide',
 		type: 'display',
 		description: 'Hides an entity and its children.',

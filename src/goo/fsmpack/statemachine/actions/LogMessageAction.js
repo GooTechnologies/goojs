@@ -13,6 +13,7 @@ define([
 	LogMessageAction.prototype.constructor = LogMessageAction;
 
 	LogMessageAction.external = {
+		key: 'Log Message',
 		name: 'Log Message',
 		description: 'Prints a message in the debug console of your browser.',
 		parameters: [{

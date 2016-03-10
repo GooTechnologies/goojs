@@ -29,6 +29,7 @@ define([
 	WaitAction.prototype.constructor = WaitAction;
 
 	WaitAction.external = {
+		key: 'Wait',
 		name: 'Wait',
 		type: 'animation',
 		description: 'Performs a transition after a specified amount of time. A random time can be set, this will add between 0 and the set random time to the specified wait time.',

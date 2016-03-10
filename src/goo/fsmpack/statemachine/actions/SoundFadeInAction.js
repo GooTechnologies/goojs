@@ -15,6 +15,7 @@ define([
 	SoundFadeInAction.prototype.constructor = SoundFadeInAction;
 
 	SoundFadeInAction.external = {
+		key: 'Sound Fade In',
 		name: 'Sound Fade In',
 		type: 'sound',
 		description: 'Fades in a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',

@@ -12,6 +12,7 @@ define([
 	ToggleMuteAction.prototype.constructor = ToggleMuteAction;
 
 	ToggleMuteAction.external = {
+		key: 'Toggle mute sounds',
 		name: 'Toggle mute sounds',
 		type: 'sound',
 		description: 'Toggles mute of all sounds globally.',

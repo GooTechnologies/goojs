@@ -13,6 +13,7 @@ define([
 	RandomTransitionAction.prototype.constructor = RandomTransitionAction;
 
 	RandomTransitionAction.external = {
+		key: 'Random Transition',
 		name: 'Random Transition',
 		type: 'transitions',
 		description: 'Performs a random transition. Will choose one of the two transitions randomly and transition immediately.',

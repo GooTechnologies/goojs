@@ -56,6 +56,7 @@ define([
 	PickAndExitAction.prototype.constructor = PickAndExitAction;
 
 	PickAndExitAction.external = {
+		key: 'Pick and Exit',
 		name: 'Pick and Exit',
 		type: 'controls',
 		description: 'Listens for a picking event on the entity and opens a new browser window.',

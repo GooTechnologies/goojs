@@ -9,6 +9,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	SetLightPropertiesAction.prototype.constructor = SetLightPropertiesAction;
 
 	SetLightPropertiesAction.external = {
+		key: 'Set Light Properties',
 		name: 'Set Light Properties',
 		description: 'Sets various properties of a light.',
 		parameters: [{

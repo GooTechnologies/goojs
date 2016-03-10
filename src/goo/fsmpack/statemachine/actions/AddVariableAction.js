@@ -15,6 +15,7 @@ define([
 	AddVariableAction.prototype.constructor = AddVariableAction;
 
 	AddVariableAction.external = {
+		key: 'Add Variable',
 		name: 'Add Variable',
 		type: 'variables',
 		description: '',

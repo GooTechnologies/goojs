@@ -24,6 +24,7 @@ define([
 	TweenLookAtAction.prototype.constructor = TweenLookAtAction;
 
 	TweenLookAtAction.external = {
+		key: 'Tween Look At',
 		name: 'Tween Look At',
 		type: 'animation',
 		description: 'Transition the entity\'s rotation to face the set position.',

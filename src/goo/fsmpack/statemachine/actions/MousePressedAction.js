@@ -13,6 +13,7 @@ define([
 	MousePressedAction.prototype.constructor = MousePressedAction;
 
 	MousePressedAction.external = {
+		key: 'Mouse Button Pressed',
 		name: 'Mouse Button Pressed',
 		type: 'controls',
 		description: 'Listens for a mouse button press event and performs a transition. Works over transition boundaries..',

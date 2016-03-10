@@ -15,6 +15,7 @@ define([
 	TagAction.prototype.constructor = TagAction;
 
 	TagAction.external = {
+		key: 'Tag',
 		name: 'Tag',
 		type: 'collision',
 		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action.',

@@ -13,6 +13,7 @@ define([
 	TransitionAction.prototype.constructor = TransitionAction;
 
 	TransitionAction.external = {
+		key: 'Transition',
 		name: 'Transition',
 		type: 'transitions',
 		description: 'Transition to a selected state.',

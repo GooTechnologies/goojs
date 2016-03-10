@@ -13,6 +13,7 @@ define([
 	PickAction.prototype.constructor = PickAction;
 
 	PickAction.external = {
+		key: 'Pick',
 		name: 'Pick',
 		type: 'controls',
 		description: 'Listens for a picking event on the entity and performs a transition.',

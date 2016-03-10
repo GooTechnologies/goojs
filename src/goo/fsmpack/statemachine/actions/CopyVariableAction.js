@@ -15,6 +15,7 @@ define([
 	CopyVariableAction.prototype.constructor = CopyVariableAction;
 
 	CopyVariableAction.external = {
+		key: 'Copy Variable',
 		name: 'Copy Variable',
 		type: 'variables',
 		description: '',

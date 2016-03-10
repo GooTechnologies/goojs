@@ -13,6 +13,7 @@ define([
 	ScaleAction.prototype.constructor = ScaleAction;
 
 	ScaleAction.external = {
+		key: 'Scale',
 		name: 'Scale',
 		type: 'animation',
 		description: 'Scales the entity.',

@@ -13,6 +13,7 @@ define([
 	RemoveAction.prototype.constructor = RemoveAction;
 
 	RemoveAction.external = {
+		key: 'Remove',
 		name: 'Remove',
 		type: 'display',
 		description: 'Removes the entity from the world.',

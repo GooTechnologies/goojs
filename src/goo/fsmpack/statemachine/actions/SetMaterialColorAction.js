@@ -13,6 +13,7 @@ define([
 	SetMaterialColorAction.prototype.constructor = SetMaterialColorAction;
 
 	SetMaterialColorAction.external = {
+		key: 'Set Material Color',
 		name: 'Set Material Color',
 		type: 'texture',
 		description: 'Sets the color of a material.',

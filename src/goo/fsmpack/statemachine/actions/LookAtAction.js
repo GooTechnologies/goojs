@@ -15,6 +15,7 @@ define([
 	LookAtAction.prototype.constructor = LookAtAction;
 
 	LookAtAction.external = {
+		key: 'Look At',
 		name: 'Look At',
 		type: 'animation',
 		description: 'Reorients an entity so that it\'s facing a specific point.',

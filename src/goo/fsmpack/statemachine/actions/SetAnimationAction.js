@@ -16,6 +16,7 @@ define([
 	SetAnimationAction.prototype.constructor = SetAnimationAction;
 
 	SetAnimationAction.external = {
+		key: 'Set Animation',
 		name: 'Set Animation',
 		type: 'animation',
 		description: 'Transitions to a selected animation.',

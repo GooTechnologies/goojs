@@ -15,6 +15,7 @@ define([
 	EvalAction.prototype.constructor = EvalAction;
 
 	EvalAction.external = {
+		key: 'Eval',
 		name: 'Eval',
 		description: 'Evaluates a JS expression.',
 		parameters: [{

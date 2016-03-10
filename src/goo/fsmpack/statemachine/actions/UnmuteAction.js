@@ -12,6 +12,7 @@ define([
 	UnmuteAction.prototype.constructor = UnmuteAction;
 
 	UnmuteAction.external = {
+		key: 'Unmute sounds',
 		name: 'Unmute sounds',
 		type: 'sound',
 		description: 'Unmute all sounds globally.',

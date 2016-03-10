@@ -16,6 +16,7 @@ define([
 	TriggerEnterAction.prototype.constructor = TriggerEnterAction;
 
 	TriggerEnterAction.external = {
+		key: 'TriggerEnter',
 		name: 'TriggerEnter',
 		type: 'collision',
 		description: 'Transitions when the trigger collider is entered. This action only works if the entity has a Collider Component.',

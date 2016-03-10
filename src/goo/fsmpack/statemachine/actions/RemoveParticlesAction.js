@@ -13,6 +13,7 @@ define([
 	RemoveParticlesAction.prototype.constructor = RemoveParticlesAction;
 
 	RemoveParticlesAction.external = {
+		key: 'Remove Particles',
 		name: 'Remove Particles',
 		type: 'fx',
 		description: 'Removes any particle emitter attached to the entity.',

@@ -13,6 +13,7 @@ define([
 	ResumeAnimationAction.prototype.constructor = ResumeAnimationAction;
 
 	ResumeAnimationAction.external = {
+		key: 'Resume Animation',
 		name: 'Resume Animation',
 		type: 'animation',
 		description: 'Continues playing a skeleton animation.',

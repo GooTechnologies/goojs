@@ -15,6 +15,7 @@ define([
 	MultiplyVariableAction.prototype.constructor = MultiplyVariableAction;
 
 	MultiplyVariableAction.external = {
+		key: 'Multiply Variable',
 		name: 'Multiply Variable',
 		type: 'variables',
 		description: '',
