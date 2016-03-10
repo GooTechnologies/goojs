@@ -17,7 +17,7 @@ define([
 	ToggleFullscreenAction.external = {
 		name: 'Toggle Fullscreen',
 		type: 'display',
-		description: 'Toggles fullscreen on/off',
+		description: 'Toggles fullscreen on/off.',
 		parameters: [],
 		transitions: []
 	};

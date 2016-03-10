@@ -18,20 +18,24 @@ define([
 		key: 'Transition on Message',
 		name: 'Listen',
 		type: 'transitions',
-		description: 'Performs a transition on receiving a system bus message (event) on a specific channel',
+		description: 'Performs a transition on receiving a system bus message (event) on a specific channel.',
 		canTransition: true,
 		parameters: [{
 			name: 'Message channel',
 			key: 'channel',
 			type: 'string',
-			description: 'Channel to listen to',
+			description: 'Channel to listen to.',
 			'default': ''
 		}],
 		transitions: [{
 			key: 'transition',
-			name: 'On Message',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
+	};
+
+	TransitionOnMessageAction.getTransitionLabel = function(transitionKey, actionConfig){
+		var label = actionConfig.options.channel ? '"' + actionConfig.options.channel + '"' : '';
+		return transitionKey === 'transition' ? 'On ' + label + ' event' : 'On Message';
 	};
 
 	TransitionOnMessageAction.prototype.enter = function (fsm) {

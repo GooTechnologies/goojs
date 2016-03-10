@@ -8,7 +8,6 @@ define([
 	function CompareCountersAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-
 	CompareCountersAction.prototype = Object.create(Action.prototype);
 	CompareCountersAction.prototype.constructor = CompareCountersAction;
 
@@ -16,38 +15,47 @@ define([
 		key: 'Compare 2 Counters',
 		name: 'Compare 2 Counters',
 		type: 'transitions',
-		description: 'Compares the value of 2 counters',
+		description: 'Compares the value of 2 counters.',
 		canTransition: true,
 		parameters: [{
 			name: 'First counter',
 			key: 'name1',
 			type: 'string',
-			description: 'First counter name'
+			description: 'First counter name.'
 		}, {
 			name: 'Second counter',
 			key: 'name2',
 			type: 'string',
-			description: 'Second counter name'
+			description: 'Second counter name.'
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'less',
-			name: 'Less',
-			description: 'State to transition to if the first counter is smaller than the second counter'
+			description: 'State to transition to if the first counter is smaller than the second counter.'
 		}, {
 			key: 'equal',
-			name: 'Equal',
-			description: 'State to transition to if the first counter is the same as the second counter'
+			description: 'State to transition to if the first counter is the same as the second counter.'
 		}, {
 			key: 'greater',
-			name: 'Greater',
-			description: 'State to transition to if the first counter is greater than the second counter'
+			description: 'State to transition to if the first counter is greater than the second counter.'
 		}]
+	};
+
+	var operators = {
+		less: '<',
+		equal: '==',
+		greater: '>'
+	};
+
+	CompareCountersAction.getTransitionLabel = function(transitionKey, actionConfig){
+		if (operators[transitionKey]) {
+			return 'On ' + (actionConfig.options.name1 || 'Counter1') + ' ' + operators[transitionKey] + ' ' + (actionConfig.options.name2 || 'counter2');
+		}
 	};
 
 	CompareCountersAction.prototype.compare = function (fsm) {

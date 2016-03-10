@@ -23,6 +23,9 @@ define([
 		this.blendWeight = blendWeight ? blendWeight : null;
 	}
 
+	BinaryLerpSource.prototype = Object.create(Source.prototype);
+	BinaryLerpSource.prototype.constructor = BinaryLerpSource;
+
 	/*
 	 * @returns a source data mapping for the channels in this clip source
 	 */

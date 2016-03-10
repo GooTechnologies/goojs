@@ -15,7 +15,7 @@ define([
 	RemoveParticlesAction.external = {
 		name: 'Remove Particles',
 		type: 'fx',
-		description: 'Removes any particle emitter attached to the entity',
+		description: 'Removes any particle emitter attached to the entity.',
 		parameters: [],
 		transitions: []
 	};

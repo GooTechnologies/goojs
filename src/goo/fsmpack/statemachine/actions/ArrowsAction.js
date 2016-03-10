@@ -27,26 +27,33 @@ define([
 		key: 'Arrow Keys Listener',
 		name: 'Arrow Keys',
 		type: 'controls',
-		description: 'Transitions to other states when arrow keys are pressed (keydown)',
+		description: 'Transitions to other states when arrow keys are pressed (keydown).',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
-			name: 'Key UP',
 			key: 'up',
-			description: "Key up pressed"
+			description: "On key up pressed."
 		}, {
-			name: 'Key LEFT',
 			key: 'left',
-			description: "Key left pressed"
+			description: "On key left pressed."
 		}, {
-			name: 'Key DOWN',
 			key: 'down',
-			description: "Key down pressed"
+			description: "On key down pressed."
 		}, {
-			name: 'Key RIGHT',
 			key: 'right',
-			description: "Key right pressed"
+			description: "On key right pressed."
 		}]
+	};
+
+	var labels = {
+		up: 'On key UP',
+		left: 'On key LEFT',
+		down: 'On key DOWN',
+		right: 'On key RIGHT'
+	};
+
+	ArrowsAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	ArrowsAction.prototype.enter = function (fsm) {

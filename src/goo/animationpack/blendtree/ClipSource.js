@@ -31,6 +31,9 @@ define([
 		this.currentLoop = 0;
 	}
 
+	ClipSource.prototype = Object.create(Source.prototype);
+	ClipSource.prototype.constructor = ClipSource;
+
 	/**
 	 * Sets the filter on the joints which the clipsource will affect
 	 * @param {string} [filter] 'Exclude' or 'Include'

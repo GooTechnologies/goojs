@@ -15,18 +15,18 @@ define([
 	SetMaterialColorAction.external = {
 		name: 'Set Material Color',
 		type: 'texture',
-		description: 'Sets the color of a material',
+		description: 'Sets the color of a material.',
 		parameters: [{
 			name: 'Entity (optional)',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity that has a material'
+			description: 'Entity that has a materia.l'
 		}, {
 			name: 'Color type',
 			key: 'type',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Color type',
+			description: 'Color type.',
 			'default': 'Diffuse',
 			options: ['Diffuse', 'Emissive', 'Specular', 'Ambient']
 		}, {
@@ -34,7 +34,7 @@ define([
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color',
+			description: 'Color.',
 			'default': [1, 1, 1]
 		}],
 		transitions: []

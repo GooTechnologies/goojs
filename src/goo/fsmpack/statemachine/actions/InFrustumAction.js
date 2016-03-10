@@ -20,36 +20,43 @@ define([
 		key: 'In Frustum',
 		name: 'In View',
 		type: 'camera',
-		description: 'Performs a transition based on whether the entity is in a camera\'s frustum or not',
+		description: 'Performs a transition based on whether the entity is in a camera\'s frustum or not.',
 		canTransition: true,
 		parameters: [{
 			name: 'Current camera',
 			key: 'current',
 			type: 'boolean',
-			description: 'Check this to always use the current camera',
+			description: 'Check this to always use the current camera.',
 			'default': true
 		}, {
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'camera',
-			description: 'Other camera; Will be ignored if the previous option is checked',
+			description: 'Other camera; Will be ignored if the previous option is checked.',
 			'default': null
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'inside',
-			name: 'Inside',
-			description: 'State to transition to if entity is in the frustum'
+			description: 'State to transition to if entity is in the frustum.'
 		}, {
 			key: 'outside',
-			name: 'Outside',
-			description: 'State to transition to if entity is outside the frustum'
+			description: 'State to transition to if entity is outside the frustum.'
 		}]
+	};
+
+	var labels = {
+		inside: 'On Inside Frustum',
+		outside: 'On Outside Frustum'
+	};
+
+	InFrustumAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	InFrustumAction.prototype.checkFrustum = function (fsm) {

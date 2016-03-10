@@ -15,7 +15,7 @@ define([
 	ShowAction.external = {
 		name: 'Show',
 		type: 'display',
-		description: 'Makes an entity visible',
+		description: 'Makes an entity visible.',
 		parameters: [],
 		transitions: []
 	};

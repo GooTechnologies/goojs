@@ -17,18 +17,18 @@ define([
 	LookAtAction.external = {
 		name: 'Look At',
 		type: 'animation',
-		description: 'Reorients an entity so that it\'s facing a specific point',
+		description: 'Reorients an entity so that it\'s facing a specific point.',
 		parameters: [{
 			name: 'Look at',
 			key: 'lookAt',
 			type: 'position',
-			description: 'Position to look at',
+			description: 'Position to look at.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []

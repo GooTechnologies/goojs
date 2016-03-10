@@ -15,12 +15,12 @@ define([
 	RemoveAction.external = {
 		name: 'Remove',
 		type: 'display',
-		description: 'Removes the entity from the world',
+		description: 'Removes the entity from the world.',
 		parameters: [{
 			name: 'Recursive',
 			key: 'recursive',
 			type: 'boolean',
-			description: 'Remove children too',
+			description: 'Remove children too.',
 			'default': false
 		}],
 		transitions: []

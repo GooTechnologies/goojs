@@ -29,6 +29,9 @@ define([
 		this._data = {};
 	}
 
+	ManagedTransformSource.prototype = Object.create(Source.prototype);
+	ManagedTransformSource.prototype.constructor = ManagedTransformSource;
+
 	/**
 	 * Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName

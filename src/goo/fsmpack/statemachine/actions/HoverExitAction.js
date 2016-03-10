@@ -26,22 +26,25 @@ define([
 		key: 'Hover Exit',
 		name: 'Entity Hover Exit',
 		type: 'controls',
-		description: 'Listens for a hover exit event on the entity and performs a transition',
+		description: 'Listens for a hover exit event on the entity and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Accuracy',
 			key: 'type',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Hover accuracy/performance selection',
+			description: 'Hover accuracy/performance selection.',
 			'default': HoverExitAction.types.fast,
 			options: [HoverExitAction.types.fast, HoverExitAction.types.slow]
 		}],
 		transitions: [{
 			key: 'exit',
-			name: 'On Exit',
-			description: 'State to transition to when entity is exited'
+			description: 'State to transition to when entity is exited.'
 		}]
+	};
+
+	HoverExitAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'On Entity Hover Exit';
 	};
 
 	HoverExitAction.prototype.enter = function (fsm) {
@@ -103,7 +106,7 @@ define([
 
 		document.addEventListener('mousemove', this.moveListener);
 		document.addEventListener('touchmove', this.moveListener);
-		
+
 		this.first = true;
 		this.hit = false;
 	};

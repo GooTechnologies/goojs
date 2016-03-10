@@ -25,7 +25,7 @@ define([
 	DollyZoomAction.external = {
 		name: 'Dolly Zoom',
 		type: 'camera',
-		description: 'Performs dolly zoom',
+		description: 'Performs dolly zoom.',
 		parameters: [{
 			name: 'Forward',
 			key: 'forward',
@@ -36,20 +36,20 @@ define([
 			name: 'Focus point',
 			key: 'lookAt',
 			type: 'position',
-			description: 'Point to focus on while transitioning',
+			description: 'Point to focus on while transitioning.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time',
+			description: 'Time.',
 			'default': 10000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing',
+			description: 'Easing.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -57,15 +57,18 @@ define([
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the transition completes.'
 		}]
+	};
+
+	DollyZoomAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+		return 'On Dolly Zoom Complete';
 	};
 
 	DollyZoomAction.prototype.ready = function () {

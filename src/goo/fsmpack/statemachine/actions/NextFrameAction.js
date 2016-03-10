@@ -16,14 +16,22 @@ define([
 		key: 'transitionOnNextFrame',
 		name: 'Transition on next frame',
 		type: 'transitions',
-		description: 'Transition to a selected state on the next frame',
+		description: 'Transition to a selected state on the next frame.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition',
 			name: 'On Next Frame',
-			description: 'State to transition to on next frame'
+			description: 'State to transition to on next frame.'
 		}]
+	};
+
+	var labels = {
+		transition: 'On Next Frame'
+	};
+
+	NextFrameAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	NextFrameAction.prototype.update = function (fsm) {

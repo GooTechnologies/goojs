@@ -15,26 +15,33 @@ define([
 	MouseUpAction.external = {
 		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftUp',
-			name: 'Left mouse up',
-			description: 'State to transition to when the left mouse button is released'
+			description: 'State to transition to when the left mouse button is released.'
 		}, {
 			key: 'middleMouseUp',
-			name: 'Middle mouse up',
-			description: 'State to transition to when the middle mouse button is released'
+			description: 'State to transition to when the middle mouse button is released.'
 		}, {
 			key: 'rightMouseUp',
-			name: 'Right mouse up',
-			description: 'State to transition to when the right mouse button is released'
+			description: 'State to transition to when the right mouse button is released.'
 		}, {
 			key: 'touchUp',
-			name: 'Touch release',
-			description: 'State to transition to when the touch event ends'
+			description: 'State to transition to when the touch event ends.'
 		}]
+	};
+
+	var labels = {
+		mouseLeftUp: 'On left mouse up',
+		middleMouseUp: 'On middle mouse up',
+		rightMouseUp: 'On right mouse up',
+		touchUp: 'On touch end'
+	};
+
+	MouseUpAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	MouseUpAction.prototype.enter = function (fsm) {

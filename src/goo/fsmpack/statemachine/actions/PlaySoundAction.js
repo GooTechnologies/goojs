@@ -17,20 +17,27 @@ define([
 	PlaySoundAction.external = {
 		name: 'Play Sound',
 		type: 'sound',
-		description: 'Plays a sound. NOTE: will not work on iOS devices.',
+		description: 'Plays a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to play.',
 			'default': 0
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the sound finishes playing'
+			description: 'State to transition to when the sound finishes playing.'
 		}]
+	};
+
+	var labels = {
+		complete: 'On Sound End'
+	};
+
+	PlaySoundAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	PlaySoundAction.prototype.enter = function (fsm) {

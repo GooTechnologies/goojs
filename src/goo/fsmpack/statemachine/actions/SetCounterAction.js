@@ -16,17 +16,17 @@ define([
 		key: 'Set Counter',
 		name: 'Set Counter',
 		type: 'transitions',
-		description: 'Sets a counter to a value',
+		description: 'Sets a counter to a value.',
 		parameters: [{
 			name: 'Name',
 			key: 'name',
 			type: 'string',
-			description: 'Counter name'
+			description: 'Counter name.'
 		}, {
 			name: 'Value',
 			key: 'value',
 			type: 'float',
-			description: 'Value to set the counter to',
+			description: 'Value to set the counter to.',
 			'default': 0
 		}],
 		transitions: []

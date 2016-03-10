@@ -16,12 +16,12 @@ define([
 
 	EvalAction.external = {
 		name: 'Eval',
-		description: 'Evaluates a JS expression',
+		description: 'Evaluates a JS expression.',
 		parameters: [{
 			name: 'expression',
 			key: 'expression',
 			type: 'string',
-			description: 'JavaScript expression to evaluate',
+			description: 'JavaScript expression to evaluate.',
 			'default': ''
 		}],
 		transitions: []

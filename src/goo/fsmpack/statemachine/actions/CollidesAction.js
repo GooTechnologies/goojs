@@ -26,18 +26,25 @@ define([
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
-			description: 'Checks for collisions with other objects having this tag',
+			description: 'Checks for collisions with other objects having this tag.',
 			'default': 'red'
 		}],
 		transitions: [{
 			key: 'collides',
-			name: 'On Collision',
-			description: 'State to transition to when a collision occurs'
+			description: 'State to transition to when a collision occurs.'
 		}, {
 			key: 'notCollides',
-			name: 'On Divergence',
-			description: 'State to transition to when a collision is not occurring'
+			description: 'State to transition to when a collision is not occurring.'
 		}]
+	};
+
+	var labels = {
+		collides: 'On bounds Overlap',
+		notCollides: 'On bounds Separate'
+	};
+
+	CollidesAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	CollidesAction.prototype.ready = function (fsm) {

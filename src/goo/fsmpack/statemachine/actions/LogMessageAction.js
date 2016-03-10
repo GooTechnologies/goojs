@@ -14,18 +14,18 @@ define([
 
 	LogMessageAction.external = {
 		name: 'Log Message',
-		description: 'Prints a message in the debug console of your browser',
+		description: 'Prints a message in the debug console of your browser.',
 		parameters: [{
 			name: 'Message',
 			key: 'message',
 			type: 'string',
-			description: 'Message to print',
+			description: 'Message to print.',
 			'default': 'hello'
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': false
 		}],
 		transitions: []

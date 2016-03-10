@@ -100,10 +100,12 @@ define([
 		 * @type {Object}
 		 * @property {boolean} enabled default: true
 		 * @property {boolean} write default: true
+		 * @property {string} depthFunc possible values: 'Never', 'Always', 'Less', 'LessEqual', 'Equal', 'GreaterEqual', 'Greater', 'NotEqual'
 		 */
 		this.depthState = {
 			enabled: true,
-			write: true
+			write: true,
+			depthFunc: 'LessEqual'
 		};
 
 		/** Specification of the polygon offset for this Material

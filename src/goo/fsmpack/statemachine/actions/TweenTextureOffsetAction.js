@@ -24,7 +24,7 @@ define([
 		key: 'Tween Texture Offset',
 		name: 'Tween Texture Offset',
 		type: 'texture',
-		description: 'Smoothly changes the texture offset of the entity',
+		description: 'Smoothly changes the texture offset of the entity.',
 		canTransition: true,
 		parameters: [{
 			name: 'X Offset',
@@ -33,7 +33,7 @@ define([
 			control: 'slider',
 			min: 0,
 			max: 1,
-			description: 'X Offset',
+			description: 'X Offset.',
 			'default': 1
 		}, {
 			name: 'Y Offset',
@@ -42,20 +42,20 @@ define([
 			control: 'slider',
 			min: 0,
 			max: 1,
-			description: 'Y Offset',
+			description: 'Y Offset.',
 			'default': 1
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for this transition to complete',
+			description: 'Time it takes for this transition to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -63,15 +63,18 @@ define([
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the transition completes.'
 		}]
+	};
+
+	TweenTextureOffsetAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On UV Tween Complete' : undefined;
 	};
 
 	TweenTextureOffsetAction.prototype.ready = function () {

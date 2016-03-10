@@ -17,32 +17,39 @@ define([
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
 		type: 'sound',
-		description: 'Fades in a sound. NOTE: will not work on iOS devices.',
+		description: 'Fades in a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to fade.',
 			'default': 0
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for the fading to complete',
+			description: 'Time it takes for the fading to complete.',
 			'default': 1000
 		}, {
 			name: 'On Sound End',
 			key: 'onSoundEnd',
 			type: 'boolean',
-			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time',
+			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time.',
 			'default': false
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the time expires or when the sound finishes playing'
+			description: 'State to transition to when the time expires or when the sound finishes playing.'
 		}]
+	};
+
+	var labels = {
+		complete: 'On Sound Fade In Complete'
+	};
+
+	SoundFadeInAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	SoundFadeInAction.prototype.enter = function (fsm) {

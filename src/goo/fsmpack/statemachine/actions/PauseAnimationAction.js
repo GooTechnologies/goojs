@@ -15,12 +15,12 @@ define([
 	PauseAnimationAction.external = {
 		name: 'Pause Animation',
 		type: 'animation',
-		description: 'Pauses skeleton animations',
+		description: 'Pauses skeleton animations.',
 		parameters: [{
 			name: 'On all entities',
 			key: 'onAll',
 			type: 'boolean',
-			description: 'Pause animation on all entities or just one',
+			description: 'Pause animation on all entities or just one.',
 			'default': false
 		}],
 		transitions: []

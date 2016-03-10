@@ -21,7 +21,7 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to stop.',
 			'default': 0
 		}],
 		transitions: []

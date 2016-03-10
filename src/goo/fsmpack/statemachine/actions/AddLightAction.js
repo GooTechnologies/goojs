@@ -22,21 +22,21 @@ define([
 
 	AddLightAction.external = {
 		name: 'Add Light',
-		description: 'Adds a point light to the entity',
+		description: 'Adds a point light to the entity.',
 		type: 'light',
 		parameters: [{
 			name: 'Color',
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color of the light',
+			description: 'Color of the light.',
 			'default': [1, 1, 1]
 		}, {
 			name: 'Light type',
 			key: 'type',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Light type',
+			description: 'Light type.',
 			'default': 'Point',
 			options: ['Point', 'Directional', 'Spot']
 		}, {
@@ -46,7 +46,7 @@ define([
 			control: 'slider',
 			min: 0,
 			max: 1000,
-			description: 'Range of the light',
+			description: 'Range of the light.',
 			'default': 200
 		}, {
 			name: 'Cone Angle',
@@ -55,7 +55,7 @@ define([
 			control: 'slider',
 			min: 1,
 			max: 170,
-			description: 'Cone angle (applies only to spot lights)',
+			description: 'Cone angle (applies only to spot lights).',
 			'default': 30
 		}, {
 			name: 'Penumbra',
@@ -64,7 +64,7 @@ define([
 			control: 'slider',
 			min: 0,
 			max: 170,
-			description: 'Penumbra (applies only to spot lights)',
+			description: 'Penumbra (applies only to spot lights).',
 			'default': 30
 		}],
 		transitions: []

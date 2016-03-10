@@ -23,7 +23,7 @@ define([
 			name: 'Channel',
 			key: 'channel',
 			type: 'string',
-			description: 'Channel to transmit a message (event) on',
+			description: 'Channel to transmit a message (event) on.',
 			'default': ''
 		}],
 		transitions: []

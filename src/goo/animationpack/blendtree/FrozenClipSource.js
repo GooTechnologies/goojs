@@ -18,6 +18,9 @@ define([
 		this._time = frozenTime;
 	}
 
+	FrozenClipSource.prototype = Object.create(Source.prototype);
+	FrozenClipSource.prototype.constructor = FrozenClipSource;
+
 	/**
 	 * @returns a source data mapping for the channels in this clip source
 	 */

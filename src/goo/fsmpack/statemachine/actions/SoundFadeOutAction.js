@@ -21,20 +21,27 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
+			description: 'Sound to fade out.',
 			'default': 0
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
-			description: 'Time it takes for the fading to complete',
+			description: 'Time it takes for the fading to complete.',
 			'default': 1000
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the movement completes'
+			description: 'State to transition to when the sound fade completes.'
 		}]
+	};
+
+	var labels = {
+		complete: 'On Sound Fade Out Complete'
+	};
+
+	SoundFadeOutAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	SoundFadeOutAction.prototype.enter = function (fsm) {
