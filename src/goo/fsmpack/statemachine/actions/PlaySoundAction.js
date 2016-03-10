@@ -23,8 +23,7 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound to play.',
-			'default': 0
+			description: 'Sound to play.'
 		}],
 		transitions: [{
 			key: 'complete',

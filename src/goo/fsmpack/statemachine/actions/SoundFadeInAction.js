@@ -23,8 +23,7 @@ define([
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound to fade.',
-			'default': 0
+			description: 'Sound to fade.'
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
