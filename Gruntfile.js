@@ -5,7 +5,6 @@ var toc = require('./tools/table-of-contents');
 var buildWatch = require('./tools/build-watch.js');
 
 module.exports = function (grunt) {
-
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 

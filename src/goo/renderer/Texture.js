@@ -111,6 +111,10 @@ var ObjectUtils = require('../util/ObjectUtils');
 			this.setImage(image, width, height, settings);
 		}
 
+		/**
+		 * If the Texture was set to load lazily in the TextureHandler, then this method can be used to load the image at a later point. This function returns a promise that resolves when the image was loaded.
+		 * @type {Function}
+		 */
 		this.loadImage = PromiseUtils.resolve.bind(null, this);
 
 		this.textureRecord = {};
@@ -172,12 +176,12 @@ var ObjectUtils = require('../util/ObjectUtils');
 				};
 
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
-					this.type = 'UnsignedByte';
+					this.type = settings.type || 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
-					this.type = 'UnsignedShort565';
+					this.type = settings.type || 'UnsignedShort565';
 					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
-					this.type = 'Float';
+					this.type = settings.type || 'Float';
 					this.format = settings.format || 'RGBA';
 				}
 			} else {

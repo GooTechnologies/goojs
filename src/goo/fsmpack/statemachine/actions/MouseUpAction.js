@@ -4,68 +4,67 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	function MouseUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.button = null;
-
-		this.mouseEventListener = function (event) {
-			this.button = event.button;
-			this.updated = true;
-		}.bind(this);
-
-		this.touchEventListener = function (event) {
-			this.button = 'touch';
-			this.updated = true;
-		}.bind(this);
 	}
 
 	MouseUpAction.prototype = Object.create(Action.prototype);
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
-		name: 'Mouse Up',
+		key: 'Mouse Up / Touch end',
+		name: 'Mouse Up / Touch end',
 		type: 'controls',
-		description: 'Listens for a mouse button release and performs a transition',
+		description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftUp',
-			name: 'Left mouse up',
-			description: 'State to transition to when the left mouse button is released'
+			description: 'State to transition to when the left mouse button is released.'
 		}, {
 			key: 'middleMouseUp',
-			name: 'Middle mouse up',
-			description: 'State to transition to when the middle mouse button is released'
+			description: 'State to transition to when the middle mouse button is released.'
 		}, {
 			key: 'rightMouseUp',
-			name: 'Right mouse up',
-			description: 'State to transition to when the right mouse button is released'
+			description: 'State to transition to when the right mouse button is released.'
 		}, {
 			key: 'touchUp',
-			name: 'Touch release',
-			description: 'State to transition to when the touch event ends'
+			description: 'State to transition to when the touch event ends.'
 		}]
 	};
 
-	MouseUpAction.prototype._setup = function () {
-		document.addEventListener('mouseup', this.mouseEventListener);
-		document.addEventListener('touchend', this.touchEventListener);
+	var labels = {
+		mouseLeftUp: 'On left mouse up',
+		middleMouseUp: 'On middle mouse up',
+		rightMouseUp: 'On right mouse up',
+		touchUp: 'On touch end'
 	};
 
-	MouseUpAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			if (this.button === 'touch') {
+	MouseUpAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	MouseUpAction.prototype.enter = function (fsm) {
+		var update = function (button) {
+			if (button === 'touch') {
 				fsm.send(this.transitions.touchUp);
 			} else {
 				fsm.send([
 					this.transitions.mouseLeftUp,
 					this.transitions.middleMouseUp,
 					this.transitions.rightMouseUp
-				][this.button]);
+				][button]);
 			}
-		}
+		}.bind(this);
+
+		this.mouseEventListener = function (event) {
+			update(event.button);
+		}.bind(this);
+
+		this.touchEventListener = function () {
+			update('touch');
+		}.bind(this);
+
+		document.addEventListener('mouseup', this.mouseEventListener);
+		document.addEventListener('touchend', this.touchEventListener);
 	};
 
 	MouseUpAction.prototype.exit = function () {

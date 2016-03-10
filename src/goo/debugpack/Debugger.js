@@ -35,9 +35,6 @@ var MarkerSystem = require('./systems/MarkerSystem');
 				lastCommStr = commStr;
 
 				// setup variables for eval scope
-				var entity = this.picked;
-				var goo = this.goo;
-
 				var resultStr = '';
 				try {
 					resultStr += eval(commStr);

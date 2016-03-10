@@ -62,6 +62,7 @@ var Vector3 = require('../../math/Vector3');
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y.clone(),
 			darkness: 1.0,
+			shadowOffset: -0.001,
 			shadowType: 'VSM'
 		};
 		//! AT: please extract this in its own class

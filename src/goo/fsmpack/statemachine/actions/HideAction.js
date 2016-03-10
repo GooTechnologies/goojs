@@ -10,14 +10,15 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	HideAction.prototype.constructor = HideAction;
 
 	HideAction.external = {
+		key: 'Hide',
 		name: 'Hide',
 		type: 'display',
-		description: 'Hides an entity and its children',
+		description: 'Hides an entity and its children.',
 		parameters: [],
 		transitions: []
 	};
 
-	HideAction.prototype._run = function (fsm) {
+	HideAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.hide();
 	};

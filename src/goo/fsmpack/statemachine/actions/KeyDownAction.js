@@ -5,39 +5,33 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 	function KeyDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (event) {
-			if (this.key) {
-				if (event.which === +this.key) {
-					this.updated = true;
-				}
-			}
-		}.bind(this);
 	}
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
 	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		key: 'Key Down',
 		name: 'Key Down',
 		type: 'controls',
-		description: 'Listens for a key press and performs a transition',
+		description: 'Listens for a key press and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for',
+			description: 'Key to listen for.',
 			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
-			name: 'Key down',
-			description: 'State to transition to when the key is pressed'
+			description: 'State to transition to when the key is pressed.'
 		}]
+	};
+
+	KeyDownAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return 'On Key ' + (actionConfig.options.key || '') + ' down';
 	};
 
 	KeyDownAction.prototype.configure = function (settings) {
@@ -45,15 +39,15 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyDownAction.prototype._setup = function () {
+	KeyDownAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			if (this.key) {
+				if (event.which === +this.key) {
+					fsm.send(this.transitions.keydown);
+				}
+			}
+		}.bind(this);
 		document.addEventListener('keydown', this.eventListener);
-	};
-
-	KeyDownAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.keydown);
-		}
 	};
 
 	KeyDownAction.prototype.exit = function () {

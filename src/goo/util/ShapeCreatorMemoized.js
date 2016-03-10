@@ -15,8 +15,9 @@ var ObjectUtil = require('../util/ObjectUtil');
 	 */
 	function ShapeCreatorMemoized() {}
 
-	var _cache = {};
-	//var hits = 0, requests = 0;
+	var _cacheQueue = [];
+	var _cacheMap = new Map();
+	var cacheLimit = 100;
 
 	function computeHash(name, options) {
 		var keys = Object.keys(options);
@@ -28,15 +29,18 @@ var ObjectUtil = require('../util/ObjectUtil');
 
 	function cacheOrCreate(name, options, createShape) {
 		var hash = computeHash(name, options);
-		//requests++;
-		if (_cache[hash]) {
-			//hits++;
-			//console.log('HIT, ratio: ', hits/requests);
-			return _cache[hash];
+
+		var shape = _cacheMap.get(hash);
+		if (shape) {
+			return shape;
 		} else {
-			//console.log('MISS, ratio: ', hits/requests);
-			var shape = createShape();
-			_cache[hash] = shape;
+			shape = createShape();
+			_cacheQueue.push(hash);
+			_cacheMap.set(hash, shape);
+			if (_cacheQueue.length > cacheLimit) {
+				var hash = _cacheQueue.shift();
+				_cacheMap.delete(hash);
+			}
 			return shape;
 		}
 	}
@@ -132,9 +136,9 @@ var ObjectUtil = require('../util/ObjectUtil');
 			options.circleSamples !== oldMeshData._circleSamples ||
 			options.tubeRadius !== oldMeshData._tubeRadius ||
 			options.centerRadius !== oldMeshData._centerRadius) {
-			//return cacheOrCreate('torus', options, function () { // cannot cache torus because of real typed tubeRadius
-			return new Torus(options.circleSamples, options.radialSamples, options.tubeRadius, options.centerRadius);
-			//});
+			return cacheOrCreate('torus', options, function () { // cannot cache torus because of real typed tubeRadius
+				return new Torus(options.circleSamples, options.radialSamples, options.tubeRadius, options.centerRadius);
+			});
 		} else {
 			return oldMeshData;
 		}
@@ -189,15 +193,13 @@ var ObjectUtil = require('../util/ObjectUtil');
 	};
 
 	ShapeCreatorMemoized.clearCache = function (context) {
-		var keys = Object.keys(_cache);
-		for (var i = 0; i < keys[i]; i++) {
-			var key = keys[i];
-			var shape = _cache[key];
-			if (context) {
-				shape.destroy(context);
-			}
-			delete _cache[key];
+		if (context) {
+			_cacheMap.forEach(function (value) {
+				value.destroy(context);
+			});
 		}
+		_cacheQueue.length = 0;
+		_cacheMap.clear();
 	};
 
 	module.exports = ShapeCreatorMemoized;

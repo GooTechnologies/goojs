@@ -1,6 +1,7 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var MeshData = require('../../renderer/MeshData');
 var BufferUtils = require('../../renderer/BufferUtils');
+var Capabilities = require('../../renderer/Capabilities');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ArrayUtils = require('../../util/ArrayUtils');
 
@@ -176,6 +177,11 @@ var ArrayUtils = require('../../util/ArrayUtils');
 				throw new Error('Bounding volume was not BoundingBox');
 			}
 		}
+
+		if (!Capabilities.ElementIndexUInt && meshData.vertexCount > 65536) {
+			meshData.deIndex();
+		}
+
 		return meshData;
 	};
 

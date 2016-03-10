@@ -10,20 +10,21 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	RemoveAction.prototype.constructor = RemoveAction;
 
 	RemoveAction.external = {
+		key: 'Remove',
 		name: 'Remove',
 		type: 'display',
-		description: 'Removes the entity from the world',
+		description: 'Removes the entity from the world.',
 		parameters: [{
 			name: 'Recursive',
 			key: 'recursive',
 			type: 'boolean',
-			description: 'Remove children too',
+			description: 'Remove children too.',
 			'default': false
 		}],
 		transitions: []
 	};
 
-	RemoveAction.prototype._run = function (fsm) {
+	RemoveAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.removeFromWorld(this.recursive);
 	};

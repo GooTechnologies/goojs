@@ -10,37 +10,45 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	RandomTransitionAction.prototype.constructor = RandomTransitionAction;
 
 	RandomTransitionAction.external = {
+		key: 'Random Transition',
 		name: 'Random Transition',
 		type: 'transitions',
-		description: 'Performs a random transition',
+		description: 'Performs a random transition. Will choose one of the two transitions randomly and transition immediately.',
 		canTransition: true,
 		parameters: [{
-			name: 'Skewness',
+			name: 'Probability A',
 			key: 'skewness',
 			type: 'float',
 			control: 'slider',
 			min: 0,
 			max: 1,
-			description: 'Determines the chance that the first destination is picked over the second',
-			'default': 1
+			description: 'The probability that the first destination is chosen over the second.',
+			'default': 0.5
 		}],
 		transitions: [{
 			key: 'transition1',
-			name: 'Destination 1',
-			description: 'First choice'
+			description: 'First choice.'
 		}, {
 			key: 'transition2',
-			name: 'Destination 2',
-			description: 'Second choice'
+			description: 'Second choice.'
 		}]
 	};
 
-	RandomTransitionAction.prototype._run = function (fsm) {
-		if (Math.random() < +this.skewness) {
-			fsm.send(this.transitions.transition1);
-		} else {
-			fsm.send(this.transitions.transition2);
-		}
+	var labels = {
+		transition1: 'On random outcome A',
+		transition2: 'On random outcome B'
+	};
+
+	RandomTransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	RandomTransitionAction.prototype.enter = function (fsm) {
+		var transitions = this.transitions;
+		var a = transitions.transition1;
+		var b = transitions.transition2;
+		var transition = Math.random() < this.skewness ? a : b;
+		fsm.send(transition);
 	};
 
 	module.exports = RandomTransitionAction;

@@ -8,57 +8,49 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	AddPositionAction.prototype = Object.create(Action.prototype);
-
-	AddPositionAction.prototype.configure = function (settings) {
-		this.everyFrame = settings.everyFrame !== false;
-		this.entity = settings.entity || null;
-		this.amountX = settings.amountX || 0;
-		this.amountY = settings.amountY || 0;
-		this.amountZ = settings.amountZ || 0;
-		this.speed = settings.speed || 1;
-	};
+	AddPositionAction.prototype.constructor = AddPositionAction;
 
 	AddPositionAction.external = {
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity to move'
+			description: 'Entity to move.'
 		}, {
 			name: 'Amount X',
 			key: 'amountX',
 			type: 'float',
-			description: 'Amount to move on the X axis',
+			description: 'Amount to move on the X axis.',
 			'default': 0
 		}, {
 			name: 'Amount Y',
 			key: 'amountY',
 			type: 'float',
-			description: 'Amount to move on the Y axis',
+			description: 'Amount to move on the Y axis.',
 			'default': 0
 		}, {
 			name: 'Amount Z',
 			key: 'amountZ',
 			type: 'float',
-			description: 'Amount to move on the Z axis',
+			description: 'Amount to move on the Z axis.',
 			'default': 0
 		}, {
 			name: 'Speed',
 			key: 'speed',
 			type: 'float',
-			description: 'Speed to multiply',
+			description: 'Speed to multiply.',
 			'default': 1
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
-	AddPositionAction.prototype._run = function (fsm) {
+	AddPositionAction.prototype.addPosition = function (fsm) {
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
@@ -73,6 +65,18 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			);
 
 			this.entity.transformComponent.setUpdated();
+		}
+	};
+
+	AddPositionAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.addPosition(fsm);
+		}
+	};
+
+	AddPositionAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.addPosition(fsm);
 		}
 	};
 

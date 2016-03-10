@@ -1,5 +1,6 @@
 var MathUtils = require('../../math/MathUtils');
 var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInstance');
+var Source = require('../../animationpack/blendtree/Source');
 
 	'use strict';
 
@@ -8,8 +9,10 @@ var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInsta
 	 * @param {AnimationClip} clip the clip to use.
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {Array<string>} [channelNames]
+	 * @extends Source
 	 */
 	function ClipSource(clip, filter, channelNames) {
+		Source.call(this);
 		this._clip = clip;
 		this._clipInstance = new AnimationClipInstance();
 
@@ -19,7 +22,12 @@ var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInsta
 
 		this._startTime = -Infinity;
 		this._endTime = Infinity;
+
+		this.currentLoop = 0;
 	}
+
+	ClipSource.prototype = Object.create(Source.prototype);
+	ClipSource.prototype.constructor = ClipSource;
 
 	/**
 	 * Sets the filter on the joints which the clipsource will affect
@@ -68,27 +76,26 @@ var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInsta
 
 			// Check for looping
 			if (maxTime !== 0) {
+				this.currentLoop = Math.floor(clockTime / duration);
 				if (instance._loopCount === -1) {
 					if (clockTime < 0) {
 						clockTime *= -1;
 						clockTime %= duration;
 						clockTime = duration - clockTime;
-						clockTime += minTime;
 					} else {
 						clockTime %= duration;
-						clockTime += minTime;
 					}
+					clockTime += minTime;
 				} else if (instance._loopCount > 0 && duration * instance._loopCount >= Math.abs(clockTime)) {
 					// probably still the same?
 					if (clockTime < 0) {
 						clockTime *= -1;
 						clockTime %= duration;
 						clockTime = duration - clockTime;
-						clockTime += minTime;
 					} else {
 						clockTime %= duration;
-						clockTime += minTime;
 					}
+					clockTime += minTime;
 				}
 
 				if (clockTime > maxTime || clockTime < minTime) {

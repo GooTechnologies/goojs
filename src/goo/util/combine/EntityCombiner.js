@@ -43,23 +43,27 @@ var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 	EntityCombiner.prototype._combineList = function (entities) {
 		var root = entities;
 		this.createdEntities = [];
-		if (entities instanceof Entity === false) {
-			root = this.world.createEntity('root');
-			root.addToWorld();
-			for (var i = 0; i < entities.length; i++) {
-				root.attachChild(entities[i]);
-			}
+		if (entities instanceof Entity === true) {
+			root = [entities];
 		}
 
 		var baseSubs = new Map();
-		this._buildSubs(root, baseSubs);
+		var subs = [];
+		for (var i = 0; i < root.length; i++) {
+			this._buildSubs(root[i], baseSubs, subs);
+		}
+		if (subs.length > 1) {
+			root = this.world.createEntity('RootCombined').addToWorld();
+			baseSubs.put(root, subs);
+		}
 
 		var keys = baseSubs.getKeys();
 		for (var i = 0; i < keys.length; i++) {
 			var entity = keys[i];
 			var combineList = baseSubs.get(entity);
-
-			this._combine(entity, combineList);
+			if (combineList.length > 0) {
+				this._combine(entity, combineList);
+			}
 		}
 	};
 
@@ -74,7 +78,7 @@ var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 			baseSubs.put(entity, subs);
 		}
 
-		if (entity.meshDataComponent && entity.meshRendererComponent &&
+		if (entity.static && entity.meshDataComponent && entity.meshRendererComponent &&
 			entity.meshRendererComponent.worldBound) {
 			subs.push(entity);
 		}

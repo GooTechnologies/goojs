@@ -385,11 +385,6 @@ var MathUtils = require('../../math/MathUtils');
 	};
 
 	BoundingBox.prototype.intersectsRay = function (ray) {
-		if (isNaN(this.center.x) || isNaN(this.center.y) || isNaN(this.center.z)) {
-			return false;
-		}
-
-		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
 		var diff = tmpVec1.set(ray.origin).sub(this.center);
 		var direction = ray.direction;
 
@@ -425,10 +420,6 @@ var MathUtils = require('../../math/MathUtils');
 	};
 
 	BoundingBox.prototype.intersectsRayWhere = function (ray) {
-		if (isNaN(this.center.x) || isNaN(this.center.y) || isNaN(this.center.z)) {
-			return null;
-		}
-
 		var diff = tmpVec1.copy(ray.origin).sub(this.center);
 		var direction = ray.direction;
 

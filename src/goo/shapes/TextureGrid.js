@@ -42,13 +42,15 @@ var ObjectUtils = require('../util/ObjectUtils');
 		var tex = [];
 
 		var indexCounter = 0;
+		var halfHeight = this.matrix.length / 2;
 		for (var i = 0; i < this.matrix.length; i++) {
+			var halfWidth = this.matrix[i].length / 2;
 			for (var j = 0; j < this.matrix[i].length; j++) {
 				verts.push(
-					j, -i - 1, 0,
-					j, -i, 0,
-					j + 1, -i, 0,
-					j + 1, -i - 1, 0
+					j - halfWidth, -i - 1 + halfHeight, 0,
+					j - halfWidth, -i + halfHeight, 0,
+					j + 1 - halfWidth, -i + halfHeight, 0,
+					j + 1 - halfWidth, -i - 1 + halfHeight, 0
 				);
 
 				norms.push(

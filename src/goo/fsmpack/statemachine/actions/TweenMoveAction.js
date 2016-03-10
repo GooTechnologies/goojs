@@ -6,12 +6,17 @@ var TWEEN = require('../../../util/TWEEN');
 
 	function TweenMoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.fromPos = new Vector3();
+		this.toPos = new Vector3();
+		this.completed = false;
 	}
 
 	TweenMoveAction.prototype = Object.create(Action.prototype);
 	TweenMoveAction.prototype.constructor = TweenMoveAction;
 
 	TweenMoveAction.external = {
+		key: 'Tween Move',
 		name: 'Tween Move',
 		type: 'animation',
 		description: 'Transition to the set location.',
@@ -20,26 +25,26 @@ var TWEEN = require('../../../util/TWEEN');
 			name: 'Translation',
 			key: 'to',
 			type: 'position',
-			description: 'Move',
+			description: 'Move.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add, otherwise set',
+			description: 'If true add, otherwise set.',
 			'default': true
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
-			description: 'Time it takes for this movement to complete',
+			type: 'float',
+			description: 'Time it takes for this movement to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -47,103 +52,56 @@ var TWEEN = require('../../../util/TWEEN');
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the movement completes'
+			description: 'State to transition to when the movement completes.'
 		}]
 	};
 
-	TweenMoveAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On Tween Move Complete' : undefined;
+	};
+
+	TweenMoveAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
-		}
-		this.eventToEmit = { channel: settings.transitions.complete };
-	};
-
-	TweenMoveAction.prototype._setup = function (/*fsm*/) {
-		this.tween = new TWEEN.Tween();
-	};
-
-	TweenMoveAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
 	};
 
-	TweenMoveAction.prototype._run = function (fsm) {
-		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent;
-		var translation = transformComponent.transform.translation;
-		var initialTranslation = translation.clone();
-		var time = entity._world.time * 1000;
+	TweenMoveAction.prototype.enter = function (fsm) {
+		var transformComponent = fsm.getOwnerEntity().transformComponent;
 
-		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
-		var fakeTo;
-
-		var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
-
+		this.fromPos.set(transformComponent.transform.translation);
+		this.toPos.setDirect(this.to[0], this.to[1], this.to[2]);
 		if (this.relative) {
-			var to = Vector3.fromArray(this.to).add(initialTranslation);
-			fakeTo = { x: to.x, y: to.y, z: to.z };
+			this.toPos.add(this.fromPos);
+		}
 
-			// it's a string until property controls are fixed
-			if (this.time === '0') {
-				// have to do this manually since tween.js chokes for time = 0
-				translation.x += fakeTo.x - old.x;
-				translation.y += fakeTo.y - old.y;
-				translation.z += fakeTo.z - old.z;
-				transformComponent.setUpdated();
-				fsm.send(this.eventToEmit.channel);
-			} else {
-				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-					translation.x += this.x - old.x;
-					translation.y += this.y - old.y;
-					translation.z += this.z - old.z;
+		this.startTime = fsm.getTime();
+		this.completed = false;
+	};
 
-					old.x = this.x;
-					old.y = this.y;
-					old.z = this.z;
+	TweenMoveAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
+		var transformComponent = fsm.getOwnerEntity().transformComponent;
 
-					transformComponent.setUpdated();
-				}).onComplete(function () {
-					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(time);
-			}
-		} else {
-			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
 
-			if (this.time === '0') {
-				// have to do this manually since tween.js chokes for time = 0
-				translation.x += fakeTo.x - old.x;
-				translation.y += fakeTo.y - old.y;
-				translation.z += fakeTo.z - old.z;
-				transformComponent.setUpdated();
-				fsm.send(this.eventToEmit.channel);
-			} else {
-				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-					translation.x += this.x - old.x;
-					translation.y += this.y - old.y;
-					translation.z += this.z - old.z;
+		transformComponent.transform.translation.set(this.fromPos).lerp(this.toPos, fT);
+		transformComponent.setUpdated();
 
-					old.x = this.x;
-					old.y = this.y;
-					old.z = this.z;
-
-					transformComponent.setUpdated();
-				}).onComplete(function () {
-					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(time);
-			}
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

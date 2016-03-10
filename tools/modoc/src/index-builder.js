@@ -45,27 +45,32 @@ function getIndex(classes) {
 		}
 	});
 
-	return Object.keys(groups).map(function (name) {
+	var ret = [{
+		name: 'Classes',
+		classes: []
+	}];
+
+	Object.keys(groups).forEach(function (name) {
 		var group = groups[name];
+		group.forEach(function (file) {
+			if (typeof file === 'object') { return file; }
 
-		return {
-			name: name,
-			classes: group.map(function (file) {
-				if (typeof file === 'object') { return file; }
-
-				var fileName = util.getFileName(file);
-				var requirePath = file.substring(differentiator, file.length - 3);
-				return {
-					name: fileName,
-					requirePath: requirePath,
-					link: fileName + HTML_SUFFIX
-				};
-			}).sort(function (classA, classB) {
-				return classA.name < classB.name ? -1 :
-					classA.name > classB.name ? 1 : 0;
-			})
-		};
+			var fileName = util.getFileName(file);
+			var requirePath = file.substring(differentiator, file.length - 3);
+			ret[0].classes.push({
+				name: fileName,
+				requirePath: requirePath,
+				link: fileName + HTML_SUFFIX
+			});
+		});
 	});
+
+	ret[0].classes.sort(function (classA, classB) {
+		return classA.name < classB.name ? -1 :
+			classA.name > classB.name ? 1 : 0;
+	})
+
+	return ret;
 }
 
 

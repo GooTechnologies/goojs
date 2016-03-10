@@ -1,10 +1,12 @@
 /* global goo, purl, RNG, requestAnimationFrame */
 
+(function(){
+
 /**
  * @class
  * A collection of useful methods for visual tests.
  */
-var V = {};
+var V = goo.V = {};
 
 // Determine if we're running the visual test for people or for machines.
 V.deterministic = !!purl().param().deterministic;
@@ -62,7 +64,7 @@ V.addOrbitCamera = function (spherical, lookAt, dragButton) {
 	}
 
 	var orbitScript = goo.Scripts.create(goo.OrbitCamControlScript, orbitCamOptions);
-	var entity = V.goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
+	var entity = V.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 	return entity;
 };
 
@@ -90,7 +92,7 @@ V.getRandomColor = function () {
  * @param {number} [green] Green value.
  * @param {number} [blue] Blue value.
  * @param {number} [alpha=1] Alpha value.
- * @returns {goo.renderer.Material} The generated material.
+ * @returns {renderer.Material} The generated material.
  */
 V.getColoredMaterial = function (red, green, blue, alpha) {
 	var material = new goo.Material(goo.ShaderLib.uber);
@@ -124,7 +126,7 @@ V.addShapes = function (nShapes, meshData, rotation) {
 	for (var i = 0; i < nShapes; i++) {
 		for (var j = 0; j < nShapes; j++) {
 			entities.push(
-				V.goo.world.createEntity(
+				V.world.createEntity(
 					meshData,
 					material,
 					[i - nShapes / 2, j - nShapes / 2, 0]
@@ -168,11 +170,11 @@ V.addColoredShapes = function (nShapes, meshData, rotation) {
 
 	for (var i = 0; i < nShapes; i++) {
 		for (var j = 0; j < nShapes; j++) {
-			var material = new goo.Material(goo.ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
+			var material = new Material(goo.ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
 			material.uniforms.color = [i / nShapes, j / nShapes, 0.3];
 
 			entities.push(
-				V.goo.world.createEntity(
+				V.world.createEntity(
 					meshData,
 					material,
 					[i - nShapes / 2, j - nShapes / 2, 0]
@@ -204,7 +206,7 @@ V.addColoredBoxes = function (nBoxes) {
  * Adds a standard lighting to the scene of 3 point lights.
  */
 V.addLights = function () {
-	var world = V.goo.world;
+	var world = V.world;
 	world.createEntity(new goo.PointLight(), [ 100, 100, 100]).addToWorld();
 	world.createEntity(new goo.PointLight(), [-100, -100, -100]).addToWorld();
 	world.createEntity(new goo.PointLight(), [-100, 100, -100]).addToWorld();
@@ -219,14 +221,14 @@ V.showNormals = function (entity) {
 	var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
 	var normalsMaterial = new goo.Material(goo.ShaderLib.simpleColored, '');
 	normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-	var normalsEntity = V.goo.world.createEntity(normalsMeshData, normalsMaterial);
+	var normalsEntity = V.world.createEntity(normalsMeshData, normalsMaterial);
 	normalsEntity.transformComponent.transform = entity.transformComponent.transform;
 	normalsEntity.addToWorld();
 	return normalsEntity;
 };
 
 /**
- * Initializes Goo.
+ * Initializes
  * @param _options
  * @returns {GooRunner}
  */
@@ -256,6 +258,7 @@ V.initGoo = function (_options) {
 	goo.ObjectUtil.extend(options, _options);
 
 	V.goo = new goo.GooRunner(options);
+	V.world = V.goo.world;
 	V.goo.renderer.domElement.id = 'goo';
 	if (V.deterministic) {
 		V.goo.renderer.domElement.style.width = '100px';
@@ -310,8 +313,8 @@ V.process = function (renderLoops) {
 		// render some frames
 		delay(renderLoops || 3, function () {
 			time += 100;
-			V.goo._updateFrame(time);
-			V.goo.stopGameLoop();
+			V._updateFrame(time);
+			V.stopGameLoop();
 			window.testLoaded = true;
 		});
 	});
@@ -322,7 +325,7 @@ V.process = function (renderLoops) {
  * @returns {Entity}
  */
 V.addDebugQuad = function () {
-	var world = V.goo.world;
+	var world = V.world;
 	var entity = world.createEntity('Quad');
 	entity.transformComponent.transform.translation.set(0, 0, 0);
 
@@ -368,7 +371,7 @@ V.addDebugQuad = function () {
 	meshRendererComponent.materials.push(material);
 	entity.setComponent(meshRendererComponent);
 
-	V.goo.callbacks.push(function (/*tpf*/) {
+	V.callbacks.push(function (/*tpf*/) {
 		if (V.goo.renderer.hardwarePicking && V.goo.renderer.hardwarePicking.pickingTarget) {
 			material.setTexture(goo.Shader.DIFFUSE_MAP, V.goo.renderer.hardwarePicking.pickingTarget);
 		}
@@ -440,3 +443,5 @@ V.button = function (text, onClick) {
 
 	panel.appendChild(button);
 };
+
+})();

@@ -27,13 +27,13 @@ var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Smoke color',
+			description: 'Smoke color.',
 			'default': [0, 0, 0]
 		}],
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function (fsm) {
+	SmokeAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (this.smokeEntity && entity.transformComponent.children.indexOf(this.smokeEntity.transformComponent) !== -1) {
 			return;

@@ -1,2 +1,2894 @@
-goo.Terrain=function(t,e,r,i,o,a,n,s,h,l,d,u,c,p,f,g,v,m,x,M){"use strict";function y(t,e,r){this.world=t.world,this.renderer=t.renderer,this.size=e,this.count=r,this.splatMult=2,this._gridCache={};var i=new M(2/e,2/e),a=this.drawMaterial1=new s(C);a.blendState.blending="AdditiveBlending",a.cullState.cullFace="Front";var n=this.drawMaterial2=new s(T);n.cullState.cullFace="Front";var h=this.drawMaterial3=new s(S);h.uniforms.size=1/e,h.cullState.cullFace="Front";var l=this.drawMaterial4=new s(D);l.cullState.cullFace="Front",this.renderable={meshData:i,materials:[a],transform:new o},this.renderable.transform.setRotationXYZ(0,0,.5*Math.PI),this.copyPass=new v(d.screenCopy),this.copyPass.material.depthState.enabled=!1,this.upsamplePass=new v(w),this.upsamplePass.material.depthState.enabled=!1,this.normalmapPass=new v(E),this.normalmapPass.material.depthState.enabled=!1,this.normalmapPass.material.uniforms.resolution=[e,e],this.normalmapPass.material.uniforms.height=10,this.extractFloatPass=new v(z),this.normalMap=new p(e,e),this.textures=[],this.texturesBounce=[];for(var u=0;r>u;u++)this.textures[u]=new p(e,e,{magFilter:"NearestNeighbor",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,type:"Float"}),this.texturesBounce[u]=new p(e,e,{magFilter:"NearestNeighbor",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,type:"Float"}),e*=.5;h.setTexture("HEIGHT_MAP",this.texturesBounce[0]),l.setTexture("HEIGHT_MAP",this.texturesBounce[0]),this.n=31,this.gridSize=4*(this.n+1)-1,console.log("grid size: ",this.gridSize),this.splat=new p(this.size*this.splatMult,this.size*this.splatMult,{wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1}),this.splatCopy=new p(this.size*this.splatMult,this.size*this.splatMult,{wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1}),n.setTexture("SPLAT_MAP",this.splatCopy)}var P=window.Ammo;y.prototype.init=function(t){var e=this.world,r=this.count,i=this.terrainRoot=e.createEntity("TerrainRoot");i.addToWorld(),this.clipmaps=[];for(var o=0;r>o;o++){var a=Math.pow(2,o),n=new s(b,"clipmap"+o);n.uniforms.materialAmbient=[0,0,0,1],n.uniforms.materialDiffuse=[1,1,1,1],n.cullState.frontFace="CW",n.uniforms.resolution=[1,1/a,this.size,this.size],n.uniforms.resolutionNorm=[this.size,this.size];var h=this.createClipmapLevel(e,n,o);h.setScale(a,1,a),i.attachChild(h);var l=new s(_,"terrainPickingMaterial"+o);l.cullState.frontFace="CW",l.uniforms.resolution=[1,1/a,this.size,this.size],l.blendState={blending:"NoBlending",blendEquation:"AddEquation",blendSrc:"SrcAlphaFactor",blendDst:"OneMinusSrcAlphaFactor"},this.clipmaps[o]={clipmapEntity:h,level:o,size:a,currentX:1e5,currentY:1e5,currentZ:1e5,origMaterial:n,terrainPickingMaterial:l}}for(var d=this.clipmaps[this.clipmaps.length-1],o=this.clipmaps.length-2;o>=0;o--){var u=this.clipmaps[o];u.parentClipmap=d,d=u}var c=new x;c.shadowSettings.size=10;var p=this.lightEntity=e.createEntity(c);p.setTranslation(200,200,200),p.setRotation(.5*-Math.PI,0,0),p.addToWorld(),this.lightEntity.lightComponent.hidden=!0,this.floatTexture=t.heightMap instanceof f?t.heightMap:new f(t.heightMap,{magFilter:"NearestNeighbor",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,format:"Luminance"},this.size,this.size),this.splatTexture=t.splatMap instanceof f?t.splatMap:new f(t.splatMap,{magFilter:"NearestNeighbor",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,flipY:!1},this.size*this.splatMult,this.size*this.splatMult);for(var o=0;o<this.count;o++){var n=this.clipmaps[o].origMaterial,g=this.textures[o];n.setTexture("HEIGHT_MAP",g),n.setTexture("NORMAL_MAP",this.normalMap),n.setTexture("DETAIL_MAP",this.detailMap),n.setTexture("SPLAT_MAP",this.splat),n.setTexture("GROUND_MAP1",t.ground1),n.setTexture("GROUND_MAP2",t.ground2),n.setTexture("GROUND_MAP3",t.ground3),n.setTexture("GROUND_MAP4",t.ground4),n.setTexture("GROUND_MAP5",t.ground5),n.setTexture("STONE_MAP",t.stone);var l=this.clipmaps[o].terrainPickingMaterial;l.setTexture("HEIGHT_MAP",g)}this.copyPass.render(this.renderer,this.textures[0],this.floatTexture),this.copyPass.render(this.renderer,this.splatCopy,this.splatTexture),this.copyPass.render(this.renderer,this.splat,this.splatTexture),this.updateTextures()},y.prototype.toggleMarker=function(){this.lightEntity.lightComponent.hidden=!this.lightEntity.lightComponent.hidden},y.prototype.setMarker=function(t,e,r,i,o,a){this.lightEntity.lightComponent.light.shadowSettings.size=.5*e,a.wrapS="EdgeClamp",a.wrapT="EdgeClamp",this.lightEntity.lightComponent.light.lightCookie=a,this.lightEntity.setTranslation(r,200,i)},y.prototype.pick=function(t,e,r,i){var o=[];this.terrainRoot.traverse(function(t){t.meshDataComponent&&t.meshRendererComponent.hidden===!1&&o.push(t)});for(var a=0;a<this.clipmaps.length;a++){var n=this.clipmaps[a];n.clipmapEntity.traverse(function(t){t.meshRendererComponent&&(t.meshRendererComponent.isPickable=!0,t.meshRendererComponent.materials[0]=n.terrainPickingMaterial)})}this.renderer.renderToPick(o,g.mainCamera,!0,!1,!1,e,r,null,!0);var s={};this.renderer.pick(e,r,s,g.mainCamera),t.getWorldPosition(e,r,this.renderer.viewportWidth,this.renderer.viewportHeight,s.depth,i);for(var a=0;a<this.clipmaps.length;a++){var n=this.clipmaps[a];n.clipmapEntity.traverse(function(t){t.meshRendererComponent&&(t.meshRendererComponent.isPickable=!1,t.meshRendererComponent.materials[0]=n.origMaterial)})}},y.prototype.draw=function(t,e,r,o,a,n,s,l,d){s=i.clamp(s,0,1),o=2*(o-this.size/2),n=2*(n-this.size/2),"paint"===t?(this.renderable.materials[0]=this.drawMaterial2,this.renderable.materials[0].uniforms.opacity=s,"add"===e?(this.renderable.materials[0].blendState.blendEquationColor="AddEquation",this.renderable.materials[0].blendState.blendEquationAlpha="AddEquation"):"sub"===e&&(this.renderable.materials[0].blendState.blendEquationColor="ReverseSubtractEquation",this.renderable.materials[0].blendState.blendEquationAlpha="ReverseSubtractEquation"),l?this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,l):this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,this.defaultBrushTexture),this.renderable.transform.translation.setDirect(o/this.size,n/this.size,0),this.renderable.transform.scale.setDirect(-r,r,r),this.renderable.transform.update(),this.copyPass.render(this.renderer,this.splatCopy,this.splat),this.renderable.materials[0].uniforms.rgba=d||[1,1,1,1],this.renderer.render(this.renderable,m.camera,[],this.splat,!1)):"smooth"===t?(this.renderable.materials[0]=this.drawMaterial3,this.renderable.materials[0].uniforms.opacity=s,l?this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,l):this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,this.defaultBrushTexture),this.renderable.transform.translation.setDirect(o/this.size,n/this.size,0),this.renderable.transform.scale.setDirect(-r,r,r),this.renderable.transform.update(),this.copyPass.render(this.renderer,this.texturesBounce[0],this.textures[0]),this.renderer.render(this.renderable,m.camera,[],this.textures[0],!1)):"flatten"===t?(this.renderable.materials[0]=this.drawMaterial4,this.renderable.materials[0].uniforms.opacity=s,this.renderable.materials[0].uniforms.height=a,l?this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,l):this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,this.defaultBrushTexture),this.renderable.transform.translation.setDirect(o/this.size,n/this.size,0),this.renderable.transform.scale.setDirect(-r,r,r),this.renderable.transform.update(),this.copyPass.render(this.renderer,this.texturesBounce[0],this.textures[0]),this.renderer.render(this.renderable,m.camera,[],this.textures[0],!1)):(this.renderable.materials[0]=this.drawMaterial1,this.renderable.materials[0].uniforms.opacity=s,"add"===e?this.renderable.materials[0].blendState.blending="AdditiveBlending":"sub"===e?this.renderable.materials[0].blendState.blending="SubtractiveBlending":"mul"===e&&(this.renderable.materials[0].blendState.blending="MultiplyBlending"),l?this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,l):this.renderable.materials[0].setTexture(h.DIFFUSE_MAP,this.defaultBrushTexture),this.renderable.transform.translation.setDirect(o/this.size,n/this.size,0),this.renderable.transform.scale.setDirect(-r,r,r),this.renderable.transform.update(),this.renderer.render(this.renderable,m.camera,[],this.textures[0],!1))},y.prototype.getTerrainData=function(){var t=new Uint8Array(this.size*this.size*4);this.extractFloatPass.render(this.renderer,this.texturesBounce[0],this.textures[0]),this.renderer.readPixels(0,0,this.size,this.size,t);var e=new Float32Array(t.buffer),r=new Uint8Array(this.size*this.size*4);this.normalmapPass.render(this.renderer,this.normalMap,this.textures[0]),this.renderer.readPixels(0,0,this.size,this.size,r);var i=new Uint8Array(this.size*this.size*4*4);return this.copyPass.render(this.renderer,this.splatCopy,this.splat),this.renderer.readPixels(0,0,this.size*this.splatMult,this.size*this.splatMult,i),{heights:e,normals:r,splat:i}},y.prototype.updateAmmoBody=function(){for(var t=this.getTerrainData().heights,e=this.heightBuffer,r=0;r<this.size;r++)for(var i=0;i<this.size;i++)P.setValue(e+4*(r*this.size+i),t[(this.size-r-1)*this.size+i],"float")},y.prototype.setLightmapTexture=function(t){for(var e=0;e<this.clipmaps.length;e++){var r=this.clipmaps[e];r.clipmapEntity.traverse(function(e){if(e.meshRendererComponent){var r=e.meshRendererComponent.materials[0];t?(r.setTexture("LIGHT_MAP",t),r.shader.setDefine("LIGHTMAP",!0)):r.shader.removeDefine("LIGHTMAP")}})}},y.prototype.initAmmoBody=function(){var t=this.heightBuffer=P.allocate(4*this.size*this.size,"float",P.ALLOC_NORMAL);this.updateAmmoBody();var e=1,r=-500,i=500,o=1,a=0,n=!1,s=new P.btHeightfieldTerrainShape(this.size,this.size,t,e,r,i,o,a,n),h=new P.btTransform;h.setIdentity(),h.setOrigin(new P.btVector3(this.size/2,0,this.size/2));var l=new P.btDefaultMotionState(h),d=new P.btVector3(0,0,0),u=0,c=new P.btRigidBodyConstructionInfo(u,l,s,d),p=new P.btRigidBody(c);return p.setFriction(1),this.world.getSystem("AmmoSystem").ammoWorld.addRigidBody(p),p},y.prototype.updateTextures=function(){for(var t=0;t<this.count-1;t++){var e=this.textures[t],r=this.textures[t+1];e.magFilter="Bilinear",e.minFilter="BilinearNoMipMaps",this.copyPass.render(this.renderer,r,e)}for(var i=this.size,t=0;t<this.count;t++){var o=this.texturesBounce[t],e=this.textures[t],r=this.textures[t+1];this.upsamplePass.material.setTexture("MAIN_MAP",e),this.upsamplePass.material.uniforms.res=[i,i,2/i,2/i],r?(r.magFilter="NearestNeighbor",r.minFilter="NearestNeighborNoMipMaps",this.upsamplePass.render(this.renderer,o,r)):(e.magFilter="NearestNeighbor",e.minFilter="NearestNeighborNoMipMaps",this.upsamplePass.render(this.renderer,o,e)),i*=.5}for(var t=0;t<this.count;t++)this.copyPass.render(this.renderer,this.textures[t],this.texturesBounce[t]);this.normalmapPass.render(this.renderer,this.normalMap,this.textures[0])},y.prototype.update=function(t){for(var e=t.x,r=t.y,o=t.z,a=0;a<this.clipmaps.length;a++){var n=this.clipmaps[a],s=Math.floor(.5*e/n.size),h=Math.floor(.5*r/n.size),l=Math.floor(.5*o/n.size);if(h!==n.currentY){n.currentY=h;var d=this.gridSize*n.size*2;if(n.clipmapEntity._hidden===!1&&r>d){if(n.clipmapEntity.hide(),a<this.clipmaps.length-1){var u=this.clipmaps[a+1];u.clipmapEntity.innermost.meshRendererComponent.hidden=!1,u.clipmapEntity.interior1.meshRendererComponent.hidden=!0,u.clipmapEntity.interior2.meshRendererComponent.hidden=!0}continue}if(n.clipmapEntity._hidden===!0&&d>=r&&(n.clipmapEntity.show(),a<this.clipmaps.length-1)){var u=this.clipmaps[a+1];u.clipmapEntity.innermost.meshRendererComponent.hidden=!0,u.clipmapEntity.interior1.meshRendererComponent.hidden=!1,u.clipmapEntity.interior2.meshRendererComponent.hidden=!1}}if(s!==n.currentX||l!==n.currentZ){var c=this.n;if(n.parentClipmap){var p=n.parentClipmap.clipmapEntity.interior1,f=n.parentClipmap.clipmapEntity.interior2,g=i.moduloPositive(s+1,2),v=i.moduloPositive(l+1,2),m=g%2===0?-c:c+1,x=v%2===0?-c:c+1;p.setTranslation(-c,0,x),v=i.moduloPositive(l,2),x=v%2===0?-c:-c+1,f.setTranslation(m,0,x)}n.clipmapEntity.setTranslation(s*n.size*2,0,l*n.size*2),n.currentX=s,n.currentZ=l}}},y.prototype.createClipmapLevel=function(t,e,r){var i=t.createEntity("clipmap"+r);i.addToWorld();var o=this.n;return this.createQuadEntity(t,e,r,i,-2*o,-2*o,o,o),this.createQuadEntity(t,e,r,i,-1*o,-2*o,o,o),this.createQuadEntity(t,e,r,i,0*o,-2*o,2,o),this.createQuadEntity(t,e,r,i,2,-2*o,o,o),this.createQuadEntity(t,e,r,i,2+1*o,-2*o,o,o),this.createQuadEntity(t,e,r,i,-2*o,-1*o,o,o),this.createQuadEntity(t,e,r,i,2+1*o,-1*o,o,o),this.createQuadEntity(t,e,r,i,-2*o,0,o,2),this.createQuadEntity(t,e,r,i,2+1*o,0,o,2),this.createQuadEntity(t,e,r,i,-2*o,2,o,o),this.createQuadEntity(t,e,r,i,2+1*o,2,o,o),this.createQuadEntity(t,e,r,i,-2*o,2+1*o,o,o),this.createQuadEntity(t,e,r,i,-1*o,2+1*o,o,o),this.createQuadEntity(t,e,r,i,0,2+1*o,2,o),this.createQuadEntity(t,e,r,i,2,2+1*o,o,o),this.createQuadEntity(t,e,r,i,2+1*o,2+1*o,o,o),i.innermost=this.createQuadEntity(t,e,r,i,-o,-o,2*o+2,2*o+2),0!==r&&(i.innermost.meshRendererComponent.hidden=!0,i.interior1=this.createQuadEntity(t,e,r,i,-o,-o,2*o+2,1),i.interior2=this.createQuadEntity(t,e,r,i,-o,-o,1,2*o+1)),i},y.prototype.createQuadEntity=function(t,e,r,i,o,a,n,s){var h=this.createGrid(n,s),l=t.createEntity("mesh_"+n+"_"+s,h,e);return l.meshDataComponent.modelBound.xExtent=.5*n,l.meshDataComponent.modelBound.yExtent=255,l.meshDataComponent.modelBound.zExtent=.5*s,l.meshDataComponent.modelBound.center.setDirect(.5*n,128,.5*s),l.meshDataComponent.autoCompute=!1,l.meshRendererComponent.isPickable=!1,l.setTranslation(o,0,a),i.attachChild(l),l.addToWorld(),l},y.prototype.createGrid=function(t,e){var r=t+"_"+e;if(this._gridCache[r])return this._gridCache[r];var i=n.defaultMap([n.POSITION]),o=new n(i,(t+1)*(e+1),(2*t+4)*e);this._gridCache[r]=o,o.indexModes=["TriangleStrip"];for(var a=o.getAttributeBuffer(n.POSITION),s=o.getIndexBuffer(),h=0;t+1>h;h++)for(var l=0;e+1>l;l++){var d=l*(t+1)+h;a[3*d+0]=h,a[3*d+1]=0,a[3*d+2]=l}for(var u=0,d=0,l=0;e>l;l++){s[u++]=l*(t+1),s[u++]=l*(t+1);for(var h=0;t>h;h++)d=l*(t+1)+h,s[u++]=d+t+1,s[u++]=d+1;s[u++]=d+t+1+1,s[u++]=d+t+1+1}return console.log((t+1)*(e+1),(2*t+4)*e,t*e*6),o};var b={defines:{SKIP_SPECULAR:!0},processors:[l.light.processor,function(t){l.USE_FOG?(t.setDefine("FOG",!0),t.uniforms.fogSettings=l.FOG_SETTINGS,t.uniforms.fogColor=l.FOG_COLOR):t.removeDefine("FOG")}],attributes:{vertexPosition:n.POSITION},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,cameraPosition:h.CAMERA,heightMap:"HEIGHT_MAP",normalMap:"NORMAL_MAP",detailMap:"DETAIL_MAP",splatMap:"SPLAT_MAP",groundMap1:"GROUND_MAP1",groundMap2:"GROUND_MAP2",groundMap3:"GROUND_MAP3",groundMap4:"GROUND_MAP4",groundMap5:"GROUND_MAP5",stoneMap:"STONE_MAP",lightMap:"LIGHT_MAP",fogSettings:function(){return l.FOG_SETTINGS},fogColor:function(){return l.FOG_COLOR},resolution:[255,1,1024,1024],resolutionNorm:[1024,1024],col:[0,0,0]},builder:function(t,e){l.light.builder(t,e)},vshader:function(){return["attribute vec3 vertexPosition;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","uniform vec3 cameraPosition;","uniform sampler2D heightMap;","uniform vec4 resolution;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec4 alphaval;",l.light.prevertex,"const vec2 alphaOffset = vec2(45.0);","const vec2 oneOverWidth = vec2(1.0 / 16.0);","void main(void) {","vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);","vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;","vec4 heightCol = texture2D(heightMap, coord);","float zf = heightCol.r;","float zd = heightCol.g;","vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));","alpha.x = max(alpha.x, alpha.y);","float z = mix(zf, zd, alpha.x);","z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;","alphaval = vec4(zf, zd, alpha.x, z);","worldPos.y = z * resolution.x;","gl_Position = viewProjectionMatrix * worldPos;","vWorldPos = worldPos.xyz;","viewPosition = cameraPosition - vWorldPos;",l.light.vertex,"}"].join("\n")},fshader:function(){return["uniform vec3 col;","uniform sampler2D normalMap;","uniform sampler2D splatMap;","uniform sampler2D detailMap;","uniform sampler2D groundMap1;","uniform sampler2D groundMap2;","uniform sampler2D groundMap3;","uniform sampler2D groundMap4;","uniform sampler2D groundMap5;","uniform sampler2D stoneMap;","uniform sampler2D lightMap;","uniform vec2 fogSettings;","uniform vec3 fogColor;","uniform vec2 resolutionNorm;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec4 alphaval;",l.light.prefragment,"void main(void) {","if (alphaval.w < -1000.0) discard;","vec2 mapcoord = vWorldPos.xz / resolutionNorm;","vec2 coord = mapcoord * 96.0;","vec4 final_color = vec4(1.0);","vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;","N.y = 0.1;","N = normalize(N);","vec4 splat = texture2D(splatMap, mapcoord);","vec4 g1 = texture2D(groundMap1, coord);","vec4 g2 = texture2D(groundMap2, coord);","vec4 g3 = texture2D(groundMap3, coord);","vec4 g4 = texture2D(groundMap4, coord);","vec4 g5 = texture2D(groundMap5, coord);","vec4 stone = texture2D(stoneMap, coord);","final_color = mix(g1, g2, splat.r);","final_color = mix(final_color, g3, splat.g);","final_color = mix(final_color, g4, splat.b);","final_color = mix(final_color, g5, splat.a);","float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);","slope = smoothstep(0.15, 0.25, slope);","final_color = mix(final_color, stone, slope);","#ifdef LIGHTMAP","final_color = final_color * texture2D(lightMap, mapcoord);","#else",l.light.fragment,"#endif","#ifdef FOG","float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);","final_color.rgb = mix(final_color.rgb, fogColor, d);","#endif","gl_FragColor = final_color;","}"].join("\n")}},w={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{diffuseMap:"MAIN_MAP",childMap:h.DIFFUSE_MAP,res:[1,1,1,1]},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","varying vec2 texCoord0;","void main(void) {","	texCoord0 = vertexUV0;","	gl_Position = vec4(vertexPosition, 1.0);","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","uniform sampler2D childMap;","uniform vec4 res;","varying vec2 texCoord0;","void main(void)","{","	gl_FragColor = texture2D(diffuseMap, texCoord0);","	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);","	bvec2 test = equal(coordMod, vec2(0.0));","	if (all(test)) {","		gl_FragColor.g = texture2D(childMap, texCoord0).r;","	} else if (test.x) {","		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;","	} else if (test.y) {","		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;","	} else {","		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;","	}","	gl_FragColor.ba = vec2(0.0);","}"].join("\n")},C={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,opacity:1,diffuseMap:h.DIFFUSE_MAP},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","varying vec2 texCoord0;","void main(void) {","	texCoord0 = vertexUV0;","	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","uniform float opacity;","varying vec2 texCoord0;","void main(void)","{","	gl_FragColor = texture2D(diffuseMap, texCoord0);","	gl_FragColor.a *= opacity;","}"].join("\n")},T={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,opacity:1,rgba:[1,1,1,1],diffuseMap:h.DIFFUSE_MAP,splatMap:"SPLAT_MAP"},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void) {","	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);","	gl_Position = viewProjectionMatrix * worldPos;","	texCoord0 = vertexUV0;","	texCoord1 = worldPos.xy * 0.5 + 0.5;","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","uniform sampler2D splatMap;","uniform vec4 rgba;","uniform float opacity;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void)","{","	vec4 splat = texture2D(splatMap, texCoord1);","	vec4 brush = texture2D(diffuseMap, texCoord0);","	vec4 final = mix(splat, rgba, opacity * length(brush.rgb) * brush.a);","	gl_FragColor = final;","}"].join("\n")},S={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,opacity:1,size:1/512,diffuseMap:h.DIFFUSE_MAP,heightMap:"HEIGHT_MAP"},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void) {","	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);","	gl_Position = viewProjectionMatrix * worldPos;","	texCoord0 = vertexUV0;","	texCoord1 = worldPos.xy * 0.5 + 0.5;","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","uniform sampler2D heightMap;","uniform float opacity;","uniform float size;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void)","{","	float col1 = texture2D(heightMap, texCoord1 + vec2(-size, -size)).r;","	float col2 = texture2D(heightMap, texCoord1 + vec2(-size, size)).r;","	float col3 = texture2D(heightMap, texCoord1 + vec2(size, size)).r;","	float col4 = texture2D(heightMap, texCoord1 + vec2(size, -size)).r;","	float avg = (col1 + col2 + col3 + col4) * 0.25;","	gl_FragColor = texture2D(heightMap, texCoord1);","	vec4 brush = texture2D(diffuseMap, texCoord0);","	gl_FragColor.r = mix(gl_FragColor.r, avg, brush.r * brush.a * opacity);","}"].join("\n")},D={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,opacity:1,height:0,diffuseMap:h.DIFFUSE_MAP,heightMap:"HEIGHT_MAP"},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void) {","	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);","	gl_Position = viewProjectionMatrix * worldPos;","	texCoord0 = vertexUV0;","	texCoord1 = worldPos.xy * 0.5 + 0.5;","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","uniform sampler2D heightMap;","uniform float opacity;","uniform float height;","varying vec2 texCoord0;","varying vec2 texCoord1;","void main(void)","{","	gl_FragColor = texture2D(heightMap, texCoord1);","	vec4 brush = texture2D(diffuseMap, texCoord0);","	gl_FragColor.r = mix(gl_FragColor.r, height, brush.r * brush.a * opacity);","}"].join("\n")},z={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewProjectionMatrix:h.VIEW_PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,diffuseMap:h.DIFFUSE_MAP},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","varying vec2 texCoord0;","void main(void) {","	texCoord0 = vertexUV0;","	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);","}"].join("\n"),fshader:["uniform sampler2D diffuseMap;","varying vec2 texCoord0;","float shift_right (float v, float amt) {","v = floor(v) + 0.5;","return floor(v / exp2(amt));","}","float shift_left (float v, float amt) {","return floor(v * exp2(amt) + 0.5);","}","float mask_last (float v, float bits) {","return mod(v, shift_left(1.0, bits));","}","float extract_bits (float num, float from, float to) {","from = floor(from + 0.5); to = floor(to + 0.5);","return mask_last(shift_right(num, from), to - from);","}","vec4 encode_float (float val) {","if (val == 0.0) return vec4(0, 0, 0, 0);","float sign = val > 0.0 ? 0.0 : 1.0;","val = abs(val);","float exponent = floor(log2(val));","float biased_exponent = exponent + 127.0;","float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;","float t = biased_exponent / 2.0;","float last_bit_of_biased_exponent = fract(t) * 2.0;","float remaining_bits_of_biased_exponent = floor(t);","float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;","float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;","float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;","float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;","return vec4(byte4, byte3, byte2, byte1);","}","void main(void)","{","	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);","}"].join("\n")},_={attributes:{vertexPosition:n.POSITION},uniforms:{viewMatrix:h.VIEW_MATRIX,projectionMatrix:h.PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,cameraFar:h.FAR_PLANE,cameraPosition:h.CAMERA,heightMap:"HEIGHT_MAP",resolution:[255,1,1,1],id:function(t){return t.renderable.id+1}},vshader:["attribute vec3 vertexPosition;","uniform sampler2D heightMap;","uniform mat4 viewMatrix;","uniform mat4 projectionMatrix;","uniform mat4 worldMatrix;","uniform float cameraFar;","uniform vec4 resolution;","uniform vec3 cameraPosition;","varying float depth;","const vec2 alphaOffset = vec2(45.0);","const vec2 oneOverWidth = vec2(1.0 / 16.0);","void main(void) {","vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);","vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;","vec4 heightCol = texture2D(heightMap, coord);","float zf = heightCol.r;","float zd = heightCol.g;","vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));","alpha.x = max(alpha.x, alpha.y);","float z = mix(zf, zd, alpha.x);","worldPos.y = z * resolution.x;","vec4 mvPosition = viewMatrix * worldPos;","depth = -mvPosition.z / cameraFar;","gl_Position = projectionMatrix * mvPosition;","}"].join("\n"),fshader:["uniform float id;","varying float depth;",u.methods.packDepth16,"void main() {","vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);","vec2 packedDepth = packDepth16(depth);","gl_FragColor = vec4(packedId, packedDepth);","}"].join("\n")},E={attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0},uniforms:{viewMatrix:h.VIEW_MATRIX,projectionMatrix:h.PROJECTION_MATRIX,worldMatrix:h.WORLD_MATRIX,heightMap:h.DIFFUSE_MAP,resolution:[512,512],height:.05},vshader:["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","uniform mat4 viewMatrix;","uniform mat4 projectionMatrix;","uniform mat4 worldMatrix;","varying vec2 vUv;","void main() {","vUv = vertexUV0;","gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );","}"].join("\n"),fshader:["uniform float height;","uniform vec2 resolution;","uniform sampler2D heightMap;","varying vec2 vUv;","void main() {","float val = texture2D(heightMap, vUv).x;","float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;","float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;","vec3 normal = vec3(val - valU, val - valV, height);","gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);","}"].join("\n")};return y}(goo.EntityUtils,goo.MeshDataComponent,goo.MeshRendererComponent,goo.MathUtils,goo.Transform,goo.Vector3,goo.MeshData,goo.Material,goo.Shader,goo.ShaderBuilder,goo.ShaderLib,goo.ShaderFragment,goo.TextureCreator,goo.RenderTarget,goo.Texture,goo.Renderer,goo.FullscreenPass,goo.FullscreenUtils,goo.DirectionalLight,goo.Quad),goo.TerrainSurface=function(t,e){"use strict";function r(e,r,i,o){for(var a=[],n=0;n<e.length;n++)for(var s=0;s<e[n].length;s++)a.push(n*r/(e.length-1),e[n][s]*i,s*o/(e.length-1));this.verts=a,this.vertsPerLine=e[0].length;var h=t.defaultMap([t.POSITION,t.NORMAL,t.TEXCOORD0]),l=this.verts.length/3,d=l/this.vertsPerLine;t.call(this,h,l,(d-1)*(this.vertsPerLine-1)*6),this.rebuild()}return r.prototype=Object.create(t.prototype),r.prototype.rebuild=function(){this.getAttributeBuffer(t.POSITION).set(this.verts);for(var r=[],i=[],o=[],a=this.verts.length/3,n=a/this.vertsPerLine,s=0;n-1>s;s++){for(var h=0;h<this.vertsPerLine-1;h++){var l=(s+0)*this.vertsPerLine+(h+0),d=(s+1)*this.vertsPerLine+(h+0),u=(s+1)*this.vertsPerLine+(h+1),c=(s+0)*this.vertsPerLine+(h+1);r.push(d,l,c,d,c,u),o=e.getTriangleNormal(this.verts[3*l+0],this.verts[3*l+1],this.verts[3*l+2],this.verts[3*c+0],this.verts[3*c+1],this.verts[3*c+2],this.verts[3*d+0],this.verts[3*d+1],this.verts[3*d+2]),i.push(o[0],o[1],o[2])}i.push(o[0],o[1],o[2])}s--;for(var h=0;h<this.vertsPerLine-1;h++){var l=(s+0)*this.vertsPerLine+(h+0),d=(s+1)*this.vertsPerLine+(h+0),c=(s+0)*this.vertsPerLine+(h+1);o=e.getTriangleNormal(this.verts[3*l+0],this.verts[3*l+1],this.verts[3*l+2],this.verts[3*c+0],this.verts[3*c+1],this.verts[3*c+2],this.verts[3*d+0],this.verts[3*d+1],this.verts[3*d+2]),i.push(o[0],o[1],o[2])}i.push(o[0],o[1],o[2]),this.getAttributeBuffer(t.NORMAL).set(i),this.getIndexBuffer().set(r);for(var p=[],f=this.verts[this.verts.length-3],g=this.verts[this.verts.length-1],s=0;s<this.verts.length;s+=3){var v=this.verts[s+0]/f,m=this.verts[s+2]/g;p.push(v,m)}return this.getAttributeBuffer(t.TEXCOORD0).set(p),this},r}(goo.MeshData,goo.MathUtils),goo.Vegetation=function(t,e,r,i,o,a,n,s,h,l,d,u,c,p,f,g,v,m,x){"use strict";function M(){this.calcVec=new o,this.initDone=!1}M.prototype.init=function(r,i,o,a,n){this.world=r,this.terrainQuery=i,this.vegetationList={};for(var s in a){var h=a[s],l=this.createBase(h);this.vegetationList[s]=l}var d=new e(C,"vegetation");d.setTexture("DIFFUSE_MAP",o),d.cullState.enabled=!1,d.uniforms.discardThreshold=.2,d.blendState.blending="CustomBlending",d.uniforms.materialAmbient=[0,0,0,0],d.uniforms.materialDiffuse=[1,1,1,1],d.uniforms.materialSpecular=[0,0,0,0],d.renderQueue=3001,this.material=d,this.patchSize=15,this.patchDensity=19,this.gridSize=7,n&&(this.patchSize=n.patchSize||this.patchSize,this.patchDensity=n.patchDensity||this.patchDensity,this.gridSize=n.gridSize||this.gridSize),this.patchSpacing=this.patchSize/this.patchDensity,this.gridSizeHalf=Math.floor(.5*this.gridSize),this.grid=[];for(var u=this.createPatch(0,0),c=0;c<this.gridSize;c++){this.grid[c]=[];for(var p=0;p<this.gridSize;p++){var f=this.world.createEntity(this.material),g=new t(u);g.modelBound.xExtent=this.patchSize,g.modelBound.yExtent=500,g.modelBound.zExtent=this.patchSize,g.autoCompute=!1,f.set(g),f.addToWorld(),this.grid[c][p]=f,f.meshRendererComponent.cullMode="Never",f.meshRendererComponent.hidden=!0}}d.uniforms.fadeDistMax=this.gridSizeHalf*this.patchSize,d.uniforms.fadeDistMin=.7*d.uniforms.fadeDistMax,this.currentX=-1e4,this.currentZ=-1e4,this.initDone=!0},M.prototype.rebuild=function(){this.currentX=-1e4,this.currentZ=-1e4};var y=!1;M.prototype.toggle=function(){y=!y;for(var t=0;t<this.gridSize;t++)for(var e=0;e<this.gridSize;e++){var r=this.grid[t][e];r.skip=y}y||this.rebuild()},M.prototype.update=function(t,e){if(this.initDone&&!y){var r=Math.floor(t/this.patchSize),o=Math.floor(e/this.patchSize);if(this.currentX!==r||this.currentZ!==o){for(var t=0;t<this.gridSize;t++)for(var e=0;e<this.gridSize;e++){var a=r+t,n=o+e,s=a-this.currentX,h=n-this.currentZ;if(!(s>=0&&s<this.gridSize&&h>=0&&h<this.gridSize)){a-=this.gridSizeHalf,n-=this.gridSizeHalf;var l=i.moduloPositive(a,this.gridSize),d=i.moduloPositive(n,this.gridSize);a*=this.patchSize,n*=this.patchSize;var u=this.grid[l][d],c=this.createPatch(a,n);c?(u.meshRendererComponent.hidden=!1,u.meshDataComponent.meshData=c,u.meshRendererComponent.worldBound.center.setDirect(a+.5*this.patchSize,0,n+.5*this.patchSize)):u.meshRendererComponent.hidden=!0;
-}}this.currentX=r,this.currentZ=o}}},M.prototype.createPatch=function(t,e){for(var r=new p,i=new a,n=this.patchDensity,s=this.patchSpacing,l=[0,10,0],d=0;n>d;d++)for(var u=0;n>u;u++){var c=t+(d+.5*Math.random())*s,f=e+(u+.5*Math.random())*s;l[0]=c,l[2]=f+.5;var g=this.terrainQuery.getHeightAt(l),v=this.terrainQuery.getNormalAt(l);null===g&&(g=0),null===v&&(v=o.UNIT_Y);var m=v.dot(o.UNIT_Y),x=this.terrainQuery.getVegetationType(c,f,m);if(x){var M=.4*Math.random()+.8;i.scale.setDirect(M,M,M),i.translation.setDirect(0,0,0);var y=Math.random()*Math.PI*2,P=Math.sin(y),b=Math.cos(y);this.calcVec.setDirect(P,0,b),this.lookAt(i.rotation,this.calcVec,v),i.translation.setDirect(c,g,f),i.update();var w=this.vegetationList[x];r.addMeshData(w,i)}}for(var C=r.build(),T=0;T<C.length;T++)for(var w=C[T],S=w.getAttributeBuffer(h.POSITION),D=w.getAttributeBuffer(h.COLOR),T=0,z=0;T<S.length;T+=3,z+=4){var _=this.terrainQuery.getLightAt([S[T],S[T+1],S[T+2]]);D[z]=_,D[z+1]=_,D[z+2]=_,D[z+3]=1}return C[0]};var P=new o,b=new o,w=new o;M.prototype.lookAt=function(t,e,r){var i=P,o=b,a=w;o.set(r).normalize(),i.set(r).cross(e).normalize(),a.set(o).cross(i);var n=t.data;return n[0]=i.x,n[1]=i.y,n[2]=i.z,n[3]=o.x,n[4]=o.y,n[5]=o.z,n[6]=a.x,n[7]=a.y,n[8]=a.z,this},M.prototype.createBase=function(t){var e=new m(t.w,t.h,10,10);e.attributeMap.BASE=h.createAttribute(1,"Float"),e.attributeMap.COLOR=h.createAttribute(4,"Float"),e.rebuildData(e.vertexCount,e.indexCount,!0),e.getAttributeBuffer(h.NORMAL).set([0,1,0,0,1,0,0,1,0,0,1,0]),e.getAttributeBuffer(h.TEXCOORD0).set([t.tx,t.ty,t.tx,t.ty+t.th,t.tx+t.tw,t.ty+t.th,t.tx+t.tw,t.ty]),e.getAttributeBuffer("BASE").set([0,t.h,t.h,0]),e.getAttributeBuffer(h.COLOR).set([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);var r=new p,i=new a;i.translation.y=.5*t.h-.1*t.h,i.translation.z=.1*-t.w,i.update(),r.addMeshData(e,i),i.setRotationXYZ(0,.3*Math.PI,0),i.translation.x=.1*t.w,i.translation.z=.1*t.w,i.update(),r.addMeshData(e,i),i.setRotationXYZ(0,.3*-Math.PI,0),i.translation.x=.1*-t.w,i.translation.z=.1*t.w,i.update(),r.addMeshData(e,i);var o=r.build();return o[0]};var C={processors:[x.light.processor,function(t){x.USE_FOG?(t.setDefine("FOG",!0),t.uniforms.fogSettings=x.FOG_SETTINGS,t.uniforms.fogColor=x.FOG_COLOR):t.removeDefine("FOG")}],attributes:{vertexPosition:h.POSITION,vertexNormal:h.NORMAL,vertexUV0:h.TEXCOORD0,vertexColor:h.COLOR,base:"BASE"},uniforms:{viewProjectionMatrix:l.VIEW_PROJECTION_MATRIX,worldMatrix:l.WORLD_MATRIX,cameraPosition:l.CAMERA,diffuseMap:l.DIFFUSE_MAP,discardThreshold:-.01,fogSettings:function(){return x.FOG_SETTINGS},fogColor:function(){return x.FOG_COLOR},time:l.TIME,fadeDistMin:40,fadeDistMax:50},builder:function(t,e){x.light.builder(t,e)},vshader:function(){return["attribute vec3 vertexPosition;","attribute vec3 vertexNormal;","attribute vec2 vertexUV0;","attribute vec4 vertexColor;","attribute float base;","uniform mat4 viewProjectionMatrix;","uniform mat4 worldMatrix;","uniform vec3 cameraPosition;","uniform float time;","uniform float fadeDistMin;","uniform float fadeDistMax;",x.light.prevertex,"varying vec3 normal;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec2 texCoord0;","varying vec4 color;","varying float dist;","void main(void) {","vec3 swayPos = vertexPosition;","swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;","vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);","vWorldPos = worldPos.xyz;","gl_Position = viewProjectionMatrix * worldPos;",x.light.vertex,"normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;","texCoord0 = vertexUV0;","color = vertexColor;","viewPosition = cameraPosition - worldPos.xyz;","dist = 1.0 - smoothstep(fadeDistMin, fadeDistMax, length(viewPosition.xz));","}"].join("\n")},fshader:function(){return["uniform sampler2D diffuseMap;","uniform float discardThreshold;","uniform vec2 fogSettings;","uniform vec3 fogColor;",x.light.prefragment,"varying vec3 normal;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec2 texCoord0;","varying float dist;","varying vec4 color;","void main(void)","{","vec4 final_color = texture2D(diffuseMap, texCoord0) * color;","if (final_color.a < discardThreshold) discard;","final_color.a = min(final_color.a, dist);","if (final_color.a <= 0.0) discard;","vec3 N = normalize(normal);",x.light.fragment,"final_color.a = pow(final_color.a, 0.5);","#ifdef FOG","float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);","final_color.rgb = mix(final_color.rgb, fogColor, d);","#endif","gl_FragColor = final_color;","}"].join("\n")}};return M}(goo.MeshDataComponent,goo.Material,goo.Camera,goo.MathUtils,goo.Vector3,goo.Transform,goo.TextureCreator,goo.Texture,goo.MeshData,goo.Shader,goo.DirectionalLight,goo.CanvasUtils,goo.Ajax,goo.MeshBuilder,goo.Noise,goo.ValueNoise,goo.TerrainSurface,goo.Quad,goo.ShaderBuilder),goo.Forrest=function(t,e,r,i,o,a,n,s,h,l,d,u,c,p,f,g,v,m,x,M,y,P,b,w){"use strict";function C(){this.calcVec=new r,this.initDone=!1}var T=function(t,e,r){var i=new g({world:t,preloadBinaries:!0,rootPath:"res/trees2"});return e.then(function(){return console.log("loading bundle ",r),i.load("root.bundle")}).then(function(t){for(var e in t)console.log(e);console.error("Config in bundle ",r," contained no scene?!")})};C.prototype.init=function(t,e,r,i,o,a){for(var n=new w.Promise,s=["fish"],h=0;h<s.length;h++)n=T(t,n,s[h]);return n.then(function(){console.log("loaded forrest",o)},function(t){console.log("Error! ",t)}).then(null,function(t){console.log("Error! ",t)}),this.loadLODTrees(t,e,r,i,o,a)},C.prototype.loadLODTrees=function(e,r,i,o,a,n){this.terrainQuery=r,this.forrestTypes=a,this.entityMap=n||{},this.world=e,this.vegetationList={};for(var s in a){var h=a[s],l=this.createBase(h);this.vegetationList[s]=l}var d=new t(D,"vegetation");d.setTexture("DIFFUSE_MAP",i),d.setTexture("NORMAL_MAP",o),d.uniforms.discardThreshold=.6,d.uniforms.materialAmbient=[0,0,0,0],d.uniforms.materialDiffuse=[1,1,1,1],d.uniforms.materialSpecular=[0,0,0,0],d.renderQueue=2001,this.material=d,this.patchSize=32,this.patchDensity=5,this.gridSize=7,this.minDist=1.5,this.patchSpacing=this.patchSize/this.patchDensity,this.gridSizeHalf=Math.floor(.5*this.gridSize),this.grid=[],this.gridState=[];for(var u=this.createForrestPatch(0,0,1),c=0;c<this.gridSize;c++){this.grid[c]=[],this.gridState[c]=[];for(var p=0;p<this.gridSize;p++){var f=e.createEntity(this.material),g=new M(u);g.modelBound.xExtent=this.patchSize,g.modelBound.yExtent=500,g.modelBound.zExtent=this.patchSize,g.autoCompute=!1,f.set(g),f.addToWorld(),this.grid[c][p]=f,this.gridState[c][p]={lod:-1,x:-1,z:-1},f.meshRendererComponent.hidden=!0}}this.currentX=-1e4,this.currentZ=-1e4,this.initDone=!0},C.prototype.rebuild=function(){this.currentX=-1e4,this.currentZ=-1e4};var S=!1;C.prototype.toggle=function(){S=!S;for(var t=0;t<this.gridSize;t++)for(var e=0;e<this.gridSize;e++){var r=this.grid[t][e];r.skip=S}S||this.rebuild()},C.prototype.update=function(t,e){if(this.initDone&&!S){var r=Math.floor(t/this.patchSize),i=Math.floor(e/this.patchSize);if(this.currentX!==r||this.currentZ!==i){for(var t=0;t<this.gridSize;t++)for(var e=0;e<this.gridSize;e++){var o=r+t,a=i+e;o-=this.gridSizeHalf,a-=this.gridSizeHalf;var n=b.moduloPositive(o,this.gridSize),s=b.moduloPositive(a,this.gridSize),h=this.grid[n][s],l=this.gridState[n][s],d=Math.abs(t-this.gridSizeHalf),u=Math.abs(e-this.gridSizeHalf),c=1;if(d<this.minDist&&u<this.minDist&&(c=2),l.lod!==c||l.x!==o||l.z!==a){l.lod=c,l.x=o,l.z=a,o*=this.patchSize,a*=this.patchSize;var p=this.createForrestPatch(o,a,c,h);p&&p.vertexCount>0?(h.meshDataComponent.meshData=p,h.meshRendererComponent.hidden=!1):h.meshRendererComponent.hidden=!0,h.meshRendererComponent.worldBound.center.setDirect(o+.5*this.patchSize,0,a+.5*this.patchSize)}}this.currentX=r,this.currentZ=i}}},C.prototype.determineVegTypeAtPos=function(t){var e=this.terrainQuery.getNormalAt(t);null===e&&(e=r.UNIT_Y);var i=e.dot(r.UNIT_Y);return this.terrainQuery.getForrestType(t[0],t[2],i,b.fastRandom())},C.prototype.fetchTreeMesh=function(t){return v.clone(this.world,this.entityMap[t])},C.prototype.fetchTreeBillboard=function(t,e){var r=this.vegetationList[t],i=this.forrestTypes[t],o=i.w*e,a=i.h*e;return r.getAttributeBuffer("OFFSET").set([.5*-o,0,.5*-o,a,.5*o,a,.5*o,0]),r},C.prototype.getPointInPatch=function(t,e,r,i,o){var a=[0,0,0];return a[0]=r+(t+.75*b.fastRandom())*o,a[2]=.5+i+(e+.75*b.fastRandom())*o,a[1]=this.terrainQuery.getHeightAt(a),null===a[1]&&(a[1]=0),a},C.prototype.addVegMeshToPatch=function(t,e,r,o,a){var n=new i,s=.5*b.fastRandom()+.75;n.translation.set(e),n.update();var h=a&&(2===o||this.forrestTypes[t].forbidden===!0);if(h&&this.entityMap[t]){var l=this.fetchTreeMesh(t);l.transformComponent.transform.scale.scale(s),l.transformComponent.transform.translation.set(e),l.addToWorld(),a.attachChild(l),this.onAddedVegMesh&&this.onAddedVegMesh(t,l,e,s)}else{var d=this.fetchTreeBillboard(t,s);r.addMeshData(d,n)}},C.prototype.createForrestPatch=function(t,e,r,i){var o=new u,a=this.patchDensity,n=this.patchSpacing;i&&i.traverse(function(t,e){e>0&&t.removeFromWorld()}),b.randomSeed=1e4*t+e;for(var s=0;a>s;s++)for(var h=0;a>h;h++){var l=this.getPointInPatch(s,h,t,e,n),d=this.determineVegTypeAtPos(l);d&&this.addVegMeshToPatch(d,l,o,r,i)}var c=o.build();return 2===r&&new m(this.world,1,!0,!0)._combineList(i),c[0]},C.prototype.createBase=function(t){var e=n.defaultMap([n.POSITION,n.TEXCOORD0]);e.BASE=n.createAttribute(1,"Float"),e.OFFSET=n.createAttribute(2,"Float");var r=new n(e,4,6);return r.getAttributeBuffer(n.POSITION).set([0,.1*-t.h,0,0,.1*-t.h,0,0,.1*-t.h,0,0,.1*-t.h,0]),r.getAttributeBuffer(n.TEXCOORD0).set([t.tx,t.ty,t.tx,t.ty+t.th,t.tx+t.tw,t.ty+t.th,t.tx+t.tw,t.ty]),r.getAttributeBuffer("BASE").set([0,t.h,t.h,0]),r.getAttributeBuffer("OFFSET").set([.5*-t.w,0,.5*-t.w,t.h,.5*t.w,t.h,.5*t.w,0]),r.getIndexBuffer().set([0,3,1,1,3,2]),r};var D={processors:[P.light.processor,function(t){P.USE_FOG?(t.setDefine("FOG",!0),t.uniforms.fogSettings=P.FOG_SETTINGS,t.uniforms.fogColor=P.FOG_COLOR):t.removeDefine("FOG")}],attributes:{vertexPosition:n.POSITION,vertexUV0:n.TEXCOORD0,base:"BASE",offset:"OFFSET"},uniforms:{viewProjectionMatrix:s.VIEW_PROJECTION_MATRIX,cameraPosition:s.CAMERA,diffuseMap:s.DIFFUSE_MAP,normalMap:s.NORMAL_MAP,discardThreshold:-.01,fogSettings:function(){return P.FOG_SETTINGS},fogColor:function(){return P.FOG_COLOR},time:s.TIME},builder:function(t,e){P.light.builder(t,e)},vshader:function(){return["attribute vec3 vertexPosition;","attribute vec2 vertexUV0;","attribute float base;","attribute vec2 offset;","uniform mat4 viewProjectionMatrix;","uniform vec3 cameraPosition;","uniform float time;",P.light.prevertex,"varying vec3 normal;","varying vec3 binormal;","varying vec3 tangent;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec2 texCoord0;","void main(void) {","vec3 swayPos = vertexPosition;","vec3 nn = cameraPosition - swayPos.xyz;","nn.y = 0.0;","normal = normalize(nn);","tangent = cross(vec3(0.0, 1.0, 0.0), normal);","binormal = cross(normal, tangent);","swayPos.xz += tangent.xz * offset.x;","swayPos.y += offset.y;","swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.02 + 0.01;","	vec4 worldPos = vec4(swayPos, 1.0);","	vWorldPos = worldPos.xyz;","	gl_Position = viewProjectionMatrix * worldPos;",P.light.vertex,"	texCoord0 = vertexUV0;","	viewPosition = cameraPosition - worldPos.xyz;","}"].join("\n")},fshader:function(){return["uniform sampler2D diffuseMap;","uniform sampler2D normalMap;","uniform float discardThreshold;","uniform vec2 fogSettings;","uniform vec3 fogColor;",P.light.prefragment,"varying vec3 normal;","varying vec3 binormal;","varying vec3 tangent;","varying vec3 vWorldPos;","varying vec3 viewPosition;","varying vec2 texCoord0;","void main(void)","{","	vec4 final_color = texture2D(diffuseMap, texCoord0);","if (final_color.a < discardThreshold) discard;","mat3 tangentToWorld = mat3(tangent, binormal, normal);","vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);","vec3 worldNormal = (tangentToWorld * tangentNormal);","vec3 N = normalize(worldNormal);",P.light.fragment,"#ifdef FOG","float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);","final_color.rgb = mix(final_color.rgb, fogColor, d);","#endif","	gl_FragColor = final_color;","}"].join("\n")}};return C}(goo.Material,goo.Camera,goo.Vector3,goo.Transform,goo.TextureCreator,goo.Texture,goo.MeshData,goo.Shader,goo.DirectionalLight,goo.CanvasUtils,goo.Ajax,goo.MeshBuilder,goo.Noise,goo.ValueNoise,goo.TerrainSurface,goo.DynamicLoader,goo.EntityUtils,goo.EntityCombiner,goo.TangentGenerator,goo.MeshDataComponent,goo.ScriptComponent,goo.ShaderBuilder,goo.MathUtils,goo.rsvp),goo.TerrainHandler=function(t,e,r,i,o,a,n,s,h,l){"use strict";function d(o,a,n,s){this.goo=o,this.terrainSize=a,this.resourceFolder=s,this.terrain=new t(o,this.terrainSize,n),this.vegetation=new e,this.forrest=new r,this.hidden=!1,this.store=new i,this.settings=null,this.pick=!0,this.draw=!1,this.eventX=0,this.eventY=0,this.vegetationSettings={gridSize:7}}d.prototype.isEditing=function(){return!this.hidden},d.prototype.getHeightAt=function(t){return this.terrainQuery?this.terrainQuery.getHeightAt(t):0},d.prototype.isEditing=function(){return!this.hidden},d.prototype.getHeightAt=function(t){return this.terrainQuery?this.terrainQuery.getHeightAt(t):0};var u=!1,c=!1,p=function(t){0===t.button&&(this.eventX=t.clientX,this.eventY=t.clientY,u=!0,c=t.altKey,this.pick=!0,this.draw=!0,console.log("mousedown"))},f=function(t){0===t.button&&(u=!1,this.draw=!1,console.log("mouseup"))},g=function(t){this.eventX=t.clientX,this.eventY=t.clientY,this.pick=!0,u&&(c=t.altKey,this.draw=!0)};return d.prototype.toggleEditMode=function(){this.terrain.toggleMarker(),this.hidden=!this.hidden,this.hidden?(this.goo.renderer.domElement.addEventListener("mousedown",p.bind(this),!1),this.goo.renderer.domElement.addEventListener("mouseup",f.bind(this),!1),this.goo.renderer.domElement.addEventListener("mouseout",f.bind(this),!1),this.goo.renderer.domElement.addEventListener("mousemove",g.bind(this),!1)):(this.goo.renderer.domElement.removeEventListener("mousedown",p),this.goo.renderer.domElement.removeEventListener("mouseup",f),this.goo.renderer.domElement.removeEventListener("mouseout",f),this.goo.renderer.domElement.removeEventListener("mousemove",g),this.terrainInfo=this.terrain.getTerrainData(),this.draw=!1,u=!1),this.forrest.toggle(),this.vegetation.toggle()},d.prototype.initLevel=function(t,e,r){this.settings=e;var i=this.terrainSize,o=this._loadData(t.heightMap),a=this._loadData(t.splatMap);return l.all([o,a]).then(function(e){var o,a=e[0],n=e[1];o=a?new Float32Array(a):new Float32Array(i*i);var s;return s=n?new Uint8Array(n):new Uint8Array(i*i*4*4),this._load(t,o,s,r)}.bind(this))},d.prototype._loadData=function(t){var e=new l.Promise,r=new o;return r.get({url:this.resourceFolder+t,responseType:"arraybuffer"}).then(function(t){e.resolve(t.response)}.bind(this),function(){e.resolve(null)}.bind(this)),e},d.prototype._textureLoad=function(t){return(new h).loadTexture2D(t,{anisotropy:4})},d.prototype._load=function(t,e,r,o){var a=[];return a.push(this._textureLoad(this.resourceFolder+t.ground1.texture)),a.push(this._textureLoad(this.resourceFolder+t.ground2.texture)),a.push(this._textureLoad(this.resourceFolder+t.ground3.texture)),a.push(this._textureLoad(this.resourceFolder+t.ground4.texture)),a.push(this._textureLoad(this.resourceFolder+t.ground5.texture)),a.push(this._textureLoad(this.resourceFolder+t.stone.texture)),l.all(a).then(function(a){this.terrain.init({heightMap:e,splatMap:r,ground1:a[0],ground2:a[1],ground3:a[2],ground4:a[3],ground5:a[4],stone:a[5]}),this.terrainInfo=this.terrain.getTerrainData();var s=this.terrainSize,l=new i,d=this.terrainQuery={getHeightAt:function(t){if(t[0]<0||t[0]>s-1||t[2]<0||t[2]>s-1)return-1e3;var e=t[0],r=s-t[2],i=Math.floor(e),o=Math.floor(r),a=e-i,h=r-o,l=i+1,d=o+1;i=n.moduloPositive(i,s),o=n.moduloPositive(o,s),l=n.moduloPositive(l,s),d=n.moduloPositive(d,s);var u=this.terrainInfo.heights[o*s+i],c=this.terrainInfo.heights[o*s+l],p=this.terrainInfo.heights[d*s+i],f=this.terrainInfo.heights[d*s+l];return n.lerp(h,n.lerp(a,u,c),n.lerp(a,p,f))}.bind(this),getNormalAt:function(t){var e=t[0],r=s-t[2],i=Math.floor(e),o=Math.floor(r),a=i+1,h=o+1;i=n.moduloPositive(i,s),o=n.moduloPositive(o,s),a=n.moduloPositive(a,s),h=n.moduloPositive(h,s);var d=this.terrainInfo.heights[o*s+i],u=this.terrainInfo.heights[o*s+a],c=this.terrainInfo.heights[h*s+i];return l.setDirect(d-u,1,c-d).normalize()}.bind(this),getVegetationType:function(e,r,i){var o=Math.random();if(n.smoothstep(.82,.91,i)<o)return null;if(this.terrainInfo){if(e=Math.floor(e),r=Math.floor(r),0>e||e>s-1||0>r||r>s-1)return null;e*=this.terrain.splatMult,r*=this.terrain.splatMult;var a=4*(r*s*this.terrain.splatMult+e),h=this.terrainInfo.splat[a+0]/255,l=this.terrainInfo.splat[a+1]/255,d=this.terrainInfo.splat[a+2]/255,u=this.terrainInfo.splat[a+3]/255,c=h>o?t.ground2:l>o?t.ground3:d>o?t.ground4:u>o?t.ground5:t.ground1,p=0;for(var f in c.vegetation)if(p+=c.vegetation[f],p>o)return f;return null}return null}.bind(this),getForrestType:function(e,r,i,o){if(n.smoothstep(.8,.88,i)<o)return null;if(this.terrainInfo){if(e=Math.floor(e),r=Math.floor(r),0>e||e>s-1||0>r||r>s-1)return null;e*=this.terrain.splatMult,r*=this.terrain.splatMult;var a=4*(r*s*this.terrain.splatMult+e),h=this.terrainInfo.splat[a+0]/255,l=this.terrainInfo.splat[a+1]/255,d=this.terrainInfo.splat[a+2]/255,u=this.terrainInfo.splat[a+3]/255,c=h>o?t.ground2:l>o?t.ground3:d>o?t.ground4:u>o?t.ground5:t.ground1,p=0;for(var f in c.forrest)if(p+=c.forrest[f],p>o)return f;return null}return null}.bind(this),getLightAt:function(t){if(t[0]<0||t[0]>s-1||t[2]<0||t[2]>s-1)return-1e3;if(!this.lightMapData||!this.lightMapSize)return 1;var e=t[0]*this.lightMapSize/s,r=(s-t[2])*this.lightMapSize/s,i=Math.floor(e),o=Math.floor(r),a=e-i,h=r-o,l=i+1,d=o+1;i=n.moduloPositive(i,this.lightMapSize),o=n.moduloPositive(o,this.lightMapSize),l=n.moduloPositive(l,this.lightMapSize),d=n.moduloPositive(d,this.lightMapSize);var u=this.lightMapData[o*this.lightMapSize+i],c=this.lightMapData[o*this.lightMapSize+l],p=this.lightMapData[d*this.lightMapSize+i],f=this.lightMapData[d*this.lightMapSize+l];return n.lerp(h,n.lerp(a,u,c),n.lerp(a,p,f))/255}.bind(this),getType:function(e,r,i,o){if(n.smoothstep(.8,.88,i)<o)return t.stone;if(this.terrainInfo){if(e=Math.floor(e),r=Math.floor(r),0>e||e>s-1||0>r||r>s-1)return t.stone;e*=this.terrain.splatMult,r*=this.terrain.splatMult;var a=4*(r*s*this.terrain.splatMult+e),h=this.terrainInfo.splat[a+0]/255,l=this.terrainInfo.splat[a+1]/255,d=this.terrainInfo.splat[a+2]/255,u=this.terrainInfo.splat[a+3]/255,c=h>o?t.ground2:l>o?t.ground3:d>o?t.ground4:u>o?t.ground5:t.ground1;return c}return t.stone}.bind(this)};return(new h).loadTexture2D(this.resourceFolder+t.vegetationAtlas).then(function(e){e.anisotropy=4;var r=t.vegetationTypes;return(new h).loadTexture2D(this.resourceFolder+t.forrestAtlas).then(function(i){return i.anisotropy=4,(new h).loadTexture2D(this.resourceFolder+t.forrestAtlasNormals).then(function(a){var n=t.forrestTypes;this.vegetation.init(this.goo.world,d,e,r,this.vegetationSettings),this.forrest.init(this.goo.world,d,i,a,n,o)}.bind(this))}.bind(this))}.bind(this))}.bind(this))},d.prototype.updatePhysics=function(){this.terrain.updateAmmoBody()},d.prototype.initPhysics=function(){this.ammoBody=this.terrain.initAmmoBody()},d.prototype.useLightmap=function(t,e){if(t){var r=new s(t,{magFilter:"Bilinear",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,format:"Luminance",type:"UnsignedByte"},e,e);this.lightMapData=t,this.lightMapSize=e,this.terrain.setLightmapTexture(r)}else delete this.lightMapData,delete this.lightMapSize,this.terrain.setLightmapTexture()},d.prototype.useLightmap=function(t,e){if(t){var r=new s(t,{magFilter:"Bilinear",minFilter:"NearestNeighborNoMipMaps",wrapS:"EdgeClamp",wrapT:"EdgeClamp",generateMipmaps:!1,format:"Luminance",type:"UnsignedByte"},e,e);this.lightMapData=t,this.lightMapSize=e,this.terrain.setLightmapTexture(r)}else delete this.lightMapData,delete this.lightMapSize,this.terrain.setLightmapTexture()},d.prototype.update=function(t){var e=t.cameraComponent.camera.translation;if(this.terrain){var r=this.settings;if(this.hidden&&this.pick&&(this.terrain.pick(t.cameraComponent.camera,this.eventX,this.eventY,this.store),this.terrain.setMarker("add",r.size,this.store.x,this.store.z,r.power,r.brushTexture),this.pick=!1),this.hidden&&this.draw){var i="add";c&&(i="sub");var o=[0,0,0,0];"ground2"===r.rgba?o=[1,0,0,0]:"ground3"===r.rgba?o=[0,1,0,0]:"ground4"===r.rgba?o=[0,0,1,0]:"ground5"===r.rgba&&(o=[0,0,0,1]),this.terrain.draw(r.mode,i,r.size,this.store.x,this.store.y,this.store.z,r.power*this.goo.world.tpf*60/100,r.brushTexture,o),this.terrain.updateTextures()}this.terrain.update(e)}this.vegetation&&this.vegetation.update(e.x,e.z),this.forrest&&this.forrest.update(e.x,e.z)},d}(goo.Terrain,goo.Vegetation,goo.Forrest,goo.Vector3,goo.Ajax,goo.Transform,goo.MathUtils,goo.Texture,goo.TextureCreator,goo.rsvp),"function"==typeof require&&(define("goo/addons/terrainpack/Terrain",[],function(){return goo.Terrain}),define("goo/addons/terrainpack/TerrainSurface",[],function(){return goo.TerrainSurface}),define("goo/addons/terrainpack/Vegetation",[],function(){return goo.Vegetation}),define("goo/addons/terrainpack/Forrest",[],function(){return goo.Forrest}),define("goo/addons/terrainpack/TerrainHandler",[],function(){return goo.TerrainHandler}));
+goo.TerrainSurface = (function (
+		MeshData,
+		MathUtils) {
+		'use strict';
+
+		/**
+		 * A grid-like surface shape
+		 * @param {array} heightMatrix The height data by x and z axis.
+		 * @param {number} xWidth x axis size in units
+         * @param {number} yHeight y axis size in units
+         * @param {number} zWidth z axis size in units
+		 */
+		function TerrainSurface(heightMatrix, xWidth, yHeight, zWidth) {
+            var verts = [];
+            for (var i = 0; i < heightMatrix.length; i++) {
+                for (var j = 0; j < heightMatrix[i].length; j++) {
+                    verts.push(i * xWidth / (heightMatrix.length-1), heightMatrix[i][j]*yHeight, j * zWidth / (heightMatrix.length-1));
+                }
+            }
+			this.verts = verts;
+			this.vertsPerLine = heightMatrix[0].length;
+
+			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
+
+			var nVerts = this.verts.length / 3;
+			var nLines = nVerts / this.vertsPerLine;
+			MeshData.call(this, attributeMap, nVerts, (nLines - 1) * (this.vertsPerLine - 1) * 6);
+
+			this.rebuild();
+		}
+
+		TerrainSurface.prototype = Object.create(MeshData.prototype);
+
+		/**
+		 * Builds or rebuilds the mesh data
+		 * @returns {Surface} Self for chaining
+		 */
+		TerrainSurface.prototype.rebuild = function () {
+			this.getAttributeBuffer(MeshData.POSITION).set(this.verts);
+
+			var indices = [];
+
+			var norms = [];
+			var normals = [];
+
+			var nVerts = this.verts.length / 3;
+			var nLines = nVerts / this.vertsPerLine;
+
+			for (var i = 0; i < nLines - 1; i++) {
+				for (var j = 0; j < this.vertsPerLine - 1; j++) {
+					var upLeft = (i + 0) * this.vertsPerLine + (j + 0);
+					var downLeft = (i + 1) * this.vertsPerLine + (j + 0);
+					var downRight = (i + 1) * this.vertsPerLine + (j + 1);
+					var upRight = (i + 0) * this.vertsPerLine + (j + 1);
+
+					indices.push(downLeft, upLeft, upRight, downLeft, upRight, downRight);
+
+					normals = MathUtils.getTriangleNormal(
+						this.verts[upLeft * 3 + 0],
+						this.verts[upLeft * 3 + 1],
+						this.verts[upLeft * 3 + 2],
+
+                        this.verts[upRight * 3 + 0],
+                        this.verts[upRight * 3 + 1],
+                        this.verts[upRight * 3 + 2],
+
+						this.verts[downLeft * 3 + 0],
+						this.verts[downLeft * 3 + 1],
+						this.verts[downLeft * 3 + 2]
+
+
+                    );
+
+					norms.push(normals[0], normals[1], normals[2]);
+				}
+				norms.push(normals[0], normals[1], normals[2]);
+			}
+
+			i--;
+			for (var j = 0; j < this.vertsPerLine - 1; j++) {
+				var upLeft = (i + 0) * this.vertsPerLine + (j + 0);
+				var downLeft = (i + 1) * this.vertsPerLine + (j + 0);
+				var upRight = (i + 0) * this.vertsPerLine + (j + 1);
+
+				normals = MathUtils.getTriangleNormal(
+					this.verts[upLeft * 3 + 0],
+					this.verts[upLeft * 3 + 1],
+					this.verts[upLeft * 3 + 2],
+
+                    this.verts[upRight * 3 + 0],
+                    this.verts[upRight * 3 + 1],
+                    this.verts[upRight * 3 + 2],
+
+					this.verts[downLeft * 3 + 0],
+					this.verts[downLeft * 3 + 1],
+					this.verts[downLeft * 3 + 2]
+                );
+
+
+				norms.push(normals[0], normals[1], normals[2]);
+			}
+
+			norms.push(normals[0], normals[1], normals[2]);
+
+			this.getAttributeBuffer(MeshData.NORMAL).set(norms);
+			this.getIndexBuffer().set(indices);
+
+			// compute texture coordinates
+			var tex = [];
+
+            var maxX = this.verts[this.verts.length-3];
+            var maxZ = this.verts[this.verts.length-1];
+			for (var i = 0; i < this.verts.length; i += 3) {
+				var x = (this.verts[i + 0]) / maxX;
+				var z = (this.verts[i + 2]) / maxZ;
+				tex.push(x, z);
+			}
+
+			this.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
+
+			return this;
+		};
+
+		return TerrainSurface;
+	})(goo.MeshData,goo.MathUtils);
+goo.Forrest = (function (
+	Material,
+	Camera,
+	Vector3,
+	Transform,
+	TextureCreator,
+	Texture,
+	MeshData,
+	Shader,
+	DirectionalLight,
+	CanvasUtils,
+	Ajax,
+	MeshBuilder,
+	Noise,
+	ValueNoise,
+	TerrainSurface,
+	DynamicLoader,
+	EntityUtils,
+	EntityCombiner,
+	TangentGenerator,
+	MeshDataComponent,
+	ScriptComponent,
+	ShaderBuilder,
+	MathUtils,
+	RSVP
+) {
+	'use strict';
+
+	function Forrest() {
+		this.calcVec = new Vector3();
+		this.initDone = false;
+	}
+
+	var chainBundleLoading = function (world, promise, bundle) {
+		var loader = new DynamicLoader({
+			world: world,
+			preloadBinaries: true,
+			rootPath: 'res/trees2'
+		});
+		return promise.then(function () {
+			console.log('loading bundle ', bundle);
+			return loader.load('root.bundle');
+		}).then(function (configs) {
+			// find scene and update it.
+			for (var ref in configs) {
+				console.log(ref);
+				// if (ref.indexOf('.scene') != -1) {
+				// 	return loader.update(ref, configs[ref]).then(function () {
+				// 		return configs;
+				// 	});
+				// }
+			}
+			console.error('Config in bundle ', bundle, ' contained no scene?!');
+		});
+	};
+
+	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
+		var p = new RSVP.Promise();
+
+		var bundlesToLoad = ['fish'];
+		for (var i = 0; i < bundlesToLoad.length; i++) {
+			p = chainBundleLoading(world, p, bundlesToLoad[i]);
+		}
+
+		p.then(function () {
+			console.log('loaded forrest', forrestTypes);
+		}, function (e) {
+			console.log('Error! ', e);
+		}).then(null, function (e) {
+			console.log('Error! ', e);
+		});
+
+		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
+	};
+
+	Forrest.prototype.loadLODTrees = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
+		this.terrainQuery = terrainQuery;
+		this.forrestTypes = forrestTypes;
+		this.entityMap = entityMap || {};
+		this.world = world;
+
+		this.vegetationList = {};
+		for (var type in forrestTypes) {
+			var typeSettings = forrestTypes[type];
+			var meshData = this.createBase(typeSettings);
+			this.vegetationList[type] = meshData;
+		}
+
+		var material = new Material(vegetationShader, 'vegetation');
+		material.setTexture('DIFFUSE_MAP', forrestAtlasTexture);
+		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
+		material.uniforms.discardThreshold = 0.6;
+		// material.blendState.blending = 'CustomBlending';
+		material.uniforms.materialAmbient = [0, 0, 0, 0];
+		material.uniforms.materialDiffuse = [1, 1, 1, 1];
+		material.uniforms.materialSpecular = [0, 0, 0, 0];
+		material.renderQueue = 2001;
+		this.material = material;
+
+		// this.patchSize = 64;
+		// this.patchDensity = 10;
+		// this.gridSize = 7;
+		// this.minDist = 0;
+		this.patchSize = 32;
+		this.patchDensity = 5;
+		this.gridSize = 7;
+		this.minDist = 1.5;
+
+		this.patchSpacing = this.patchSize / this.patchDensity;
+		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
+		this.grid = [];
+		this.gridState = [];
+		var dummyMesh = this.createForrestPatch(0, 0, 1);
+		for (var x = 0; x < this.gridSize; x++) {
+			this.grid[x] = [];
+			this.gridState[x] = [];
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = world.createEntity(this.material);
+				var meshDataComponent = new MeshDataComponent(dummyMesh);
+				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.yExtent = 500;
+				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.autoCompute = false;
+				entity.set(meshDataComponent);
+				entity.addToWorld();
+				this.grid[x][z] = entity;
+				this.gridState[x][z] = {
+					lod: -1,
+					x: -1,
+					z: -1
+				};
+				entity.meshRendererComponent.hidden = true;
+			}
+		}
+
+		this.currentX = -10000;
+		this.currentZ = -10000;
+
+		this.initDone = true;
+	};
+
+	Forrest.prototype.rebuild = function () {
+		this.currentX = -10000;
+		this.currentZ = -10000;
+	};
+
+	var hidden = false;
+	Forrest.prototype.toggle = function () {
+		hidden = !hidden;
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				entity.skip = hidden;
+			}
+		}
+		if (!hidden) {
+			this.rebuild();
+		}
+	};
+
+	Forrest.prototype.update = function (x, z) {
+		if (!this.initDone || hidden) {
+			return;
+		}
+
+		var newX = Math.floor(x / this.patchSize);
+		var newZ = Math.floor(z / this.patchSize);
+
+		if (this.currentX === newX && this.currentZ === newZ) {
+			return;
+		}
+
+		// console.time('forrest update');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var patchX = newX + x;
+				var patchZ = newZ + z;
+
+				patchX -= this.gridSizeHalf;
+				patchZ -= this.gridSizeHalf;
+				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+				var entity = this.grid[modX][modZ];
+				var state = this.gridState[modX][modZ];
+
+				//
+				var testX = Math.abs(x - this.gridSizeHalf);
+				var testZ = Math.abs(z - this.gridSizeHalf);
+				var levelOfDetail = 1;
+				if (testX < this.minDist && testZ < this.minDist) {
+					levelOfDetail = 2;
+				}
+
+				// recycle if same settings
+				if (state.lod === levelOfDetail && state.x === patchX && state.z === patchZ) {
+					continue;
+				}
+
+				// store grid patch state and re-generate
+				state.lod = levelOfDetail;
+				state.x = patchX;
+				state.z = patchZ;
+
+				patchX *= this.patchSize;
+				patchZ *= this.patchSize;
+				var meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
+				if (meshData && meshData.vertexCount > 0) {
+					entity.meshDataComponent.meshData = meshData;
+					entity.meshRendererComponent.hidden = false;
+				} else {
+					entity.meshRendererComponent.hidden = true;
+				}
+				entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+			}
+		}
+
+		this.currentX = newX;
+		this.currentZ = newZ;
+
+		// console.timeEnd('forrest update');
+	};
+
+	Forrest.prototype.determineVegTypeAtPos = function (pos) {
+		var norm = this.terrainQuery.getNormalAt(pos);
+		if (norm === null) {
+			norm = Vector3.UNIT_Y;
+		}
+		var slope = norm.dot(Vector3.UNIT_Y);
+		return this.terrainQuery.getForrestType(pos[0], pos[2], slope, MathUtils.fastRandom());
+	};
+
+	Forrest.prototype.fetchTreeMesh = function (vegetationType) {
+        return EntityUtils.clone(this.world, this.entityMap[vegetationType]);
+	};
+
+	Forrest.prototype.fetchTreeBillboard = function (vegetationType, size) {
+		var meshData = this.vegetationList[vegetationType];
+		var type = this.forrestTypes[vegetationType];
+		var w = type.w * size;
+		var h = type.h * size;
+		meshData.getAttributeBuffer('OFFSET').set([
+			-w * 0.5, 0,
+			-w * 0.5, h,
+			w * 0.5, h,
+			w * 0.5, 0
+		]);
+		return meshData;
+	};
+
+	Forrest.prototype.getPointInPatch = function (x, z, patchX, patchZ, patchSpacing) {
+		var pos = [0, 0, 0];
+		pos[0] = patchX + (x + MathUtils.fastRandom() * 0.75) * patchSpacing;
+		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom() * 0.75) * patchSpacing;
+
+		pos[1] = this.terrainQuery.getHeightAt(pos);
+		if (pos[1] === null) {
+			pos[1] = 0;
+		}
+		return pos;
+	};
+
+	Forrest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
+		var transform = new Transform();
+		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
+		transform.translation.set(pos);
+		transform.update();
+		// var meshData;
+		var useMesh = gridEntity && ((levelOfDetail === 2) || (this.forrestTypes[vegetationType].forbidden === true));
+
+		if (useMesh && this.entityMap[vegetationType]) {
+			var treeEntity = this.fetchTreeMesh(vegetationType);
+			treeEntity.transformComponent.transform.scale.scale(size);
+			treeEntity.transformComponent.transform.translation.set(pos);
+			treeEntity.addToWorld();
+			gridEntity.attachChild(treeEntity);
+			if (this.onAddedVegMesh) {
+				this.onAddedVegMesh(vegetationType, treeEntity, pos, size);
+			}
+		} else {
+			var meshData = this.fetchTreeBillboard(vegetationType, size);
+			meshBuilder.addMeshData(meshData, transform);
+		}
+	};
+
+
+	Forrest.prototype.createForrestPatch = function (patchX, patchZ, levelOfDetail, gridEntity) {
+		var meshBuilder = new MeshBuilder();
+		var patchDensity = this.patchDensity;
+		var patchSpacing = this.patchSpacing;
+
+		if (gridEntity) {
+			// remove any previous old trees.
+			gridEntity.traverse(function (entity, level) {
+				if (level > 0) {
+					entity.removeFromWorld();
+				}
+			});
+		}
+
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
+		for (var x = 0; x < patchDensity; x++) {
+			for (var z = 0; z < patchDensity; z++) {
+
+				var pos = this.getPointInPatch(x, z, patchX, patchZ, patchSpacing);
+				var vegetationType = this.determineVegTypeAtPos(pos);
+
+				if (vegetationType) {
+					 this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
+				}
+				// console.count('tree');
+			}
+		}
+
+		var meshDatas = meshBuilder.build();
+		if (levelOfDetail === 2) {
+			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
+		}
+
+		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
+	Forrest.prototype.createBase = function (type) {
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
+		attributeMap.BASE = MeshData.createAttribute(1, 'Float');
+		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
+		var meshData = new MeshData(attributeMap, 4, 6);
+
+		meshData.getAttributeBuffer(MeshData.POSITION).set([
+			0, -type.h * 0.1, 0,
+			0, -type.h * 0.1, 0,
+			0, -type.h * 0.1, 0,
+			0, -type.h * 0.1, 0
+		]);
+		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
+			type.tx, type.ty,
+			type.tx, type.ty + type.th,
+			type.tx + type.tw, type.ty + type.th,
+			type.tx + type.tw, type.ty
+		]);
+		meshData.getAttributeBuffer('BASE').set([
+			0, type.h, type.h, 0
+		]);
+		meshData.getAttributeBuffer('OFFSET').set([
+			-type.w * 0.5, 0,
+			-type.w * 0.5, type.h,
+			type.w * 0.5, type.h,
+			type.w * 0.5, 0
+		]);
+
+		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
+
+		return meshData;
+	};
+
+	var vegetationShader = {
+		processors: [
+			ShaderBuilder.light.processor,
+			function (shader) {
+				if (ShaderBuilder.USE_FOG) {
+					shader.setDefine('FOG', true);
+					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+				} else {
+					shader.removeDefine('FOG');
+				}
+			}
+		],
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0,
+			base: 'BASE',
+			offset: 'OFFSET'
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			normalMap: Shader.NORMAL_MAP,
+			discardThreshold: -0.01,
+			fogSettings: function () {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function () {
+				return ShaderBuilder.FOG_COLOR;
+			},
+			time: Shader.TIME
+		},
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+		'attribute float base;',
+		'attribute vec2 offset;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform vec3 cameraPosition;',
+		'uniform float time;',
+
+		ShaderBuilder.light.prevertex,
+
+		'varying vec3 normal;',
+		'varying vec3 binormal;',
+		'varying vec3 tangent;',
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+			'vec3 swayPos = vertexPosition;',
+
+			'vec3 nn = cameraPosition - swayPos.xyz;',
+			'nn.y = 0.0;',
+			'normal = normalize(nn);',
+			'tangent = cross(vec3(0.0, 1.0, 0.0), normal);',
+			'binormal = cross(normal, tangent);',
+			'swayPos.xz += tangent.xz * offset.x;',
+			'swayPos.y += offset.y;',
+
+			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.02 + 0.01;',
+
+		'	vec4 worldPos = vec4(swayPos, 1.0);',
+		'	vWorldPos = worldPos.xyz;',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+
+			ShaderBuilder.light.vertex,
+
+		'	texCoord0 = vertexUV0;',
+		'	viewPosition = cameraPosition - worldPos.xyz;',
+		'}'//
+		].join('\n');
+		},
+		fshader: function () {
+			return [
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D normalMap;',
+		'uniform float discardThreshold;',
+		'uniform vec2 fogSettings;',
+		'uniform vec3 fogColor;',
+
+		ShaderBuilder.light.prefragment,
+
+		'varying vec3 normal;',
+		'varying vec3 binormal;',
+		'varying vec3 tangent;',
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
+		'varying vec2 texCoord0;',
+
+		'void main(void)',
+		'{',
+		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
+			'if (final_color.a < discardThreshold) discard;',
+			// 'final_color = vec4(1.0);',
+
+			'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
+			'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
+			'vec3 worldNormal = (tangentToWorld * tangentNormal);',
+			'vec3 N = normalize(worldNormal);',
+
+			// 'final_color = vec4(N, 1.0);',
+			ShaderBuilder.light.fragment,
+
+			'#ifdef FOG',
+			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+			'#endif',
+
+		'	gl_FragColor = final_color;',
+		'}'//
+		].join('\n');
+		}
+	};
+
+	return Forrest;
+})(goo.Material,goo.Camera,goo.Vector3,goo.Transform,goo.TextureCreator,goo.Texture,goo.MeshData,goo.Shader,goo.DirectionalLight,goo.CanvasUtils,goo.Ajax,goo.MeshBuilder,goo.Noise,goo.ValueNoise,goo.TerrainSurface,goo.DynamicLoader,goo.EntityUtils,goo.EntityCombiner,goo.TangentGenerator,goo.MeshDataComponent,goo.ScriptComponent,goo.ShaderBuilder,goo.MathUtils,goo.rsvp);
+goo.Terrain = (function (
+	EntityUtils,
+	MeshDataComponent,
+	MeshRendererComponent,
+	MathUtils,
+	Transform,
+	Vector3,
+	MeshData,
+	Material,
+	Shader,
+	ShaderBuilder,
+	ShaderLib,
+	ShaderFragment,
+	TextureCreator,
+	RenderTarget,
+	Texture,
+	Renderer,
+	FullscreenPass,
+	FullscreenUtils,
+	DirectionalLight,
+	Quad
+) {
+	'use strict';
+
+	var Ammo = window.Ammo; // make jslint happy
+
+	/**
+	 * A terrain
+	 */
+	function Terrain(goo, size, count) {
+		this.world = goo.world;
+		this.renderer = goo.renderer;
+		this.size = size;
+		this.count = count;
+		this.splatMult = 2;
+
+		this._gridCache = {};
+
+		var brush = new Quad(2 / size, 2 / size);
+
+		var mat = this.drawMaterial1 = new Material(brushShader);
+		mat.blendState.blending = 'AdditiveBlending';
+		mat.cullState.cullFace = 'Front';
+
+		var mat2 = this.drawMaterial2 = new Material(brushShader2);
+		mat2.cullState.cullFace = 'Front';
+
+		var mat3 = this.drawMaterial3 = new Material(brushShader3);
+		mat3.uniforms.size = 1 / size;
+		mat3.cullState.cullFace = 'Front';
+
+		var mat4 = this.drawMaterial4 = new Material(brushShader4);
+		mat4.cullState.cullFace = 'Front';
+
+		this.renderable = {
+			meshData: brush,
+			materials: [mat],
+			transform: new Transform()
+		};
+		this.renderable.transform.setRotationXYZ(0, 0, Math.PI * 0.5);
+
+		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
+		this.copyPass.material.depthState.enabled = false;
+
+		this.upsamplePass = new FullscreenPass(upsampleShader);
+		this.upsamplePass.material.depthState.enabled = false;
+
+		this.normalmapPass = new FullscreenPass(normalmapShader);
+		this.normalmapPass.material.depthState.enabled = false;
+		this.normalmapPass.material.uniforms.resolution = [size, size];
+		this.normalmapPass.material.uniforms.height = 10;
+
+		this.extractFloatPass = new FullscreenPass(extractShader);
+		// this.detailmapPass = new FullscreenPass(detailShader);
+
+		this.normalMap = new RenderTarget(size, size);
+		// this.detailMap = new RenderTarget(size, size);
+
+		this.textures = [];
+		this.texturesBounce = [];
+		for (var i = 0; i < count; i++) {
+			this.textures[i] = new RenderTarget(size, size, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				type: 'Float'
+			});
+			this.texturesBounce[i] = new RenderTarget(size, size, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				type: 'Float'
+			});
+
+			size *= 0.5;
+		}
+
+		mat3.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
+		mat4.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
+
+		this.n = 31;
+		this.gridSize = (this.n + 1) * 4 - 1;
+		console.log('grid size: ', this.gridSize);
+
+		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false
+		});
+		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false
+		});
+		mat2.setTexture('SPLAT_MAP', this.splatCopy);
+	}
+
+	Terrain.prototype.init = function (terrainTextures) {
+		var world = this.world;
+		var count = this.count;
+
+		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
+		entity.addToWorld();
+		this.clipmaps = [];
+		for (var i = 0; i < count; i++) {
+			var size = Math.pow(2, i);
+
+			var material = new Material(terrainShaderDefFloat, 'clipmap' + i);
+			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
+			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
+			material.cullState.frontFace = 'CW';
+			// material.wireframe = true;
+			material.uniforms.resolution = [1, 1 / size, this.size, this.size];
+			material.uniforms.resolutionNorm = [this.size, this.size];
+
+			var clipmapEntity = this.createClipmapLevel(world, material, i);
+			clipmapEntity.setScale(size, 1, size);
+			entity.attachChild(clipmapEntity);
+
+			var terrainPickingMaterial = new Material(terrainPickingShader, 'terrainPickingMaterial' + i);
+			terrainPickingMaterial.cullState.frontFace = 'CW';
+			terrainPickingMaterial.uniforms.resolution = [1, 1 / size, this.size, this.size];
+			terrainPickingMaterial.blendState = {
+				blending: 'NoBlending',
+				blendEquation: 'AddEquation',
+				blendSrc: 'SrcAlphaFactor',
+				blendDst: 'OneMinusSrcAlphaFactor'
+			};
+
+			this.clipmaps[i] = {
+				clipmapEntity: clipmapEntity,
+				level: i,
+				size: size,
+				currentX: 100000,
+				currentY: 100000,
+				currentZ: 100000,
+				origMaterial: material,
+				terrainPickingMaterial: terrainPickingMaterial
+			};
+		}
+
+		var parentClipmap = this.clipmaps[this.clipmaps.length - 1];
+		for (var i = this.clipmaps.length - 2; i >= 0; i--) {
+			var clipmap = this.clipmaps[i];
+			clipmap.parentClipmap = parentClipmap;
+			parentClipmap = clipmap;
+		}
+
+		// edit marker
+		var light = new DirectionalLight();
+		light.shadowSettings.size = 10;
+		var lightEntity = this.lightEntity = world.createEntity(light);
+		lightEntity.setTranslation(200, 200, 200);
+		lightEntity.setRotation(-Math.PI * 0.5, 0, 0);
+		lightEntity.addToWorld();
+		this.lightEntity.lightComponent.hidden = true;
+
+		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			format: 'Luminance'
+		}, this.size, this.size);
+
+		this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			flipY: false
+		}, this.size * this.splatMult, this.size * this.splatMult);
+
+		for (var i = 0; i < this.count; i++) {
+			var material = this.clipmaps[i].origMaterial;
+			var texture = this.textures[i];
+
+			material.setTexture('HEIGHT_MAP', texture);
+			material.setTexture('NORMAL_MAP', this.normalMap);
+			material.setTexture('DETAIL_MAP', this.detailMap);
+
+			material.setTexture('SPLAT_MAP', this.splat);
+			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
+			material.setTexture('GROUND_MAP2', terrainTextures.ground2);
+			material.setTexture('GROUND_MAP3', terrainTextures.ground3);
+			material.setTexture('GROUND_MAP4', terrainTextures.ground4);
+			material.setTexture('GROUND_MAP5', terrainTextures.ground5);
+			material.setTexture('STONE_MAP', terrainTextures.stone);
+
+			var terrainPickingMaterial = this.clipmaps[i].terrainPickingMaterial;
+			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
+		}
+
+		// var normalAdd = new TextureCreator().loadTexture2D('res/terrain/grass2n.jpg', {
+			// anisotropy: 4
+		// }, function (texture) {});
+		// this.normalmapPass.material.setTexture('NORMAL_MAP', normalAdd);
+
+		// var material = this.detailmapPass.material;
+		// material.setTexture('NORMAL_MAP', this.normalMap);
+		// material.setTexture('SPLAT_MAP', this.splat);
+		// material.setTexture('GROUND_MAP1', terrainTextures.ground1);
+		// material.setTexture('GROUND_MAP2', terrainTextures.ground2);
+		// material.setTexture('GROUND_MAP3', terrainTextures.ground3);
+		// material.setTexture('GROUND_MAP4', terrainTextures.ground4);
+		// material.setTexture('GROUND_MAP5', terrainTextures.ground5);
+		// material.setTexture('STONE_MAP', terrainTextures.stone);
+
+		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
+		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
+		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
+
+		this.updateTextures();
+	};
+
+	Terrain.prototype.toggleMarker = function () {
+		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
+	};
+
+	Terrain.prototype.setMarker = function (type, size, x, y, power, brushTexture) {
+		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
+		brushTexture.wrapS = 'EdgeClamp';
+		brushTexture.wrapT = 'EdgeClamp';
+		this.lightEntity.lightComponent.light.lightCookie = brushTexture;
+		this.lightEntity.setTranslation(x, 200, y);
+	};
+
+	Terrain.prototype.pick = function (camera, x, y, store) {
+		var entities = [];
+		this.terrainRoot.traverse(function (entity) {
+			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {
+				entities.push(entity);
+			}
+		});
+
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+
+			clipmap.clipmapEntity.traverse(function (entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.isPickable = true;
+					entity.meshRendererComponent.materials[0] = clipmap.terrainPickingMaterial;
+				}
+			});
+		}
+
+		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y, null, true);
+		var pickStore = {};
+		this.renderer.pick(x, y, pickStore, Renderer.mainCamera);
+		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
+
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+
+			clipmap.clipmapEntity.traverse(function (entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.isPickable = false;
+					entity.meshRendererComponent.materials[0] = clipmap.origMaterial;
+				}
+			});
+		}
+	};
+
+	Terrain.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
+		power = MathUtils.clamp(power, 0, 1);
+
+		x = (x - this.size / 2) * 2;
+		z = (z - this.size / 2) * 2;
+
+		if (mode === 'paint') {
+			this.renderable.materials[0] = this.drawMaterial2;
+			this.renderable.materials[0].uniforms.opacity = power;
+
+			if (type === 'add') {
+				this.renderable.materials[0].blendState.blendEquationColor = 'AddEquation';
+				this.renderable.materials[0].blendState.blendEquationAlpha = 'AddEquation';
+			} else if (type === 'sub') {
+				this.renderable.materials[0].blendState.blendEquationColor = 'ReverseSubtractEquation';
+				this.renderable.materials[0].blendState.blendEquationAlpha = 'ReverseSubtractEquation';
+			}
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
+			this.renderable.transform.update();
+
+			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
+
+			this.renderable.materials[0].uniforms.rgba = rgba || [1, 1, 1, 1];
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.splat, false);
+		} else if (mode === 'smooth') {
+			this.renderable.materials[0] = this.drawMaterial3;
+			this.renderable.materials[0].uniforms.opacity = power;
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
+			this.renderable.transform.update();
+
+			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
+		} else if (mode === 'flatten') {
+			this.renderable.materials[0] = this.drawMaterial4;
+			this.renderable.materials[0].uniforms.opacity = power;
+			this.renderable.materials[0].uniforms.height = y;
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
+			this.renderable.transform.update();
+
+			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
+		} else {
+			this.renderable.materials[0] = this.drawMaterial1;
+			this.renderable.materials[0].uniforms.opacity = power;
+
+			if (type === 'add') {
+				this.renderable.materials[0].blendState.blending = 'AdditiveBlending';
+			} else if (type === 'sub') {
+				this.renderable.materials[0].blendState.blending = 'SubtractiveBlending';
+			} else if (type === 'mul') {
+				this.renderable.materials[0].blendState.blending = 'MultiplyBlending';
+			}
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setDirect(x / this.size, z / this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
+			this.renderable.transform.update();
+
+			this.renderer.render(this.renderable, FullscreenUtils.camera, [], this.textures[0], false);
+		}
+	};
+
+	Terrain.prototype.getTerrainData = function () {
+		var terrainBuffer = new Uint8Array(this.size * this.size * 4);
+		this.extractFloatPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+		this.renderer.readPixels(0, 0, this.size, this.size, terrainBuffer);
+		var terrainFloats = new Float32Array(terrainBuffer.buffer);
+
+		var normalBuffer = new Uint8Array(this.size * this.size * 4);
+		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
+		this.renderer.readPixels(0, 0, this.size, this.size, normalBuffer);
+
+		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
+		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
+		this.renderer.readPixels(0, 0, this.size * this.splatMult, this.size * this.splatMult, splatBuffer);
+
+		return {
+			heights: terrainFloats,
+			normals: normalBuffer,
+			splat: splatBuffer
+		};
+	};
+
+	Terrain.prototype.updateAmmoBody = function () {
+		var heights = this.getTerrainData().heights;
+		var heightBuffer = this.heightBuffer;
+		for (var z = 0; z < this.size; z++) {
+			for (var x = 0; x < this.size; x++) {
+				Ammo.setValue(heightBuffer + (z * this.size + x) * 4, heights[(this.size - z - 1) * this.size + x], 'float');
+			}
+		}
+	};
+
+	Terrain.prototype.setLightmapTexture = function (lightMap) {
+		// update all meshes.
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+			clipmap.clipmapEntity.traverse(function (entity) {
+				if (entity.meshRendererComponent) {
+					var material = entity.meshRendererComponent.materials[0];
+					if (lightMap) {
+						material.setTexture('LIGHT_MAP', lightMap);
+						material.shader.setDefine('LIGHTMAP', true);
+					} else {
+						material.shader.removeDefine('LIGHTMAP');
+					}
+				}
+			});
+		}
+	};
+
+	// Returns the ammo body.
+	Terrain.prototype.initAmmoBody = function () {
+		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, 'float', Ammo.ALLOC_NORMAL);
+
+		this.updateAmmoBody();
+
+		var heightScale = 1.0;
+		var minHeight = -500;
+		var maxHeight = 500;
+		var upAxis = 1; // 0 => x, 1 => y, 2 => z
+		var heightDataType = 0; //PHY_FLOAT;
+		var flipQuadEdges = false;
+
+		var shape = new Ammo.btHeightfieldTerrainShape(
+			this.size,
+			this.size,
+			heightBuffer,
+			heightScale,
+			minHeight,
+			maxHeight,
+			upAxis,
+			heightDataType,
+			flipQuadEdges
+		);
+
+		// var sx = xw / widthPoints;
+		// var sz = zw / lengthPoints;
+		// var sy = 1.0;
+
+		// var sizeVector = new Ammo.btVector3(sx, sy, sz);
+		// shape.setLocalScaling(sizeVector);
+
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity(); // TODO: is this needed ?
+		ammoTransform.setOrigin(new Ammo.btVector3( this.size / 2, 0, this.size / 2 ));
+		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+		var localInertia = new Ammo.btVector3(0, 0, 0);
+
+		var mass = 0;
+
+		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+		var body = new Ammo.btRigidBody(info);
+		body.setFriction(1);
+
+		this.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
+
+		return body;
+	};
+
+	Terrain.prototype.updateTextures = function () {
+		for (var i = 0; i < this.count - 1; i++) {
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
+
+			mipmap.magFilter = 'Bilinear';
+			mipmap.minFilter = 'BilinearNoMipMaps';
+
+			this.copyPass.render(this.renderer, child, mipmap);
+		}
+
+		var size = this.size;
+		for (var i = 0; i < this.count; i++) {
+			var mipmapTarget = this.texturesBounce[i];
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
+
+			this.upsamplePass.material.setTexture('MAIN_MAP', mipmap);
+			this.upsamplePass.material.uniforms.res =  [size, size, 2/size, 2/size];
+
+			if (child) {
+				child.magFilter = 'NearestNeighbor';
+				child.minFilter = 'NearestNeighborNoMipMaps';
+
+				this.upsamplePass.render(this.renderer, mipmapTarget, child);
+			} else {
+				mipmap.magFilter = 'NearestNeighbor';
+				mipmap.minFilter = 'NearestNeighborNoMipMaps';
+
+				this.upsamplePass.render(this.renderer, mipmapTarget, mipmap);
+			}
+
+			size *= 0.5;
+		}
+
+		for (var i = 0; i < this.count; i++) {
+			this.copyPass.render(this.renderer, this.textures[i], this.texturesBounce[i]);
+		}
+
+		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
+
+		// this.detailmapPass.render(this.renderer, this.detailMap, this.textures[0]);
+	};
+
+	Terrain.prototype.update = function (pos) {
+		var x = pos.x;
+		var y = pos.y;
+		var z = pos.z;
+
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+
+			var xx = Math.floor(x * 0.5 / clipmap.size);
+			var yy = Math.floor(y * 0.5 / clipmap.size);
+			var zz = Math.floor(z * 0.5 / clipmap.size);
+
+			if (yy !== clipmap.currentY) {
+				clipmap.currentY = yy;
+				var compSize = this.gridSize * clipmap.size * 2;
+				if (clipmap.clipmapEntity._hidden === false && y > compSize) {
+					clipmap.clipmapEntity.hide();
+
+					if (i < this.clipmaps.length - 1) {
+						var childClipmap = this.clipmaps[i + 1];
+						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = false;
+						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = true;
+						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = true;
+					}
+
+					continue;
+				} else if (clipmap.clipmapEntity._hidden === true && y <= compSize) {
+					clipmap.clipmapEntity.show();
+
+					if (i < this.clipmaps.length - 1) {
+						var childClipmap = this.clipmaps[i + 1];
+						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = true;
+						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = false;
+						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = false;
+					}
+				}
+			}
+
+			if (xx === clipmap.currentX && zz === clipmap.currentZ) {
+				continue;
+			}
+
+			var n = this.n;
+
+			if (clipmap.parentClipmap) {
+				var interior1 = clipmap.parentClipmap.clipmapEntity.interior1;
+				var interior2 = clipmap.parentClipmap.clipmapEntity.interior2;
+
+				var xxx = MathUtils.moduloPositive(xx + 1, 2);
+				var zzz = MathUtils.moduloPositive(zz + 1, 2);
+				var xmove = xxx % 2 === 0 ? -n : n + 1;
+				var zmove = zzz % 2 === 0 ? -n : n + 1;
+				interior1.setTranslation(-n, 0, zmove);
+				zzz = MathUtils.moduloPositive(zz, 2);
+				zmove = zzz % 2 === 0 ? -n : -n + 1;
+				interior2.setTranslation(xmove, 0, zmove);
+			}
+
+			clipmap.clipmapEntity.setTranslation(xx * clipmap.size * 2, 0, zz * clipmap.size * 2);
+
+			clipmap.currentX = xx;
+			clipmap.currentZ = zz;
+		}
+	};
+
+	Terrain.prototype.createClipmapLevel = function (world, material, level) {
+		var entity = world.createEntity('clipmap' + level);
+		entity.addToWorld();
+
+		var n = this.n;
+
+		// 0
+		this.createQuadEntity(world, material, level, entity, -2 * n, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, -1 * n, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 0 * n, -2 * n, 2, n);
+		this.createQuadEntity(world, material, level, entity, 2, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -2 * n, n, n);
+
+		// 1
+		this.createQuadEntity(world, material, level, entity, -2 * n, -1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -1 * n, n, n);
+
+		// 2
+		this.createQuadEntity(world, material, level, entity, -2 * n, 0, n, 2);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 0, n, 2);
+
+		// 3
+		this.createQuadEntity(world, material, level, entity, -2 * n, 2, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2, n, n);
+
+		// 4
+		this.createQuadEntity(world, material, level, entity, -2 * n, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, -1 * n, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 0, 2 + 1 * n, 2, n);
+		this.createQuadEntity(world, material, level, entity, 2, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2 + 1 * n, n, n);
+
+		entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, n * 2 + 2);
+
+		if (level !== 0) {
+			entity.innermost.meshRendererComponent.hidden = true;
+
+			// interior
+			entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, 1);
+			entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, n * 2 + 1);
+		}
+
+		return entity;
+	};
+
+	Terrain.prototype.createQuadEntity = function (world, material, level, parentEntity, x, y, w, h) {
+		var meshData = this.createGrid(w, h);
+		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
+
+		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
+		entity.meshDataComponent.modelBound.yExtent = 255;
+		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
+		entity.meshDataComponent.modelBound.center.setDirect(w * 0.5, 128, h * 0.5);
+		entity.meshDataComponent.autoCompute = false;
+		entity.meshRendererComponent.isPickable = false;
+
+		entity.setTranslation(x, 0, y);
+		// entity.setTranslation(x * 1.05, 0, y * 1.05);
+
+		parentEntity.attachChild(entity);
+		entity.addToWorld();
+
+		return entity;
+	};
+
+
+	Terrain.prototype.createGrid = function (w, h) {
+		var key = w + '_' + h;
+		if (this._gridCache[key]) {
+			return this._gridCache[key];
+		}
+
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
+		var meshData = new MeshData(attributeMap, (w + 1) * (h + 1), (w * 2 + 4) * h);
+		this._gridCache[key] = meshData;
+
+		meshData.indexModes = ['TriangleStrip'];
+
+		var vertices = meshData.getAttributeBuffer(MeshData.POSITION);
+		var indices = meshData.getIndexBuffer();
+
+		for (var x = 0; x < w + 1; x++) {
+			for (var y = 0; y < h + 1; y++) {
+				var index = y * (w + 1) + x;
+				vertices[index * 3 + 0] = x;
+				vertices[index * 3 + 1] = 0;
+				vertices[index * 3 + 2] = y;
+			}
+		}
+
+		var indicesIndex = 0;
+		var index = 0;
+		for (var y = 0; y < h; y++) {
+			indices[indicesIndex++] = y * (w + 1);
+			indices[indicesIndex++] = y * (w + 1);
+
+			for (var x = 0; x < w; x++) {
+				index = y * (w + 1) + x;
+				indices[indicesIndex++] = index + w + 1;
+				indices[indicesIndex++] = index + 1;
+			}
+
+			indices[indicesIndex++] = index + w + 1 + 1;
+			indices[indicesIndex++] = index + w + 1 + 1;
+		}
+
+		console.log((w + 1) * (h + 1), (w * 2 + 4) * h, w * h * 6);
+
+		return meshData;
+	};
+
+	var terrainShaderDefFloat = {
+		defines: {
+			SKIP_SPECULAR: true
+		},
+		processors: [
+			ShaderBuilder.light.processor,
+			function (shader) {
+				if (ShaderBuilder.USE_FOG) {
+					shader.setDefine('FOG', true);
+					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+				} else {
+					shader.removeDefine('FOG');
+				}
+			}
+		],
+		attributes: {
+			vertexPosition: MeshData.POSITION
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			heightMap: 'HEIGHT_MAP',
+			normalMap: 'NORMAL_MAP',
+			detailMap: 'DETAIL_MAP',
+			splatMap: 'SPLAT_MAP',
+			groundMap1: 'GROUND_MAP1',
+			groundMap2: 'GROUND_MAP2',
+			groundMap3: 'GROUND_MAP3',
+			groundMap4: 'GROUND_MAP4',
+			groundMap5: 'GROUND_MAP5',
+			stoneMap: 'STONE_MAP',
+			lightMap: 'LIGHT_MAP',
+			fogSettings: function () {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function () {
+				return ShaderBuilder.FOG_COLOR;
+			},
+			resolution: [255, 1, 1024, 1024],
+			resolutionNorm: [1024, 1024],
+			col: [0, 0, 0]
+		},
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
+				'attribute vec3 vertexPosition;',
+
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+				'uniform vec3 cameraPosition;',
+				'uniform sampler2D heightMap;',
+				'uniform vec4 resolution;',
+
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
+
+				ShaderBuilder.light.prevertex,
+
+				'const vec2 alphaOffset = vec2(45.0);',
+				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
+
+				'void main(void) {',
+				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+				'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
+
+				'vec4 heightCol = texture2D(heightMap, coord);',
+				'float zf = heightCol.r;',
+				'float zd = heightCol.g;',
+
+				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
+				'alpha.x = max(alpha.x, alpha.y);',
+				'float z = mix(zf, zd, alpha.x);',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				'alphaval = vec4(zf, zd, alpha.x, z);',
+
+				'worldPos.y = z * resolution.x;',
+				'gl_Position = viewProjectionMatrix * worldPos;',
+
+				'vWorldPos = worldPos.xyz;',
+				'viewPosition = cameraPosition - vWorldPos;',
+
+				ShaderBuilder.light.vertex,
+				'}'
+			].join('\n');
+		},
+		fshader: function () {
+			return [
+				'uniform vec3 col;',
+				'uniform sampler2D normalMap;',
+				'uniform sampler2D splatMap;',
+				'uniform sampler2D detailMap;',
+				'uniform sampler2D groundMap1;',
+				'uniform sampler2D groundMap2;',
+				'uniform sampler2D groundMap3;',
+				'uniform sampler2D groundMap4;',
+				'uniform sampler2D groundMap5;',
+				'uniform sampler2D stoneMap;',
+				'uniform sampler2D lightMap;',
+
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
+
+				'uniform vec2 resolutionNorm;',
+
+				// 'uniform vec2 resolution;',
+				// 'uniform sampler2D heightMap;',
+
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
+
+				ShaderBuilder.light.prefragment,
+
+				'void main(void) {',
+					'if (alphaval.w < -1000.0) discard;',
+					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
+					'vec2 coord = mapcoord * 96.0;',
+					'vec4 final_color = vec4(1.0);',
+
+					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+					'N.y = 0.1;',
+					'N = normalize(N);',
+
+					'vec4 splat = texture2D(splatMap, mapcoord);',
+					'vec4 g1 = texture2D(groundMap1, coord);',
+					'vec4 g2 = texture2D(groundMap2, coord);',
+					'vec4 g3 = texture2D(groundMap3, coord);',
+					'vec4 g4 = texture2D(groundMap4, coord);',
+					'vec4 g5 = texture2D(groundMap5, coord);',
+					'vec4 stone = texture2D(stoneMap, coord);',
+
+					'final_color = mix(g1, g2, splat.r);',
+					'final_color = mix(final_color, g3, splat.g);',
+					'final_color = mix(final_color, g4, splat.b);',
+					'final_color = mix(final_color, g5, splat.a);',
+
+					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					'slope = smoothstep(0.15, 0.25, slope);',
+					'final_color = mix(final_color, stone, slope);',
+
+					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',
+					// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
+
+					'#ifdef LIGHTMAP',
+					'final_color = final_color * texture2D(lightMap, mapcoord);',
+					'#else',
+					ShaderBuilder.light.fragment,
+					'#endif',
+
+					'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'#endif',
+
+					'gl_FragColor = final_color;',
+				'}'
+			].join('\n');
+		}
+	};
+
+	var upsampleShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			diffuseMap: 'MAIN_MAP',
+			childMap: Shader.DIFFUSE_MAP,
+			res: [1, 1, 1, 1]
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void) {',
+			'	texCoord0 = vertexUV0;',
+			'	gl_Position = vec4(vertexPosition, 1.0);',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D diffuseMap;',
+			'uniform sampler2D childMap;',
+
+			'uniform vec4 res;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void)',
+			'{',
+			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+
+			'	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);',
+			'	bvec2 test = equal(coordMod, vec2(0.0));',
+
+			'	if (all(test)) {',
+			'		gl_FragColor.g = texture2D(childMap, texCoord0).r;',
+			'	} else if (test.x) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;',
+			'	} else if (test.y) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;',
+			'	} else {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;',
+			'	}',
+			'	gl_FragColor.ba = vec2(0.0);',
+			'}'
+		].join('\n')
+	};
+
+	var brushShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			diffuseMap: Shader.DIFFUSE_MAP
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+		'	texCoord0 = vertexUV0;',
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'//
+		].join('\n'),
+		fshader: [
+		'uniform sampler2D diffuseMap;',
+		'uniform float opacity;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void)',
+		'{',
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.a *= opacity;',
+		'}'//
+		].join('\n')
+	};
+
+	var brushShader2 = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			rgba: [1, 1, 1, 1],
+			diffuseMap: Shader.DIFFUSE_MAP,
+			splatMap: 'SPLAT_MAP'
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void) {',
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+		'	texCoord0 = vertexUV0;',
+		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
+		'}'//
+		].join('\n'),
+		fshader: [
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D splatMap;',
+		'uniform vec4 rgba;',
+		'uniform float opacity;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void)',
+		'{',
+		'	vec4 splat = texture2D(splatMap, texCoord1);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	vec4 final = mix(splat, rgba, opacity * length(brush.rgb) * brush.a);',
+		'	gl_FragColor = final;',
+		'}'//
+		].join('\n')
+	};
+
+	var brushShader3 = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			size: 1/512,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void) {',
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+		'	texCoord0 = vertexUV0;',
+		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
+		'}'//
+		].join('\n'),
+		fshader: [
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D heightMap;',
+		'uniform float opacity;',
+
+		'uniform float size;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void)',
+		'{',
+		'	float col1 = texture2D(heightMap, texCoord1 + vec2(-size, -size)).r;',
+		'	float col2 = texture2D(heightMap, texCoord1 + vec2(-size, size)).r;',
+		'	float col3 = texture2D(heightMap, texCoord1 + vec2(size, size)).r;',
+		'	float col4 = texture2D(heightMap, texCoord1 + vec2(size, -size)).r;',
+		'	float avg = (col1 + col2 + col3 + col4) * 0.25;',
+		'	gl_FragColor = texture2D(heightMap, texCoord1);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.r = mix(gl_FragColor.r, avg, brush.r * brush.a * opacity);',
+		'}'//
+		].join('\n')
+	};
+
+	var brushShader4 = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			opacity: 1.0,
+			height: 0,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			heightMap: 'HEIGHT_MAP'
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void) {',
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+		'	texCoord0 = vertexUV0;',
+		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
+		'}'//
+		].join('\n'),
+		fshader: [
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D heightMap;',
+		'uniform float opacity;',
+
+		'uniform float height;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void)',
+		'{',
+		'	gl_FragColor = texture2D(heightMap, texCoord1);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.r = mix(gl_FragColor.r, height, brush.r * brush.a * opacity);',
+		'}'//
+		].join('\n')
+	};
+
+	var extractShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.DIFFUSE_MAP
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+		'	texCoord0 = vertexUV0;',
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'//
+		].join('\n'),
+		fshader: [
+		'uniform sampler2D diffuseMap;',
+
+		'varying vec2 texCoord0;',
+
+		'float shift_right (float v, float amt) {',
+			'v = floor(v) + 0.5;',
+			'return floor(v / exp2(amt));',
+		'}',
+		'float shift_left (float v, float amt) {',
+			'return floor(v * exp2(amt) + 0.5);',
+		'}',
+		'float mask_last (float v, float bits) {',
+			'return mod(v, shift_left(1.0, bits));',
+		'}',
+		'float extract_bits (float num, float from, float to) {',
+			'from = floor(from + 0.5); to = floor(to + 0.5);',
+			'return mask_last(shift_right(num, from), to - from);',
+		'}',
+		'vec4 encode_float (float val) {',
+			'if (val == 0.0) return vec4(0, 0, 0, 0);',
+			'float sign = val > 0.0 ? 0.0 : 1.0;',
+			'val = abs(val);',
+			'float exponent = floor(log2(val));',
+			'float biased_exponent = exponent + 127.0;',
+			'float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
+			'float t = biased_exponent / 2.0;',
+			'float last_bit_of_biased_exponent = fract(t) * 2.0;',
+			'float remaining_bits_of_biased_exponent = floor(t);',
+			'float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;',
+			'float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
+			'float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
+			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
+			'return vec4(byte4, byte3, byte2, byte1);',
+		'}',
+
+		'void main(void)',
+		'{',
+		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
+		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
+		'}'//
+		].join('\n')
+	};
+
+	var terrainPickingShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION
+		},
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraFar: Shader.FAR_PLANE,
+			cameraPosition: Shader.CAMERA,
+			heightMap: 'HEIGHT_MAP',
+			resolution: [255, 1, 1, 1],
+			id: function (shaderInfo) {
+				return shaderInfo.renderable.id + 1;
+			}
+		},
+		vshader: [
+		'attribute vec3 vertexPosition;',
+
+		'uniform sampler2D heightMap;',
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform float cameraFar;',
+		'uniform vec4 resolution;',
+		'uniform vec3 cameraPosition;',
+
+		'varying float depth;',
+
+		'const vec2 alphaOffset = vec2(45.0);',
+		'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
+
+		'void main(void) {',
+			'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+			'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
+
+			'vec4 heightCol = texture2D(heightMap, coord);',
+			'float zf = heightCol.r;',
+			'float zd = heightCol.g;',
+
+			'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
+			'alpha.x = max(alpha.x, alpha.y);',
+			'float z = mix(zf, zd, alpha.x);',
+			// 'depth = z;',
+
+			'worldPos.y = z * resolution.x;',
+
+			'vec4 mvPosition = viewMatrix * worldPos;',
+			'depth = -mvPosition.z / cameraFar;',
+			'gl_Position = projectionMatrix * mvPosition;',
+		'}'
+		].join('\n'),
+		fshader: [
+		'uniform float id;',
+
+		'varying float depth;',
+
+		ShaderFragment.methods.packDepth16,
+
+		'void main() {',
+			'vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
+			'vec2 packedDepth = packDepth16(depth);',
+			'gl_FragColor = vec4(packedId, packedDepth);',
+			// 'gl_FragColor = vec4(depth * 0.2, 0.0, 0.0, 1.0);',
+		'}'
+		].join('\n')
+	};
+
+	// var detailShader = {
+	// 	attributes: {
+	// 		vertexPosition: MeshData.POSITION,
+	// 		vertexUV0: MeshData.TEXCOORD0
+	// 	},
+	// 	uniforms: {
+	// 		viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+	// 		worldMatrix: Shader.WORLD_MATRIX,
+	// 		normalMap: 'NORMAL_MAP',
+	// 		splatMap: 'SPLAT_MAP',
+	// 		groundMap1: 'GROUND_MAP1',
+	// 		groundMap2: 'GROUND_MAP2',
+	// 		groundMap3: 'GROUND_MAP3',
+	// 		groundMap4: 'GROUND_MAP4',
+	// 		groundMap5: 'GROUND_MAP5',
+	// 		stoneMap: 'STONE_MAP'
+	// 	},
+	// 	vshader: [
+	// 		'attribute vec3 vertexPosition;',
+	// 		'attribute vec2 vertexUV0;',
+
+	// 		'varying vec2 texCoord0;',
+
+	// 		'void main(void) {',
+	// 		'	texCoord0 = vertexUV0;',
+	// 		'	gl_Position = vec4(vertexPosition, 1.0);',
+	// 		'}'
+	// 	].join('\n'),
+	// 	fshader: [
+	// 		'uniform sampler2D normalMap;',
+	// 		'uniform sampler2D splatMap;',
+	// 		'uniform sampler2D groundMap1;',
+	// 		'uniform sampler2D groundMap2;',
+	// 		'uniform sampler2D groundMap3;',
+	// 		'uniform sampler2D groundMap4;',
+	// 		'uniform sampler2D groundMap5;',
+	// 		'uniform sampler2D stoneMap;',
+
+	// 		'varying vec2 texCoord0;',
+
+	// 		'void main(void) {',
+	// 			'vec4 final_color = vec4(1.0);',
+
+	// 			'vec2 coord = texCoord0 * 96.0;',
+
+	// 			'vec3 N = (texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+	// 			'N.y = 0.1;',
+	// 			'N = normalize(N);',
+
+	// 			'vec4 splat = texture2D(splatMap, texCoord0);',
+	// 			'vec4 g1 = texture2D(groundMap1, coord);',
+	// 			'vec4 g2 = texture2D(groundMap2, coord);',
+	// 			'vec4 g3 = texture2D(groundMap3, coord);',
+	// 			'vec4 g4 = texture2D(groundMap4, coord);',
+	// 			'vec4 g5 = texture2D(groundMap5, coord);',
+	// 			'vec4 stone = texture2D(stoneMap, coord);',
+
+	// 			'final_color = mix(g1, g2, splat.r);',
+	// 			'final_color = mix(final_color, g3, splat.g);',
+	// 			'final_color = mix(final_color, g4, splat.b);',
+	// 			'final_color = mix(final_color, g5, splat.a);',
+
+	// 			'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+	// 			'slope = smoothstep(0.15, 0.25, slope);',
+	// 			'final_color = mix(final_color, stone, slope);',
+
+	// 			'gl_FragColor = final_color;',
+	// 		'}'
+	// 	].join('\n')
+	// };
+
+	var normalmapShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			heightMap: Shader.DIFFUSE_MAP,
+			// normalMap: Shader.NORMAL_MAP,
+			resolution: [512, 512],
+			height	: 0.05
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform float height;',
+			'uniform vec2 resolution;',
+			'uniform sampler2D heightMap;',
+			// 'uniform sampler2D normalMap;',
+
+			'varying vec2 vUv;',
+
+			'void main() {',
+				'float val = texture2D(heightMap, vUv).x;',
+				'float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;',
+				'float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;',
+
+				'vec3 normal = vec3(val - valU, val - valV, height);',
+				// 'normal.rgb += vec3(texture2D(normalMap, vUv).rg * 2.0 - 1.0, 0.0);',
+				'gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);',
+			'}'
+		].join('\n')
+	};
+
+	return Terrain;
+})(goo.EntityUtils,goo.MeshDataComponent,goo.MeshRendererComponent,goo.MathUtils,goo.Transform,goo.Vector3,goo.MeshData,goo.Material,goo.Shader,goo.ShaderBuilder,goo.ShaderLib,goo.ShaderFragment,goo.TextureCreator,goo.RenderTarget,goo.Texture,goo.Renderer,goo.FullscreenPass,goo.FullscreenUtils,goo.DirectionalLight,goo.Quad);
+goo.Vegetation = (function (
+	MeshDataComponent,
+	Material,
+	Camera,
+	MathUtils,
+	Vector3,
+	Transform,
+	TextureCreator,
+	Texture,
+	MeshData,
+	Shader,
+	DirectionalLight,
+	CanvasUtils,
+	Ajax,
+	MeshBuilder,
+	Noise,
+	ValueNoise,
+	TerrainSurface,
+	Quad,
+	ShaderBuilder
+) {
+	'use strict';
+
+	function Vegetation() {
+		this.calcVec = new Vector3();
+		this.initDone = false;
+	}
+
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings) {
+		this.world = world;
+		this.terrainQuery = terrainQuery;
+
+		this.vegetationList = {};
+		for (var type in vegetationTypes) {
+			var typeSettings = vegetationTypes[type];
+			var meshData = this.createBase(typeSettings);
+			this.vegetationList[type] = meshData;
+		}
+
+		var material = new Material(vegetationShader, 'vegetation');
+		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
+		material.cullState.enabled = false;
+		material.uniforms.discardThreshold = 0.2;
+		material.blendState.blending = 'CustomBlending';
+		// material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
+		material.uniforms.materialAmbient = [0, 0, 0, 0];
+		material.uniforms.materialDiffuse = [1, 1, 1, 1];
+		material.uniforms.materialSpecular = [0, 0, 0, 0];
+		material.renderQueue = 3001;
+		this.material = material;
+
+		this.patchSize = 15;
+		this.patchDensity = 19;
+		this.gridSize = 7;
+
+		if (settings) {
+			this.patchSize = settings.patchSize || this.patchSize;
+			this.patchDensity = settings.patchDensity || this.patchDensity;
+			this.gridSize = settings.gridSize || this.gridSize;
+		}
+
+		this.patchSpacing = this.patchSize / this.patchDensity;
+		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
+		this.grid = [];
+		var dummyMesh = this.createPatch(0, 0);
+		for (var x = 0; x < this.gridSize; x++) {
+			this.grid[x] = [];
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.world.createEntity(this.material);
+				var meshDataComponent = new MeshDataComponent(dummyMesh);
+				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.yExtent = 500;
+				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.autoCompute = false;
+				entity.set(meshDataComponent);
+				entity.addToWorld();
+				this.grid[x][z] = entity;
+				entity.meshRendererComponent.cullMode = 'Never';
+				entity.meshRendererComponent.hidden = true;
+			}
+		}
+
+		material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
+		material.uniforms.fadeDistMin = 0.70 * material.uniforms.fadeDistMax;
+
+		this.currentX = -10000;
+		this.currentZ = -10000;
+
+		this.initDone = true;
+	};
+
+	Vegetation.prototype.rebuild = function () {
+		this.currentX = -10000;
+		this.currentZ = -10000;
+	};
+
+	var hidden = false;
+	Vegetation.prototype.toggle = function () {
+		hidden = !hidden;
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				entity.skip = hidden;
+			}
+		}
+		if (!hidden) {
+			this.rebuild();
+		}
+	};
+
+	Vegetation.prototype.update = function (x, z) {
+		if (!this.initDone || hidden) {
+			return;
+		}
+
+		var newX = Math.floor(x / this.patchSize);
+		var newZ = Math.floor(z / this.patchSize);
+
+		if (this.currentX === newX && this.currentZ === newZ) {
+			return;
+		}
+
+		// console.time('vegetation update');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var patchX = newX + x;
+				var patchZ = newZ + z;
+
+				var diffX = patchX - this.currentX;
+				var diffZ = patchZ - this.currentZ;
+				if (diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
+					continue;
+				}
+
+				patchX -= this.gridSizeHalf;
+				patchZ -= this.gridSizeHalf;
+				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+				patchX *= this.patchSize;
+				patchZ *= this.patchSize;
+
+				var entity = this.grid[modX][modZ];
+				var meshData = this.createPatch(patchX, patchZ);
+				if (!meshData) {
+					entity.meshRendererComponent.hidden = true;
+				} else {
+					entity.meshRendererComponent.hidden = false;
+					entity.meshDataComponent.meshData = meshData;
+					entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				}
+			}
+		}
+
+		this.currentX = newX;
+		this.currentZ = newZ;
+
+		// console.timeEnd('vegetation update');
+	};
+
+	Vegetation.prototype.createPatch = function (patchX, patchZ) {
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+
+		var patchDensity = this.patchDensity;
+		var patchSpacing = this.patchSpacing;
+		var pos = [0, 10, 0];
+		for (var x = 0; x < patchDensity; x++) {
+			for (var z = 0; z < patchDensity; z++) {
+				var xx = patchX + (x + Math.random() * 0.5) * patchSpacing;
+				var zz = patchZ + (z + Math.random() * 0.5) * patchSpacing;
+				pos[0] = xx;
+				pos[2] = zz + 0.5;
+				var yy = this.terrainQuery.getHeightAt(pos);
+				var norm = this.terrainQuery.getNormalAt(pos);
+				if (yy === null) {
+					yy = 0;
+				}
+				if (norm === null) {
+					norm = Vector3.UNIT_Y;
+				}
+				var slope = norm.dot(Vector3.UNIT_Y);
+
+				var vegetationType = this.terrainQuery.getVegetationType(xx, zz, slope);
+				if (!vegetationType) {
+					continue;
+				}
+
+				var size = Math.random() * 0.4 + 0.8;
+				transform.scale.setDirect(size, size, size);
+				transform.translation.setDirect(0, 0, 0);
+				var angle = Math.random() * Math.PI * 2.0;
+				var anglex = Math.sin(angle);
+				var anglez = Math.cos(angle);
+				this.calcVec.setDirect(anglex, 0.0, anglez);
+				// norm.y = 0.5;
+				// norm.normalize();
+				this.lookAt(transform.rotation, this.calcVec, norm);
+				transform.translation.setDirect(xx, yy, zz);
+				transform.update();
+
+				var meshData = this.vegetationList[vegetationType];
+				meshBuilder.addMeshData(meshData, transform);
+
+				// console.count('grass');
+			}
+		}
+		var meshDatas = meshBuilder.build();
+
+		// Calculate lighting from lightmap
+		for (var i = 0; i<meshDatas.length; i++) {
+			var meshData = meshDatas[i];
+			var verts = meshData.getAttributeBuffer(MeshData.POSITION);
+			var cols = meshData.getAttributeBuffer(MeshData.COLOR);
+			for (var i = 0, j = 0; i < verts.length; i += 3, j += 4) {
+				var col = this.terrainQuery.getLightAt([verts[i], verts[i + 1], verts[i + 2]]);
+				cols[j] = col;
+				cols[j + 1] = col;
+				cols[j + 2] = col;
+				cols[j + 3] = 1;
+			}
+		}
+
+		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
+	var _tempX = new Vector3();
+	var _tempY = new Vector3();
+	var _tempZ = new Vector3();
+
+	Vegetation.prototype.lookAt = function (matrix, direction, up) {
+		var x = _tempX, y = _tempY, z = _tempZ;
+
+		y.set(up).normalize();
+		x.set(up).cross(direction).normalize();
+		z.set(y).cross(x);
+
+		var d = matrix.data;
+		d[0] = x.x;
+		d[1] = x.y;
+		d[2] = x.z;
+		d[3] = y.x;
+		d[4] = y.y;
+		d[5] = y.z;
+		d[6] = z.x;
+		d[7] = z.y;
+		d[8] = z.z;
+
+		return this;
+	};
+
+	Vegetation.prototype.createBase = function (type) {
+		var meshData = new Quad(type.w, type.h, 10, 10);
+		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float');
+		meshData.attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
+
+		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
+
+		meshData.getAttributeBuffer(MeshData.NORMAL).set([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
+			type.tx, type.ty,
+			type.tx, type.ty + type.th,
+			type.tx + type.tw, type.ty + type.th,
+			type.tx + type.tw, type.ty
+		]);
+
+
+		meshData.getAttributeBuffer('BASE').set([
+			0, type.h, type.h, 0
+		]);
+
+		meshData.getAttributeBuffer(MeshData.COLOR).set([
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1
+		]);
+
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+		transform.translation.y = type.h * 0.5 - type.h * 0.1;
+		transform.translation.z = -type.w * 0.1;
+		transform.update();
+
+		meshBuilder.addMeshData(meshData, transform);
+
+		// transform.setRotationXYZ(0, Math.PI * 0.5, 0);
+		transform.setRotationXYZ(0, Math.PI * 0.3, 0);
+		transform.translation.x = type.w * 0.1;
+		transform.translation.z = type.w * 0.1;
+		transform.update();
+
+		meshBuilder.addMeshData(meshData, transform);
+
+		transform.setRotationXYZ(0, -Math.PI * 0.3, 0);
+		transform.translation.x = -type.w * 0.1;
+		transform.translation.z = type.w * 0.1;
+		transform.update();
+
+		meshBuilder.addMeshData(meshData, transform);
+
+		var meshDatas = meshBuilder.build();
+
+		return meshDatas[0];
+	};
+
+	var vegetationShader = {
+		processors: [
+			ShaderBuilder.light.processor,
+			function (shader) {
+				if (ShaderBuilder.USE_FOG) {
+					shader.setDefine('FOG', true);
+					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+				} else {
+					shader.removeDefine('FOG');
+				}
+			}
+		],
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL,
+			vertexUV0: MeshData.TEXCOORD0,
+			vertexColor: MeshData.COLOR,
+			base: 'BASE'
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			discardThreshold: -0.01,
+			fogSettings: function () {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function () {
+				return ShaderBuilder.FOG_COLOR;
+			},
+			time: Shader.TIME,
+			fadeDistMin: 40.0,
+			fadeDistMax: 50.0
+		},
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
+				'attribute vec3 vertexPosition;',
+				'attribute vec3 vertexNormal;',
+				'attribute vec2 vertexUV0;',
+				'attribute vec4 vertexColor;',
+				'attribute float base;',
+
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+				'uniform vec3 cameraPosition;',
+				'uniform float time;',
+				'uniform float fadeDistMin;',
+				'uniform float fadeDistMax;',
+
+				ShaderBuilder.light.prevertex,
+
+				'varying vec3 normal;',
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec2 texCoord0;',
+				'varying vec4 color;',
+				'varying float dist;',
+
+				'void main(void) {',
+					'vec3 swayPos = vertexPosition;',
+					'swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;',
+					'vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
+					'vWorldPos = worldPos.xyz;',
+					'gl_Position = viewProjectionMatrix * worldPos;',
+
+					ShaderBuilder.light.vertex,
+
+					'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+					'texCoord0 = vertexUV0;',
+					'color = vertexColor;',
+					'viewPosition = cameraPosition - worldPos.xyz;',
+					'dist = 1.0 - smoothstep(fadeDistMin, fadeDistMax, length(viewPosition.xz));',
+				'}'
+			].join('\n');
+		},
+		fshader: function () {
+			return [
+				'uniform sampler2D diffuseMap;',
+				'uniform float discardThreshold;',
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
+
+				ShaderBuilder.light.prefragment,
+
+				'varying vec3 normal;',
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec2 texCoord0;',
+				'varying float dist;',
+				'varying vec4 color;',
+
+				'void main(void)',
+				'{',
+					'vec4 final_color = texture2D(diffuseMap, texCoord0) * color;',
+					'if (final_color.a < discardThreshold) discard;',
+					'final_color.a = min(final_color.a, dist);',
+					'if (final_color.a <= 0.0) discard;',
+
+					'vec3 N = normalize(normal);',
+
+					ShaderBuilder.light.fragment,
+
+					'final_color.a = pow(final_color.a, 0.5);',
+
+					'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'#endif',
+
+					'gl_FragColor = final_color;',
+				'}'
+			].join('\n');
+		}
+	};
+
+	return Vegetation;
+})(goo.MeshDataComponent,goo.Material,goo.Camera,goo.MathUtils,goo.Vector3,goo.Transform,goo.TextureCreator,goo.Texture,goo.MeshData,goo.Shader,goo.DirectionalLight,goo.CanvasUtils,goo.Ajax,goo.MeshBuilder,goo.Noise,goo.ValueNoise,goo.TerrainSurface,goo.Quad,goo.ShaderBuilder);
+goo.TerrainHandler = (function (
+	Terrain,
+	Vegetation,
+	Forrest,
+	Vector3,
+	Ajax,
+	Transform,
+	MathUtils,
+	Texture,
+	TextureCreator,
+	RSVP
+) {
+	'use strict';
+
+	function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
+		this.goo = goo;
+		this.terrainSize = terrainSize;
+		this.resourceFolder = resourceFolder;
+		this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels);
+		this.vegetation = new Vegetation();
+		this.forrest = new Forrest();
+
+		this.hidden = false;
+		this.store = new Vector3();
+		this.settings = null;
+		this.pick = true;
+		this.draw = false;
+		this.eventX = 0;
+		this.eventY = 0;
+		this.vegetationSettings = {
+			gridSize: 7
+		};
+	}
+
+	TerrainHandler.prototype.isEditing = function () {
+		return !this.hidden;
+	};
+
+	TerrainHandler.prototype.getHeightAt = function (pos) {
+		return this.terrainQuery ? this.terrainQuery.getHeightAt(pos) : 0;
+	};
+
+	TerrainHandler.prototype.isEditing = function () {
+		return !this.hidden;
+	};
+
+	TerrainHandler.prototype.getHeightAt = function (pos) {
+		return this.terrainQuery ? this.terrainQuery.getHeightAt(pos) : 0;
+	};
+
+	var LMB = false;
+	var altKey = false;
+
+	var mousedown = function (e) {
+		if (e.button === 0) {
+			this.eventX = e.clientX;
+			this.eventY = e.clientY;
+
+			LMB = true;
+			altKey = e.altKey;
+
+			this.pick = true;
+			this.draw = true;
+			console.log('mousedown');
+		}
+	};
+
+	var mouseup = function (e) {
+		if (e.button === 0) {
+			LMB = false;
+			this.draw = false;
+			console.log('mouseup');
+		}
+	};
+
+	var mousemove = function (e) {
+		this.eventX = e.clientX;
+		this.eventY = e.clientY;
+
+		this.pick = true;
+
+		if (LMB) {
+			altKey = e.altKey;
+			this.draw = true;
+		}
+	};
+
+	TerrainHandler.prototype.toggleEditMode = function () {
+		this.terrain.toggleMarker();
+
+		this.hidden = !this.hidden;
+
+		if (this.hidden) {
+			this.goo.renderer.domElement.addEventListener('mousedown', mousedown.bind(this), false);
+			this.goo.renderer.domElement.addEventListener('mouseup', mouseup.bind(this), false);
+			this.goo.renderer.domElement.addEventListener('mouseout', mouseup.bind(this), false);
+			this.goo.renderer.domElement.addEventListener('mousemove', mousemove.bind(this), false);
+		} else {
+			this.goo.renderer.domElement.removeEventListener('mousedown', mousedown);
+			this.goo.renderer.domElement.removeEventListener('mouseup', mouseup);
+			this.goo.renderer.domElement.removeEventListener('mouseout', mouseup);
+			this.goo.renderer.domElement.removeEventListener('mousemove', mousemove);
+			this.terrainInfo = this.terrain.getTerrainData();
+			this.draw = false;
+			LMB = false;
+		}
+
+		this.forrest.toggle();
+		this.vegetation.toggle();
+	};
+
+	TerrainHandler.prototype.initLevel = function (terrainData, settings, forrestLODEntityMap) {
+		this.settings = settings;
+		var terrainSize = this.terrainSize;
+
+		var terrainPromise = this._loadData(terrainData.heightMap);
+		var splatPromise = this._loadData(terrainData.splatMap);
+
+		return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
+			var terrainBuffer = datas[0];
+			var splatBuffer = datas[1];
+
+			var terrainArray;
+			if (terrainBuffer) {
+				terrainArray = new Float32Array(terrainBuffer);
+			} else {
+				terrainArray = new Float32Array(terrainSize * terrainSize);
+			}
+
+			var splatArray;
+			if (splatBuffer) {
+				splatArray = new Uint8Array(splatBuffer);
+			} else {
+				splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
+			}
+
+			return this._load(terrainData, terrainArray, splatArray, forrestLODEntityMap);
+		}.bind(this));
+	};
+
+	TerrainHandler.prototype._loadData = function (url) {
+		var promise = new RSVP.Promise();
+
+		var ajax = new Ajax();
+		ajax.get({
+			url: this.resourceFolder + url,
+			responseType: 'arraybuffer'
+		}).then(function (request) {
+			promise.resolve(request.response);
+		}.bind(this), function () {
+			promise.resolve(null);
+		}.bind(this));
+
+		return promise;
+	};
+
+	TerrainHandler.prototype._textureLoad = function (url) {
+		return new TextureCreator().loadTexture2D(url, {
+			anisotropy: 4
+		});
+	};
+
+	TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
+		var promises = [];
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.ground3.texture));
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
+		promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
+		return RSVP.all(promises).then(function (textures) {
+			this.terrain.init({
+				heightMap: parentMipmap,
+				splatMap: splatMap,
+				ground1: textures[0],
+				ground2: textures[1],
+				ground3: textures[2],
+				ground4: textures[3],
+				ground5: textures[4],
+				stone: textures[5]
+			});
+			this.terrainInfo = this.terrain.getTerrainData();
+
+			var terrainSize = this.terrainSize;
+			var calcVec = new Vector3();
+
+			var terrainQuery = this.terrainQuery = {
+				getHeightAt: function (pos) {
+					if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
+						return -1000;
+					}
+
+					var x = pos[0];
+					var z = terrainSize - pos[2];
+
+					var col = Math.floor(x);
+					var row = Math.floor(z);
+
+					var intOnX = x - col,
+						intOnZ = z - row;
+
+					var col1 = col + 1;
+					var row1 = row + 1;
+
+					col = MathUtils.moduloPositive(col, terrainSize);
+					row = MathUtils.moduloPositive(row, terrainSize);
+					col1 = MathUtils.moduloPositive(col1, terrainSize);
+					row1 = MathUtils.moduloPositive(row1, terrainSize);
+
+					var topLeft = this.terrainInfo.heights[row * terrainSize + col];
+					var topRight = this.terrainInfo.heights[row * terrainSize + col1];
+					var bottomLeft = this.terrainInfo.heights[row1 * terrainSize + col];
+					var bottomRight = this.terrainInfo.heights[row1 * terrainSize + col1];
+
+					return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
+						MathUtils.lerp(intOnX, bottomLeft, bottomRight));
+				}.bind(this),
+				getNormalAt: function (pos) {
+					var x = pos[0];
+					var z = terrainSize - pos[2];
+
+					var col = Math.floor(x);
+					var row = Math.floor(z);
+
+					var col1 = col + 1;
+					var row1 = row + 1;
+
+					col = MathUtils.moduloPositive(col, terrainSize);
+					row = MathUtils.moduloPositive(row, terrainSize);
+					col1 = MathUtils.moduloPositive(col1, terrainSize);
+					row1 = MathUtils.moduloPositive(row1, terrainSize);
+
+					var topLeft = this.terrainInfo.heights[row * terrainSize + col];
+					var topRight = this.terrainInfo.heights[row * terrainSize + col1];
+					var bottomLeft = this.terrainInfo.heights[row1 * terrainSize + col];
+
+					return calcVec.setDirect((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
+				}.bind(this),
+				getVegetationType: function (xx, zz, slope) {
+					var rand = Math.random();
+					if (MathUtils.smoothstep(0.82, 0.91, slope) < rand) {
+						return null;
+					}
+
+					if (this.terrainInfo) {
+						xx = Math.floor(xx);
+						zz = Math.floor(zz);
+
+						if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+							return null;
+						}
+
+						xx *= this.terrain.splatMult;
+						zz *= this.terrain.splatMult;
+
+						var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
+						var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
+						var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
+						var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
+						var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
+						var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
+
+						var test = 0;
+						for (var veg in type.vegetation) {
+							test += type.vegetation[veg];
+							if (rand < test) {
+								return veg;
+							}
+						}
+						return null;
+					}
+					return null;
+				}.bind(this),
+				getForrestType: function (xx, zz, slope, rand) {
+					if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
+						return null;
+					}
+
+					if (this.terrainInfo) {
+						xx = Math.floor(xx);
+						zz = Math.floor(zz);
+
+						if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+							return null;
+						}
+
+						xx *= this.terrain.splatMult;
+						zz *= this.terrain.splatMult;
+
+						var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
+						var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
+						var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
+						var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
+						var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
+						var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
+
+						var test = 0;
+						for (var veg in type.forrest) {
+							test += type.forrest[veg];
+							if (rand < test) {
+								return veg;
+							}
+						}
+						return null;
+					}
+					return null;
+				}.bind(this),
+				getLightAt: function (pos) {
+					if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
+						return -1000;
+					}
+
+					if (!this.lightMapData || !this.lightMapSize) {
+						return 1;
+					}
+
+					var x = pos[0] * this.lightMapSize / terrainSize;
+					var z = (terrainSize - pos[2]) * this.lightMapSize / terrainSize;
+
+					var col = Math.floor(x);
+					var row = Math.floor(z);
+
+					var intOnX = x - col;
+					var intOnZ = z - row;
+
+					var col1 = col + 1;
+					var row1 = row + 1;
+
+					col = MathUtils.moduloPositive(col, this.lightMapSize);
+					row = MathUtils.moduloPositive(row, this.lightMapSize);
+					col1 = MathUtils.moduloPositive(col1, this.lightMapSize);
+					row1 = MathUtils.moduloPositive(row1, this.lightMapSize);
+
+					var topLeft = this.lightMapData[row * this.lightMapSize + col];
+					var topRight = this.lightMapData[row * this.lightMapSize + col1];
+					var bottomLeft = this.lightMapData[row1 * this.lightMapSize + col];
+					var bottomRight = this.lightMapData[row1 * this.lightMapSize + col1];
+
+					return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
+							MathUtils.lerp(intOnX, bottomLeft, bottomRight)) / 255.0;
+				}.bind(this),
+
+				getType: function (xx, zz, slope, rand) {
+					if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
+						return terrainData.stone;
+					}
+
+					if (this.terrainInfo) {
+						xx = Math.floor(xx);
+						zz = Math.floor(zz);
+
+						if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+							return terrainData.stone;
+						}
+
+						xx *= this.terrain.splatMult;
+						zz *= this.terrain.splatMult;
+
+						var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
+						var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
+						var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
+						var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
+						var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
+						var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
+
+						return type;
+					}
+					return terrainData.stone;
+				}.bind(this)
+			};
+
+			return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas).then(function (vegetationAtlasTexture) {
+
+				vegetationAtlasTexture.anisotropy = 4;
+				var vegetationTypes = terrainData.vegetationTypes;
+
+				return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas).then(function (forrestAtlasTexture) {
+
+					forrestAtlasTexture.anisotropy = 4;
+
+					return new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals).then(function (forrestAtlasNormals) {
+
+						var forrestTypes = terrainData.forrestTypes;
+
+						this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
+						this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+
+					}.bind(this));
+				}.bind(this));
+			}.bind(this));
+		}.bind(this));
+	};
+
+	TerrainHandler.prototype.updatePhysics = function () {
+		this.terrain.updateAmmoBody();
+	};
+
+	TerrainHandler.prototype.initPhysics = function () {
+		this.ammoBody = this.terrain.initAmmoBody();
+	};
+
+	TerrainHandler.prototype.useLightmap = function (data, size) {
+		if (data) {
+			var lightMap = new Texture(data, {
+				magFilter: 'Bilinear',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				format: 'Luminance',
+				type: 'UnsignedByte'
+			}, size, size);
+
+			this.lightMapData = data;
+			this.lightMapSize = size;
+			this.terrain.setLightmapTexture(lightMap);
+		} else {
+			delete this.lightMapData;
+			delete this.lightMapSize;
+			this.terrain.setLightmapTexture();
+		}
+	};
+
+	TerrainHandler.prototype.useLightmap = function (data, size) {
+		if (data) {
+			var lightMap = new Texture(data, {
+				magFilter: 'Bilinear',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				format: 'Luminance',
+				type: 'UnsignedByte'
+			}, size, size);
+
+			this.lightMapData = data;
+			this.lightMapSize = size;
+			this.terrain.setLightmapTexture(lightMap);
+		} else {
+			delete this.lightMapData;
+			delete this.lightMapSize;
+			this.terrain.setLightmapTexture();
+		}
+	};
+
+	TerrainHandler.prototype.update = function (cameraEntity) {
+		var pos = cameraEntity.cameraComponent.camera.translation;
+
+		if (this.terrain) {
+			var settings = this.settings;
+
+			if (this.hidden && this.pick) {
+				this.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, this.store);
+				this.terrain.setMarker('add', settings.size, this.store.x, this.store.z, settings.power, settings.brushTexture);
+				this.pick = false;
+			}
+
+			if (this.hidden && this.draw) {
+				var type = 'add';
+				if (altKey) {
+					type = 'sub';
+				}
+
+				var rgba = [0, 0, 0, 0];
+				if (settings.rgba === 'ground2') {
+					rgba = [1, 0, 0, 0];
+				} else if (settings.rgba === 'ground3') {
+					rgba = [0, 1, 0, 0];
+				} else if (settings.rgba === 'ground4') {
+					rgba = [0, 0, 1, 0];
+				} else if (settings.rgba === 'ground5') {
+					rgba = [0, 0, 0, 1];
+				}
+
+				this.terrain.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
+					settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
+				this.terrain.updateTextures();
+			}
+
+			this.terrain.update(pos);
+		}
+		if (this.vegetation) {
+			this.vegetation.update(pos.x, pos.z);
+		}
+		if (this.forrest) {
+			this.forrest.update(pos.x, pos.z);
+		}
+	};
+
+	return TerrainHandler;
+})(goo.Terrain,goo.Vegetation,goo.Forrest,goo.Vector3,goo.Ajax,goo.Transform,goo.MathUtils,goo.Texture,goo.TextureCreator,goo.rsvp);
+if (typeof require === "function") {
+define("goo/addons/terrainpack/TerrainSurface", [], function () { return goo.TerrainSurface; });
+define("goo/addons/terrainpack/Forrest", [], function () { return goo.Forrest; });
+define("goo/addons/terrainpack/Terrain", [], function () { return goo.Terrain; });
+define("goo/addons/terrainpack/Vegetation", [], function () { return goo.Vegetation; });
+define("goo/addons/terrainpack/TerrainHandler", [], function () { return goo.TerrainHandler; });
+}

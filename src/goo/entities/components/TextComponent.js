@@ -1,6 +1,6 @@
 var Component = require('../../entities/components/Component');
-var TextureGrid = require('../../shapes/TextureGrid');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
+
+'use strict';
 
 /**
  * Provides ways for the entity to display text
@@ -15,9 +15,9 @@ function TextComponent(text) {
 	this.text = text || '';
 	this.dirty = true;
 
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	Object.seal(this);
-	// @endif
+	// #endif
 }
 
 TextComponent.type = 'TextComponent';
@@ -31,8 +31,10 @@ TextComponent.prototype.constructor = TextComponent;
  * @returns {TextComponent} Self for chaining
  */
 TextComponent.prototype.setText = function (text) {
-	this.text = text;
-	this.dirty = true;
+	if (this.text !== text) {
+		this.text = text;
+		this.dirty = true;
+	}
 	return this;
 };
 

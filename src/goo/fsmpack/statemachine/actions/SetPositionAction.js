@@ -8,6 +8,7 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	SetPositionAction.prototype = Object.create(Action.prototype);
+	SetPositionAction.prototype.constructor = SetPositionAction;
 
 	SetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
@@ -22,36 +23,36 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity to move'
+			description: 'Entity to move.'
 		}, {
 			name: 'Amount X',
 			key: 'amountX',
 			type: 'float',
-			description: 'Position on the X axis',
+			description: 'Position on the X axis.',
 			'default': 0
 		}, {
 			name: 'Amount Y',
 			key: 'amountY',
 			type: 'float',
-			description: 'Position on the Y axis',
+			description: 'Position on the Y axis.',
 			'default': 0
 		}, {
 			name: 'Amount Z',
 			key: 'amountZ',
 			type: 'float',
-			description: 'Position on the Z axis',
+			description: 'Position on the Z axis.',
 			'default': 0
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
-	SetPositionAction.prototype._run = function (fsm) {
+	SetPositionAction.prototype.update = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.translation.setDirect(
 				FsmUtils.getValue(this.amountX, fsm),
@@ -59,14 +60,6 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 				FsmUtils.getValue(this.amountZ, fsm)
 			);
 			this.entity.transformComponent.setUpdated();
-
-			/*
-			// Hack for box2d physics, tmp
-			if (this.entity.body) {
-				var translation = this.entity.transformComponent.transform.translation;
-				this.entity.body.SetTransform(new window.Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
-			}
-			*/
 		}
 	};
 

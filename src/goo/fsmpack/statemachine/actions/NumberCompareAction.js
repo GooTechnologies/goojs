@@ -8,6 +8,7 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	NumberCompareAction.prototype = Object.create(Action.prototype);
+	NumberCompareAction.prototype.constructor = NumberCompareAction;
 
 	NumberCompareAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
@@ -37,22 +38,32 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
-			name: 'less',
-			description: 'Event fired if left hand argument is smaller than right hand argument'
+			key: 'less',
+			description: 'Event fired if left hand argument is smaller than right hand argument.'
 		}, {
-			name: 'equal',
-			description: 'Event fired if both sides are approximately equal'
+			key: 'equal',
+			description: 'Event fired if both sides are approximately equal.'
 		}, {
-			name: 'greater',
-			description: 'Event fired if left hand argument is greater than right hand argument'
+			key: 'greater',
+			description: 'Event fired if left hand argument is greater than right hand argument.'
 		}]
 	};
 
-	NumberCompareAction.prototype._run = function (fsm) {
+	var labels = {
+		less: 'On X < Y',
+		equal: 'On X == Y',
+		greater: 'On X > Y'
+	};
+
+	NumberCompareAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	NumberCompareAction.prototype.compare = function (fsm) {
 		var leftHand = FsmUtils.getValue(this.leftHand, fsm);
 		var rightHand = FsmUtils.getValue(this.rightHand, fsm);
 		var diff = rightHand - leftHand;
@@ -63,6 +74,18 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			if (this.lessThanEvent.channel) { fsm.send(this.lessThanEvent.channel); }
 		} else {
 			if (this.greaterThanEvent.channel) { fsm.send(this.greaterThanEvent.channel); }
+		}
+	};
+
+	NumberCompareAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	NumberCompareAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 

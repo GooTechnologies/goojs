@@ -10,26 +10,35 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	LogMessageAction.prototype.constructor = LogMessageAction;
 
 	LogMessageAction.external = {
+		key: 'Log Message',
 		name: 'Log Message',
-		description: 'Prints a message in the debug console of your browser',
+		description: 'Prints a message in the debug console of your browser.',
 		parameters: [{
 			name: 'Message',
 			key: 'message',
 			type: 'string',
-			description: 'Message to print',
+			description: 'Message to print.',
 			'default': 'hello'
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': false
 		}],
 		transitions: []
 	};
 
-	LogMessageAction.prototype._run = function (/*fsm*/) {
-		console.log(this.message);
+	LogMessageAction.prototype.enter = function (/*fsm*/) {
+		if (!this.everyFrame) {
+			console.log(this.message);
+		}
+	};
+
+	LogMessageAction.prototype.update = function (/*fsm*/) {
+		if (this.everyFrame) {
+			console.log(this.message);
+		}
 	};
 
 	module.exports = LogMessageAction;

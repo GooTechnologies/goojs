@@ -3,11 +3,17 @@ var Component = require('../../entities/components/Component');
 	'use strict';
 
 	/**
-	 * HTML Component.
+	 * Adds a 2D DOM element to the entity, that can move with its transform.
 	 * @extends Component
+	 * @param {DOMElement} domElement
+	 * @param {object} [options]
+	 * @param {boolean} [options.hidden=false]
+	 * @param {boolean} [options.useTransformComponent=true]
+	 * @param {boolean} [options.pixelPerfect=true]
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
-	function HtmlComponent(domElement) {
+	function HtmlComponent(domElement, options) {
+		options = options || {};
 		Component.apply(this, arguments);
 
 		this.type = 'HtmlComponent';
@@ -20,12 +26,19 @@ var Component = require('../../entities/components/Component');
 		/**
 		 * @type {boolean}
 		 */
-		this.hidden = false;
+		this.hidden = options.hidden !== undefined ? options.hidden : false;
 
 		/**
+		 * Move with the screen position of the entity.
 		 * @type {boolean}
 		 */
-		this.useTransformComponent = true;
+		this.useTransformComponent = options.useTransformComponent !== undefined ? options.useTransformComponent : true;
+
+		/**
+		 * Snap to integer pixel positions.
+		 * @type {boolean}
+		 */
+		this.pixelPerfect = options.pixelPerfect !== undefined ? options.pixelPerfect : true;
 
 		// @ifdef DEBUG
 		Object.seal(this);

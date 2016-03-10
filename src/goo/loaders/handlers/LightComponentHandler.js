@@ -25,18 +25,6 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
-
-	//! AT: would be nice to have a FuncUtil.memoize()
-	var cachedSupportsShadows;
-	var supportsShadows = function () {
-		if (cachedSupportsShadows === undefined) {
-			var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
-			cachedSupportsShadows = !isIos;
-		}
-		return cachedSupportsShadows;
-	};
-
-
 	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {Object} config
@@ -54,14 +42,15 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
 
-		if (config.shadowCaster && supportsShadows()) {
+		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			ObjectUtils.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
-				darkness: 0.5
+				darkness: 0.5,
+				shadowOffset: -0.001
 			});
 
 			var settings = config.shadowSettings;
@@ -126,7 +115,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 				}
 			}
 
-			if (config.type === 'PointLight' || !supportsShadows()) {
+			if (config.type === 'PointLight') {
 				light.shadowCaster = false;
 			}
 

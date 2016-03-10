@@ -11,21 +11,22 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	CopyJointTransformAction.prototype.constructor = CopyJointTransformAction;
 
 	CopyJointTransformAction.external = {
+		key: 'Copy Joint Transform',
 		name: 'Copy Joint Transform',
 		type: 'animation',
-		description: 'Copies a joint\'s transform from another entity, and applies it to this entity. This entity must be a child of an entity with an animation component',
+		description: 'Copies a joint\'s transform from another entity, and applies it to this entity. This entity must be a child of an entity with an animation component.',
 		parameters: [{
 			name: 'Joint',
 			key: 'jointIndex',
 			type: 'int',
 			control: 'jointSelector',
 			'default': null,
-			description: 'Joint transform to copy'
+			description: 'Joint transform to copy.'
 		}],
 		transitions: []
 	};
 
-	CopyJointTransformAction.prototype._run = function (fsm) {
+	CopyJointTransformAction.prototype.update = function (fsm) {
 		if (this.jointIndex === null) { return; }
 
 		var entity = fsm.getOwnerEntity();

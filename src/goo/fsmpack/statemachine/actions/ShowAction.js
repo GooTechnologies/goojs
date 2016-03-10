@@ -10,14 +10,15 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	ShowAction.prototype.constructor = ShowAction;
 
 	ShowAction.external = {
+		key: 'Show',
 		name: 'Show',
 		type: 'display',
-		description: 'Makes an entity visible',
+		description: 'Makes an entity visible.',
 		parameters: [],
 		transitions: []
 	};
 
-	ShowAction.prototype._run = function (fsm) {
+	ShowAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		entity.show();
 	};

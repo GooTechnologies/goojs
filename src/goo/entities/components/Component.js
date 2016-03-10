@@ -3,7 +3,7 @@ var EntitySelection = require('../EntitySelection');
 'use strict';
 
 /**
- * Base class/module for all components.
+ * Base class/module for all components. Should not be used directly.
  * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
  */
 function Component() {
@@ -19,8 +19,30 @@ function Component() {
 }
 
 /**
+ * Should be implemented in the same way in subclasses. Will be called by the World for each argument to world.createEntity(arg0, arg1, ...). If this function returns true, it indicates that the passed argument was used and should not be passed to other components. See World.prototype.createEntity.
+ * @param argument
+ * @param {Entity} entity
+ * @returns {boolean} True if the data was used.
+ */
+Component.applyOnEntity = function (argument, entity) {
+	return false;
+};
+
+/**
+ * Called when the component was added to an entity
+ * @param {Entity} entity
+ */
+Component.prototype.attached = function (entity) {};
+
+/**
+ * Called when the component was removed from an entity
+ * @param {Entity} entity
+ */
+Component.prototype.detached = function (entity) {};
+
+/**
  * Injects public methods of this component into the host entity.
- * @param entity
+ * @param {Entity} entity
  * @private
  */
 Component.prototype.applyAPI = function (entity) {

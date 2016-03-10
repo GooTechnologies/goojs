@@ -10,19 +10,27 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	TransitionAction.prototype.constructor = TransitionAction;
 
 	TransitionAction.external = {
+		key: 'Transition',
 		name: 'Transition',
 		type: 'transitions',
-		description: 'Transition to a selected state',
+		description: 'Transition to a selected state.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'To',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
 	};
 
-	TransitionAction.prototype._run = function (fsm) {
+	var labels = {
+		transition: 'On Enter'
+	};
+
+	TransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	TransitionAction.prototype.enter = function (fsm) {
 		fsm.send(this.transitions.transition);
 	};
 

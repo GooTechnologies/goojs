@@ -85,7 +85,7 @@ var MathUtils = require('../../math/MathUtils');
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtils.defaults(config, {
 			wrapS: 'Repeat',
 			wrapT: 'Repeat',
 			magFilter: 'Bilinear',
@@ -138,7 +138,7 @@ var MathUtils = require('../../math/MathUtils');
 		return this.loadObject(imageRef)
 		.then(function (data) {
 			if (data && data.preloaded) {
-				_.extend(texture.image, data.image);
+				ObjectUtils.extend(texture.image, data.image);
 				texture.format = data.format;
 				texture.setNeedsUpdate();
 				return texture;
@@ -205,10 +205,14 @@ var MathUtils = require('../../math/MathUtils');
 			if (!texture) { return; }
 			var ret;
 
-			// Texture settings
+			// Wrap
+			if (texture.wrapS !== config.wrapS || texture.wrapT !== config.wrapT) {
+				texture.setNeedsUpdate();
+			}
 			texture.wrapS = config.wrapS;
 			texture.wrapT = config.wrapT;
 
+			// SH: Why do we need to check this?
 			if (TextureHandler.magFilters.indexOf(config.magFilter) !== -1) {
 				texture.magFilter = config.magFilter;
 			}

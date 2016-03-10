@@ -45,7 +45,7 @@
 				setEntityData(entity, new Vector3(1, 1, 1));
 				spyOn(mockFsm, 'send');
 
-				inBoxAction._run(mockFsm);
+				inBoxAction.update(mockFsm);
 
 				expect(mockFsm.send).toHaveBeenCalledWith(settings.transitions.inside);
 			});
@@ -64,7 +64,7 @@
 
 				setEntityData(entity, new Vector3(3, 3, 3));
 				spyOn(mockFsm, 'send');
-				inBoxAction._run(mockFsm);
+				inBoxAction.update(mockFsm);
 				expect(mockFsm.send).toHaveBeenCalledWith(settings.transitions.outside);
 			});
 
@@ -82,7 +82,7 @@
 
 				setEntityData(entity, new Vector3(-100, 0, 0));
 				spyOn(mockFsm, 'send');
-				inBoxAction._run(mockFsm);
+				inBoxAction.update(mockFsm);
 				expect(mockFsm.send).toHaveBeenCalledWith(settings.transitions.inside);
 			});
 		});

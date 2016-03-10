@@ -231,7 +231,7 @@ var MathUtils = require('../../math/MathUtils');
 		material.uniforms.color = COLORS[axis].slice();
 
 		if (opacity !== undefined && opacity < 1.0) {
-			material.blendState.blending = 'CustomBlending';
+			material.blendState.blending = 'TransparencyBlending';
 			material.uniforms.opacity = opacity;
 			material.renderQueue = 3000;
 		}

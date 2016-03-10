@@ -73,11 +73,30 @@
 			expect(rigidBodyComponent.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
-		it('can apply force', function () {
+		it('can applyForce', function () {
 			rigidBodyComponent.cannonBody.position.set(1, 2, 3);
 			rigidBodyComponent.applyForce(new Vector3(1, 2, 3));
 			expect(rigidBodyComponent.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
 			expect(rigidBodyComponent.cannonBody.torque).toEqual(new CANNON.Vec3(0, 0, 0));
+		});
+
+		it('can applyForceWorld', function () {
+			rigidBodyComponent.setPosition(new Vector3(1, 2, 3));
+			rigidBodyComponent.setQuaternion(new Quaternion().fromAngleAxis(Math.PI / 4, new Vector3(1,0,0))); // Should not affect at all
+			var worldForce = new Vector3(0, 1, 0);
+			var worldPosition = new Vector3(2, 2, 3); // (1,0,0) relative to the body
+			rigidBodyComponent.applyForceWorld(worldForce, worldPosition);
+			expect(rigidBodyComponent.cannonBody.force).toEqual(new CANNON.Vec3(0, 1, 0));
+			expect(rigidBodyComponent.cannonBody.torque).toEqual(new CANNON.Vec3(0, 0, 1)); // (1,0,0) x (0,1,0) is (0,0,1)
+		});
+
+		it('can applyForceLocal', function () {
+			rigidBodyComponent.setPosition(new Vector3(1, 2, 3));
+			var localForce = new Vector3(0, 1, 0);
+			var localPosition = new Vector3(1, 0, 0);
+			rigidBodyComponent.applyForceLocal(localForce, localPosition);
+			expect(rigidBodyComponent.cannonBody.force).toEqual(new CANNON.Vec3(0, 1, 0));
+			expect(rigidBodyComponent.cannonBody.torque).toEqual(new CANNON.Vec3(0, 0, 1)); // (1,0,0) x (0,1,0) is (0,0,1)
 		});
 
 		it('can set velocity', function () {

@@ -119,6 +119,12 @@ var Scripts = require('../scripts/Scripts');
 			' if (typeof update !== "undefined") {',
 			'  obj.update = update;',
 			' }',
+			' if (typeof enter !== "undefined") {',
+			'  obj.enter = enter;',
+			' }',
+			' if (typeof exit !== "undefined") {',
+			'  obj.exit = exit;',
+			' }',
 			' return obj;',
 			'};',
 			'// ]]>'
@@ -144,6 +150,8 @@ var Scripts = require('../scripts/Scripts');
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
+				script.enter = newScript.enter;
+				script.exit = newScript.exit;
 				script.parameters = {};
 				script.enabled = false;
 			} catch (e) {
@@ -283,6 +291,8 @@ var Scripts = require('../scripts/Scripts');
 			script.update = newScript.update;
 			script.run = newScript.run;
 			script.cleanup = newScript.cleanup;
+			script.enter = newScript.enter;
+			script.exit = newScript.exit;
 			script.parameters = newScript.parameters || {};
 			script.enabled = false;
 
@@ -343,7 +353,7 @@ var Scripts = require('../scripts/Scripts');
 
 			var addDependencyPromises = [];
 
-			if (config.body && config.dependencies) {
+			if (isCustomScript(config) && config.dependencies) {
 				delete script.dependencyErrors;
 
 				// Get all the script HTML elements which refer to the current
@@ -379,14 +389,16 @@ var Scripts = require('../scripts/Scripts');
 
 			_.forEach(config.dependencies, function (dependency) {
 				var scriptElement = that._scriptElementsByURL.get(dependency.url);
-				parentElement.appendChild(scriptElement);
+				if (scriptElement) {
+					parentElement.appendChild(scriptElement);
+				}
 			}, null, 'sortValue');
 
 			return RSVP.all(addDependencyPromises)
 			.then(function () {
-				if (config.className) { // Engine script.
+				if (isEngineScript(config)) {
 					that._updateFromClass(script, config, options);
-				} else if (config.body) { // Custom script.
+				} else if (isCustomScript(config)) {
 					that._updateFromCustom(script, config, options);
 				}
 
@@ -423,6 +435,32 @@ var Scripts = require('../scripts/Scripts');
 			});
 		});
 	};
+
+	/**
+	 * Gets whether the specified configuration object refers to a built-in
+	 * engine script (i.e. not a custom script).
+	 *
+	 * @param {object} config
+	 *        The configuration object which is to be checked.
+	 *
+	 * @returns {Boolean}
+	 */
+	function isEngineScript(config) {
+		return Boolean(config.className);
+	}
+
+	/**
+	 * Gets whether the specified configuration object refers to a custom script
+	 * script (i.e. not a built-in engine script).
+	 *
+	 * @param {object} config
+	 *        The configuration object which is to be checked.
+	 *
+	 * @returns {Boolean}
+	 */
+	function isCustomScript(config) {
+		return !isEngineScript(config) && config.body !== undefined;
+	}
 
 	/**
 	 * Removes all the script HTML elements that are not needed by any script
@@ -481,7 +519,6 @@ var Scripts = require('../scripts/Scripts');
 			}
 		});
 	};
-
 
 	// The allowed types for the script parameters.
 	var PARAMETER_TYPES = [
@@ -593,9 +630,6 @@ var Scripts = require('../scripts/Scripts');
 		}
 	};
 
-	// why does the engine care about these thing si beyond me
-	// there's a lot of very create specific validation done here
-	// `exponential` for instance has NOTHING to do with the engine
 	var PROPERTY_VALIDATORS = [
 		{ name: 'key', validator: TYPE_VALIDATORS.string },
 		{ name: 'name', validator: TYPE_VALIDATORS.string },
@@ -670,6 +704,7 @@ var Scripts = require('../scripts/Scripts');
 			return;
 		}
 		outScript.externals.parameters = [];
+		var duplicateChecker = {};
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var parameter = externals.parameters[i];
 
@@ -679,9 +714,16 @@ var Scripts = require('../scripts/Scripts');
 			}
 
 			// create cares about this, in order to build the control panel for the script
-			if (parameter.default === null || parameter.default === undefined) {
-				parameter.default = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
+			if (parameter['default'] === null || parameter['default'] === undefined) {
+				parameter['default'] = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
 			}
+
+			if(parameter.key && duplicateChecker[parameter.key]){
+				errors.push({
+					message: 'Duplicate parameter key: "' + parameter.key + '"'
+				});
+			}
+			duplicateChecker[parameter.key] = true;
 
 			outScript.externals.parameters.push(parameter);
 		}
@@ -718,6 +760,8 @@ var Scripts = require('../scripts/Scripts');
 			script.update = null;
 			script.run = null;
 			script.cleanup = null;
+			script.enter = null;
+			script.exit = null;
 
 			script.parameters = {};
 			script.enabled = false;

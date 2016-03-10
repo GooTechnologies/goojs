@@ -13,24 +13,25 @@ var Renderer = require('../../../renderer/Renderer');
 	SwitchCameraAction.prototype.constructor = SwitchCameraAction;
 
 	SwitchCameraAction.external = {
+		key: 'Switch Camera',
 		name: 'Switch Camera',
 		type: 'camera',
-		description: 'Switches to a selected camera',
+		description: 'Switches to a selected camera.',
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'camera',
-			description: 'Camera to switch to',
+			description: 'Camera to switch to.',
 			'default': null
 		}],
 		transitions: []
 	};
 
 	SwitchCameraAction.prototype.ready = function (/*fsm*/) {
-		this._camera = Renderer.mainCamera;
+		this._camera = Renderer.mainCamera; // make this into get activeCamera
 	};
 
-	SwitchCameraAction.prototype._run = function (fsm) {
+	SwitchCameraAction.prototype.enter = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {

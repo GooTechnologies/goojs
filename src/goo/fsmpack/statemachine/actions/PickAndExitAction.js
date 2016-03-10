@@ -6,6 +6,10 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		Action.apply(this, arguments);
 
 		this.eventListener = function (event) {
+			// To prevent touch + click event firing multiple times on touch devices
+			event.stopPropagation();
+			event.preventDefault();
+
 			var htmlCmp = this.ownerEntity.getComponent('HtmlComponent');
 			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(event.target));
 			if (clickedHtmlCmp) {
@@ -18,9 +22,12 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 			}
 
 			var x, y;
-			if (event.touches) {
+			if (event.touches && event.touches.length) {
 				x = event.touches[0].clientX;
 				y = event.touches[0].clientY;
+			} else if (event.changedTouches && event.changedTouches.length) {
+				x = event.changedTouches[0].pageX;
+				y = event.changedTouches[0].pageY;
 			} else {
 				x = event.offsetX;
 				y = event.offsetY;
@@ -46,15 +53,16 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	PickAndExitAction.prototype.constructor = PickAndExitAction;
 
 	PickAndExitAction.external = {
+		key: 'Pick and Exit',
 		name: 'Pick and Exit',
 		type: 'controls',
-		description: 'Listens for a picking event on the entity and opens a new browser window',
+		description: 'Listens for a picking event on the entity and opens a new browser window.',
 		canTransition: true,
 		parameters: [{
 			name: 'URL',
 			key: 'url',
 			type: 'string',
-			description: 'URL to open',
+			description: 'URL to open.',
 			'default': 'http://www.goocreate.com/'
 		}, {
 			name: 'Exit name',
@@ -66,7 +74,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		transitions: []
 	};
 
-	PickAndExitAction.prototype._setup = function (fsm) {
+	PickAndExitAction.prototype.enter = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.canvasElement = this.goo.renderer.domElement;
@@ -76,11 +84,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		//
 		this.domElement = this.canvasElement.parentNode;
 		this.domElement.addEventListener('click', this.eventListener, false);
-		this.domElement.addEventListener('touchstart', this.eventListener, false);
-	};
-
-	PickAndExitAction.prototype._run = function () {
-		// Don't really need it.
+		this.domElement.addEventListener('touchend', this.eventListener, false); // window.open does not work in touchstart for iOS9
 	};
 
 	PickAndExitAction.prototype.handleExit = function () {
@@ -94,7 +98,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	PickAndExitAction.prototype.exit = function () {
 		if (this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
-			this.domElement.removeEventListener('touchstart', this.eventListener);
+			this.domElement.removeEventListener('touchend', this.eventListener);
 		}
 	};
 

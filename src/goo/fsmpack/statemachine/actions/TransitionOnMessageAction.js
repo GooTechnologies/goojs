@@ -5,12 +5,6 @@ var SystemBus = require('../../../entities/SystemBus');
 
 	function TransitionOnMessageAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (/*data*/) {
-			this.updated = true;
-		}.bind(this);
 	}
 
 	TransitionOnMessageAction.prototype = Object.create(Action.prototype);
@@ -20,31 +14,31 @@ var SystemBus = require('../../../entities/SystemBus');
 		key: 'Transition on Message',
 		name: 'Listen',
 		type: 'transitions',
-		description: 'Performs a transition on receiving a system bus message (a ping) on a specific channel',
+		description: 'Performs a transition on receiving a system bus message (event) on a specific channel.',
 		canTransition: true,
 		parameters: [{
 			name: 'Message channel',
 			key: 'channel',
 			type: 'string',
-			description: 'Channel to listen to',
+			description: 'Channel to listen to.',
 			'default': ''
 		}],
 		transitions: [{
 			key: 'transition',
-			name: 'To',
-			description: 'State to transition to'
+			description: 'State to transition to.'
 		}]
 	};
 
-	TransitionOnMessageAction.prototype._setup = function (/*fsm*/) {
-		SystemBus.addListener(this.channel, this.eventListener, false);
+	TransitionOnMessageAction.getTransitionLabel = function(transitionKey, actionConfig){
+		var label = actionConfig.options.channel ? '"' + actionConfig.options.channel + '"' : '';
+		return transitionKey === 'transition' ? 'On ' + label + ' event' : 'On Message';
 	};
 
-	TransitionOnMessageAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
+	TransitionOnMessageAction.prototype.enter = function (fsm) {
+		this.eventListener = function (/*data*/) {
 			fsm.send(this.transitions.transition);
-		}
+		}.bind(this);
+		SystemBus.addListener(this.channel, this.eventListener, false);
 	};
 
 	TransitionOnMessageAction.prototype.exit = function (/*fsm*/) {

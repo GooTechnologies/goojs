@@ -9,6 +9,7 @@
 
 			function getShader(key, uniforms) {
 				return {
+					defineKey: key,
 					getDefineKey: function () { return key; },
 					endFrame: function () {},
 					uniforms: uniforms,

@@ -76,7 +76,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 			)
 			.then(_.constant(newScript));
 		});
-	}
+	};
 
 	/**
 	 * Depending on the reference specified in the script instance, creates an
@@ -87,14 +87,14 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 	 *        "scriptRef" property which refers to the script which is to be
 	 *        loaded.
 	 *
-	 * @return {Promise}
+	 * @returns {Promise}
 	 *         A promise which is resolved with the referenced script.
 	 *
 	 * @private
 	 */
 	ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
 		var ref = instanceConfig.scriptRef;
-		var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX
+		var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
 		var isEngineScript = ref.indexOf(prefix) === 0;
 
 		if (isEngineScript) {
@@ -102,7 +102,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		} else {
 			return this._load(ref, { reload: true });
 		}
-	}
+	};
 
 	/**
 	 * Creates a new instance of one of the default scripts provided by the
@@ -131,7 +131,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		});
 
 		return PromiseUtils.resolve(script);
-	}
+	};
 
 	/**
 	 * Sets the parameters of a script instance from the json configuration.
@@ -218,7 +218,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		}
 
 		if (!ScriptUtils.TYPE_VALIDATORS[type](config)) {
-			return setParam(getInvalidParam())
+			return setParam(getInvalidParam());
 		} else if (type === 'entity') {
 			// For entities, because they can depend on themselves, we don't
 			// wait for the load to be completed. It will eventually resolve

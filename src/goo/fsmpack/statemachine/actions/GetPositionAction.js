@@ -7,6 +7,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	}
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
+	GetPositionAction.prototype.constructor = GetPositionAction;
 
 	GetPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
@@ -33,13 +34,13 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
-	GetPositionAction.prototype._run = function (fsm) {
+	GetPositionAction.prototype.update = function (fsm) {
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined

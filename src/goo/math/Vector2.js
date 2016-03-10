@@ -341,7 +341,7 @@ var Vector4 = require('./Vector4');
 	 * v.set(new Vector2(2, 4)); // v == (2, 4)
 	 */
 	Vector2.prototype.set = function (rhs) {
-		if(rhs instanceof Vector2 || rhs instanceof Vector3 || rhs instanceof Vector4){
+		if (rhs instanceof Vector2 || rhs instanceof Vector3 || rhs instanceof Vector4) {
 			this.x = rhs.x;
 			this.y = rhs.y;
 		} else {

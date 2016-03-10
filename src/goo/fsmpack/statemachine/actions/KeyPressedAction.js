@@ -5,26 +5,13 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 	function KeyPressedAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.keyIsDown = false;
-		this.eventListenerDown = function (event) {
-			if (event.which === +this.key) {
-				this.keyIsDown = true;
-			}
-		}.bind(this);
-		this.eventListenerUp = function (event) {
-			if (event.which === +this.key) {
-				document.removeEventListener('keydown', this.eventListenerUp);
-				this.keyIsDown = false;
-			}
-		}.bind(this);
 	}
 
 	KeyPressedAction.prototype = Object.create(Action.prototype);
 	KeyPressedAction.prototype.constructor = KeyPressedAction;
 
 	KeyPressedAction.external = {
+		key: 'Key Pressed',
 		name: 'Key Pressed',
 		type: 'controls',
 		description: 'Listens for a key press event and performs a transition. Works over transition boundaries.',
@@ -34,13 +21,17 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for'
+			description: 'Key to listen for.',
+			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
-			name: 'Key pressed',
-			description: 'State to transition to when the key is pressed'
+			description: 'State to transition to when the key is pressed.'
 		}]
+	};
+
+	KeyPressedAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return 'On Key ' + (actionConfig.options.key || '') + ' pressed';
 	};
 
 	KeyPressedAction.prototype.configure = function (settings) {
@@ -48,19 +39,16 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyPressedAction.prototype._setup = function () {
-		document.addEventListener('keydown', this.eventListenerDown);
-		document.addEventListener('keyup', this.eventListenerUp);
-	};
-
-	KeyPressedAction.prototype._run = function (fsm) {
-		if (this.keyIsDown) {
+	KeyPressedAction.prototype.enter = function (fsm) {
+		if (fsm.getInputState(this.key)) {
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	KeyPressedAction.prototype.exit = function () {
-		document.removeEventListener('keydown', this.eventListenerDown);
+	KeyPressedAction.prototype.update = function (fsm) {
+		if (fsm.getInputState(this.key)) {
+			fsm.send(this.transitions.keydown);
+		}
 	};
 
 	module.exports = KeyPressedAction;

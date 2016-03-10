@@ -38,7 +38,7 @@ function AmmoComponent(settings) {
 
 	this.settings = settings = settings || {};
 
-	_.defaults(settings, {
+	ObjectUtils.defaults(settings, {
 		mass: 0,
 		useBounds: false,
 		useWorldBounds: false,

@@ -4,27 +4,16 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	function WasdAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.updated = false;
-		this.keysPressed = {};
-
-		this.eventListener = function (event) {
-			var keyname = WasdAction._keys[event.which];
-			if (keyname !== undefined) {
-				this.updated = true;
-				this.keysPressed[keyname] = true;
-			}
-		}.bind(this);
 	}
 
 	WasdAction.prototype = Object.create(Action.prototype);
+	WasdAction.prototype.constructor = WasdAction;
 
 	WasdAction.prototype.configure = function (settings) {
-		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
-	WasdAction._keys = {
+	var keys = {
 		87: 'w',
 		65: 'a',
 		83: 's',
@@ -33,12 +22,12 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	WasdAction.external = (function () {
 		var transitions = [];
-		for (var keycode in WasdAction._keys) {
-			var keyname = WasdAction._keys[keycode];
+		for (var keycode in keys) {
+			var keyname = keys[keycode];
 			transitions.push({
 				key: keyname,
-				name: 'Key ' + keyname.toUpperCase(),
-				description: "Key '" + keyname + "' pressed"
+				name: 'On key ' + keyname.toUpperCase(),
+				description: "On key '" + keyname + "' pressed."
 			});
 		}
 
@@ -46,30 +35,36 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 			key: 'WASD Keys Listener',
 			name: 'WASD Keys',
 			type: 'controls',
-			description: 'Transitions to other states when the WASD keys are pressed',
+			description: 'Transitions to other states when the WASD keys are pressed.',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions
 		};
 	})();
 
-	WasdAction.prototype._setup = function () {
-		document.addEventListener('keydown', this.eventListener);
+	var labels = {
+		w: 'On Key W Pressed',
+		a: 'On Key A Pressed',
+		s: 'On Key S Pressed',
+		d: 'On Key D Pressed'
 	};
 
-	WasdAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			//var keyKeys = _.keys(WasdAction._keys); // unused
+	WasdAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
 
-			for (var keyname in this.keysPressed) {
+	WasdAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			var keyname = keys[event.which];
+			if (keyname) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
 					fsm.send(target);
 				}
 			}
-			this.keysPressed = [];
-		}
+		}.bind(this);
+
+		document.addEventListener('keydown', this.eventListener);
 	};
 
 	WasdAction.prototype.exit = function () {

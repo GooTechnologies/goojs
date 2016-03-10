@@ -41,7 +41,7 @@
     "handlebars": "^3.0.3",
     "jasmine-node": "~2.0.0",
     "jshint": "2.7.0",
-    "karma": "~0.12.31",
+    "karma": "0.12.31",
     "karma-chrome-launcher": "0.1.12",
     "karma-coffee-preprocessor": "0.2.1",
     "karma-coverage": "0.3.1",

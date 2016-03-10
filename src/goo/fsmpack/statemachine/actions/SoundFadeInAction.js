@@ -11,37 +11,44 @@ var PromiseUtil = require('../../../util/PromiseUtil');
 	SoundFadeInAction.prototype.constructor = SoundFadeInAction;
 
 	SoundFadeInAction.external = {
+		key: 'Sound Fade In',
 		name: 'Sound Fade In',
 		type: 'sound',
-		description: 'Fades in a sound. NOTE: will not work on iOS devices.',
+		description: 'Fades in a sound. NOTE: On iOS devices, you need to play the first sound inside a touchend event (for example using the MouseUpAction).',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
 			key: 'sound',
 			type: 'sound',
-			description: 'Sound',
-			'default': 0
+			description: 'Sound to fade.'
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
-			description: 'Time it takes for the fading to complete',
+			type: 'float',
+			description: 'Time it takes for the fading to complete.',
 			'default': 1000
 		}, {
 			name: 'On Sound End',
 			key: 'onSoundEnd',
 			type: 'boolean',
-			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time',
+			description: 'Whether to transition when the sound finishes playing, regardless of the specified transition time.',
 			'default': false
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the time expires or when the sound finishes playing'
+			description: 'State to transition to when the time expires or when the sound finishes playing.'
 		}]
 	};
 
-	SoundFadeInAction.prototype._run = function (fsm) {
+	var labels = {
+		complete: 'On Sound Fade In Complete'
+	};
+
+	SoundFadeInAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	SoundFadeInAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		if (!entity.hasComponent('SoundComponent')) { return; }
@@ -51,12 +58,10 @@ var PromiseUtil = require('../../../util/PromiseUtil');
 
 		var endPromise;
 		try {
-			sound.fadeIn(this.time / 1000);
+			endPromise = sound.fadeIn(this.time / 1000);
 
 			if (this.onSoundEnd) {
 				endPromise = sound.play();
-			} else {
-				endPromise = PromiseUtil.delay(null, this.time);
 			}
 		} catch (e) {
 			console.warn('Could not play sound: ' + e);

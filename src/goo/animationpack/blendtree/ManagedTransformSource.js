@@ -1,9 +1,7 @@
-var JointChannel = require('../../animationpack/clip/JointChannel');
-var JointData = require('../../animationpack/clip/JointData');
-var JointChannel = require('../../animationpack/clip/JointChannel');
-var JointData = require('../../animationpack/clip/JointData');
+var TransformData = require('../../animationpack/clip/TransformData');
 var Vector3 = require('../../math/Vector3');
 var Quaternion = require('../../math/Quaternion');
+var Source = require('../../animationpack/blendtree/Source');
 
 	'use strict';
 
@@ -11,11 +9,16 @@ var Quaternion = require('../../math/Quaternion');
 	 * This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically.
 	 * @param {string} [sourceName] Name of source we were initialized from, if given.
+	 * @extends Source
 	 */
 	function ManagedTransformSource(sourceName) {
+		Source.call(this);
 		this._sourceName = sourceName ? sourceName : null;
 		this._data = {};
 	}
+
+	ManagedTransformSource.prototype = Object.create(Source.prototype);
+	ManagedTransformSource.prototype.constructor = ManagedTransformSource;
 
 	/**
 	 * Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
@@ -128,30 +131,6 @@ var Quaternion = require('../../math/Quaternion');
 				}
 			}
 		}
-	};
-
-	/*
-	 * This has no effect on clip source, but will be called by owning {@link SteadyState}
-	 */
-	ManagedTransformSource.prototype.resetClips = function () {
-	};
-
-	ManagedTransformSource.prototype.setTimeScale = function () {
-	};
-
-	/*
-	 * This has no effect, but will be called by owning {@link SteadyState}
-	 * @returns true to stay active
-	 */
-	ManagedTransformSource.prototype.setTime = function () {
-		return true;
-	};
-
-	/*
-	 * ManagedTransformSource is always active
-	 */
-	ManagedTransformSource.prototype.isActive = function () {
-		return true;
 	};
 
 	ManagedTransformSource.prototype.getChannelData = function (channelName) {

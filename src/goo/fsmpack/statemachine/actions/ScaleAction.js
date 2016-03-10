@@ -10,38 +10,39 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	ScaleAction.prototype.constructor = ScaleAction;
 
 	ScaleAction.external = {
+		key: 'Scale',
 		name: 'Scale',
 		type: 'animation',
-		description: 'Scales the entity',
+		description: 'Scales the entity.',
 		parameters: [{
 			name: 'Scale',
 			key: 'scale',
 			type: 'position',
-			description: 'Scale',
+			description: 'Scale.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true, add/multiply the current scaling',
+			description: 'If true, add/multiply the current scaling.',
 			'default': true
 		}, {
 			name: 'Multiply',
 			key: 'multiply',
 			type: 'boolean',
-			description: 'If true multiply, otherwise add',
+			description: 'If true multiply, otherwise add.',
 			'default': false
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': false
 		}],
 		transitions: []
 	};
 
-	ScaleAction.prototype._run = function (fsm) {
+	ScaleAction.prototype.applyScale = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
@@ -65,10 +66,22 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 				}
 			}
 		} else {
-			transform.scale.set(this.scale);
+			transform.scale.setArray(this.scale);
 		}
 
 		entity.transformComponent.setUpdated();
+	};
+
+	ScaleAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.applyScale(fsm);
+		}
+	};
+
+	ScaleAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyScale(fsm);
+		}
 	};
 
 	module.exports = ScaleAction;

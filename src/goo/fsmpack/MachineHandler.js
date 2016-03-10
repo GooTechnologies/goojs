@@ -3,7 +3,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 var State = require('../fsmpack/statemachine/State');
 var Machine = require('../fsmpack/statemachine/Machine');
 var Actions = require('../fsmpack/statemachine/actions/Actions');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 
 /**
  * Handler for loading materials into engine
@@ -29,6 +29,18 @@ ConfigHandler._registerClass('machine', MachineHandler);
  */
 MachineHandler.prototype._create = function () {
 	return new Machine();
+};
+
+/**
+ * Preparing sound config by populating it with defaults.
+ * @param {Object} config
+ * @private
+ */
+MachineHandler.prototype._prepare = function (config) {
+	ObjectUtils.defaults(config, {
+		maxLoopDepth: 100,
+		asyncMode: true
+	});
 };
 
 /**
@@ -82,7 +94,7 @@ MachineHandler.prototype._updateActions = function (state, stateConfig) {
 	// Update new and existing ones
 	// For actions, order is (or will be) important
 	var actions = [];
-	_.forEach(stateConfig.actions, function (actionConfig) {
+	ObjectUtils.forEach(stateConfig.actions, function (actionConfig) {
 		var action = state.getAction(actionConfig.id);
 		if (!action) {
 			var Action = Actions.actionForType(actionConfig.type);
@@ -150,7 +162,7 @@ MachineHandler.prototype._updateState = function (machine, stateConfig, options)
 
 	/*
 	// TODO: Test and use this. Will make the promises sorted correctly.
-	_.forEach(stateConfig.childMachines, function (childMachineConfig) {
+	ObjectUtils.forEach(stateConfig.childMachines, function (childMachineConfig) {
 		promises.push(that._load(childMachineConfig.machineRef, options));
 	}, null, 'sortValue');
 	*/
@@ -162,6 +174,5 @@ MachineHandler.prototype._updateState = function (machine, stateConfig, options)
 		return state;
 	});
 };
-
 
 module.exports = MachineHandler;

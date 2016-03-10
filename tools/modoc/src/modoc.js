@@ -21,6 +21,17 @@ var indexBuilder = require('./index-builder');
 var util = require('./util');
 var trunk = require('./trunk');
 
+// handlebars.registerHelper("debug", function(optionalValue) {
+//   console.log("Current Context");
+//   console.log("====================");
+//   console.log(this);
+ 
+//   if (optionalValue) {
+//     console.log("Value");
+//     console.log("====================");
+//     console.log(optionalValue);
+//   }
+// });
 
 function processArguments() {
 	if (process.argv.length < 6) {
@@ -62,6 +73,22 @@ function resolveRequirePaths(classes, index) {
 
 			if (!class_.requirePath) {
 				class_.requirePath = entry.requirePath;
+			}
+		});
+	});
+}
+
+function resolvePacks(classes, index) {
+	index.forEach(function (group) {
+		group.classes.forEach(function (entry) {
+			var className = entry.name;
+			var class_ = classes[className];
+
+			if (!class_.pack) {
+				var m = entry.requirePath.match(/([a-zA-Z\d]+pack)\//);
+				if(m && m.length >= 2){
+					class_.pack = m[1];
+				}
 			}
 		});
 	});
@@ -182,6 +209,7 @@ copyStaticFiles(function () {
 	var classes = trunk.compileDoc(files);
 	var index = indexBuilder.getIndex(classes, 'goo');
 	resolveRequirePaths(classes, index);
+	resolvePacks(classes, index);
 
 	buildClasses(classes);
 	buildIndex(index);

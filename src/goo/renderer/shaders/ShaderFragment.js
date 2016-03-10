@@ -136,24 +136,23 @@
 
 	ShaderFragment.methods = {
 		packDepth: [
-			'vec4 packDepth( const in float depth ) {',
-				'const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );',
-				'const vec4 bit_mask  = vec4( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );',
-				'vec4 res = fract( depth * bit_shift );',
+			'vec4 packDepth(const in float depth) {',
+				'const vec4 bit_shift = vec4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);',
+				'const vec4 bit_mask  = vec4(0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);',
+				'vec4 res = fract(depth * bit_shift);',
 				'res -= res.xxyz * bit_mask;',
 				'return res;',
 			'}'
 		].join('\n'),
 		unpackDepth: [
-			'float unpackDepth( const in vec4 rgba_depth ) {',
-				'const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );',
-				'float depth = dot( rgba_depth, bit_shift );',
-				'return depth;',
-			'}'
+			'float unpackDepth(const in vec4 rgba_depth) {',
+				'const vec4 bit_shift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);',
+				'return dot(rgba_depth, bit_shift);',
+			'}',
 		].join('\n'),
 		packFloat: [
 			packCommon,
-			'vec4 packFloat (float val) {',
+			'vec4 packFloat(float val) {',
 				'if (val == 0.0) return vec4(0, 0, 0, 0);',
 				'float sign = val > 0.0 ? 0.0 : 1.0;',
 				'val = abs(val);',
@@ -172,7 +171,7 @@
 		].join('\n'),
 		unpackFloat: [
 			packCommon,
-			'float unpackFloat (vec4 val) {',
+			'float unpackFloat(vec4 val) {',
 				// 'if (val == vec4(0.0)) return 0.0;',
 				'val = val * vec4(255.0);',
 				'float sign = - shift_right(val.w, 7.0) * 2.0 + 1.0;',
@@ -191,14 +190,14 @@
 			'}'
 		].join('\n'),
 		packDepth16: [
-			'vec2 packDepth16( const in float depth ) {',
+			'vec2 packDepth16(const in float depth) {',
 				'const vec2 bias = vec2(1.0 / 255.0, 0.0);',
 				'vec2 res = vec2(depth, fract(depth * 255.0));',
 				'return res - (res.yy * bias);',
 			'}'
 		].join('\n'),
 		unpackDepth16: [
-			'float unpackDepth16( const in vec2 rg_depth ) {',
+			'float unpackDepth16(const in vec2 rg_depth) {',
 				'return rg_depth.x + (rg_depth.y / 255.0);',
 			'}'
 		].join('\n'),

@@ -8,14 +8,13 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	AddVariableAction.prototype = Object.create(Action.prototype);
-
-	AddVariableAction.prototype.configure = function (settings) {
-		this.everyFrame = !!settings.everyFrame;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
-	};
+	AddVariableAction.prototype.constructor = AddVariableAction;
 
 	AddVariableAction.external = {
+		key: 'Add Variable',
+		name: 'Add Variable',
+		type: 'variables',
+		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
@@ -28,16 +27,28 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': false
 		}],
 		transitions: []
 	};
 
-	AddVariableAction.prototype._run = function (fsm) {
+	AddVariableAction.prototype.add = function (fsm) {
 		fsm.applyOnVariable(this.variable, function (v) {
 			return v + FsmUtils.getValue(this.amount, fsm);
 		}.bind(this));
+	};
+
+	AddVariableAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.add(fsm);
+		}
+	};
+
+	AddVariableAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.add(fsm);
+		}
 	};
 
 	module.exports = AddVariableAction;

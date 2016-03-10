@@ -23,7 +23,7 @@ var MeshData = require('../../../renderer/MeshData');
 	};
 
 	/**
-	 * @return {PhysicsBoxDebugShape} self for chaining
+	 * @returns {PhysicsBoxDebugShape} self for chaining
 	 */
 	PhysicsBoxDebugShape.prototype.rebuild = function () {
 		var verts = [];

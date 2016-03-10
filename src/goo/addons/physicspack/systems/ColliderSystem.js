@@ -19,19 +19,6 @@ var SystemBus = require('../../../entities/SystemBus');
 	 * @param {array} entities
 	 */
 	ColliderSystem.prototype.process = function (/*entities*/) {
-		// var N = entities.length;
-
-		// for (var i = 0; i !== N; i++) {
-		// 	var entity = entities[i];
-		// 	var transformComp = entity.transformComponent;
-		// 	var colliderComp = entity.colliderComponent;
-
-		// 	colliderComp._updated = false;
-		// 	if (transformComp._updated) {
-		// 		entity.colliderComponent.updateWorldCollider();
-		// 		entity.colliderComponent.setToDirty();
-		// 	}
-		// }
 	};
 
 	/**

@@ -48,6 +48,9 @@ var Vector3 = require('../../math/Vector3');
 		var screenWidth = this.renderer.domElement.width;
 		var screenHeight = this.renderer.domElement.height;
 
+		var renderer = this.renderer;
+		var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
+
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var component = entity.htmlComponent;
@@ -86,10 +89,13 @@ var Vector3 = require('../../math/Vector3');
 			// Else visible
 			component.domElement.style.display = '';
 
-			var renderer = this.renderer;
-			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
-			var fx = Math.floor(tmpVector.x / devicePixelRatio);
-			var fy = Math.floor(tmpVector.y / devicePixelRatio);
+			var fx = tmpVector.x / devicePixelRatio;
+			var fy = tmpVector.y / devicePixelRatio;
+
+			if(component.pixelPerfect){
+				fx = Math.floor(fx);
+				fy = Math.floor(fy);
+			}
 
 			this.setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) ' +

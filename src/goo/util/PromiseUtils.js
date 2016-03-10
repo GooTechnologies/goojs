@@ -1,4 +1,4 @@
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 
 	'use strict';
 

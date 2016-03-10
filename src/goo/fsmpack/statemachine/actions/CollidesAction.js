@@ -6,8 +6,6 @@ var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 
 	function CollidesAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
 	}
 
 	CollidesAction.prototype = Object.create(Action.prototype);
@@ -15,26 +13,33 @@ var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 
 	CollidesAction.external = {
 		key: 'Collides',
-		name: 'Collision',
+		name: 'Collision (Bounding volume intersection)',
 		type: 'collision',
-		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag entities via the entity panel or using the \'Tag\' action.',
+		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag your entities.',
 		canTransition: true,
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
-			description: 'Checks for collisions with other objects having this tag',
+			description: 'Checks for collisions with other objects having this tag.',
 			'default': 'red'
 		}],
 		transitions: [{
 			key: 'collides',
-			name: 'On Collision',
-			description: 'State to transition to when a collision occurs'
+			description: 'State to transition to when a collision occurs.'
 		}, {
 			key: 'notCollides',
-			name: 'On Divergence',
-			description: 'State to transition to when a collision is not occurring'
+			description: 'State to transition to when a collision is not occurring.'
 		}]
+	};
+
+	var labels = {
+		collides: 'On bounds Overlap',
+		notCollides: 'On bounds Separate'
+	};
+
+	CollidesAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
 	};
 
 	CollidesAction.prototype.ready = function (fsm) {
@@ -45,7 +50,7 @@ var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 		}
 	};
 
-	CollidesAction.prototype._run = function (fsm) {
+	CollidesAction.prototype.update = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 		var proximitySystem = world.getSystem('ProximitySystem');

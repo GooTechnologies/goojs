@@ -1,10 +1,15 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Vector2 = require('../../../math/Vector2');
 var TWEEN = require('../../../util/TWEEN');
 
 	'use strict';
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.fromOffset = new Vector2();
+		this.toOffset = new Vector2();
+		this.completed = false;
 	}
 
 	TweenTextureOffsetAction.prototype = Object.create(Action.prototype);
@@ -12,9 +17,9 @@ var TWEEN = require('../../../util/TWEEN');
 
 	TweenTextureOffsetAction.external = {
 		key: 'Tween Texture Offset',
-		name: 'Tween Texture',
+		name: 'Tween Texture Offset',
 		type: 'texture',
-		description: 'Smoothly changes the texture offset of the entity',
+		description: 'Smoothly changes the texture offset of the entity.',
 		canTransition: true,
 		parameters: [{
 			name: 'X Offset',
@@ -23,7 +28,7 @@ var TWEEN = require('../../../util/TWEEN');
 			control: 'slider',
 			min: 0,
 			max: 1,
-			description: 'X Offset',
+			description: 'X Offset.',
 			'default': 1
 		}, {
 			name: 'Y Offset',
@@ -32,20 +37,20 @@ var TWEEN = require('../../../util/TWEEN');
 			control: 'slider',
 			min: 0,
 			max: 1,
-			description: 'Y Offset',
+			description: 'Y Offset.',
 			'default': 1
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
-			description: 'Time it takes for this transition to complete',
+			type: 'float',
+			description: 'Time it takes for this transition to complete.',
 			'default': 1000
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing type',
+			description: 'Easing type.',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
@@ -53,57 +58,67 @@ var TWEEN = require('../../../util/TWEEN');
 			key: 'easing2',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Easing direction',
+			description: 'Easing direction.',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
-			name: 'On Completion',
-			description: 'State to transition to when the transition completes'
+			description: 'State to transition to when the transition completes.'
 		}]
 	};
 
-	TweenTextureOffsetAction.prototype.configure = function (settings) {
-		this.toX = +settings.toX;
-		this.toY = +settings.toY;
-		this.time = +settings.time;
-		if (settings.easing1 === 'Linear') {
+	TweenTextureOffsetAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return transitionKey === 'complete' ? 'On UV Tween Complete' : undefined;
+	};
+
+	TweenTextureOffsetAction.prototype.ready = function () {
+		if (this.easing1 === 'Linear') {
 			this.easing = TWEEN.Easing.Linear.None;
 		} else {
-			this.easing = TWEEN.Easing[settings.easing1][settings.easing2];
-		}
-		this.eventToEmit = { channel: settings.transitions.complete };
-	};
-
-	TweenTextureOffsetAction.prototype._setup = function () {
-		this.tween = new TWEEN.Tween();
-	};
-
-	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
+			this.easing = TWEEN.Easing[this.easing1][this.easing2];
 		}
 	};
 
-	TweenTextureOffsetAction.prototype._run = function (fsm) {
+	TweenTextureOffsetAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
-			var meshRendererComponent = entity.meshRendererComponent;
-			var material = meshRendererComponent.materials[0];
-			var texture = material.getTexture('DIFFUSE_MAP');
-			if (!texture) { return; }
-			var initialOffset = texture.offset;
-			var time = entity._world.time * 1000;
+		var meshRendererComponent = entity.meshRendererComponent;
+		this.texture = null;
+		if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
+			return;
+		}
+		var material = meshRendererComponent.materials[0];
+		this.texture = material.getTexture('DIFFUSE_MAP');
+		if (!this.texture) {
+			return;
+		}
 
-			var fakeFrom = { x: initialOffset.x, y: initialOffset.y };
-			var fakeTo = { x: this.toX, y: this.toY };
+		this.fromOffset.set(this.texture.offset);
+		this.toOffset.setDirect(this.toX, this.toY);
+		if (this.relative) {
+			this.toOffset.add(this.fromOffset);
+		}
 
-			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function () {
-				texture.offset.setDirect(this.x, this.y);
-			}).onComplete(function () {
-				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+		this.startTime = fsm.getTime();
+		this.completed = false;
+	};
+
+	TweenTextureOffsetAction.prototype.update = function (fsm) {
+		if (this.completed) {
+			return;
+		}
+		if (!this.texture) {
+			return;
+		}
+
+		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var fT = this.easing(t);
+
+		this.texture.offset.set(this.fromOffset).lerp(this.toOffset, fT);
+
+		if (t >= 1) {
+			fsm.send(this.transitions.complete);
+			this.completed = true;
 		}
 	};
 

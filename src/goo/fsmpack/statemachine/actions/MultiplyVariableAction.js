@@ -8,14 +8,13 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	MultiplyVariableAction.prototype = Object.create(Action.prototype);
-
-	MultiplyVariableAction.prototype.configure = function (settings) {
-		this.everyFrame = !!settings.everyFrame;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
-	};
+	MultiplyVariableAction.prototype.constructor = MultiplyVariableAction;
 
 	MultiplyVariableAction.external = {
+		key: 'Multiply Variable',
+		name: 'Multiply Variable',
+		type: 'variables',
+		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
@@ -34,7 +33,7 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 		transitions: []
 	};
 
-	MultiplyVariableAction.prototype._run = function (fsm) {
+	MultiplyVariableAction.prototype.update = function (fsm) {
 		fsm.applyOnVariable(this.variable, function (v) {
 			return v * FsmUtils.getValue(this.amount, fsm);
 		}.bind(this));

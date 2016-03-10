@@ -258,7 +258,7 @@ var MathUtils = require('./MathUtils');
 			target = new Vector(size);
 		}
 
-		for(var i=0; i<size; i++){
+		for (var i=0; i<size; i++) {
 			target.data[i] = source.data[i];
 		}
 
@@ -271,7 +271,7 @@ var MathUtils = require('./MathUtils');
 	 */
 	Vector.prototype.copy = ObjectUtils.warnOnce('Vector.prototype.copy  is deprecated.', function (source) {
 		var size = source._size;
-		for(var i=0; i<size; i++){
+		for (var i=0; i<size; i++) {
 			this.data[i] = source.data[i];
 		}
 		return this;

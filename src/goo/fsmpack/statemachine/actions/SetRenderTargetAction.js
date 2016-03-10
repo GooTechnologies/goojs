@@ -17,14 +17,15 @@ var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 	SetRenderTargetAction.prototype.constructor = SetRenderTargetAction;
 
 	SetRenderTargetAction.external = {
+		key: 'Set Render Target',
 		name: 'Set Render Target',
 		type: 'texture',
-		description: 'Renders what a camera sees on the current entity\'s texture',
+		description: 'Renders what a camera sees on the current entity\'s texture.',
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'camera',
-			description: 'Camera to use as source',
+			description: 'Camera to use as source.',
 			'default': null
 		}],
 		transitions: []
@@ -40,7 +41,7 @@ var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 		}
 	};
 
-	SetRenderTargetAction.prototype._run = function (fsm) {
+	SetRenderTargetAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 

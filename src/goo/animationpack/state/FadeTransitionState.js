@@ -30,6 +30,12 @@ var AbstractTransitionState = require('../../animationpack/state/AbstractTransit
 		}
 	};
 
+	/*
+	 */
+	FadeTransitionState.prototype.getCurrentLoop = function () {
+		return this._targetState.getCurrentLoop();
+	};
+
 	/**
 	 * Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.

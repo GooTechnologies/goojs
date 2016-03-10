@@ -15,12 +15,20 @@ var Camera = require('../renderer/Camera');
 		var listeners;
 
 		function getTouchCenter(touches) {
+			var cx = 0;
+			var cy = 0;
+
 			var x1 = touches[0].clientX;
 			var y1 = touches[0].clientY;
-			var x2 = touches[1].clientX;
-			var y2 = touches[1].clientY;
-			var cx = (x1 + x2) / 2;
-			var cy = (y1 + y2) / 2;
+			if (touches.length >= 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+			} else {
+				cx = x1;
+				cy = y1;
+			}
 			return [cx, cy];
 		}
 
@@ -98,7 +106,7 @@ var Camera = require('../renderer/Camera');
 				},
 				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						mouseState.down = (event.targetTouches.length === 2);
+						mouseState.down = (parameters.touchMode === 'Any' || (parameters.touchMode === 'Single' && event.targetTouches.length === 1) || (parameters.touchMode === 'Double' && event.targetTouches.length === 2));
 						if (!mouseState.down) { return; }
 
 						var center = getTouchCenter(event.targetTouches);
@@ -113,6 +121,7 @@ var Camera = require('../renderer/Camera');
 						var center = getTouchCenter(event.targetTouches);
 						mouseState.x = center[0];
 						mouseState.y = center[1];
+						environment.dirty = true;
 					}
 				},
 				touchend: function (/*event*/) {
@@ -180,7 +189,7 @@ var Camera = require('../renderer/Camera');
 				calcVector2.set(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
-				//if (parameters.screenMove){
+				//if (parameters.screenMove) {
 					// In the case of screenMove, we normalize the camera movement
 					// to the near plane instead of using pixels. This makes the parallel
 					// camera map mouse world movement to camera movement 1-1
@@ -192,7 +201,7 @@ var Camera = require('../renderer/Camera');
 				//}
 				calcVector.add(calcVector2);
 				calcVector.applyPost(transform.rotation);
-				//if (!parameters.screenMove){
+				//if (!parameters.screenMove) {
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 				if (camera.projectionMode === Camera.Perspective) {
 					// RB: I know, very arbitrary but looks ok
@@ -242,6 +251,13 @@ var Camera = require('../renderer/Camera');
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
+		}, {
+			key: 'touchMode',
+			description: 'Number of fingers needed to trigger panning.',
+			type: 'string',
+			control: 'select',
+			'default': 'Double',
+			options: ['Any', 'Single', 'Double']
 		}, {
 			key: 'panSpeed',
 			type: 'float',

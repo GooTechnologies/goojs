@@ -1,19 +1,19 @@
 var System = require('../../entities/systems/System');
 var AudioContext = require('../../sound/AudioContext');
-var Vector3 = require('../../math/Vector3');
 var MathUtils = require('../../math/MathUtils');
 var SystemBus = require('../../entities/SystemBus');
-var ObjectUtils = require('../../util/ObjectUtils');
 var Matrix4 = require('../../math/Matrix4');
 
 	'use strict';
+
 	/**
 	 * System responsible for sound.
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
-	 * @extends {System}
+	 * @extends System
 	 */
 	function SoundSystem() {
-		if (!AudioContext.isSupported()) {
+		this._isSupported = AudioContext.isSupported();
+		if (!this._isSupported) {
 			console.warn('Cannot create SoundSystem, WebAudio not supported');
 			return;
 		}
@@ -21,15 +21,53 @@ var Matrix4 = require('../../math/Matrix4');
 
 		this.entities = [];
 		this._relativeTransform = new Matrix4();
-		this._camera = null;
 
-		this._settings = {
-			rolloffFactor: 0.4,
-			maxDistance: 100
-		};
 		this._pausedSounds = {};
 
 		this.initialized = false;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.rolloffFactor = 0.4;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.maxDistance = 100;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.dopplerFactor = 0.05;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.volume = 1;
+
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.reverb = 0;
+
+		/**
+		 * The muted state. To mute or unmute, see the mute() and unmute() methods.
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.muted = false;
+
+		this.reverbAudioBuffer = null;
+
+		this._reverbDirty = true;
+		this._dirty = true;
+		this._camera = null;
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
@@ -79,6 +117,8 @@ var Matrix4 = require('../../math/Matrix4');
 			dry: this._outNode,
 			wet: this._convolver
 		});
+
+		entity.soundComponent._system = this;
 	};
 
 	/**
@@ -94,64 +134,52 @@ var Matrix4 = require('../../math/Matrix4');
 				sounds[i].stop();
 			}
 			entity.soundComponent.connectTo();
+			entity.soundComponent._system = null;
 		}
 	};
 
 	/**
-	 * Update the environmental sound system properties. The settings are not applied immediately.
+	 * Update the environmental sound system properties. The settings are applied on the next process().
 	 * @param {Object} [config]
 	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
+	 * @param {boolean} [config.muted]
 	 */
 	SoundSystem.prototype.updateConfig = function (config) {
-		if (!AudioContext.isSupported()) {
-			console.warn('WebAudio not supported');
-			return;
+		config = config || {};
+
+		if (config.maxDistance !== undefined) {
+			this.maxDistance = config.maxDistance;
+		}
+		if (config.rolloffFactor !== undefined) {
+			this.rolloffFactor = config.rolloffFactor;
+		}
+		if (config.dopplerFactor !== undefined) {
+			this.dopplerFactor = config.dopplerFactor * 0.05; // 0.05 ??? I have no idea
+		}
+		if (config.volume !== undefined) {
+			this.volume = MathUtils.clamp(config.volume, 0, 1);
+		}
+		if (config.reverb !== undefined) {
+			this.reverb = MathUtils.clamp(config.reverb, 0, 1);
+		}
+		if (config.muted !== undefined) {
+			this.muted = config.muted;
 		}
 
-		this._scheduledUpdates.push(function () {
-			_.extend(this._settings, config);
-
-			if (!this.initialized) { this._initializeAudioNodes(); }
-
-			if (config.dopplerFactor !== undefined) {
-				this._listener.dopplerFactor = config.dopplerFactor * 0.05;
-			}
-			if (config.volume !== undefined) {
-				this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
-			}
-			if (config.reverb !== undefined) {
-				this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
-			}
-		});
+		this._dirty = true;
 	};
 
 	/**
 	 * Set the reverb impulse response. The settings are not applied immediately.
-	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
+	 * @param {?AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function (audioBuffer) {
-		if (!AudioContext.isSupported()) {
-			console.warn('WebAudio not supported');
-			return;
-		}
-
-		this._scheduledUpdates.push(function () {
-			if (!this.initialized) {
-				this._initializeAudioNodes();
-			}
-
-			this._wetNode.disconnect();
-			if (!audioBuffer && this._wetNode) {
-				this._convolver.buffer = null;
-			} else {
-				this._convolver.buffer = audioBuffer;
-				this._wetNode.connect(this._outNode);
-			}
-		});
+		this.reverbAudioBuffer = audioBuffer;
+		this._reverbDirty = true;
 	};
 
 	/**
@@ -173,6 +201,22 @@ var Matrix4 = require('../../math/Matrix4');
 	};
 
 	/**
+	 * Mute all sounds.
+	 */
+	SoundSystem.prototype.mute = function () {
+		this.muted = true;
+		this._dirty = true;
+	};
+
+	/**
+	 * Unmute all sounds.
+	 */
+	SoundSystem.prototype.unmute = function () {
+		this.muted = false;
+		this._dirty = true;
+	};
+
+	/**
 	 * Resumes playing of all sounds that were paused
 	 */
 	SoundSystem.prototype.resume = function () {
@@ -191,9 +235,12 @@ var Matrix4 = require('../../math/Matrix4');
 	};
 
 	/**
-	 * Resumes playing of all sounds that were paused; an alias for `.resume`
+	 * Resumes playing of all sounds that were paused.
 	 */
-	SoundSystem.prototype.play = SoundSystem.prototype.resume;
+	SoundSystem.prototype.play = function() {
+		this.resume();
+		this.passive = false;
+	};
 
 	/**
 	 * Stopping the sound system and all sounds in scene
@@ -207,23 +254,35 @@ var Matrix4 = require('../../math/Matrix4');
 			}
 		}
 		this._pausedSounds = null;
+		this.passive = true;
 	};
 
 	SoundSystem.prototype.process = function (entities, tpf) {
-		if (!AudioContext.isSupported()) {
-			// This should never happen because system shouldn't process
-			return;
-		}
-		if (entities.length === 0) {
+		if (!this._isSupported || entities.length === 0) {
 			return;
 		}
 
-		while (this._scheduledUpdates.length) {
-			var thunk = this._scheduledUpdates.pop();
-			thunk.call(this);
+		if (!this.initialized) {
+			this._initializeAudioNodes();
 		}
 
-		if (!this.initialized) { this._initializeAudioNodes(); }
+		if (this._reverbDirty) {
+			this._wetNode.disconnect();
+			if (!this.reverbAudioBuffer && this._wetNode) {
+				this._convolver.buffer = null;
+			} else {
+				this._convolver.buffer = this.reverbAudioBuffer;
+				this._wetNode.connect(this._outNode);
+			}
+			this._reverbDirty = false;
+		}
+
+		if (this._dirty) {
+			this._listener.dopplerFactor = this.dopplerFactor;
+			this._outNode.gain.value = this.muted ? 0 : this.volume;
+			this._wetNode.gain.value = this.reverb;
+			this._dirty = false;
+		}
 
 		this.entities = entities;
 		var relativeTransform = this._relativeTransform;
@@ -242,10 +301,10 @@ var Matrix4 = require('../../math/Matrix4');
 			if (this._camera && !component._attachedToCamera) {
 				// Give the transform relative to the camera
 				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
-				component.process(this._settings, relativeTransform, tpf);
+				component.process(this, relativeTransform, tpf);
 			} else {
 				// Component is attached to camera.
-				component.process(this._settings, null, tpf);
+				component.process(this, null, tpf);
 			}
 		}
 	};

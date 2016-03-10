@@ -5,37 +5,33 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.eventListener = function (event) {
-			if (!this.key || event.which === +this.key) {
-				this.updated = true;
-			}
-		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
 	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		key: 'Key Up',
 		name: 'Key Up',
 		type: 'controls',
-		description: 'Listens for a key release and performs a transition',
+		description: 'Listens for a key release and performs a transition.',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'string',
 			control: 'key',
-			description: 'Key to listen for',
+			description: 'Key to listen for.',
 			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keyup',
-			name: 'Key up',
-			description: 'State to transition to when the key is released'
+			description: 'State to transition to when the key is released.'
 		}]
+	};
+
+	KeyUpAction.getTransitionLabel = function(transitionKey, actionConfig){
+		return 'On Key ' + (actionConfig.options.key || '') + ' up';
 	};
 
 	KeyUpAction.prototype.configure = function (settings) {
@@ -43,15 +39,13 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 		this.transitions = { keyup: settings.transitions.keyup };
 	};
 
-	KeyUpAction.prototype._setup = function () {
+	KeyUpAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			if (!this.key || event.which === +this.key) {
+				fsm.send(this.transitions.keyup);
+			}
+		}.bind(this);
 		document.addEventListener('keyup', this.eventListener);
-	};
-
-	KeyUpAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			fsm.send(this.transitions.keyup);
-		}
 	};
 
 	KeyUpAction.prototype.exit = function () {

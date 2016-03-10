@@ -26,20 +26,20 @@ var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 			key: 'startColor',
 			type: 'vec3',
 			control: 'color',
-			description: 'Flame color at source',
+			description: 'Flame color at source.',
 			'default': [1, 1, 0]
 		}, {
 			name: 'End color',
 			key: 'endColor',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color near the end of a flame\'s life',
+			description: 'Color near the end of a flame\'s life.',
 			'default': [1, 0, 0]
 		}],
 		transitions: []
 	};
 
-	FireAction.prototype._run = function (fsm) {
+	FireAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity.transformComponent) !== -1) {
 			return;

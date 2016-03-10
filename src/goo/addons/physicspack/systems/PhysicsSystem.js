@@ -35,12 +35,64 @@ var Transform = require('../../../math/Transform');
 			broadphase: new CANNON.SAPBroadphase()
 		});
 
-		var that = this;
-		this.cannonWorld.addEventListener('postStep', function () {
-			that.emitContactEvents();
-			that.emitSubStepEvent();
-		});
+		this.cannonWorld.addEventListener('beginShapeContact', function (evt) {
+			var shapeIdToColliderEntityMap = this._shapeIdToColliderEntityMap;
+			var entityA = shapeIdToColliderEntityMap.get(evt.shapeA.id);
+			var entityB = shapeIdToColliderEntityMap.get(evt.shapeB.id);
 
+			if (!entityA || !entityB) {
+				return;
+			}
+
+			var colliderComponentA = entityA.colliderComponent;
+			var colliderComponentB = entityB.colliderComponent;
+			if (colliderComponentA.isTrigger || colliderComponentB.isTrigger) {
+				this.emitTriggerEnter(entityA, entityB);
+				this._stayingEntities.push(entityA, entityB);
+
+				// At least one of the colliders need to have a non-kinematic rigid body
+			} else if ((colliderComponentA.getBodyEntity() && !colliderComponentA.getBodyEntity().rigidBodyComponent.isKinematic) || (colliderComponentB.getBodyEntity() && !colliderComponentB.getBodyEntity().rigidBodyComponent.isKinematic)) {
+				this.emitBeginContact(entityA, entityB);
+				this._stayingEntities.push(entityA, entityB);
+			}
+		}.bind(this));
+
+		this.cannonWorld.addEventListener('endShapeContact', function (evt) {
+			var shapeIdToColliderEntityMap = this._shapeIdToColliderEntityMap;
+			var entityA = shapeIdToColliderEntityMap.get(evt.shapeA.id);
+			var entityB = shapeIdToColliderEntityMap.get(evt.shapeB.id);
+
+			// Remove them from the staying array
+			var stayingEntities = this._stayingEntities;
+			for (var i = 0; i < stayingEntities.length; i += 2) {
+				if ((stayingEntities[i] === entityA && stayingEntities[i + 1] === entityB) || (stayingEntities[i] === entityB && stayingEntities[i + 1] === entityA)) {
+					stayingEntities.splice(i, 2);
+					break;
+				}
+			}
+
+			if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+				this.emitTriggerExit(entityA, entityB);
+			} else {
+				this.emitEndContact(entityA, entityB);
+			}
+		}.bind(this));
+
+		this.cannonWorld.addEventListener('postStep', function () {
+			this.emitSubStepEvent();
+			var stayingEntities = this._stayingEntities;
+			for (var i = 0; i < stayingEntities.length; i += 2) {
+				var entityA = stayingEntities[i];
+				var entityB = stayingEntities[i + 1];
+				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+					this.emitTriggerStay(entityA, entityB);
+				} else {
+					this.emitDuringContact(entityA, entityB);
+				}
+			}
+		}.bind(this));
+
+		this._stayingEntities = [];
 		this._entities = {};
 		this._shapeIdToColliderEntityMap = new Map();
 
@@ -65,54 +117,6 @@ var Transform = require('../../../math/Transform');
 		 */
 		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
-		/**
-		 * The current shape pair hashes.
-		 * @private
-		 * @type {Set}
-		 */
-		this._currentContacts = new Set();
-
-		/**
-		 * Shape pair hashes from last step.
-		 * @private
-		 * @type {Set}
-		 */
-		this._lastContacts = new Set();
-
-		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
-		this._sortContacts = function (contactA, contactB) {
-			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
-		};
-
-		// Set iterator callback for lastContacts: emits endContact events
-		this._emitEndContactEvents = function (hash) {
-			var idA = PhysicsSystem._getShapeIdA(hash);
-			var idB = PhysicsSystem._getShapeIdB(hash);
-
-			var entityA = this._shapeIdToColliderEntityMap.get(idA);
-			var entityB = this._shapeIdToColliderEntityMap.get(idB);
-
-			var found = this._currentContacts.has(hash);
-			if (!found) {
-				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
-					this.emitTriggerExit(entityA, entityB);
-				} else {
-					this.emitEndContact(entityA, entityB);
-				}
-			}
-		}.bind(this);
-
-		// Set iterator callback for currentContacts: Moves all hashes from currentContacts to lastContacts
-		this._moveHashes = function (hash) {
-			this._lastContacts.add(hash);
-			this._currentContacts.delete(hash);
-		}.bind(this);
-
-		// Set iterator callback for lastContacts: just empties the Set
-		this._emptyLastContacts = function (hash) {
-			this._lastContacts.delete(hash);
-		}.bind(this);
-
 		this.initialized = false;
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
@@ -120,14 +124,6 @@ var Transform = require('../../../math/Transform');
 
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 	PhysicsSystem.prototype.constructor = PhysicsSystem;
-
-	/**
-	 * @private
-	 */
-	PhysicsSystem.prototype._swapContactLists = function () {
-		this._lastContacts.forEach(this._emptyLastContacts);
-		this._currentContacts.forEach(this._moveHashes);
-	};
 
 	/**
 	 * @param {Vector3} gravityVector
@@ -165,112 +161,6 @@ var Transform = require('../../../math/Transform');
 		}
 	};
 
-	/**
-	 * Returns an integer hash given two shapes.
-	 * @private
-	 * @param  {CANNON.Shape} shapeA
-	 * @param  {CANNON.Shape} shapeB
-	 * @return {number}
-	 */
-	PhysicsSystem._getShapePairHash = function (shapeA, shapeB) {
-		var idA = shapeA.id;
-		var idB = shapeB.id;
-
-		if (idA > idB) {
-			var tmp = idA;
-			idA = idB;
-			idB = tmp;
-		}
-
-		var hash = (idA << 16) | idB;
-
-		return hash;
-	};
-
-	/**
-	 * Returns the first of the shape id's given a hash.
-	 * @private
-	 * @param  {number} hash
-	 * @return {number}
-	 */
-	PhysicsSystem._getShapeIdA = function (hash) {
-		return (hash & 0xFFFF0000) >> 16;
-	};
-
-	/**
-	 * Returns the second shape id given a hash.
-	 * @private
-	 * @param  {number} hash
-	 * @return {number}
-	 */
-	PhysicsSystem._getShapeIdB = function (hash) {
-		return hash & 0x0000FFFF;
-	};
-
-	/**
-	 * Fill a Map with contacts.
-	 * @private
-	 * @param  {Array} contacts
-	 * @param  {Map} targetMap
-	 */
-	PhysicsSystem.prototype._fillContactsMap = function (contacts, targetMap) {
-		for (var i = 0; i !== contacts.length; i++) {
-			var contact = contacts[i];
-			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
-			targetMap.add(hash);
-		}
-	};
-
-	/**
-	 * @private
-	 */
-	PhysicsSystem.prototype.emitContactEvents = function () {
-		// TODO: Move this logic to CANNON.js intead?
-
-		// Get overlapping entities
-		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
-			currentContacts = this._currentContacts,
-			lastContacts = this._lastContacts;
-
-		// Make the shape pairs unique
-		this._fillContactsMap(contacts, currentContacts);
-
-		// loop over the non-unique, but sorted array.
-		var lastHash;
-		for (var i = 0; i < contacts.length; i++) {
-			var contact = contacts[i];
-			var shapeA = contact.si;
-			var shapeB = contact.sj;
-			var entityA = this._shapeIdToColliderEntityMap.get(shapeA.id);
-			var entityB = this._shapeIdToColliderEntityMap.get(shapeB.id);
-
-			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
-			if (hash !== lastHash) {
-				var wasInContact = this._lastContacts.has(hash);
-
-				if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
-					if (wasInContact) {
-						this.emitTriggerStay(entityA, entityB);
-					} else {
-						this.emitTriggerEnter(entityA, entityB);
-					}
-				} else if (wasInContact) {
-					this.emitDuringContact(entityA, entityB);
-				} else {
-					this.emitBeginContact(entityA, entityB);
-				}
-			}
-
-			lastHash = hash;
-		}
-
-		// Emit end contact events
-		lastContacts.forEach(this._emitEndContactEvents);
-
-		// Swap the lists, drop references to the current Cannon.js contacts
-		this._swapContactLists();
-	};
-
 	var tmpOptions = {};
 	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
 		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
@@ -281,7 +171,7 @@ var Transform = require('../../../math/Transform');
 
 	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult, rayStart) {
 		if (cannonResult.hasHit) {
-			gooResult.entity = this._entities[cannonResult.body.id] || this._shapeIdToColliderEntityMap.get(cannonResult.shape.id);
+			gooResult.entity = this._shapeIdToColliderEntityMap.get(cannonResult.shape.id);
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
 			gooResult.point.setDirect(point.x, point.y, point.z);
@@ -489,12 +379,7 @@ var Transform = require('../../../math/Transform');
 		}.bind(this));
 
 		// Empty the contact event lists
-		this._lastContacts.forEach(function (key) {
-			this._lastContacts.delete(key);
-		}.bind(this));
-		this._currentContacts.forEach(function (key) {
-			this._currentContacts.delete(key);
-		}.bind(this));
+		this._stayingEntities.length = 0;
 
 		// Destroy joints
 		for (var i = 0; i !== N; i++) {
@@ -537,6 +422,9 @@ var Transform = require('../../../math/Transform');
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
+		if (entities.length === 0) {
+			return;
+		}
 		if (!this.initialized) {
 			this.initialize();
 		}

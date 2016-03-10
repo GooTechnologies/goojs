@@ -94,12 +94,20 @@ var MathUtils = require('../math/MathUtils');
 		} else {
 			this.shaderPrecision = 'lowp';
 		}
-		//console.log('Shader precision: ' + this.shaderPrecision);
 
+		/**
+		 * Used to scale down/up the pixels in the canvas. If you set downScale=2, you will get half the number of pixels in X and Y. Default is 1.
+		 * @type {number}
+		 */
 		this.downScale = parameters.downScale || 1;
 
 		//! AT: why are there 2 clear colors?
 		// Default setup
+		/**
+		 * Current clear color of the scene. Use .setClearColor() to set it.
+		 * @type {Vector4}
+		 * @readonly
+		 */
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
 		this._clearColor = new Vector4();
@@ -531,7 +539,7 @@ var MathUtils = require('../math/MathUtils');
 		if (texture.variant === '2D') {
 			if (!image) {
 				context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
-					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), null);
+					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 			} else {
 				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
@@ -543,10 +551,10 @@ var MathUtils = require('../math/MathUtils');
 						this.loadCompressedTexture(context, context.TEXTURE_2D, texture, image.data);
 					} else {
 						context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data);
+							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data);
 					}
 				} else {
-					context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image);
+					context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image);
 				}
 
 				if (texture.generateMipmaps && !image.isCompressed) {
@@ -573,17 +581,17 @@ var MathUtils = require('../math/MathUtils');
 
 				if (!image) {
 					context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
-						RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), null);
+						RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 				} else {
 					if (image.isData === true) {
 						if (image.isCompressed) {
 							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(context, face), texture, image.data[faceIndex]);
 						} else {
 							context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data[faceIndex]);
 						}
 					} else {
-						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
+						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data[faceIndex]);
 					}
 				}
 			}
@@ -1166,23 +1174,36 @@ var MathUtils = require('../math/MathUtils');
 	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
+
 		var shader = material.shader;
-		var defineKey = shader.getDefineKey(this._definesIndices);
+		var shaderCache = this.rendererRecord.shaderCache;
 		shader.endFrame();
 
-		var shaderCache = this.rendererRecord.shaderCache;
+		var defineKey = shader.getDefineKey(this._definesIndices);
+
 		var cachedShader = shaderCache.get(defineKey);
+		if (cachedShader === material.shader) {
+			return;
+		}
 
 		if (cachedShader) {
-			if (cachedShader !== material.shader) {
-				var uniforms = material.shader.uniforms;
-				var keys = Object.keys(uniforms);
+			cachedShader.defines = {};
+			if (material.shader.defines) {
+				var keys = Object.keys(material.shader.defines);
 				for (var i = 0, l = keys.length; i < l; i++) {
 					var key = keys[i];
-					var origUniform = cachedShader.uniforms[key] = uniforms[key];
-					if (origUniform instanceof Array) {
-						cachedShader.uniforms[key] = origUniform.slice(0);
-					}
+					cachedShader.defines[key] = material.shader.defines[key];
+				}
+				cachedShader.defineKey = material.shader.defineKey;
+			}
+
+			var uniforms = material.shader.uniforms;
+			var keys = Object.keys(uniforms);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var key = keys[i];
+				var origUniform = cachedShader.uniforms[key] = uniforms[key];
+				if (origUniform instanceof Array) {
+					cachedShader.uniforms[key] = origUniform.slice(0);
 				}
 			}
 			material.shader = cachedShader;
@@ -1190,6 +1211,7 @@ var MathUtils = require('../math/MathUtils');
 			if (shader.builder) {
 				shader.builder(shader, renderInfo);
 			}
+
 			shader = shader.clone();
 			shaderCache.set(defineKey, shader);
 			material.shader = shader;
@@ -1452,7 +1474,10 @@ var MathUtils = require('../math/MathUtils');
 			}
 			record.write = depthState.write;
 		}
-		// this.context.depthFunc(this.context.LEQUAL);
+		if (record.depthFunc !== depthState.depthFunc) {
+			this.context.depthFunc(RendererUtils.getGLDepthFunc(this.context, depthState.depthFunc));
+			record.depthFunc = depthState.depthFunc;
+		}
 	};
 
 	/**
@@ -1578,6 +1603,7 @@ var MathUtils = require('../math/MathUtils');
 			texrecord.minFilter = minFilter;
 		}
 
+		// repeating NPOT textures are not supported in webgl https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
 			var glwrapS = RendererUtils.getGLWrap(context, wrapS);
@@ -1736,9 +1762,9 @@ var MathUtils = require('../math/MathUtils');
 		if (texture.variant === '2D') {
 			if (!image) {
 				context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
-					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), null);
+					RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+				if (!(image instanceof HTMLVideoElement) && !image.isCompressed && (texture.generateMipmaps || texture.wrapS !== 'EdgeClamp' || texture.wrapT !== 'EdgeClamp' || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}
@@ -1748,10 +1774,10 @@ var MathUtils = require('../math/MathUtils');
 						this.loadCompressedTexture(context, context.TEXTURE_2D, texture, image.data);
 					} else {
 						context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data);
+							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data);
 					}
 				} else {
-					context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image);
+					context.texImage2D(context.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image);
 				}
 
 				if (texture.generateMipmaps && !image.isCompressed) {
@@ -1777,17 +1803,17 @@ var MathUtils = require('../math/MathUtils');
 
 				if (!image) {
 					context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), texture.width, texture.height, 0,
-						RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), null);
+						RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), null);
 				} else {
 					if (image.isData === true) {
 						if (image.isCompressed) {
 							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(context, face), texture, image.data[faceIndex]);
 						} else {
 							context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data[faceIndex]);
 						}
 					} else {
-						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLPixelDataType(context, texture.type), image.data[faceIndex]);
+						context.texImage2D(RendererUtils.getGLCubeMapFace(context, face), 0, RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLInternalFormat(context, texture.format), RendererUtils.getGLDataType(context, texture.type), image.data[faceIndex]);
 					}
 				}
 			}

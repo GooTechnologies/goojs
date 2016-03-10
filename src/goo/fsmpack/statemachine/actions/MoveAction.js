@@ -11,46 +11,57 @@ var Vector3 = require('../../../math/Vector3');
 	MoveAction.prototype.constructor = MoveAction;
 
 	MoveAction.external = {
+		key: 'Move',
 		name: 'Move',
 		type: 'animation',
-		description: 'Moves the entity',
+		description: 'Moves the entity.',
 		parameters: [{
 			name: 'Translation',
 			key: 'translation',
 			type: 'position',
-			description: 'Move',
+			description: 'Move.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Oriented',
 			key: 'oriented',
 			type: 'boolean',
-			description: 'If true translate with rotation',
+			description: 'If true translate with rotation.',
 			'default': true
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add to current translation',
+			description: 'If true add to current translation.',
 			'default': true
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
-	MoveAction.prototype._setup = function (fsm) {
+	MoveAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		this.forward = Vector3.fromArray(this.translation);
 		var orientation = transform.rotation;
 		this.forward.applyPost(orientation);
+
+		if (!this.everyFrame) {
+			this.applyMove(fsm);
+		}
 	};
 
-	MoveAction.prototype._run = function (fsm) {
+	MoveAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.applyMove(fsm);
+		}
+	};
+
+	MoveAction.prototype.applyMove = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		var translation = transform.translation;
@@ -62,7 +73,7 @@ var Vector3 = require('../../../math/Vector3');
 				forward.applyPost(orientation);
 
 				if (this.everyFrame) {
-					forward.scale(fsm.getTpf() * 10);
+					forward.scale(fsm.getTpf());
 					translation.add(forward);
 				} else {
 					translation.add(forward);
@@ -73,9 +84,8 @@ var Vector3 = require('../../../math/Vector3');
 		} else {
 			if (this.relative) {
 				if (this.everyFrame) {
-					var tpf = fsm.getTpf() * 10;
-					translation.addDirect(this.translation[0], this.translation[1], this.translation[2])
-						.scale(tpf);
+					var tpf = fsm.getTpf();
+					translation.addDirect(this.translation[0] * tpf, this.translation[1] * tpf, this.translation[2] * tpf);
 				} else {
 					translation.addDirect(this.translation[0], this.translation[1], this.translation[2]);
 				}

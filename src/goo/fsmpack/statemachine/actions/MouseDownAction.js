@@ -4,68 +4,67 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	function MouseDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.everyFrame = true;
-		this.updated = false;
-		this.button = null;
-
-		this.mouseEventListener = function (event) {
-			this.button = event.button;
-			this.updated = true;
-		}.bind(this);
-
-		this.touchEventListener = function (event) {
-			this.button = 'touch';
-			this.updated = true;
-		}.bind(this);
 	}
 
 	MouseDownAction.prototype = Object.create(Action.prototype);
 	MouseDownAction.prototype.constructor = MouseDownAction;
 
 	MouseDownAction.external = {
-		name: 'Mouse Down',
+		key: 'Mouse Down / Touch Start',
+		name: 'Mouse Down / Touch Start',
 		type: 'controls',
-		description: 'Listens for a mouse button press and performs a transition',
+		description: 'Listens for a mousedown event (or touchstart) on the canvas and performs a transition.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseLeftDown',
-			name: 'Left mouse down',
-			description: 'State to transition to when the left mouse button is pressed'
+			description: 'State to transition to when the left mouse button is pressed.'
 		}, {
 			key: 'middleMouseDown',
-			name: 'Middle mouse down',
-			description: 'State to transition to when the middle mouse button is pressed'
+			description: 'State to transition to when the middle mouse button is pressed.'
 		}, {
 			key: 'rightMouseDown',
-			name: 'Right mouse down',
-			description: 'State to transition to when the right mouse button is pressed'
+			description: 'State to transition to when the right mouse button is pressed.'
 		}, {
 			key: 'touchDown',
-			name: 'Touch begin',
-			description: 'State to transition to when the touch event begins'
+			description: 'State to transition to when the touch event begins.'
 		}]
 	};
 
-	MouseDownAction.prototype._setup = function () {
-		document.addEventListener('mousedown', this.mouseEventListener);
-		document.addEventListener('touchstart', this.touchEventListener);
+	var labels = {
+		mouseLeftDown: 'On left mouse down',
+		middleMouseDown: 'On middle mouse down',
+		rightMouseDown: 'On right mouse down',
+		touchDown: 'On touch start'
 	};
 
-	MouseDownAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			if (this.button === 'touch') {
+	MouseDownAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	MouseDownAction.prototype.enter = function (fsm) {
+		var update = function (button) {
+			if (button === 'touch') {
 				fsm.send(this.transitions.touchDown);
 			} else {
 				fsm.send([
 					this.transitions.mouseLeftDown,
 					this.transitions.middleMouseDown,
 					this.transitions.rightMouseDown
-				][this.button]);
+				][button]);
 			}
-		}
+		}.bind(this);
+
+		this.mouseEventListener = function (event) {
+			update(event.button);
+		}.bind(this);
+
+		this.touchEventListener = function () {
+			update('touch');
+		}.bind(this);
+
+		document.addEventListener('mousedown', this.mouseEventListener);
+		document.addEventListener('touchstart', this.touchEventListener);
 	};
 
 	MouseDownAction.prototype.exit = function () {

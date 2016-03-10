@@ -14,7 +14,6 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 		this.engine = engine;
 		this.resetRequest = false;
 		this.passive = false;
-		this.entered = true;
 		this.paused = false;
 
 		/**
@@ -32,9 +31,31 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 
 		// actions triggered by this system typically need to run after all other systems do their job
 		this.priority = 1000;
+
+		// Input handling
+		var buttonNames = ['Left', 'Middle', 'Right'];
+		this._inputStates = new Set();
+		this._listeners = {
+			keydown: function (event) {
+				this._inputStates.add(event.which);
+			}.bind(this),
+			keyup: function (event) {
+				this._inputStates.delete(event.which);
+			}.bind(this),
+			mousedown: function (event) {
+				this._inputStates.add(buttonNames[event.button]);
+			}.bind(this),
+			mouseup: function (event) {
+				this._inputStates.delete(buttonNames[event.button]);
+			}.bind(this)
+		};
 	}
 
 	StateMachineSystem.prototype = Object.create(System.prototype);
+
+	StateMachineSystem.prototype.getInputState = function (key) {
+		return this._inputStates.has(key);
+	};
 
 	StateMachineSystem.prototype.process = function (entities, tpf) {
 		var component;
@@ -55,12 +76,13 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 
 		this.time += tpf;
 
-		if (this.entered) {
-			this.entered = false;
-			for (var i = 0; i < entities.length; i++) {
-				component = entities[i].stateMachineComponent;
-				component.init();
+		// Enter unentered components
+		for (var i = 0; i < entities.length; i++) {
+			component = entities[i].stateMachineComponent;
+			if (!component.entered) {
+				// component.init(); // why was this done?
 				component.doEnter();
+				component.entered = true;
 			}
 		}
 
@@ -86,7 +108,17 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 	StateMachineSystem.prototype.play = function () {
 		this.passive = false;
 		if (!this.paused) {
-			this.entered = true;
+			// Un-enter entered components
+			var entities = this._activeEntities;
+			for (var i = 0; i < entities.length; i++) {
+				var component = entities[i].stateMachineComponent;
+				component.entered = false;
+			}
+
+			for (var key in this._listeners) {
+				document.addEventListener(key, this._listeners[key]);
+			}
+			this._inputStates.clear();
 		}
 		this.paused = false;
 	};
@@ -111,6 +143,10 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;
+
+		for (var key in this._listeners) {
+			document.removeEventListener(key, this._listeners[key]);
+		}
 	};
 
 	module.exports = StateMachineSystem;

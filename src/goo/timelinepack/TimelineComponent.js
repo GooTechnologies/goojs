@@ -16,6 +16,8 @@ var Component = require('../entities/components/Component');
 		this.time = 0;
 		this.duration = 0;
 		this.loop = false;
+
+		this.playing = true;
 	}
 
 	TimelineComponent.prototype = Object.create(Component.prototype);
@@ -36,6 +38,10 @@ var Component = require('../entities/components/Component');
 	 * @param {number} tpf
 	 */
 	TimelineComponent.prototype.update = function (tpf) {
+		if (!this.playing) {
+			return;
+		}
+
 		var time = this.time + tpf;
 		if (time > this.duration) {
 			if (this.loop) {
@@ -52,8 +58,34 @@ var Component = require('../entities/components/Component');
 
 			channel.update(this.time);
 		}
+	};
 
-		return this;
+	/**
+	 * Resumes updating the entities
+	 */
+	TimelineComponent.prototype.start = function () {
+		this.playing = true;
+	};
+
+	/**
+	 * Resumes updating the entities; an alias for `.play`
+	 */
+	TimelineComponent.prototype.resume = TimelineComponent.prototype.start;
+
+	/**
+	 * Stops updating the entities
+	 */
+	TimelineComponent.prototype.pause = function () {
+		this.playing = false;
+	};
+
+
+	/**
+	 * Stop updating entities and resets the state machines to their initial state
+	 */
+	TimelineComponent.prototype.stop = function () {
+		this.playing = false;
+		this.setTime(0);
 	};
 
 	/**

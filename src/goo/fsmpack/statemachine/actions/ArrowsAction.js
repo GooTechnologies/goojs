@@ -2,73 +2,66 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 
 	'use strict';
 
-	function ArrowsAction(/*id, settings*/) {
-		Action.apply(this, arguments);
-
-		this.updated = false;
-		this.keysPressed = {};
-
-		this.eventListener = function (event) {
-			var keyname = ArrowsAction._keys[event.which];
-			if (keyname !== undefined) {
-				this.updated = true;
-				this.keysPressed[keyname] = true;
-			}
-		}.bind(this);
-	}
-
-	ArrowsAction.prototype = Object.create(Action.prototype);
-
-	ArrowsAction.prototype.configure = function (settings) {
-		this.everyFrame = true;
-		this.targets = settings.transitions;
-	};
-
-	ArrowsAction._keys = {
+	var keys = {
 		38: 'up',
 		37: 'left',
 		40: 'down',
 		39: 'right'
 	};
 
-	ArrowsAction.external = (function () {
-		var transitions = [];
-		for (var keycode in ArrowsAction._keys) {
-			var keyname = ArrowsAction._keys[keycode];
-			transitions.push({
-				name: 'Key ' + keyname.toUpperCase(),
-				key: keyname,
-				description: "Key '" + keyname + "' pressed"
-			});
-		}
+	function ArrowsAction(/*id, settings*/) {
+		Action.apply(this, arguments);
+	}
 
-		return {
-			key: 'Arrow Keys Listener',
-			name: 'Arrow Keys',
-			type: 'controls',
-			description: 'Transitions to other states when arrow keys are pressed',
-			canTransition: true,
-			parameters: [],
-			transitions: transitions
-		};
-	})();
+	ArrowsAction.prototype = Object.create(Action.prototype);
+	ArrowsAction.prototype.constructor = ArrowsAction;
 
-	ArrowsAction.prototype._setup = function () {
-		document.addEventListener('keydown', this.eventListener);
+	ArrowsAction.prototype.configure = function (settings) {
+		this.targets = settings.transitions;
 	};
 
-	ArrowsAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
+	ArrowsAction.external = {
+		key: 'Arrow Keys Listener',
+		name: 'Arrow Keys',
+		type: 'controls',
+		description: 'Transitions to other states when arrow keys are pressed (keydown).',
+		canTransition: true,
+		parameters: [],
+		transitions: [{
+			key: 'up',
+			description: "On key up pressed."
+		}, {
+			key: 'left',
+			description: "On key left pressed."
+		}, {
+			key: 'down',
+			description: "On key down pressed."
+		}, {
+			key: 'right',
+			description: "On key right pressed."
+		}]
+	};
 
-			for (var keyname in this.keysPressed) {
-				var target = this.targets[keyname];
-				if (typeof target === 'string') {
-					fsm.send(target);
-				}
+	var labels = {
+		up: 'On key UP',
+		left: 'On key LEFT',
+		down: 'On key DOWN',
+		right: 'On key RIGHT'
+	};
+
+	ArrowsAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	ArrowsAction.prototype.enter = function (fsm) {
+		this.eventListener = function (event) {
+			var keyname = keys[event.which];
+			var target = this.targets[keyname];
+			if (target) {
+				fsm.send(target);
 			}
-			this.keysPressed = {};
-		}
+		}.bind(this);
+		document.addEventListener('keydown', this.eventListener);
 	};
 
 	ArrowsAction.prototype.exit = function () {

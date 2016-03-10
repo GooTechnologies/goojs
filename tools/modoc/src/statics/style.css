@@ -309,7 +309,7 @@ article a {text-decoration: underline;}
 
 section {margin-bottom: 50px;}
 
-div {margin-bottom: 10px;}
+div {margin-bottom: 2px;}
 
 ul {
 	margin: 0;
@@ -360,7 +360,7 @@ li {
 
 .parameter-doc {margin-left: 20px;}
 
-.parameter-doc:last-child {margin-bottom: 50px;}
+.parameter-doc:last-child {margin-bottom: 20px;}
 
 .deprecated-description {
 	display: block;
@@ -373,7 +373,7 @@ li {
 	border-radius: 3px;
 }
 
-.comment {margin-top: 15px;}
+.comment {margin-top: 10px;}
 
 /******************************************************************************
 CODE EXAMPLES
@@ -381,6 +381,7 @@ CODE EXAMPLES
 
 pre {
 	margin: 0;
+	margin-top: 15px;
 	margin-bottom: 30px;
 }
 
@@ -420,9 +421,18 @@ SYNTAX & COLORS
 
 .method-name, .method-name a {color: #f76162 !important;}
 
+.constructor-name, .constructor-name a {
+	color: #f76162 !important;
+	display: inline-block;
+}
+
 .static-name {color: #ffbe55;}
 
 .parameter {color: #91cf4b;}
+
+.parameter:before {content: ", ";}
+
+.parameter:first-of-type:before {content: "";}
 
 .parameter-name {color: #91cf4b;}
 

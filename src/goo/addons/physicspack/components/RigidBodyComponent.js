@@ -231,12 +231,95 @@ var ColliderComponent = require('../../../addons/physicspack/components/Collider
 	};
 
 	/**
-	 * Apply a force to the center of mass of the body.
+	 * Apply a world-oriented force to a world point.
 	 * @param {Vector3} force The force vector, oriented in world space.
+	 * @param {Vector3} worldPoint Where to apply the force, in world space.
+	 * @example
+     * var direction = new Vector3();
+     * direction
+     *     .copy(entity.transformComponent.worldTransform.translation)
+	 *     .sub(bombEntity.transformComponent.worldTransform.translation)
+	 *     .normalize()
+	 *     .scale(100);
+     * entity.applyForceWorld(direction, entity.transformComponent.worldTransform.translation);
 	 */
-	RigidBodyComponent.prototype.applyForce = function (force) {
-		tmpCannonVec.copy(force);
-		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
+	RigidBodyComponent.prototype.applyForceWorld = function (force, worldPoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = tmpCannonVec2;
+		cannonPoint.copy(worldPoint);
+		cannonPoint.vsub(this.cannonBody.position, cannonPoint);
+
+		this.cannonBody.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a local force to the body in local body space.
+	 * @param {Vector3} force The force vector, oriented in local space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. This point is relative to the Body, oriented in local space. Defaults to the zero vector (the center of mass).
+	 * @example
+	 * var localThrusterForce = new Vector3(0, 0, 1); // Thrust in forward direction of ship
+	 * var localPosition = new Vector3(0, 0, -1); // Applies to the back part of the ship
+	 * shapeShip.rigidBodyComponent.applyForce(localThrusterForce, localPosition);
+	 */
+	RigidBodyComponent.prototype.applyForceLocal = function (force, relativePoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = CANNON.Vec3.ZERO;
+		if (relativePoint) {
+			cannonPoint = tmpCannonVec2;
+			cannonPoint.copy(relativePoint);
+		}
+
+		var body = this.cannonBody;
+
+		// Transform the vectors to world space
+		body.vectorToWorldFrame(cannonForce, cannonForce);
+		body.vectorToWorldFrame(cannonPoint, cannonPoint);
+
+		body.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a force to a point on the body in world space.
+	 * @param {Vector3} force The force vector, oriented in world space.
+	 * @param {Vector3} [relativePoint] Where to apply the force. This point is relative to the Body, oriented in World space. Defaults to the zero vector (the center of mass).
+	 */
+	RigidBodyComponent.prototype.applyForce = function (force, relativePoint) {
+		var cannonForce = tmpCannonVec;
+		cannonForce.copy(force);
+
+		var cannonPoint = CANNON.Vec3.ZERO;
+		if (relativePoint) {
+			cannonPoint = tmpCannonVec2;
+			cannonPoint.copy(relativePoint);
+		}
+
+		this.cannonBody.applyForce(cannonForce, cannonPoint);
+	};
+
+	/**
+	 * Apply a torque to a point on the body in world space.
+	 * @param {Vector3} torque The torque vector, oriented in world space.
+	 */
+	RigidBodyComponent.prototype.applyTorque = function (torque) {
+		tmpCannonVec.copy(torque);
+		this.cannonBody.torque.vadd(tmpCannonVec, this.cannonBody.torque);
+	};
+
+	/**
+	 * Apply a torque to the body in local body space.
+	 * @param {Vector3} torque The torque vector, oriented in local body space.
+	 */
+	RigidBodyComponent.prototype.applyTorqueLocal = function (torque) {
+		var cannonTorque = tmpCannonVec;
+		cannonTorque.copy(torque);
+
+		// Transform to world space
+		this.cannonBody.vectorToWorldFrame(cannonTorque, cannonTorque);
+		this.cannonBody.torque.vadd(cannonTorque, this.cannonBody.torque);
 	};
 
 	/**
@@ -471,7 +554,7 @@ var ColliderComponent = require('../../../addons/physicspack/components/Collider
 
 		/**
 		 * Constraint the movement of the rigid body. Set it to RigidBodyComponent.FREEZE_NONE, RigidBodyComponent.FREEZE_POSITION_X, RigidBodyComponent.FREEZE_POSITION_Y, RigidBodyComponent.FREEZE_POSITION_Z, RigidBodyComponent.FREEZE_ROTATION_X, RigidBodyComponent.FREEZE_ROTATION_Y, RigidBodyComponent.FREEZE_ROTATION_Z, RigidBodyComponent.FREEZE_POSITION, RigidBodyComponent.FREEZE_ROTATION or RigidBodyComponent.FREEZE_ALL.
-		 * @target-class RigidBodyComponent sleepingTimeLimit member
+		 * @target-class RigidBodyComponent constraints member
 		 * @type {number}
 		 */
 		constraints: {

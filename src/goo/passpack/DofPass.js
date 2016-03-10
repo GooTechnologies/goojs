@@ -5,10 +5,9 @@ var Shader = require('../renderer/Shader');
 var ShaderFragment = require('../renderer/shaders/ShaderFragment');
 var RenderPass = require('../renderer/pass/RenderPass');
 var FullscreenPass = require('../renderer/pass/FullscreenPass');
-var BlurPass = require('../passpack/BlurPass');
-var RendererUtils = require('../renderer/RendererUtils');
 var Skybox = require('../util/Skybox');
 var Pass = require('../renderer/pass/Pass');
+var MathUtils = require('../math/MathUtils');
 
 	'use strict';
 
@@ -79,8 +78,8 @@ var Pass = require('../renderer/pass/Pass');
 			'varying vec4 vPosition;',
 
 			'void main(void) {',
-			'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = projectionMatrix * vPosition;',
+				'vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+				'gl_Position = projectionMatrix * vPosition;',
 			'}'//
 		].join('\n'),
 		fshader: [
@@ -95,8 +94,8 @@ var Pass = require('../renderer/pass/Pass');
 
 			'void main(void)',
 			'{',
-			'	float linearDepth = min(-vPosition.z, farPlane) / farPlane;',
-			'	gl_FragColor = packDepth(linearDepth);',
+				'float linearDepth = min(-vPosition.z, farPlane) / farPlane;',
+				'gl_FragColor = packDepth(linearDepth);',
 			'}'//
 		].join('\n')
 	};
@@ -129,8 +128,8 @@ var Pass = require('../renderer/pass/Pass');
 		'varying vec2 texCoord0;',
 
 		'void main(void) {',
-		'	texCoord0 = vertexUV0;',
-		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'texCoord0 = vertexUV0;',
+			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'
 		].join('\n'),
 		fshader: '' +
@@ -147,24 +146,23 @@ var Pass = require('../renderer/pass/Pass');
 
 		ShaderFragment.methods.unpackDepth +
 
-		'void main() \n' +
-		'{\n' +
-		'	float depth = unpackDepth(texture2D(depthMap,texCoord0)) * zfar;\n' +
-		'	float f = focalLength; //focal length in mm\n' +
-		'	float d = focalDepth*1000.0; //focal plane in mm\n' +
-		'	float o = depth*1000.0; //depth in mm\n' +
+		'void main() {\n' +
+			'float depth = unpackDepth(texture2D(depthMap,texCoord0)) * zfar;\n' +
+			'float f = focalLength; //focal length in mm\n' +
+			'float d = focalDepth*1000.0; //focal plane in mm\n' +
+			'float o = depth*1000.0; //depth in mm\n' +
 
-		'	float a = (o*f)/(o-f); \n' +
-		'	float b = (d*f)/(d-f); \n' +
-		'	float c = (d-f)/(d*fStop*CoC); \n' +
+			'float a = (o*f)/(o-f);\n' +
+			'float b = (d*f)/(d-f);\n' +
+			'float c = (d-f)/(d*fStop*CoC); \n' +
 
-		'	float blur = clamp(abs(a-b)*c, 0.0, maxBlur);\n' +
-		' if (blur < 0.3) {\n' +
-		'   gl_FragColor = texture2D(diffuseMip, texCoord0);\n' +
-		' } else { \n' +
-		'   gl_FragColor = texture2D(diffuseMap, texCoord0, log2(blur));\n' +
-		' }\n' +
-		' gl_FragColor.a = 1.0;' +
+			'float blur = clamp(abs(a-b)*c, 0.0, maxBlur);\n' +
+			'if (blur < 0.3) {\n' +
+				'gl_FragColor = texture2D(diffuseMip, texCoord0);\n' +
+			'} else {\n' +
+				'gl_FragColor = texture2D(diffuseMap, texCoord0, log2(blur));\n' +
+			'}\n' +
+			'gl_FragColor.a = 1.0;' +
 		'}'
 	};
 

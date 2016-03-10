@@ -12,24 +12,25 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	EvalAction.prototype.constructor = EvalAction;
 
 	EvalAction.external = {
+		key: 'Eval',
 		name: 'Eval',
-		description: 'Evaluates a JS expression',
+		description: 'Evaluates a JS expression.',
 		parameters: [{
 			name: 'expression',
 			key: 'expression',
 			type: 'string',
-			description: 'JavaScript expression to evaluate',
+			description: 'JavaScript expression to evaluate.',
 			'default': ''
 		}],
 		transitions: []
 	};
 
-	EvalAction.prototype._setup = function () {
+	EvalAction.prototype.enter = function () {
 		/* jshint evil: true */
 		this.expressionFunction = new Function('goo', this.expression);
 	};
 
-	EvalAction.prototype._run = function (fsm) {
+	EvalAction.prototype.update = function (fsm) {
 		/* jshint evil: true */
 		if (this.expressionFunction) {
 			try {

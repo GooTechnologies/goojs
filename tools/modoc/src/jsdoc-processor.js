@@ -61,7 +61,6 @@ var processType = _.compose(linkTypes, escapeType, translateType);
 
 var link = function (comment) {
 	if (!comment) { return; }
-
 	comment.description = linkUrls(expandIcons(comment.description));
 
 	if (comment.param) {
@@ -134,6 +133,13 @@ var compileComment = function (rawComment) {
 		// if there's nothing interesting then don't bother
 		if (!hasParamData(comment.param)) {
 			comment.param = [];
+		}
+
+		for (var pkey in comment.param) {
+			var param = comment.param[pkey];
+			if (param.name.indexOf('.') === -1) {
+				param.isTop = true;
+			}
 		}
 	}
 

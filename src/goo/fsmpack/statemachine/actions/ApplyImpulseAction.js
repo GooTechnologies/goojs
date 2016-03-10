@@ -11,7 +11,8 @@ var Vector3 = require('../../../math/Vector3');
 	ApplyImpulseAction.prototype.constructor = ApplyImpulseAction;
 
 	ApplyImpulseAction.external = {
-		name: 'ApplyImpulse',
+		key: 'ApplyImpulse',
+		name: 'Apply impulse on rigid body',
 		type: 'physics',
 		description: 'Apply an impulse to the attached rigid body.',
 		canTransition: false,
@@ -41,7 +42,7 @@ var Vector3 = require('../../../math/Vector3');
 
 	var impulseVector = new Vector3();
 	var applyPoint = new Vector3();
-	ApplyImpulseAction.prototype._run = function (fsm) {
+	ApplyImpulseAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (!entity.rigidBodyComponent) { return; }
 

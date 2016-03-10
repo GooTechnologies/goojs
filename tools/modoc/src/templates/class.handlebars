@@ -45,7 +45,7 @@
 				</span>
 			{{/constructor.comment.extends}}
 		</h1>
-		<span class="path">goo/{{requirePath}}</span>
+		<span class="path">goo/{{requirePath}}{{#pack}} (requires {{.}}.js){{/pack}}</span>
 		<div class="class-description roboto">
 			<div>{{{constructor.comment.description}}}</div>
 
@@ -66,12 +66,7 @@
 	{{! constructor }}
 	{{#constructor.comment}}
 		<section>
-			<span class="method-name">constructor</span>
-			 :: (
-			{{#each constructor.params}}
-				<span class="parameter">{{.}}</span>
-			{{/each}}
-			)
+			new <div class="constructor-name">{{../constructor.name}}</div>({{#each param}}{{#if isTop}}<span class="parameter">{{name}}</span>{{/if}}{{/each}})
 			{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
 			<div class="comment">
@@ -177,11 +172,7 @@
 						href="#_met_{{../constructor.name}}_{{name}}"
 					>
 						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
-					--></a> :: (
-					{{#each params}}
-						<span class="parameter">{{.}}</span>
-					{{/each}}
-					)
+					--></a>({{#each params}}<span class="parameter">{{.}}</span>{{/each}})
 					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
 					<div class="comment">
@@ -228,13 +219,7 @@
 						href="#_smet_{{../constructor.name}}_{{name}}"
 					>
 						<span class="{{#if comment.deprecated}}deprecated{{/if}}">{{name}}</span><!--
-					--></a> :: (
-					{{#params}}
-						<span class="parameter">
-							{{.}}
-						</span>
-					{{/params}}
-					)
+					--></a>({{#params}}<span class="parameter">{{.}}</span>{{/params}})
 					{{#comment.returns}} -> {{{type}}}{{/comment.returns}}
 
 					<div class="comment">

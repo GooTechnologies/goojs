@@ -8,6 +8,7 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	}
 
 	SetRotationAction.prototype = Object.create(Action.prototype);
+	SetRotationAction.prototype.constructor = SetRotationAction;
 
 	SetRotationAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
@@ -22,36 +23,36 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
-			description: 'Entity to move'
+			description: 'Entity to move.'
 		}, {
 			name: 'Amount X',
 			key: 'amountX',
 			type: 'float',
-			description: 'Amount to rotate on the X axis',
+			description: 'Amount to rotate on the X axis.',
 			'default': 0
 		}, {
 			name: 'Amount Y',
 			key: 'amountY',
 			type: 'float',
-			description: 'Amount to rotate on the Y axis',
+			description: 'Amount to rotate on the Y axis.',
 			'default': 0
 		}, {
 			name: 'Amount Z',
 			key: 'amountZ',
 			type: 'float',
-			description: 'Amount to rotate on the Z axis',
+			description: 'Amount to rotate on the Z axis.',
 			'default': 0
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: []
 	};
 
-	SetRotationAction.prototype._run = function (fsm) {
+	SetRotationAction.prototype.setRotation = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.setRotationXYZ(
 				FsmUtils.getValue(this.amountX, fsm),
@@ -59,6 +60,18 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 				FsmUtils.getValue(this.amountZ, fsm)
 			);
 			this.entity.transformComponent.setUpdated();
+		}
+	};
+
+	SetRotationAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.setRotation(fsm);
+		}
+	};
+
+	SetRotationAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.setRotation(fsm);
 		}
 	};
 

@@ -45,7 +45,7 @@ var MathUtils = require('../../math/MathUtils');
 	/*
 	 * Calculates which samples to use for extracting animation state, then applies the animation state to supplied data item.
 	 * @param {number} clockTime
-	 * @param {TransformData|TriggerData|number[]} applyTo
+	 * @param {(TransformData|TriggerData|number[])} applyTo
 	 */
 	AbstractAnimationChannel.prototype.updateSample = function (clockTime, applyTo) {
 		var timeCount = this._times.length;

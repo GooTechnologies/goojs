@@ -10,14 +10,15 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	RemoveLightAction.prototype.constructor = RemoveLightAction;
 
 	RemoveLightAction.external = {
+		key: 'Remove Light',
 		name: 'Remove Light',
 		type: 'light',
-		description: 'Removes the light attached to the entity',
+		description: 'Removes the light attached to the entity.',
 		parameters: [],
 		transitions: []
 	};
 
-	RemoveLightAction.prototype._run = function (fsm) {
+	RemoveLightAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('LightComponent')) {
 			entity.clearComponent('LightComponent');

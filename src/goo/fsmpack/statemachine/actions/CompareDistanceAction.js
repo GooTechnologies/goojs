@@ -7,7 +7,6 @@ var Renderer = require('../../../renderer/Renderer');
 	function CompareDistanceAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
-
 	CompareDistanceAction.prototype = Object.create(Action.prototype);
 	CompareDistanceAction.prototype.constructor = CompareDistanceAction;
 
@@ -15,62 +14,69 @@ var Renderer = require('../../../renderer/Renderer');
 		key: 'Compare Distance',
 		name: 'Camera Distance',
 		type: 'collision',
-		description: 'Performs a transition based on the distance to the main camera or to a location',
+		description: 'Performs a transition based on the distance to the main camera or to a location.',
 		canTransition: true,
 		parameters: [{
 			name: 'Current camera',
 			key: 'camera',
 			type: 'boolean',
-			description: 'Measure the distance to the current camera or to an arbitrary point',
+			description: 'Measure the distance to the current camera or to an arbitrary point.',
 			'default': true
 		}, {
 			name: 'Position',
 			key: 'position',
 			type: 'position',
-			description: 'Position to measure the distance to; Will be ignored if previous option is selected',
+			description: 'Position to measure the distance to; Will be ignored if previous option is selected.',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Value',
 			key: 'value',
-			type: 'number',
-			description: 'Value to compare to',
+			type: 'float',
+			description: 'Value to compare to.',
 			'default': 0
 		}, {
 			name: 'Tolerance',
 			key: 'tolerance',
-			type: 'number',
-			'default': 0.1
+			type: 'float',
+			'default': 0
 		}, {
 			name: 'Type',
 			key: 'distanceType',
 			type: 'string',
 			control: 'dropdown',
-			description: 'The type of distance',
+			description: 'The type of distance.',
 			'default': 'Euclidean',
 			options: ['Euclidean', 'Manhattan']
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame',
+			description: 'Repeat this action every frame.',
 			'default': true
 		}],
 		transitions: [{
 			key: 'less',
-			name: 'Less',
-			description: 'State to transition to if the measured distance is smaller than the specified value'
+			description: 'State to transition to if the measured distance is smaller than the specified value.'
 		}, {
 			key: 'equal',
-			name: 'Equal',
-			description: 'State to transition to if the measured distance is about the same as the specified value'
+			description: 'State to transition to if the measured distance is about the same as the specified value.'
 		}, {
 			key: 'greater',
-			name: 'Greater',
-			description: 'State to transition to if the measured distance is greater than the specified value'
+			description: 'State to transition to if the measured distance is greater than the specified value.'
 		}]
 	};
 
-	CompareDistanceAction.prototype._run = function (fsm) {
+	var labels = {
+		less: 'On camera distance < X',
+		equal: 'On camera distance == X',
+		greater: 'On camera distance > X'
+	};
+
+	CompareDistanceAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+		return labels[transitionKey];
+	};
+
+	CompareDistanceAction.prototype.compare = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 		var delta;
@@ -95,6 +101,18 @@ var Renderer = require('../../../renderer/Renderer');
 			fsm.send(this.transitions.less);
 		} else {
 			fsm.send(this.transitions.greater);
+		}
+	};
+
+	CompareDistanceAction.prototype.enter = function (fsm) {
+		if (!this.everyFrame) {
+			this.compare(fsm);
+		}
+	};
+
+	CompareDistanceAction.prototype.update = function (fsm) {
+		if (this.everyFrame) {
+			this.compare(fsm);
 		}
 	};
 

@@ -28,7 +28,11 @@ var MathUtils = require('../../math/MathUtils');
 	AbstractTransitionState.BLENDTYPES.LINEAR = 'Linear';
 	AbstractTransitionState.BLENDTYPES.CUBIC = 'SCurve3';
 	AbstractTransitionState.BLENDTYPES.QUINTIC = 'SCurve5';
-
+	
+	AbstractTransitionState.prototype.getCurrentLoop = function () {
+		return 0;
+	};
+	
 	/**
 	 * Update this state using the current global time.
 	 * @param {number} globalTime the current global time.

@@ -14,22 +14,23 @@ var SpotLight = require('../../../renderer/light/SpotLight');
 	AddLightAction.prototype.constructor = AddLightAction;
 
 	AddLightAction.external = {
+		key: 'Add Light',
 		name: 'Add Light',
-		description: 'Adds a point light to the entity',
+		description: 'Adds a point light to the entity.',
 		type: 'light',
 		parameters: [{
 			name: 'Color',
 			key: 'color',
 			type: 'vec3',
 			control: 'color',
-			description: 'Color of the light',
+			description: 'Color of the light.',
 			'default': [1, 1, 1]
 		}, {
 			name: 'Light type',
 			key: 'type',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Light type',
+			description: 'Light type.',
 			'default': 'Point',
 			options: ['Point', 'Directional', 'Spot']
 		}, {
@@ -39,7 +40,7 @@ var SpotLight = require('../../../renderer/light/SpotLight');
 			control: 'slider',
 			min: 0,
 			max: 1000,
-			description: 'Range of the light',
+			description: 'Range of the light.',
 			'default': 200
 		}, {
 			name: 'Cone Angle',
@@ -48,7 +49,7 @@ var SpotLight = require('../../../renderer/light/SpotLight');
 			control: 'slider',
 			min: 1,
 			max: 170,
-			description: 'Cone angle (applies only to spot lights)',
+			description: 'Cone angle (applies only to spot lights).',
 			'default': 30
 		}, {
 			name: 'Penumbra',
@@ -57,13 +58,13 @@ var SpotLight = require('../../../renderer/light/SpotLight');
 			control: 'slider',
 			min: 0,
 			max: 170,
-			description: 'Penumbra (applies only to spot lights)',
+			description: 'Penumbra (applies only to spot lights).',
 			'default': 30
 		}],
 		transitions: []
 	};
 
-	AddLightAction.prototype._run = function (fsm) {
+	AddLightAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.lightComponent) {
 			this._untouched = true;

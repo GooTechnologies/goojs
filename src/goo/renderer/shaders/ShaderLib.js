@@ -57,7 +57,6 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
 			fogColor: [1, 1, 1],
-			shadowDarkness: 0.5,
 			vertexColorAmount: 1.0,
 			lodBias: 0.0,
 			wrapSettings: [0.5, 0.0]
@@ -277,6 +276,8 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 					// '#endif',
 					'#endif',
 
+					'N = N * (-1.0 + 2.0 * float(gl_FrontFacing));',
+
 					ShaderBuilder.light.fragment,
 				'#endif',
 
@@ -325,6 +326,8 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
 						'#elif REFLECTION_TYPE == 1',
 							'final_color.rgb += environment.rgb * reflectionAmount;',
+						'#elif REFLECTION_TYPE == 2',
+							'final_color.rgb *= environment.rgb * reflectionAmount;',
 						'#endif',
 						'final_color.a = min(final_color.a + reflectionAmount, 1.0);',
 					'}',
@@ -400,7 +403,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -438,7 +441,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -470,7 +473,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -498,7 +501,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		'uniform mat4 worldMatrix;',
 
 		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -627,7 +630,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -773,7 +776,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 				// 'imageCoord += uImageIncrement * size;',
 			// '}',
 			// Hack for Android, who seems to crash on int looping
-			'for(float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
+			'for (float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
 				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[int(i)];',
 				'imageCoord += uImageIncrement * size;',
 			'}',
@@ -838,7 +841,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
 		'void main() {',
 			'normal = vec3(worldMatrix * vec4(vertexNormal, 0.0));',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -880,7 +883,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
@@ -904,8 +907,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			heightMap: Shader.DIFFUSE_MAP,
 			resolution: [512, 512],
@@ -915,14 +917,13 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
 			'varying vec2 vUv;',
 			'void main() {',
 				'vUv = vertexUV0;',
-				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+				'gl_Position = viewProjectionMatrix * (worldMatrix * vec4( vertexPosition, 1.0 ));',
 			'}'
 		].join('\n'),
 		fshader: [
@@ -964,7 +965,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
 		'void main(void) {',
 			'color = vertexColor;',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 			'gl_PointSize = pointSize;',
 		'}'
 		].join('\n'),
@@ -1047,23 +1048,27 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		'void main(void) {',
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
-			'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
+			'worldPosition = viewMatrix * (wMatrix * vec4(vertexPosition, 1.0));',
 			'gl_Position = projectionMatrix * worldPosition;',
 		'}'
 		].join('\n'),
 		fshader: [
-		'uniform float cameraScale;',
+		'#if SHADOW_TYPE == 2',
+			'uniform float cameraScale;',
+		'#endif',
 
 		'varying vec4 worldPosition;',
 
+		ShaderFragment.methods.packDepth,
+
 		'void main(void)',
 		'{',
-			'float linearDepth = length(worldPosition) * cameraScale;',
 			'#if SHADOW_TYPE == 0',
-				'gl_FragColor = vec4(linearDepth);',
+				'gl_FragColor = packDepth(gl_FragCoord.z);',
 			'#elif SHADOW_TYPE == 1',
-				'gl_FragColor = vec4(linearDepth);',
+				'gl_FragColor = packDepth(gl_FragCoord.z);',
 			'#elif SHADOW_TYPE == 2',
+				'float linearDepth = length(worldPosition) * cameraScale;',
 				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',
 		'}'
@@ -1128,12 +1133,11 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 			ShaderBuilder.animation.vertex,
 
 			'#ifdef NORMAL',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 ));',
 			'#else',
-				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+				'vec4 mvPosition = viewMatrix * (wMatrix * vec4( vertexPosition, 1.0 ));',
 			'#endif',
 
-			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'

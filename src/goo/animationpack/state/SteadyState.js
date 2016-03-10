@@ -46,6 +46,12 @@ var AbstractState = require('../../animationpack/state/AbstractState');
 	};
 
 	/*
+	 */
+	SteadyState.prototype.getCurrentLoop = function () {
+		return this._sourceTree.currentLoop;
+	};
+
+	/*
 	 * Resets the animationclips in the sourcetree
 	 * @param {number} globalStartTime Usually current time
 	 */

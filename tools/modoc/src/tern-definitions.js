@@ -42,6 +42,9 @@ var convertParameters = function (parameters) {
 
 		var type = parameter.rawType ? convert(parameter.rawType) : '?';
 
+		// remove bad \n
+		decoratedName = decoratedName.replace('\n', '');
+
 		return decoratedName + ': ' + type;
 	}).join(', ');
 };
@@ -166,8 +169,7 @@ function compileFunction(fun, urlParameter) {
 			ternDefinition['!type'] = compileTypelessFunction(fun.params);
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;
@@ -189,8 +191,7 @@ function compileMember(member, urlParameter) {
 			}
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;
@@ -210,8 +211,7 @@ function compileProperty(property, urlParameter) {
 			ternDefinition['!type'] = convert(property.type);
 		}
 	} catch (e) {
-		console.log(urlParameter);
-		throw e;
+		console.log(urlParameter, e);
 	}
 
 	return ternDefinition;

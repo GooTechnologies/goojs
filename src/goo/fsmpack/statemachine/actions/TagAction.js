@@ -11,22 +11,23 @@ var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent'
 	TagAction.prototype.constructor = TagAction;
 
 	TagAction.external = {
+		key: 'Tag',
 		name: 'Tag',
 		type: 'collision',
-		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action',
+		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action.',
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
 			type: 'string',
 			control: 'dropdown',
-			description: 'Checks for collisions with other objects having this tag',
+			description: 'Checks for collisions with other objects having this tag.',
 			'default': 'red',
 			options: ['red', 'blue', 'green', 'yellow']
 		}],
 		transitions: []
 	};
 
-	TagAction.prototype._run = function (fsm) {
+	TagAction.prototype.enter = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.proximityComponent) {
 			if (entity.proximityComponent.tag !== this.tag) {

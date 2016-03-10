@@ -83,7 +83,13 @@ var rsvp = require('../util/rsvp');
 	};
 
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
+
+	/**
+	 * Allow cross-origin requests (CORS) for images.
+	 * @type {boolean} [crossOrigin=false]
+	 */
 	Ajax.crossOrigin = false;
+
 
 	var MIME_TYPES = {
 		mp4: 'video/mp4',
