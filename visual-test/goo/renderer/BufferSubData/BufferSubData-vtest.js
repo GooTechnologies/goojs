@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Alters all attributes but marks only position as dirty');
 
@@ -49,4 +49,3 @@
 	}, 1000);
 
 	V.process();
-});

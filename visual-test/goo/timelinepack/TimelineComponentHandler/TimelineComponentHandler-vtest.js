@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The sphere has a timeline component which was loadd using the dynamic loader.');
 

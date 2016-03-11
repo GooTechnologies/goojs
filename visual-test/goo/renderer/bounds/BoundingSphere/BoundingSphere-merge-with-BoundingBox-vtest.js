@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	function addBoundingSphereToWorld(goo, boundingSphere) {
 		var material2 = new Material(ShaderLib.simpleColored);
@@ -73,4 +73,3 @@
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 
 	V.process();
-});

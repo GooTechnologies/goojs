@@ -1,6 +1,6 @@
 goo.V.attachToGlobal();
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a cannon component which updates their transform.');
 

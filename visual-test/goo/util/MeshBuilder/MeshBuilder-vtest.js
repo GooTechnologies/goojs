@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Create a single movie camera entity from different parts');
 
@@ -51,4 +51,3 @@
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 
 	V.process();
-});

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The quad is textured with a render target');
 
@@ -33,4 +33,3 @@
 	addQuad(renderTarget);
 
 	V.process();
-});

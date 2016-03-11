@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	function addSpheres(goo, heightMapBoundingScript) {
 		/*jshint loopfunc: true */

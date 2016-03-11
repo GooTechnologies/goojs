@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Click any key to run deIndex() on the bottom row mesh datas. This converts the mesh into a vertex only mesh (no indices).');
 
@@ -41,4 +41,3 @@
 	document.addEventListener('touchstart', splitListener, false);
 
 	V.process();
-});

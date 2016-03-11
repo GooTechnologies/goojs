@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Tests that cubemaps with mipmaps works with typed array images. Should display two spheres with checkerboard reflections (left using images and right using arrays).'
@@ -118,4 +118,3 @@
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0.5, 0));
 
 	V.process();
-});

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The quad component/handler are used to render 2 svgs to double-faced quads');
 
@@ -74,4 +74,3 @@
 			canvas.getContext('2d').drawImage(img, 0, 0);
 		};
 	}
-});

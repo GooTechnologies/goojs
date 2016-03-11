@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('All supported light types are featured in this scene');
 
@@ -113,4 +113,3 @@
 	V.addOrbitCamera();
 
 	V.process();
-});

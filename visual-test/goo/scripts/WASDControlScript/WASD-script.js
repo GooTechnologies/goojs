@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	//! schteppe: Already covered in other tests. Delete?
 

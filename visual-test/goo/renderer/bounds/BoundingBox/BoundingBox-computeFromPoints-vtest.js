@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	var gooRunner = V.initGoo();
 
@@ -32,4 +32,3 @@
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 
 	V.process();
-});

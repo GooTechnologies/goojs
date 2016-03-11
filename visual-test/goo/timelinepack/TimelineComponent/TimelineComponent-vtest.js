@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Value/event channels in action.',
@@ -180,4 +180,3 @@
 	});
 
 	V.process();
-});

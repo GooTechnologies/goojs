@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	function pickAndRotateScriptDemo() {
 		var gooRunner = V.initGoo();

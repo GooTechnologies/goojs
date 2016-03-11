@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Bloom is used as a posteffect');
 
@@ -30,4 +30,3 @@
 	gooRunner.renderSystem.composers.push(composer);
 
 	V.process();
-});

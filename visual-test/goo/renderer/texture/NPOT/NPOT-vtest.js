@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('NPOT textures were at some point believed to cause transparency issues. This is the minimal test scene to prove or disprove the bug.');
 

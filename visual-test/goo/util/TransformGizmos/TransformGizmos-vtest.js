@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Select and entity and transform it using the transform gizmos.',

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Half of the visible surface has a texture with anisotropic filtering on and the other half without. The effect is most visible when the surface is viewed at a low angle.'
@@ -35,4 +35,3 @@
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0.5, 0));
 
 	V.process();
-});

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	function addSpheres(sparseHeightMapBoundingScript) {
 		var meshData = new Sphere(32, 32);
@@ -109,4 +109,3 @@
 	cameraEntity.set(scriptComponent);
 
 	V.process();
-});

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Tests that WebCam texture works. Should display a sphere the webcam content on it.'
@@ -32,4 +32,3 @@
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0, 0));
 
 	V.process();
-});

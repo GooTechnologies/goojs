@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Cylinders of different heights');
 
@@ -36,4 +36,3 @@
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 
 	V.process();
-});

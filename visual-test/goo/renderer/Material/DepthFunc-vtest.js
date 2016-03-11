@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Boxes with different depth functions');
 
@@ -52,4 +52,3 @@
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0));
 
 	V.process();
-});

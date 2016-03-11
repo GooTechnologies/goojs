@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Click on any object and a small red sphere should appear at the intersection between the pick ray originating from the camera and the clicked-on object',
@@ -72,4 +72,3 @@
 	});
 
 	V.process();
-});

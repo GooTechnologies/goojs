@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('All implemented shadow types');
 
@@ -137,4 +137,3 @@
 	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 
 	V.process();
-});

@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('3 disks of different height (positive, zero and negative)');
 
@@ -28,4 +28,3 @@
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 
 	V.process();
-});

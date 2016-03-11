@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Simple shadow test');
 
@@ -35,4 +35,3 @@
 
 	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 	V.process();
-});

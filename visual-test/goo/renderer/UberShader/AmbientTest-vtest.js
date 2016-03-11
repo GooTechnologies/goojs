@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Three spheres with materialAmbient set on ubershader. The middle sphere has its color continously updated.');
 
@@ -30,4 +30,3 @@
 	});
 
 	V.process();
-});

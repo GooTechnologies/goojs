@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Modify particles with ParticleInfluence. The particles on the left have no influence.');
 
@@ -55,4 +55,3 @@
 	entity2.particleComponent.emitters[0].influences.push(spiralInfluence);
 
 	V.process();
-});

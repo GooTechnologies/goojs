@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('A cube and a skybox with checkered textures');
 
@@ -31,4 +31,3 @@
 	).addToWorld();
 
 	V.process();
-});

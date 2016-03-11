@@ -1,5 +1,5 @@
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('1 = requestFullScreen, 2 = exitFullScreen, 3 = toggleFullScreen\n' +
 				'4 = requestPointerLock, 5 = exitPointerLock, 6 = togglePointerLock');
@@ -63,4 +63,3 @@
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, Math.PI / 8));
 
 	V.process();
-});
