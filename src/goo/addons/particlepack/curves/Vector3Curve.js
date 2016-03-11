@@ -1,13 +1,6 @@
-define([
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/Curve',
-	'goo/util/ObjectUtils'
-], function (
-	ConstantCurve,
-	Curve,
-	ObjectUtils
-) {
-	'use strict';
+var ConstantCurve = require('../../../addons/particlepack/curves/ConstantCurve');
+var Curve = require('../../../addons/particlepack/curves/Curve');
+var ObjectUtils = require('../../../util/ObjectUtils');
 
 	/**
 	 * Three scalar curves. Can be converted to a vec3-valued expression in GLSL code.
@@ -60,5 +53,4 @@ define([
 		);
 	};
 
-	return Vector3Curve;
-});
+	module.exports = Vector3Curve;

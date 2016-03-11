@@ -1,35 +1,17 @@
-define([
-	'goo/math/Matrix3',
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/renderer/MeshData',
-	'goo/renderer/Material',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/Component',
-	'goo/renderer/Shader',
-	'goo/math/Transform',
-	'goo/addons/particlepack/ParticleData',
-	'goo/renderer/Renderer',
-	'goo/shapes/Quad',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/util/ObjectUtils'
-], function (
-	Matrix3,
-	Vector3,
-	Vector4,
-	MeshData,
-	Material,
-	MeshRendererComponent,
-	Component,
-	Shader,
-	Transform,
-	ParticleData,
-	Renderer,
-	Quad,
-	ConstantCurve,
-	ObjectUtils
-) {
-	'use strict';
+var Matrix3 = require('../../../math/Matrix3');
+var Vector3 = require('../../../math/Vector3');
+var Vector4 = require('../../../math/Vector4');
+var MeshData = require('../../../renderer/MeshData');
+var Material = require('../../../renderer/Material');
+var MeshRendererComponent = require('../../../entities/components/MeshRendererComponent');
+var Component = require('../../../entities/components/Component');
+var Shader = require('../../../renderer/Shader');
+var Transform = require('../../../math/Transform');
+var ParticleData = require('../../../addons/particlepack/ParticleData');
+var Renderer = require('../../../renderer/Renderer');
+var Quad = require('../../../shapes/Quad');
+var ConstantCurve = require('../../../addons/particlepack/curves/ConstantCurve');
+var ObjectUtils = require('../../../util/ObjectUtils');
 
 	function mod(a,b) {
 	    return ((a % b) + b) % b;
@@ -350,7 +332,7 @@ define([
 		 * @readonly
 		 */
 		this.time = options.time || 0;
-		
+
 		/**
 		 * Force that makes particles fall.
 		 * @type {Vector3}
@@ -363,7 +345,7 @@ define([
 		 * @readonly
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
-		
+
 		/**
 		 * Acts as a scale on the color curve. Should be used at runtime.
 		 * @type {Vector4}
@@ -419,7 +401,7 @@ define([
 	/**
 	 * No sorting of particles.
 	 * @type {number}
-	 * @readonly	 
+	 * @readonly
 	 */
 	ParticleSystemComponent.SORT_NONE = 1;
 
@@ -479,7 +461,7 @@ define([
 				this.material.shader.setDefine('COLOR_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.COLOR_CURVE_CODE);
 			}
 		},
-		
+
 		/**
 		 * Angle of the cone, if cone shape is used.
 		 * @target-class ParticleSystemComponent coneAngle member
@@ -821,7 +803,7 @@ define([
 				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.SIZE_CURVE_CODE);
 			}
 		},
-		
+
 		/**
 		 * @target-class ParticleSystemComponent sortMode member
 		 * @type {string}
@@ -1507,7 +1489,7 @@ define([
 		var r = this.boundsRadius;
 		bounds.xExtent = bounds.yExtent = bounds.zExtent = r * 2;
 	};
-	
+
 	var tmpWorldPos = new Vector3();
 
 	/**
@@ -1665,7 +1647,7 @@ define([
 
 		var meshRendererComponent = new MeshRendererComponent(this.material);
 		meshRendererComponent.castShadows = meshRendererComponent.receiveShadows = meshRendererComponent.isPickable = meshRendererComponent.isReflectable = false;
-		
+
 		this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
 			.set(meshRendererComponent)
 			.addToWorld();
@@ -1684,7 +1666,7 @@ define([
 		this.meshEntity.removeFromWorld();
 		this.entity = this.meshEntity = null;
 	};
-	
+
 	/**
 	 * @private
 	 * @param obj
@@ -1703,5 +1685,4 @@ define([
 		return new ParticleSystemComponent(this);
 	};
 
-	return ParticleSystemComponent;
-});
+module.exports = ParticleSystemComponent;

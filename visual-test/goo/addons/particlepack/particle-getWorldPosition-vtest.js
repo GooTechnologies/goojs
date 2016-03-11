@@ -1,38 +1,11 @@
-require([
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'lib/V',
-	'goo/entities/SystemBus',
-	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem',
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/addons/particlepack/systems/ParticleSystemSystem',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/addons/linerenderpack/LineRenderSystem'
-], function (
-	Vector3,
-	Box,
-	V,
-	SystemBus,
-	HtmlComponent,
-	HtmlSystem,
-	ParticleSystemComponent,
-	ParticleSystemSystem,
-	ConstantCurve,
-	LinearCurve,
-	Vector3Curve,
-	LineRenderSystem
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 	V.addLights();
 
 	var lineRenderSystem = new LineRenderSystem(world);
-	goo.setRenderSystem(lineRenderSystem);
+	gooRunner.setRenderSystem(lineRenderSystem);
 
 	var colors = [
 		new Vector3(1, 1, 1),
@@ -45,9 +18,9 @@ require([
 	];
 
 	world.setSystem(new ParticleSystemSystem());
-	world.setSystem(new HtmlSystem(goo.renderer));
+	world.setSystem(new HtmlSystem(gooRunner.renderer));
 	V.addOrbitCamera(new Vector3(40, Math.PI / 2, 0));
-	
+
 	var entities = [];
 
 	for(var i=0; i<2; i++){
@@ -92,7 +65,7 @@ require([
 	}
 	var markerPosition = new Vector3();
 	var color = new Vector3(1,0,0);
-	goo.callbacksPreRender.push(function(){
+	gooRunner.callbacksPreRender.push(function(){
 
 		lineRenderSystem._lineRenderers.forEach(function(renderer){
 			renderer._material.lineWidth = 10;
@@ -123,5 +96,4 @@ require([
 		});
 	});
 
-	V.goo.renderer.setClearColor(0, 0, 0, 1);
-});
+	gooRunner.renderer.setClearColor(0, 0, 0, 1);

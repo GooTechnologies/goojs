@@ -30,7 +30,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 
 		settings = settings || {};
 
-		_.defaults(settings, {
+		ObjectUtils.defaults(settings, {
 			gravity: new Vector3(0, -10, 0),
 			stepFrequency: 60,
 			broadphase: 'naive'
@@ -54,8 +54,6 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	CannonSystem.prototype.reset = function () {
 		for (var i = 0; i < this._activeEntities.length; i++) {
 			var entity = this._activeEntities[i];
-			// this.deleted(entity);
-			// this.inserted(entity);
 
 			if (entity.cannonRigidbodyComponent.added) {
 				var body = entity.cannonRigidbodyComponent.body;

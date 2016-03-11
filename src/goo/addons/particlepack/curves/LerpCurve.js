@@ -1,11 +1,5 @@
-define([
-	'goo/math/MathUtils',
-	'goo/addons/particlepack/curves/Curve'
-], function (
-	MathUtils,
-	Curve
-) {
-	'use strict';
+var Curve = require('../../../addons/particlepack/curves/Curve');
+var MathUtils = require('../../../math/MathUtils');
 
 	/**
 	 * Curve that can lerp between two other curves.
@@ -25,7 +19,7 @@ define([
 		 * @type {Curve}
 		 */
 		this.curveA = options.curveA !== undefined ? options.curveA.clone() : null;
-		
+
 		/**
 		 * @type {Curve}
 		 */
@@ -50,5 +44,4 @@ define([
 		return MathUtils.lerp(lerpValue, this.curveA.getIntegralValueAt(t, lerpValue), this.curveB.getIntegralValueAt(t, lerpValue));
 	};
 
-	return LerpCurve;
-});
+	module.exports = LerpCurve;

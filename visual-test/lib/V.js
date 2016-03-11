@@ -8,6 +8,12 @@
  */
 var V = goo.V = {};
 
+V.attachToGlobal = function(){
+	for(var key in goo){
+		window[key] = goo[key];
+	}
+};
+
 // Determine if we're running the visual test for people or for machines.
 V.deterministic = !!purl().param().deterministic;
 V.minimal = !!purl().param().minimal;

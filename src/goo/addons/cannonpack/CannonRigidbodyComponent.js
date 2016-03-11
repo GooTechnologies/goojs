@@ -2,9 +2,6 @@ var Component = require('../../entities/components/Component');
 var Quaternion = require('../../math/Quaternion');
 var Vector3 = require('../../math/Vector3');
 var Transform = require('../../math/Transform');
-var Box = require('../../shapes/Box');
-var Sphere = require('../../shapes/Sphere');
-var Quad = require('../../shapes/Quad');
 var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
@@ -35,7 +32,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		settings = settings || {};
 		this.type = 'CannonRigidbodyComponent';
 
-		_.defaults(settings, {
+		ObjectUtils.defaults(settings, {
 			mass: 1,
 			velocity: new Vector3()
 			// Todo: a lot of more things from Cannon.js API

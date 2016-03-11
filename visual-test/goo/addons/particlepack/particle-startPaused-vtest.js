@@ -1,18 +1,7 @@
-require([
-	'goo/math/Vector3',
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/addons/particlepack/systems/ParticleSystemSystem',
-	'lib/V'
-], function (
-	Vector3,
-	ParticleSystemComponent,
-	ParticleSystemSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	world.setSystem(new ParticleSystemSystem());
 
@@ -25,6 +14,5 @@ require([
 	}, 2000);
 
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
-	V.goo.renderer.setClearColor(0, 0, 0, 1);
+	gooRunner.renderer.setClearColor(0, 0, 0, 1);
 	V.process();
-});

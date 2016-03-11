@@ -1,9 +1,4 @@
-define([
-	'goo/addons/particlepack/curves/Curve'
-], function (
-	Curve
-) {
-	'use strict';
+var Curve = require('../../../addons/particlepack/curves/Curve');
 
 	/**
 	 * @class
@@ -64,5 +59,4 @@ define([
 		return 0.5 * k * x * x + m * x;
 	};
 
-	return LinearCurve;
-});
+	module.exports = LinearCurve;

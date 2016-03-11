@@ -1,3 +1,5 @@
+goo.V.attachToGlobal();
+
 V.describe([
 	'All entities in the scene hold a p2Component',
 	'',

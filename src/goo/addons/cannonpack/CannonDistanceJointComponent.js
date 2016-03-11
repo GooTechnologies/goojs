@@ -19,7 +19,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		settings = settings || {};
 		this.type = 'CannonDistanceJointComponent';
 
-		_.defaults(settings, {
+		ObjectUtils.defaults(settings, {
 			distance: 1,
 			connectedBody: null
 		});

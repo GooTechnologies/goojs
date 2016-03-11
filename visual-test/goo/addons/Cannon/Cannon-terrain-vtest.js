@@ -1,55 +1,4 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/Camera',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Quad',
-	'goo/entities/components/CameraComponent',
-	'goo/renderer/TextureCreator',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/World',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/entities/components/TransformComponent',
-	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonSphereColliderComponent',
-	'goo/addons/cannonpack/CannonBoxColliderComponent',
-	'goo/addons/cannonpack/CannonTerrainColliderComponent',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent',
-	'goo/geometrypack/Surface',
-	'lib/V'
-], function (
-	GooRunner,
-	Material,
-	Camera,
-	Box,
-	Sphere,
-	Quad,
-	CameraComponent,
-	TextureCreator,
-	ScriptComponent,
-	ShaderLib,
-	World,
-	OrbitCamControlScript,
-	Vector3,
-	Quaternion,
-	TransformComponent,
-	CannonSystem,
-	CannonRigidbodyComponent,
-	CannonSphereColliderComponent,
-	CannonBoxColliderComponent,
-	CannonTerrainColliderComponent,
-	PointLight,
-	LightComponent,
-	Surface,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	/* global CANNON */
 
@@ -58,19 +7,19 @@ require([
 		nCol = 30,
 		elementSize = 0.5;
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var cannonSystem = new CannonSystem({
 		gravity: new Vector3(0, -10, 0),
 		maxSubSteps: 3
 	});
-	goo.world.setSystem(cannonSystem);
+	gooRunner.world.setSystem(cannonSystem);
 
 	function createSphere(x, y, z) {
 		var material = V.getColoredMaterial();
 		var radius = 1.5;
 		var meshData = new Sphere(8, 8, radius);
-		var boxEntity = goo.world.createEntity(meshData, material, [x, y, z]).addToWorld();
+		var boxEntity = gooRunner.world.createEntity(meshData, material, [x, y, z]).addToWorld();
 		boxEntity.setComponent(new CannonRigidbodyComponent({
 			mass: 1
 		}));
@@ -82,7 +31,7 @@ require([
 		var material = V.getColoredMaterial();
 		var halfExtents = new Vector3(5, 0.5, 2);
 		var meshData = new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2);
-		var boxEntity = goo.world.createEntity(meshData, material, [x, y, z]).addToWorld();
+		var boxEntity = gooRunner.world.createEntity(meshData, material, [x, y, z]).addToWorld();
 		boxEntity.setComponent(new CannonRigidbodyComponent({
 			mass: 1
 		}));
@@ -126,12 +75,12 @@ require([
 		var meshData = Surface.createFromHeightMap(matrix, elementSize, 1, elementSize);
 		var material = V.getColoredMaterial();
 
-		entity = goo.world.createEntity([0, -2, 0]).addToWorld();
+		entity = gooRunner.world.createEntity([0, -2, 0]).addToWorld();
 		entity.setComponent(new CannonRigidbodyComponent({
 			mass: 0 // static
 		}));
 
-		var meshEntity = goo.world.createEntity(meshData, material, [
+		var meshEntity = gooRunner.world.createEntity(meshData, material, [
 			-(nCol - 1) / 2 * elementSize,
 			0,
 			-(nLin - 1) / 2 * elementSize
@@ -139,7 +88,7 @@ require([
 		entity.attachChild(meshEntity);
 
 		// Cannon terrain is facing in Z direction. Move it to center and rotate to compensate.
-		colliderEntity = goo.world.createEntity([
+		colliderEntity = gooRunner.world.createEntity([
 			(nCol - 1) / 2 * elementSize,
 			0,
 			(nLin - 1) / 2 * elementSize,
@@ -170,7 +119,7 @@ require([
 	function addCar(chassisEntity, wheelEntities) {
 
 		// Need to do a process to make the CannonSystem add rigid bodies to the entities
-		goo.world.processEntityChanges();
+		gooRunner.world.processEntityChanges();
 
 		var world = cannonSystem.world;
 
@@ -253,4 +202,3 @@ require([
 	}
 
 	init();
-});

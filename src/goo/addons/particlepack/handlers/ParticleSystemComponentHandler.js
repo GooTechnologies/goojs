@@ -1,33 +1,16 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/PolyCurve',
-	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/addons/particlepack/curves/Vector4Curve',
-	'goo/addons/particlepack/curves/LerpCurve',
-	'goo/util/rsvp',
-	'goo/util/ObjectUtils',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/util/ParticleSystemUtils'
-], function (
-	ComponentHandler,
-	ParticleSystemComponent,
-	LinearCurve,
-	ConstantCurve,
-	PolyCurve,
-	Vector3Curve,
-	Vector4Curve,
-	LerpCurve,
-	RSVP,
-	_,
-	Vector3,
-	MathUtils,
-	ParticleSystemUtils
-) {
-	'use strict';
+var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
+var ParticleSystemComponent = require('../../../addons/particlepack/components/ParticleSystemComponent');
+var LinearCurve = require('../../../addons/particlepack/curves/LinearCurve');
+var ConstantCurve = require('../../../addons/particlepack/curves/ConstantCurve');
+var PolyCurve = require('../../../addons/particlepack/curves/PolyCurve');
+var Vector3Curve = require('../../../addons/particlepack/curves/Vector3Curve');
+var Vector4Curve = require('../../../addons/particlepack/curves/Vector4Curve');
+var LerpCurve = require('../../../addons/particlepack/curves/LerpCurve');
+var RSVP = require('../../../util/rsvp');
+var ObjectUtils = require('../../../util/ObjectUtils');
+var Vector3 = require('../../../math/Vector3');
+var MathUtils = require('../../../math/MathUtils');
+var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 
 	/**
 	 * @extends ComponentHandler
@@ -67,7 +50,7 @@ define([
 	 * @private
 	 */
 	ParticleSystemComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 			gravity: [0, 0, 0],
 			seed: -1,
 			shapeType: 'cone',
@@ -278,5 +261,4 @@ define([
 		});
 	};
 
-	return ParticleSystemComponentHandler;
-});
+	module.exports = ParticleSystemComponentHandler;

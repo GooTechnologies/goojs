@@ -1,5 +1,3 @@
-define([], function () {
-	'use strict';
 
 	/**
 	 * A curve that has a time-dependent value (time is always between 0 and 1), and can be translated into GLSL code.
@@ -85,5 +83,4 @@ define([], function () {
 		}
 	};
 
-	return Curve;
-});
+	module.exports = Curve;

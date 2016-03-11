@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 					physicspack: ['./src/goo/addons/physicspack'],
 					gamepadpack: ['./src/goo/addons/gamepadpack'],
 					passpack: ['./src/goo/passpack'],
+					particlepack: ['./src/goo/addons/particlepack'],
 					gizmopack: ['./src/goo/util/gizmopack'],
 					logicpack: ['./src/goo/logicpack']
 				},

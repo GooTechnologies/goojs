@@ -1,9 +1,5 @@
-define([
-	'goo/addons/particlepack/curves/Curve'
-], function (
-	Curve
-) {
-	'use strict';
+var Curve = require('../../../addons/particlepack/curves/Curve');
+
 
 	/**
 	 * A curve with a constant value.
@@ -43,5 +39,4 @@ define([
 		return this.value * t;
 	};
 
-	return ConstantCurve;
-});
+	module.exports = ConstantCurve;

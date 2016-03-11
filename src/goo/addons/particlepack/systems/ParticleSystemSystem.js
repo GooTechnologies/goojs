@@ -1,9 +1,4 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
-	'use strict';
+var System = require('../../../entities/systems/System');
 
 	/**
 	 * System that runs all the ParticleSystemComponents.
@@ -44,7 +39,7 @@ define([
 	 * @param  {Component} component
 	 */
 	ParticleSystemSystem.prototype.removedComponent = function (/*entity, component*/) {};
-	
+
 	/**
 	 * Pause all ParticleSystemComponents.
 	 */
@@ -86,5 +81,4 @@ define([
 		}
 	};
 
-	return ParticleSystemSystem;
-});
+	module.exports = ParticleSystemSystem;

@@ -1,9 +1,4 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
-	'use strict';
+var Vector3 = require('../../math/Vector3');
 
 	/**
 	 * Container for particle data in the ParticleSystemComponent.
@@ -88,7 +83,7 @@ define([
 		if (!this.active) {
 			return store;
 		}
-		
+
 		var component = this.component;
 
 		// pos + dir * t + 0.5 * t * t * g
@@ -127,5 +122,4 @@ define([
 		return store;
 	};
 
-	return ParticleData;
-});
+	module.exports = ParticleData;

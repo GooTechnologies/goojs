@@ -1,26 +1,12 @@
-define([
-	'goo/entities/EntitySelection',
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/math/Transform',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder'
-],
-function (
-	EntitySelection,
-	System,
-	SystemBus,
-	Transform,
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	Cylinder
-) {
-	'use strict';
+var EntitySelection = require('../../../entities/EntitySelection');
+var System = require('../../../entities/systems/System');
+var SystemBus = require('../../../entities/SystemBus');
+var Transform = require('../../../math/Transform');
+var Material = require('../../../renderer/Material');
+var ShaderLib = require('../../../renderer/shaders/ShaderLib');
+var Sphere = require('../../../shapes/Sphere');
+var Box = require('../../../shapes/Box');
+var Cylinder = require('../../../shapes/Cylinder');
 
 	/**
 	 * Renders all ParticleSystemComponents in the scene.
@@ -183,6 +169,4 @@ function (
 		this.process(this._activeEntities);
 	};
 
-
-	return ParticleDebugRenderSystem;
-});
+	module.exports = ParticleDebugRenderSystem;
