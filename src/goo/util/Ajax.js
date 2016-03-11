@@ -2,7 +2,7 @@ var TextureHandler = require('../loaders/handlers/TextureHandler');
 var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 var StringUtils = require('../util/StringUtils');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 
 	'use strict';
 
@@ -31,7 +31,7 @@ var rsvp = require('../util/rsvp');
 		if (clear) {
 			this._cache = bundle;
 		} else {
-			_.extend(this._cache, bundle);
+			ObjectUtils.extend(this._cache, bundle);
 		}
 	};
 

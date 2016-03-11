@@ -7,7 +7,7 @@ var Transform = require('../../math/Transform');
 var MathUtils = require('../../math/MathUtils');
 var Texture = require('../../renderer/Texture');
 var TextureCreator = require('../../renderer/TextureCreator');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 
 	'use strict';
 

@@ -1,32 +1,4 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/math/Matrix3',
-	'goo/timelinepack/ValueChannel',
-	'goo/timelinepack/EventChannel',
-	'goo/util/Tween',
-	'lib/V'
-], function (
-	GooRunner,
-	Material,
-	ShaderLib,
-	MeshDataComponent,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	Matrix3,
-	ValueChannel,
-	EventChannel,
-	TWEEN,
-	V
-) {
+
 	'use strict';
 
 	V.describe([
@@ -169,8 +141,8 @@ require([
 	}
 
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 	var con2d;
 	var paused = false;
 
@@ -201,7 +173,7 @@ require([
 	var time = 0;
 	goo.callbacks.push(function () {
 		if (!paused) {
-			time += goo.world.tpf * 1000 * 0.1;
+			time += gooRunner.world.tpf * 1000 * 0.1;
 			valueChannel.update(time);
 			eventChannel.update(time);
 		}

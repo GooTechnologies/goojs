@@ -21,6 +21,9 @@ module.exports = {
 	WasdControlScript: require('./WasdControlScript'),
 	WorldFittedTerrainScript: require('./WorldFittedTerrainScript')
 };
+
+require('./ScriptRegister');
+
 if (typeof(window) !== 'undefined') {
 	for (var key in module.exports) {
 		window.goo[key] = module.exports[key];

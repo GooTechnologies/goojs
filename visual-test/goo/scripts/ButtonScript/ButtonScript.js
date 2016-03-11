@@ -1,28 +1,10 @@
-require([
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'lib/V',
-	'goo/scripts/Scripts',
-	'goo/scriptpack/ScriptRegister',
-	'goo/entities/SystemBus',
-	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem'
-], function (
-	Vector3,
-	Box,
-	V,
-	Scripts,
-	ScriptRegister,
-	SystemBus,
-	HtmlComponent,
-	HtmlSystem
-) {
+
 	'use strict';
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
-	world.setSystem(new HtmlSystem(goo.renderer));
+	world.setSystem(new HtmlSystem(gooRunner.renderer));
 
 	V.addLights();
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));

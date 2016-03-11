@@ -1,5 +1,5 @@
 var ConfigHandler = require('../loaders/handlers/ConfigHandler');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
 var OrbitNPanControlScript = require('../scriptpack/OrbitNPanControlScript');
 var FlyControlScript = require('../scriptpack/FlyControlScript');
@@ -362,7 +362,7 @@ var Scripts = require('../scripts/Scripts');
 				// reference to the current script from the remaining ones.
 				var scriptsElementsToRemove = getReferringDependencies(config.id);
 
-				_.forEach(config.dependencies, function (dependencyConfig) {
+				ObjectUtils.forEach(config.dependencies, function (dependencyConfig) {
 					var url = dependencyConfig.url;
 
 					// If the dependency being added is already loaded in a script
@@ -380,14 +380,14 @@ var Scripts = require('../scripts/Scripts');
 
 				// Remove references to the current script from all the script
 				// elements that are not needed anymore.
-				_.forEach(scriptsElementsToRemove, function (scriptElement) {
+				ObjectUtils.forEach(scriptsElementsToRemove, function (scriptElement) {
 					removeReference(scriptElement, config.id);
 				});
 			}
 
 			var parentElement = that.world.gooRunner.renderer.domElement.parentElement || document.body;
 
-			_.forEach(config.dependencies, function (dependency) {
+			ObjectUtils.forEach(config.dependencies, function (dependency) {
 				var scriptElement = that._scriptElementsByURL.get(dependency.url);
 				if (scriptElement) {
 					parentElement.appendChild(scriptElement);
@@ -425,7 +425,7 @@ var Scripts = require('../scripts/Scripts');
 					SystemBus.emit('goo.scriptError', { id: ref, errors: null });
 				}
 
-				_.extend(script.parameters, config.options);
+				ObjectUtils.extend(script.parameters, config.options);
 
 				// Remove any script HTML elements that are not needed by any
 				// script.

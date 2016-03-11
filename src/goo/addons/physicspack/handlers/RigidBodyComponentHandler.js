@@ -2,7 +2,7 @@ var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
 var RigidBodyComponent = require('../../../addons/physicspack/components/RigidBodyComponent');
 var BoundingBox = require('../../../renderer/bounds/BoundingBox');
 var ShapeCreatorMemoized = require('../../../util/ShapeCreatorMemoized');
-var rsvp = require('../../../util/rsvp');
+var RSVP = require('../../../util/rsvp');
 var ObjectUtils = require('../../../util/ObjectUtils');
 var Vector3 = require('../../../math/Vector3');
 
@@ -29,7 +29,7 @@ var Vector3 = require('../../../math/Vector3');
 	 * @private
 	 */
 	RigidBodyComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 			mass: 1,
 			isKinematic: false,
 			velocity: [0, 0, 0],

@@ -82,7 +82,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Disk}
 	 */
 	Disk.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['nSegments', 'radius', 'pointiness']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['nSegments', 'radius', 'pointiness']);
 
 		return new Disk(options);
 	};

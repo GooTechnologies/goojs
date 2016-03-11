@@ -1,6 +1,6 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var StringUtils = require('../../util/StringUtils');
 var PromiseUtils = require('../../util/PromiseUtils');
 

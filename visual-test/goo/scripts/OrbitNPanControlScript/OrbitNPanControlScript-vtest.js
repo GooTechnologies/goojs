@@ -1,21 +1,7 @@
-require([
-	'goo/renderer/Camera',
-	'goo/entities/components/ScriptComponent',
-	'goo/scripts/Scripts',
-	'goo/math/Vector3',
-	'lib/V',
-	'goo/scriptpack/ScriptRegister'
-], function (
-	Camera,
-	ScriptComponent,
-	Scripts,
-	Vector3,
-	V
-	/* ScriptRegister */
-	) {
+
 	'use strict';
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	V.addLights();
 
@@ -23,7 +9,7 @@ require([
 
 	// add camera
 	var camera = new Camera();
-	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity').addToWorld();
+	var cameraEntity = gooRunner.world.createEntity(camera, 'CameraEntity').addToWorld();
 
 	var script = Scripts.create('OrbitNPanControlScript', {
 		// Orbit

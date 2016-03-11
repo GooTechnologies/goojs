@@ -1,5 +1,5 @@
 /* global goo, V */
-
+goo.V.attachToGlobal();
 V.describe(
 	'<b>Red Line</b>: raycastAll<br>' +
 	'<b>Green Line</b>: raycastAny<br>' +
@@ -10,33 +10,33 @@ V.describe(
 
 var gooRunner = V.initGoo();
 var world = gooRunner.world;
-var lineRenderSystem = new goo.LineRenderSystem(world);
-var physicsSystem = new goo.PhysicsSystem();
+var lineRenderSystem = new LineRenderSystem(world);
+var physicsSystem = new PhysicsSystem();
 
 gooRunner.setRenderSystem(lineRenderSystem);
 
 world.setSystem(physicsSystem);
-world.setSystem(new goo.ColliderSystem());
+world.setSystem(new ColliderSystem());
 
-V.addOrbitCamera(new goo.Vector3(9, Math.PI / 1.2, 0.7), new goo.Vector3(1.5, 0, 1.5));
+V.addOrbitCamera(new Vector3(9, Math.PI / 1.2, 0.7), new Vector3(1.5, 0, 1.5));
 
 var addDirectionalLight = function (directionArr) {
-	var directionalLight = new goo.DirectionalLight();
+	var directionalLight = new DirectionalLight();
 	directionalLight.intensity = 0.5;
 	directionalLight.specularIntensity = 1;
 	var directionalLightEntity = world.createEntity(directionalLight, directionArr).addToWorld();
-	directionalLightEntity.transformComponent.transform.lookAt(new goo.Vector3(0, 0, 0), goo.Vector3.UNIT_Y);
+	directionalLightEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 };
 
 addDirectionalLight([1, 1, -1]);
 addDirectionalLight([-1, -1, -1]);
 
 var createMaterial = function (materialName, color) {
-	var material = new goo.Material(materialName, goo.ShaderLib.uber);
+	var material = new Material(materialName, ShaderLib.uber);
 	material.uniforms.materialAmbient = [color[0], color[1], color[2], color[3]];
 	material.uniforms.opacity = 0.6;
 	material.blendState.blending = 'CustomBlending';
-	material.renderQueue = goo.RenderQueue.TRANSPARENT;
+	material.renderQueue = RenderQueue.TRANSPARENT;
 	material.depthState.write = false;
 
 	return material;
@@ -80,16 +80,16 @@ ColliderEntity.PRIMITIVE_COLLIDER_MATERIAL = createMaterial('PrimitiveColliderMa
 ColliderEntity.prototype.initialize = function (position) {
 	switch (this.shapeType) {
 	case ColliderEntity.SPHERE:
-		this.shape = new goo.Sphere(8, 8, 0.5);
-		this.shapeCollider = new goo.SphereCollider({radius: this.shape.radius});
+		this.shape = new Sphere(8, 8, 0.5);
+		this.shapeCollider = new SphereCollider({radius: this.shape.radius});
 		break;
 	case ColliderEntity.BOX:
-		this.shape = new goo.Box(0.5, 0.5);
-		this.shapeCollider = new goo.BoxCollider({halfExtents: new goo.Vector3(this.shape.xExtent, this.shape.yExtent, this.shape.zExtent)});
+		this.shape = new Box(0.5, 0.5);
+		this.shapeCollider = new BoxCollider({halfExtents: new Vector3(this.shape.xExtent, this.shape.yExtent, this.shape.zExtent)});
 		break;
 	case ColliderEntity.CYLINDER:
-		this.shape = new goo.Cylinder(8, 0.25, 0.25, 0.5);
-		this.shapeCollider = new goo.CylinderCollider({radius: this.shape.radiusTop, height: this.shape.height});
+		this.shape = new Cylinder(8, 0.25, 0.25, 0.5);
+		this.shapeCollider = new CylinderCollider({radius: this.shape.radiusTop, height: this.shape.height});
 		break;
 	}
 
@@ -98,31 +98,31 @@ ColliderEntity.prototype.initialize = function (position) {
 	}
 	else {
 		this.material = ColliderEntity.MESH_COLLIDER_MATERIAL;
-		this.shapeCollider = new goo.MeshCollider({meshData: this.shape});
+		this.shapeCollider = new MeshCollider({meshData: this.shape});
 	}
 
-	this.rigidBodyComponent = new goo.RigidBodyComponent({mass: 0});
-	this.colliderComponent = new goo.ColliderComponent({collider: this.shapeCollider});
+	this.rigidBodyComponent = new RigidBodyComponent({mass: 0});
+	this.colliderComponent = new ColliderComponent({collider: this.shapeCollider});
 
 	this.entity = this.world.createEntity(this.shape, this.material, position, this.rigidBodyComponent, this.colliderComponent).addToWorld();
 };
 
-var normalEndPosition = new goo.Vector3();
+var normalEndPosition = new Vector3();
 var drawNormal = function (position, normal) {
 	normalEndPosition.set(normal).scale(0.5).add(position);
 
 	lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
 };
 
-var arrowStartPosition = new goo.Vector3();
-var arrowEndPosition = new goo.Vector3();
-var arrowDirection = new goo.Vector3();
+var arrowStartPosition = new Vector3();
+var arrowEndPosition = new Vector3();
+var arrowDirection = new Vector3();
 var drawLineArrow = function (origin, direction, length, fraction, color, width) {
 
 	arrowStartPosition.set(direction).scale(length * fraction).add(origin);
 	arrowEndPosition.set(direction).scale(-width).add(arrowStartPosition);
 
-	var arrowUpDirection = arrowDirection.set(goo.Vector3.UNIT_Y).scale(width);
+	var arrowUpDirection = arrowDirection.set(Vector3.UNIT_Y).scale(width);
 	arrowUpDirection.add(arrowEndPosition);
 
 	lineRenderSystem.drawLine(arrowStartPosition, arrowUpDirection, color);
@@ -134,7 +134,7 @@ var drawLineArrow = function (origin, direction, length, fraction, color, width)
 	lineRenderSystem.drawLine(arrowStartPosition, arrowDownDirection, color);
 };
 
-var lineEndVector = new goo.Vector3();
+var lineEndVector = new Vector3();
 var drawArrowedLine = function (origin, direction, length, time, color) {
 
 	var lengthRound = Math.round(length);
@@ -152,8 +152,8 @@ var drawArrowedLine = function (origin, direction, length, time, color) {
 };
 
 
-var tmpQuaternion = new goo.Quaternion();
-var rotationAxis = new goo.Vector3();
+var tmpQuaternion = new Quaternion();
+var rotationAxis = new Vector3();
 var getQuaternionRotationFromIndex = function (index) {
 	//set the rotation axis for the quaternion
 	rotationAxis.setDirect((index % 4 === 0) + (index % 2 === 0), 0.9, (index % 4 === 2) + (index % 2 === 1)).normalize();
@@ -174,21 +174,21 @@ var getQuaternionRotationFromIndex = function (index) {
  * @constructor
  */
 var RayCaster = function (origin, direction, length, color, castType, settings) {
-	this.origin = new goo.Vector3(origin);
-	this.direction = new goo.Vector3(direction);
+	this.origin = new Vector3(origin);
+	this.direction = new Vector3(direction);
 	this.length = length;
 	this.color = color;
 	this.castType = castType;
 	this.settings = settings;
 };
 
-RayCaster.endVector = new goo.Vector3();
+RayCaster.endVector = new Vector3();
 
 RayCaster.ALL = 0;
 RayCaster.ANY = 1;
 RayCaster.CLOSEST = 2;
 
-RayCaster.rayCastResult = new goo.RaycastResult();
+RayCaster.rayCastResult = new RaycastResult();
 RayCaster.rayCastCallback = function (result) {
 	drawNormal(result.point, result.normal);
 };
@@ -217,7 +217,7 @@ RayCaster.prototype.cast = function () {
 
 var colliderEntitys = [];
 
-var rayStart = new goo.Vector3(-4, 0, 0);
+var rayStart = new Vector3(-4, 0, 0);
 var rayCasters = [];
 
 var createScene = function () {
@@ -225,7 +225,7 @@ var createScene = function () {
 	var colliderEntitysPerRow = 4;
 	var colliderEntitysPerColumn = 4;
 
-	var colliderEntityPosition = new goo.Vector3();
+	var colliderEntityPosition = new Vector3();
 
 	for (var x = 0; x < colliderEntitysPerRow; x++) {
 		for (var z = 0; z < colliderEntitysPerColumn; z++) {
@@ -247,7 +247,7 @@ var createScene = function () {
 		}
 	}
 
-	var rayDirection = new goo.Vector3(1, 0, 0);
+	var rayDirection = new Vector3(1, 0, 0);
 	var rayLength = 8;
 
 	rayCasters.push(new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.RED, RayCaster.ALL, {skipBackfaces: true}));

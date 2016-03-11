@@ -1,6 +1,6 @@
 var ComponentHandler = require('../loaders/handlers/ComponentHandler');
 var StateMachineComponent = require('../fsmpack/statemachine/StateMachineComponent');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
@@ -63,7 +63,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 			if (!component) { return; }
 
 			var promises = [];
-			_.forEach(config.machines, function (machineConfig) {
+			ObjectUtils.forEach(config.machines, function (machineConfig) {
 				promises.push(that._load(machineConfig.machineRef, options));
 			}, null, 'sortValue');
 

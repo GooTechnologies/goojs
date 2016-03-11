@@ -1,7 +1,5 @@
 var Component = require('../../entities/components/Component');
 
-'use strict';
-
 /**
  * Provides ways for the entity to display text
  * @extends Component

@@ -78,7 +78,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Quad}
 	 */
 	Quad.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'tileX', 'tileY']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'tileX', 'tileY']);
 
 		return new Quad(options);
 	};

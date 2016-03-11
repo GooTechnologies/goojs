@@ -1,24 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/shapes/Sphere',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	TextureCreator,
-	Sphere,
-	V
-	) {
+
 	'use strict';
 
 	V.describe('spheres with different texture modes');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var material = new Material(ShaderLib.texturedLit);
 	new TextureCreator().loadTexture2D('../../../resources/check.png').then(function (texture) {

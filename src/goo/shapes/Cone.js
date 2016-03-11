@@ -104,7 +104,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Cone}
 	 */
 	Cone.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radius', 'height']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['radialSamples', 'radius', 'height']);
 
 		return new Cone(options);
 	};

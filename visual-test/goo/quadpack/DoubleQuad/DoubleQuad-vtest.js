@@ -1,31 +1,13 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/quadpack/DoubleQuad',
-	'lib/V',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'goo/renderer/light/PointLight'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	TextureCreator,
-	DoubleQuad,
-	V,
-	DebugRenderSystem,
-	PointLight
-	) {
+
 	'use strict';
 
 	V.describe('The double-faced quad');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	var material = new Material(ShaderLib.uber);

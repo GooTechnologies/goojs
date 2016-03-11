@@ -4,7 +4,7 @@ var TextureHandler = require('../loaders/handlers/TextureHandler');
 var Ajax = require('../util/Ajax');
 var StringUtils = require('../util/StringUtils');
 var PromiseUtils = require('../util/PromiseUtils');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 
 	'use strict';
 

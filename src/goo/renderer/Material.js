@@ -251,7 +251,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 		if (options.shareUniforms) {
 			clone.uniforms = this.uniforms;
 		} else {
-			clone.uniforms = _.deepClone(this.uniforms);
+			clone.uniforms = ObjectUtils.deepClone(this.uniforms);
 		}
 
 		if (options.shareTextures) {

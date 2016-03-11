@@ -1,27 +1,11 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem',
-	'goo/shapes/Box',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	HtmlComponent,
-	HtmlSystem,
-	Box,
-	V
-) {
+
 	'use strict';
 
 	V.describe('Boxes with different depth functions');
 
-	var goo = V.initGoo();
-	var world = goo.world;
-	world.setSystem(new HtmlSystem(goo.renderer));
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
+	world.setSystem(new HtmlSystem(gooRunner.renderer));
 	var box = new Box(1, 1, 1);
 
 	// Create background box

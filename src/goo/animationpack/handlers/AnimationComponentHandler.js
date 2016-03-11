@@ -1,6 +1,6 @@
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var AnimationComponent = require('../../animationpack/components/AnimationComponent');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 
 	'use strict';
 

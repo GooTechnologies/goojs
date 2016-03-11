@@ -2,9 +2,8 @@ var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var ObjectUtils = require('../../util/ObjectUtils');
 var SystemBus = require('../../entities/SystemBus');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-	'goo/util/Snow', // TODO Should move!var rsvp = require('../../util/rsvp');
-
-	'use strict';
+var Snow = require('../../util/Snow'); // TODO Should move!
+var RSVP = require('../../util/rsvp');
 
 	var defaults = {
 		backgroundColor: [0.3, 0.3, 0.3, 1],
@@ -40,7 +39,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 	ConfigHandler._registerClass('environment', EnvironmentHandler);
 
 	EnvironmentHandler.prototype._prepare = function (config) {
-		_.defaults(config, defaults);
+		ObjectUtils.defaults(config, defaults);
 	};
 
 	EnvironmentHandler.prototype._create = function () {
@@ -99,7 +98,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 			];
 			object.globalAmbient = config.globalAmbient.slice(0, 3);
 
-			object.fog = _.deepClone(config.fog);
+			object.fog = ObjectUtils.deepClone(config.fog);
 
 			// Background color
 			SystemBus.emit('goo.setClearColor', object.backgroundColor);

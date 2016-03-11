@@ -1,44 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
-	'goo/geometrypack/Surface',
-	'goo/shapes/Sphere',
-	'goo/scriptpack/HeightMapBoundingScript',
-	'goo/scripts/Scripts',
-	'goo/util/CanvasUtils',
-	'lib/V',
-	'goo/scriptpack/ScriptRegister',
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	CameraComponent,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
-	Surface,
-	Sphere,
-	HeightMapBoundingScript,
-	Scripts,
-	CanvasUtils,
-	V
-	/* ScriptRegister */
-) {
+
 	'use strict';
 
 	function addSpheres(goo, heightMapBoundingScript) {
@@ -54,7 +14,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = goo.world.createEntity(meshData, material);
+			var sphereEntity = gooRunner.world.createEntity(meshData, material);
 			sphereEntity.transformComponent.transform.translation.setDirect(i, 0, 0);
 
 			var scripts = new ScriptComponent();
@@ -78,8 +38,8 @@ require([
 	}
 
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
 		var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
@@ -102,12 +62,12 @@ require([
 		// Camera control set up
 		var scriptComponent = new ScriptComponent([
 			Scripts.create('WASD', {
-				domElement : goo.renderer.domElement,
+				domElement : gooRunner.renderer.domElement,
 				walkSpeed : 25.0,
 				crawlSpeed : 10.0
 			}),
 			Scripts.create('MouseLookScript', {
-				domElement : goo.renderer.domElement
+				domElement : gooRunner.renderer.domElement
 			})
 		]);
 

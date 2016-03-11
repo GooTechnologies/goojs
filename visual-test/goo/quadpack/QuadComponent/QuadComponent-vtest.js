@@ -1,18 +1,4 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/quadpack/QuadComponent',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	GooRunner,
-	Material,
-	ShaderLib,
-	QuadComponent,
-	Vector3,
-	V
-) {
+
 	'use strict';
 
 	V.describe('The quad component/handler are used to render 2 svgs to double-faced quads');
@@ -28,8 +14,8 @@ require([
 		"</svg>";
 
 	// 3d test ---
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	addQuad(svgData1, -5);
 	addQuad(svgData2,  5);

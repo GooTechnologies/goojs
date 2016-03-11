@@ -1,38 +1,5 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/animationpack/systems/AnimationSystem',
-	'goo/fsmpack/statemachine/StateMachineSystem',
-	'goo/entities/systems/HtmlSystem',
-	'goo/timelinepack/TimelineSystem',
-	'goo/loaders/DynamicLoader',
-	'goo/util/combine/EntityCombiner',
-	'goo/renderer/Renderer',
-	'lib/V',
-	'goo/util/rsvp',
 
-	'CanvasWrapper',
-	'WebGLSupport',
-
-	'goo/animationpack/handlers/AnimationHandlers',
-
-	'goo/fsmpack/StateMachineHandlers',
-	'goo/timelinepack/TimelineComponentHandler',
-	'goo/passpack/PosteffectsHandler',
-	'goo/quadpack/QuadComponentHandler',
-	'goo/scriptpack/ScriptHandlers',
-	'goo/scriptpack/ScriptRegister'
-], function (
-	GooRunner,
-	AnimationSystem,
-	StateMachineSystem,
-	HtmlSystem,
-	TimelineSystem,
-	DynamicLoader,
-	EntityCombiner,
-	Renderer,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'A scene with a goon and the bloom post effect is loaded and unloaded repeatedly.',
@@ -182,4 +149,3 @@ require([
 		});
 	}
 	init();
-});

@@ -1,26 +1,15 @@
-require([
-	'goo/renderer/Camera',
-	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem',
-	'lib/V'
-], function (
-	Camera,
-	HtmlComponent,
-	HtmlSystem,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('All spheres have an html component attached which should have it\'s transform synced');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addLights();
 	V.addOrbitCamera();
 
 	// add text system to world
-	world.setSystem(new HtmlSystem(goo.renderer));
+	world.setSystem(new HtmlSystem(gooRunner.renderer));
 
 	// add spheres
 	var spheres = V.addColoredSpheres(7);
@@ -43,4 +32,3 @@ require([
 	});
 
 	V.process();
-});

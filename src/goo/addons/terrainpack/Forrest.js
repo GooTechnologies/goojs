@@ -21,7 +21,7 @@ var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 var ScriptComponent = require('../../entities/components/ScriptComponent');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 var MathUtils = require('../../math/MathUtils');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 
 	'use strict';
 

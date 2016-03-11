@@ -2,7 +2,7 @@ var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 var BoundingBox = require('../../renderer/bounds/BoundingBox');
 var ShapeCreatorMemoized = require('../../util/ShapeCreatorMemoized');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 var StringUtils = require('../../util/StringUtils');
 
@@ -32,7 +32,7 @@ var StringUtils = require('../../util/StringUtils');
 	 * @private
 	 */
 	MeshDataComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 		});
 	};
 

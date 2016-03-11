@@ -4,7 +4,7 @@ var ClipSource = require('../../animationpack/blendtree/ClipSource');
 var ManagedTransformSource = require('../../animationpack/blendtree/ManagedTransformSource');
 var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
 var FrozenClipSource = require('../../animationpack/blendtree/FrozenClipSource');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -50,7 +50,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			if (!state) { return; }
 			state._name = config.name;
 			state.id = config.id;
-			state._transitions = _.deepClone(config.transitions);
+			state._transitions = ObjectUtils.deepClone(config.transitions);
 
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function (source) {
 				state._sourceTree = source;

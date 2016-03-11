@@ -2,8 +2,6 @@ var System = require('../../entities/systems/System');
 var TWEEN = require('../../util/TWEEN');
 var Actions = require('../../fsmpack/statemachine/actions/Actions');
 
-	'use strict';
-
 	/**
 	 * Processes all entities with a FSM component
 	 * @private

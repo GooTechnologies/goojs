@@ -1,29 +1,9 @@
-require([
-	'goo/util/MeshBuilder',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Box',
-	'goo/renderer/MeshData',
-	'lib/V'
-], function (
-	MeshBuilder,
-	Material,
-	ShaderLib,
-	Vector3,
-	Transform,
-	Cylinder,
-	Box,
-	MeshData,
-	V
-	) {
+
 	'use strict';
 
 	V.describe('Create a single movie camera entity from different parts');
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var meshBuilder = new MeshBuilder();
 	var transform = new Transform();
@@ -62,7 +42,7 @@ require([
 
 	var meshData = meshBuilder.build()[0];
 
-	goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit), function (entity) {
+	gooRunner.world.createEntity( meshData, new Material(ShaderLib.simpleLit), function (entity) {
 		entity.addRotation(0.012, 0.02, 0);
 	}).addToWorld();
 

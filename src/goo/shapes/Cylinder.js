@@ -157,7 +157,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Cylinder}
 	 */
 	Cylinder.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radiusTop', 'radiusBottom', 'height']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['radialSamples', 'radiusTop', 'radiusBottom', 'height']);
 
 		return new Cylinder(options);
 	};

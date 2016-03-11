@@ -1,7 +1,7 @@
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var CameraComponent = require('../../entities/components/CameraComponent');
 var Camera = require('../../renderer/Camera');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -31,7 +31,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	 * @private
 	 */
 	CameraComponentHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtils.defaults(config, {
 			near: 1,
 			far: 10000,
 			projectionMode: 'Perspective',

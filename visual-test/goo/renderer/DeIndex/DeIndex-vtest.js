@@ -1,32 +1,12 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/TextureCreator',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Quad,
-	Sphere,
-	Vector3,
-	MeshData,
-	TextureCreator,
-	V
-	) {
+
 	'use strict';
 
 	V.describe('Click any key to run deIndex() on the bottom row mesh datas. This converts the mesh into a vertex only mesh (no indices).');
 
-	var goo = V.initGoo({
+	var gooRunner = V.initGoo({
 		showStats: true
 	});
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(6, Math.PI / 2, 0));
 	V.addLights();

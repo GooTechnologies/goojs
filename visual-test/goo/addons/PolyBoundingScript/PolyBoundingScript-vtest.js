@@ -1,27 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/scriptpack/PolyBoundingScript',
-	'goo/scripts/Scripts',
-	'goo/scriptpack/ScriptRegister',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	ScriptComponent,
-	Vector3,
-	Box,
-	PolyBoundingScript,
-	Scripts,
-	ScriptRegister,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe([
 		'The polyBounding script is used do prevent the camera entity from going into the pillars',
@@ -65,9 +42,8 @@ require([
 		}
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
-
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var polyBoundingScript = new PolyBoundingScript();
 	addBoxes(polyBoundingScript);
@@ -82,16 +58,15 @@ require([
 	// Camera control set up
 	var scripts = new ScriptComponent();
 	scripts.scripts.push(Scripts.create('WASD', {
-		domElement: goo.renderer.domElement,
+		domElement: gooRunner.renderer.domElement,
 		walkSpeed: 25.0,
 		crawlSpeed: 10.0
 	}));
 	scripts.scripts.push(Scripts.create('MouseLookScript', {
-		domElement: goo.renderer.domElement
+		domElement: gooRunner.renderer.domElement
 	}));
 
 	scripts.scripts.push(polyBoundingScript);
 	cameraEntity.set(scripts);
 
 	V.process();
-});

@@ -1,6 +1,6 @@
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var HtmlComponent = require('../../entities/components/HtmlComponent');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 
 	'use strict';

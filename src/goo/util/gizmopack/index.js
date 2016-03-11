@@ -7,3 +7,8 @@ module.exports = {
 	ScaleGizmo: require('./ScaleGizmo'),
 	TranslationGizmo: require('./TranslationGizmo')
 };
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

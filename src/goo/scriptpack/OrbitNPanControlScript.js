@@ -1,7 +1,7 @@
 var Scripts = require('../scripts/Scripts');
 var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
 var PanCamControlScript = require('../scriptpack/PanCamScript');
-var _ = require('../util/ObjectUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	function OrbitNPan() {
 		var orbitScript = Scripts.create(OrbitCamControlScript);
@@ -31,7 +31,7 @@ var _ = require('../util/ObjectUtils');
 	var panParams = PanCamControlScript.externals.parameters;
 
 	// Make sure we don't change parameters for the other scripts
-	var params = _.deepClone(orbitParams.concat(panParams.slice(1)));
+	var params = ObjectUtils.deepClone(orbitParams.concat(panParams.slice(1)));
 
 	// Remove the panSpeed and touchMode parameters
 	for (var i = params.length - 1; i >= 0; i--) {

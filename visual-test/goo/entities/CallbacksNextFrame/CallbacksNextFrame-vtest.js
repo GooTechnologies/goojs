@@ -1,21 +1,4 @@
-require([
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'lib/V'
-], function(
-	World,
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	TextureCreator,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe([
 		'Every frame a callback will spin the boxes a bit and schedule itself to execute one more time, the next frame.',
@@ -25,10 +8,10 @@ require([
 	function createBoxEntity(size, position) {
 		var meshData = new Box(size, size, size);
 		var material = new Material(ShaderLib.simpleLit);
-		return goo.world.createEntity(meshData, material, position);
+		return gooRunner.world.createEntity(meshData, material, position);
 	}
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var boxEntity1 = createBoxEntity(3, [0, 0, 0]);
 
@@ -41,9 +24,9 @@ require([
 	boxEntity1.addToWorld();
 
 	// adding callbacks from a callback
-	goo.callbacksNextFrame.push(function updateRotation() {
+	gooRunner.callbacksNextFrame.push(function updateRotation() {
 		boxEntity1.transformComponent.setRotation(World.time, 0, 0);
-		goo.callbacksNextFrame.push(updateRotation);
+		gooRunner.callbacksNextFrame.push(updateRotation);
 	});
 
 	V.addLights();
@@ -51,4 +34,3 @@ require([
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 
 	V.process();
-});

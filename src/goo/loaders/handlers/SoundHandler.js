@@ -1,7 +1,7 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var AudioContext = require('../../sound/AudioContext');
 var Sound = require('../../sound/Sound');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -61,7 +61,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	 * @private
 	 */
 	SoundHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtils.defaults(config, {
 			loop: false,
 			audioRefs: {},
 			volume: 1.0,

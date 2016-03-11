@@ -2,7 +2,7 @@ var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var Material = require('../../renderer/Material');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var RenderQueue = require('../../renderer/RenderQueue');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';

@@ -1,13 +1,11 @@
 var ComponentHandler = require('../loaders/handlers/ComponentHandler');
 var ScriptComponent = require('../entities/components/ScriptComponent');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 var ObjectUtils = require('../util/ObjectUtils');
 var PromiseUtils = require('../util/PromiseUtils');
 var SystemBus = require('../entities/SystemBus');
 var Scripts = require('../scripts/Scripts');
 var ScriptUtils = require('../scripts/ScriptUtils');
-
-	'use strict';
 
 	/**
 	 * @hidden
@@ -36,7 +34,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		.then(function (component) {
 			if (!component) { return; }
 
-			return RSVP.all(_.map(config.scripts, function (instanceConfig) {
+			return RSVP.all(ObjectUtils.map(config.scripts, function (instanceConfig) {
 				return that._updateScriptInstance(instanceConfig, options);
 			}, null, 'sortValue'))
 			.then(function (scripts) {
@@ -53,7 +51,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		.then(function (script) {
 			var newParameters = instanceConfig.options || {};
 			if (script.parameters) {
-				_.defaults(newParameters, script.parameters);
+				ObjectUtils.defaults(newParameters, script.parameters);
 			}
 
 			if (script.externals && script.externals.parameters) {
@@ -74,7 +72,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 				script.externals,
 				options
 			)
-			.then(_.constant(newScript));
+			.then(ObjectUtils.constant(newScript));
 		});
 	};
 
@@ -199,9 +197,9 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 
 		function getInvalidParam() {
 			if (external.default === undefined) {
-				return _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[type]);
+				return ObjectUtils.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[type]);
 			} else {
-				return _.deepClone(external.default);
+				return ObjectUtils.deepClone(external.default);
 			}
 		}
 
@@ -228,7 +226,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		} else if (ScriptUtils.isRefType(type)) {
 			return setRefParam();
 		} else {
-			return setParam(_.clone(config));
+			return setParam(ObjectUtils.clone(config));
 		}
 	};
 

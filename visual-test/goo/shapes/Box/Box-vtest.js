@@ -1,24 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/shapes/Box',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	TextureCreator,
-	Box,
-	V
-	) {
+
 	'use strict';
 
 	V.describe('boxes with different texture modes');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var textureCreator = new TextureCreator();
 

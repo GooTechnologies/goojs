@@ -168,7 +168,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Torus}
 	 */
 	Torus.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this,
+		var options = ObjectUtils.shallowSelectiveClone(this,
 			['circleSamples', 'radialSamples', 'tubeRadius', 'centerRadius']);
 
 		return new Torus(options);

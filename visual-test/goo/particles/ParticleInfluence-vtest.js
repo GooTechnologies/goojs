@@ -1,20 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/particles/ParticleLib',
-	'goo/particles/ParticleInfluence',
-	'goo/util/ParticleSystemUtils',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	ParticleLib,
-	ParticleInfluence,
-	ParticleSystemUtils,
-	V
-	) {
+
 	'use strict';
 
 	V.describe('Modify particles with ParticleInfluence. The particles on the left have no influence.');
@@ -53,11 +37,11 @@ require([
 		return entity;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
-	
+
 	var entity1 = addParticleEntity([-5, 0, 0]);
 
 	var entity2 = addParticleEntity([5, 0, 0]);

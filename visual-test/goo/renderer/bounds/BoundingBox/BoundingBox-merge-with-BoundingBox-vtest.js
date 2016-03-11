@@ -1,22 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Sphere,
-	MeshData,
-	BoundingBox,
-	Vector3,
-	V
-	) {
+
 	'use strict';
 
 	function buildCustomTriangle(verts) {
@@ -34,7 +16,7 @@ require([
 		return meshData;
 	}
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var shape1MeshData = new Sphere();
 	var shape2MeshData = buildCustomTriangle([0, 0, 4, 0, 3, 5, 0, 0, 6]);
@@ -47,8 +29,8 @@ require([
 	material2.wireframe = true;
 
 	// wrap shapeMeshData-s entities entity
-	goo.world.createEntity(shape1MeshData, material1).addToWorld();
-	goo.world.createEntity(shape2MeshData, material1).addToWorld();
+	gooRunner.world.createEntity(shape1MeshData, material1).addToWorld();
+	gooRunner.world.createEntity(shape2MeshData, material1).addToWorld();
 
 	// bounding box for shape 1
 	var boundingBox1 = new BoundingBox();
@@ -69,7 +51,7 @@ require([
 	var zCenter = mergedBoundingBox.center.z;
 
 	var boxMeshData = new Box(xSize, ySize, zSize);
-	goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+	gooRunner.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 	// camera
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));

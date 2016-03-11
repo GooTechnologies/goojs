@@ -1,7 +1,7 @@
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var SoundComponent = require('../../entities/components/SoundComponent');
 var AudioContext = require('../../sound/AudioContext');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -44,7 +44,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	 * @param {Object} config
 	 */
 	SoundComponentHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtils.defaults(config, {
 			volume: 1.0,
 			reverb: 0.0
 		});
@@ -86,7 +86,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 
 			var promises = [];
 			// Load all sounds
-			_.forEach(config.sounds, function (soundCfg) {
+			ObjectUtils.forEach(config.sounds, function (soundCfg) {
 				promises.push(that._load(soundCfg.soundRef, options));
 			}, null, 'sortValue');
 

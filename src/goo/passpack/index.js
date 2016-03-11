@@ -11,3 +11,8 @@ module.exports = {
 	ShaderLibExtra: require('./ShaderLibExtra'),
 	SsaoPass: require('./SsaoPass')
 };
+if (typeof(window) !== 'undefined') {
+	for (var key in module.exports) {
+		window.goo[key] = module.exports[key];
+	}
+}

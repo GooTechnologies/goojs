@@ -2,7 +2,7 @@ var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
 var ColliderComponent = require('../../../addons/physicspack/components/ColliderComponent');
 var BoundingBox = require('../../../renderer/bounds/BoundingBox');
 var ShapeCreatorMemoized = require('../../../util/ShapeCreatorMemoized');
-var rsvp = require('../../../util/rsvp');
+var RSVP = require('../../../util/rsvp');
 var ObjectUtils = require('../../../util/ObjectUtils');
 var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
 var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
@@ -33,7 +33,7 @@ var PhysicsMaterial = require('../../../addons/physicspack/PhysicsMaterial');
 	 * @private
 	 */
 	ColliderComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 			shape: 'Box',
 			shapeOptions: {
 				halfExtents: [1, 1, 1],

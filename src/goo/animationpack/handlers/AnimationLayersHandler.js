@@ -3,7 +3,7 @@ var AnimationLayer = require('../../animationpack/layer/AnimationLayer');
 var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
 var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
 var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 
 	'use strict';
@@ -66,7 +66,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			var promises = [];
 
 			var i = 0;
-			_.forEach(config.layers, function (layerCfg) {
+			ObjectUtils.forEach(config.layers, function (layerCfg) {
 				promises.push(that._parseLayer(layerCfg, object[i++], options));
 			}, null, 'sortValue');
 
@@ -97,7 +97,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		}
 
 		layer.id = layerConfig.id;
-		layer._transitions = _.deepClone(layerConfig.transitions);
+		layer._transitions = ObjectUtils.deepClone(layerConfig.transitions);
 
 		if (layer._layerBlender) {
 			if (layerConfig.blendWeight !== undefined) {
@@ -109,7 +109,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 
 		// Load all the stuff we need
 		var promises = [];
-		_.forEach(layerConfig.states, function (stateCfg) {
+		ObjectUtils.forEach(layerConfig.states, function (stateCfg) {
 			promises.push(that.loadObject(stateCfg.stateRef, options).then(function (state) {
 				layer.setState(state.id, state);
 			}));

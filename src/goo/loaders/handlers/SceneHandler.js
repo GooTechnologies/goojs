@@ -2,7 +2,7 @@ var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var SystemBus = require('../../entities/SystemBus');
 var ArrayUtils = require('../../util/ArrayUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 
 	'use strict';
 
@@ -104,7 +104,7 @@ var rsvp = require('../../util/rsvp');
 		var that = this;
 		var promises = [];
 
-		var addedEntityIds = _.clone(config.entities);
+		var addedEntityIds = ObjectUtils.clone(config.entities);
 		var removedEntityIds = [];
 
 		for (var id in scene.entities) {
@@ -117,7 +117,7 @@ var rsvp = require('../../util/rsvp');
 			}
 		}
 
-		_.forEach(config.entities, function (entityConfig) {
+		ObjectUtils.forEach(config.entities, function (entityConfig) {
 			promises.push(that._load(entityConfig.entityRef, options));
 		}, null, 'sortValue');
 

@@ -1,22 +1,9 @@
-require([
-	'goo/shapes/Box',
-	'goo/shapes/Cone',
-	'goo/math/Quaternion',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	Box,
-	Cone,
-	Quaternion,
-	Vector3,
-	V
-	) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The 2 cones rotate using different methods');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 
 	function addCone() {
@@ -55,4 +42,3 @@ require([
 	V.addLights();
 
 	V.process();
-});

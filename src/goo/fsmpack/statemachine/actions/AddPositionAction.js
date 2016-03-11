@@ -51,7 +51,7 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	};
 
 	AddPositionAction.prototype.addPosition = function (fsm) {
-		if (this.entity !== null) {
+		if (this.entity) {
 			var tpf = fsm.getTpf();
 
 			var dx = FsmUtils.getValue(this.amountX, fsm);

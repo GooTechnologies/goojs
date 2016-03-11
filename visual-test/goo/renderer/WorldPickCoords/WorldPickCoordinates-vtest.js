@@ -1,22 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-    'goo/renderer/Camera',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-    Camera,
-	V
-) {
+
 	'use strict';
 
 	V.describe([
@@ -27,8 +9,8 @@ require([
     V.button('P', keyP);
 
 	// initialise goo
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// add some lights
 	V.addLights();
@@ -63,8 +45,8 @@ require([
     };
 
 	// register a listener for click events
-	goo.addEventListener('click', onPick);
-    goo.addEventListener('touchstart', onPick);
+	gooRunner.addEventListener('click', onPick);
+    gooRunner.addEventListener('touchstart', onPick);
 
 	var size = 3;
 	var fov = camera.fov;

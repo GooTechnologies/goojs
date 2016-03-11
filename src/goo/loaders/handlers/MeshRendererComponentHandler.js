@@ -2,7 +2,7 @@ var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
 var Material = require('../../renderer/Material');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -34,7 +34,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 	 * @private
 	 */
 	MeshRendererComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 			cullMode: 'Dynamic',
 			castShadows: true,
 			receiveShadows: true,
@@ -81,7 +81,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			}
 
 			var promises = [];
-			_.forEach(materials, function (item) {
+			ObjectUtils.forEach(materials, function (item) {
 				promises.push(that._load(item.materialRef, options));
 			}, null, 'sortValue');
 			return RSVP.all(promises).then(function (materials) {

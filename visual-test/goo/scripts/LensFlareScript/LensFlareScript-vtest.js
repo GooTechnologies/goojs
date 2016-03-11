@@ -1,21 +1,7 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Camera',
-	'goo/entities/components/ScriptComponent',
-	'lib/V',
-	'goo/scripts/Scripts',
-	'goo/scriptpack/LensFlareScript'
-], function (
-	GooRunner,
-	Camera,
-	ScriptComponent,
-	V,
-	Scripts,
-	LensFlareScript
-) {
+
 	'use strict';
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	V.addLights();
 
@@ -28,7 +14,7 @@ require([
 	var scripts = new ScriptComponent();
 
 	var lensFlareScript = Scripts.create(LensFlareScript, {
-		domElement: goo.renderer.domElement,
+		domElement: gooRunner.renderer.domElement,
 		edgeDampen: 1
 	});
 

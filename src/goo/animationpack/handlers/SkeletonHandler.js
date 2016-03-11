@@ -37,7 +37,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 				return PromiseUtils.resolve();
 			}
 			var joints = [];
-			_.forEach(config.joints, function (jointConfig) {
+			ObjectUtils.forEach(config.joints, function (jointConfig) {
 				var joint = new Joint(jointConfig.name);
 				joint._index = jointConfig.index;
 				joint._parentIndex = jointConfig.parentIndex;

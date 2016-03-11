@@ -2,8 +2,6 @@ var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var TextComponent = require('../../geometrypack/text/TextComponent');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
-
 	/**
 	 * For handling loading of text components
 	 * @param {World} world The goo world

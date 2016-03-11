@@ -1,28 +1,11 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/entities/components/TextComponent',
-	'goo/renderer/TextureCreator',
-	'goo/entities/systems/TextSystem',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	TextComponent,
-	TextureCreator,
-	TextSystem,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Tests the TextComponent, which uses an image of the alphabet to display text.');
 
 	var resourcesPath = '../../../../resources/';
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addLights();
 	V.addOrbitCamera(new Vector3(50, Math.PI / 2, 0));
@@ -84,4 +67,3 @@ require([
 	}, 100);
 
 	V.process();
-});

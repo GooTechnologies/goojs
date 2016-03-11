@@ -1,38 +1,9 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Cone',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Disk',
-	'goo/shapes/Grid',
-	'goo/shapes/Quad',
-	'goo/shapes/SimpleBox',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Cone,
-	Cylinder,
-	Disk,
-	Grid,
-	Quad,
-	SimpleBox,
-	Sphere,
-	Torus,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Cloning shapes');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 	V.addLights();
@@ -51,6 +22,4 @@ require([
 		world.createEntity(clonedShape, new Material(ShaderLib.simpleLit), [(i - 4) * 2,  3, 0]).addToWorld();
 	});
 
-
 	V.process();
-});

@@ -3,7 +3,7 @@ var EnvironmentHandler = require('../../loaders/handlers/EnvironmentHandler');
 var Texture = require('../../renderer/Texture');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 var Skybox = require('../../util/Skybox');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var SystemBus = require('../../entities/SystemBus');
 

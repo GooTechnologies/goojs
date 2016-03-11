@@ -33,7 +33,7 @@ var Texture = require('../renderer/Texture');
 			tileY: 1,
 			preserveAspectRatio : true
 		};
-		_.defaults(settings, defaults); //! AT: this will mutate settings which is BAD!!!
+		ObjectUtils.defaults(settings, defaults); //! AT: this will mutate settings which is BAD!!!
 
 		this.type = 'QuadComponent';
 

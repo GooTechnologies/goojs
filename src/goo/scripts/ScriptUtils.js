@@ -1,4 +1,4 @@
-var _ = require('../util/ObjectUtils');
+var ObjectUtils = require('../util/ObjectUtils');
 
 	'use strict';
 
@@ -31,7 +31,7 @@ var _ = require('../util/ObjectUtils');
 	];
 
 	ScriptUtils.isRefType = function (type) {
-		return _.contains(ScriptUtils.REF_TYPES, type);
+		return ObjectUtils.contains(ScriptUtils.REF_TYPES, type);
 	};
 
 	ScriptUtils.TYPE_VALIDATORS = (function () {
@@ -43,7 +43,7 @@ var _ = require('../util/ObjectUtils');
 
 		var isRef = function (type) {
 			function isDirectRef(data) {
-				return _.isString(data) && _.getExtension(data) === type;
+				return ObjectUtils.isString(data) && ObjectUtils.getExtension(data) === type;
 			}
 
 			// Checks for references passed like:
@@ -61,10 +61,10 @@ var _ = require('../util/ObjectUtils');
 		};
 
 		return {
-			'float': _.isNumber,
-			'string': _.isString,
-			'boolean': _.isBoolean,
-			'int': _.isInteger,
+			'float': ObjectUtils.isNumber,
+			'string': ObjectUtils.isString,
+			'boolean': ObjectUtils.isBoolean,
+			'int': ObjectUtils.isInteger,
 			'vec2': isVec(2),
 			'vec3': isVec(3),
 			'vec4': isVec(4),
@@ -93,12 +93,12 @@ var _ = require('../util/ObjectUtils');
 			}
 
 			if (spec.default === null || spec.default === undefined) {
-				spec.default = _.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[spec.type]);
+				spec.default = ObjectUtils.deepClone(ScriptUtils.DEFAULTS_BY_TYPE[spec.type]);
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = _.clone(spec.default);
+				parameters[spec.key] = ObjectUtils.clone(spec.default);
 			}
 		});
 

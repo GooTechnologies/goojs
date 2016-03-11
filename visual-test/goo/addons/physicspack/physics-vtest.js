@@ -1,63 +1,14 @@
-require([
-	'goo/renderer/Material',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Quad',
-	'goo/shapes/Torus',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/MeshCollider',
-	'goo/addons/physicspack/joints/BallJoint',
-	'goo/addons/physicspack/joints/HingeJoint',
-	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'lib/V'
-], function (
-	Material,
-	Sphere,
-	Box,
-	Cylinder,
-	Quad,
-	Torus,
-	TextureCreator,
-	ShaderLib,
-	OrbitCamControlScript,
-	Vector3,
-	ColliderComponent,
-	PhysicsSystem,
-	ColliderSystem,
-	RigidBodyComponent,
-	BoxCollider,
-	CylinderCollider,
-	SphereCollider,
-	PlaneCollider,
-	MeshCollider,
-	BallJoint,
-	HingeJoint,
-	PhysicsDebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
-	goo.setRenderSystem(new PhysicsDebugRenderSystem());
+	gooRunner.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
@@ -361,7 +312,7 @@ require([
 	createStaticBox(-10, -7.5, 0, w, 5, 20);
 
 	var force = new Vector3();
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		if (forcefieldEnabled) {
 			// Add some force to all bodies
 			world.by.system(physicsSystem.type).each(function (entity) {
@@ -398,4 +349,3 @@ require([
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 
 	V.process();
-});

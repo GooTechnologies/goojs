@@ -1,28 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Quad',
-	'goo/shapes/Box',
-	'goo/renderer/MeshData',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Transform',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Sphere,
-	Quad,
-	Box,
-	MeshData,
-	BoundingBox,
-	Vector3,
-	BoundingSphere,
-	Transform,
-	V
-	) {
+
 	'use strict';
 
 	function addBoundingSphereToWorld(goo, boundingSphere) {
@@ -36,7 +12,7 @@ require([
 		var zCenter = boundingSphere.center.z;
 
 		var sphereMeshData = new Sphere(16, 16, radius);
-		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+		gooRunner.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function addBoundingBoxToWorld(goo, boundingBox) {
@@ -52,10 +28,10 @@ require([
 		var zCenter = boundingBox.center.z;
 
 		var boxMeshData = new Box(xSize, ySize, zSize);
-		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+		gooRunner.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var transform = new Transform();
 
@@ -73,8 +49,8 @@ require([
 	material1.uniforms.color = [0.3, 0.6, 0.9];
 
 	// wrap shapeMeshData-s entities entity
-	goo.world.createEntity(shape1MeshData, material1).addToWorld();
-	goo.world.createEntity(shape2MeshData, material1).addToWorld();
+	gooRunner.world.createEntity(shape1MeshData, material1).addToWorld();
+	gooRunner.world.createEntity(shape2MeshData, material1).addToWorld();
 
 	// bounding sphere for shape 1
 	var boundingSphere1 = new BoundingSphere();

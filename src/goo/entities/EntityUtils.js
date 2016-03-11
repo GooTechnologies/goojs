@@ -40,8 +40,8 @@ var ObjectUtils = require('../util/ObjectUtils');
 		// settings is also used to store stuff on it, like animation skeletons
 		var newEntity = world.createEntity(entity.name);
 
-		newEntity._tags = _.cloneSet(entity._tags);
-		newEntity._attributes = _.cloneMap(entity._attributes);
+		newEntity._tags = ObjectUtils.cloneSet(entity._tags);
+		newEntity._attributes = ObjectUtils.cloneMap(entity._attributes);
 		newEntity._hidden = entity._hidden;
 		newEntity.static = entity.static;
 
@@ -73,7 +73,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 							name: (script.name || '') + '_clone',
 							enabled: !!script.enabled
 						};
-						if (script.parameters) { newScript.parameters = _.deepClone(script.parameters); }
+						if (script.parameters) { newScript.parameters = ObjectUtils.deepClone(script.parameters); }
 
 						if (script.setup) { newScript.setup = script.setup; }
 						if (script.update) { newScript.update = script.update; }

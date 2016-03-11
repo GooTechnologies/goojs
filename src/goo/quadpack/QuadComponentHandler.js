@@ -1,5 +1,5 @@
 var ComponentHandler = require('../loaders/handlers/ComponentHandler');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 var QuadComponent = require('../quadpack/QuadComponent');

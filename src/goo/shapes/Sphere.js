@@ -400,7 +400,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Sphere}
 	 */
 	Sphere.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['zSamples', 'radialSamples', 'radius', 'textureMode']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['zSamples', 'radialSamples', 'radius', 'textureMode']);
 
 		return new Sphere(options);
 	};

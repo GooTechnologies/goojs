@@ -94,7 +94,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {TextureGrid}
 	 */
 	TextureGrid.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['matrix', 'textureUnitsPerLine']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['matrix', 'textureUnitsPerLine']);
 
 		return new TextureGrid(options);
 	};

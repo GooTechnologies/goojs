@@ -2,7 +2,7 @@ var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var TransformComponent = require('../../entities/components/TransformComponent');
 var MathUtils = require('../../math/MathUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
-var rsvp = require('../../util/rsvp');
+var RSVP = require('../../util/rsvp');
 
 	'use strict';
 
@@ -29,7 +29,7 @@ var rsvp = require('../../util/rsvp');
 	 * @private
 	 */
 	TransformComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
+		return ObjectUtils.defaults(config, {
 			translation: [0, 0, 0],
 			rotation: [0, 0, 0],
 			scale: [1, 1, 1]

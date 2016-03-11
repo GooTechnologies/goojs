@@ -90,7 +90,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 	 * @returns {Grid}
 	 */
 	Grid.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['xSegments', 'ySegments', 'width', 'height']);
+		var options = ObjectUtils.shallowSelectiveClone(this, ['xSegments', 'ySegments', 'width', 'height']);
 
 		return new Grid(options);
 	};

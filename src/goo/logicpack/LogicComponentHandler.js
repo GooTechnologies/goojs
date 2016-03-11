@@ -1,6 +1,6 @@
 var ComponentHandler = require('../loaders/handlers/ComponentHandler');
 var LogicComponent = require('./LogicComponent');
-var rsvp = require('../util/rsvp');
+var RSVP = require('../util/rsvp');
 var PromiseUtils = require('../util/PromiseUtils');
 var LogicNodeEntityProxy = require('./logic/LogicNodeEntityProxy');
 var LogicNodeTransformComponent = require('./logic/LogicNodeTransformComponent');

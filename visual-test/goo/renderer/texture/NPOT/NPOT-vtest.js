@@ -1,30 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/renderer/Texture',
-	'goo/shapes/Quad',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	Camera,
-	Texture,
-	Quad,
-	OrbitCamControlScript,
-	ScriptComponent,
-	Vector3,
-	V
-) {
+
 	'use strict';
 
 	V.describe('NPOT textures were at some point believed to cause transparency issues. This is the minimal test scene to prove or disprove the bug.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	createEntity([ 1, 0, 0], [255, 255, 255, 100, 0, 0, 0, 100, 0, 0, 0, 255, 255, 255, 255, 255]);
 	createEntity([ 1, 0, 1], [255, 255, 255, 100, 0, 0, 0, 100, 0, 0, 0, 255, 255, 255, 255, 255]);
