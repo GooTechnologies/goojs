@@ -3,9 +3,8 @@ var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransit
 var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
 var SteadyState = require('../../animationpack/state/SteadyState');
 var LayerLerpBlender = require('../../animationpack/layer/LayerLerpBlender');
-	'goo/entities/World', //! AT: this should not existvar MathUtils = require('../../math/MathUtils');
-
-
+var World = require('../../entities/World');
+var MathUtils = require('../../math/MathUtils');
 
 	/**
 	 * Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
