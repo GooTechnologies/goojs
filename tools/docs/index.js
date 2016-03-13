@@ -16,10 +16,10 @@ function stripId(id){
 	if(!id) return id;
 	return id.replace('<anonymous>~','').replace('()','');
 }
-function parseParams(params){
+function parseParams(params, item){
 	return params && params.length ? params.map(function(param){
 		if(!param.type){
-			console.warn('Warning: Parameter type not set for "' + param.name + '". Using "any" instead.');
+			warn(item, 'Parameter type not set for "' + param.name + '". Using "any" instead.');
 		}
 		return {
 			name: param.name,
@@ -28,11 +28,18 @@ function parseParams(params){
 		};
 	}) : [];
 }
+function warn(item, message){
+	var where = item.id;
+	if(item.meta && item.meta.filename && item.meta.path){
+		where = item.id + '@' + path.join(item.meta.path, item.meta.filename) + ':' + item.meta.lineno;
+	}
+	console.error('Warning in ' + where + ': ' + message);
+}
 
 
 console.log('Parsing...');
 parse({
-	src: path.join(__dirname, '../../src/goo/**/*.js')
+	src: path.join(__dirname, '../../src/goo/entities/**/*.js')
 }).pipe(wstream).on('finish', function (){
 	console.log('docs.json created.');
 
@@ -69,7 +76,9 @@ parse({
 		return item.kind === 'class';
 	}).forEach(function(classItem){
 		var classObject = templateData.classes[stripId(classItem.id)];
-		if(!classObject) return console.warn('Class "' + stripId(classItem.id) + '" found, but not constructor. Maybe the @class tag couldn\'t be parsed correctly. Note that the class MUST have a description and it MUST be given before @class.');
+		if(!classObject){
+			return console.warn('Class "' + stripId(classItem.id) + '" found, but not constructor. Maybe the @class tag couldn\'t be parsed correctly. Note that the class MUST have a description and it MUST be given before @class.');
+		}
 		classObject.private = false;
 	});
 
@@ -84,7 +93,7 @@ parse({
 		}
 
 		classObject.examples = constructorItem.examples ? constructorItem.examples.slice(0) : [];
-		classObject.params = parseParams(constructorItem.params);
+		classObject.params = parseParams(constructorItem.params, constructorItem);
 		classObject.description = constructorItem.description;
 	});
 
@@ -116,7 +125,7 @@ parse({
 			// static method
 			classObject.staticMethods.push({
 				name: propertyItem.name,
-				params: parseParams(propertyItem.params)
+				params: parseParams(propertyItem.params, propertyItem)
 			});
 		} else {
 			// static property
@@ -138,7 +147,7 @@ parse({
 		}
 		classObject.methods.push({
 			name: methodItem.name,
-			params: parseParams(methodItem.params)
+			params: parseParams(methodItem.params, methodItem)
 		});
 	});
 
