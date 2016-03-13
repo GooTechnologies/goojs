@@ -76,4 +76,3 @@
 	SystemBus.addListener('button6.mousemove', handler);
 	SystemBus.addListener('button7.mouseover', handler);
 	SystemBus.addListener('button8.mouseout', handler);
-});

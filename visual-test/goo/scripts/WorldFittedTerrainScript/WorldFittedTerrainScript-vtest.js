@@ -1,3 +1,4 @@
+    goo.V.attachToGlobal();
 
     var gooRunner;
     var worldFittedTerrainScript = new WorldFittedTerrainScript();
@@ -254,7 +255,7 @@
     }
 
     function init() {
-        goo = new GooRunner();
+        gooRunner = new GooRunner();
         gooRunner.renderer.domElement.id = 'goo';
         document.body.appendChild(gooRunner.renderer.domElement);
 		worldFittedTerrainScriptDemo(gooRunner);

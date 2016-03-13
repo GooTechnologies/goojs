@@ -6,17 +6,23 @@
 	function setupGUI() {
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
-		buttonReset.addEventListener('click', TimelineSystem.prototype.reset.bind(timelineSystem));
+		buttonReset.addEventListener('click', function(){
+			timelineSystem.stop();
+		});
 		document.body.appendChild(buttonReset);
 
 		var buttonPause = document.createElement('button');
 		buttonPause.innerHTML = 'pause';
-		buttonPause.addEventListener('click', TimelineSystem.prototype.pause.bind(timelineSystem));
+		buttonPause.addEventListener('click', function(){
+			timelineSystem.pause();
+		});
 		document.body.appendChild(buttonPause);
 
 		var buttonResume = document.createElement('button');
 		buttonResume.innerHTML = 'play';
-		buttonResume.addEventListener('click', TimelineSystem.prototype.play.bind(timelineSystem));
+		buttonResume.addEventListener('click', function(){
+			timelineSystem.play();
+		});
 		document.body.appendChild(buttonResume);
 	}
 
@@ -68,9 +74,8 @@
 		// Application code goes here!
 
 		// Start the rendering loop!
-		goo.startGameLoop();
+		gooRunner.startGameLoop();
 
 	}).then(null, function (e) {
 
 	});
-});

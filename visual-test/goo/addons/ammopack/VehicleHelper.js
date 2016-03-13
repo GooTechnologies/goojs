@@ -1,4 +1,3 @@
-goo.V.attachToGlobal();
 var Ammo = window.Ammo; // make jslint happy
 function VehicleHelper(goo, ammoSystem, chassis, wheelRadius, suspensionLength, doCreateDebugTire) {
 	this.goo = goo;

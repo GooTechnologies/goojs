@@ -1,19 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	ParticleLib,
-	ParticleSystemUtils,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	var numFires = 200;
 	var scale = 3 / numFires;
@@ -40,8 +25,8 @@ require([
 		.addToWorld();
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera();
 
@@ -50,4 +35,3 @@ require([
 	}
 
 	V.process();
-});

@@ -45,4 +45,3 @@
 	SystemBus.addListener('goo.scriptError', function(evt){
 		throw new Error(evt.message);
 	});
-});

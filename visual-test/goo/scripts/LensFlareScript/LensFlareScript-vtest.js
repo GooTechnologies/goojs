@@ -21,4 +21,3 @@
 	scripts.scripts.push(lensFlareScript);
 
 	sphereEntity.setComponent(scripts);
-});

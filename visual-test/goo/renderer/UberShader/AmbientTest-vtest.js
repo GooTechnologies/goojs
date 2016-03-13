@@ -25,7 +25,7 @@
 	material2.uniforms.materialAmbient = [0.0, 1.0, 0.0, 1.0];
 	material3.uniforms.materialAmbient = [0.0, 0.0, 1.0, 1.0];
 
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		material2.uniforms.materialAmbient[1] = Math.sin(world.time * 5) * 0.5 + 0.5;
 	});
 

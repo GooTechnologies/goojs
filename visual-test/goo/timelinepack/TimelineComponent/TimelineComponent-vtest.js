@@ -171,7 +171,7 @@
 
 	// gotta trigger the update somehow
 	var time = 0;
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		if (!paused) {
 			time += gooRunner.world.tpf * 1000 * 0.1;
 			valueChannel.update(time);

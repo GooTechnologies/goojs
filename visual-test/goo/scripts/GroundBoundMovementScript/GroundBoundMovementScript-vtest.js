@@ -289,4 +289,3 @@
 	var world = gooRunner.world;
 
 	groundBoundMovementScriptDemo();
-});

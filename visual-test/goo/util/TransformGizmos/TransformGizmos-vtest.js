@@ -113,7 +113,7 @@
 	function setupGizmos() {
 		gizmoRenderSystem = new GizmoRenderSystem();
 		gizmoRenderSystem.setActiveGizmo(0);
-		goo.setRenderSystem(gizmoRenderSystem);
+		gooRunner.setRenderSystem(gizmoRenderSystem);
 	}
 
 	// initialise goo

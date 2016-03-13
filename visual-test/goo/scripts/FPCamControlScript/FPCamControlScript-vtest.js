@@ -31,4 +31,3 @@
 	scripts.scripts.push(wasdScript, fpScript);
 
 	cameraEntity.setComponent(scripts);
-});

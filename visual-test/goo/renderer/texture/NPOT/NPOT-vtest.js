@@ -58,4 +58,3 @@
 
 		world.createEntity(new Quad(), material, translation).addToWorld();
 	}
-});

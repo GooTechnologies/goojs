@@ -22,4 +22,3 @@
 	scripts.scripts.push(wasdScript);
 
 	cameraEntity.setComponent(scripts);
-});

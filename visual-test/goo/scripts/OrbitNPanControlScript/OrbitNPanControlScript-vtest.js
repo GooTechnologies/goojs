@@ -41,4 +41,3 @@
 	scriptComponent.scripts.push(script);
 
 	cameraEntity.setComponent(scriptComponent);
-});

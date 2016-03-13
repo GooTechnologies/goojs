@@ -1,7 +1,7 @@
 
 	goo.V.attachToGlobal();
 
-	function addSpheres(goo, heightMapBoundingScript) {
+	function addSpheres(gooRunner, heightMapBoundingScript) {
 		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
 
@@ -37,7 +37,6 @@
 		}
 	}
 
-
 	var gooRunner = V.initGoo();
 	var world = gooRunner.world;
 
@@ -54,7 +53,7 @@
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 
-		addSpheres(goo, heightMapBoundingScript);
+		addSpheres(gooRunner, heightMapBoundingScript);
 
 		// Add camera
 		var cameraEntity = world.createEntity(new Camera(), 'CameraEntity', [0, 10, 0]).lookAt(30, 0, 30).addToWorld();
@@ -73,4 +72,3 @@
 
 		cameraEntity.set(scriptComponent);
 	});
-});
