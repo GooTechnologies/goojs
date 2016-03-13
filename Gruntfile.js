@@ -121,7 +121,7 @@ module.exports = function (grunt) {
 			]
 		},
 
-		'table-of-contents': {
+		'generate-toc': {
 			'visual-test': {
 				path: 'visual-test',
 				title: 'Visual tests'
@@ -210,7 +210,7 @@ module.exports = function (grunt) {
 		fs.chmodSync('.git/hooks/pre-commit', '777');
 	});
 
-	grunt.registerMultiTask('table-of-contents', 'Generates the Table of contents for a directory', function () {
+	grunt.registerMultiTask('generate-toc', 'Generates the Table of contents for a directory', function () {
 		toc.run(
 			this.data.path,
 			this.data.title
@@ -221,7 +221,7 @@ module.exports = function (grunt) {
 		outWatch.run();
 	});
 
-	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents', 'copy']);
+	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'generate-toc', 'copy']);
 	grunt.registerTask('minify-dev', ['webpack', 'copy']);
 	grunt.registerTask('default', ['minify']);
 };
