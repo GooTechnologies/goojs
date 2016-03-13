@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var fs = require('fs');
 var toc = require('./tools/table-of-contents');
-var buildWatch = require('./tools/build-watch.js');
+var outWatch = require('./tools/build-watch.js');
 
 module.exports = function (grunt) {
 	grunt.initConfig({
@@ -35,19 +35,19 @@ module.exports = function (grunt) {
 					logicpack: ['./src/goo/logicpack']
 				},
 				output: {
-					filename: "build/[name].js"
+					filename: "out/[name].js"
 				},
 				plugins: [
-					new webpack.optimize.CommonsChunkPlugin('goo', 'build/goo.js')
+					new webpack.optimize.CommonsChunkPlugin('goo', 'out/goo.js')
 				]
 			}
 		},
 
 		preprocess: {
-			build : {
-				cwd: 'build',
+			out: {
+				cwd: 'out',
 				src: '**.js',
-				dest: 'build',
+				dest: 'out',
 				expand: true,
 				options: {
 					context : {
@@ -58,8 +58,8 @@ module.exports = function (grunt) {
 		},
 
 		wrap: {
-			build: {
-				src: 'build/*.js',
+			out: {
+				src: 'out/*.js',
 				dest: '', // Same as the infile
 				options: {
 					wrapper: [
@@ -73,12 +73,12 @@ module.exports = function (grunt) {
 		},
 
 		uglify: {
-			build: {
+			out: {
 				files: [{
 					expand: true,
-					cwd: 'build',
+					cwd: 'out',
 					src: '**/*.js',
-					dest: 'build'
+					dest: 'out'
 				}]
 			}
 		},
@@ -87,7 +87,7 @@ module.exports = function (grunt) {
 			lib: {
 				files: [{
 					expand: true,
-					cwd: 'build',
+					cwd: 'out',
 					src: '*.js',
 					dest: 'lib/'
 				}]
@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 		watch: {
 			dev: {
 				files: ['src/**/*.js'],
-				tasks: ['dev'],
+				tasks: ['minify-dev'],
 				options: {
 					spawn: false
 				}
@@ -105,9 +105,9 @@ module.exports = function (grunt) {
 		},
 
 		clean: {
-			build: {
+			out: {
 				src: [
-					'build/'
+					'out/'
 				]
 			},
 			toc: {
@@ -126,7 +126,7 @@ module.exports = function (grunt) {
 				path: 'visual-test',
 				title: 'Visual tests'
 			},
-			'examples': {
+			examples: {
 				path: 'examples',
 				title: 'Examples'
 			}
@@ -218,9 +218,10 @@ module.exports = function (grunt) {
 	});
 
 	grunt.registerTask('manual-watch', function () {
-		buildWatch.run();
+		outWatch.run();
 	});
 
-	grunt.registerTask('default', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents', 'copy']);
-	grunt.registerTask('dev', ['webpack', 'copy']);
+	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'table-of-contents', 'copy']);
+	grunt.registerTask('minify-dev', ['webpack', 'copy']);
+	grunt.registerTask('default', ['minify']);
 };
