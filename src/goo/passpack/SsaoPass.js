@@ -10,7 +10,7 @@ var BlurPass = require('../passpack/BlurPass');
 var ShaderLibExtra = require('../passpack/ShaderLibExtra');
 var Pass = require('../renderer/pass/Pass');
 
-	'use strict';
+
 
 	/**
 	 * Screen Space Ambient Occlusion pass

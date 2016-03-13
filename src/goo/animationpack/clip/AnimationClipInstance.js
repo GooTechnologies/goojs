@@ -1,6 +1,6 @@
 var World = require('../../entities/World');
 
-	'use strict';
+
 
 	/**
 	 * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the

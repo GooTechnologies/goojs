@@ -1,6 +1,6 @@
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * A plain light source in the scene, to be handled by shaders<br>

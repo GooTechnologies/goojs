@@ -3,7 +3,7 @@ var Matrix3 = require('./Matrix3');
 var Matrix4 = require('./Matrix4');
 var MathUtils = require('./MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation

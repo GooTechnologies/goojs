@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 
-	'use strict';
+
 
 	function MoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);

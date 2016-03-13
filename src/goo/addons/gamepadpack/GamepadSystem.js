@@ -1,7 +1,7 @@
 var System = require('../../entities/systems/System');
 var GamepadData = require('../../addons/gamepadpack/GamepadData');
 
-	'use strict';
+
 
 	/**
 	 * @extends System

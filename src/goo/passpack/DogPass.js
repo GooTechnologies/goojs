@@ -6,7 +6,7 @@ var ShaderLib = require('../renderer/shaders/ShaderLib');
 var ShaderLibExtra = require('../passpack/ShaderLibExtra');
 var Pass = require('../renderer/pass/Pass');
 
-	'use strict';
+
 
 	/**
 	* Difference of Gaussian Filter pass.

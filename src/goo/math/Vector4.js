@@ -2,7 +2,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('./MathUtils');
 var Vector = require('./Vector');
 
-'use strict';
+
 
 /**
  * Vector with 4 components

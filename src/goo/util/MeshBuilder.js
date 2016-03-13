@@ -3,7 +3,7 @@ var Capabilities = require('../renderer/Capabilities');
 var Vector3 = require('../math/Vector3');
 var EntityUtils = require('../entities/EntityUtils');
 
-	'use strict';
+
 
 	/**
 	 * Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.

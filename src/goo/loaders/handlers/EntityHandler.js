@@ -4,7 +4,7 @@ var RSVP = require('../../util/rsvp');
 var StringUtils = require('../../util/StringUtils');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading entities into engine

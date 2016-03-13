@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * A collection of useful math-related functions, constants and helpers.

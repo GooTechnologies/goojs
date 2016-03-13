@@ -6,7 +6,7 @@ var Quaternion = require('../../../math/Quaternion');
 var EntityUtils = require('../../../entities/EntityUtils');
 var Transform = require('../../../math/Transform');
 
-	'use strict';
+
 
 	/* global CANNON */
 

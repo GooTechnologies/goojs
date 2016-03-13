@@ -6,7 +6,7 @@ var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 var StringUtils = require('../../util/StringUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of meshdatacomponents

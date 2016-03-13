@@ -1,6 +1,6 @@
 var Edge = require('./Edge');
 
-	'use strict';
+
 
 	/**
 	 * Stores the edges to render.

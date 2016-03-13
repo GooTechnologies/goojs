@@ -1,7 +1,7 @@
 var Component = require('../../entities/components/Component');
 var BoundingVolumeMeshBuilder = require('../../debugpack/BoundingVolumeMeshBuilder');
 
-'use strict';
+
 
 /**
  * Holds the necessary data for a marker

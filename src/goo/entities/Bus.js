@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
@@ -8,7 +8,7 @@
 	 *     console.log('caught message!');
 	 * }
 	 * SystemBus.addListener('eventName', listener);
-	 * 
+	 *
 	 * // Emit an event on the bus
 	 * SystemBus.emit('eventName');
 	 *

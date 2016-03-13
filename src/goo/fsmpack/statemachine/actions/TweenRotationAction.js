@@ -4,7 +4,7 @@ var Matrix3 = require('../../../math/Matrix3');
 var MathUtils = require('../../../math/MathUtils');
 var TWEEN = require('../../../util/TWEEN');
 
-	'use strict';
+
 
 	function TweenRotationAction(/*id, settings*/) {
 		Action.apply(this, arguments);

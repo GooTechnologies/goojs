@@ -1,6 +1,6 @@
 /*jshint bitwise: false */var Capabilities = require('../../renderer/Capabilities');
 
-	'use strict';
+
 
 	function DdsUtils() {}
 

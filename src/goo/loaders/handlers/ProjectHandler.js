@@ -1,6 +1,6 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 
-	'use strict';
+
 
 	/*jshint eqeqeq: false, -W041 */
 	/**

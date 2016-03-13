@@ -1,6 +1,6 @@
 var BufferUtils = require('../renderer/BufferUtils');
 
-	'use strict';
+
 
 	/**
 	 * The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags

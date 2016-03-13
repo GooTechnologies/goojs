@@ -2,7 +2,7 @@ var System = require('../../entities/systems/System');
 var TextureGrid = require('../../shapes/TextureGrid');
 var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with a text component<br>

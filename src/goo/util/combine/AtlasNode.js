@@ -1,6 +1,6 @@
 var Rectangle = require('../../util/combine/Rectangle');
 
-	'use strict';
+
 
 	/**
 	 * Atlas node

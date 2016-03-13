@@ -2,7 +2,7 @@ var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimati
 var TransformData = require('../../animationpack/clip/TransformData');
 var Quaternion = require('../../math/Quaternion');
 
-	'use strict';
+
 
 	/**
 	 * An animation channel consisting of a series of transforms interpolated over time.

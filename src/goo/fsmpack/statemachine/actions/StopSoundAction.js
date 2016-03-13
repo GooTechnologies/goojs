@@ -3,7 +3,7 @@ define([
 ], function (
 	Action
 ) {
-	'use strict';
+
 
 	function StopSoundAction(/*id, settings*/) {
 		Action.apply(this, arguments);

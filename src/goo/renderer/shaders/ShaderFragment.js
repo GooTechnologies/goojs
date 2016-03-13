@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Collection of useful shader fragments

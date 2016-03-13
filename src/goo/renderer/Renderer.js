@@ -20,7 +20,7 @@ var TaskScheduler = require('../renderer/TaskScheduler');
 var RenderInfo = require('../renderer/RenderInfo');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	var STUB_METHOD = function () {};
 

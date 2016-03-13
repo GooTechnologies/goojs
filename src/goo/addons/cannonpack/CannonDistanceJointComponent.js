@@ -1,7 +1,7 @@
 var Component = require('../../entities/components/Component');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/* global CANNON */
 

@@ -3,7 +3,7 @@ var MathUtils = require('../../math/MathUtils');
 var BoundingVolume = require('../../renderer/bounds/BoundingVolume');
 var MeshData = require('../../renderer/MeshData');
 
-	'use strict';
+
 
 	/**
 	 * <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This

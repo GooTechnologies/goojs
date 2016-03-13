@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Rc4 random generator with seeding

@@ -6,7 +6,7 @@ var RenderQueue = require('../renderer/RenderQueue');
 var ObjectUtils = require('../util/ObjectUtils');
 var SystemBus = require('../entities/SystemBus');
 
-'use strict';
+
 
 	/* global WebGLRenderingContext */
 

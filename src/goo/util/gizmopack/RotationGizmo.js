@@ -8,7 +8,7 @@ var Renderer = require('../../renderer/Renderer');
 var Ray = require('../../math/Ray');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * @extends Gizmo

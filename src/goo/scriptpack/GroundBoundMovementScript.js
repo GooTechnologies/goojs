@@ -1,6 +1,6 @@
 var Vector3 = require('../math/Vector3');
 
-	'use strict';
+
 
 	var calcVec = new Vector3();
 	var _defaults = {

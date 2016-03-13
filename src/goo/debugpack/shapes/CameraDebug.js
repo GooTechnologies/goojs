@@ -5,7 +5,7 @@ var Vector3 = require('../../math/Vector3');
 var Box = require('../../shapes/Box');
 var Cylinder = require('../../shapes/Cylinder');
 
-	'use strict';
+
 
 	function CameraDebug() {
 		this._camera = CameraDebug.buildCamera();

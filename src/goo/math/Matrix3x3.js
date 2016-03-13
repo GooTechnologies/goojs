@@ -1,7 +1,7 @@
 var Matrix3 = require('./Matrix3');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	var Matrix3x3 = ObjectUtils.warnOnce(
 		'Matrix3x3 has been renamed to Matrix3.',

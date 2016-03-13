@@ -9,7 +9,7 @@ var Skybox = require('../util/Skybox');
 var Pass = require('../renderer/pass/Pass');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Deph of field pass

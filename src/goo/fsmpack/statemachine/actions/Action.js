@@ -1,6 +1,6 @@
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-	'use strict';
+
 
 	/**
 	 * @param {string} id

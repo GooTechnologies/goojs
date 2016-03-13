@@ -1,7 +1,7 @@
 var Shader = require('../renderer/Shader');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * A Material defines the look of an object

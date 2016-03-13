@@ -1,4 +1,4 @@
-'use strict';
+
 var config = {};
 
 var browserGlobal = (typeof window !== 'undefined') ? window : {};

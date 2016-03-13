@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector2 = require('../../../math/Vector2');
 var TWEEN = require('../../../util/TWEEN');
 
-	'use strict';
+
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
 		Action.apply(this, arguments);

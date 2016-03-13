@@ -1,7 +1,7 @@
 var Component = require('../../entities/components/Component');
 var RenderTarget = require('../../renderer/pass/RenderTarget');
 
-	'use strict';
+
 
 	/**
 	 * Renders to the texture of the host object<br>

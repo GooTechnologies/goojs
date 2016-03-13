@@ -19,7 +19,7 @@ var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
 var DirectionalLight = require('../../renderer/light/DirectionalLight');
 var Quad = require('../../shapes/Quad');
 
-	'use strict';
+
 
 	/**
 	 * A terrain

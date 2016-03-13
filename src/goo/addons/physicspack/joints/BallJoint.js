@@ -1,7 +1,7 @@
 var PhysicsJoint = require('../../../addons/physicspack/joints/PhysicsJoint');
 var Vector3 = require('../../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * A physics ball joint. A ball joint (or "constraint") will try to keep a point in each of two connected bodies the same.

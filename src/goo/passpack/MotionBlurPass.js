@@ -7,7 +7,7 @@ var RenderTarget = require('../renderer/pass/RenderTarget');
 var FullscreenPass = require('../renderer/pass/FullscreenPass');
 var Pass = require('../renderer/pass/Pass');
 
-	'use strict';
+
 
 	function MotionBlurPass() {
 		this.inPass = new FullscreenPass(blendShader);

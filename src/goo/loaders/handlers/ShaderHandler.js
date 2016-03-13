@@ -6,7 +6,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading shaders into engine

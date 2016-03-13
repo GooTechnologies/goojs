@@ -1,6 +1,6 @@
 var MeshData = require('../../../renderer/MeshData');
 
-	'use strict';
+
 
 	/**
 	 * A wireframe mesh indicating the position and orientation of a SphereCollider.

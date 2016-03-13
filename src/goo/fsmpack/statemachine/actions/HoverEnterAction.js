@@ -5,7 +5,7 @@ define([
 	Action,
 	BoundingPicker
 ) {
-	'use strict';
+
 
 	function HoverEnterAction(/*id, settings*/) {
 		Action.apply(this, arguments);

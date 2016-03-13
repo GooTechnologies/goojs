@@ -5,7 +5,7 @@ var SteadyState = require('../../animationpack/state/SteadyState');
 var LayerLerpBlender = require('../../animationpack/layer/LayerLerpBlender');
 	'goo/entities/World', //! AT: this should not existvar MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible

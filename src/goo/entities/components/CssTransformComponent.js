@@ -1,6 +1,6 @@
 var Component = require('../../entities/components/Component');
 
-	'use strict';
+
 
 	/**
 	 * Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.

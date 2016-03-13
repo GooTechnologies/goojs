@@ -1,7 +1,7 @@
 var Component = require('../entities/components/Component');
 var StringUtils = require('../util/StringUtils');
 
-'use strict';
+
 
 /**
  * An Entity is a generic container of data.

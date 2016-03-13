@@ -3,7 +3,7 @@ var HtmlComponent = require('../../entities/components/HtmlComponent');
 var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of HTML components

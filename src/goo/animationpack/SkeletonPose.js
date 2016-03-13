@@ -2,7 +2,7 @@ var Transform = require('../math/Transform');
 var Joint = require('../animationpack/Joint');
 var Matrix4 = require('../math/Matrix4');
 
-	'use strict';
+
 
 	/**
 	 * Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.

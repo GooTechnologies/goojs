@@ -7,7 +7,7 @@ define([
 	Vector3,
 	SystemBus
 ) {
-	'use strict';
+
 
 	function ApplyForceAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -9,7 +9,7 @@ var Vector4 = require('../../math/Vector4');
 var PointLight = require('../../renderer/light/PointLight');
 var SpotLight = require('../../renderer/light/SpotLight');
 
-'use strict';
+
 
 	/**
 	 * Handles shadow techniques

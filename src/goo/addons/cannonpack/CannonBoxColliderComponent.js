@@ -2,7 +2,7 @@ var Component = require('../../entities/components/Component');
 var Box = require('../../shapes/Box');
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/* global CANNON */
 

@@ -1,6 +1,6 @@
 var MeshData = require('../renderer/MeshData');
 
-	'use strict';
+
 
 	/**
 	 * A rectangular, two dimensional shape. The local height of the

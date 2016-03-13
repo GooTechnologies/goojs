@@ -1,6 +1,6 @@
 var Vector3 = require('../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Various helper utils for particle systems.

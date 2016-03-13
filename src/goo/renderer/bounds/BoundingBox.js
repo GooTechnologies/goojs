@@ -3,7 +3,7 @@ var BoundingVolume = require('../../renderer/bounds/BoundingVolume');
 var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a

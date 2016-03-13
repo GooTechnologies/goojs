@@ -5,7 +5,7 @@ var Capabilities = require('../../renderer/Capabilities');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ArrayUtils = require('../../util/ArrayUtils');
 
-	'use strict';
+
 
 	var WEIGHTS_PER_VERT = 4;
 

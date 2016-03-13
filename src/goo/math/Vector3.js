@@ -3,7 +3,7 @@ var MathUtils = require('./MathUtils');
 var Vector = require('./Vector');
 var Vector4 = require('./Vector4');
 
-	'use strict';
+
 
 	/**
 	 * Vector with 3 components.

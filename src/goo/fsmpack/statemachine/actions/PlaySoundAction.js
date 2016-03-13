@@ -5,7 +5,7 @@ define([
 	Action,
 	PromiseUtil
 ) {
-	'use strict';
+
 
 	function PlaySoundAction(/*id, settings*/) {
 		Action.apply(this, arguments);

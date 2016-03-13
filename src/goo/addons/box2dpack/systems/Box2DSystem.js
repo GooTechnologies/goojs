@@ -1,6 +1,6 @@
 var System = require('../../../entities/systems/System');
 
-	'use strict';
+
 	/* global Box2D */
 
 	/**

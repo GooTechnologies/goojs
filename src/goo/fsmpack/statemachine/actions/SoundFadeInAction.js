@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var PromiseUtil = require('../../../util/PromiseUtil');
 
-	'use strict';
+
 
 	function SoundFadeInAction(/*id, settings*/) {
 		Action.apply(this, arguments);

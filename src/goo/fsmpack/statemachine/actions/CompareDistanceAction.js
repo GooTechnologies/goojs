@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Renderer = require('../../../renderer/Renderer');
 
-	'use strict';
+
 
 	function CompareDistanceAction(/*id, settings*/) {
 		Action.apply(this, arguments);

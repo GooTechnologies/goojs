@@ -5,7 +5,7 @@ var Material = require('../../renderer/Material');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling

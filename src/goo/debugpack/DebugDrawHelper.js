@@ -16,7 +16,7 @@ var Transform = require('../math/Transform');
 var Camera = require('../renderer/Camera');
 var Renderer = require('../renderer/Renderer');
 
-	'use strict';
+
 	var DebugDrawHelper = {};
 
 	var lightDebug = new LightDebug();

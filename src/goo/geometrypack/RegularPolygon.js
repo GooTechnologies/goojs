@@ -1,7 +1,7 @@
 var MeshData = require('../renderer/MeshData');
 var PolyLine = require('../geometrypack/PolyLine');
 
-	'use strict';
+
 
 	/**
 	 * Regular polygon mesh

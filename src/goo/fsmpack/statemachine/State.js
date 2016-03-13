@@ -1,7 +1,7 @@
 var ArrayUtils = require('../../util/ArrayUtils');
 var SystemBus = require('../../entities/SystemBus');
 
-	'use strict';
+
 
 	function State(uuid) {
 		this.uuid = uuid;

@@ -2,7 +2,7 @@ var Vector2 = require('../Vector2');
 var Vector3 = require('../Vector3');
 var Vector4 = require('../Vector4');
 
-'use strict';
+
 
 	/**
 	 * Describes a cubic spline

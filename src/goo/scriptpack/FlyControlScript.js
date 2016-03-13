@@ -2,7 +2,7 @@ var Scripts = require('../scripts/Scripts');
 var WasdControlScript = require('../scriptpack/WasdControlScript');
 var MouseLookControlScript = require('../scriptpack/MouseLookControlScript');
 
-	'use strict';
+
 
 	function FlyControlScript() {
 		var wasdScript = Scripts.create(WasdControlScript);

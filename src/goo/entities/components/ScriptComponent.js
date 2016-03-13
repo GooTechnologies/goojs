@@ -3,7 +3,7 @@ var SystemBus = require('../../entities/SystemBus');
 var Scripts = require('../../scripts/Scripts');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Contains scripts to be executed each frame when set on an active entity.

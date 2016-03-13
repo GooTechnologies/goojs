@@ -3,7 +3,7 @@ var StateMachineComponent = require('../fsmpack/statemachine/StateMachineCompone
 var RSVP = require('../util/rsvp');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of state machine components

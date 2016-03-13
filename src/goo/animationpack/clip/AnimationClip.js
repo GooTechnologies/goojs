@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * AnimationClip manages a set of animation channels as a single clip entity.

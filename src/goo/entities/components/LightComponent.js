@@ -1,7 +1,7 @@
 var Component = require('../../entities/components/Component');
 var Light = require('../../renderer/light/Light');
 
-	'use strict';
+
 
 	/**
 	 * Defines a light<br>

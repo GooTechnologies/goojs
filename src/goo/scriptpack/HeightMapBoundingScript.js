@@ -1,6 +1,6 @@
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handles the height data for a heightmap and

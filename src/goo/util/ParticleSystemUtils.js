@@ -4,7 +4,7 @@ var MeshDataComponent = require('../entities/components/MeshDataComponent');
 var Texture = require('../renderer/Texture');
 var ParticleEmitter = require('../particles/ParticleEmitter');
 
-	'use strict';
+
 
 	/**
 	 * Provides utility methods for particle systems

@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-	'use strict';
+
 
 	function AddVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);

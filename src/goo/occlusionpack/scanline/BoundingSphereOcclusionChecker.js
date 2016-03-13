@@ -1,7 +1,7 @@
 var Matrix4 = require('../../math/Matrix4');
 var Vector4 = require('../../math/Vector4');
 
-	'use strict';
+
 
 	var tempVec = new Vector4(0, 0, 0, 1);
 	var combinedMatrix = new Matrix4();

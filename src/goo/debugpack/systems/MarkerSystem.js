@@ -5,7 +5,7 @@ var MarkerComponent = require('../../debugpack/components/MarkerComponent');
 var Renderer = require('../../renderer/Renderer');
 var Transform = require('../../math/Transform');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with a marker component

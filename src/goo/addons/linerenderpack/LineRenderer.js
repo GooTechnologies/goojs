@@ -4,7 +4,7 @@ var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var Shader = require('../../renderer/Shader');
 var Transform = require('../../math/Transform');
 
-	'use strict';
+
 
 	/**
 	 * Used internally to render a batch of lines all with the same color.

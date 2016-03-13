@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Transient class that maintains the current triggers and armed status for a {@link TriggerChannel}.

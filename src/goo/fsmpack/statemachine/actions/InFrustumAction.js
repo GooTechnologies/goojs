@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Camera = require('../../../renderer/Camera');
 var BoundingSphere = require('../../../renderer/bounds/BoundingSphere');
 
-	'use strict';
+
 
 	function InFrustumAction(/*id, settings*/) {
 		Action.apply(this, arguments);

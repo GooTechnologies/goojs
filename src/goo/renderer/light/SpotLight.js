@@ -1,7 +1,7 @@
 var Vector3 = require('../../math/Vector3');
 var Light = require('../../renderer/light/Light');
 
-	'use strict';
+
 
 	/**
 	 * The SpotLight can be viewed as two cones with their apexes located at the light's location.

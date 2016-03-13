@@ -2,7 +2,7 @@ var Quad = require('../../shapes/Quad');
 var Camera = require('../../renderer/Camera');
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage

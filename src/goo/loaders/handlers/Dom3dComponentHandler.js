@@ -3,7 +3,7 @@ var Dom3dComponent = require('../../entities/components/Dom3dComponent');
 var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of Dom3d components

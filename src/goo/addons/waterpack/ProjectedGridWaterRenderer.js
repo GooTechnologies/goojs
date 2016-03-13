@@ -12,7 +12,7 @@ var TextureCreator = require('../../renderer/TextureCreator');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 
-	'use strict';
+
 
 	/**
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.

@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 
-'use strict';
+
 
 /**
  * @private

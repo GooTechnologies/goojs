@@ -5,7 +5,7 @@ var SkeletonPose = require('../../animationpack/SkeletonPose');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading skeletons into engine

@@ -8,7 +8,7 @@ var Collider = require('../../../addons/physicspack/colliders/Collider');
 var Vector3 = require('../../../math/Vector3');
 var Quaternion = require('../../../math/Quaternion');
 
-	'use strict';
+
 
 	var tmpQuat = new Quaternion();
 

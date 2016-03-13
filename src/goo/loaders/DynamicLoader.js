@@ -25,7 +25,7 @@ var SkyboxHandler = require('./handlers/SkyboxHandler');
 var HtmlComponentHandler = require('./handlers/HtmlComponentHandler');
 
 	/*jshint eqeqeq: false, -W041, -W099 */
-	'use strict';
+
 
 	/**
 	 * Class to load objects into the engine, or to update objects based on the data model.

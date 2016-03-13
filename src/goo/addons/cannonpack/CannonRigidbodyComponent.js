@@ -4,7 +4,7 @@ var Vector3 = require('../../math/Vector3');
 var Transform = require('../../math/Transform');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/* global CANNON */
 

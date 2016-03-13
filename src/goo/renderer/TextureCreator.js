@@ -6,7 +6,7 @@ var StringUtils = require('../util/StringUtils');
 var PromiseUtils = require('../util/PromiseUtils');
 var RSVP = require('../util/rsvp');
 
-	'use strict';
+
 
 	//! AT: shouldn't this stay in util?
 

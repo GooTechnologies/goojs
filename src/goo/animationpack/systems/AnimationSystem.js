@@ -1,7 +1,7 @@
 var System = require('../../entities/systems/System');
 var World = require('../../entities/World');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with animation components, updating the animations

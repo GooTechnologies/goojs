@@ -6,7 +6,7 @@ var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of meshrenderercomponents

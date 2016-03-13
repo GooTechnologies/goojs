@@ -3,7 +3,7 @@ define([
 ], function (
 	Ray
 ) {
-	'use strict';
+
 
 	/**
 	 * BoundingPicker

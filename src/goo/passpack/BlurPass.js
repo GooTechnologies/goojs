@@ -5,7 +5,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 var ShaderLib = require('../renderer/shaders/ShaderLib');
 var Pass = require('../renderer/pass/Pass');
 
-	'use strict';
+
 
 	/**
 	 * <pre>

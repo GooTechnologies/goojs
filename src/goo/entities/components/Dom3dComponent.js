@@ -3,7 +3,7 @@ var Quad = require('../../shapes/Quad');
 var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
 var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 
-	'use strict';
+
 
 	/**
 	 * Connects a domElement to an entity and applies the transforms of the entity to the domElement with CSS3 3D transforms.

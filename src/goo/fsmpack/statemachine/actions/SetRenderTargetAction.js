@@ -7,7 +7,7 @@ var Camera = require('../../../renderer/Camera');
 var Material = require('../../../renderer/Material');
 var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 
-	'use strict';
+
 
 	function SetRenderTargetAction(/*id, settings*/) {
 		Action.apply(this, arguments);

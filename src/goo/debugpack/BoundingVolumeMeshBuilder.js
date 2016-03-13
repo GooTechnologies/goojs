@@ -4,7 +4,7 @@ var MeshBuilder = require('../util/MeshBuilder');
 var MeshData = require('../renderer/MeshData');
 var Transform = require('../math/Transform');
 
-	'use strict';
+
 
 	/**
 	 * Provides methods for building bounding volume debug meshes

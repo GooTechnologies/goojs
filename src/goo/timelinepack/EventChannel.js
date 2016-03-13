@@ -1,6 +1,6 @@
 var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
 
-	'use strict';
+
 
 	function EventChannel(id) {
 		AbstractTimelineChannel.call(this, id);

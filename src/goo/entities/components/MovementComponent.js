@@ -1,7 +1,7 @@
 var Vector3 = require('../../math/Vector3');
 var Component = require('../../entities/components/Component');
 
-'use strict';
+
 
 /**
  * Holds the movement parameters of an entity.

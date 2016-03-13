@@ -1,7 +1,7 @@
 var TransformChannel = require('../../animationpack/clip/TransformChannel');
 var JointData = require('../../animationpack/clip/JointData');
 
-	'use strict';
+
 
 	/**
 	 * Transform animation channel, specifically geared towards describing the motion of skeleton joints.

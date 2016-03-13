@@ -4,7 +4,7 @@ var Quaternion = require('../../../math/Quaternion');
 var Transform = require('../../../math/Transform');
 var SystemBus = require('../../../entities/SystemBus');
 
-	'use strict';
+
 
 	var tmpQuat = new Quaternion();
 

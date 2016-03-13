@@ -1,7 +1,7 @@
 var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	// TODO: make promise based instead of sending callbacks
 

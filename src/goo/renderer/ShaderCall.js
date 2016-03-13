@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Makes sure shader calls are not done when already set

@@ -1,7 +1,7 @@
 var MeshData = require('../renderer/MeshData');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Cone mesh data

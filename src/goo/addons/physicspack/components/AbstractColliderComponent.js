@@ -1,7 +1,7 @@
 var Component = require('../../../entities/components/Component');
 var Collider = require('../../../addons/physicspack/colliders/Collider');
 
-	'use strict';
+
 
 	/**
 	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidBodyComponent}, the collider is added to the physics world.

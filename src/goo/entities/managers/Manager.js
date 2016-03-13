@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * Base class for managers.

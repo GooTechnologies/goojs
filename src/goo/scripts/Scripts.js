@@ -1,7 +1,7 @@
 var ScriptUtils = require('../scripts/ScriptUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-'use strict';
+
 
 // the collection of scripts
 var _scripts = {};

@@ -6,7 +6,7 @@ var Matrix3 = require('./Matrix3');
 var MathUtils = require('./MathUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Quaternions provide a convenient mathematical notation for

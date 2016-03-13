@@ -20,7 +20,7 @@ var Material = require('../../../renderer/Material');
 var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 var Pool = require('../../../addons/physicspack/util/Pool');
 
-	'use strict';
+
 
 	/**
 	 * Renders all ColliderComponents in the scene.

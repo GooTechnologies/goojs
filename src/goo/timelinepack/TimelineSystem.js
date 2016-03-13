@@ -1,7 +1,7 @@
 var System = require('../entities/systems/System');
 var TWEEN = require('../util/TWEEN');
 
-	'use strict';
+
 
 	/**
 	 * Manages entities with a TimelineComponent

@@ -2,7 +2,7 @@ var MathUtils = require('../../math/MathUtils');
 var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInstance');
 var Source = require('../../animationpack/blendtree/Source');
 
-	'use strict';
+
 
 	/**
 	 * A blend tree leaf node that samples and returns values from the channels of an AnimationClip.

@@ -1,6 +1,6 @@
 var RSVP = require('../util/rsvp');
 
-	'use strict';
+
 
 	/**
 	 * Provides promise-related utility methods

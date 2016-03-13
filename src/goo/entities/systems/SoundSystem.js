@@ -4,7 +4,7 @@ var MathUtils = require('../../math/MathUtils');
 var SystemBus = require('../../entities/SystemBus');
 var Matrix4 = require('../../math/Matrix4');
 
-	'use strict';
+
 
 	/**
 	 * System responsible for sound.

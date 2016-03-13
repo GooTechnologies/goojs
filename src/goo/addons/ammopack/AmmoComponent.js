@@ -11,7 +11,7 @@ var BoundingBox = require('../../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-'use strict';
+
 
 /*global Ammo */
 

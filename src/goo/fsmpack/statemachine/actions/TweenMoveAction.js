@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var TWEEN = require('../../../util/TWEEN');
 
-	'use strict';
+
 
 	function TweenMoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);

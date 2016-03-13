@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-'use strict';
+
 
 	function SetLightRangeAction(/*id, settings*/) {
 		Action.apply(this, arguments);

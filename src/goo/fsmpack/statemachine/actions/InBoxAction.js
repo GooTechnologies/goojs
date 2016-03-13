@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	'use strict';
+
 
 	function InBoxAction(/*id, settings*/) {
 		Action.apply(this, arguments);

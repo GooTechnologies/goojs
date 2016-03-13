@@ -9,7 +9,7 @@ var BoundingBox = require('../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 var BoundingVolume = require('../renderer/bounds/BoundingVolume');
 
-	'use strict';
+
 
 	/**
 	 * This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.

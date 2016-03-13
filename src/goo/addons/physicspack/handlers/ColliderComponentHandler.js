@@ -10,7 +10,7 @@ var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider
 var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
 var PhysicsMaterial = require('../../../addons/physicspack/PhysicsMaterial');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of collider components

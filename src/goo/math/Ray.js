@@ -1,7 +1,7 @@
 var Vector3 = require('./Vector3');
 var MathUtils = require('./MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Constructs a new ray with an origin at (0, 0, 0) and a direction of (0, 0, 1).

@@ -1,6 +1,6 @@
 var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
 
-	'use strict';
+
 
 	/**
 	 * A transition that blends over a given time from one animation state to another, synchronizing the target state to the initial state's start time. This is best used with two clips that have similar motions.

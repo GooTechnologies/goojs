@@ -2,7 +2,7 @@ var MeshData = require('../renderer/MeshData');
 var Vector3 = require('../math/Vector3');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * A 3D object representing a cylinder.

@@ -3,7 +3,7 @@ var Shader = require('../../renderer/Shader');
 var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
-	'use strict';
+
 
 	/**
 	 * Collection of useful shaders<br>

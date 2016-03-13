@@ -3,7 +3,7 @@ var Vector3 = require('../math/Vector3');
 var MathUtils = require('../math/MathUtils');
 var GameUtils = require('../util/GameUtils');
 
-	'use strict';
+
 
 	function MouseLookControlScript() {
 		var buttonPressed = false;

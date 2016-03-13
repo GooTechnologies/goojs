@@ -5,7 +5,7 @@ var Renderer = require('../renderer/Renderer');
 var SystemBus = require('../entities/SystemBus');
 var Camera = require('../renderer/Camera');
 
-	'use strict';
+
 
 	function PanCamScript() {
 		var fwdVector, leftVector, calcVector, calcVector2;

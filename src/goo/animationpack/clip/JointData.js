@@ -1,6 +1,6 @@
 var TransformData = require('../../animationpack/clip/TransformData');
 
-	'use strict';
+
 
 	/**
 	 * Describes transform of a joint.

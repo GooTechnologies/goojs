@@ -1,6 +1,6 @@
 var PromiseUtils = require('../util/PromiseUtils');
 
-'use strict';
+
 
 var performance = typeof(window) !== 'undefined' ? window.performance : {};
 

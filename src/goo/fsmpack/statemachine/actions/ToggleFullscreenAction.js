@@ -5,7 +5,7 @@ define([
 	Action,
 	GameUtils
 ) {
-	'use strict';
+
 
 	function ToggleFullscreenAction(/*id, settings*/) {
 		Action.apply(this, arguments);

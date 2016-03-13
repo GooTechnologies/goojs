@@ -1,7 +1,7 @@
 var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
 var TriggerData = require('../../animationpack/clip/TriggerData');
 
-	'use strict';
+
 
 	/**
 	 * An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be in one keyword "state" at a given moment in time.

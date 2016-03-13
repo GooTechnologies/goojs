@@ -12,7 +12,7 @@ var SystemBus = require('../entities/SystemBus');
 var ScriptUtils = require('../scripts/ScriptUtils');
 var Scripts = require('../scripts/Scripts');
 
-	'use strict';
+
 
 	var DEPENDENCY_LOAD_TIMEOUT = 6000;
 

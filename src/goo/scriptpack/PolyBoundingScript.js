@@ -1,5 +1,5 @@
 
-	'use strict';
+
 
 	/**
 	 * Checks for collisions against a set of `collidables` and repositions the host object accordingly.

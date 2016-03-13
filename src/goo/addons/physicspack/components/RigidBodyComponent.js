@@ -11,7 +11,7 @@ var BallJoint = require('../../../addons/physicspack/joints/BallJoint');
 var HingeJoint = require('../../../addons/physicspack/joints/HingeJoint');
 var ColliderComponent = require('../../../addons/physicspack/components/ColliderComponent');
 
-	'use strict';
+
 
 	/* global CANNON */
 	var tmpQuat = new Quaternion();

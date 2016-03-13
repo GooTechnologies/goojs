@@ -9,7 +9,7 @@ var Transform = require('../../math/Transform');
 var Renderer = require('../../renderer/Renderer');
 var Ray = require('../../math/Ray');
 
-	'use strict';
+
 
 	/**
 	 * @extends Gizmo

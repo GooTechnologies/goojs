@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 
-	'use strict';
+
 
 	function EmitAction(/*id, settings*/) {
 		Action.apply(this, arguments);

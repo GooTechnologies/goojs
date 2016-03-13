@@ -1,6 +1,6 @@
 var System = require('../../entities/systems/System');
 
-	'use strict';
+
 
 	// has to stay here because it's used by traverseFunc below
 	// it's pretty crappy how it's sprinkled over the code

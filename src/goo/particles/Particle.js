@@ -4,7 +4,7 @@ var Vector3 = require('../math/Vector3');
 var Vector4 = require('../math/Vector4');
 var MeshData = require('../renderer/MeshData');
 
-	'use strict';
+
 
 	var calcVec = new Vector3();
 

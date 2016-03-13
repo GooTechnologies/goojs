@@ -4,7 +4,7 @@ var Joint = require('../../animationpack/Joint');
 var MeshBuilder = require('../../util/MeshBuilder');
 var MeshData = require('../../renderer/MeshData');
 
-	'use strict';
+
 	function SkeletonDebug() {}
 	var calcTrans = new Transform();
 

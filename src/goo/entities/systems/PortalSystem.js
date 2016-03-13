@@ -1,6 +1,6 @@
 var System = require('../../entities/systems/System');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with a portal component, a mesh renderer component and a mesh data component

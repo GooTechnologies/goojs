@@ -12,7 +12,7 @@ var StringUtils = require('../../util/StringUtils');
 var SystemBus = require('../../entities/SystemBus');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/*jshint eqeqeq: false, -W041 */
 	/**

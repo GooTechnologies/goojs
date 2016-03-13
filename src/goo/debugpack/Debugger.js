@@ -1,7 +1,7 @@
 var MarkerComponent = require('./components/MarkerComponent');
 var MarkerSystem = require('./systems/MarkerSystem');
 
-	'use strict';
+
 
 	//! AT: unused; should be removed
 	/**

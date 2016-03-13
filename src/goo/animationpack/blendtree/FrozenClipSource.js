@@ -1,5 +1,5 @@
 var Source = require('../../animationpack/blendtree/Source');
-	'use strict';
+
 
 	/**
 	 * A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often

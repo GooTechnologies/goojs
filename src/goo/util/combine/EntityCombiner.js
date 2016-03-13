@@ -6,7 +6,7 @@ var Vector3 = require('../../math/Vector3');
 var BoundingBox = require('../../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 
-	'use strict';
+
 
 	/**
 	 * Runs a mesh combine optimization on the whole scene, based on

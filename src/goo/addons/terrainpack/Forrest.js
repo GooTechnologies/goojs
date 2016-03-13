@@ -23,7 +23,7 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 var MathUtils = require('../../math/MathUtils');
 var RSVP = require('../../util/rsvp');
 
-	'use strict';
+
 
 	function Forrest() {
 		this.calcVec = new Vector3();

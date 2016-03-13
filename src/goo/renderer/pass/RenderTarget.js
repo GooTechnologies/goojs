@@ -1,7 +1,7 @@
 var Vector2 = require('../../math/Vector2');
 var ObjectUtil = require('../../util/ObjectUtil');
 
-	'use strict';
+
 
 	/**
 	 * Creates a new RenderTarget object

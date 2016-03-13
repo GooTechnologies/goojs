@@ -3,7 +3,7 @@ var Vector3 = require('../../math/Vector3');
 var Component = require('../../entities/components/Component');
 var EntitySelection = require('../../entities/EntitySelection');
 
-	'use strict';
+
 
 	/**
 	 * Holds the transform of an entity. It also allows for a scene graph to be created,

@@ -4,7 +4,7 @@ var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 var QuadComponent = require('../quadpack/QuadComponent');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of quadcomponents

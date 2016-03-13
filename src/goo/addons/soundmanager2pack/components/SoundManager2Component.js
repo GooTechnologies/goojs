@@ -1,6 +1,6 @@
 var Component = require('../../../entities/components/Component');
 
-	'use strict';
+
 
 	/**
 	 * @extends Component

@@ -3,7 +3,7 @@ var Vector3 = require('../../../math/Vector3');
 var MathUtils = require('../../../math/MathUtils');
 var TWEEN = require('../../../util/TWEEN');
 
-	'use strict';
+
 
 	function ShakeAction(/*id, settings*/) {
 		Action.apply(this, arguments);

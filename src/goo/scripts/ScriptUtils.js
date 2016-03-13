@@ -1,6 +1,6 @@
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	function ScriptUtils() {}
 

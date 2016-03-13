@@ -1,6 +1,6 @@
 var MathUtils = require('../math/MathUtils');
 
-'use strict';
+
 
 /**
  * A base class for procedural noise functions.

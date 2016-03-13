@@ -3,7 +3,7 @@ var Vector3 = require('../../math/Vector3');
 var Quaternion = require('../../math/Quaternion');
 var Source = require('../../animationpack/blendtree/Source');
 
-	'use strict';
+
 
 	/**
 	 * This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	'use strict';
+
 
 	function PauseAnimationAction(/*id, settings*/) {
 		Action.apply(this, arguments);

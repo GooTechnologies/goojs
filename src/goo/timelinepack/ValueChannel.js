@@ -1,7 +1,7 @@
 var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	function ValueChannel(id, options) {
 		AbstractTimelineChannel.call(this, id);

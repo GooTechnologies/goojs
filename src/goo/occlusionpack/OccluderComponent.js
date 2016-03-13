@@ -1,6 +1,6 @@
 var Component = require('../entities/components/Component');
 
-	'use strict';
+
 
 	/**
 	 * This component contains the triangle mesh which forms an occluder shape for the

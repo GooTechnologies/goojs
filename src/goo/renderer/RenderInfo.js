@@ -2,7 +2,7 @@ var Entity = require('../entities/Entity');
 var Transform = require('../math/Transform');
 
 
-	'use strict';
+
 
 	/**
 	 * Holds configuration data for renderable objects.

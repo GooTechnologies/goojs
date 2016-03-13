@@ -1,6 +1,6 @@
 var EntitySelection = require('../EntitySelection');
 
-'use strict';
+
 
 /**
  * Base class/module for all components. Should not be used directly.

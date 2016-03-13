@@ -2,7 +2,7 @@ var Vector2 = require('../math/Vector2');
 var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is

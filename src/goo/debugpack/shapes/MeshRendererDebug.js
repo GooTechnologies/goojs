@@ -1,6 +1,6 @@
 var MeshData = require('../../renderer/MeshData');
 
-	'use strict';
+
 
 	function MeshRendererDebug() {
 		this._meshes = [buildBox(1, 1, 1), null];

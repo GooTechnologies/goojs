@@ -1,5 +1,5 @@
 
-'use strict';
+
 
 function AbstractTimelineChannel(id) {
 	this.id = id;

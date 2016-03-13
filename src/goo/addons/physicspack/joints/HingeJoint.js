@@ -1,7 +1,7 @@
 var PhysicsJoint = require('../../../addons/physicspack/joints/PhysicsJoint');
 var Vector3 = require('../../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Physics hinge joint. To be added to a {@link RigidBodyComponent}.

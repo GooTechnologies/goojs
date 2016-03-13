@@ -3,7 +3,7 @@ var Vector3 = require('../math/Vector3');
 var MathUtils = require('../math/MathUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * A donut-shaped model.

@@ -3,7 +3,7 @@ var Vector3 = require('../../math/Vector3');
 var Camera = require('../../renderer/Camera');
 var SystemBus = require('../../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Holds a camera.

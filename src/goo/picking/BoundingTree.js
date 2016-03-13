@@ -2,7 +2,7 @@ var BoundingBox = require('../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 var Vector3 = require('../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Bounding tree node

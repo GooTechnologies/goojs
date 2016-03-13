@@ -2,7 +2,7 @@ var System = require('../../entities/systems/System');
 var SystemBus = require('../../entities/SystemBus');
 var Renderer = require('../../renderer/Renderer');
 
-	'use strict';
+
 
 	/**
 	 * Updates cameras/cameracomponents with their transform component transforms

@@ -1,7 +1,7 @@
 var HeightMapBoundingScript = require('../scriptpack/HeightMapBoundingScript');
 var Vector3 = require('../math/Vector3');
 
-	'use strict';
+
 
 	var calcVec1 = new Vector3();
 	var calcVec2 = new Vector3();

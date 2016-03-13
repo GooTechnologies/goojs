@@ -2,7 +2,7 @@ var Vector3 = require('../math/Vector3');
 var ScriptUtils = require('../scripts/ScriptUtils');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Axis aligned camera control script

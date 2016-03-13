@@ -1,7 +1,7 @@
 var Quaternion = require('../../math/Quaternion');
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.

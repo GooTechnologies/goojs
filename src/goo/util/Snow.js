@@ -7,7 +7,7 @@ var ParticleSystemUtils = require('../util/ParticleSystemUtils');
 var Renderer = require('../renderer/Renderer');
 var Vector3 = require('../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Snow

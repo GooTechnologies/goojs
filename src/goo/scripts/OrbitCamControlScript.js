@@ -4,7 +4,7 @@ var MathUtils = require('../math/MathUtils');
 var Camera = require('../renderer/Camera');
 var SystemBus = require('../entities/SystemBus');
 
-	'use strict';
+
 
 	var ZOOM_DISTANCE_FACTOR = 0.035;
 	var EPSILON = 1e-6;

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	'use strict';
+
 
 	function CompareCountersAction(/*id, settings*/) {
 		Action.apply(this, arguments);

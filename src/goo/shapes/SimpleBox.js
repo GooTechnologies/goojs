@@ -1,6 +1,6 @@
 var MeshData = require('../renderer/MeshData');
 
-	'use strict';
+
 
 	/**
 	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.

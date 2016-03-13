@@ -2,7 +2,7 @@ var EntitySelection = require('../../../entities/EntitySelection');
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 
-	'use strict';
+
 
 	function CollidesAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,6 +1,6 @@
 var Joint = require('./Joint');
 
-'use strict';
+
 
 /**
  * Describes a collection of Joints. This class represents the hierarchy of a Skeleton and its original aspect (via the {@link Joint} class). This

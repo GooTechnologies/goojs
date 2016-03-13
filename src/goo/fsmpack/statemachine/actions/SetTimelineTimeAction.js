@@ -3,7 +3,7 @@ define([
 ], function (
 	Action
 ) {
-	'use strict';
+
 
 	function SetTimelineTimeAction(/*id, settings*/) {
 		Action.apply(this, arguments);

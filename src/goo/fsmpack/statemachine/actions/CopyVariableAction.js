@@ -5,7 +5,7 @@ define([
 	Action,
 	FsmUtils
 ) {
-	'use strict';
+
 
 	function CopyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);

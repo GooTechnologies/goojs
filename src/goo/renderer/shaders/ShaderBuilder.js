@@ -8,7 +8,7 @@ var MathUtils = require('../../math/MathUtils');
 var TangentGenerator = require('../../util/TangentGenerator');
 var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 
-	'use strict';
+
 
 	/**
 	 * Builds shaders

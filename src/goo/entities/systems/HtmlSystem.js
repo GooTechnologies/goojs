@@ -4,7 +4,7 @@ var Matrix4 = require('../../math/Matrix4');
 var MathUtils = require('../../math/MathUtils');
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * @extends System

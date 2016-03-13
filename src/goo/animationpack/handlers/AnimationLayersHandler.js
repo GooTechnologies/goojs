@@ -6,7 +6,7 @@ var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionS
 var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading animation layers

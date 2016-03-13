@@ -6,7 +6,7 @@ var DirectionalLight = require('../../renderer/light/DirectionalLight');
 var Vector3 = require('../../math/Vector3');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of light components

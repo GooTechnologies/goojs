@@ -6,7 +6,7 @@ var Shader = require('../renderer/Shader');
 var TextureCreator = require('../renderer/TextureCreator');
 var Transform = require('../math/Transform');
 
-	'use strict';
+
 
 	/**
 	 * Skybox

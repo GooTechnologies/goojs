@@ -1,7 +1,7 @@
 var System = require('../../entities/systems/System');
 var BoundingBox = require('../../renderer/bounds/BoundingBox');
 
-	'use strict';
+
 
 	/**
 	 * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components

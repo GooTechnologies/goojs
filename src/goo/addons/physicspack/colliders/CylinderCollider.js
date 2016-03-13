@@ -1,6 +1,6 @@
 var Collider = require('../../../addons/physicspack/colliders/Collider');
 
-	'use strict';
+
 
 	/**
 	 * Cylinder collider, that extends along the Z axis.

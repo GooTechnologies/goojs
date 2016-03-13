@@ -1,6 +1,6 @@
 var Vector3 = require('./Vector3');
 
-	'use strict';
+
 
 	/**
 	 * A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance

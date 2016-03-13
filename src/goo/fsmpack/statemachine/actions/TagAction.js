@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent');
 
-	'use strict';
+
 
 	function TagAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,7 +1,7 @@
 var Vector3 = require('../../math/Vector3');
 var Light = require('../../renderer/light/Light');
 
-	'use strict';
+
 
 	/**
 	 * A directional light

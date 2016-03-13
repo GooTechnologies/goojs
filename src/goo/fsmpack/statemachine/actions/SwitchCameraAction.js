@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 var Renderer = require('../../../renderer/Renderer');
 
-	'use strict';
+
 
 	function SwitchCameraAction(/*id, settings*/) {
 		Action.apply(this, arguments);

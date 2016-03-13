@@ -1,7 +1,7 @@
 var AudioContext = require('../sound/AudioContext');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	function OscillatorSound() {
 		// Settings

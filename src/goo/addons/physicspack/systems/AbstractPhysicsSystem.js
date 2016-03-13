@@ -1,7 +1,7 @@
 var System = require('../../../entities/systems/System');
 var SystemBus = require('../../../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Base class for physics systems.

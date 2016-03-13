@@ -1,7 +1,7 @@
 var MeshData = require('../renderer/MeshData');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,

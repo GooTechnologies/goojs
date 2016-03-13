@@ -6,7 +6,7 @@ var RSVP = require('../../../util/rsvp');
 var ObjectUtils = require('../../../util/ObjectUtils');
 var Vector3 = require('../../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of rigid body components

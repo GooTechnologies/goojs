@@ -1,5 +1,5 @@
 
-	'use strict';
+
 
 	/**
 	 * Bounds the host entity to a height map computed from a set of terrain points

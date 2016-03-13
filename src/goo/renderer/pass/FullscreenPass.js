@@ -3,7 +3,7 @@ var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var Pass = require('../../renderer/pass/Pass');
 
-'use strict';
+
 
 /**
  * Fullscreen pass

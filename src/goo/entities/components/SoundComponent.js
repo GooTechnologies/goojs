@@ -3,7 +3,7 @@ var AudioContext = require('../../sound/AudioContext');
 var Vector3 = require('../../math/Vector3');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	//! AT: every method here is prefixed with a check for AudioContext. Is it really needed? can it just be refactored away?
 	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
@@ -45,7 +45,7 @@ var MathUtils = require('../../math/MathUtils');
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
-		
+
 		this._autoPlayDirty = false;
 
 		// @ifdef DEBUG

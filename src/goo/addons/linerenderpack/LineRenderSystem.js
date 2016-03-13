@@ -3,7 +3,7 @@ var SystemBus = require('../../entities/SystemBus');
 var LineRenderer = require('../../addons/linerenderpack/LineRenderer');
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Updates all of it's LineRenderers and exposes methods for drawing primitive line shapes.

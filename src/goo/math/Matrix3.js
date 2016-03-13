@@ -3,7 +3,7 @@ var Matrix = require('./Matrix');
 var Vector3 = require('./Vector3');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.

@@ -7,7 +7,7 @@ define([
 	Vector3,
 	SystemBus
 ) {
-	'use strict';
+
 
 	function ApplyTorqueAction(/*id, settings*/) {
 		Action.apply(this, arguments);

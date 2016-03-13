@@ -5,7 +5,7 @@ define([
 	Action,
 	Vector3
 ) {
-	'use strict';
+
 
 	function SetRigidBodyVelocityAction(/*id, settings*/) {
 		Action.apply(this, arguments);

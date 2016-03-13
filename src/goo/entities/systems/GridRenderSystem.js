@@ -10,7 +10,7 @@ var Transform = require('../../math/Transform');
 var MathUtils = require('../../math/MathUtils');
 var Grid = require('../../shapes/Grid');
 
-	'use strict';
+
 
 	/**
 	 * Renders entities/renderables using a configurable partitioner for culling

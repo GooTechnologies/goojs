@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Shims for standard gaming features

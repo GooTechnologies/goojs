@@ -1,4 +1,4 @@
-	'use strict';
+
 
 	/**
 	 * Holds the renderer's state

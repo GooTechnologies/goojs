@@ -1,6 +1,6 @@
 var Collider = require('../../../addons/physicspack/colliders/Collider');
 
-	'use strict';
+
 
 	/**
 	 * @param {Object} [settings]

@@ -4,7 +4,7 @@ var PointLight = require('../../../renderer/light/PointLight');
 var DirectionalLight = require('../../../renderer/light/DirectionalLight');
 var SpotLight = require('../../../renderer/light/SpotLight');
 
-	'use strict';
+
 
 	function AddLightAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,7 +1,7 @@
 var Collider = require('../../../addons/physicspack/colliders/Collider');
 var Vector3 = require('../../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Physics mesh collider.

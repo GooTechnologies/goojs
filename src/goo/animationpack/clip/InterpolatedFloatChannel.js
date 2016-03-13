@@ -1,7 +1,7 @@
 var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for

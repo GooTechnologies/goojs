@@ -22,7 +22,7 @@ var Logo = require('../util/Logo');
 var SystemBus = require('./SystemBus');
 var Material = require('../renderer/Material');
 
-	'use strict';
+
 
 	/**
 	 * The main class that updates the world and calls the renderers.

@@ -5,7 +5,7 @@ var RenderQueue = require('../../renderer/RenderQueue');
 var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading materials into engine

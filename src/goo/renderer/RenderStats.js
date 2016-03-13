@@ -1,5 +1,5 @@
 
-	'use strict';
+
 
 	function RenderStats() {
 		this.reset();

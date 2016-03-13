@@ -1,6 +1,6 @@
 var Light = require('../../renderer/light/Light');
 
-	'use strict';
+
 
 	/**
 	 * A omni-directional source of light. So far it has the same effect as {@link Light}<br>

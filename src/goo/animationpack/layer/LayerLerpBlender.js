@@ -1,6 +1,6 @@
 var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
 
-	'use strict';
+
 
 	/**
 	 * A layer blender that uses linear interpolation to merge the results of two layers.

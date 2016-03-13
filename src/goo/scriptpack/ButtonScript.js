@@ -4,7 +4,7 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 var Renderer = require('../renderer/Renderer');
 var SystemBus = require('../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Attaches mouse events to an entity.

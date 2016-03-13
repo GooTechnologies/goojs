@@ -7,7 +7,7 @@ var SystemBus = require('../entities/SystemBus');
 var ObjectUtils = require('../util/ObjectUtils');
 var TWEEN = require('../util/TWEEN');
 
-	'use strict';
+
 
 	/**
 	 * @hidden

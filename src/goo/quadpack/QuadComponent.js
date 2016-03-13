@@ -7,7 +7,7 @@ var Material = require('../renderer/Material');
 var ObjectUtils = require('../util/ObjectUtils');
 var Texture = require('../renderer/Texture');
 
-	'use strict';
+
 
 	/**
 	 * Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.

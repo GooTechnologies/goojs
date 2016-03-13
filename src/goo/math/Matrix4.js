@@ -2,7 +2,7 @@ var MathUtils = require('./MathUtils');
 var Matrix = require('./Matrix');
 var ObjectUtils = require('../util/ObjectUtils');
 
-	'use strict';
+
 
 	/**
 	 * Matrix with 4x4 components.

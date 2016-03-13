@@ -1,6 +1,6 @@
 var Bus = require('./Bus');
 
-'use strict';
+
 
 /**
  * SystemBus is a global instance of the {@link Bus} class.

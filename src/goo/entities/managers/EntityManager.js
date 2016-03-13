@@ -1,7 +1,7 @@
 var Manager = require('../../entities/managers/Manager');
 var EntitySelection = require('../../entities/EntitySelection');
 
-'use strict';
+
 
 /**
  * Main handler of all entities in the world.

@@ -2,7 +2,7 @@ var Capabilities = require('../../renderer/Capabilities');
 var System = require('../../entities/systems/System');
 var SystemBus = require('../../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with a light component making sure that lights are placed according to its transforms<br>

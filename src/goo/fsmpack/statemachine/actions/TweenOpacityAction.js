@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var TWEEN = require('../../../util/TWEEN');
 var MathUtils = require('../../../math/MathUtils');
-	'use strict';
+
 
 	function TweenOpacityAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,7 +1,7 @@
 var System = require('../../../entities/systems/System');
 var SystemBus = require('../../../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Processes all entities with collider components, making sure they are up to date.

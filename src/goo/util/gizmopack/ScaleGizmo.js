@@ -8,7 +8,7 @@ var Vector3 = require('../../math/Vector3');
 var Ray = require('../../math/Ray');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * @extends Gizmo

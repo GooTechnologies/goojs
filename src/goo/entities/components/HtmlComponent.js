@@ -1,6 +1,6 @@
 var Component = require('../../entities/components/Component');
 
-	'use strict';
+
 
 	/**
 	 * Adds a 2D DOM element to the entity, that can move with its transform.

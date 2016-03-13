@@ -25,7 +25,7 @@
 var DdsUtils = require('../../loaders/dds/DdsUtils');
 var Capabilities = require('../../renderer/Capabilities');
 
-	'use strict';
+
 
 	/**
 	 * @private

@@ -1,6 +1,6 @@
 var System = require('../../entities/systems/System');
 
-	'use strict';
+
 
 	/**
 	 * Manages and reacts to particle components on entities.

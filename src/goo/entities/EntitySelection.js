@@ -1,6 +1,6 @@
 var Selection = require('./Selection');
 
-	'use strict';
+
 
 	/**
 	 * A specialised selection object for entities

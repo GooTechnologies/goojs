@@ -9,7 +9,7 @@ var Texture = require('../../renderer/Texture');
 var TextureCreator = require('../../renderer/TextureCreator');
 var RSVP = require('../../util/rsvp');
 
-	'use strict';
+
 
 	function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
 		this.goo = goo;

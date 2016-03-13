@@ -4,7 +4,7 @@ var MathUtils = require('../../math/MathUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 var RSVP = require('../../util/rsvp');
 
-	'use strict';
+
 
 	/**
 	 * For handling loading of transform component

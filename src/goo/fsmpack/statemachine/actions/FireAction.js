@@ -4,7 +4,7 @@ var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 var ParticleLib = require('../../../particles/ParticleLib');
 var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 
-	'use strict';
+
 
 	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,4 +1,4 @@
-	'use strict';
+
 	var _actions = {};
 
 	var Actions = {};

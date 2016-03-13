@@ -3,7 +3,7 @@ var Particle = require('../../particles/Particle');
 var ParticleEmitter = require('../../particles/ParticleEmitter');
 var MeshData = require('../../renderer/MeshData');
 
-	'use strict';
+
 
 	/**
 	 * Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or

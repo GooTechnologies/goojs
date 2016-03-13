@@ -1,7 +1,7 @@
 var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('./MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Abstract vector class

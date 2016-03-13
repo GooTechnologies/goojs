@@ -1,6 +1,6 @@
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * Base class for component handlers. All different types of components that an entity

@@ -7,7 +7,7 @@ var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var SystemBus = require('../../entities/SystemBus');
 
-	'use strict';
+
 
 	function SkyboxHandler() {
 		ConfigHandler.apply(this, arguments);

@@ -1,6 +1,6 @@
 var Collider = require('../../../addons/physicspack/colliders/Collider');
 
-	'use strict';
+
 
 	/**
 	 * Plane collider, that faces in the Z direction.

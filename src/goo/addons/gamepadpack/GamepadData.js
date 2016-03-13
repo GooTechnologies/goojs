@@ -1,7 +1,7 @@
 var Vector2 = require('../../math/Vector2');
 var MathUtils = require('../../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * Used for storing derived data from gamepads

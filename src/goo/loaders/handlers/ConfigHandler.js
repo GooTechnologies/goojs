@@ -1,7 +1,7 @@
 var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 
-	'use strict';
+
 
 	/**
 	 * Base class for resource handlers, used to load all types of resources into the engine.

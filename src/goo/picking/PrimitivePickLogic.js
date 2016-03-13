@@ -1,6 +1,6 @@
 var BoundingTree = require('../picking/BoundingTree');
 
-	'use strict';
+
 
 	/**
 	 * Primitive pick logic

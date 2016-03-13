@@ -1,7 +1,7 @@
 var MeshData = require('../renderer/MeshData');
 var MathUtils = require('../math/MathUtils');
 
-	'use strict';
+
 
 	/**
 	 * A polygon shape

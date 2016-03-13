@@ -2,7 +2,7 @@ var ParticleUtils = require('../particles/ParticleUtils');
 var Renderer = require('../renderer/Renderer');
 var ObjectUtil = require('../util/ObjectUtil');
 
-	'use strict';
+
 
 	/**
 	 * A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.

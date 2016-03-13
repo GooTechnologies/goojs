@@ -2,7 +2,7 @@ var Component = require('../entities/components/Component');
 var BoundingBox = require('../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 
-	'use strict';
+
 
 	/**
 	 * @param meshData

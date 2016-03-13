@@ -5,7 +5,7 @@ define([
 	Action,
 	BoundingPicker
 ) {
-	'use strict';
+
 
 	function HoverExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);

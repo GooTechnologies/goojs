@@ -1,7 +1,7 @@
 /*jshint bitwise: false */var DdsUtils = require('../../loaders/dds/DdsUtils');
 var Capabilities = require('../../renderer/Capabilities');
 
-	'use strict';
+
 
 	function DdsPixelFormat() {
 		this.dwSize = 0;

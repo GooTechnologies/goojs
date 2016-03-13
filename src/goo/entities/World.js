@@ -6,7 +6,7 @@ var System = require('./systems/System');
 var Component = require('./components/Component');
 var EntitySelection = require('./EntitySelection');
 
-	'use strict';
+
 
 	/**
 	 * Main handler for an entity world. The World keeps track of managers and systems,

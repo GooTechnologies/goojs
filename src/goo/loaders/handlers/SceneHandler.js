@@ -4,7 +4,7 @@ var ArrayUtils = require('../../util/ArrayUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 var RSVP = require('../../util/rsvp');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading scene into engine

@@ -9,7 +9,7 @@ var FullscreenPass = require('../renderer/pass/FullscreenPass');
 var ShaderLib = require('../renderer/shaders/ShaderLib');
 var PassLib = require('../passpack/PassLib');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading posteffects into engine

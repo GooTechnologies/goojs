@@ -3,7 +3,7 @@ var FullscreenPass = require('../../renderer/pass/FullscreenPass');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var SystemBus = require('../../entities/SystemBus');
 
-	'use strict';
+
 
 	/**
 	 * Post processing handler

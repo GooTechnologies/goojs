@@ -1,6 +1,6 @@
 var Vector3 = require('../../math/Vector3');
 
-	'use strict';
+
 
 	/**
 	 * Structure used to get information back from a raycast.

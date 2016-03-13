@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var MathUtils = require('../../../math/MathUtils');
 
-	'use strict';
+
 
 	function RotateAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -7,7 +7,7 @@ var Disk = require('../shapes/Disk');
 var Cone = require('../shapes/Cone');
 var ObjectUtil = require('../util/ObjectUtil');
 
-	'use strict';
+
 
 	/**
 	 * Factory for shape creation.

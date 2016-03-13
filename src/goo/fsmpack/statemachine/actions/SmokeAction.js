@@ -5,7 +5,7 @@ var TextureCreator = require('../../../renderer/TextureCreator');
 var ParticleLib = require('../../../particles/ParticleLib');
 var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 
-	'use strict';
+
 
 	function SmokeAction(/*id, settings*/) {
 		Action.apply(this, arguments);

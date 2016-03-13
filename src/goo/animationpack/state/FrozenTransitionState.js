@@ -1,6 +1,6 @@
 var AbstractTransitionState = require('../../animationpack/state/AbstractTransitionState');
 
-	'use strict';
+
 
 	/**
 	 * A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target

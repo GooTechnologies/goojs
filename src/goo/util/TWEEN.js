@@ -12,7 +12,7 @@
  */
 
 
-'use strict';
+
 
 var TWEEN = (function () {
 

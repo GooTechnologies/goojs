@@ -1,6 +1,6 @@
 var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
 
-	'use strict';
+
 
 	/**
 	 * Fullscreen-related utilities

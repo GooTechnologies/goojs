@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-'use strict';
+
 
 function FsmUtils() {
 }

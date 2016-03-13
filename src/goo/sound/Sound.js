@@ -3,7 +3,7 @@ var MathUtils = require('../math/MathUtils');
 var PromiseUtil = require('../util/PromiseUtil');
 var RSVP = require('../util/rsvp');
 
-	'use strict';
+
 
 	/**
 	 * A representation of a sound in the engine

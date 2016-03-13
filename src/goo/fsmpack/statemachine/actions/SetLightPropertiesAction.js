@@ -1,5 +1,5 @@
 define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
-	'use strict';
+
 
 	function SetLightPropertiesAction(/*id, settings*/) {
 		Action.apply(this, arguments);

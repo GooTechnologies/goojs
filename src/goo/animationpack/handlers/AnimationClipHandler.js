@@ -6,7 +6,7 @@ var InterpolatedFloatChannel = require('../../animationpack/clip/InterpolatedFlo
 var TriggerChannel = require('../../animationpack/clip/TriggerChannel');
 var ArrayUtils = require('../../util/ArrayUtils');
 
-	'use strict';
+
 
 	/**
 	 * Handler for loading animation clips into engine

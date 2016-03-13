@@ -5,7 +5,7 @@ var ShaderLib = require('../renderer/shaders/ShaderLib');
 var Quad = require('../shapes/Quad');
 var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 
-	'use strict';
+
 
 	/**
 	 * This script makes an entity shine with some lensflare effect.

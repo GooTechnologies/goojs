@@ -18,7 +18,7 @@ var TerrainSurface = require('../../addons/terrainpack/TerrainSurface');
 var Quad = require('../../shapes/Quad');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 
-	'use strict';
+
 
 	function Vegetation() {
 		this.calcVec = new Vector3();

@@ -1,5 +1,5 @@
 
-'use strict';
+
 
 /**
  * Utilities for arrays and typed arrays

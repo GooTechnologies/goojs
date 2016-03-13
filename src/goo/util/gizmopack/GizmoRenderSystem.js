@@ -16,7 +16,7 @@ var RotationGizmo = require('../../util/gizmopack/RotationGizmo');
 var GlobalRotationGizmo = require('../../util/gizmopack/GlobalRotationGizmo');
 var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
 
-	'use strict';
+
 
 	/**
 	 * Renders transform gizmos<br>

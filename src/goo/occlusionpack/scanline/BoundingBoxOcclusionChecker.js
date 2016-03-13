@@ -3,7 +3,7 @@ var Vector4 = require('../../math/Vector4');
 var Vector2 = require('../../math/Vector2');
 var OccludeeTriangleData = require('./OccludeeTriangleData');
 
-	'use strict';
+
 
 	// Cohen-Sutherland area constants.
 	// (Clipping method for the bounding box)

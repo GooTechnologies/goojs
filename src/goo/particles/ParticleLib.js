@@ -1,5 +1,5 @@
 
-'use strict';
+
 
 /**
  * Library of particles
