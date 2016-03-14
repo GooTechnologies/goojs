@@ -19,9 +19,6 @@ define([
 		this.quatFrom = new Quaternion();
 		this.quatTo = new Quaternion();
 		this.quatFinal = new Quaternion();
-		this.quatDelta = new Quaternion();
-		this.quatOld = new Quaternion();
-		this.quatCalc = new Quaternion();
 		this.completed = false;
 	}
 
@@ -94,8 +91,6 @@ define([
 		this.startTime = fsm.getTime();
 
 		this.quatFrom.fromRotationMatrix(transformComponent.transform.rotation);
-		this.quatOld.set(this.quatFrom);
-		this.quatFinal.set(this.quatFrom);
 		this.quatTo.fromRotationMatrix(new Matrix3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
 		if (this.relative) {
 			this.quatTo.mul(this.quatFrom);
@@ -112,15 +107,7 @@ define([
 
 		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
 		var fT = this.easing(t);
-
-		if (this.relative) {
-			this.quatCalc.set(this.quatOld).invert();
-			Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatDelta).mul(this.quatCalc);
-			this.quatFinal.mul(this.quatDelta);
-			this.quatOld.mul(this.quatDelta);
-		} else {
-			Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
-		}
+		Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
 
 		this.quatFinal.toRotationMatrix(transform.rotation);
 		entity.transformComponent.setUpdated();
