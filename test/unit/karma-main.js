@@ -1,3 +1,4 @@
+/*
 var tests = [];
 for (var file in window.__karma__.files) {
     //   /\-test\.js$/.test(file) ||
@@ -36,3 +37,7 @@ require(['test/all-tests'], function () {
     window.__karma__.externalResourceRootPath = '/base/test/unit';
     window.__karma__.start();
 });
+*/
+
+//window.__karma__.externalResourceRootPath = '/base/test/unit';
+window.__karma__.start();

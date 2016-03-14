@@ -3,6 +3,7 @@
 
 'use strict';
 
+/*
 require.config({
 	paths: {
 		'goo': '../../src/goo',
@@ -12,3 +13,4 @@ require.config({
 	},
 	waitSeconds: 5
 });
+*/

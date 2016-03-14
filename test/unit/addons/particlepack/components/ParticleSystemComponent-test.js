@@ -1,4 +1,14 @@
 	describe('ParticleSystemComponent', function () {
+		var CustomMatchers = require('test/unit/CustomMatchers');
+		var LinearCurve = require('src/goo/addons/particlepack/curves/LinearCurve');
+		var MeshData = require('src/goo/renderer/MeshData');
+		var ParticleSystemComponent = require('src/goo/addons/particlepack/components/ParticleSystemComponent');
+		var Texture = require('src/goo/renderer/Texture');
+		var TransformComponent = require('src/goo/entities/components/TransformComponent');
+		var Vector3 = require('src/goo/math/Vector3');
+		var Vector3Curve = require('src/goo/addons/particlepack/curves/Vector3Curve');
+		var Vector4Curve = require('src/goo/addons/particlepack/curves/Vector4Curve');
+		var World = require('src/goo/entities/World');
 
 		var world;
 
@@ -138,7 +148,7 @@
 			var component = new ParticleSystemComponent({
 				localSpace: false
 			});
-			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			world.createEntity([0, 0, 0], component).addToWorld();
 			var position = new Vector3();
 			var direction = new Vector3(0,1,0);
 			component.emitOne(position, direction);
@@ -149,7 +159,7 @@
 
 		it('can pause/resume', function () {
 			var component = new ParticleSystemComponent();
-			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			world.createEntity([0, 0, 0], component).addToWorld();
 			expect(component.time).toBe(0);
 			component.process(1);
 			expect(component.time).toBe(1);
@@ -163,7 +173,7 @@
 
 		it('can stop/resume', function () {
 			var component = new ParticleSystemComponent();
-			var entity = world.createEntity([0, 0, 0], component).addToWorld();
+			world.createEntity([0, 0, 0], component).addToWorld();
 			component.process(1);
 			expect(component.time).toBe(1);
 			component.stop();

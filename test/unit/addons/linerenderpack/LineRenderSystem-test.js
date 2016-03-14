@@ -1,4 +1,9 @@
 describe('LineRenderSystem', function () {
+
+	var Vector3 = require('src/goo/math/Vector3');
+	var World = require('src/goo/entities/World');
+	var LineRenderSystem = require('src/goo/addons/linerenderpack/LineRenderSystem');
+
 	var world;
 	var lineRenderSystem;
 

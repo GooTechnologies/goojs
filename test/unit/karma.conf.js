@@ -1,5 +1,4 @@
-// Karma configuration
-// Generated on Mon Mar 10 2014 10:17:32 GMT+0100 (CET)
+var path = require('path');
 
 module.exports = function (config) {
   config.set({
@@ -7,32 +6,26 @@ module.exports = function (config) {
 	// base path, that will be used to resolve files and exclude
 	basePath: '../../',
 
-
-	// frameworks to use
-	frameworks: ['jasmine', 'requirejs'],
-
-
-	// list of files / patterns to load in the browser
-	files: [
-		{ pattern: 'test/unit/**/*.png', included: false },
-		{ pattern: 'test/unit/**/*.mp4', included: false },
-		{ pattern: 'test/unit/all-tests.js', included: false },
-		'test/unit/karma-main.js',
-		'lib/cannon/cannon.min.js',
-		{ pattern: 'src/**/*.js', included: false },
-		{ pattern: 'lib/**/*.js', included: false },
-		{ pattern: 'test/unit/**/*.js', included: false }
+	plugins: [
+		require('karma-jasmine'),
+		require('karma-chrome-launcher'),
+		require('karma-webpack')
 	],
 
+	frameworks: ['jasmine'],
+
+	files: [
+		//{ pattern: 'test/unit/**/*-test.js' }
+		{ pattern: 'test/unit/addons/linerenderpack/*-test.js' },
+		{ pattern: 'test/unit/addons/particlepack/components/ParticleSystemComponent-test.js' }
+	],
 
 	// list of files to exclude
-	exclude: [
-	],
-
+	exclude: [],
 
 	// test results reporter to use
 	// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-	reporters: ['dots', 'coverage'],
+	reporters: ['dots'/*, 'coverage'*/],
 
 
 	// web server port
@@ -45,7 +38,7 @@ module.exports = function (config) {
 
 	// level of logging
 	// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-	logLevel: config.LOG_INFO,
+	// logLevel: config.LOG_INFO,
 
 
 	// enable / disable watching file and executing tests whenever any file changes
@@ -62,7 +55,6 @@ module.exports = function (config) {
 	// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
 	browsers: ['Chrome'],
 
-
 	// If browser does not capture in given timeout [ms], kill it
 	captureTimeout: 60000,
 
@@ -75,13 +67,29 @@ module.exports = function (config) {
 		// source files, that you wanna generate coverage for
 		// do not include tests or libraries
 		// (these files will be instrumented by Istanbul)
-		'**/src/goo/**/*.js': ['coverage']
+		//'**/*.js': [/*'coverage', */'webpack']
+		'test/unit/addons/**/*-test.js': ['webpack']
+	},
+
+	webpack: {
+		resolve: {
+			// Everything relative to repo root
+			root: path.resolve(path.join(__dirname, '..', '..'))
+		}
 	},
 
 	// optionally, configure the reporter
+	/*
 	coverageReporter: {
 		type : 'html',
 		dir : 'coverage/'
+	},
+	*/
+
+	webpackMiddleware: {
+		// webpack-dev-middleware configuration
+		// i. e.
+		noInfo: true
 	}
   });
 };

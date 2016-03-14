@@ -1,10 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/Actions'
-], function (
-	Actions
-) {
-	'use strict';
-
 	describe('Actions', function () {
 		it('Every action has a key', function () {
 			var allActions = Actions.allActionsArray();
@@ -13,4 +6,3 @@ define([
 			}
 		});
 	});
-});

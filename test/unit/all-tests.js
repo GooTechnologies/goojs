@@ -1,3 +1,4 @@
+/*
 define([
 	'test/addons/linerenderpack/LineRenderer-test',
 	'test/addons/linerenderpack/LineRenderSystem-test',
@@ -244,3 +245,4 @@ define([
 	'test/util/PromiseUtils-test',
 	'test/util/StringUtils-test'
 ], function () {});
+*/
