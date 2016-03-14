@@ -1,7 +1,9 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/entities/SystemBus'
 ], function (
-	Action
+	Action,
+	SystemBus
 ) {
 	'use strict';
 
@@ -40,21 +42,24 @@ define([
 
 		var that = this;
 		this.eventListener = function (event) {
-			var x, y;
-			var domTarget = that.goo.renderer.domElement;
-			if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
-				x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
-				y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
-			} else {
-				var rect = domTarget.getBoundingClientRect();
-				x = event.clientX - rect.left;
-				y = event.clientY - rect.top;
-			}
-			var pickingStore = that.goo.pickSync(x, y);
-			var pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
-
+			var pickedEntity = event.entity;
 			if (!pickedEntity) {
-				return;
+				var x, y;
+				var domTarget = that.goo.renderer.domElement;
+				if (event.type === 'touchstart' || event.type === 'touchend' || event.type === 'touchmove') {
+					x = event.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
+					y = event.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+				} else {
+					var rect = domTarget.getBoundingClientRect();
+					x = event.clientX - rect.left;
+					y = event.clientY - rect.top;
+				}
+				var pickingStore = that.goo.pickSync(x, y);
+				pickedEntity = that.goo.world.entityManager.getEntityByIndex(pickingStore.id);
+
+				if (!pickedEntity) {
+					return;
+				}
 			}
 
 			pickedEntity.traverseUp(function (entity) {
@@ -67,11 +72,13 @@ define([
 
 		document.addEventListener('click', this.eventListener);
 		document.addEventListener('touchstart', this.eventListener);
+		SystemBus.addListener('goo.trigger.click', this.eventListener);
 	};
 
 	PickAction.prototype.exit = function () {
 		document.removeEventListener('click', this.eventListener);
 		document.removeEventListener('touchstart', this.eventListener);
+		SystemBus.removeListener('goo.trigger.click', this.eventListener);
 	};
 
 	return PickAction;
