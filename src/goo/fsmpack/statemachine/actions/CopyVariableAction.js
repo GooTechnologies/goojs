@@ -1,3 +1,5 @@
+var Action = require('./Action');
+
 	function CopyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}

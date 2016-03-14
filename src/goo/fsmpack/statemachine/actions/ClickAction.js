@@ -1,3 +1,4 @@
+var Action = require('./Action');
 
 	function ClickAction(/*id, settings*/) {
 		Action.apply(this, arguments);

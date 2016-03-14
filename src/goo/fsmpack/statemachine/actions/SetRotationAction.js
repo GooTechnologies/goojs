@@ -19,6 +19,8 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	};
 
 	SetRotationAction.external = {
+		name: 'Set Rotation',
+		key: 'Set Rotation',
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',

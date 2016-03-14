@@ -1,7 +1,7 @@
 
 	var _actions = {};
 
-	var Actions = {};
+	var Actions = function(){};
 
 	var IGNORED_ACTIONS = [
 		'Eval',
@@ -32,123 +32,108 @@
 	};
 
 	Actions.allActionsArray = function () {
-		var actions = [];
-		var keys = Object.keys(_actions);
+		var array = [];
+		var actions = Actions.allActions();
+		var keys = Object.keys(actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (key === 'Eval' || key === 'HTMLPick' || key === 'Remove') {
-				continue;
-			}
-			actions.push(_actions[key]);
+			array.push(actions[key]);
 		}
-		return actions;
+		return array;
 	};
 
-	function registerAll(args) {
-		var actionsStartIndex = 0;
-		for (var i = actionsStartIndex; i < args.length; i++) {
-			var arg = args[i];
-			Actions.register(arg.external.key, arg);
-		}
-	}
-
-	registerAll({
-		AddLightAction: require('./AddLightAction'),
-		AddPositionAction: require('./AddPositionAction'),
-		AddVariableAction: require('./AddVariableAction'),
-		ApplyForceAction: require('./ApplyForceAction'),
-		ApplyImpulseAction: require('./ApplyImpulseAction'),
-		ApplyTorqueAction: require('./ApplyTorqueAction'),
+	var allActions = {
 		ArrowsAction: require('./ArrowsAction'),
-		ClickAction: require('./ClickAction'),
-		CollidesAction: require('./CollidesAction'),
-		CompareCounterAction: require('./CompareCounterAction'),
-		CompareCountersAction: require('./CompareCountersAction'),
-		CompareDistanceAction: require('./CompareDistanceAction'),
-		CopyJointTransformAction: require('./CopyJointTransformAction'),
-		CopyVariableAction: require('./CopyVariableAction'),
-		DollyZoomAction: require('./DollyZoomAction'),
-		EmitAction: require('./EmitAction'),
-		EvalAction: require('./EvalAction'),
-		FireAction: require('./FireAction'),
-		GetPositionAction: require('./GetPositionAction'),
-		HideAction: require('./HideAction'),
-		HoverEnterAction: require('./HoverEnterAction'),
-		HoverExitAction: require('./HoverExitAction'),
-		HtmlAction: require('./HtmlAction'),
-		InBoxAction: require('./InBoxAction'),
-		InFrustumAction: require('./InFrustumAction'),
-		IncrementCounterAction: require('./IncrementCounterAction'),
-		KeyDownAction: require('./KeyDownAction'),
-		KeyPressedAction: require('./KeyPressedAction'),
-		KeyUpAction: require('./KeyUpAction'),
-		LogMessageAction: require('./LogMessageAction'),
-		LookAtAction: require('./LookAtAction'),
+		MouseUpAction: require('./MouseUpAction'),
 		MouseDownAction: require('./MouseDownAction'),
 		MouseMoveAction: require('./MouseMoveAction'),
 		MousePressedAction: require('./MousePressedAction'),
-		MouseUpAction: require('./MouseUpAction'),
-		MoveAction: require('./MoveAction'),
-		MultiplyVariableAction: require('./MultiplyVariableAction'),
-		MuteAction: require('./MuteAction'),
-		NextFrameAction: require('./NextFrameAction'),
-		NumberCompareAction: require('./NumberCompareAction'),
-		PauseAnimationAction: require('./PauseAnimationAction'),
-		PauseSoundAction: require('./PauseSoundAction'),
-		PauseTimelineAction: require('./PauseTimelineAction'),
+		KeyUpAction: require('./KeyUpAction'),
+		KeyDownAction: require('./KeyDownAction'),
+		KeyPressedAction: require('./KeyPressedAction'),
 		PickAction: require('./PickAction'),
 		PickAndExitAction: require('./PickAndExitAction'),
-		PlaySoundAction: require('./PlaySoundAction'),
-		RandomTransitionAction: require('./RandomTransitionAction'),
-		RemoveAction: require('./RemoveAction'),
-		RemoveLightAction: require('./RemoveLightAction'),
-		RemoveParticlesAction: require('./RemoveParticlesAction'),
-		ResumeAnimationAction: require('./ResumeAnimationAction'),
+		ClickAction: require('./ClickAction'),
+		HoverEnterAction: require('./HoverEnterAction'),
+		HoverExitAction: require('./HoverExitAction'),
+		WasdAction: require('./WasdAction'),
+		MoveAction: require('./MoveAction'),
 		RotateAction: require('./RotateAction'),
 		ScaleAction: require('./ScaleAction'),
-		ScriptAction: require('./ScriptAction'),
-		SetAnimationAction: require('./SetAnimationAction'),
-		SetClearColorAction: require('./SetClearColorAction'),
-		SetCounterAction: require('./SetCounterAction'),
-		SetHtmlTextAction: require('./SetHtmlTextAction'),
-		SetLightPropertiesAction: require('./SetLightPropertiesAction'),
-		SetLightRangeAction: require('./SetLightRangeAction'),
-		SetMaterialColorAction: require('./SetMaterialColorAction'),
-		SetPositionAction: require('./SetPositionAction'),
-		SetRenderTargetAction: require('./SetRenderTargetAction'),
-		SetRigidBodyAngularVelocityAction: require('./SetRigidBodyAngularVelocityAction'),
-		SetRigidBodyPositionAction: require('./SetRigidBodyPositionAction'),
-		SetRigidBodyVelocityAction: require('./SetRigidBodyVelocityAction'),
-		SetRotationAction: require('./SetRotationAction'),
-		SetTimelineTimeAction: require('./SetTimelineTimeAction'),
-		SetVariableAction: require('./SetVariableAction'),
-		ShakeAction: require('./ShakeAction'),
-		ShowAction: require('./ShowAction'),
-		SmokeAction: require('./SmokeAction'),
-		SoundFadeInAction: require('./SoundFadeInAction'),
-		SoundFadeOutAction: require('./SoundFadeOutAction'),
-		StartTimelineAction: require('./StartTimelineAction'),
-		StopSoundAction: require('./StopSoundAction'),
-		StopTimelineAction: require('./StopTimelineAction'),
-		SwitchCameraAction: require('./SwitchCameraAction'),
-		TagAction: require('./TagAction'),
-		ToggleFullscreenAction: require('./ToggleFullscreenAction'),
-		ToggleMuteAction: require('./ToggleMuteAction'),
-		TogglePostFxAction: require('./TogglePostFxAction'),
-		TransitionAction: require('./TransitionAction'),
-		TransitionOnMessageAction: require('./TransitionOnMessageAction'),
-		TriggerEnterAction: require('./TriggerEnterAction'),
-		TriggerLeaveAction: require('./TriggerLeaveAction'),
-		TweenLightColorAction: require('./TweenLightColorAction'),
-		TweenLookAtAction: require('./TweenLookAtAction'),
+		LookAtAction: require('./LookAtAction'),
 		TweenMoveAction: require('./TweenMoveAction'),
-		TweenOpacityAction: require('./TweenOpacityAction'),
 		TweenRotationAction: require('./TweenRotationAction'),
 		TweenScaleAction: require('./TweenScaleAction'),
-		TweenTextureOffsetAction: require('./TweenTextureOffsetAction'),
-		UnmuteAction: require('./UnmuteAction'),
+		TweenLookAtAction: require('./TweenLookAtAction'),
+		ShakeAction: require('./ShakeAction'),
+		PauseAnimationAction: require('./PauseAnimationAction'),
+		ResumeAnimationAction: require('./ResumeAnimationAction'),
+		SetAnimationAction: require('./SetAnimationAction'),
+		SetTimeScale: require('./SetTimeScale'),
 		WaitAction: require('./WaitAction'),
-		WasdAction: require('./WasdAction')
-	});
+		TransitionAction: require('./TransitionAction'),
+		NextFrameAction: require('./NextFrameAction'),
+		RandomTransitionAction: require('./RandomTransitionAction'),
+		EmitAction: require('./EmitAction'),
+		TransitionOnMessageAction: require('./TransitionOnMessageAction'),
+		EvalAction: require('./EvalAction'),
+		HideAction: require('./HideAction'),
+		ShowAction: require('./ShowAction'),
+		RemoveAction: require('./RemoveAction'),
+		AddLightAction: require('./AddLightAction'),
+		RemoveLightAction: require('./RemoveLightAction'),
+		SetLightPropertiesAction: require('./SetLightPropertiesAction'),
+		TweenLightColorAction: require('./TweenLightColorAction'),
+		SetClearColorAction: require('./SetClearColorAction'),
+		SwitchCameraAction: require('./SwitchCameraAction'),
+		InFrustumAction: require('./InFrustumAction'),
+		DollyZoomAction: require('./DollyZoomAction'),
+		InBoxAction: require('./InBoxAction'),
+		CompareDistanceAction: require('./CompareDistanceAction'),
+		CollidesAction: require('./CollidesAction'),
+		TagAction: require('./TagAction'),
+		SmokeAction: require('./SmokeAction'),
+		FireAction: require('./FireAction'),
+		RemoveParticlesAction: require('./RemoveParticlesAction'),
+		TogglePostFxAction: require('./TogglePostFxAction'),
+		ToggleFullscreenAction: require('./ToggleFullscreenAction'),
+		PlaySoundAction: require('./PlaySoundAction'),
+		PauseSoundAction: require('./PauseSoundAction'),
+		StopSoundAction: require('./StopSoundAction'),
+		SoundFadeInAction: require('./SoundFadeInAction'),
+		SoundFadeOutAction: require('./SoundFadeOutAction'),
+		SetRenderTargetAction: require('./SetRenderTargetAction'),
+		TweenTextureOffsetAction: require('./TweenTextureOffsetAction'),
+		SetMaterialColorAction: require('./SetMaterialColorAction'),
+		LogMessageAction: require('./LogMessageAction'),
+		TweenOpacityAction: require('./TweenOpacityAction'),
+		HtmlAction: require('./HtmlAction'),
+		CopyJointTransformAction: require('./CopyJointTransformAction'),
+		TriggerEnterAction: require('./TriggerEnterAction'),
+		TriggerLeaveAction: require('./TriggerLeaveAction'),
+		ApplyImpulseAction: require('./ApplyImpulseAction'),
+		ApplyForceAction: require('./ApplyForceAction'),
+		ApplyTorqueAction: require('./ApplyTorqueAction'),
+		SetRigidBodyPositionAction: require('./SetRigidBodyPositionAction'),
+		SetRigidBodyVelocityAction: require('./SetRigidBodyVelocityAction'),
+		SetRigidBodyAngularVelocityAction: require('./SetRigidBodyAngularVelocityAction'),
+		CompareCounterAction: require('./CompareCounterAction'),
+		CompareCountersAction: require('./CompareCountersAction'),
+		SetCounterAction: require('./SetCounterAction'),
+		IncrementCounterAction: require('./IncrementCounterAction'),
+		MuteAction: require('./MuteAction'),
+		UnmuteAction: require('./UnmuteAction'),
+		ToggleMuteAction: require('./ToggleMuteAction'),
+		StartTimelineAction: require('./StartTimelineAction'),
+		PauseTimelineAction: require('./PauseTimelineAction'),
+		StopTimelineAction: require('./StopTimelineAction'),
+		SetTimelineTimeAction: require('./SetTimelineTimeAction'),
+		SetHtmlTextAction: require('./SetHtmlTextAction')
+	};
+
+	for(var actionName in allActions){
+		var action = allActions[actionName];
+		Actions.register(action.external.key, action);
+	}
 
 module.exports = Actions;

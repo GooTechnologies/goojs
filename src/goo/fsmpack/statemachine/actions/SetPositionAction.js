@@ -19,6 +19,8 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	};
 
 	SetPositionAction.external = {
+		key: 'Set Position',
+		name: 'Set Position',
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',

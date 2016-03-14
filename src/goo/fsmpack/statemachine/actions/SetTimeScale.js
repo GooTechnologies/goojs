@@ -1,5 +1,4 @@
 var Action = require('./Action');
-var Vector3 = require('./../../math/Vector3');
 
 	function SetTimeScale(/*id, settings*/) {
 		Action.apply(this, arguments);

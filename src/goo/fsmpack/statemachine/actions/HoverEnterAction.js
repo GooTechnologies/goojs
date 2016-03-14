@@ -1,3 +1,4 @@
+var Action = require('./Action');
 
 	function HoverEnterAction(/*id, settings*/) {
 		Action.apply(this, arguments);
