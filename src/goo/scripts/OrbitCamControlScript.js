@@ -180,6 +180,9 @@ define([
 	}
 
 	function updateFrustumSize(delta, ctx) {
+		if (!ctx.entity.cameraComponent) {
+			return;
+		}
 		var camera = ctx.entity.cameraComponent.camera;
 		if (camera.projectionMode === Camera.Parallel) {
 			ctx.size = camera.top;
@@ -396,12 +399,14 @@ define([
 
 		// set our component updated.
 		transformComponent.setUpdated();
-		SystemBus.emit('goo.cameraPositionChanged', {
-			spherical: ctx.spherical.toArray(),
-			translation: transform.translation.toArray(),
-			lookAtPoint: ctx.lookAtPoint.toArray(),
-			id: entity.id
-		});
+		if (ctx.entity.cameraComponent) {
+			SystemBus.emit('goo.cameraPositionChanged', {
+				spherical: ctx.spherical.toArray(),
+				translation: transform.translation.toArray(),
+				lookAtPoint: ctx.lookAtPoint.toArray(),
+				id: entity.id
+			});
+		}
 	}
 
 	function cleanup(args, ctx) {
