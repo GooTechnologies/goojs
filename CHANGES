@@ -1,3 +1,24 @@
+v0.15.34 --- 2016-03-14
+
+### Additions
+  
+  + Setting depth function is now supported (Material.depthState.depthFunc)
+
+### Fixes
+
+  * Initialize before bailing out early in PhysicsSystem
+  * Set background color action can now set alpha as well
+  * Remove default zero for sound action parameters
+  * Fix to prevent camscript crash on entities without camera component
+
+v0.15.33 --- 2016-03-09
+
+### Fixes
+  
+  * Fix requestFullscreen on Safari and IE/Edge
+  * Transition triggerEnterAction on the actual event and not next frame
+  * ClickAction optimization, don't pickSync if already diff too much
+
 v0.15.32 --- 2016-03-07
 v0.15.31 --- 2016-03-07
 
