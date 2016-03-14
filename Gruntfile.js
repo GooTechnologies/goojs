@@ -222,6 +222,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'generate-toc', 'copy']);
+	grunt.registerTask('minify-no-mangle', ['minify']); // TODO
 	grunt.registerTask('minify-dev', ['webpack', 'copy']);
 	grunt.registerTask('default', ['minify']);
 };
