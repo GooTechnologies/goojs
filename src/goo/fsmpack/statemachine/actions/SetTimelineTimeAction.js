@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function SetTimelineTimeAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -36,5 +31,4 @@ define([
 		entity.timelineComponent.setTime(this.time);
 	};
 
-	return SetTimelineTimeAction;
-});
+	module.exports = SetTimelineTimeAction;

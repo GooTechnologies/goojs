@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function NextFrameAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -38,5 +33,4 @@ define([
 		fsm.send(this.transitions.transition);
 	};
 
-	return NextFrameAction;
-});
+	module.exports = NextFrameAction;

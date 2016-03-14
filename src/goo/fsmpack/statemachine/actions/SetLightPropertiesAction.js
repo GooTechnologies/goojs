@@ -1,4 +1,4 @@
-define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
+var Action = require('./Action');
 
 
 	function SetLightPropertiesAction(/*id, settings*/) {
@@ -58,5 +58,4 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 		}
 	};
 
-	return SetLightPropertiesAction;
-});
+	module.exports = SetLightPropertiesAction;

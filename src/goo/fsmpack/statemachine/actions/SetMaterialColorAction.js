@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function SetMaterialColorAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -61,5 +56,4 @@ define([
 		}
 	};
 
-	return SetMaterialColorAction;
-});
+	module.exports = SetMaterialColorAction;

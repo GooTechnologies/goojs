@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function ScriptAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -82,5 +77,4 @@ define([
 	ScriptAction.prototype.onDestroy = function () {
 	};
 
-	return ScriptAction;
-});
+	module.exports = ScriptAction;

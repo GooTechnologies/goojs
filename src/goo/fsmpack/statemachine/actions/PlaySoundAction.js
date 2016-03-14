@@ -1,11 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/PromiseUtil'
-], function (
-	Action,
-	PromiseUtil
-) {
-
+var Action = require('./Action');
+var PromiseUtil = require('./../../../util/PromiseUtil');
 
 	function PlaySoundAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -61,5 +55,4 @@ define([
 		}.bind(this));
 	};
 
-	return PlaySoundAction;
-});
+	module.exports = PlaySoundAction;

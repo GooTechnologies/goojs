@@ -1,13 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3',
-	'goo/entities/SystemBus'
-], function (
-	Action,
-	Vector3,
-	SystemBus
-) {
-
 
 	function ApplyTorqueAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -59,5 +49,4 @@ define([
 		SystemBus.removeListener('goo.physics.substep', this.substepListener);
 	};
 
-	return ApplyTorqueAction;
-});
+	module.exports = ApplyTorqueAction;

@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function StopTimelineAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -30,5 +25,4 @@ define([
 		entity.timelineComponent.stop();
 	};
 
-	return StopTimelineAction;
-});
+	module.exports = StopTimelineAction;

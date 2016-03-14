@@ -1,9 +1,4 @@
-define([
-	'goo/math/Ray'
-], function (
-	Ray
-) {
-
+var Ray = require('../../math/Ray');
 
 	/**
 	 * BoundingPicker
@@ -49,5 +44,4 @@ define([
 		return pickList;
 	};
 
-	return BoundingPicker;
-});
+	module.exports = BoundingPicker;

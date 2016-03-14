@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function TogglePostFxAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -34,5 +29,4 @@ define([
 		}
 	};
 
-	return TogglePostFxAction;
-});
+	module.exports = TogglePostFxAction;

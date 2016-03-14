@@ -1,11 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/renderer/bounds/BoundingPicker'
-], function (
-	Action,
-	BoundingPicker
-) {
-
+var Action = require('./Action');
+var BoundingPicker = require('./../../../renderer/bounds/BoundingPicker');
 
 	function HoverExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -116,5 +110,4 @@ define([
 		document.removeEventListener('touchmove', this.moveListener);
 	};
 
-	return HoverExitAction;
-});
+	module.exports = HoverExitAction;

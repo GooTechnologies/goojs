@@ -1,9 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
 
 	function ClickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -121,5 +115,4 @@ define([
 		document.removeEventListener('touchend', this.upListener);
 	};
 
-	return ClickAction;
-});
+	module.exports = ClickAction;

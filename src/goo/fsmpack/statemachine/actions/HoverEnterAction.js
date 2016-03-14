@@ -1,11 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/renderer/bounds/BoundingPicker'
-], function (
-	Action,
-	BoundingPicker
-) {
-
 
 	function HoverEnterAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -117,5 +109,5 @@ define([
 		document.removeEventListener('touchmove', this.moveListener);
 	};
 
-	return HoverEnterAction;
-});
+	module.exports = HoverEnterAction;
+

@@ -1,9 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
+var Vector3 = require('./../../math/Vector3');
 
 	function SetTimeScale(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -35,5 +31,4 @@ define([
 		}
 	};
 
-	return SetTimeScale;
-});
+	module.exports = SetTimeScale;

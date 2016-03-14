@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function ToggleMuteAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -35,5 +30,4 @@ define([
 		}
 	};
 
-	return ToggleMuteAction;
-});
+	module.exports = ToggleMuteAction;

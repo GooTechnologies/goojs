@@ -1,11 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
-], function (
-	Action,
-	Vector3
-) {
-
+var Action = require('./Action');
+var Vector3 = require('./../../../math/Vector3');
 
 	function SetRigidBodyVelocityAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -37,5 +31,4 @@ define([
 		entity.rigidBodyComponent.setVelocity(tmpVector);
 	};
 
-	return SetRigidBodyVelocityAction;
-});
+	module.exports = SetRigidBodyVelocityAction;

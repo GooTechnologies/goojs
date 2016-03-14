@@ -1,11 +1,5 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/util/GameUtils'
-], function (
-	Action,
-	GameUtils
-) {
-
+var Action = require('./Action');
+var GameUtils = require('./../../../util/GameUtils');
 
 	function ToggleFullscreenAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -27,5 +21,4 @@ define([
 		GameUtils.toggleFullScreen();
 	};
 
-	return ToggleFullscreenAction;
-});
+	module.exports = ToggleFullscreenAction;

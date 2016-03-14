@@ -1,8 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
+var Action = require('./Action');
 
 
 	function MousePressedAction(/*id, settings*/) {
@@ -55,5 +51,4 @@ define([
 		}
 	};
 
-	return MousePressedAction;
-});
+	module.exports = MousePressedAction;

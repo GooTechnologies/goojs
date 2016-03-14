@@ -1,12 +1,3 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FsmUtils'
-], function (
-	Action,
-	FsmUtils
-) {
-
-
 	function CopyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
@@ -70,5 +61,4 @@ define([
 		}
 	};
 
-	return CopyVariableAction;
-});
+	module.exports = CopyVariableAction;

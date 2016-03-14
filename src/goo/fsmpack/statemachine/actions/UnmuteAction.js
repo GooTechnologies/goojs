@@ -1,9 +1,4 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-
+var Action = require('./Action');
 
 	function UnmuteAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -31,5 +26,4 @@ define([
 		}
 	};
 
-	return UnmuteAction;
-});
+	module.exports = UnmuteAction;
