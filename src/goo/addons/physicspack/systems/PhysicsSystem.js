@@ -432,11 +432,11 @@ function (
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
-		if (entities.length === 0) {
-			return;
-		}
 		if (!this.initialized) {
 			this.initialize();
+		}
+		if (entities.length === 0) {
+			return;
 		}
 		this.step(tpf);
 		this.syncTransforms(entities);
