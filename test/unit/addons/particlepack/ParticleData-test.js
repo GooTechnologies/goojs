@@ -1,20 +1,5 @@
-define([
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/math/Vector3',
-	'goo/entities/World',
-	'goo/entities/components/TransformComponent',
-	'test/CustomMatchers'
-], function (
-	ParticleSystemComponent,
-	Vector3,
-	World,
-	TransformComponent,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('ParticleData', function () {
-		
+
 		var world;
 
 		beforeEach(function () {
@@ -32,4 +17,3 @@ define([
 		});
 
 	});
-});

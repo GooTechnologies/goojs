@@ -1,16 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/Curve',
-	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/math/Vector3'
-], function (
-	Curve,
-	Vector3Curve,
-	ConstantCurve,
-	Vector3
-) {
-	'use strict';
-
 	describe('Vector3Curve', function () {
 
 		it('.getVec3ValueAt', function () {
@@ -69,4 +56,3 @@ define([
 			expect(curve.integralToGLSL('t')).toBe('vec3((1.0*t),(2.0*t),(3.0*t))');
 		});
 	});
-});

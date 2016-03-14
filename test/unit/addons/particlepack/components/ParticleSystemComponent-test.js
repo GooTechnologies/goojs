@@ -1,32 +1,5 @@
-define([
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/Vector4Curve',
-	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/math/Vector3',
-	'goo/entities/World',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/systems/TransformSystem',
-	'goo/renderer/Texture',
-	'goo/renderer/MeshData',
-	'test/CustomMatchers'
-], function (
-	ParticleSystemComponent,
-	LinearCurve,
-	Vector4Curve,
-	Vector3Curve,
-	Vector3,
-	World,
-	TransformComponent,
-	TransformSystem,
-	Texture,
-	MeshData,
-	CustomMatchers
-) {
-	'use strict';
-
 	describe('ParticleSystemComponent', function () {
-		
+
 		var world;
 
 		beforeEach(function () {
@@ -102,7 +75,7 @@ define([
 				texture: texture,
 				textureFrameOverLifetime: new LinearCurve({ k: 1, m: 0 })
 			});
-			
+
 			var clone = component.clone();
 
 			expect(clone.maxParticles).toBe(10);
@@ -141,7 +114,7 @@ define([
 			}));
 			expect(clone.emissionRate).toEqual(new LinearCurve({ k: 123, m: 123 }));
 			expect(clone.startLifetime).toEqual(new LinearCurve({ k: 123, m: 123 }));
-			expect(clone.renderQueue).toBe(123); 
+			expect(clone.renderQueue).toBe(123);
 			expect(clone.discardThreshold).toBe(0.123);
 			expect(clone.loop).toBe(true);
 			expect(clone.blending).toBe('TransparencyBlending');
@@ -202,4 +175,3 @@ define([
 			expect(component.time).toBe(1);
 		});
 	});
-});

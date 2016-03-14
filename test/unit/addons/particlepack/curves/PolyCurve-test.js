@@ -1,14 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/Curve',
-	'goo/addons/particlepack/curves/LinearCurve',
-	'goo/addons/particlepack/curves/PolyCurve'
-], function (
-	Curve,
-	LinearCurve,
-	PolyCurve
-) {
-	'use strict';
-
 	describe('PolyCurve', function () {
 		it('can add a segment', function () {
 			var set = new PolyCurve();
@@ -55,4 +44,3 @@ define([
 			expect(set.integralToGLSL('t','lerp')).toBe('(1.0*clamp(t,0.0,1.0)*clamp(t,0.0,1.0)*0.5+0.0*clamp(t,0.0,1.0))');
 		});
 	});
-});

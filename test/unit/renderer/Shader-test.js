@@ -159,7 +159,7 @@
 			};
 
 			it('has applied the correct mappings to simple shader (simple)', function () {
-				var shaderDefinition = miniShaderDefinition;
+				var shaderDefinition = miniShaderDefinition();
 				var shaderInfo = createShaderInfo(shaderDefinition);
 				updateShader(shaderInfo);
 
@@ -207,6 +207,7 @@
 			it('has applied the correct mappings to complex shader (uber)', function () {
 				var shaderDefinition = ShaderLib.uber;
 				var shaderInfo = createShaderInfo(shaderDefinition);
+
 
 				spyOn(shaderInfo.renderer.context, 'uniform1i').and.callThrough();
 				spyOn(shaderInfo.renderer.context, 'uniform1f').and.callThrough();
@@ -332,33 +333,35 @@
 		};
 	}
 
-	var miniShaderDefinition = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
-		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX
-		},
-		vshader : [
-		'attribute vec3 vertexPosition;',
+	function miniShaderDefinition(){
+		return {
+			attributes : {
+				vertexPosition : MeshData.POSITION
+			},
+			uniforms : {
+				viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX
+			},
+			vshader : [
+			'attribute vec3 vertexPosition;',
 
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
 
-		'uniform float doesExist;',
-		'varying float test;',
+			'uniform float doesExist;',
+			'varying float test;',
 
-		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-		'}'
-		].join('\n'),
-		fshader : [
-		'varying float test;',
-		'void main(void)',
-		'{',
-			'gl_FragColor = vec4(test);',
-		'}'
-		].join('\n')
-	};
+			'void main(void) {',
+				'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'}'
+			].join('\n'),
+			fshader : [
+			'varying float test;',
+			'void main(void)',
+			'{',
+				'gl_FragColor = vec4(test);',
+			'}'
+			].join('\n')
+		};
+	}
 })();

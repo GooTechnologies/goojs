@@ -1,28 +1,3 @@
-define([
-	'goo/entities/World',
-	'goo/addons/particlepack/components/ParticleSystemComponent',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/addons/particlepack/curves/PolyCurve',
-	'goo/addons/particlepack/curves/Vector3Curve',
-	'goo/addons/particlepack/curves/Vector4Curve',
-	'goo/math/Vector3',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs',
-	'goo/util/ObjectUtil'
-], function (
-	World,
-	ParticleSystemComponent,
-	ConstantCurve,
-	PolyCurve,
-	Vector3Curve,
-	Vector4Curve,
-	Vector3,
-	DynamicLoader,
-	Configs,
-	_
-) {
-	'use strict';
-
 	describe('ParticleSystemComponentHandler', function () {
 		var loader;
 
@@ -159,4 +134,3 @@ define([
 			});
 		});
 	});
-});

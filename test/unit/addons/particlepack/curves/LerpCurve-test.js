@@ -1,14 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/Curve',
-	'goo/addons/particlepack/curves/LerpCurve',
-	'goo/addons/particlepack/curves/ConstantCurve'
-], function (
-	Curve,
-	LerpCurve,
-	ConstantCurve
-) {
-	'use strict';
-
 	describe('LerpCurve', function () {
 
 		it('.getValueAt', function () {
@@ -49,4 +38,3 @@ define([
 			expect(curve.integralToGLSL('t','a')).toBe('mix((1.0*t),(2.0*t),a)');
 		});
 	});
-});

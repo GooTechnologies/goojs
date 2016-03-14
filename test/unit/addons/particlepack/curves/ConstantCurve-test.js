@@ -1,11 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/Curve',
-	'goo/addons/particlepack/curves/ConstantCurve'
-], function (
-	Curve,
-	ConstantCurve
-) {
-	'use strict';
 
 	describe('ConstantCurve', function () {
 
@@ -33,4 +25,3 @@ define([
 			expect(set.integralToGLSL('t')).toBe('(123.0*t)');
 		});
 	});
-});

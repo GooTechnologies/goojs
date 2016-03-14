@@ -1,10 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/LinearCurve'
-], function (
-	LinearCurve
-) {
-	'use strict';
-
 	describe('LinearCurve', function () {
 		it('.getValueAt', function () {
 			var curve = new LinearCurve({
@@ -52,4 +45,3 @@ define([
 			expect(curve.integralToGLSL('t')).toBe('(1.0*t*t*0.5+0.0*t)');
 		});
 	});
-});

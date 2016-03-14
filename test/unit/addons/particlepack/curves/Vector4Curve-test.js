@@ -1,16 +1,3 @@
-define([
-	'goo/addons/particlepack/curves/Curve',
-	'goo/addons/particlepack/curves/Vector4Curve',
-	'goo/addons/particlepack/curves/ConstantCurve',
-	'goo/math/Vector4'
-], function (
-	Curve,
-	Vector4Curve,
-	ConstantCurve,
-	Vector4
-) {
-	'use strict';
-
 	describe('Vector4Curve', function () {
 
 		it('.getVec4ValueAt', function () {
@@ -73,4 +60,3 @@ define([
 			expect(curve.integralToGLSL('t')).toBe('vec4((1.0*t),(2.0*t),(3.0*t),(4.0*t))');
 		});
 	});
-});
