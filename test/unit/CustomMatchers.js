@@ -1,4 +1,7 @@
-var CustomMatchers = {};
+var Matrix = require('src/goo/math/Matrix');
+var MathUtils = require('src/goo/math/MathUtils');
+
+function CustomMatchers(){}
 
 var serializeArrayBuffer = function (array) {
 	return '[' + Array.prototype.join.call(array, ', ') + ']';
@@ -199,3 +202,5 @@ CustomMatchers.toBeCloned = function (util, customEqualityTesters) {
 		}
 	};
 };
+
+module.exports = CustomMatchers;

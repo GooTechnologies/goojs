@@ -1,4 +1,6 @@
-EntityConfig = {
+var _ = require('src/goo/util/ObjectUtil');
+
+module.exports = {
 		entity: function (components) {
 			components = components || ['transform'];
 			var entity = this.gooObject('entity', 'Dummy');

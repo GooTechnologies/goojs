@@ -1,4 +1,14 @@
 describe('AnimationComponentHandler', function () {
+
+	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+	var World = require('src/goo/entities/World');
+	var Configs = require('test/unit/loaders/Configs');
+	var AnimationComponent = require('src/goo/animationpack/components/AnimationComponent');
+	var AnimationLayer = require('src/goo/animationpack/layer/AnimationLayer');
+	var SkeletonPose = require('src/goo/animationpack/SkeletonPose');
+
+	require('src/goo/animationpack/handlers/AnimationHandlers');
+
 	var loader;
 
 	beforeEach(function () {

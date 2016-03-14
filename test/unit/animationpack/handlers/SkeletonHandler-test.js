@@ -1,4 +1,12 @@
 describe('SkeletonHandler', function () {
+
+	var World = require('src/goo/entities/World');
+	var SkeletonPose = require('src/goo/animationpack/SkeletonPose');
+	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+	var Configs = require('test/unit/loaders/Configs');
+
+	require('src/goo/animationpack/handlers/AnimationHandlers');
+
 	var loader;
 
 	beforeEach(function () {

@@ -1,4 +1,4 @@
-AnimationConfig = {
+module.exports = {
 	skeleton: function () {
 		var skeleton = this.gooObject('skeleton', 'Dummy');
 		skeleton.joints = {};

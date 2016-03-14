@@ -1,5 +1,7 @@
 	describe('Curve', function () {
 
+		var Curve = require('src/goo/addons/particlepack/curves/Curve');
+
 		it('.getValueAt', function () {
 			var curve = new Curve();
 			expect(curve.getValueAt(0)).toBe(0);

@@ -1,4 +1,18 @@
 	describe('ParticleSystemComponentHandler', function () {
+		var PolyCurve = require('src/goo/addons/particlepack/curves/PolyCurve');
+		var Vector3Curve = require('src/goo/addons/particlepack/curves/Vector3Curve');
+		var Vector4Curve = require('src/goo/addons/particlepack/curves/Vector4Curve');
+		var ConstantCurve = require('src/goo/addons/particlepack/curves/ConstantCurve');
+		var ConstantCurve = require('src/goo/addons/particlepack/curves/ConstantCurve');
+		var ParticleSystemComponent = require('src/goo/addons/particlepack/components/ParticleSystemComponent');
+		var Vector3 = require('src/goo/math/Vector3');
+		var World = require('src/goo/entities/World');
+		var Configs = require('test/unit/loaders/Configs');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var _ = require('src/goo/util/ObjectUtil');
+
+		require('src/goo/addons/particlepack/handlers/ParticleSystemComponentHandler');
+
 		var loader;
 
 		beforeEach(function () {

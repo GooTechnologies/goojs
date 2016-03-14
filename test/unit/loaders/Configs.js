@@ -1,7 +1,16 @@
+var EntityConfig = require('./helpers/EntityConfig');
+var AnimationConfig = require('./helpers/AnimationConfig');
+var MaterialConfig = require('./helpers/MaterialConfig');
+var MeshConfig = require('./helpers/MeshConfig');
+var SceneConfig = require('./helpers/SceneConfig');
+var PosteffectsConfig = require('./helpers/PosteffectsConfig');
+
 var bundle = {};
 var Configs = {
 	randomRef: function (type) {
-		var hash = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb'.replace(/[ab]/g, function(a) { return ((Math.random() * 16) % 16 | 0).toString(16)});
+		var hash = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb'.replace(/[ab]/g, function(a) {
+			return ((Math.random() * 16) % 16 | 0).toString(16);
+		});
 		return hash + '.' + (type || '');
 	},
 	gooObject: function (type, name) {
@@ -67,3 +76,5 @@ attach(Configs, PosteffectsConfig);
 // for (var i = 0; i < arguments.length; i++) {
 // 	attach(Configs, arguments[i]);
 // }
+
+module.exports = Configs;

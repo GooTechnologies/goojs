@@ -1,4 +1,6 @@
-SceneConfig = {
+var _ = require('src/goo/util/ObjectUtil');
+
+module.exports = {
 		scene: function (complex) {
 			var entities = {};
 			var components = complex ? ['transform', 'meshRenderer', 'meshData', 'animation', 'camera', 'light'] : null;

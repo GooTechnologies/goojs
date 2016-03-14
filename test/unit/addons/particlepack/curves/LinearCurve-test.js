@@ -1,4 +1,6 @@
 	describe('LinearCurve', function () {
+		var LinearCurve = require('src/goo/addons/particlepack/curves/LinearCurve');
+
 		it('.getValueAt', function () {
 			var curve = new LinearCurve({
 				k: 1,

@@ -1,12 +1,16 @@
-	function createPool() {
-		return new Pool({
-			create: function () { return new Vector3(); },
-			init: Vector3.prototype.setDirect,
-			destroy: function (vector) { vector.setDirect(0, 0, 0); } // just for testing
-		});
-	}
 
 	describe('Pool', function () {
+
+		var Pool = require('src/goo/addons/physicspack/util/Pool');
+		var Vector3 = require('src/goo/math/Vector3');
+
+		function createPool() {
+			return new Pool({
+				create: function () { return new Vector3(); },
+				init: Vector3.prototype.setDirect,
+				destroy: function (vector) { vector.setDirect(0, 0, 0); } // just for testing
+			});
+		}
 
 		it('can resize', function () {
 			var pool = createPool();

@@ -1,4 +1,9 @@
 	describe('PosteffectsHandler', function () {
+
+		var GooRunner = require('src/goo/entities/GooRunner');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		require('src/goo/passpack/PosteffectsHandler');
+
 		var gooRunner, loader;
 
 		beforeEach(function () {

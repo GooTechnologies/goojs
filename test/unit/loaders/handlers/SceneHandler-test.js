@@ -1,4 +1,12 @@
 	describe('SceneHandler', function () {
+
+		var World = require('src/goo/entities/World');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Entity = require('src/goo/entities/Entity');
+		var Configs = require('test/unit/loaders/Configs');
+
+		require('src/goo/loaders/handlers/SceneHandler');
+
 		var loader;
 
 		beforeEach(function () {

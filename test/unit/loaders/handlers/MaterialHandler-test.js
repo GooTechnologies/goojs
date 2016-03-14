@@ -1,4 +1,15 @@
 	describe('MaterialHandler', function () {
+
+		var World = require('src/goo/entities/World');
+		var Material = require('src/goo/renderer/Material');
+		var Shader = require('src/goo/renderer/Shader');
+		var Texture = require('src/goo/renderer/Texture');
+		var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Configs = require('test/unit/loaders/Configs');
+
+		require('src/goo/loaders/handlers/MaterialHandler');
+
 		var loader;
 
 		beforeEach(function () {

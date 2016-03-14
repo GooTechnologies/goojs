@@ -1,4 +1,5 @@
-PosteffectsConfig = {
+var _ = require('src/goo/util/ObjectUtil');
+module.exports = {
 		posteffects: function () {
 			var config = this.gooObject('posteffects', 'Dummy');
 			_.extend(config, {

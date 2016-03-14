@@ -1,4 +1,13 @@
 	describe('RigidBodyComponentHandler', function () {
+
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Vector3 = require('src/goo/math/Vector3');
+		var World = require('src/goo/entities/World');
+		var RigidBodyComponent = require('src/goo/addons/physicspack/components/RigidBodyComponent');
+		var Configs = require('test/unit/loaders/Configs');
+
+		require('src/goo/addons/physicspack/handlers/RigidBodyComponentHandler');
+
 		var loader;
 
 		beforeEach(function () {

@@ -1,8 +1,12 @@
 	describe('PlaneCollider', function () {
+
+		var PlaneCollider = require('src/goo/addons/physicspack/colliders/PlaneCollider');
+		var Transform = require('src/goo/math/Transform');
+
 		it('can clone', function () {
 			var collider = new PlaneCollider();
 			var clone = collider.clone();
-			expect(collider).equal(clone);
+			expect(collider).toEqual(clone);
 		});
 
 		it('can transform', function () {

@@ -1,4 +1,10 @@
 	describe('MeshCollider', function () {
+
+		var MeshCollider = require('src/goo/addons/physicspack/colliders/MeshCollider');
+		var Vector3 = require('src/goo/math/Vector3');
+		var Sphere = require('src/goo/shapes/Sphere');
+		var Transform = require('src/goo/math/Transform');
+
 		it('can clone', function () {
 			var collider = new MeshCollider({
 				meshData: new Sphere(10, 10, 1),

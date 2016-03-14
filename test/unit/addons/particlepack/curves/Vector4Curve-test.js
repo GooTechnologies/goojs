@@ -1,5 +1,9 @@
 	describe('Vector4Curve', function () {
 
+		var Vector4Curve = require('src/goo/addons/particlepack/curves/Vector4Curve');
+		var ConstantCurve = require('src/goo/addons/particlepack/curves/ConstantCurve');
+		var Vector4 = require('src/goo/math/Vector4');
+
 		it('.getVec4ValueAt', function () {
 			var curve = new Vector4Curve({
 				x: new ConstantCurve({ value: 1 }),

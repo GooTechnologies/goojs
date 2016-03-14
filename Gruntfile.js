@@ -64,7 +64,7 @@ module.exports = function (grunt) {
 				options: {
 					wrapper: [
 						'/* Goo Engine ' + (grunt.option('goo-version') || 'UNOFFICIAL') + '\n' +
-						' * Copyright 2015 Goo Technologies AB\n' +
+						' * Copyright ' + (new Date()).getFullYear() + ' Goo Technologies AB\n' +
 						' */\n',
 						''
 					]
@@ -223,6 +223,6 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'generate-toc', 'copy']);
 	grunt.registerTask('minify-no-mangle', ['minify']); // TODO
-	grunt.registerTask('minify-dev', ['webpack', 'copy']);
+	grunt.registerTask('minify-dev', ['webpack', 'wrap', 'copy']);
 	grunt.registerTask('default', ['minify']);
 };
