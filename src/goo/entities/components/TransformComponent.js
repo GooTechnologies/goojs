@@ -671,6 +671,30 @@ define([
 		this._updated = true;
 	};
 
+	/**
+	 * Update the tree above and this component, making it up to date with all transforms.
+	 */
+	TransformComponent.prototype.sync = (function () {
+		var parents = [];
+		return function(){
+			var current = this;
+
+			while (current !== null) {
+				parents.push(current);
+				current = current.parent;
+			}
+
+			for (var i = parents.length - 1; i >= 0; i--) {
+				var component = parents[i];
+				if(component._dirty){
+					component.updateWorldTransform();
+				}
+			}
+
+			parents.length = 0;
+		};
+	})();
+
 	TransformComponent.applyOnEntity = function (obj, entity) {
 		var transformComponent = entity.transformComponent;
 
