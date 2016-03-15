@@ -73,12 +73,14 @@ define([
 		document.addEventListener('click', this.eventListener);
 		document.addEventListener('touchstart', this.eventListener);
 		SystemBus.addListener('goo.trigger.click', this.eventListener);
+		SystemBus.addListener('goo.trigger.touchstart', this.eventListener);
 	};
 
 	PickAction.prototype.exit = function () {
 		document.removeEventListener('click', this.eventListener);
 		document.removeEventListener('touchstart', this.eventListener);
 		SystemBus.removeListener('goo.trigger.click', this.eventListener);
+		SystemBus.removeListener('goo.trigger.touchstart', this.eventListener);
 	};
 
 	return PickAction;
