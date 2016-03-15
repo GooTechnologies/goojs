@@ -85,7 +85,7 @@ define([
 		this.fromScale.set(transformComponent.transform.scale);
 		this.toScale.setDirect(this.to[0], this.to[1], this.to[2]);
 		if (this.relative) {
-			this.toScale.mul(this.fromScale);
+			this.toScale.add(this.fromScale);
 		}
 
 		this.startTime = fsm.getTime();
