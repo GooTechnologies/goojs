@@ -23,6 +23,10 @@ function () {
 		this.interests = interests;
 
 		this._activeEntities = [];
+
+		/**
+		 * @type {boolean}
+		 */
 		this.passive = false;
 
 		/**
@@ -33,11 +37,17 @@ function () {
 	}
 
 	/**
+	 * Called on each render frame, if the system is not passive.
+	 * @param {array} entities
+	 * @param {number} tpf
+	 */
+	System.prototype.process = function (/*entities, tpf*/) {};
+
+	/**
 	 * Called when an entity is added to the world and systems need to be informed
 	 * @param entity
 	 */
 	System.prototype.added = function (entity) {
-		//! AT: added shouldn't call _check as it doesn't need to do as much as _check
 		this._check(entity);
 	};
 
@@ -46,7 +56,6 @@ function () {
 	 * @param entity
 	 */
 	System.prototype.changed = function (entity) {
-		//! AT: can directly say: System.prototype.changed = _check;
 		this._check(entity);
 	};
 
@@ -129,9 +138,7 @@ function () {
 	};
 
 	System.prototype._process = function (tpf) {
-		if (this.process) { // are there systems without a this.process?
-			this.process(this._activeEntities, tpf);
-		}
+		this.process(this._activeEntities, tpf);
 	};
 
 	System.prototype.clear = function () {
