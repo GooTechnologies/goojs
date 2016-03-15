@@ -1,9 +1,7 @@
 define([
-	'goo/entities/systems/System',
-	'goo/util/TWEEN'
+	'goo/entities/systems/System'
 ], function (
-	System,
-	TWEEN
+	System
 ) {
 	'use strict';
 
@@ -18,18 +16,18 @@ define([
 	TimelineSystem.prototype = Object.create(System.prototype);
 	TimelineSystem.prototype.constructor = TimelineSystem;
 
-	//! AT: why do we pass entities when this._activeEntities is the same is beyond me
 	TimelineSystem.prototype.process = function (entities, tpf) {
 		if (this.resetRequest) {
 			var component;
 			this.resetRequest = false;
 			for (var i = 0; i < entities.length; i++) {
 				component = entities[i].timelineComponent;
-				component.setTime(0);
+				component.stop();
+				if (component.autoStart) {
+					component.start();
+				}
 			}
 			this.time = 0;
-			//! AT: but no TWEENS have been harmed in any way
-			TWEEN.removeAll(); // this should not stay here
 			this.passive = true;
 			return;
 		}

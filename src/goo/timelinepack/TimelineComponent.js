@@ -16,11 +16,22 @@ define([
 
 		this.channels = [];
 
+		/**
+		 * Current time, locally in this timeline.
+		 * @type {number}
+		 */
 		this.time = 0;
+
 		this.duration = 0;
 		this.loop = false;
 
 		this.playing = true;
+
+		/**
+		 * If set to true, the TimelineSystem will automatically run .start() on the component when the TimelineSystem starts.
+		 * @type {Boolean}
+		 */
+		this.autoStart = true;
 	}
 
 	TimelineComponent.prototype = Object.create(Component.prototype);
@@ -53,7 +64,9 @@ define([
 				time = this.duration;
 			}
 		}
-		if (time === this.time) { return this; }
+		if (time === this.time) {
+			return;
+		}
 		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
