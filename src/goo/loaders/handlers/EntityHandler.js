@@ -101,7 +101,7 @@ define([
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);
-			updateAttributes(entity, config.meta);
+			updateAttributes(entity, config.attributes);
 
 			var promises = [];
 
