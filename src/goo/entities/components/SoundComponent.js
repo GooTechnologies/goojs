@@ -1,7 +1,7 @@
-var Component = require('../../entities/components/Component');
-var AudioContext = require('../../sound/AudioContext');
-var Vector3 = require('../../math/Vector3');
-var MathUtils = require('../../math/MathUtils');
+import Component from '../../entities/components/Component';
+import AudioContext from '../../sound/AudioContext';
+import Vector3 from '../../math/Vector3';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -196,4 +196,4 @@ var MathUtils = require('../../math/MathUtils');
 		this._pannerNode.setOrientation(this._orientation.x, this._orientation.y, this._orientation.z);
 	};
 
-	module.exports = SoundComponent;
+	export default SoundComponent;

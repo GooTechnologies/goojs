@@ -1,6 +1,6 @@
-var ObjectUtils = require('../util/ObjectUtils');
-var MathUtils = require('./MathUtils');
-var Vector = require('./Vector');
+import ObjectUtils from '../util/ObjectUtils';
+import MathUtils from './MathUtils';
+import Vector from './Vector';
 
 
 
@@ -912,4 +912,4 @@ Vector4.prototype.subVector = ObjectUtils.warnOnce('Vector4.prototype.subVector 
 
 // SHIM END
 
-module.exports = Vector4;
+export default Vector4;

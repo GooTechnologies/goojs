@@ -1,10 +1,10 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var ShapeCreatorMemoized = require('../../util/ShapeCreatorMemoized');
-var RSVP = require('../../util/rsvp');
-var ObjectUtils = require('../../util/ObjectUtils');
-var StringUtils = require('../../util/StringUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
+import ShapeCreatorMemoized from '../../util/ShapeCreatorMemoized';
+import RSVP from '../../util/rsvp';
+import ObjectUtils from '../../util/ObjectUtils';
+import StringUtils from '../../util/StringUtils';
 
 
 
@@ -111,4 +111,4 @@ var StringUtils = require('../../util/StringUtils');
 		});
 	};
 
-	module.exports = MeshDataComponentHandler;
+	export default MeshDataComponentHandler;

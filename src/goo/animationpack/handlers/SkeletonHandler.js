@@ -1,9 +1,9 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var Joint = require('../../animationpack/Joint');
-var Skeleton = require('../../animationpack/Skeleton');
-var SkeletonPose = require('../../animationpack/SkeletonPose');
-var PromiseUtils = require('../../util/PromiseUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import Joint from '../../animationpack/Joint';
+import Skeleton from '../../animationpack/Skeleton';
+import SkeletonPose from '../../animationpack/SkeletonPose';
+import PromiseUtils from '../../util/PromiseUtils';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -55,4 +55,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		return PromiseUtils.resolve(this._objects.get(ref));
 	};
 
-	module.exports = SkeletonHandler;
+	export default SkeletonHandler;

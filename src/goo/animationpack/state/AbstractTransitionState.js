@@ -1,6 +1,6 @@
-var AbstractState = require('../../animationpack/state/AbstractState');
-var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
-var MathUtils = require('../../math/MathUtils');
+import AbstractState from '../../animationpack/state/AbstractState';
+import BinaryLerpSource from '../../animationpack/blendtree/BinaryLerpSource';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -141,4 +141,4 @@ var MathUtils = require('../../math/MathUtils');
 		}
 	};
 
-	module.exports = AbstractTransitionState;
+	export default AbstractTransitionState;

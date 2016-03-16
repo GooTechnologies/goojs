@@ -1,6 +1,6 @@
-var System = require('../../entities/systems/System');
-var TWEEN = require('../../util/TWEEN');
-var Actions = require('../../fsmpack/statemachine/actions/Actions');
+import System from '../../entities/systems/System';
+import TWEEN from '../../util/TWEEN';
+import Actions from '../../fsmpack/statemachine/actions/Actions';
 
 	/**
 	 * Processes all entities with a FSM component
@@ -147,4 +147,4 @@ var Actions = require('../../fsmpack/statemachine/actions/Actions');
 		}
 	};
 
-	module.exports = StateMachineSystem;
+	export default StateMachineSystem;

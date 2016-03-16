@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 
 
@@ -50,4 +50,4 @@ var Action = require('./Action');
 		}
 	};
 
-module.exports = SetLightRangeAction;
+export default SetLightRangeAction;

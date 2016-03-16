@@ -1,16 +1,16 @@
-var ConfigHandler = require('../loaders/handlers/ConfigHandler');
-var RSVP = require('../util/rsvp');
-var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
-var OrbitNPanControlScript = require('../scriptpack/OrbitNPanControlScript');
-var FlyControlScript = require('../scriptpack/FlyControlScript');
-var WasdControlScript = require('../scriptpack/WasdControlScript');
-var BasicControlScript = require('../scriptpack/BasicControlScript');
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
-var ArrayUtils = require('../util/ArrayUtils');
-var SystemBus = require('../entities/SystemBus');
-var ScriptUtils = require('../scripts/ScriptUtils');
-var Scripts = require('../scripts/Scripts');
+import ConfigHandler from '../loaders/handlers/ConfigHandler';
+import RSVP from '../util/rsvp';
+import OrbitCamControlScript from '../scripts/OrbitCamControlScript';
+import OrbitNPanControlScript from '../scriptpack/OrbitNPanControlScript';
+import FlyControlScript from '../scriptpack/FlyControlScript';
+import WasdControlScript from '../scriptpack/WasdControlScript';
+import BasicControlScript from '../scriptpack/BasicControlScript';
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
+import ArrayUtils from '../util/ArrayUtils';
+import SystemBus from '../entities/SystemBus';
+import ScriptUtils from '../scripts/ScriptUtils';
+import Scripts from '../scripts/Scripts';
 
 
 
@@ -770,4 +770,4 @@ var Scripts = require('../scripts/Scripts');
 
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
 
-	module.exports = ScriptHandler;
+	export default ScriptHandler;

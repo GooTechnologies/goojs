@@ -1,5 +1,5 @@
-var PhysicsJoint = require('../../../addons/physicspack/joints/PhysicsJoint');
-var Vector3 = require('../../../math/Vector3');
+import PhysicsJoint from '../../../addons/physicspack/joints/PhysicsJoint';
+import Vector3 from '../../../math/Vector3';
 
 
 
@@ -37,4 +37,4 @@ var Vector3 = require('../../../math/Vector3');
 	BallJoint.prototype = Object.create(PhysicsJoint.prototype);
 	BallJoint.prototype.constructor = BallJoint;
 
-	module.exports = BallJoint;
+	export default BallJoint;

@@ -1,5 +1,5 @@
-var Vector3 = require('../../math/Vector3');
-var Component = require('../../entities/components/Component');
+import Vector3 from '../../math/Vector3';
+import Component from '../../entities/components/Component';
 
 
 
@@ -78,4 +78,4 @@ MovementComponent.prototype.getRotationVelocity = function () {
 	return this.rotationVelocity;
 };
 
-module.exports = MovementComponent;
+export default MovementComponent;

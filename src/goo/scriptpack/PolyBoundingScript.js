@@ -87,4 +87,4 @@
 		}
 	};
 
-	module.exports = PolyBoundingScript;
+	export default PolyBoundingScript;

@@ -50,4 +50,4 @@
 		this.currentBuffer[target].valid = false;
 	};
 
-	module.exports = RendererRecord;
+	export default RendererRecord;

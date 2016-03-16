@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function StartTimelineAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -25,4 +25,4 @@ var Action = require('./Action');
 		entity.timelineComponent.start();
 	};
 
-	module.exports = StartTimelineAction;
+	export default StartTimelineAction;

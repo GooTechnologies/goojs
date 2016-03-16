@@ -1,6 +1,6 @@
-var MathUtils = require('../../math/MathUtils');
-var TransformData = require('../../animationpack/clip/TransformData');
-var Source = require('../../animationpack/blendtree/Source');
+import MathUtils from '../../math/MathUtils';
+import TransformData from '../../animationpack/clip/TransformData';
+import Source from '../../animationpack/blendtree/Source';
 
 
 
@@ -170,4 +170,4 @@ var Source = require('../../animationpack/blendtree/Source');
 		);
 	};
 
-	module.exports = BinaryLerpSource;
+	export default BinaryLerpSource;

@@ -1,4 +1,4 @@
-var Component = require('../entities/components/Component');
+import Component from '../entities/components/Component';
 
 
 
@@ -19,4 +19,4 @@ var Component = require('../entities/components/Component');
 
 	OccluderComponent.prototype = Object.create(Component.prototype);
 
-	module.exports = OccluderComponent;
+	export default OccluderComponent;

@@ -81,4 +81,4 @@ EdgeData.prototype.getShortZIncrement = function () {
 	return this.floatData[7];
 };
 
-module.exports = EdgeData;
+export default EdgeData;

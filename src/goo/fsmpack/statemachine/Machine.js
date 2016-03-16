@@ -144,4 +144,4 @@
 		this.initialState = initialState;
 	};
 
-module.exports = Machine;
+export default Machine;

@@ -37,4 +37,4 @@
 		translation.y -= diff * 0.1;
 	};
 
-	module.exports = SparseHeightMapBoundingScript;
+	export default SparseHeightMapBoundingScript;

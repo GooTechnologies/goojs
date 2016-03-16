@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import FsmUtils from '../../../fsmpack/statemachine/FsmUtils';
 
 
 
@@ -52,4 +52,4 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 		document.removeEventListener('keyup', this.eventListener);
 	};
 
-	module.exports = KeyUpAction;
+	export default KeyUpAction;

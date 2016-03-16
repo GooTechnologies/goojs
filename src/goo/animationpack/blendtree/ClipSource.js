@@ -1,6 +1,6 @@
-var MathUtils = require('../../math/MathUtils');
-var AnimationClipInstance = require('../../animationpack/clip/AnimationClipInstance');
-var Source = require('../../animationpack/blendtree/Source');
+import MathUtils from '../../math/MathUtils';
+import AnimationClipInstance from '../../animationpack/clip/AnimationClipInstance';
+import Source from '../../animationpack/blendtree/Source';
 
 
 
@@ -185,4 +185,4 @@ var Source = require('../../animationpack/blendtree/Source');
 		return cloned;
 	};
 
-	module.exports = ClipSource;
+	export default ClipSource;

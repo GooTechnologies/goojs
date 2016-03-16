@@ -1,4 +1,4 @@
-var BufferUtils = require('../renderer/BufferUtils');
+import BufferUtils from '../renderer/BufferUtils';
 
 
 
@@ -87,4 +87,4 @@ var BufferUtils = require('../renderer/BufferUtils');
 		return clone;
 	};
 
-	module.exports = BufferData;
+	export default BufferData;

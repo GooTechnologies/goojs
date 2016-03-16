@@ -1,6 +1,6 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var Renderer = require('../../renderer/Renderer');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import Renderer from '../../renderer/Renderer';
 
 
 
@@ -57,4 +57,4 @@ var Renderer = require('../../renderer/Renderer');
 		}
 	};
 
-	module.exports = CameraSystem;
+	export default CameraSystem;

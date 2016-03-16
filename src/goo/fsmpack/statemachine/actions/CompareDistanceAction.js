@@ -1,6 +1,6 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Vector3 = require('../../../math/Vector3');
-var Renderer = require('../../../renderer/Renderer');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Vector3 from '../../../math/Vector3';
+import Renderer from '../../../renderer/Renderer';
 
 
 
@@ -116,4 +116,4 @@ var Renderer = require('../../../renderer/Renderer');
 		}
 	};
 
-	module.exports = CompareDistanceAction;
+	export default CompareDistanceAction;

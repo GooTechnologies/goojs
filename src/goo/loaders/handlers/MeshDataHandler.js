@@ -1,9 +1,9 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var MeshData = require('../../renderer/MeshData');
-var BufferUtils = require('../../renderer/BufferUtils');
-var Capabilities = require('../../renderer/Capabilities');
-var PromiseUtils = require('../../util/PromiseUtils');
-var ArrayUtils = require('../../util/ArrayUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import MeshData from '../../renderer/MeshData';
+import BufferUtils from '../../renderer/BufferUtils';
+import Capabilities from '../../renderer/Capabilities';
+import PromiseUtils from '../../util/PromiseUtils';
+import ArrayUtils from '../../util/ArrayUtils';
 
 
 
@@ -185,4 +185,4 @@ var ArrayUtils = require('../../util/ArrayUtils');
 		return meshData;
 	};
 
-	module.exports = MeshDataHandler;
+	export default MeshDataHandler;

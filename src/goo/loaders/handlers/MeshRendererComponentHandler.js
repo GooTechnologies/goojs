@@ -1,10 +1,10 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import MeshRendererComponent from '../../entities/components/MeshRendererComponent';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -94,4 +94,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = MeshRendererComponentHandler;
+	export default MeshRendererComponentHandler;

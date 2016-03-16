@@ -1,15 +1,15 @@
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var Material = require('../../renderer/Material');
-var Renderer = require('../../renderer/Renderer');
-var Transform = require('../../math/Transform');
-var Matrix4 = require('../../math/Matrix4');
-var Plane = require('../../math/Plane');
-var Ray = require('../../math/Ray');
-var Vector3 = require('../../math/Vector3');
-var Camera = require('../../renderer/Camera');
-var MathUtils = require('../../math/MathUtils');
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import Material from '../../renderer/Material';
+import Renderer from '../../renderer/Renderer';
+import Transform from '../../math/Transform';
+import Matrix4 from '../../math/Matrix4';
+import Plane from '../../math/Plane';
+import Ray from '../../math/Ray';
+import Vector3 from '../../math/Vector3';
+import Camera from '../../renderer/Camera';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -296,4 +296,4 @@ var MathUtils = require('../../math/MathUtils');
 		].join('\n')
 	};
 
-	module.exports = Gizmo;
+	export default Gizmo;

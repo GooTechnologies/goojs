@@ -1,10 +1,10 @@
-var Box = require('../shapes/Box');
-var Sphere = require('../shapes/Sphere');
-var MeshData = require('../renderer/MeshData');
-var Material = require('../renderer/Material');
-var Shader = require('../renderer/Shader');
-var TextureCreator = require('../renderer/TextureCreator');
-var Transform = require('../math/Transform');
+import Box from '../shapes/Box';
+import Sphere from '../shapes/Sphere';
+import MeshData from '../renderer/MeshData';
+import Material from '../renderer/Material';
+import Shader from '../renderer/Shader';
+import TextureCreator from '../renderer/TextureCreator';
+import Transform from '../math/Transform';
 
 
 
@@ -161,4 +161,4 @@ var Transform = require('../math/Transform');
 		].join('\n')
 	};
 
-	module.exports = Skybox;
+	export default Skybox;

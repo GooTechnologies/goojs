@@ -1,6 +1,6 @@
-var Vector3 = require('../math/Vector3');
-var ScriptUtils = require('../scripts/ScriptUtils');
-var MathUtils = require('../math/MathUtils');
+import Vector3 from '../math/Vector3';
+import ScriptUtils from '../scripts/ScriptUtils';
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -96,4 +96,4 @@ var MathUtils = require('../math/MathUtils');
 		}]
 	};
 
-	module.exports = AxisAlignedCamControlScript;
+	export default AxisAlignedCamControlScript;

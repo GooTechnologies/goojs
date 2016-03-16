@@ -230,4 +230,4 @@
 		this.trie = { name: '', listeners: [], children: new Map() };
 	};
 
-	module.exports = Bus;
+	export default Bus;

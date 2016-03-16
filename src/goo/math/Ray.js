@@ -1,5 +1,5 @@
-var Vector3 = require('./Vector3');
-var MathUtils = require('./MathUtils');
+import Vector3 from './Vector3';
+import MathUtils from './MathUtils';
 
 
 
@@ -185,4 +185,4 @@ var MathUtils = require('./MathUtils');
 		return new Ray(this.origin.clone(), this.direction.clone());
 	};
 
-	module.exports = Ray;
+	export default Ray;

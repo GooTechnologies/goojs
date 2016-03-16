@@ -1,5 +1,5 @@
-var SimplePartitioner = require('../renderer/SimplePartitioner');
-var SoftwareRenderer = require('./scanline/SoftwareRenderer');
+import SimplePartitioner from '../renderer/SimplePartitioner';
+import SoftwareRenderer from './scanline/SoftwareRenderer';
 
 /**
  * Processes all entities with meshrenderer components.
@@ -103,4 +103,4 @@ OcclusionPartitioner.prototype._addVisibleOccluders = function (renderList) {
 	}
 };
 
-module.exports = OcclusionPartitioner;
+export default OcclusionPartitioner;

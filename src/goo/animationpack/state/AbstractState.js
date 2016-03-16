@@ -21,4 +21,4 @@ AbstractState.prototype.shiftClipTime = function (shiftTime) {
 	this._globalStartTime += shiftTime;
 };
 
-module.exports = AbstractState;
+export default AbstractState;

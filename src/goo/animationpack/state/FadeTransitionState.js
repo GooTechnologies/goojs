@@ -1,4 +1,4 @@
-var AbstractTransitionState = require('../../animationpack/state/AbstractTransitionState');
+import AbstractTransitionState from '../../animationpack/state/AbstractTransitionState';
 
 
 
@@ -67,4 +67,4 @@ var AbstractTransitionState = require('../../animationpack/state/AbstractTransit
 		}
 	};
 
-	module.exports = FadeTransitionState;
+	export default FadeTransitionState;

@@ -1,5 +1,5 @@
-var Component = require('../../../entities/components/Component');
-var Collider = require('../../../addons/physicspack/colliders/Collider');
+import Component from '../../../entities/components/Component';
+import Collider from '../../../addons/physicspack/colliders/Collider';
 
 
 
@@ -125,4 +125,4 @@ var Collider = require('../../../addons/physicspack/colliders/Collider');
 
 	AbstractColliderComponent.prototype.api = {};
 
-	module.exports = AbstractColliderComponent;
+	export default AbstractColliderComponent;

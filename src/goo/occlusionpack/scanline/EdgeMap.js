@@ -1,4 +1,4 @@
-var Edge = require('./Edge');
+import Edge from './Edge';
 
 
 
@@ -65,4 +65,4 @@ var Edge = require('./Edge');
 	};
 	/*jshint bitwise: true*/
 
-	module.exports = EdgeMap;
+	export default EdgeMap;

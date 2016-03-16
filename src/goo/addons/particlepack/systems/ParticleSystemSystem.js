@@ -1,4 +1,4 @@
-var System = require('../../../entities/systems/System');
+import System from '../../../entities/systems/System';
 
 	/**
 	 * System that runs all the ParticleSystemComponents.
@@ -81,4 +81,4 @@ var System = require('../../../entities/systems/System');
 		}
 	};
 
-	module.exports = ParticleSystemSystem;
+	export default ParticleSystemSystem;

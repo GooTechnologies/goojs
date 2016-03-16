@@ -1,6 +1,6 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Vector3 = require('../../../math/Vector3');
-var TWEEN = require('../../../util/TWEEN');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Vector3 from '../../../math/Vector3';
+import TWEEN from '../../../util/TWEEN';
 
 
 
@@ -104,4 +104,4 @@ var TWEEN = require('../../../util/TWEEN');
 		}
 	};
 
-	module.exports = TweenLightColorAction;
+	export default TweenLightColorAction;

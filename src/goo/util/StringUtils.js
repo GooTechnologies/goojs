@@ -236,4 +236,4 @@ StringUtils.parseURL = function (uri) {
 	};
 };
 
-module.exports = StringUtils;
+export default StringUtils;

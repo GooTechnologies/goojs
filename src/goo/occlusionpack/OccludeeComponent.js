@@ -1,6 +1,6 @@
-var Component = require('../entities/components/Component');
-var BoundingBox = require('../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../renderer/bounds/BoundingSphere');
+import Component from '../entities/components/Component';
+import BoundingBox from '../renderer/bounds/BoundingBox';
+import BoundingSphere from '../renderer/bounds/BoundingSphere';
 
 
 
@@ -48,4 +48,4 @@ var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 
 	OccludeeComponent.prototype = Object.create(Component.prototype);
 
-	module.exports = OccludeeComponent;
+	export default OccludeeComponent;

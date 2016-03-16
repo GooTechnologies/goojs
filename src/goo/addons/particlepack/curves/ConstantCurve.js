@@ -1,4 +1,4 @@
-var Curve = require('../../../addons/particlepack/curves/Curve');
+import Curve from '../../../addons/particlepack/curves/Curve';
 
 
 	/**
@@ -39,4 +39,4 @@ var Curve = require('../../../addons/particlepack/curves/Curve');
 		return this.value * t;
 	};
 
-	module.exports = ConstantCurve;
+	export default ConstantCurve;

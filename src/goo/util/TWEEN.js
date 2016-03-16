@@ -714,4 +714,4 @@ if(typeof(window) !== 'undefined'){
 	window.TWEEN = TWEEN; // ask Martin, Ray
 }
 
-module.exports = TWEEN;
+export default TWEEN;

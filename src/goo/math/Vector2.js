@@ -1,8 +1,8 @@
-var ObjectUtils = require('../util/ObjectUtils');
-var MathUtils = require('./MathUtils');
-var Vector = require('./Vector');
-var Vector3 = require('./Vector3');
-var Vector4 = require('./Vector4');
+import ObjectUtils from '../util/ObjectUtils';
+import MathUtils from './MathUtils';
+import Vector from './Vector';
+import Vector3 from './Vector3';
+import Vector4 from './Vector4';
 
 
 
@@ -773,4 +773,4 @@ var Vector4 = require('./Vector4');
 
 	// SHIM END
 
-	module.exports = Vector2;
+	export default Vector2;

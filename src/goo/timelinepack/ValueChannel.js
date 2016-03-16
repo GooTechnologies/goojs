@@ -1,5 +1,5 @@
-var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
-var MathUtils = require('../math/MathUtils');
+import AbstractTimelineChannel from '../timelinepack/AbstractTimelineChannel';
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -120,4 +120,4 @@ var MathUtils = require('../math/MathUtils');
 		return func;
 	};
 
-	module.exports = ValueChannel;
+	export default ValueChannel;

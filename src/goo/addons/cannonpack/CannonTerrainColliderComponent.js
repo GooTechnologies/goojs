@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -27,4 +27,4 @@ var Component = require('../../entities/components/Component');
 	CannonTerrainColliderComponent.prototype = Object.create(Component.prototype);
 	CannonTerrainColliderComponent.constructor = CannonTerrainColliderComponent;
 
-	module.exports = CannonTerrainColliderComponent;
+	export default CannonTerrainColliderComponent;

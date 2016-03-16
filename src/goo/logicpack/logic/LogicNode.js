@@ -87,4 +87,4 @@ LogicNode.prototype.onInputChanged = function () {};
 
 LogicNode._instanceCount = 0;
 
-module.exports = LogicNode;
+export default LogicNode;

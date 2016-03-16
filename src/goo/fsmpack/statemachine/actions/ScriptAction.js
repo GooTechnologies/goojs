@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function ScriptAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -77,4 +77,4 @@ var Action = require('./Action');
 	ScriptAction.prototype.onDestroy = function () {
 	};
 
-	module.exports = ScriptAction;
+	export default ScriptAction;

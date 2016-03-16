@@ -1,5 +1,5 @@
-var Vector2 = require('../../math/Vector2');
-var ObjectUtil = require('../../util/ObjectUtil');
+import Vector2 from '../../math/Vector2';
+import ObjectUtil from '../../util/ObjectUtil';
 
 
 
@@ -105,4 +105,4 @@ var ObjectUtil = require('../../util/ObjectUtil');
 		}
 	};
 
-	module.exports = RenderTarget;
+	export default RenderTarget;

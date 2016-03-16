@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function TogglePostFxAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -29,4 +29,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = TogglePostFxAction;
+	export default TogglePostFxAction;

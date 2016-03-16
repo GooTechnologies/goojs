@@ -1,12 +1,12 @@
-var Capabilities = require('../../renderer/Capabilities');
-var MeshData = require('../../renderer/MeshData');
-var PointLight = require('../../renderer/light/PointLight');
-var DirectionalLight = require('../../renderer/light/DirectionalLight');
-var SpotLight = require('../../renderer/light/SpotLight');
-var Texture = require('../../renderer/Texture');
-var MathUtils = require('../../math/MathUtils');
-var TangentGenerator = require('../../util/TangentGenerator');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
+import Capabilities from '../../renderer/Capabilities';
+import MeshData from '../../renderer/MeshData';
+import PointLight from '../../renderer/light/PointLight';
+import DirectionalLight from '../../renderer/light/DirectionalLight';
+import SpotLight from '../../renderer/light/SpotLight';
+import Texture from '../../renderer/Texture';
+import MathUtils from '../../math/MathUtils';
+import TangentGenerator from '../../util/TangentGenerator';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
 
 
 
@@ -870,4 +870,4 @@ var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 			'#endif'
 		].join('\n')
 	};
-	module.exports = ShaderBuilder;
+	export default ShaderBuilder;

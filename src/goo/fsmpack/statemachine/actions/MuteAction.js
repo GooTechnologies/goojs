@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function MuteAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -26,4 +26,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = MuteAction;
+	export default MuteAction;

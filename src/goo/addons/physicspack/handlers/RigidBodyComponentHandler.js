@@ -1,10 +1,10 @@
-var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
-var RigidBodyComponent = require('../../../addons/physicspack/components/RigidBodyComponent');
-var BoundingBox = require('../../../renderer/bounds/BoundingBox');
-var ShapeCreatorMemoized = require('../../../util/ShapeCreatorMemoized');
-var RSVP = require('../../../util/rsvp');
-var ObjectUtils = require('../../../util/ObjectUtils');
-var Vector3 = require('../../../math/Vector3');
+import ComponentHandler from '../../../loaders/handlers/ComponentHandler';
+import RigidBodyComponent from '../../../addons/physicspack/components/RigidBodyComponent';
+import BoundingBox from '../../../renderer/bounds/BoundingBox';
+import ShapeCreatorMemoized from '../../../util/ShapeCreatorMemoized';
+import RSVP from '../../../util/rsvp';
+import ObjectUtils from '../../../util/ObjectUtils';
+import Vector3 from '../../../math/Vector3';
 
 
 
@@ -78,4 +78,4 @@ var Vector3 = require('../../../math/Vector3');
 		});
 	};
 
-	module.exports = RigidBodyComponentHandler;
+	export default RigidBodyComponentHandler;

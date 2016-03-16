@@ -1,8 +1,8 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var SystemBus = require('../../entities/SystemBus');
-var ArrayUtils = require('../../util/ArrayUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
-var RSVP = require('../../util/rsvp');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import SystemBus from '../../entities/SystemBus';
+import ArrayUtils from '../../util/ArrayUtils';
+import ObjectUtils from '../../util/ObjectUtils';
+import RSVP from '../../util/rsvp';
 
 
 
@@ -167,4 +167,4 @@ var RSVP = require('../../util/rsvp');
 		return this._load(config.environmentRef, options);
 	};
 
-	module.exports = SceneHandler;
+	export default SceneHandler;

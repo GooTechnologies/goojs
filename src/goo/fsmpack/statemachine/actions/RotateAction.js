@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var MathUtils = require('../../../math/MathUtils');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import MathUtils from '../../../math/MathUtils';
 
 
 
@@ -91,4 +91,4 @@ var MathUtils = require('../../../math/MathUtils');
 		}
 	};
 
-	module.exports = RotateAction;
+	export default RotateAction;

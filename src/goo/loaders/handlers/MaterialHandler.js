@@ -1,9 +1,9 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var RenderQueue = require('../../renderer/RenderQueue');
-var RSVP = require('../../util/rsvp');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import RenderQueue from '../../renderer/RenderQueue';
+import RSVP from '../../util/rsvp';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -184,4 +184,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = MaterialHandler;
+	export default MaterialHandler;

@@ -1,6 +1,6 @@
-var ParticleUtils = require('../particles/ParticleUtils');
-var Renderer = require('../renderer/Renderer');
-var ObjectUtil = require('../util/ObjectUtil');
+import ParticleUtils from '../particles/ParticleUtils';
+import Renderer from '../renderer/Renderer';
+import ObjectUtil from '../util/ObjectUtil';
 
 
 
@@ -66,4 +66,4 @@ var ObjectUtil = require('../util/ObjectUtil');
 		return this.minLifetime + (this.maxLifetime - this.minLifetime) * Math.random();
 	};
 
-	module.exports = ParticleEmitter;
+	export default ParticleEmitter;

@@ -1,4 +1,4 @@
-var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource');
+import BinaryLerpSource from '../../animationpack/blendtree/BinaryLerpSource';
 
 
 
@@ -24,4 +24,4 @@ var BinaryLerpSource = require('../../animationpack/blendtree/BinaryLerpSource')
 		return BinaryLerpSource.combineSourceData(sourceAData, sourceBData, this._blendWeight);
 	};
 
-	module.exports = LayerLerpBlender;
+	export default LayerLerpBlender;

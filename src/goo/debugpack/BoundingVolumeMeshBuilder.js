@@ -1,8 +1,8 @@
-var BoundingBox = require('../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../renderer/bounds/BoundingSphere');
-var MeshBuilder = require('../util/MeshBuilder');
-var MeshData = require('../renderer/MeshData');
-var Transform = require('../math/Transform');
+import BoundingBox from '../renderer/bounds/BoundingBox';
+import BoundingSphere from '../renderer/bounds/BoundingSphere';
+import MeshBuilder from '../util/MeshBuilder';
+import MeshData from '../renderer/MeshData';
+import Transform from '../math/Transform';
 
 
 
@@ -121,4 +121,4 @@ var Transform = require('../math/Transform');
 		}
 	};
 
-	module.exports = BoundingVolumeMeshBuilder;
+	export default BoundingVolumeMeshBuilder;

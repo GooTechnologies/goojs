@@ -1,7 +1,7 @@
-var Component = require('../../entities/components/Component');
-var Particle = require('../../particles/Particle');
-var ParticleEmitter = require('../../particles/ParticleEmitter');
-var MeshData = require('../../renderer/MeshData');
+import Component from '../../entities/components/Component';
+import Particle from '../../particles/Particle';
+import ParticleEmitter from '../../particles/ParticleEmitter';
+import MeshData from '../../renderer/MeshData';
 
 
 
@@ -90,4 +90,4 @@ var MeshData = require('../../renderer/MeshData');
 		this.generateMeshData();
 	};
 
-	module.exports = ParticleComponent;
+	export default ParticleComponent;

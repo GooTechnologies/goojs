@@ -1,8 +1,8 @@
-var TextureHandler = require('../loaders/handlers/TextureHandler');
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
-var StringUtils = require('../util/StringUtils');
-var RSVP = require('../util/rsvp');
+import TextureHandler from '../loaders/handlers/TextureHandler';
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
+import StringUtils from '../util/StringUtils';
+import RSVP from '../util/rsvp';
 
 
 
@@ -355,4 +355,4 @@ var RSVP = require('../util/rsvp');
 			.concat(Object.keys(Ajax.types.binary))
 	);
 
-	module.exports = Ajax;
+	export default Ajax;

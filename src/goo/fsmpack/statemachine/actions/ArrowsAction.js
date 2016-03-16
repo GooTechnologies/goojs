@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -68,4 +68,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	module.exports = ArrowsAction;
+	export default ArrowsAction;

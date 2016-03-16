@@ -1,4 +1,4 @@
-var Ray = require('../../math/Ray');
+import Ray from '../../math/Ray';
 
 	/**
 	 * BoundingPicker
@@ -44,4 +44,4 @@ var Ray = require('../../math/Ray');
 		return pickList;
 	};
 
-	module.exports = BoundingPicker;
+	export default BoundingPicker;

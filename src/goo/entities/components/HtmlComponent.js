@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -50,4 +50,4 @@ var Component = require('../../entities/components/Component');
 	HtmlComponent.prototype = Object.create(Component.prototype);
 	HtmlComponent.prototype.constructor = HtmlComponent;
 
-	module.exports = HtmlComponent;
+	export default HtmlComponent;

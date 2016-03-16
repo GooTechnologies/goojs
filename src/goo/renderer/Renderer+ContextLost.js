@@ -1,5 +1,5 @@
-var Renderer = require('../renderer/Renderer');
-var RendererRecord = require('../renderer/RendererRecord');
+import Renderer from '../renderer/Renderer';
+import RendererRecord from '../renderer/RendererRecord';
 
 Renderer.prototype.invalidateBuffer = function (buffer) {
 	buffer.glBuffer = null;

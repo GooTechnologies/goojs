@@ -1,4 +1,4 @@
-var Vector3 = require('../math/Vector3');
+import Vector3 from '../math/Vector3';
 
 
 
@@ -312,6 +312,6 @@ var Vector3 = require('../math/Vector3');
 		this.applyGroundContact(entity, transform);
 	};
 
-	module.exports = GroundBoundMovementScript;
+	export default GroundBoundMovementScript;
 
 

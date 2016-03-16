@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -30,4 +30,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		entity._world.gooRunner.renderer.setClearColor(color[0], color[1], color[2], color[3]);
 	};
 
-	module.exports = SetClearColorAction;
+	export default SetClearColorAction;

@@ -1,5 +1,5 @@
-var PhysicsJoint = require('../../../addons/physicspack/joints/PhysicsJoint');
-var Vector3 = require('../../../math/Vector3');
+import PhysicsJoint from '../../../addons/physicspack/joints/PhysicsJoint';
+import Vector3 from '../../../math/Vector3';
 
 
 
@@ -43,4 +43,4 @@ var Vector3 = require('../../../math/Vector3');
 	HingeJoint.prototype = Object.create(PhysicsJoint.prototype);
 	HingeJoint.prototype.constructor = HingeJoint;
 
-	module.exports = HingeJoint;
+	export default HingeJoint;

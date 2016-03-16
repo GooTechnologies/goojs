@@ -1,7 +1,7 @@
-var RenderTarget = require('../../renderer/pass/RenderTarget');
-var FullscreenPass = require('../../renderer/pass/FullscreenPass');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var SystemBus = require('../../entities/SystemBus');
+import RenderTarget from '../../renderer/pass/RenderTarget';
+import FullscreenPass from '../../renderer/pass/FullscreenPass';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import SystemBus from '../../entities/SystemBus';
 
 
 
@@ -145,4 +145,4 @@ var SystemBus = require('../../entities/SystemBus');
 		}
 	};
 
-	module.exports = Composer;
+	export default Composer;

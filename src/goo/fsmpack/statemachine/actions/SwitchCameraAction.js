@@ -1,6 +1,6 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var SystemBus = require('../../../entities/SystemBus');
-var Renderer = require('../../../renderer/Renderer');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import SystemBus from '../../../entities/SystemBus';
+import Renderer from '../../../renderer/Renderer';
 
 
 
@@ -45,4 +45,4 @@ var Renderer = require('../../../renderer/Renderer');
 	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
 	};
 
-	module.exports = SwitchCameraAction;
+	export default SwitchCameraAction;

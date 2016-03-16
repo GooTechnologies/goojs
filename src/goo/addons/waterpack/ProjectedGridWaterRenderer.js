@@ -1,16 +1,16 @@
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var Camera = require('../../renderer/Camera');
-var Plane = require('../../math/Plane');
-var RenderTarget = require('../../renderer/pass/RenderTarget');
-var FullscreenPass = require('../../renderer/pass/FullscreenPass');
-var Vector3 = require('../../math/Vector3');
-var Vector4 = require('../../math/Vector4');
-var Material = require('../../renderer/Material');
-var Texture = require('../../renderer/Texture');
-var TextureCreator = require('../../renderer/TextureCreator');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import Camera from '../../renderer/Camera';
+import Plane from '../../math/Plane';
+import RenderTarget from '../../renderer/pass/RenderTarget';
+import FullscreenPass from '../../renderer/pass/FullscreenPass';
+import Vector3 from '../../math/Vector3';
+import Vector4 from '../../math/Vector4';
+import Material from '../../renderer/Material';
+import Texture from '../../renderer/Texture';
+import TextureCreator from '../../renderer/TextureCreator';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
 
 
 
@@ -521,4 +521,4 @@ var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 		].join('\n')
 	};
 
-	module.exports = ProjectedGridWaterRenderer;
+	export default ProjectedGridWaterRenderer;

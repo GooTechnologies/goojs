@@ -1,5 +1,5 @@
-var Component = require('../../../entities/components/Component');
-var ObjectUtil = require('../../../util/ObjectUtil');
+import Component from '../../../entities/components/Component';
+import ObjectUtil from '../../../util/ObjectUtil';
 
 /**
  * Box2DComponent
@@ -32,4 +32,4 @@ function Box2DComponent(options) {
 Box2DComponent.prototype = Object.create(Component.prototype);
 Box2DComponent.prototype.constructor = Box2DComponent;
 
-module.exports = Box2DComponent;
+export default Box2DComponent;

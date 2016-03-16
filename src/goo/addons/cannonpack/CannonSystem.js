@@ -1,10 +1,10 @@
-var System = require('../../entities/systems/System');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
-var Quaternion = require('../../math/Quaternion');
-var Transform = require('../../math/Transform');
-var Vector3 = require('../../math/Vector3');
-var ObjectUtils = require('../../util/ObjectUtils');
+import System from '../../entities/systems/System';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
+import BoundingSphere from '../../renderer/bounds/BoundingSphere';
+import Quaternion from '../../math/Quaternion';
+import Transform from '../../math/Transform';
+import Vector3 from '../../math/Vector3';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -185,4 +185,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		}
 	};
 
-	module.exports = CannonSystem;
+	export default CannonSystem;

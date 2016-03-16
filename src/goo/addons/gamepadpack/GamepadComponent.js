@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -47,4 +47,4 @@ var Component = require('../../entities/components/Component');
 		this.rightStickFunction = stickFunction;
 	};
 
-	module.exports = GamepadComponent;
+	export default GamepadComponent;

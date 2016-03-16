@@ -1,8 +1,8 @@
-var Material = require('../../renderer/Material');
-var MeshData = require('../../renderer/MeshData');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var Shader = require('../../renderer/Shader');
-var Transform = require('../../math/Transform');
+import Material from '../../renderer/Material';
+import MeshData from '../../renderer/MeshData';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import Shader from '../../renderer/Shader';
+import Transform from '../../math/Transform';
 
 
 
@@ -143,4 +143,4 @@ var Transform = require('../../math/Transform');
 		this._numRenderingLines++;
 	};
 
-	module.exports = LineRenderer;
+	export default LineRenderer;

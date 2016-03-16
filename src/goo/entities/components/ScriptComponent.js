@@ -1,7 +1,7 @@
-var Component = require('../../entities/components/Component');
-var SystemBus = require('../../entities/SystemBus');
-var Scripts = require('../../scripts/Scripts');
-var ObjectUtils = require('../../util/ObjectUtils');
+import Component from '../../entities/components/Component';
+import SystemBus from '../../entities/SystemBus';
+import Scripts from '../../scripts/Scripts';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -220,4 +220,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		}
 	};
 
-	module.exports = ScriptComponent;
+	export default ScriptComponent;

@@ -1,8 +1,8 @@
-var Vector3 = require('../math/Vector3');
-var Scripts = require('../scripts/Scripts');
-var ScriptUtils = require('../scripts/ScriptUtils');
-var Renderer = require('../renderer/Renderer');
-var SystemBus = require('../entities/SystemBus');
+import Vector3 from '../math/Vector3';
+import Scripts from '../scripts/Scripts';
+import ScriptUtils from '../scripts/ScriptUtils';
+import Renderer from '../renderer/Renderer';
+import SystemBus from '../entities/SystemBus';
 
 
 
@@ -209,4 +209,4 @@ var SystemBus = require('../entities/SystemBus');
 		}]
 	};
 
-	module.exports = ButtonScript;
+	export default ButtonScript;

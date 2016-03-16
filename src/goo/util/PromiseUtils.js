@@ -1,4 +1,4 @@
-var RSVP = require('../util/rsvp');
+import RSVP from '../util/rsvp';
 
 
 
@@ -155,4 +155,4 @@ var RSVP = require('../util/rsvp');
 		return promise;
 	};
 
-	module.exports = PromiseUtils;
+	export default PromiseUtils;

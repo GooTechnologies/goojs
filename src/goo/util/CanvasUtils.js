@@ -1,5 +1,5 @@
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -183,4 +183,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		});
 	};
 
-	module.exports = CanvasUtils;
+	export default CanvasUtils;

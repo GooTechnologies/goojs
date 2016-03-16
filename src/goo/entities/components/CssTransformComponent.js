@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -39,4 +39,4 @@ var Component = require('../../entities/components/Component');
 	CssTransformComponent.prototype = Object.create(Component.prototype);
 	CssTransformComponent.prototype.constructor = CssTransformComponent;
 
-	module.exports = CssTransformComponent;
+	export default CssTransformComponent;

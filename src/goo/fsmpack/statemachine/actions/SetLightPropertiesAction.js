@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 
 	function SetLightPropertiesAction(/*id, settings*/) {
@@ -58,4 +58,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = SetLightPropertiesAction;
+	export default SetLightPropertiesAction;

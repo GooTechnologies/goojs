@@ -1,9 +1,9 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var SoundComponent = require('../../entities/components/SoundComponent');
-var AudioContext = require('../../sound/AudioContext');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import SoundComponent from '../../entities/components/SoundComponent';
+import AudioContext from '../../sound/AudioContext';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -102,4 +102,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = SoundComponentHandler;
+	export default SoundComponentHandler;

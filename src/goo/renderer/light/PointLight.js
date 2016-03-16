@@ -1,4 +1,4 @@
-var Light = require('../../renderer/light/Light');
+import Light from '../../renderer/light/Light';
 
 
 
@@ -48,4 +48,4 @@ var Light = require('../../renderer/light/Light');
 		return clone;
 	};
 
-	module.exports = PointLight;
+	export default PointLight;

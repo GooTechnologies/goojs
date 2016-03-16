@@ -1,5 +1,5 @@
-var Vector2 = require('../../math/Vector2');
-var MathUtils = require('../../math/MathUtils');
+import Vector2 from '../../math/Vector2';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -88,4 +88,4 @@ var MathUtils = require('../../math/MathUtils');
 		return Math.max(Math.abs(x), Math.abs(y));
 	};
 
-	module.exports = GamepadData;
+	export default GamepadData;

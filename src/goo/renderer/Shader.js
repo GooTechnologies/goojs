@@ -1,10 +1,10 @@
-var ShaderCall = require('../renderer/ShaderCall');
-var Matrix3 = require('../math/Matrix3');
-var Matrix4 = require('../math/Matrix4');
-var World = require('../entities/World');
-var RenderQueue = require('../renderer/RenderQueue');
-var ObjectUtils = require('../util/ObjectUtils');
-var SystemBus = require('../entities/SystemBus');
+import ShaderCall from '../renderer/ShaderCall';
+import Matrix3 from '../math/Matrix3';
+import Matrix4 from '../math/Matrix4';
+import World from '../entities/World';
+import RenderQueue from '../renderer/RenderQueue';
+import ObjectUtils from '../util/ObjectUtils';
+import SystemBus from '../entities/SystemBus';
 
 
 
@@ -815,4 +815,4 @@ var SystemBus = require('../entities/SystemBus');
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);
 
-module.exports = Shader;
+export default Shader;

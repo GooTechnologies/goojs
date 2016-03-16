@@ -1,9 +1,9 @@
-var Vector3 = require('../math/Vector3');
-var ParticleSystemUtils = require('../util/ParticleSystemUtils');
-var Material = require('../renderer/Material');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var Quad = require('../shapes/Quad');
-var BoundingSphere = require('../renderer/bounds/BoundingSphere');
+import Vector3 from '../math/Vector3';
+import ParticleSystemUtils from '../util/ParticleSystemUtils';
+import Material from '../renderer/Material';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import Quad from '../shapes/Quad';
+import BoundingSphere from '../renderer/bounds/BoundingSphere';
 
 
 
@@ -326,4 +326,4 @@ var BoundingSphere = require('../renderer/bounds/BoundingSphere');
 		this.quad.transformComponent.updateWorldTransform();
 	};
 
-	module.exports = LensFlareScript;
+	export default LensFlareScript;

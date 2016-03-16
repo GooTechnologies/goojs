@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -51,4 +51,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		fsm.send(transition);
 	};
 
-	module.exports = RandomTransitionAction;
+	export default RandomTransitionAction;

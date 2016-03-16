@@ -35,4 +35,4 @@ function ParticleInfluence (settings) {
 	this.enabled = settings.enabled !== undefined ? settings.enabled === true : true;
 }
 
-module.exports = ParticleInfluence;
+export default ParticleInfluence;

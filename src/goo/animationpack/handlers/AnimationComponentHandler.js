@@ -1,6 +1,6 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var AnimationComponent = require('../../animationpack/components/AnimationComponent');
-var RSVP = require('../../util/rsvp');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import AnimationComponent from '../../animationpack/components/AnimationComponent';
+import RSVP from '../../util/rsvp';
 
 
 
@@ -68,4 +68,4 @@ var RSVP = require('../../util/rsvp');
 		});
 	};
 
-	module.exports = AnimationComponentHandler;
+	export default AnimationComponentHandler;

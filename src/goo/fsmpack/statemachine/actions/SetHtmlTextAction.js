@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function SetHtmlTextAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -54,4 +54,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = SetHtmlTextAction;
+	export default SetHtmlTextAction;

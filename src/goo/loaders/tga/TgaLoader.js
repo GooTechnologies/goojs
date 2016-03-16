@@ -522,4 +522,4 @@ TgaLoader.prototype.toString = function () {
 	return "TgaLoader";
 };
 
-module.exports = TgaLoader;
+export default TgaLoader;

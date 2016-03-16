@@ -1,7 +1,7 @@
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
 
 
 
@@ -1157,4 +1157,4 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		].join('\n')
 	};
 
-	module.exports = ShaderLib;
+	export default ShaderLib;

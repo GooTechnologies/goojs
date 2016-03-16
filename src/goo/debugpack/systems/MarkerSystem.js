@@ -1,9 +1,9 @@
-var System = require('../../entities/systems/System');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var MarkerComponent = require('../../debugpack/components/MarkerComponent');
-var Renderer = require('../../renderer/Renderer');
-var Transform = require('../../math/Transform');
+import System from '../../entities/systems/System';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import MarkerComponent from '../../debugpack/components/MarkerComponent';
+import Renderer from '../../renderer/Renderer';
+import Transform from '../../math/Transform';
 
 
 
@@ -52,4 +52,4 @@ var Transform = require('../../math/Transform');
 		this.entities = entities;
 	};
 
-	module.exports = MarkerSystem;
+	export default MarkerSystem;

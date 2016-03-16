@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function UnmuteAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -26,4 +26,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = UnmuteAction;
+	export default UnmuteAction;

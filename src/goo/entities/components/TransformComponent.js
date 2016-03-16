@@ -1,7 +1,7 @@
-var Transform = require('../../math/Transform');
-var Vector3 = require('../../math/Vector3');
-var Component = require('../../entities/components/Component');
-var EntitySelection = require('../../entities/EntitySelection');
+import Transform from '../../math/Transform';
+import Vector3 from '../../math/Vector3';
+import Component from '../../entities/components/Component';
+import EntitySelection from '../../entities/EntitySelection';
 
 
 
@@ -695,4 +695,4 @@ var EntitySelection = require('../../entities/EntitySelection');
 		}
 	};
 
-	module.exports = TransformComponent;
+	export default TransformComponent;

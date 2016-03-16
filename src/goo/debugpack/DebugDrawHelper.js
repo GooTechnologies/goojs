@@ -1,20 +1,20 @@
-var LightComponent = require('../entities/components/LightComponent');
-var CameraComponent = require('../entities/components/CameraComponent');
-var MeshRendererComponent = require('../entities/components/MeshRendererComponent');
-var SkeletonPose = require('../animationpack/SkeletonPose');
-var PointLight = require('../renderer/light/PointLight');
-var DirectionalLight = require('../renderer/light/DirectionalLight');
-var SpotLight = require('../renderer/light/SpotLight');
-var LightDebug = require('./shapes/LightDebug');
-var CameraDebug = require('./shapes/CameraDebug');
-var MeshRendererDebug = require('./shapes/MeshRendererDebug');
-var SkeletonDebug = require('./shapes/SkeletonDebug');
-var Material = require('../renderer/Material');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var ShaderBuilder = require('../renderer/shaders/ShaderBuilder');
-var Transform = require('../math/Transform');
-var Camera = require('../renderer/Camera');
-var Renderer = require('../renderer/Renderer');
+import LightComponent from '../entities/components/LightComponent';
+import CameraComponent from '../entities/components/CameraComponent';
+import MeshRendererComponent from '../entities/components/MeshRendererComponent';
+import SkeletonPose from '../animationpack/SkeletonPose';
+import PointLight from '../renderer/light/PointLight';
+import DirectionalLight from '../renderer/light/DirectionalLight';
+import SpotLight from '../renderer/light/SpotLight';
+import LightDebug from './shapes/LightDebug';
+import CameraDebug from './shapes/CameraDebug';
+import MeshRendererDebug from './shapes/MeshRendererDebug';
+import SkeletonDebug from './shapes/SkeletonDebug';
+import Material from '../renderer/Material';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import ShaderBuilder from '../renderer/shaders/ShaderBuilder';
+import Transform from '../math/Transform';
+import Camera from '../renderer/Camera';
+import Renderer from '../renderer/Renderer';
 
 
 	var DebugDrawHelper = {};
@@ -164,4 +164,4 @@ var Renderer = require('../renderer/Renderer');
 		// transform.update();
 	};
 
-	module.exports = DebugDrawHelper;
+	export default DebugDrawHelper;

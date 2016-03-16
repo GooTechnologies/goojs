@@ -21,4 +21,4 @@ Collider.prototype.clone = function () {
  */
 Collider.prototype.transform = function (/*transform, targetCollider*/) {};
 
-module.exports = Collider;
+export default Collider;

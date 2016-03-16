@@ -1,6 +1,6 @@
-var Renderer = require('../../renderer/Renderer');
-var Pass = require('../../renderer/pass/Pass');
-var Vector4 = require('../../math/Vector4');
+import Renderer from '../../renderer/Renderer';
+import Pass from '../../renderer/pass/Pass';
+import Vector4 from '../../math/Vector4';
 
 
 
@@ -57,4 +57,4 @@ var Vector4 = require('../../math/Vector4');
 		}
 	};
 
-	module.exports = RenderPass;
+	export default RenderPass;

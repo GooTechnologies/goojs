@@ -1,5 +1,5 @@
-var System = require('../../entities/systems/System');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
+import System from '../../entities/systems/System';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
 
 
 
@@ -71,4 +71,4 @@ var BoundingBox = require('../../renderer/bounds/BoundingBox');
 		}
 	};
 
-	module.exports = BoundingUpdateSystem;
+	export default BoundingUpdateSystem;

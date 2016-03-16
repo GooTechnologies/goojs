@@ -1,4 +1,4 @@
-var Vector3 = require('../../math/Vector3');
+import Vector3 from '../../math/Vector3';
 
 	/**
 	 * Container for particle data in the ParticleSystemComponent.
@@ -122,4 +122,4 @@ var Vector3 = require('../../math/Vector3');
 		return store;
 	};
 
-	module.exports = ParticleData;
+	export default ParticleData;

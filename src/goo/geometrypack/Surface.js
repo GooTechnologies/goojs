@@ -1,5 +1,5 @@
-var MeshData = require('../renderer/MeshData');
-var MathUtils = require('../math/MathUtils');
+import MeshData from '../renderer/MeshData';
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -209,4 +209,4 @@ var MathUtils = require('../math/MathUtils');
 		return new Surface(verts, xCount);
 	};
 
-	module.exports = Surface;
+	export default Surface;

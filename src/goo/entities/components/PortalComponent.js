@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var RenderTarget = require('../../renderer/pass/RenderTarget');
+import Component from '../../entities/components/Component';
+import RenderTarget from '../../renderer/pass/RenderTarget';
 
 
 
@@ -64,4 +64,4 @@ var RenderTarget = require('../../renderer/pass/RenderTarget');
 		this.doUpdate = true;
 	};
 
-	module.exports = PortalComponent;
+	export default PortalComponent;

@@ -1,10 +1,10 @@
-var AbstractPhysicsSystem = require('../../../addons/physicspack/systems/AbstractPhysicsSystem');
-var RaycastResult = require('../../../addons/physicspack/RaycastResult');
-var RigidBodyComponent = require('../../../addons/physicspack/components/RigidBodyComponent');
-var Vector3 = require('../../../math/Vector3');
-var Quaternion = require('../../../math/Quaternion');
-var EntityUtils = require('../../../entities/EntityUtils');
-var Transform = require('../../../math/Transform');
+import AbstractPhysicsSystem from '../../../addons/physicspack/systems/AbstractPhysicsSystem';
+import RaycastResult from '../../../addons/physicspack/RaycastResult';
+import RigidBodyComponent from '../../../addons/physicspack/components/RigidBodyComponent';
+import Vector3 from '../../../math/Vector3';
+import Quaternion from '../../../math/Quaternion';
+import EntityUtils from '../../../entities/EntityUtils';
+import Transform from '../../../math/Transform';
 
 
 
@@ -505,4 +505,4 @@ var Transform = require('../../../math/Transform');
 		}
 	};
 
-	module.exports = PhysicsSystem;
+	export default PhysicsSystem;

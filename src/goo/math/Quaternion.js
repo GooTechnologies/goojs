@@ -1,10 +1,10 @@
 /*jshint bitwise: false*/
-var Vector = require('./Vector');
-var Vector3 = require('./Vector3');
-var Vector4 = require('./Vector4');
-var Matrix3 = require('./Matrix3');
-var MathUtils = require('./MathUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import Vector from './Vector';
+import Vector3 from './Vector3';
+import Vector4 from './Vector4';
+import Matrix3 from './Matrix3';
+import MathUtils from './MathUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -817,4 +817,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 
 	// SHIM END
 
-	module.exports = Quaternion;
+	export default Quaternion;

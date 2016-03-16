@@ -1,10 +1,10 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var AnimationClip = require('../../animationpack/clip/AnimationClip');
-var JointChannel = require('../../animationpack/clip/JointChannel');
-var TransformChannel = require('../../animationpack/clip/TransformChannel');
-var InterpolatedFloatChannel = require('../../animationpack/clip/InterpolatedFloatChannel');
-var TriggerChannel = require('../../animationpack/clip/TriggerChannel');
-var ArrayUtils = require('../../util/ArrayUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import AnimationClip from '../../animationpack/clip/AnimationClip';
+import JointChannel from '../../animationpack/clip/JointChannel';
+import TransformChannel from '../../animationpack/clip/TransformChannel';
+import InterpolatedFloatChannel from '../../animationpack/clip/InterpolatedFloatChannel';
+import TriggerChannel from '../../animationpack/clip/TriggerChannel';
+import ArrayUtils from '../../util/ArrayUtils';
 
 
 
@@ -132,4 +132,4 @@ var ArrayUtils = require('../../util/ArrayUtils');
 		return clip;
 	};
 
-	module.exports = AnimationClipHandler;
+	export default AnimationClipHandler;

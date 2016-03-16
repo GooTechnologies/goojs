@@ -1,4 +1,4 @@
-var MeshData = require('../../../renderer/MeshData');
+import MeshData from '../../../renderer/MeshData';
 
 
 
@@ -69,4 +69,4 @@ var MeshData = require('../../../renderer/MeshData');
 		return this;
 	};
 
-	module.exports = PhysicsCylinderDebugShape;
+	export default PhysicsCylinderDebugShape;

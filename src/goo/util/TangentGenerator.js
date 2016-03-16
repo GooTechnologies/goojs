@@ -1,6 +1,6 @@
-var Vector2 = require('../math/Vector2');
-var Vector3 = require('../math/Vector3');
-var MeshData = require('../renderer/MeshData');
+import Vector2 from '../math/Vector2';
+import Vector3 from '../math/Vector3';
+import MeshData from '../renderer/MeshData';
 
 
 
@@ -137,4 +137,4 @@ TangentGenerator.addTangentBuffer = function (meshData, uvUnit) {
 	return tangentBuffer;
 };
 
-module.exports = TangentGenerator;
+export default TangentGenerator;

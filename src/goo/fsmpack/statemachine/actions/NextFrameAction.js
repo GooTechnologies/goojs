@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function NextFrameAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -33,4 +33,4 @@ var Action = require('./Action');
 		fsm.send(this.transitions.transition);
 	};
 
-	module.exports = NextFrameAction;
+	export default NextFrameAction;

@@ -1,4 +1,4 @@
-var Vector3 = require('../../math/Vector3');
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -130,4 +130,4 @@ var Vector3 = require('../../math/Vector3');
 		return this;
 	};
 
-	module.exports = Light;
+	export default Light;

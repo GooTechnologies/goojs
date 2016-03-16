@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var PromiseUtil = require('../../../util/PromiseUtil');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import PromiseUtil from '../../../util/PromiseUtil';
 
 
 
@@ -73,4 +73,4 @@ var PromiseUtil = require('../../../util/PromiseUtil');
 		}.bind(this));
 	};
 
-	module.exports = SoundFadeInAction;
+	export default SoundFadeInAction;

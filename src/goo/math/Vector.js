@@ -1,5 +1,5 @@
-var ObjectUtils = require('../util/ObjectUtils');
-var MathUtils = require('./MathUtils');
+import ObjectUtils from '../util/ObjectUtils';
+import MathUtils from './MathUtils';
 
 
 
@@ -519,4 +519,4 @@ var MathUtils = require('./MathUtils');
 	});
 	// SHIM END
 
-	module.exports = Vector;
+	export default Vector;

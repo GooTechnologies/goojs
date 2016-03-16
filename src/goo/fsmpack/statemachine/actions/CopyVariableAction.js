@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function CopyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -63,4 +63,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = CopyVariableAction;
+	export default CopyVariableAction;

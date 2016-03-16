@@ -1,4 +1,4 @@
-var TransformData = require('../../animationpack/clip/TransformData');
+import TransformData from '../../animationpack/clip/TransformData';
 
 
 
@@ -45,4 +45,4 @@ var TransformData = require('../../animationpack/clip/TransformData');
 		return new JointData(this);
 	};
 
-	module.exports = JointData;
+	export default JointData;

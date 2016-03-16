@@ -1,13 +1,13 @@
-var Vector4 = require('../../math/Vector4');
-var Matrix4 = require('../../math/Matrix4');
-var Edge = require('./Edge');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var EdgeData = require('./EdgeData');
-var BoundingBoxOcclusionChecker = require('./BoundingBoxOcclusionChecker');
-var BoundingSphereOcclusionChecker = require('./BoundingSphereOcclusionChecker');
-var OccluderTriangleData = require('./OccluderTriangleData');
-var EdgeMap = require('./EdgeMap');
+import Vector4 from '../../math/Vector4';
+import Matrix4 from '../../math/Matrix4';
+import Edge from './Edge';
+import BoundingSphere from '../../renderer/bounds/BoundingSphere';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
+import EdgeData from './EdgeData';
+import BoundingBoxOcclusionChecker from './BoundingBoxOcclusionChecker';
+import BoundingSphereOcclusionChecker from './BoundingSphereOcclusionChecker';
+import OccluderTriangleData from './OccluderTriangleData';
+import EdgeMap from './EdgeMap';
 
 // Variables used during creation of triangle data and rendering
 var indices = new Uint8Array(4);
@@ -1544,4 +1544,4 @@ SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clear
 	}
 };
 
-module.exports = SoftwareRenderer;
+export default SoftwareRenderer;

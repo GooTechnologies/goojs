@@ -1,10 +1,10 @@
-var MeshData = require('../../renderer/MeshData');
-var MeshBuilder = require('../../util/MeshBuilder');
-var Transform = require('../../math/Transform');
-var Sphere = require('../../shapes/Sphere');
-var PointLight = require('../../renderer/light/PointLight');
-var DirectionalLight = require('../../renderer/light/DirectionalLight');
-var SpotLight = require('../../renderer/light/SpotLight');
+import MeshData from '../../renderer/MeshData';
+import MeshBuilder from '../../util/MeshBuilder';
+import Transform from '../../math/Transform';
+import Sphere from '../../shapes/Sphere';
+import PointLight from '../../renderer/light/PointLight';
+import DirectionalLight from '../../renderer/light/DirectionalLight';
+import SpotLight from '../../renderer/light/SpotLight';
 
 
 
@@ -188,4 +188,4 @@ var SpotLight = require('../../renderer/light/SpotLight');
 		return meshDatas[0];
 	}
 
-	module.exports = LightDebug;
+	export default LightDebug;

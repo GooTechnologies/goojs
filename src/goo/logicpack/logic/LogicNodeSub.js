@@ -1,7 +1,7 @@
-var LogicLayer = require('./LogicLayer');
-var LogicNode = require('./LogicNode');
-var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface')
+import LogicLayer from './LogicLayer';
+import LogicNode from './LogicNode';
+import LogicNodes from './LogicNodes';
+import LogicInterface from './LogicInterface'
 
 /**
  * Logic node that subtracts inputs.
@@ -30,4 +30,4 @@ LogicNodeSub.inportY = LogicNodeSub.logicInterface.addInputProperty('y', 'float'
 
 LogicNodes.registerType('LogicNodeSub', LogicNodeSub);
 
-module.exports = LogicNodeSub;
+export default LogicNodeSub;

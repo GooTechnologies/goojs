@@ -1,15 +1,15 @@
-var AbstractRigidBodyComponent = require('../../../addons/physicspack/components/AbstractRigidBodyComponent');
-var Vector3 = require('../../../math/Vector3');
-var Quaternion = require('../../../math/Quaternion');
-var Transform = require('../../../math/Transform');
-var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
-var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
-var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
-var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider');
-var MeshCollider = require('../../../addons/physicspack/colliders/MeshCollider');
-var BallJoint = require('../../../addons/physicspack/joints/BallJoint');
-var HingeJoint = require('../../../addons/physicspack/joints/HingeJoint');
-var ColliderComponent = require('../../../addons/physicspack/components/ColliderComponent');
+import AbstractRigidBodyComponent from '../../../addons/physicspack/components/AbstractRigidBodyComponent';
+import Vector3 from '../../../math/Vector3';
+import Quaternion from '../../../math/Quaternion';
+import Transform from '../../../math/Transform';
+import BoxCollider from '../../../addons/physicspack/colliders/BoxCollider';
+import SphereCollider from '../../../addons/physicspack/colliders/SphereCollider';
+import CylinderCollider from '../../../addons/physicspack/colliders/CylinderCollider';
+import PlaneCollider from '../../../addons/physicspack/colliders/PlaneCollider';
+import MeshCollider from '../../../addons/physicspack/colliders/MeshCollider';
+import BallJoint from '../../../addons/physicspack/joints/BallJoint';
+import HingeJoint from '../../../addons/physicspack/joints/HingeJoint';
+import ColliderComponent from '../../../addons/physicspack/components/ColliderComponent';
 
 
 
@@ -807,4 +807,4 @@ var ColliderComponent = require('../../../addons/physicspack/components/Collider
 
 	RigidBodyComponent.prototype.api = {};
 
-	module.exports = RigidBodyComponent;
+	export default RigidBodyComponent;

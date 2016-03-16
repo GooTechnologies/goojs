@@ -1,4 +1,4 @@
-var MathUtils = require('../math/MathUtils');
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -152,4 +152,4 @@ Noise.fractal4d = function (x, y, z, w, scale, octaves, persistance, lacunarity,
 	return result / normalizer;
 };
 
-module.exports = Noise;
+export default Noise;

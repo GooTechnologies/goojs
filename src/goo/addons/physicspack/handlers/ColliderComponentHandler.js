@@ -1,14 +1,14 @@
-var ComponentHandler = require('../../../loaders/handlers/ComponentHandler');
-var ColliderComponent = require('../../../addons/physicspack/components/ColliderComponent');
-var BoundingBox = require('../../../renderer/bounds/BoundingBox');
-var ShapeCreatorMemoized = require('../../../util/ShapeCreatorMemoized');
-var RSVP = require('../../../util/rsvp');
-var ObjectUtils = require('../../../util/ObjectUtils');
-var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
-var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
-var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider');
-var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
-var PhysicsMaterial = require('../../../addons/physicspack/PhysicsMaterial');
+import ComponentHandler from '../../../loaders/handlers/ComponentHandler';
+import ColliderComponent from '../../../addons/physicspack/components/ColliderComponent';
+import BoundingBox from '../../../renderer/bounds/BoundingBox';
+import ShapeCreatorMemoized from '../../../util/ShapeCreatorMemoized';
+import RSVP from '../../../util/rsvp';
+import ObjectUtils from '../../../util/ObjectUtils';
+import SphereCollider from '../../../addons/physicspack/colliders/SphereCollider';
+import BoxCollider from '../../../addons/physicspack/colliders/BoxCollider';
+import PlaneCollider from '../../../addons/physicspack/colliders/PlaneCollider';
+import CylinderCollider from '../../../addons/physicspack/colliders/CylinderCollider';
+import PhysicsMaterial from '../../../addons/physicspack/PhysicsMaterial';
 
 
 
@@ -102,4 +102,4 @@ var PhysicsMaterial = require('../../../addons/physicspack/PhysicsMaterial');
 		});
 	};
 
-	module.exports = ColliderComponentHandler;
+	export default ColliderComponentHandler;

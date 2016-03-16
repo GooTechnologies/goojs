@@ -158,4 +158,4 @@
 		}]
 	};
 
-	module.exports = PickAndRotateScript;
+	export default PickAndRotateScript;

@@ -1,5 +1,5 @@
-var Matrix4 = require('../../math/Matrix4');
-var Vector4 = require('../../math/Vector4');
+import Matrix4 from '../../math/Matrix4';
+import Vector4 from '../../math/Vector4';
 
 
 
@@ -480,4 +480,4 @@ var Vector4 = require('../../math/Vector4');
 		return coordinate.x >= 0 && coordinate.x <= this._clipX && coordinate.y <= this._clipY && coordinate.y >= 0;
 	};
 
-	module.exports = BoundingSphereOcclusionChecker;
+	export default BoundingSphereOcclusionChecker;

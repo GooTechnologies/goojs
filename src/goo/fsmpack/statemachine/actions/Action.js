@@ -1,4 +1,4 @@
-var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
+import FsmUtils from '../../../fsmpack/statemachine/FsmUtils';
 
 
 
@@ -38,4 +38,4 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 	Action.prototype.cleanup = function (/*fsm*/) {
 	};
 
-	module.exports = Action;
+	export default Action;

@@ -1,4 +1,4 @@
-var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel');
+import AbstractTimelineChannel from '../timelinepack/AbstractTimelineChannel';
 
 
 
@@ -87,4 +87,4 @@ var AbstractTimelineChannel = require('../timelinepack/AbstractTimelineChannel')
 		return this;
 	};
 
-	module.exports = EventChannel;
+	export default EventChannel;

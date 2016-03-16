@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function SetMaterialColorAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -56,4 +56,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = SetMaterialColorAction;
+	export default SetMaterialColorAction;

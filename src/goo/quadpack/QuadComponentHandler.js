@@ -1,8 +1,8 @@
-var ComponentHandler = require('../loaders/handlers/ComponentHandler');
-var RSVP = require('../util/rsvp');
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
-var QuadComponent = require('../quadpack/QuadComponent');
+import ComponentHandler from '../loaders/handlers/ComponentHandler';
+import RSVP from '../util/rsvp';
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
+import QuadComponent from '../quadpack/QuadComponent';
 
 
 
@@ -78,4 +78,4 @@ var QuadComponent = require('../quadpack/QuadComponent');
 		});
 	};
 
-	module.exports = QuadComponentHandler;
+	export default QuadComponentHandler;

@@ -1,5 +1,5 @@
-var ArrayUtils = require('../../util/ArrayUtils');
-var SystemBus = require('../../entities/SystemBus');
+import ArrayUtils from '../../util/ArrayUtils';
+import SystemBus from '../../entities/SystemBus';
 
 
 
@@ -304,4 +304,4 @@ var SystemBus = require('../../entities/SystemBus');
 		ArrayUtils.remove(this._machines, machine);
 	};
 
-	module.exports = State;
+	export default State;

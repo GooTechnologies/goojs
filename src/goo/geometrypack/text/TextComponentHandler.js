@@ -1,6 +1,6 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var TextComponent = require('../../geometrypack/text/TextComponent');
-var PromiseUtils = require('../../util/PromiseUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import TextComponent from '../../geometrypack/text/TextComponent';
+import PromiseUtils from '../../util/PromiseUtils';
 
 	/**
 	 * For handling loading of text components
@@ -84,4 +84,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		});
 	};
 
-	module.exports = TextComponentHandler;
+	export default TextComponentHandler;

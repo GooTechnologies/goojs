@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -44,4 +44,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		}
 	};
 
-	module.exports = HtmlAction;
+	export default HtmlAction;

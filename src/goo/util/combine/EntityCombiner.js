@@ -1,10 +1,10 @@
-var EntityUtils = require('../../entities/EntityUtils');
-var Entity = require('../../entities/Entity');
-var MeshBuilder = require('../../util/MeshBuilder');
-var Transform = require('../../math/Transform');
-var Vector3 = require('../../math/Vector3');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
+import EntityUtils from '../../entities/EntityUtils';
+import Entity from '../../entities/Entity';
+import MeshBuilder from '../../util/MeshBuilder';
+import Transform from '../../math/Transform';
+import Vector3 from '../../math/Vector3';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
+import BoundingSphere from '../../renderer/bounds/BoundingSphere';
 
 
 
@@ -242,4 +242,4 @@ var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 		};
 	}
 
-	module.exports = EntityCombiner;
+	export default EntityCombiner;

@@ -1,4 +1,4 @@
-var Capabilities = require('../renderer/Capabilities');
+import Capabilities from '../renderer/Capabilities';
 
 
 
@@ -52,4 +52,4 @@ BufferUtils.cloneTypedArray = function (source) {
 	return new source.constructor(source);
 };
 
-module.exports = BufferUtils;
+export default BufferUtils;

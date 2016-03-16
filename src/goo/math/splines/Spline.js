@@ -1,6 +1,6 @@
-var Vector2 = require('../Vector2');
-var Vector3 = require('../Vector3');
-var Vector4 = require('../Vector4');
+import Vector2 from '../Vector2';
+import Vector3 from '../Vector3';
+import Vector4 from '../Vector4';
 
 
 
@@ -196,4 +196,4 @@ var Vector4 = require('../Vector4');
 		Spline.cubicInterpolation(p0, p1, p2, p3, fraction, store);
 	};
 
-module.exports = Spline;
+export default Spline;

@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function SetTimelineTimeAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -31,4 +31,4 @@ var Action = require('./Action');
 		entity.timelineComponent.setTime(this.time);
 	};
 
-	module.exports = SetTimelineTimeAction;
+	export default SetTimelineTimeAction;

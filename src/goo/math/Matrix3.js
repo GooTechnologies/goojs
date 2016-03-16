@@ -1,7 +1,7 @@
-var MathUtils = require('./MathUtils');
-var Matrix = require('./Matrix');
-var Vector3 = require('./Vector3');
-var ObjectUtils = require('../util/ObjectUtils');
+import MathUtils from './MathUtils';
+import Matrix from './Matrix';
+import Vector3 from './Vector3';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -1074,4 +1074,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 	]);
 	// @endif
 
-	module.exports = Matrix3;
+	export default Matrix3;

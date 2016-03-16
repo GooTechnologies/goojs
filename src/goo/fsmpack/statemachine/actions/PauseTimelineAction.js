@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function PauseTimelineAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -25,4 +25,4 @@ var Action = require('./Action');
 		entity.timelineComponent.pause();
 	};
 
-	module.exports = PauseTimelineAction;
+	export default PauseTimelineAction;

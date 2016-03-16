@@ -1,8 +1,8 @@
-var Vector3 = require('../math/Vector3');
-var Vector2 = require('../math/Vector2');
-var MathUtils = require('../math/MathUtils');
-var Camera = require('../renderer/Camera');
-var SystemBus = require('../entities/SystemBus');
+import Vector3 from '../math/Vector3';
+import Vector2 from '../math/Vector2';
+import MathUtils from '../math/MathUtils';
+import Camera from '../renderer/Camera';
+import SystemBus from '../entities/SystemBus';
 
 
 
@@ -514,4 +514,4 @@ var SystemBus = require('../entities/SystemBus');
 		}]
 	};
 
-	module.exports = OrbitCamControlScript;
+	export default OrbitCamControlScript;

@@ -22,4 +22,4 @@ function PhysicsJoint(settings) {
 	this.collideConnected = settings.collideConnected !== undefined ? settings.collideConnected : false;
 }
 
-module.exports = PhysicsJoint;
+export default PhysicsJoint;

@@ -1,7 +1,7 @@
-var MeshData = require('../renderer/MeshData');
-var Vector3 = require('../math/Vector3');
-var MathUtils = require('../math/MathUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import MeshData from '../renderer/MeshData';
+import Vector3 from '../math/Vector3';
+import MathUtils from '../math/MathUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -415,4 +415,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		Chromeball: 'Chromeball'
 	};
 
-	module.exports = Sphere;
+	export default Sphere;

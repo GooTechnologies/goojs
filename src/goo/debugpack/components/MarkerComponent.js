@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var BoundingVolumeMeshBuilder = require('../../debugpack/BoundingVolumeMeshBuilder');
+import Component from '../../entities/components/Component';
+import BoundingVolumeMeshBuilder from '../../debugpack/BoundingVolumeMeshBuilder';
 
 
 
@@ -21,4 +21,4 @@ function MarkerComponent(hostEntity) {
 MarkerComponent.prototype = Object.create(Component.prototype);
 MarkerComponent.prototype.constructor = MarkerComponent;
 
-module.exports = MarkerComponent;
+export default MarkerComponent;

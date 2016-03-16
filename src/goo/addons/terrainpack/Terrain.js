@@ -1,23 +1,23 @@
-var EntityUtils = require('../../entities/EntityUtils');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
-var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
-var MathUtils = require('../../math/MathUtils');
-var Transform = require('../../math/Transform');
-var Vector3 = require('../../math/Vector3');
-var MeshData = require('../../renderer/MeshData');
-var Material = require('../../renderer/Material');
-var Shader = require('../../renderer/Shader');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
-var TextureCreator = require('../../renderer/TextureCreator');
-var RenderTarget = require('../../renderer/pass/RenderTarget');
-var Texture = require('../../renderer/Texture');
-var Renderer = require('../../renderer/Renderer');
-var FullscreenPass = require('../../renderer/pass/FullscreenPass');
-var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
-var DirectionalLight = require('../../renderer/light/DirectionalLight');
-var Quad = require('../../shapes/Quad');
+import EntityUtils from '../../entities/EntityUtils';
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
+import MeshRendererComponent from '../../entities/components/MeshRendererComponent';
+import MathUtils from '../../math/MathUtils';
+import Transform from '../../math/Transform';
+import Vector3 from '../../math/Vector3';
+import MeshData from '../../renderer/MeshData';
+import Material from '../../renderer/Material';
+import Shader from '../../renderer/Shader';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
+import TextureCreator from '../../renderer/TextureCreator';
+import RenderTarget from '../../renderer/pass/RenderTarget';
+import Texture from '../../renderer/Texture';
+import Renderer from '../../renderer/Renderer';
+import FullscreenPass from '../../renderer/pass/FullscreenPass';
+import FullscreenUtils from '../../renderer/pass/FullscreenUtils';
+import DirectionalLight from '../../renderer/light/DirectionalLight';
+import Quad from '../../shapes/Quad';
 
 
 
@@ -1356,4 +1356,4 @@ var Quad = require('../../shapes/Quad');
 		].join('\n')
 	};
 
-	module.exports = Terrain;
+	export default Terrain;

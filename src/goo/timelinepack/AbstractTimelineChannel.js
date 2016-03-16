@@ -50,4 +50,4 @@ AbstractTimelineChannel.prototype.sort = function () {
 	return this;
 };
 
-module.exports = AbstractTimelineChannel;
+export default AbstractTimelineChannel;

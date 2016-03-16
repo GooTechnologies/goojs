@@ -268,4 +268,4 @@
 		'#define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput)	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)'
 	].join('\n');
 
-	module.exports = ShaderFragment;
+	export default ShaderFragment;

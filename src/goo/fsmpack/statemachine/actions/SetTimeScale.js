@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function SetTimeScale(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -30,4 +30,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = SetTimeScale;
+	export default SetTimeScale;

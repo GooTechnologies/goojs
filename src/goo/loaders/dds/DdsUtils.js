@@ -1,4 +1,4 @@
-/*jshint bitwise: false */var Capabilities = require('../../renderer/Capabilities');
+/*jshint bitwise: false */import Capabilities from '../../renderer/Capabilities';
 
 
 
@@ -243,4 +243,4 @@
 		return result;
 	};
 
-	module.exports = DdsUtils;
+	export default DdsUtils;

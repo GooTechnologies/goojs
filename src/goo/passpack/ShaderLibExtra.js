@@ -1,8 +1,8 @@
-var MeshData = require('../renderer/MeshData');
-var Shader = require('../renderer/Shader');
-var ShaderFragment = require('../renderer/shaders/ShaderFragment');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var World = require('../entities/World');
+import MeshData from '../renderer/MeshData';
+import Shader from '../renderer/Shader';
+import ShaderFragment from '../renderer/shaders/ShaderFragment';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import World from '../entities/World';
 
 	/**
 	 * Collection of additional useful shaders
@@ -1637,4 +1637,4 @@ var World = require('../entities/World');
 		].join('\n')
 	};
 
-	module.exports = ShaderLibExtra;
+	export default ShaderLibExtra;

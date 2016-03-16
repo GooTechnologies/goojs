@@ -1,11 +1,11 @@
-var SystemBus = require('../entities/SystemBus');
-var Material = require('../renderer/Material');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var TextureCreator = require('../renderer/TextureCreator');
-var ParticleLib = require('../particles/ParticleLib');
-var ParticleSystemUtils = require('../util/ParticleSystemUtils');
-var Renderer = require('../renderer/Renderer');
-var Vector3 = require('../math/Vector3');
+import SystemBus from '../entities/SystemBus';
+import Material from '../renderer/Material';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import TextureCreator from '../renderer/TextureCreator';
+import ParticleLib from '../particles/ParticleLib';
+import ParticleSystemUtils from '../util/ParticleSystemUtils';
+import Renderer from '../renderer/Renderer';
+import Vector3 from '../math/Vector3';
 
 
 
@@ -97,4 +97,4 @@ var Vector3 = require('../math/Vector3');
 		this.particleCloudEntity.removeFromWorld();
 	};
 
-	module.exports = Snow;
+	export default Snow;

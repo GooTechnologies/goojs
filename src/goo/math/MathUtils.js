@@ -411,4 +411,4 @@
 		});
 	};
 
-	module.exports = MathUtils;
+	export default MathUtils;

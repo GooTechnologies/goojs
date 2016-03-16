@@ -1,15 +1,15 @@
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var Camera = require('../../renderer/Camera');
-var Plane = require('../../math/Plane');
-var RenderTarget = require('../../renderer/pass/RenderTarget');
-var Vector3 = require('../../math/Vector3');
-var Vector4 = require('../../math/Vector4');
-var Material = require('../../renderer/Material');
-var Texture = require('../../renderer/Texture');
-var TextureCreator = require('../../renderer/TextureCreator');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import Camera from '../../renderer/Camera';
+import Plane from '../../math/Plane';
+import RenderTarget from '../../renderer/pass/RenderTarget';
+import Vector3 from '../../math/Vector3';
+import Vector4 from '../../math/Vector4';
+import Material from '../../renderer/Material';
+import Texture from '../../renderer/Texture';
+import TextureCreator from '../../renderer/TextureCreator';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
 
 	/**
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
@@ -487,4 +487,4 @@ var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
 		].join('\n')
 	};
 
-	module.exports = FlatWaterRenderer;
+	export default FlatWaterRenderer;

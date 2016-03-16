@@ -1,4 +1,4 @@
-var AbstractState = require('../../animationpack/state/AbstractState');
+import AbstractState from '../../animationpack/state/AbstractState';
 
 
 
@@ -81,4 +81,4 @@ var AbstractState = require('../../animationpack/state/AbstractState');
 		return cloned;
 	};
 
-	module.exports = SteadyState;
+	export default SteadyState;

@@ -1,8 +1,8 @@
-var System = require('../../entities/systems/System');
-var Renderer = require('../../renderer/Renderer');
-var Matrix4 = require('../../math/Matrix4');
-var MathUtils = require('../../math/MathUtils');
-var Vector3 = require('../../math/Vector3');
+import System from '../../entities/systems/System';
+import Renderer from '../../renderer/Renderer';
+import Matrix4 from '../../math/Matrix4';
+import MathUtils from '../../math/MathUtils';
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -120,4 +120,4 @@ var Vector3 = require('../../math/Vector3');
 		component.domElement = null;
 	};
 
-	module.exports = HtmlSystem;
+	export default HtmlSystem;

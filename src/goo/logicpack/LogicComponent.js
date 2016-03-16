@@ -1,7 +1,7 @@
-var LogicInterface = require('./logic/LogicInterface');
-var LogicLayer = require('./logic/LogicLayer');
-var LogicNodes = require('./logic/LogicNodes');
-var Component = require('../entities/components/Component');
+import LogicInterface from './logic/LogicInterface';
+import LogicLayer from './logic/LogicLayer';
+import LogicNodes from './logic/LogicNodes';
+import Component from '../entities/components/Component';
 
 /**
  * A component that embeds a LogicLayer and processes it every frame.
@@ -53,4 +53,4 @@ LogicComponent.prototype.process = function (tpf) {
 	}
 };
 
-module.exports = LogicComponent;
+export default LogicComponent;

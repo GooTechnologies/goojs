@@ -1,5 +1,5 @@
-var System = require('../../entities/systems/System');
-var GamepadData = require('../../addons/gamepadpack/GamepadData');
+import System from '../../entities/systems/System';
+import GamepadData from '../../addons/gamepadpack/GamepadData';
 
 
 
@@ -148,4 +148,4 @@ var GamepadData = require('../../addons/gamepadpack/GamepadData');
 		this.resetGamepadData();
 	};
 
-	module.exports = GamepadSystem;
+	export default GamepadSystem;

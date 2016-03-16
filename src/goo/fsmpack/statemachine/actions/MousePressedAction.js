@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 
 	function MousePressedAction(/*id, settings*/) {
@@ -51,4 +51,4 @@ var Action = require('./Action');
 		}
 	};
 
-	module.exports = MousePressedAction;
+	export default MousePressedAction;

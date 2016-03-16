@@ -142,4 +142,4 @@ LogicInterface.assignPortDataName = function (port, dataname) {
  */
 LogicInterface._portID = 0;
 
-module.exports = LogicInterface;
+export default LogicInterface;

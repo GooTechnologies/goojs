@@ -1,11 +1,11 @@
-var Material = require('../renderer/Material');
-var Shader = require('../renderer/Shader');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var FullscreenUtils = require('../renderer/pass/FullscreenUtils');
-var MeshData = require('../renderer/MeshData');
-var RenderTarget = require('../renderer/pass/RenderTarget');
-var FullscreenPass = require('../renderer/pass/FullscreenPass');
-var Pass = require('../renderer/pass/Pass');
+import Material from '../renderer/Material';
+import Shader from '../renderer/Shader';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import FullscreenUtils from '../renderer/pass/FullscreenUtils';
+import MeshData from '../renderer/MeshData';
+import RenderTarget from '../renderer/pass/RenderTarget';
+import FullscreenPass from '../renderer/pass/FullscreenPass';
+import Pass from '../renderer/pass/Pass';
 
 
 
@@ -126,4 +126,4 @@ var Pass = require('../renderer/pass/Pass');
 		].join('\n')
 	};
 
-	module.exports = MotionBlurPass;
+	export default MotionBlurPass;

@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function ClickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -116,4 +116,4 @@ var Action = require('./Action');
 		document.removeEventListener('touchend', this.upListener);
 	};
 
-	module.exports = ClickAction;
+	export default ClickAction;

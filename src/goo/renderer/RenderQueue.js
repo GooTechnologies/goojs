@@ -1,4 +1,4 @@
-var Vector3 = require('../math/Vector3');
+import Vector3 from '../math/Vector3';
 
 /**
  * The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.
@@ -122,4 +122,4 @@ RenderQueue.TRANSPARENT = 2000;
  */
 RenderQueue.OVERLAY = 3000;
 
-module.exports = RenderQueue;
+export default RenderQueue;

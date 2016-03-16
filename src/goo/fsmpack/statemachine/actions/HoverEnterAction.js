@@ -1,4 +1,4 @@
-var Action = require('./Action');
+import Action from './Action';
 
 	function HoverEnterAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -110,5 +110,5 @@ var Action = require('./Action');
 		document.removeEventListener('touchmove', this.moveListener);
 	};
 
-	module.exports = HoverEnterAction;
+	export default HoverEnterAction;
 

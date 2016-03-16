@@ -1,5 +1,5 @@
-var HeightMapBoundingScript = require('../scriptpack/HeightMapBoundingScript');
-var Vector3 = require('../math/Vector3');
+import HeightMapBoundingScript from '../scriptpack/HeightMapBoundingScript';
+import Vector3 from '../math/Vector3';
 
 
 
@@ -163,5 +163,5 @@ var Vector3 = require('../math/Vector3');
 		return calcVec1;
 	};
 
-	module.exports = WorldFittedTerrainScript;
+	export default WorldFittedTerrainScript;
 

@@ -21,9 +21,9 @@
  *    distribution.
  */
 
-/*jshint bitwise: false */var DdsLoader = require('../../loaders/dds/DdsLoader');
-var DdsUtils = require('../../loaders/dds/DdsUtils');
-var Capabilities = require('../../renderer/Capabilities');
+/*jshint bitwise: false */import DdsLoader from '../../loaders/dds/DdsLoader';
+import DdsUtils from '../../loaders/dds/DdsUtils';
+import Capabilities from '../../renderer/Capabilities';
 
 
 
@@ -233,4 +233,4 @@ var Capabilities = require('../../renderer/Capabilities');
 		return 'CrunchLoader';
 	};
 
-	module.exports = CrunchLoader;
+	export default CrunchLoader;

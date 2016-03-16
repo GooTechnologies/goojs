@@ -1,5 +1,5 @@
-var MeshData = require('../renderer/MeshData');
-var PolyLine = require('../geometrypack/PolyLine');
+import MeshData from '../renderer/MeshData';
+import PolyLine from '../geometrypack/PolyLine';
 
 
 
@@ -23,4 +23,4 @@ var PolyLine = require('../geometrypack/PolyLine');
 
 	RegularPolygon.prototype = Object.create(PolyLine.prototype);
 
-	module.exports = RegularPolygon;
+	export default RegularPolygon;

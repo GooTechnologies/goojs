@@ -1,4 +1,4 @@
-var MeshData = require('../renderer/MeshData');
+import MeshData from '../renderer/MeshData';
 
 
 
@@ -83,4 +83,4 @@ var MeshData = require('../renderer/MeshData');
 		return new SimpleBox(options);
 	};
 
-	module.exports = SimpleBox;
+	export default SimpleBox;

@@ -1,5 +1,5 @@
-var ScriptUtils = require('../scripts/ScriptUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import ScriptUtils from '../scripts/ScriptUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -77,4 +77,4 @@ Scripts.allScripts = function () {
 	return scripts;
 };
 
-module.exports = Scripts;
+export default Scripts;

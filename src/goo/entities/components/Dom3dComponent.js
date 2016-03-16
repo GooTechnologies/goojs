@@ -1,7 +1,7 @@
-var Component = require('../../entities/components/Component');
-var Quad = require('../../shapes/Quad');
-var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
+import Component from '../../entities/components/Component';
+import Quad from '../../shapes/Quad';
+import MeshRendererComponent from '../../entities/components/MeshRendererComponent';
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
 
 
 
@@ -94,4 +94,4 @@ var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 		this.meshData.destroy(context);
 	};
 
-	module.exports = Dom3dComponent;
+	export default Dom3dComponent;

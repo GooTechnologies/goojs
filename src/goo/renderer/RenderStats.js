@@ -17,4 +17,4 @@
 			'<br/>Indices: ' + this.indices;
 	};
 
-	module.exports = RenderStats;
+	export default RenderStats;

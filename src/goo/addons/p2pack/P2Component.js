@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var ObjectUtil = require('../../util/ObjectUtil');
+import Component from '../../entities/components/Component';
+import ObjectUtil from '../../util/ObjectUtil';
 
 
 
@@ -54,4 +54,4 @@ var ObjectUtil = require('../../util/ObjectUtil');
 	P2Component.prototype = Object.create(Component.prototype);
 	P2Component.prototype.constructor = P2Component;
 
-	module.exports = P2Component;
+	export default P2Component;

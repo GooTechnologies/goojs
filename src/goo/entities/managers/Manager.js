@@ -19,4 +19,4 @@ Manager.prototype.applyAPI = function (worldBy) {
 	}
 };
 
-module.exports = Manager;
+export default Manager;

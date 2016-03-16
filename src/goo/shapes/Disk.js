@@ -1,5 +1,5 @@
-var MeshData = require('../renderer/MeshData');
-var ObjectUtils = require('../util/ObjectUtils');
+import MeshData from '../renderer/MeshData';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -87,4 +87,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return new Disk(options);
 	};
 
-	module.exports = Disk;
+	export default Disk;

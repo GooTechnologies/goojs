@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var SystemBus = require('../../../entities/SystemBus');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import SystemBus from '../../../entities/SystemBus';
 
 
 
@@ -45,4 +45,4 @@ var SystemBus = require('../../../entities/SystemBus');
 		SystemBus.removeListener(this.channel, this.eventListener);
 	};
 
-	module.exports = TransitionOnMessageAction;
+	export default TransitionOnMessageAction;

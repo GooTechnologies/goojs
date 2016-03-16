@@ -1,5 +1,5 @@
-var Matrix2 = require('./Matrix2');
-var ObjectUtils = require('../util/ObjectUtils');
+import Matrix2 from './Matrix2';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -16,4 +16,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		Matrix2x2[x] = Matrix2[x];
 	}
 
-	module.exports = Matrix2x2;
+	export default Matrix2x2;

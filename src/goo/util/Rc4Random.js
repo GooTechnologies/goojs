@@ -46,4 +46,4 @@
 		};
 	}
 
-	module.exports = Rc4Random;
+	export default Rc4Random;

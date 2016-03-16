@@ -193,4 +193,4 @@ FsmUtils.getValue = function(par, fsm) {
 	}
 };
 
-module.exports = FsmUtils;
+export default FsmUtils;

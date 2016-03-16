@@ -1,4 +1,4 @@
-var System = require('../../entities/systems/System');
+import System from '../../entities/systems/System';
 
 
 
@@ -105,4 +105,4 @@ P2System.prototype.process = function (entities /*, tpf */) {
 	}
 };
 
-module.exports = P2System;
+export default P2System;

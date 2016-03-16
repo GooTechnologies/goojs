@@ -1,14 +1,14 @@
-var Material = require('../renderer/Material');
-var RenderTarget = require('../renderer/pass/RenderTarget');
-var ObjectUtils = require('../util/ObjectUtils');
-var MeshData = require('../renderer/MeshData');
-var Shader = require('../renderer/Shader');
-var ShaderFragment = require('../renderer/shaders/ShaderFragment');
-var RenderPass = require('../renderer/pass/RenderPass');
-var FullscreenPass = require('../renderer/pass/FullscreenPass');
-var BlurPass = require('../passpack/BlurPass');
-var ShaderLibExtra = require('../passpack/ShaderLibExtra');
-var Pass = require('../renderer/pass/Pass');
+import Material from '../renderer/Material';
+import RenderTarget from '../renderer/pass/RenderTarget';
+import ObjectUtils from '../util/ObjectUtils';
+import MeshData from '../renderer/MeshData';
+import Shader from '../renderer/Shader';
+import ShaderFragment from '../renderer/shaders/ShaderFragment';
+import RenderPass from '../renderer/pass/RenderPass';
+import FullscreenPass from '../renderer/pass/FullscreenPass';
+import BlurPass from '../passpack/BlurPass';
+import ShaderLibExtra from '../passpack/ShaderLibExtra';
+import Pass from '../renderer/pass/Pass';
 
 
 
@@ -107,4 +107,4 @@ var Pass = require('../renderer/pass/Pass');
 		].join('\n')
 	};
 
-	module.exports = SsaoPass;
+	export default SsaoPass;

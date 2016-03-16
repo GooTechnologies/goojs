@@ -104,4 +104,4 @@ OccluderTriangleData.prototype.addIndices = function (triangleIndices) {
 	this.indexCount = writeIndex;
 };
 
-module.exports = OccluderTriangleData;
+export default OccluderTriangleData;

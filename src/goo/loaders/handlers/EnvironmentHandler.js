@@ -1,9 +1,9 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var ObjectUtils = require('../../util/ObjectUtils');
-var SystemBus = require('../../entities/SystemBus');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-var Snow = require('../../util/Snow'); // TODO Should move!
-var RSVP = require('../../util/rsvp');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import ObjectUtils from '../../util/ObjectUtils';
+import SystemBus from '../../entities/SystemBus';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
+import Snow from '../../util/Snow'; // TODO Should move!
+import RSVP from '../../util/rsvp';
 
 	var defaults = {
 		backgroundColor: [0.3, 0.3, 0.3, 1],
@@ -181,4 +181,4 @@ var RSVP = require('../../util/rsvp');
 		}
 	};
 
-	module.exports = EnvironmentHandler;
+	export default EnvironmentHandler;

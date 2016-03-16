@@ -1,5 +1,5 @@
-var Action = require('./Action');
-var Vector3 = require('./../../../math/Vector3');
+import Action from './Action';
+import Vector3 from './../../../math/Vector3';
 
 	function SetRigidBodyVelocityAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -31,4 +31,4 @@ var Vector3 = require('./../../../math/Vector3');
 		entity.rigidBodyComponent.setVelocity(tmpVector);
 	};
 
-	module.exports = SetRigidBodyVelocityAction;
+	export default SetRigidBodyVelocityAction;

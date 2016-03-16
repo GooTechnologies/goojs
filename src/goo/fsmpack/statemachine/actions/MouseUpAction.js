@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -72,4 +72,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		document.removeEventListener('touchend', this.touchEventListener);
 	};
 
-	module.exports = MouseUpAction;
+	export default MouseUpAction;

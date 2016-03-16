@@ -304,4 +304,4 @@
 		return '';
 	};
 
-module.exports = ObjectUtils;
+export default ObjectUtils;

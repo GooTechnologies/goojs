@@ -91,4 +91,4 @@ EventTarget.prototype.has = function (type) {
 	return this._listenerMap.has(type);
 };
 
-module.exports = EventTarget;
+export default EventTarget;

@@ -1,4 +1,4 @@
-var Curve = require('../../../addons/particlepack/curves/Curve');
+import Curve from '../../../addons/particlepack/curves/Curve';
 
 	/**
 	 * @class
@@ -59,4 +59,4 @@ var Curve = require('../../../addons/particlepack/curves/Curve');
 		return 0.5 * k * x * x + m * x;
 	};
 
-	module.exports = LinearCurve;
+	export default LinearCurve;

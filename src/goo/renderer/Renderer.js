@@ -1,24 +1,24 @@
 /*jshint bitwise: false*/
-var Capabilities = require('../renderer/Capabilities');
-var RendererRecord = require('../renderer/RendererRecord');
-var RendererUtils = require('../renderer/RendererUtils');
-var TextureCreator = require('../renderer/TextureCreator');
-var RenderTarget = require('../renderer/pass/RenderTarget');
-var Vector4 = require('../math/Vector4');
-var Entity = require('../entities/Entity');
-var Texture = require('../renderer/Texture');
-var DdsLoader = require('../loaders/dds/DdsLoader');
-var DdsUtils = require('../loaders/dds/DdsUtils');
-var Material = require('../renderer/Material');
-var Transform = require('../math/Transform');
-var RenderQueue = require('../renderer/RenderQueue');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var ShadowHandler = require('../renderer/shadow/ShadowHandler');
-var RenderStats = require('../renderer/RenderStats');
-var SystemBus = require('../entities/SystemBus');
-var TaskScheduler = require('../renderer/TaskScheduler');
-var RenderInfo = require('../renderer/RenderInfo');
-var MathUtils = require('../math/MathUtils');
+import Capabilities from '../renderer/Capabilities';
+import RendererRecord from '../renderer/RendererRecord';
+import RendererUtils from '../renderer/RendererUtils';
+import TextureCreator from '../renderer/TextureCreator';
+import RenderTarget from '../renderer/pass/RenderTarget';
+import Vector4 from '../math/Vector4';
+import Entity from '../entities/Entity';
+import Texture from '../renderer/Texture';
+import DdsLoader from '../loaders/dds/DdsLoader';
+import DdsUtils from '../loaders/dds/DdsUtils';
+import Material from '../renderer/Material';
+import Transform from '../math/Transform';
+import RenderQueue from '../renderer/RenderQueue';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import ShadowHandler from '../renderer/shadow/ShadowHandler';
+import RenderStats from '../renderer/RenderStats';
+import SystemBus from '../entities/SystemBus';
+import TaskScheduler from '../renderer/TaskScheduler';
+import RenderInfo from '../renderer/RenderInfo';
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -2204,4 +2204,4 @@ var MathUtils = require('../math/MathUtils');
 		shader.destroy();
 	};
 
-	module.exports = Renderer;
+	export default Renderer;

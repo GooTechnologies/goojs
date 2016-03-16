@@ -1,20 +1,20 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var SimplePartitioner = require('../../renderer/SimplePartitioner');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
-var Matrix3 = require('../../math/Matrix3');
-var Matrix4 = require('../../math/Matrix4');
-var Vector2 = require('../../math/Vector2');
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var Gizmo = require('../../util/gizmopack/Gizmo');
-var TranslationGizmo = require('../../util/gizmopack/TranslationGizmo');
-var GlobalTranslationGizmo = require('../../util/gizmopack/GlobalTranslationGizmo');
-var RotationGizmo = require('../../util/gizmopack/RotationGizmo');
-var GlobalRotationGizmo = require('../../util/gizmopack/GlobalRotationGizmo');
-var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import SimplePartitioner from '../../renderer/SimplePartitioner';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import ShaderFragment from '../../renderer/shaders/ShaderFragment';
+import Matrix3 from '../../math/Matrix3';
+import Matrix4 from '../../math/Matrix4';
+import Vector2 from '../../math/Vector2';
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import Gizmo from '../../util/gizmopack/Gizmo';
+import TranslationGizmo from '../../util/gizmopack/TranslationGizmo';
+import GlobalTranslationGizmo from '../../util/gizmopack/GlobalTranslationGizmo';
+import RotationGizmo from '../../util/gizmopack/RotationGizmo';
+import GlobalRotationGizmo from '../../util/gizmopack/GlobalRotationGizmo';
+import ScaleGizmo from '../../util/gizmopack/ScaleGizmo';
 
 
 
@@ -365,4 +365,4 @@ var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
 		].join('\n')
 	};
 
-	module.exports = GizmoRenderSystem;
+	export default GizmoRenderSystem;

@@ -1,6 +1,6 @@
-var Component = require('../../entities/components/Component');
-var Box = require('../../shapes/Box');
-var Vector3 = require('../../math/Vector3');
+import Component from '../../entities/components/Component';
+import Box from '../../shapes/Box';
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -30,4 +30,4 @@ var Vector3 = require('../../math/Vector3');
 	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);
 	CannonBoxColliderComponent.constructor = CannonBoxColliderComponent;
 
-	module.exports = CannonBoxColliderComponent;
+	export default CannonBoxColliderComponent;

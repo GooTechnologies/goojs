@@ -1,5 +1,5 @@
-var MeshData = require('../renderer/MeshData');
-var ObjectUtils = require('../util/ObjectUtils');
+import MeshData from '../renderer/MeshData';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -116,4 +116,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return new TextureGrid(stringToMatrix(str), 16);
 	};
 
-	module.exports = TextureGrid;
+	export default TextureGrid;

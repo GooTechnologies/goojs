@@ -1,10 +1,10 @@
-var BufferData = require('../renderer/BufferData');
-var RendererUtils = require('../renderer/RendererUtils');
-var BufferUtils = require('../renderer/BufferUtils');
-var Vector2 = require('../math/Vector2');
-var Vector3 = require('../math/Vector3');
-var Vector4 = require('../math/Vector4');
-var ObjectUtils = require('../util/ObjectUtils');
+import BufferData from '../renderer/BufferData';
+import RendererUtils from '../renderer/RendererUtils';
+import BufferUtils from '../renderer/BufferUtils';
+import Vector2 from '../math/Vector2';
+import Vector3 from '../math/Vector3';
+import Vector4 from '../math/Vector4';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -1011,4 +1011,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		}
 	};
 
-module.exports = MeshData;
+export default MeshData;

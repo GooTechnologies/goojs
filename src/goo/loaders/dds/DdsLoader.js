@@ -1,5 +1,5 @@
-/*jshint bitwise: false */var DdsUtils = require('../../loaders/dds/DdsUtils');
-var Capabilities = require('../../renderer/Capabilities');
+/*jshint bitwise: false */import DdsUtils from '../../loaders/dds/DdsUtils';
+import Capabilities from '../../renderer/Capabilities';
 
 
 
@@ -509,4 +509,4 @@ var Capabilities = require('../../renderer/Capabilities');
 		return 'DdsLoader';
 	};
 
-	module.exports = DdsLoader;
+	export default DdsLoader;

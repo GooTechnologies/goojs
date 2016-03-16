@@ -1,13 +1,13 @@
-var Gizmo = require('../../util/gizmopack/Gizmo');
-var RotationGizmo = require('../../util/gizmopack/RotationGizmo');
-var Sphere = require('../../shapes/Sphere');
-var Torus = require('../../shapes/Torus');
-var Vector3 = require('../../math/Vector3');
-var Matrix3 = require('../../math/Matrix3');
-var Matrix4 = require('../../math/Matrix4');
-var Transform = require('../../math/Transform');
-var Renderer = require('../../renderer/Renderer');
-var Ray = require('../../math/Ray');
+import Gizmo from '../../util/gizmopack/Gizmo';
+import RotationGizmo from '../../util/gizmopack/RotationGizmo';
+import Sphere from '../../shapes/Sphere';
+import Torus from '../../shapes/Torus';
+import Vector3 from '../../math/Vector3';
+import Matrix3 from '../../math/Matrix3';
+import Matrix4 from '../../math/Matrix4';
+import Transform from '../../math/Transform';
+import Renderer from '../../renderer/Renderer';
+import Ray from '../../math/Ray';
 
 
 
@@ -118,4 +118,4 @@ var Ray = require('../../math/Ray');
 
 	GlobalRotationGizmo.prototype.compileRenderables = RotationGizmo.prototype.compileRenderables;
 
-	module.exports = GlobalRotationGizmo;
+	export default GlobalRotationGizmo;

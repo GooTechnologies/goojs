@@ -1,5 +1,5 @@
-var Action = require('./Action');
-var GameUtils = require('./../../../util/GameUtils');
+import Action from './Action';
+import GameUtils from './../../../util/GameUtils';
 
 	function ToggleFullscreenAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -21,4 +21,4 @@ var GameUtils = require('./../../../util/GameUtils');
 		GameUtils.toggleFullScreen();
 	};
 
-	module.exports = ToggleFullscreenAction;
+	export default ToggleFullscreenAction;

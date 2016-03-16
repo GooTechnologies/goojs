@@ -1,4 +1,4 @@
-var Scripts = require('../scripts/Scripts');
+import Scripts from '../scripts/Scripts';
 
 var scripts = {
 	OrbitCamControlScript: require('../scripts/OrbitCamControlScript'),

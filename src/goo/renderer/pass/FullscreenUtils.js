@@ -1,6 +1,6 @@
-var Quad = require('../../shapes/Quad');
-var Camera = require('../../renderer/Camera');
-var Vector3 = require('../../math/Vector3');
+import Quad from '../../shapes/Quad';
+import Camera from '../../renderer/Camera';
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -20,4 +20,4 @@ var Vector3 = require('../../math/Vector3');
 
 	FullscreenUtils.quad = new Quad(2, 2);
 
-	module.exports = FullscreenUtils;
+	export default FullscreenUtils;

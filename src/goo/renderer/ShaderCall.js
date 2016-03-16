@@ -369,4 +369,4 @@
 		this.context.uniformMatrix4fv(this.location, transpose, matrix.data);
 	};
 
-	module.exports = ShaderCall;
+	export default ShaderCall;

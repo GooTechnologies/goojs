@@ -1,7 +1,7 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var HtmlComponent = require('../../entities/components/HtmlComponent');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import HtmlComponent from '../../entities/components/HtmlComponent';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -174,4 +174,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		}
 	};
 
-	module.exports = HtmlComponentHandler;
+	export default HtmlComponentHandler;

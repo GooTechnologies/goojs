@@ -1,15 +1,15 @@
-var EntityUtils = require('../../entities/EntityUtils');
-var Component = require('../../entities/components/Component');
-var Quaternion = require('../../math/Quaternion');
-var calculateTriangleMeshShape = require('../../addons/ammopack/calculateTriangleMeshShape');
-var Box = require('../../shapes/Box');
-var Quad = require('../../shapes/Quad');
-var Sphere = require('../../shapes/Sphere');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
-var ObjectUtils = require('../../util/ObjectUtils');
+import EntityUtils from '../../entities/EntityUtils';
+import Component from '../../entities/components/Component';
+import Quaternion from '../../math/Quaternion';
+import calculateTriangleMeshShape from '../../addons/ammopack/calculateTriangleMeshShape';
+import Box from '../../shapes/Box';
+import Quad from '../../shapes/Quad';
+import Sphere from '../../shapes/Sphere';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import BoundingBox from '../../renderer/bounds/BoundingBox';
+import BoundingSphere from '../../renderer/bounds/BoundingSphere';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -227,4 +227,4 @@ AmmoComponent.prototype.copyPhysicalTransformToVisual = function (entity) {
 	}
 };
 
-module.exports = AmmoComponent;
+export default AmmoComponent;

@@ -1,10 +1,10 @@
-var Texture = require('../renderer/Texture');
-var MathUtils = require('../math/MathUtils');
-var TextureHandler = require('../loaders/handlers/TextureHandler');
-var Ajax = require('../util/Ajax');
-var StringUtils = require('../util/StringUtils');
-var PromiseUtils = require('../util/PromiseUtils');
-var RSVP = require('../util/rsvp');
+import Texture from '../renderer/Texture';
+import MathUtils from '../math/MathUtils';
+import TextureHandler from '../loaders/handlers/TextureHandler';
+import Ajax from '../util/Ajax';
+import StringUtils from '../util/StringUtils';
+import PromiseUtils from '../util/PromiseUtils';
+import RSVP from '../util/rsvp';
 
 
 
@@ -217,4 +217,4 @@ var RSVP = require('../util/rsvp');
 	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
 
-	module.exports = TextureCreator;
+	export default TextureCreator;

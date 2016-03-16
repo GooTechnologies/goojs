@@ -73,4 +73,4 @@
 		return document.getElementById('_entitycountertex');
 	}
 
-	module.exports = EntityCounter;
+	export default EntityCounter;

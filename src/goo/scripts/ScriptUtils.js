@@ -1,4 +1,4 @@
-var ObjectUtils = require('../util/ObjectUtils');
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -273,4 +273,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return ScriptUtils._keyInverse[code];
 	};
 
-	module.exports = ScriptUtils;
+	export default ScriptUtils;

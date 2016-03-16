@@ -1,4 +1,4 @@
-var Component = require('../../../entities/components/Component');
+import Component from '../../../entities/components/Component';
 
 
 
@@ -26,4 +26,4 @@ var Component = require('../../../entities/components/Component');
 		this.sounds[soundName].soundObject.play();
 	};
 
-	module.exports = SoundManager2Component;
+	export default SoundManager2Component;

@@ -1,4 +1,4 @@
-var System = require('../../../entities/systems/System');
+import System from '../../../entities/systems/System';
 
 
 	/* global Box2D */
@@ -162,4 +162,4 @@ var System = require('../../../entities/systems/System');
 		}
 	};
 
-	module.exports = Box2DSystem;
+	export default Box2DSystem;

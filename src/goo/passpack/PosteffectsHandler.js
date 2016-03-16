@@ -1,13 +1,13 @@
-var ConfigHandler = require('../loaders/handlers/ConfigHandler');
-var ArrayUtils = require('../util/ArrayUtils');
-var RSVP = require('../util/rsvp');
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
-var Composer = require('../renderer/pass/Composer');
-var RenderPass = require('../renderer/pass/RenderPass');
-var FullscreenPass = require('../renderer/pass/FullscreenPass');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var PassLib = require('../passpack/PassLib');
+import ConfigHandler from '../loaders/handlers/ConfigHandler';
+import ArrayUtils from '../util/ArrayUtils';
+import RSVP from '../util/rsvp';
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
+import Composer from '../renderer/pass/Composer';
+import RenderPass from '../renderer/pass/RenderPass';
+import FullscreenPass from '../renderer/pass/FullscreenPass';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import PassLib from '../passpack/PassLib';
 
 
 
@@ -177,4 +177,4 @@ var PassLib = require('../passpack/PassLib');
 		});
 	};
 
-	module.exports = PosteffectsHandler;
+	export default PosteffectsHandler;

@@ -85,4 +85,4 @@
 			+ this._channels.map(function (channel) { return channel._channelName; });
 	};
 
-	module.exports = AnimationClip;
+	export default AnimationClip;

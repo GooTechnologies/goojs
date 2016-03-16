@@ -1,4 +1,4 @@
-var System = require('../../entities/systems/System');
+import System from '../../entities/systems/System';
 
 
 
@@ -129,4 +129,4 @@ var System = require('../../entities/systems/System');
 
 	ParticlesSystem.prototype.stop = ParticlesSystem.prototype.pause;
 
-	module.exports = ParticlesSystem;
+	export default ParticlesSystem;

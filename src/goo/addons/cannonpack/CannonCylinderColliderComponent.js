@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -34,4 +34,4 @@ var Component = require('../../entities/components/Component');
 	CannonCylinderColliderComponent.prototype = Object.create(Component.prototype);
 	CannonCylinderColliderComponent.constructor = CannonCylinderColliderComponent;
 
-	module.exports = CannonCylinderColliderComponent;
+	export default CannonCylinderColliderComponent;

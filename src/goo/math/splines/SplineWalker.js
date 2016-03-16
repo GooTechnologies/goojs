@@ -1,4 +1,4 @@
-var Spline = require('./Spline');
+import Spline from './Spline';
 
 /**
  * Provides a way to interpolate on a spline with constant speed
@@ -72,4 +72,4 @@ SplineWalker.prototype.canWalk = function () {
 	return this._segment < this._spline.segments;
 };
 
-module.exports = SplineWalker;
+export default SplineWalker;

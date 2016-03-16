@@ -1,7 +1,7 @@
 /* jshint bitwise: false */
-var ObjectUtils = require('../util/ObjectUtils');
-var MathUtils = require('../math/MathUtils');
-var Capabilities = require('../renderer/Capabilities');
+import ObjectUtils from '../util/ObjectUtils';
+import MathUtils from '../math/MathUtils';
+import Capabilities from '../renderer/Capabilities';
 
 
 
@@ -580,4 +580,4 @@ var Capabilities = require('../renderer/Capabilities');
 		return glBlendParam;
 	};
 
-	module.exports = RendererUtils;
+	export default RendererUtils;

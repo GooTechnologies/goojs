@@ -1,7 +1,7 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var Dom3dComponent = require('../../entities/components/Dom3dComponent');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import Dom3dComponent from '../../entities/components/Dom3dComponent';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -147,4 +147,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		component.destroy(this.world.gooRunner.renderer.context);
 	};
 
-	module.exports = Dom3dComponentHandler;
+	export default Dom3dComponentHandler;

@@ -1,24 +1,24 @@
-var EntitySelection = require('../../../entities/EntitySelection');
-var System = require('../../../entities/systems/System');
-var SystemBus = require('../../../entities/SystemBus');
-var Sphere = require('../../../shapes/Sphere');
-var Box = require('../../../shapes/Box');
-var Cylinder = require('../../../shapes/Cylinder');
-var PhysicsPlaneDebugShape = require('../../../addons/physicspack/shapes/PhysicsPlaneDebugShape');
-var PhysicsCylinderDebugShape = require('../../../addons/physicspack/shapes/PhysicsCylinderDebugShape');
-var PhysicsSphereDebugShape = require('../../../addons/physicspack/shapes/PhysicsSphereDebugShape');
-var PhysicsBoxDebugShape = require('../../../addons/physicspack/shapes/PhysicsBoxDebugShape');
-var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
-var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
-var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
-var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider');
-var MeshCollider = require('../../../addons/physicspack/colliders/MeshCollider');
-var Quaternion = require('../../../math/Quaternion');
-var Vector3 = require('../../../math/Vector3');
-var Transform = require('../../../math/Transform');
-var Material = require('../../../renderer/Material');
-var ShaderLib = require('../../../renderer/shaders/ShaderLib');
-var Pool = require('../../../addons/physicspack/util/Pool');
+import EntitySelection from '../../../entities/EntitySelection';
+import System from '../../../entities/systems/System';
+import SystemBus from '../../../entities/SystemBus';
+import Sphere from '../../../shapes/Sphere';
+import Box from '../../../shapes/Box';
+import Cylinder from '../../../shapes/Cylinder';
+import PhysicsPlaneDebugShape from '../../../addons/physicspack/shapes/PhysicsPlaneDebugShape';
+import PhysicsCylinderDebugShape from '../../../addons/physicspack/shapes/PhysicsCylinderDebugShape';
+import PhysicsSphereDebugShape from '../../../addons/physicspack/shapes/PhysicsSphereDebugShape';
+import PhysicsBoxDebugShape from '../../../addons/physicspack/shapes/PhysicsBoxDebugShape';
+import SphereCollider from '../../../addons/physicspack/colliders/SphereCollider';
+import BoxCollider from '../../../addons/physicspack/colliders/BoxCollider';
+import CylinderCollider from '../../../addons/physicspack/colliders/CylinderCollider';
+import PlaneCollider from '../../../addons/physicspack/colliders/PlaneCollider';
+import MeshCollider from '../../../addons/physicspack/colliders/MeshCollider';
+import Quaternion from '../../../math/Quaternion';
+import Vector3 from '../../../math/Vector3';
+import Transform from '../../../math/Transform';
+import Material from '../../../renderer/Material';
+import ShaderLib from '../../../renderer/shaders/ShaderLib';
+import Pool from '../../../addons/physicspack/util/Pool';
 
 
 
@@ -192,4 +192,4 @@ var Pool = require('../../../addons/physicspack/util/Pool');
 		this.clear();
 	};
 
-	module.exports = PhysicsDebugRenderSystem;
+	export default PhysicsDebugRenderSystem;

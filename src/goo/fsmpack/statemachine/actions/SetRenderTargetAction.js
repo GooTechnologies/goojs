@@ -1,11 +1,11 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var PortalComponent = require('../../../entities/components/PortalComponent');
-var PortalSystem = require('../../../entities/systems/PortalSystem');
-var Vector3 = require('../../../math/Vector3');
-var CameraComponent = require('../../../entities/components/CameraComponent');
-var Camera = require('../../../renderer/Camera');
-var Material = require('../../../renderer/Material');
-var ShaderLib = require('../../../renderer/shaders/ShaderLib');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import PortalComponent from '../../../entities/components/PortalComponent';
+import PortalSystem from '../../../entities/systems/PortalSystem';
+import Vector3 from '../../../math/Vector3';
+import CameraComponent from '../../../entities/components/CameraComponent';
+import Camera from '../../../renderer/Camera';
+import Material from '../../../renderer/Material';
+import ShaderLib from '../../../renderer/shaders/ShaderLib';
 
 
 
@@ -74,4 +74,4 @@ var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 		// would remove the entire system, but the engine does not support that
 	};
 
-	module.exports = SetRenderTargetAction;
+	export default SetRenderTargetAction;

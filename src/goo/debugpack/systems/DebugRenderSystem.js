@@ -1,9 +1,9 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var SimplePartitioner = require('../../renderer/SimplePartitioner');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var DebugDrawHelper = require('../../debugpack/DebugDrawHelper');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import SimplePartitioner from '../../renderer/SimplePartitioner';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import DebugDrawHelper from '../../debugpack/DebugDrawHelper';
 
 
 
@@ -176,4 +176,4 @@ DebugRenderSystem.prototype.cleanup = function () {
 	SystemBus.removeListener('goo.setLights', this.lightsListener);
 };
 
-module.exports = DebugRenderSystem;
+export default DebugRenderSystem;

@@ -1,4 +1,4 @@
-var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
+import FadeTransitionState from '../../animationpack/state/FadeTransitionState';
 
 
 
@@ -26,4 +26,4 @@ var FadeTransitionState = require('../../animationpack/state/FadeTransitionState
 		this._sourceState.shiftClipTime(shiftTime);
 	};
 
-	module.exports = SyncFadeTransitionState;
+	export default SyncFadeTransitionState;

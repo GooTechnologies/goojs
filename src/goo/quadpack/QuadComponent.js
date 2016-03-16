@@ -1,11 +1,11 @@
-var Component = require('../entities/components/Component');
-var DoubleQuad = require('../quadpack/DoubleQuad');
-var MeshDataComponent = require('../entities/components/MeshDataComponent');
-var MeshRendererComponent = require('../entities/components/MeshRendererComponent');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var Material = require('../renderer/Material');
-var ObjectUtils = require('../util/ObjectUtils');
-var Texture = require('../renderer/Texture');
+import Component from '../entities/components/Component';
+import DoubleQuad from '../quadpack/DoubleQuad';
+import MeshDataComponent from '../entities/components/MeshDataComponent';
+import MeshRendererComponent from '../entities/components/MeshRendererComponent';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import Material from '../renderer/Material';
+import ObjectUtils from '../util/ObjectUtils';
+import Texture from '../renderer/Texture';
 
 
 
@@ -179,5 +179,5 @@ var Texture = require('../renderer/Texture');
 		}
 	};
 
-	module.exports = QuadComponent;
+	export default QuadComponent;
 

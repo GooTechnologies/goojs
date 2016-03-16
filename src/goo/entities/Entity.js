@@ -1,5 +1,5 @@
-var Component = require('../entities/components/Component');
-var StringUtils = require('../util/StringUtils');
+import Component from '../entities/components/Component';
+import StringUtils from '../util/StringUtils';
 
 
 
@@ -325,4 +325,4 @@ Entity.prototype.toString = function () {
 
 Entity.entityCount = 0;
 
-module.exports = Entity;
+export default Entity;

@@ -1,8 +1,8 @@
-var ParticleComponent = require('../entities/components/ParticleComponent');
-var MeshRendererComponent = require('../entities/components/MeshRendererComponent');
-var MeshDataComponent = require('../entities/components/MeshDataComponent');
-var Texture = require('../renderer/Texture');
-var ParticleEmitter = require('../particles/ParticleEmitter');
+import ParticleComponent from '../entities/components/ParticleComponent';
+import MeshRendererComponent from '../entities/components/MeshRendererComponent';
+import MeshDataComponent from '../entities/components/MeshDataComponent';
+import Texture from '../renderer/Texture';
+import ParticleEmitter from '../particles/ParticleEmitter';
 
 
 
@@ -250,4 +250,4 @@ var ParticleEmitter = require('../particles/ParticleEmitter');
 		return texture;
 	};
 
-	module.exports = ParticleSystemUtils;
+	export default ParticleSystemUtils;

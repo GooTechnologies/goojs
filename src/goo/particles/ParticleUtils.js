@@ -1,4 +1,4 @@
-var Vector3 = require('../math/Vector3');
+import Vector3 from '../math/Vector3';
 
 
 
@@ -153,4 +153,4 @@ var Vector3 = require('../math/Vector3');
 		particle.spin = (1 - ratio) * start + ratio * end;
 	};
 
-	module.exports = ParticleUtils;
+	export default ParticleUtils;

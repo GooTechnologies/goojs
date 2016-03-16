@@ -114,4 +114,4 @@
 		return str;
 	};
 
-	module.exports = Logo;
+	export default Logo;

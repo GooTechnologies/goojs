@@ -1,9 +1,9 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var CameraComponent = require('../../entities/components/CameraComponent');
-var Camera = require('../../renderer/Camera');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import CameraComponent from '../../entities/components/CameraComponent';
+import Camera from '../../renderer/Camera';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -86,4 +86,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = CameraComponentHandler;
+	export default CameraComponentHandler;

@@ -1,10 +1,10 @@
-var Material = require('../renderer/Material');
-var FullscreenUtils = require('../renderer/pass/FullscreenUtils');
-var RenderTarget = require('../renderer/pass/RenderTarget');
-var ObjectUtils = require('../util/ObjectUtils');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var ShaderLibExtra = require('../passpack/ShaderLibExtra');
-var Pass = require('../renderer/pass/Pass');
+import Material from '../renderer/Material';
+import FullscreenUtils from '../renderer/pass/FullscreenUtils';
+import RenderTarget from '../renderer/pass/RenderTarget';
+import ObjectUtils from '../util/ObjectUtils';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import ShaderLibExtra from '../passpack/ShaderLibExtra';
+import Pass from '../renderer/pass/Pass';
 
 
 
@@ -137,4 +137,4 @@ var Pass = require('../renderer/pass/Pass');
 	BloomPass.blurX = [0.001953125, 0.0];
 	BloomPass.blurY = [0.0, 0.001953125];
 
-	module.exports = BloomPass;
+	export default BloomPass;

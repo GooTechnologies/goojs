@@ -1,4 +1,4 @@
-var AbstractTransitionState = require('../../animationpack/state/AbstractTransitionState');
+import AbstractTransitionState from '../../animationpack/state/AbstractTransitionState';
 
 
 
@@ -51,4 +51,4 @@ var AbstractTransitionState = require('../../animationpack/state/AbstractTransit
 		this._targetState.shiftClipTime(shiftTime);
 	};
 
-	module.exports = FrozenTransitionState;
+	export default FrozenTransitionState;

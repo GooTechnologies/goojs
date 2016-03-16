@@ -1,5 +1,5 @@
-var MathUtils = require('./MathUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import MathUtils from './MathUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 	/**
 	 * Matrix with RxC components.
@@ -616,4 +616,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 	);
 	// SHIM END
 
-module.exports = Matrix;
+export default Matrix;

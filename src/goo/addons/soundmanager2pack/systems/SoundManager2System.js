@@ -1,4 +1,4 @@
-var System = require('../../../entities/systems/System');
+import System from '../../../entities/systems/System';
 
 
 
@@ -58,4 +58,4 @@ var System = require('../../../entities/systems/System');
 		}*/
 	};
 
-	module.exports = SoundManager2System;
+	export default SoundManager2System;

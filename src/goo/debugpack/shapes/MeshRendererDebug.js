@@ -1,4 +1,4 @@
-var MeshData = require('../../renderer/MeshData');
+import MeshData from '../../renderer/MeshData';
 
 
 
@@ -50,4 +50,4 @@ var MeshData = require('../../renderer/MeshData');
 		return meshData;
 	}
 
-	module.exports = MeshRendererDebug;
+	export default MeshRendererDebug;

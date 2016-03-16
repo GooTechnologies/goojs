@@ -1,6 +1,6 @@
-var EntitySelection = require('../../../entities/EntitySelection');
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
+import EntitySelection from '../../../entities/EntitySelection';
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import ProximitySystem from '../../../fsmpack/proximity/ProximitySystem';
 
 
 
@@ -91,4 +91,4 @@ var ProximitySystem = require('../../../fsmpack/proximity/ProximitySystem');
 		fsm.send(collides ? this.transitions.collides : this.transitions.notCollides);
 	};
 
-	module.exports = CollidesAction;
+	export default CollidesAction;

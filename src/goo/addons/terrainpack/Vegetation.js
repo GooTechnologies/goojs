@@ -1,22 +1,22 @@
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
-var Material = require('../../renderer/Material');
-var Camera = require('../../renderer/Camera');
-var MathUtils = require('../../math/MathUtils');
-var Vector3 = require('../../math/Vector3');
-var Transform = require('../../math/Transform');
-var TextureCreator = require('../../renderer/TextureCreator');
-var Texture = require('../../renderer/Texture');
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var DirectionalLight = require('../../renderer/light/DirectionalLight');
-var CanvasUtils = require('../../util/CanvasUtils');
-var Ajax = require('../../util/Ajax');
-var MeshBuilder = require('../../util/MeshBuilder');
-var Noise = require('../../noise/Noise');
-var ValueNoise = require('../../noise/ValueNoise');
-var TerrainSurface = require('../../addons/terrainpack/TerrainSurface');
-var Quad = require('../../shapes/Quad');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
+import Material from '../../renderer/Material';
+import Camera from '../../renderer/Camera';
+import MathUtils from '../../math/MathUtils';
+import Vector3 from '../../math/Vector3';
+import Transform from '../../math/Transform';
+import TextureCreator from '../../renderer/TextureCreator';
+import Texture from '../../renderer/Texture';
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import DirectionalLight from '../../renderer/light/DirectionalLight';
+import CanvasUtils from '../../util/CanvasUtils';
+import Ajax from '../../util/Ajax';
+import MeshBuilder from '../../util/MeshBuilder';
+import Noise from '../../noise/Noise';
+import ValueNoise from '../../noise/ValueNoise';
+import TerrainSurface from '../../addons/terrainpack/TerrainSurface';
+import Quad from '../../shapes/Quad';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
 
 
 
@@ -424,4 +424,4 @@ var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 		}
 	};
 
-	module.exports = Vegetation;
+	export default Vegetation;

@@ -1,4 +1,4 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
 
 
 
@@ -77,4 +77,4 @@ var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 		});
 	};
 
-	module.exports = ProjectHandler;
+	export default ProjectHandler;

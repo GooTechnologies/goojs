@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var SystemBus = require('../../../entities/SystemBus');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import SystemBus from '../../../entities/SystemBus';
 
 
 
@@ -46,4 +46,4 @@ var SystemBus = require('../../../entities/SystemBus');
 		this.entity = null;
 	};
 
-	module.exports = TriggerLeaveAction;
+	export default TriggerLeaveAction;

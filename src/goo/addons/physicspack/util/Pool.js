@@ -90,4 +90,4 @@ Pool.prototype.release = function (object) {
 	return this;
 };
 
-module.exports = Pool;
+export default Pool;

@@ -1,8 +1,8 @@
-var Box = require('../../shapes/Box');
-var Transform = require('../../math/Transform');
-var Joint = require('../../animationpack/Joint');
-var MeshBuilder = require('../../util/MeshBuilder');
-var MeshData = require('../../renderer/MeshData');
+import Box from '../../shapes/Box';
+import Transform from '../../math/Transform';
+import Joint from '../../animationpack/Joint';
+import MeshBuilder from '../../util/MeshBuilder';
+import MeshData from '../../renderer/MeshData';
 
 
 	function SkeletonDebug() {}
@@ -92,4 +92,4 @@ var MeshData = require('../../renderer/MeshData');
 		meshData.weightsPerVertex = 4;
 	};
 
-	module.exports = SkeletonDebug;
+	export default SkeletonDebug;

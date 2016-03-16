@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -34,4 +34,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		fsm.send(this.transitions.transition);
 	};
 
-	module.exports = TransitionAction;
+	export default TransitionAction;

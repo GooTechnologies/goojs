@@ -79,4 +79,4 @@ Edge.prototype.roundOccludeeCoordinates = function () {
 	this.y1 = Math.round(this.y1);
 };
 
-module.exports = Edge;
+export default Edge;

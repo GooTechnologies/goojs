@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var SystemBus = require('../../../entities/SystemBus');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import SystemBus from '../../../entities/SystemBus';
 
 	function PickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -77,4 +77,4 @@ var SystemBus = require('../../../entities/SystemBus');
 		SystemBus.removeListener('goo.trigger.touchstart', this.eventListener);
 	};
 
-	module.exports = PickAction;
+	export default PickAction;

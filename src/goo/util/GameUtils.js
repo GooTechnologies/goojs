@@ -414,4 +414,4 @@
 		}
 	};
 
-	module.exports = GameUtils;
+	export default GameUtils;

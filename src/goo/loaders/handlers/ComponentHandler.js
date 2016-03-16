@@ -1,4 +1,4 @@
-var PromiseUtils = require('../../util/PromiseUtils');
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -108,4 +108,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 
-	module.exports = ComponentHandler;
+	export default ComponentHandler;

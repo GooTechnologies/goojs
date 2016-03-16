@@ -1,4 +1,4 @@
-var Vector3 = require('../../math/Vector3');
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -44,4 +44,4 @@ var Vector3 = require('../../math/Vector3');
 		this.distance = -1;
 	};
 
-	module.exports = RaycastResult;
+	export default RaycastResult;

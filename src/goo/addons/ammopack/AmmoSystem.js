@@ -1,4 +1,4 @@
-var System = require('../../entities/systems/System');
+import System from '../../entities/systems/System';
 
 
 	/*global Ammo */
@@ -64,4 +64,4 @@ var System = require('../../entities/systems/System');
 		}
 	};
 
-	module.exports = AmmoSystem;
+	export default AmmoSystem;

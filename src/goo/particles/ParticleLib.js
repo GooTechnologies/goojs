@@ -137,4 +137,4 @@ ParticleLib.getSnow = function (options) {
 	};
 };
 
-module.exports = ParticleLib;
+export default ParticleLib;

@@ -1,8 +1,8 @@
-var System = require('../entities/systems/System');
-var SystemBus = require('../entities/SystemBus');
-var Renderer = require('../renderer/Renderer');
-var LogicLayer = require('./logic/LogicLayer');
-var LogicInterface = require('./logic/LogicInterface');
+import System from '../entities/systems/System';
+import SystemBus from '../entities/SystemBus';
+import Renderer from '../renderer/Renderer';
+import LogicLayer from './logic/LogicLayer';
+import LogicInterface from './logic/LogicInterface';
 
 // REVIEW: this description seems inaccurate
 /**
@@ -131,4 +131,4 @@ LogicSystem.prototype.stop = function () {
 	}
 };
 
-module.exports = LogicSystem;
+export default LogicSystem;

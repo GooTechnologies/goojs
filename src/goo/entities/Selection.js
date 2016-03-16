@@ -357,4 +357,4 @@
 		}
 	}
 
-	module.exports = Selection;
+	export default Selection;

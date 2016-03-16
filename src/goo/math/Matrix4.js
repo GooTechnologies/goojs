@@ -1,6 +1,6 @@
-var MathUtils = require('./MathUtils');
-var Matrix = require('./Matrix');
-var ObjectUtils = require('../util/ObjectUtils');
+import MathUtils from './MathUtils';
+import Matrix from './Matrix';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -1120,4 +1120,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 	]);
 	// @endif
 
-	module.exports = Matrix4;
+	export default Matrix4;

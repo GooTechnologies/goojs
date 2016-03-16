@@ -1,8 +1,8 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var TransformComponent = require('../../entities/components/TransformComponent');
-var MathUtils = require('../../math/MathUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
-var RSVP = require('../../util/rsvp');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import TransformComponent from '../../entities/components/TransformComponent';
+import MathUtils from '../../math/MathUtils';
+import ObjectUtils from '../../util/ObjectUtils';
+import RSVP from '../../util/rsvp';
 
 
 
@@ -147,4 +147,4 @@ var RSVP = require('../../util/rsvp');
 		});
 	};
 
-	module.exports = TransformComponentHandler;
+	export default TransformComponentHandler;

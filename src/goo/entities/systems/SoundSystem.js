@@ -1,8 +1,8 @@
-var System = require('../../entities/systems/System');
-var AudioContext = require('../../sound/AudioContext');
-var MathUtils = require('../../math/MathUtils');
-var SystemBus = require('../../entities/SystemBus');
-var Matrix4 = require('../../math/Matrix4');
+import System from '../../entities/systems/System';
+import AudioContext from '../../sound/AudioContext';
+import MathUtils from '../../math/MathUtils';
+import SystemBus from '../../entities/SystemBus';
+import Matrix4 from '../../math/Matrix4';
 
 
 
@@ -309,4 +309,4 @@ var Matrix4 = require('../../math/Matrix4');
 		}
 	};
 
-	module.exports = SoundSystem;
+	export default SoundSystem;

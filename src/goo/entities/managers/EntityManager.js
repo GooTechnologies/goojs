@@ -1,5 +1,5 @@
-var Manager = require('../../entities/managers/Manager');
-var EntitySelection = require('../../entities/EntitySelection');
+import Manager from '../../entities/managers/Manager';
+import EntitySelection from '../../entities/EntitySelection';
 
 
 
@@ -159,4 +159,4 @@ EntityManager.prototype.clear = function () {
 	this._entityCount = 0;
 };
 
-module.exports = EntityManager;
+export default EntityManager;

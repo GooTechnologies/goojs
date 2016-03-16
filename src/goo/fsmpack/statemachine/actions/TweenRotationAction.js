@@ -1,8 +1,8 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Quaternion = require('../../../math/Quaternion');
-var Matrix3 = require('../../../math/Matrix3');
-var MathUtils = require('../../../math/MathUtils');
-var TWEEN = require('../../../util/TWEEN');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Quaternion from '../../../math/Quaternion';
+import Matrix3 from '../../../math/Matrix3';
+import MathUtils from '../../../math/MathUtils';
+import TWEEN from '../../../util/TWEEN';
 
 
 
@@ -111,4 +111,4 @@ var TWEEN = require('../../../util/TWEEN');
 		}
 	};
 
-	module.exports = TweenRotationAction;
+	export default TweenRotationAction;

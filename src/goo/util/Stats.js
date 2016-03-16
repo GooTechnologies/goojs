@@ -147,4 +147,4 @@
 		};
 	}
 
-	module.exports = Stats;
+	export default Stats;

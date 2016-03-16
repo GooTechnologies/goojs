@@ -21,4 +21,4 @@ function PhysicsMaterial(settings) {
 	this.restitution = settings.restitution !== undefined ? settings.restitution : 0;
 }
 
-module.exports = PhysicsMaterial;
+export default PhysicsMaterial;

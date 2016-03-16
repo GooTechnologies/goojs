@@ -1,5 +1,5 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import ProximityComponent from '../../../fsmpack/proximity/ProximityComponent';
 
 
 
@@ -46,4 +46,4 @@ var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent'
 		}
 	};
 
-	module.exports = TagAction;
+	export default TagAction;

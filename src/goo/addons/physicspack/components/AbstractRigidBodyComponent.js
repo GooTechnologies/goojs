@@ -1,8 +1,8 @@
-var Component = require('../../../entities/components/Component');
-var Vector3 = require('../../../math/Vector3');
-var Quaternion = require('../../../math/Quaternion');
-var Transform = require('../../../math/Transform');
-var SystemBus = require('../../../entities/SystemBus');
+import Component from '../../../entities/components/Component';
+import Vector3 from '../../../math/Vector3';
+import Quaternion from '../../../math/Quaternion';
+import Transform from '../../../math/Transform';
+import SystemBus from '../../../entities/SystemBus';
 
 
 
@@ -151,4 +151,4 @@ var SystemBus = require('../../../entities/SystemBus');
 		this._system = null;
 	};
 
-	module.exports = AbstractRigidBodyComponent;
+	export default AbstractRigidBodyComponent;

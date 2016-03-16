@@ -1,4 +1,4 @@
-var Vector3 = require('./Vector3');
+import Vector3 from './Vector3';
 
 
 
@@ -116,4 +116,4 @@ var Vector3 = require('./Vector3');
 		return new Plane(this.normal.clone(), this.constant);
 	};
 
-	module.exports = Plane;
+	export default Plane;

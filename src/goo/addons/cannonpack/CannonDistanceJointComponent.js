@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var ObjectUtils = require('../../util/ObjectUtils');
+import Component from '../../entities/components/Component';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -39,4 +39,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		return this.cannonConstraint;
 	};
 
-	module.exports = CannonDistanceJointComponent;
+	export default CannonDistanceJointComponent;

@@ -1,4 +1,4 @@
-var System = require('../../entities/systems/System');
+import System from '../../entities/systems/System';
 
 
 
@@ -89,4 +89,4 @@ PickingSystem.prototype.process = function (entities) {
 	this.onPick(pickList);
 };
 
-module.exports = PickingSystem;
+export default PickingSystem;

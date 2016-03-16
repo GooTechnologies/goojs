@@ -1,4 +1,4 @@
-var Transform = require('../math/Transform');
+import Transform from '../math/Transform';
 
 
 
@@ -16,4 +16,4 @@ function Joint (name) {
 
 Joint.NO_PARENT = -32768;
 
-module.exports = Joint;
+export default Joint;

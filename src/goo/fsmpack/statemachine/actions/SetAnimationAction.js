@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -100,4 +100,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		this._previousLoop = 0;
 	};
 
-	module.exports = SetAnimationAction;
+	export default SetAnimationAction;

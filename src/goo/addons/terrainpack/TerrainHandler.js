@@ -1,13 +1,13 @@
-var Terrain = require('../../addons/terrainpack/Terrain');
-var Vegetation = require('../../addons/terrainpack/Vegetation');
-var Forrest = require('../../addons/terrainpack/Forrest');
-var Vector3 = require('../../math/Vector3');
-var Ajax = require('../../util/Ajax');
-var Transform = require('../../math/Transform');
-var MathUtils = require('../../math/MathUtils');
-var Texture = require('../../renderer/Texture');
-var TextureCreator = require('../../renderer/TextureCreator');
-var RSVP = require('../../util/rsvp');
+import Terrain from '../../addons/terrainpack/Terrain';
+import Vegetation from '../../addons/terrainpack/Vegetation';
+import Forrest from '../../addons/terrainpack/Forrest';
+import Vector3 from '../../math/Vector3';
+import Ajax from '../../util/Ajax';
+import Transform from '../../math/Transform';
+import MathUtils from '../../math/MathUtils';
+import Texture from '../../renderer/Texture';
+import TextureCreator from '../../renderer/TextureCreator';
+import RSVP from '../../util/rsvp';
 
 
 
@@ -486,4 +486,4 @@ var RSVP = require('../../util/rsvp');
 		}
 	};
 
-	module.exports = TerrainHandler;
+	export default TerrainHandler;

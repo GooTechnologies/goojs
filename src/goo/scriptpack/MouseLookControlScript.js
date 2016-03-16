@@ -1,7 +1,7 @@
-var Scripts = require('../scripts/Scripts');
-var Vector3 = require('../math/Vector3');
-var MathUtils = require('../math/MathUtils');
-var GameUtils = require('../util/GameUtils');
+import Scripts from '../scripts/Scripts';
+import Vector3 from '../math/Vector3';
+import MathUtils from '../math/MathUtils';
+import GameUtils from '../util/GameUtils';
 
 
 
@@ -230,4 +230,4 @@ var GameUtils = require('../util/GameUtils');
 		]
 	};
 
-	module.exports = MouseLookControlScript;
+	export default MouseLookControlScript;

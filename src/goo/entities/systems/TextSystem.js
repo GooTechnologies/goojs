@@ -1,6 +1,6 @@
-var System = require('../../entities/systems/System');
-var TextureGrid = require('../../shapes/TextureGrid');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
+import System from '../../entities/systems/System';
+import TextureGrid from '../../shapes/TextureGrid';
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
 
 
 
@@ -34,4 +34,4 @@ var MeshDataComponent = require('../../entities/components/MeshDataComponent');
 		}
 	};
 
-	module.exports = TextSystem;
+	export default TextSystem;

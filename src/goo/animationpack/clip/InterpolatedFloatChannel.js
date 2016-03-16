@@ -1,5 +1,5 @@
-var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
-var MathUtils = require('../../math/MathUtils');
+import AbstractAnimationChannel from '../../animationpack/clip/AbstractAnimationChannel';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -48,4 +48,4 @@ var MathUtils = require('../../math/MathUtils');
 		return rVal;
 	};
 
-	module.exports = InterpolatedFloatChannel;
+	export default InterpolatedFloatChannel;

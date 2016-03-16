@@ -1,5 +1,5 @@
-var System = require('../../../entities/systems/System');
-var SystemBus = require('../../../entities/SystemBus');
+import System from '../../../entities/systems/System';
+import SystemBus from '../../../entities/SystemBus';
 
 
 
@@ -126,4 +126,4 @@ var SystemBus = require('../../../entities/SystemBus');
 	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
 	AbstractPhysicsSystem.prototype._colliderDeletedComponent = function (/*entity*/) {};
 
-	module.exports = AbstractPhysicsSystem;
+	export default AbstractPhysicsSystem;

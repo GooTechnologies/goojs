@@ -1,9 +1,9 @@
-var ConfigHandler = require('../loaders/handlers/ConfigHandler');
-var ObjectUtils = require('../util/ObjectUtils');
-var State = require('../fsmpack/statemachine/State');
-var Machine = require('../fsmpack/statemachine/Machine');
-var Actions = require('../fsmpack/statemachine/actions/Actions');
-var RSVP = require('../util/rsvp');
+import ConfigHandler from '../loaders/handlers/ConfigHandler';
+import ObjectUtils from '../util/ObjectUtils';
+import State from '../fsmpack/statemachine/State';
+import Machine from '../fsmpack/statemachine/Machine';
+import Actions from '../fsmpack/statemachine/actions/Actions';
+import RSVP from '../util/rsvp';
 
 /**
  * Handler for loading materials into engine
@@ -175,4 +175,4 @@ MachineHandler.prototype._updateState = function (machine, stateConfig, options)
 	});
 };
 
-module.exports = MachineHandler;
+export default MachineHandler;

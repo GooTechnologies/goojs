@@ -1,4 +1,4 @@
-var MathUtils = require('../../math/MathUtils');
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -95,4 +95,4 @@ var MathUtils = require('../../math/MathUtils');
 		}
 	};
 
-	module.exports = AbstractAnimationChannel;
+	export default AbstractAnimationChannel;

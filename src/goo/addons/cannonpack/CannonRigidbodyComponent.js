@@ -1,8 +1,8 @@
-var Component = require('../../entities/components/Component');
-var Quaternion = require('../../math/Quaternion');
-var Vector3 = require('../../math/Vector3');
-var Transform = require('../../math/Transform');
-var ObjectUtils = require('../../util/ObjectUtils');
+import Component from '../../entities/components/Component';
+import Quaternion from '../../math/Quaternion';
+import Vector3 from '../../math/Vector3';
+import Transform from '../../math/Transform';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -172,4 +172,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		}
 	};
 
-	module.exports = CannonRigidbodyComponent;
+	export default CannonRigidbodyComponent;

@@ -83,4 +83,4 @@
 		}
 	};
 
-	module.exports = Curve;
+	export default Curve;

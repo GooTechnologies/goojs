@@ -1,4 +1,4 @@
-var Component = require('../entities/components/Component');
+import Component from '../entities/components/Component';
 
 
 
@@ -135,4 +135,4 @@ var Component = require('../entities/components/Component');
 		return retVal;
 	};
 
-	module.exports = TimelineComponent;
+	export default TimelineComponent;

@@ -1,4 +1,4 @@
-var System = require('../entities/systems/System');
+import System from '../entities/systems/System';
 
 	/**
 	 * Manages entities with a TimelineComponent
@@ -67,4 +67,4 @@ var System = require('../entities/systems/System');
 		this.paused = false;
 	};
 
-	module.exports = TimelineSystem;
+	export default TimelineSystem;

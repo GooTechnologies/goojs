@@ -1,9 +1,9 @@
-var Vector3 = require('../math/Vector3');
-var Scripts = require('../scripts/Scripts');
-var ScriptUtils = require('../scripts/ScriptUtils');
-var Renderer = require('../renderer/Renderer');
-var SystemBus = require('../entities/SystemBus');
-var Camera = require('../renderer/Camera');
+import Vector3 from '../math/Vector3';
+import Scripts from '../scripts/Scripts';
+import ScriptUtils from '../scripts/ScriptUtils';
+import Renderer from '../renderer/Renderer';
+import SystemBus from '../entities/SystemBus';
+import Camera from '../renderer/Camera';
 
 
 
@@ -271,4 +271,4 @@ var Camera = require('../renderer/Camera');
 		}*/]
 	};
 
-	module.exports = PanCamScript;
+	export default PanCamScript;

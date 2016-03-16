@@ -1,4 +1,4 @@
-var Joint = require('./Joint');
+import Joint from './Joint';
 
 
 
@@ -32,4 +32,4 @@ Skeleton.prototype.clone = function () {
 	return new Skeleton(name, joints);
 };
 
-module.exports = Skeleton;
+export default Skeleton;

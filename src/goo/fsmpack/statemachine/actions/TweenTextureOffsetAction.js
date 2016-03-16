@@ -1,6 +1,6 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Vector2 = require('../../../math/Vector2');
-var TWEEN = require('../../../util/TWEEN');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Vector2 from '../../../math/Vector2';
+import TWEEN from '../../../util/TWEEN';
 
 
 
@@ -122,4 +122,4 @@ var TWEEN = require('../../../util/TWEEN');
 		}
 	};
 
-	module.exports = TweenTextureOffsetAction;
+	export default TweenTextureOffsetAction;

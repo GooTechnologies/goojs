@@ -1,6 +1,6 @@
-var Vector2 = require('../math/Vector2');
-var PromiseUtils = require('../util/PromiseUtils');
-var ObjectUtils = require('../util/ObjectUtils');
+import Vector2 from '../math/Vector2';
+import PromiseUtils from '../util/PromiseUtils';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -282,4 +282,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
 
-	module.exports = Texture;
+	export default Texture;

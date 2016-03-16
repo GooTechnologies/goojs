@@ -1,7 +1,7 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var LineRenderer = require('../../addons/linerenderpack/LineRenderer');
-var Vector3 = require('../../math/Vector3');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import LineRenderer from '../../addons/linerenderpack/LineRenderer';
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -167,4 +167,4 @@ var Vector3 = require('../../math/Vector3');
 		this.world.gooRunner.renderer.clearShaderCache();
 	};
 
-	module.exports = LineRenderSystem;
+	export default LineRenderSystem;

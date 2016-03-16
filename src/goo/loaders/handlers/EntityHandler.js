@@ -1,8 +1,8 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var RSVP = require('../../util/rsvp');
-var StringUtils = require('../../util/StringUtils');
-var PromiseUtils = require('../../util/PromiseUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import RSVP from '../../util/rsvp';
+import StringUtils from '../../util/StringUtils';
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -183,4 +183,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		return this._componentHandlers[type];
 	};
 
-	module.exports = EntityHandler;
+	export default EntityHandler;

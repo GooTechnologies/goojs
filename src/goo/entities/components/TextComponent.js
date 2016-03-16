@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 /**
  * Provides ways for the entity to display text
@@ -36,4 +36,4 @@ TextComponent.prototype.setText = function (text) {
 	return this;
 };
 
-module.exports = TextComponent;
+export default TextComponent;

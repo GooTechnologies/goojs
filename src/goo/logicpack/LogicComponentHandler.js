@@ -1,32 +1,32 @@
-var ComponentHandler = require('../loaders/handlers/ComponentHandler');
-var LogicComponent = require('./LogicComponent');
-var RSVP = require('../util/rsvp');
-var PromiseUtils = require('../util/PromiseUtils');
-var LogicNodeEntityProxy = require('./logic/LogicNodeEntityProxy');
-var LogicNodeTransformComponent = require('./logic/LogicNodeTransformComponent');
-var LogicNodeMeshRendererComponent = require('./logic/LogicNodeMeshRendererComponent');
-var LogicNodeLightComponent = require('./logic/LogicNodeLightComponent');
-var LogicNodeDebug = require('./logic/LogicNodeDebug');
-var LogicNodeRandom = require('./logic/LogicNodeRandom');
-var LogicNodeTime = require('./logic/LogicNodeTime');
-var LogicNodeSine = require('./logic/LogicNodeSine');
-var LogicNodeVec3 = require('./logic/LogicNodeVec3');
-var LogicNodeMultiply = require('./logic/LogicNodeMultiply');
-var LogicNodeWASD = require('./logic/LogicNodeWASD');
-var LogicNodeWASD2 = require('./logic/LogicNodeWASD2');
-var LogicNodeMouse = require('./logic/LogicNodeMouse');
-var LogicNodeAdd = require('./logic/LogicNodeAdd');
-var LogicNodeSub = require('./logic/LogicNodeSub');
-var LogicNodeFloat = require('./logic/LogicNodeFloat');
-var LogicNodeApplyMatrix = require('./logic/LogicNodeApplyMatrix');
-var LogicNodeConstVec3 = require('./logic/LogicNodeConstVec3');
-var LogicNodeVec3Add = require('./logic/LogicNodeVec3Add');
-var LogicNodeRotationMatrix = require('./logic/LogicNodeRotationMatrix');
-var LogicNodeMultiplyFloat = require('./logic/LogicNodeMultiplyFloat');
-var LogicNodeMax = require('./logic/LogicNodeMax');
-var LogicNodeInt = require('./logic/LogicNodeInt');
-var LogicNodeInput = require('./logic/LogicNodeInput');
-var LogicNodeOutput = require('./logic/LogicNodeOutput');
+import ComponentHandler from '../loaders/handlers/ComponentHandler';
+import LogicComponent from './LogicComponent';
+import RSVP from '../util/rsvp';
+import PromiseUtils from '../util/PromiseUtils';
+import LogicNodeEntityProxy from './logic/LogicNodeEntityProxy';
+import LogicNodeTransformComponent from './logic/LogicNodeTransformComponent';
+import LogicNodeMeshRendererComponent from './logic/LogicNodeMeshRendererComponent';
+import LogicNodeLightComponent from './logic/LogicNodeLightComponent';
+import LogicNodeDebug from './logic/LogicNodeDebug';
+import LogicNodeRandom from './logic/LogicNodeRandom';
+import LogicNodeTime from './logic/LogicNodeTime';
+import LogicNodeSine from './logic/LogicNodeSine';
+import LogicNodeVec3 from './logic/LogicNodeVec3';
+import LogicNodeMultiply from './logic/LogicNodeMultiply';
+import LogicNodeWASD from './logic/LogicNodeWASD';
+import LogicNodeWASD2 from './logic/LogicNodeWASD2';
+import LogicNodeMouse from './logic/LogicNodeMouse';
+import LogicNodeAdd from './logic/LogicNodeAdd';
+import LogicNodeSub from './logic/LogicNodeSub';
+import LogicNodeFloat from './logic/LogicNodeFloat';
+import LogicNodeApplyMatrix from './logic/LogicNodeApplyMatrix';
+import LogicNodeConstVec3 from './logic/LogicNodeConstVec3';
+import LogicNodeVec3Add from './logic/LogicNodeVec3Add';
+import LogicNodeRotationMatrix from './logic/LogicNodeRotationMatrix';
+import LogicNodeMultiplyFloat from './logic/LogicNodeMultiplyFloat';
+import LogicNodeMax from './logic/LogicNodeMax';
+import LogicNodeInt from './logic/LogicNodeInt';
+import LogicNodeInput from './logic/LogicNodeInput';
+import LogicNodeOutput from './logic/LogicNodeOutput';
 
 /**
 * 	* @private
@@ -52,4 +52,4 @@ LogicComponentHandler.prototype.update = function (entity, config) {
 	return PromiseUtils.resolve(component);
 };
 
-module.exports = LogicComponentHandler;
+export default LogicComponentHandler;

@@ -1,12 +1,12 @@
-var EntitySelection = require('../../../entities/EntitySelection');
-var System = require('../../../entities/systems/System');
-var SystemBus = require('../../../entities/SystemBus');
-var Transform = require('../../../math/Transform');
-var Material = require('../../../renderer/Material');
-var ShaderLib = require('../../../renderer/shaders/ShaderLib');
-var Sphere = require('../../../shapes/Sphere');
-var Box = require('../../../shapes/Box');
-var Cylinder = require('../../../shapes/Cylinder');
+import EntitySelection from '../../../entities/EntitySelection';
+import System from '../../../entities/systems/System';
+import SystemBus from '../../../entities/SystemBus';
+import Transform from '../../../math/Transform';
+import Material from '../../../renderer/Material';
+import ShaderLib from '../../../renderer/shaders/ShaderLib';
+import Sphere from '../../../shapes/Sphere';
+import Box from '../../../shapes/Box';
+import Cylinder from '../../../shapes/Cylinder';
 
 	/**
 	 * Renders all ParticleSystemComponents in the scene.
@@ -169,4 +169,4 @@ var Cylinder = require('../../../shapes/Cylinder');
 		this.process(this._activeEntities);
 	};
 
-	module.exports = ParticleDebugRenderSystem;
+	export default ParticleDebugRenderSystem;

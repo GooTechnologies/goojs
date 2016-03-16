@@ -1,6 +1,6 @@
-var BoundingBox = require('../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../renderer/bounds/BoundingSphere');
-var Vector3 = require('../math/Vector3');
+import BoundingBox from '../renderer/bounds/BoundingBox';
+import BoundingSphere from '../renderer/bounds/BoundingSphere';
+import Vector3 from '../math/Vector3';
 
 
 
@@ -206,4 +206,4 @@ var Vector3 = require('../math/Vector3');
 		return result;
 	};
 
-	module.exports = BoundingTree;
+	export default BoundingTree;

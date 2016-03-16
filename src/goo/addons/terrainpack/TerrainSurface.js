@@ -1,5 +1,5 @@
-var MeshData = require('../../renderer/MeshData');
-var MathUtils = require('../../math/MathUtils');
+import MeshData from '../../renderer/MeshData';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -121,4 +121,4 @@ TerrainSurface.prototype.rebuild = function () {
 	return this;
 };
 
-module.exports = TerrainSurface;
+export default TerrainSurface;

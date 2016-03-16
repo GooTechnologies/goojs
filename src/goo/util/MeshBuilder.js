@@ -1,7 +1,7 @@
-var MeshData = require('../renderer/MeshData');
-var Capabilities = require('../renderer/Capabilities');
-var Vector3 = require('../math/Vector3');
-var EntityUtils = require('../entities/EntityUtils');
+import MeshData from '../renderer/MeshData';
+import Capabilities from '../renderer/Capabilities';
+import Vector3 from '../math/Vector3';
+import EntityUtils from '../entities/EntityUtils';
 
 
 
@@ -235,4 +235,4 @@ var EntityUtils = require('../entities/EntityUtils');
 		this.indexModes = [];
 	};
 
-	module.exports = MeshBuilder;
+	export default MeshBuilder;

@@ -117,4 +117,4 @@ ArrayUtils.fromValues = function (collection) {
 	return array;
 };
 
-module.exports = ArrayUtils;
+export default ArrayUtils;

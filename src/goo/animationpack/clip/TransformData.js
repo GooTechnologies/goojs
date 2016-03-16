@@ -1,5 +1,5 @@
-var Quaternion = require('../../math/Quaternion');
-var Vector3 = require('../../math/Vector3');
+import Quaternion from '../../math/Quaternion';
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -53,4 +53,4 @@ var Vector3 = require('../../math/Vector3');
 		return tData;
 	};
 
-	module.exports = TransformData;
+	export default TransformData;

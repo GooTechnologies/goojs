@@ -1,4 +1,4 @@
-var PromiseUtils = require('../util/PromiseUtils');
+import PromiseUtils from '../util/PromiseUtils';
 
 
 
@@ -44,4 +44,4 @@ TaskScheduler.each = function (queue) {
 	});
 };
 
-module.exports = TaskScheduler;
+export default TaskScheduler;

@@ -1,4 +1,4 @@
-var MathUtils = require('../math/MathUtils');
+import MathUtils from '../math/MathUtils';
 
 
 
@@ -87,4 +87,4 @@ var MathUtils = require('../math/MathUtils');
 		translation.y = this.getInterpolated(translation.z, translation.x);
 	};
 
-	module.exports = HeightMapBoundingScript;
+	export default HeightMapBoundingScript;

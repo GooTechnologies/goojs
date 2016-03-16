@@ -1,16 +1,16 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var Texture = require('../../renderer/Texture');
-var DdsLoader = require('../../loaders/dds/DdsLoader');
-var CrunchLoader = require('../../loaders/crunch/CrunchLoader');
-var TgaLoader = require('../../loaders/tga/TgaLoader');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
-var RendererUtils = require('../../renderer/RendererUtils');
-var ObjectUtils = require('../../util/ObjectUtils');
-var CanvasUtils = require('../../util/CanvasUtils');
-var StringUtils = require('../../util/StringUtils');
-var SystemBus = require('../../entities/SystemBus');
-var MathUtils = require('../../math/MathUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import Texture from '../../renderer/Texture';
+import DdsLoader from '../../loaders/dds/DdsLoader';
+import CrunchLoader from '../../loaders/crunch/CrunchLoader';
+import TgaLoader from '../../loaders/tga/TgaLoader';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
+import RendererUtils from '../../renderer/RendererUtils';
+import ObjectUtils from '../../util/ObjectUtils';
+import CanvasUtils from '../../util/CanvasUtils';
+import StringUtils from '../../util/StringUtils';
+import SystemBus from '../../entities/SystemBus';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -275,4 +275,4 @@ var MathUtils = require('../../math/MathUtils');
 		});
 	};
 
-	module.exports = TextureHandler;
+	export default TextureHandler;

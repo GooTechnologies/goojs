@@ -1,8 +1,8 @@
-var ParticleUtils = require('../particles/ParticleUtils');
-var Vector = require('../math/Vector');
-var Vector3 = require('../math/Vector3');
-var Vector4 = require('../math/Vector4');
-var MeshData = require('../renderer/MeshData');
+import ParticleUtils from '../particles/ParticleUtils';
+import Vector from '../math/Vector';
+import Vector3 from '../math/Vector3';
+import Vector4 from '../math/Vector4';
+import MeshData from '../renderer/MeshData';
 
 
 
@@ -184,4 +184,4 @@ var MeshData = require('../renderer/MeshData');
 		vertexBuffer.set(pointA, this.index * 12 + 9);
 	};
 
-	module.exports = Particle;
+	export default Particle;

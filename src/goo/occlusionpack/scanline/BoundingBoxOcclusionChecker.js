@@ -1,7 +1,7 @@
-var Matrix4 = require('../../math/Matrix4');
-var Vector4 = require('../../math/Vector4');
-var Vector2 = require('../../math/Vector2');
-var OccludeeTriangleData = require('./OccludeeTriangleData');
+import Matrix4 from '../../math/Matrix4';
+import Vector4 from '../../math/Vector4';
+import Vector2 from '../../math/Vector2';
+import OccludeeTriangleData from './OccludeeTriangleData';
 
 
 
@@ -514,4 +514,4 @@ var OccludeeTriangleData = require('./OccludeeTriangleData');
 		}
 	};
 
-	module.exports = BoundingBoxOcclusionChecker;
+	export default BoundingBoxOcclusionChecker;

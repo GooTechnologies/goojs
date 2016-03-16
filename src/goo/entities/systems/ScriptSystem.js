@@ -1,5 +1,5 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
 
 
 
@@ -110,4 +110,4 @@ var SystemBus = require('../../entities/SystemBus');
 		System.prototype.clear.call(this);
 	};
 
-	module.exports = ScriptSystem;
+	export default ScriptSystem;

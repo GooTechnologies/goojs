@@ -1,4 +1,4 @@
-var LogicInterface = require('./LogicInterface');
+import LogicInterface from './LogicInterface';
 
 
 
@@ -369,4 +369,4 @@ LogicLayer.prototype.connectEndpoints = function (sourceInst, sourcePort, destIn
 	this.addConnectionByName(sourceInst, sourcePort, destInst.name, destPort);
 };
 
-module.exports = LogicLayer;
+export default LogicLayer;

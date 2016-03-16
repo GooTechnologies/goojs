@@ -1,5 +1,5 @@
-var MarkerComponent = require('./components/MarkerComponent');
-var MarkerSystem = require('./systems/MarkerSystem');
+import MarkerComponent from './components/MarkerComponent';
+import MarkerSystem from './systems/MarkerSystem';
 
 
 
@@ -275,4 +275,4 @@ var MarkerSystem = require('./systems/MarkerSystem');
 		elem.value = entityStr;
 	}
 
-	module.exports = Debugger;
+	export default Debugger;

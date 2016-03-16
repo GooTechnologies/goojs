@@ -16,4 +16,4 @@ function Rectangle(x, y, w, h) {
 	this.h = h;
 }
 
-module.exports = Rectangle;
+export default Rectangle;

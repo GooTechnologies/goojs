@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -64,4 +64,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		fsm.getFsm().removeVariable(this.name);
 	};
 
-	module.exports = IncrementCounterAction;
+	export default IncrementCounterAction;

@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var Light = require('../../renderer/light/Light');
+import Component from '../../entities/components/Component';
+import Light from '../../renderer/light/Light';
 
 
 
@@ -65,4 +65,4 @@ var Light = require('../../renderer/light/Light');
 		}
 	};
 
-	module.exports = LightComponent;
+	export default LightComponent;

@@ -1,4 +1,4 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+import Action from '../../../fsmpack/statemachine/actions/Action';
 
 
 
@@ -23,4 +23,4 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 		entity.hide();
 	};
 
-	module.exports = HideAction;
+	export default HideAction;

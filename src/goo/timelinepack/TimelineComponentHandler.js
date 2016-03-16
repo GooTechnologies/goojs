@@ -1,11 +1,11 @@
-var ComponentHandler = require('../loaders/handlers/ComponentHandler');
-var TimelineComponent = require('../timelinepack/TimelineComponent');
-var ValueChannel = require('../timelinepack/ValueChannel');
-var EventChannel = require('../timelinepack/EventChannel');
-var ArrayUtils = require('../util/ArrayUtils');
-var SystemBus = require('../entities/SystemBus');
-var ObjectUtils = require('../util/ObjectUtils');
-var TWEEN = require('../util/TWEEN');
+import ComponentHandler from '../loaders/handlers/ComponentHandler';
+import TimelineComponent from '../timelinepack/TimelineComponent';
+import ValueChannel from '../timelinepack/ValueChannel';
+import EventChannel from '../timelinepack/EventChannel';
+import ArrayUtils from '../util/ArrayUtils';
+import SystemBus from '../entities/SystemBus';
+import ObjectUtils from '../util/ObjectUtils';
+import TWEEN from '../util/TWEEN';
 
 
 
@@ -203,4 +203,4 @@ var TWEEN = require('../util/TWEEN');
 		});
 	};
 
-	module.exports = TimelineComponentHandler;
+	export default TimelineComponentHandler;

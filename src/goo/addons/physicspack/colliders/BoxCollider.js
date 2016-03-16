@@ -1,5 +1,5 @@
-var Vector3 = require('../../../math/Vector3');
-var Collider = require('../../../addons/physicspack/colliders/Collider');
+import Vector3 from '../../../math/Vector3';
+import Collider from '../../../addons/physicspack/colliders/Collider';
 
 
 
@@ -41,4 +41,4 @@ var Collider = require('../../../addons/physicspack/colliders/Collider');
 		});
 	};
 
-	module.exports = BoxCollider;
+	export default BoxCollider;

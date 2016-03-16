@@ -1,10 +1,10 @@
-var Entity = require('./Entity');
-var EntityManager = require('./managers/EntityManager');
-var TransformComponent = require('./components/TransformComponent');
-var Manager = require('./managers/Manager');
-var System = require('./systems/System');
-var Component = require('./components/Component');
-var EntitySelection = require('./EntitySelection');
+import Entity from './Entity';
+import EntityManager from './managers/EntityManager';
+import TransformComponent from './components/TransformComponent';
+import Manager from './managers/Manager';
+import System from './systems/System';
+import Component from './components/Component';
+import EntitySelection from './EntitySelection';
 
 
 
@@ -491,4 +491,4 @@ var EntitySelection = require('./EntitySelection');
 		this.gooRunner = null;
 	};
 
-	module.exports = World;
+	export default World;

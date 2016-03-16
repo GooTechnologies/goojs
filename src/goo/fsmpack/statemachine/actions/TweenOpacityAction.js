@@ -1,6 +1,6 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var TWEEN = require('../../../util/TWEEN');
-var MathUtils = require('../../../math/MathUtils');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import TWEEN from '../../../util/TWEEN';
+import MathUtils from '../../../math/MathUtils';
 
 
 	function TweenOpacityAction(/*id, settings*/) {
@@ -111,4 +111,4 @@ var MathUtils = require('../../../math/MathUtils');
 		}
 	};
 
-	module.exports = TweenOpacityAction;
+	export default TweenOpacityAction;

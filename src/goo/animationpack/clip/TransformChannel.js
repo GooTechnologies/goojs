@@ -1,6 +1,6 @@
-var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
-var TransformData = require('../../animationpack/clip/TransformData');
-var Quaternion = require('../../math/Quaternion');
+import AbstractAnimationChannel from '../../animationpack/clip/AbstractAnimationChannel';
+import TransformData from '../../animationpack/clip/TransformData';
+import Quaternion from '../../math/Quaternion';
 
 
 
@@ -121,4 +121,4 @@ var Quaternion = require('../../math/Quaternion');
 		return rVal;
 	};
 
-	module.exports = TransformChannel;
+	export default TransformChannel;

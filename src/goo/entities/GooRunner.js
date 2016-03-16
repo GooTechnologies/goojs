@@ -1,26 +1,26 @@
-var World = require('./World');
-var Renderer = require('../renderer/Renderer');
-var TransformSystem = require('./systems/TransformSystem');
-var RenderSystem = require('./systems/RenderSystem');
-var BoundingUpdateSystem = require('./systems/BoundingUpdateSystem');
-var ScriptSystem = require('./systems/ScriptSystem');
-var LightingSystem = require('./systems/LightingSystem');
-var CameraSystem = require('./systems/CameraSystem');
-var ParticlesSystem = require('./systems/ParticlesSystem');
-var Stats = require('../util/Stats');
-var AudioContext = require('../sound/AudioContext');
-var SoundSystem = require('./systems/SoundSystem');
-var TransformComponent = require('./components/TransformComponent');
-var MeshDataComponent = require('./components/MeshDataComponent');
-var MeshRendererComponent = require('./components/MeshRendererComponent');
-var CameraComponent = require('./components/CameraComponent');
-var LightComponent = require('./components/LightComponent');
-var ScriptComponent = require('./components/ScriptComponent');
-var SoundComponent = require('./components/SoundComponent');
-var GameUtils = require('../util/GameUtils');
-var Logo = require('../util/Logo');
-var SystemBus = require('./SystemBus');
-var Material = require('../renderer/Material');
+import World from './World';
+import Renderer from '../renderer/Renderer';
+import TransformSystem from './systems/TransformSystem';
+import RenderSystem from './systems/RenderSystem';
+import BoundingUpdateSystem from './systems/BoundingUpdateSystem';
+import ScriptSystem from './systems/ScriptSystem';
+import LightingSystem from './systems/LightingSystem';
+import CameraSystem from './systems/CameraSystem';
+import ParticlesSystem from './systems/ParticlesSystem';
+import Stats from '../util/Stats';
+import AudioContext from '../sound/AudioContext';
+import SoundSystem from './systems/SoundSystem';
+import TransformComponent from './components/TransformComponent';
+import MeshDataComponent from './components/MeshDataComponent';
+import MeshRendererComponent from './components/MeshRendererComponent';
+import CameraComponent from './components/CameraComponent';
+import LightComponent from './components/LightComponent';
+import ScriptComponent from './components/ScriptComponent';
+import SoundComponent from './components/SoundComponent';
+import GameUtils from '../util/GameUtils';
+import Logo from '../util/Logo';
+import SystemBus from './SystemBus';
+import Material from '../renderer/Material';
 
 
 
@@ -850,4 +850,4 @@ var Material = require('../renderer/Material');
 		this._events = null;
 	};
 
-	module.exports = GooRunner;
+	export default GooRunner;

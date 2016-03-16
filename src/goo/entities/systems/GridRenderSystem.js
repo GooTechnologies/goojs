@@ -1,14 +1,14 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var SimplePartitioner = require('../../renderer/SimplePartitioner');
-var MeshData = require('../../renderer/MeshData');
-var Material = require('../../renderer/Material');
-var Shader = require('../../renderer/Shader');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var ObjectUtils = require('../../util/ObjectUtils');
-var Transform = require('../../math/Transform');
-var MathUtils = require('../../math/MathUtils');
-var Grid = require('../../shapes/Grid');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import SimplePartitioner from '../../renderer/SimplePartitioner';
+import MeshData from '../../renderer/MeshData';
+import Material from '../../renderer/Material';
+import Shader from '../../renderer/Shader';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import ObjectUtils from '../../util/ObjectUtils';
+import Transform from '../../math/Transform';
+import MathUtils from '../../math/MathUtils';
+import Grid from '../../shapes/Grid';
 
 
 
@@ -224,4 +224,4 @@ var Grid = require('../../shapes/Grid');
 		].join('\n')
 	};
 
-	module.exports = GridRenderSystem;
+	export default GridRenderSystem;

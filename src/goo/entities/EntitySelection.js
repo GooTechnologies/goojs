@@ -1,4 +1,4 @@
-var Selection = require('./Selection');
+import Selection from './Selection';
 
 
 
@@ -248,4 +248,4 @@ var Selection = require('./Selection');
 		}
 	}
 
-	module.exports = EntitySelection;
+	export default EntitySelection;

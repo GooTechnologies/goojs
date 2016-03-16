@@ -1,7 +1,7 @@
-var LogicLayer = require('./LogicLayer');
-var LogicNode = require('./LogicNode');
-var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface')
+import LogicLayer from './LogicLayer';
+import LogicNode from './LogicNode';
+import LogicNodes from './LogicNodes';
+import LogicInterface from './LogicInterface'
 
 /**
  * Logic node handling WASD input.
@@ -65,4 +65,4 @@ LogicNodeWASD.upKeys = {
 
 LogicNodes.registerType('LogicNodeWASD', LogicNodeWASD);
 
-module.exports = LogicNodeWASD;
+export default LogicNodeWASD;

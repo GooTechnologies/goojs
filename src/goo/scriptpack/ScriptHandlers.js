@@ -1,2 +1,2 @@
-var ScriptHandler = require('./ScriptHandler');
-var ScriptComponentHandler = require('./ScriptComponentHandler');
+import ScriptHandler from './ScriptHandler';
+import ScriptComponentHandler from './ScriptComponentHandler';

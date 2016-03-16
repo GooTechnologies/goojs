@@ -1,6 +1,6 @@
-var Scripts = require('../scripts/Scripts');
-var WasdControlScript = require('../scriptpack/WasdControlScript');
-var MouseLookControlScript = require('../scriptpack/MouseLookControlScript');
+import Scripts from '../scripts/Scripts';
+import WasdControlScript from '../scriptpack/WasdControlScript';
+import MouseLookControlScript from '../scriptpack/MouseLookControlScript';
 
 
 
@@ -41,4 +41,4 @@ var MouseLookControlScript = require('../scriptpack/MouseLookControlScript');
 		parameters: params
 	};
 
-	module.exports = FlyControlScript;
+	export default FlyControlScript;

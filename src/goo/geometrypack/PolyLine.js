@@ -1,7 +1,7 @@
-var MeshData = require('../renderer/MeshData');
-var Surface = require('../geometrypack/Surface');
-var Matrix3 = require('../math/Matrix3');
-var Vector3 = require('../math/Vector3');
+import MeshData from '../renderer/MeshData';
+import Surface from '../geometrypack/Surface';
+import Matrix3 from '../math/Matrix3';
+import Vector3 from '../math/Vector3';
 
 
 
@@ -328,4 +328,4 @@ var Vector3 = require('../math/Vector3');
 		}
 	};
 
-	module.exports = PolyLine;
+	export default PolyLine;

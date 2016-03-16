@@ -1,5 +1,5 @@
-var Entity = require('../entities/Entity');
-var Transform = require('../math/Transform');
+import Entity from '../entities/Entity';
+import Transform from '../math/Transform';
 
 
 
@@ -63,4 +63,4 @@ var Transform = require('../math/Transform');
 		this.renderable = renderable;
 	};
 
-	module.exports = RenderInfo;
+	export default RenderInfo;

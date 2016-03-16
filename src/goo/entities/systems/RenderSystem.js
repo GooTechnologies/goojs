@@ -1,9 +1,9 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var SimplePartitioner = require('../../renderer/SimplePartitioner');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var ObjectUtils = require('../../util/ObjectUtils');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import SimplePartitioner from '../../renderer/SimplePartitioner';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -207,4 +207,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		renderer.rendererRecord = null; // might hold on to stuff
 	};
 
-	module.exports = RenderSystem;
+	export default RenderSystem;

@@ -1,4 +1,4 @@
-var Vector3 = require('../../math/Vector3');
+import Vector3 from '../../math/Vector3';
 
 
 
@@ -38,4 +38,4 @@ var Vector3 = require('../../math/Vector3');
 	BoundingVolume.Inside = 1;
 	BoundingVolume.Intersects = 2;
 
-	module.exports = BoundingVolume;
+	export default BoundingVolume;

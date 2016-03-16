@@ -31,4 +31,4 @@
 		this._currentIndex = index;
 	};
 
-	module.exports = TriggerData;
+	export default TriggerData;

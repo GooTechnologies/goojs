@@ -1,4 +1,4 @@
-var BoundingTree = require('../picking/BoundingTree');
+import BoundingTree from '../picking/BoundingTree';
 
 
 
@@ -43,4 +43,4 @@ var BoundingTree = require('../picking/BoundingTree');
 		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
 	};
 
-	module.exports = PrimitivePickLogic;
+	export default PrimitivePickLogic;

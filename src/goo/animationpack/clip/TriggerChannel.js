@@ -1,5 +1,5 @@
-var AbstractAnimationChannel = require('../../animationpack/clip/AbstractAnimationChannel');
-var TriggerData = require('../../animationpack/clip/TriggerData');
+import AbstractAnimationChannel from '../../animationpack/clip/AbstractAnimationChannel';
+import TriggerData from '../../animationpack/clip/TriggerData';
 
 
 
@@ -54,4 +54,4 @@ var TriggerData = require('../../animationpack/clip/TriggerData');
 		}
 	};
 
-	module.exports = TriggerChannel;
+	export default TriggerChannel;

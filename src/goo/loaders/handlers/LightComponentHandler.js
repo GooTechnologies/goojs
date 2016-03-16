@@ -1,10 +1,10 @@
-var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
-var LightComponent = require('../../entities/components/LightComponent');
-var PointLight = require('../../renderer/light/PointLight');
-var SpotLight = require('../../renderer/light/SpotLight');
-var DirectionalLight = require('../../renderer/light/DirectionalLight');
-var Vector3 = require('../../math/Vector3');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ComponentHandler from '../../loaders/handlers/ComponentHandler';
+import LightComponent from '../../entities/components/LightComponent';
+import PointLight from '../../renderer/light/PointLight';
+import SpotLight from '../../renderer/light/SpotLight';
+import DirectionalLight from '../../renderer/light/DirectionalLight';
+import Vector3 from '../../math/Vector3';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -138,4 +138,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = LightComponentHandler;
+	export default LightComponentHandler;

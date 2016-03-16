@@ -1,8 +1,8 @@
-var LogicLayer = require('./LogicLayer');
-var LogicNode = require('./LogicNode');
-var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface');
-var Vector3 = require('../../math/Vector3')
+import LogicLayer from './LogicLayer';
+import LogicNode from './LogicNode';
+import LogicNodes from './LogicNodes';
+import LogicInterface from './LogicInterface';
+import Vector3 from '../../math/Vector3'
 
 /**
  * Logic node that provides a Vec3.
@@ -48,4 +48,4 @@ LogicNodeVec3.outportZ = LogicNodeVec3.logicInterface.addOutputProperty('z', 'fl
 
 LogicNodes.registerType('LogicNodeVec3', LogicNodeVec3);
 
-module.exports = LogicNodeVec3;
+export default LogicNodeVec3;

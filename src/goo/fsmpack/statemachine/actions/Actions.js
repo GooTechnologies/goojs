@@ -136,4 +136,4 @@
 		Actions.register(action.external.key, action);
 	}
 
-module.exports = Actions;
+export default Actions;

@@ -1,8 +1,8 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Material = require('../../../renderer/Material');
-var ShaderLib = require('../../../renderer/shaders/ShaderLib');
-var ParticleLib = require('../../../particles/ParticleLib');
-var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Material from '../../../renderer/Material';
+import ShaderLib from '../../../renderer/shaders/ShaderLib';
+import ParticleLib from '../../../particles/ParticleLib';
+import ParticleSystemUtils from '../../../util/ParticleSystemUtils';
 
 
 
@@ -85,4 +85,4 @@ var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 		}
 	};
 
-	module.exports = FireAction;
+	export default FireAction;

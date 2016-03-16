@@ -1,4 +1,4 @@
-var EntitySelection = require('../EntitySelection');
+import EntitySelection from '../EntitySelection';
 
 
 
@@ -87,4 +87,4 @@ Component.applyEntitySelectionAPI = function (entitySelectionAPI, componentType)
 	}
 };
 
-module.exports = Component;
+export default Component;

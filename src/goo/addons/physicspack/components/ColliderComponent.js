@@ -1,12 +1,12 @@
-var AbstractColliderComponent = require('../../../addons/physicspack/components/AbstractColliderComponent');
-var BoxCollider = require('../../../addons/physicspack/colliders/BoxCollider');
-var SphereCollider = require('../../../addons/physicspack/colliders/SphereCollider');
-var MeshCollider = require('../../../addons/physicspack/colliders/MeshCollider');
-var PlaneCollider = require('../../../addons/physicspack/colliders/PlaneCollider');
-var CylinderCollider = require('../../../addons/physicspack/colliders/CylinderCollider');
-var Collider = require('../../../addons/physicspack/colliders/Collider');
-var Vector3 = require('../../../math/Vector3');
-var Quaternion = require('../../../math/Quaternion');
+import AbstractColliderComponent from '../../../addons/physicspack/components/AbstractColliderComponent';
+import BoxCollider from '../../../addons/physicspack/colliders/BoxCollider';
+import SphereCollider from '../../../addons/physicspack/colliders/SphereCollider';
+import MeshCollider from '../../../addons/physicspack/colliders/MeshCollider';
+import PlaneCollider from '../../../addons/physicspack/colliders/PlaneCollider';
+import CylinderCollider from '../../../addons/physicspack/colliders/CylinderCollider';
+import Collider from '../../../addons/physicspack/colliders/Collider';
+import Vector3 from '../../../math/Vector3';
+import Quaternion from '../../../math/Quaternion';
 
 
 
@@ -170,4 +170,4 @@ var Quaternion = require('../../../math/Quaternion');
 		}
 	};
 
-	module.exports = ColliderComponent;
+	export default ColliderComponent;

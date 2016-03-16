@@ -1,9 +1,9 @@
-var Material = require('../renderer/Material');
-var FullscreenUtils = require('../renderer/pass/FullscreenUtils');
-var RenderTarget = require('../renderer/pass/RenderTarget');
-var ObjectUtils = require('../util/ObjectUtils');
-var ShaderLib = require('../renderer/shaders/ShaderLib');
-var Pass = require('../renderer/pass/Pass');
+import Material from '../renderer/Material';
+import FullscreenUtils from '../renderer/pass/FullscreenUtils';
+import RenderTarget from '../renderer/pass/RenderTarget';
+import ObjectUtils from '../util/ObjectUtils';
+import ShaderLib from '../renderer/shaders/ShaderLib';
+import Pass from '../renderer/pass/Pass';
 
 
 
@@ -120,4 +120,4 @@ var Pass = require('../renderer/pass/Pass');
 		}
 	};
 
-	module.exports = BlurPass;
+	export default BlurPass;

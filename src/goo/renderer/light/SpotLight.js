@@ -1,5 +1,5 @@
-var Vector3 = require('../../math/Vector3');
-var Light = require('../../renderer/light/Light');
+import Vector3 from '../../math/Vector3';
+import Light from '../../renderer/light/Light';
 
 
 
@@ -82,4 +82,4 @@ var Light = require('../../renderer/light/Light');
 		return clone;
 	};
 
-	module.exports = SpotLight;
+	export default SpotLight;

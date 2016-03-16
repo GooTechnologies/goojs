@@ -1,6 +1,6 @@
-var Transform = require('../math/Transform');
-var Joint = require('../animationpack/Joint');
-var Matrix4 = require('../math/Matrix4');
+import Transform from '../math/Transform';
+import Joint from '../animationpack/Joint';
+import Matrix4 from '../math/Matrix4';
 
 
 
@@ -103,4 +103,4 @@ var Matrix4 = require('../math/Matrix4');
 		return new SkeletonPose(this._skeleton);
 	};
 
-	module.exports = SkeletonPose;
+	export default SkeletonPose;

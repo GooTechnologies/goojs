@@ -1,6 +1,6 @@
-var ConstantCurve = require('../../../addons/particlepack/curves/ConstantCurve');
-var Curve = require('../../../addons/particlepack/curves/Curve');
-var ObjectUtils = require('../../../util/ObjectUtils');
+import ConstantCurve from '../../../addons/particlepack/curves/ConstantCurve';
+import Curve from '../../../addons/particlepack/curves/Curve';
+import ObjectUtils from '../../../util/ObjectUtils';
 
 	/**
 	 * Three scalar curves. Can be converted to a vec4-valued expression in GLSL code.
@@ -57,4 +57,4 @@ var ObjectUtils = require('../../../util/ObjectUtils');
 		);
 	};
 
-	module.exports = Vector4Curve;
+	export default Vector4Curve;

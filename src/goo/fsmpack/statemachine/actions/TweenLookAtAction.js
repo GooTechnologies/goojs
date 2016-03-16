@@ -1,7 +1,7 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
-var Vector3 = require('../../../math/Vector3');
-var Quaternion = require('../../../math/Quaternion');
-var TWEEN = require('../../../util/TWEEN');
+import Action from '../../../fsmpack/statemachine/actions/Action';
+import Vector3 from '../../../math/Vector3';
+import Quaternion from '../../../math/Quaternion';
+import TWEEN from '../../../util/TWEEN';
 
 
 	function TweenLookAtAction(/*id, settings*/) {
@@ -105,4 +105,4 @@ var TWEEN = require('../../../util/TWEEN');
 		}
 	};
 
-	module.exports = TweenLookAtAction;
+	export default TweenLookAtAction;

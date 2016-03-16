@@ -1,6 +1,6 @@
-var Vector3 = require('../math/Vector3');
-var Scripts = require('../scripts/Scripts');
-var ScriptUtils = require('../scripts/ScriptUtils');
+import Vector3 from '../math/Vector3';
+import Scripts from '../scripts/Scripts';
+import ScriptUtils from '../scripts/ScriptUtils';
 
 	function WasdControlScript() {
 		var entity, transformComponent, transform;
@@ -197,4 +197,4 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		}]
 	};
 
-	module.exports = WasdControlScript;
+	export default WasdControlScript;

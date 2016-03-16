@@ -1,4 +1,4 @@
-var Rectangle = require('../../util/combine/Rectangle');
+import Rectangle from '../../util/combine/Rectangle';
 
 
 
@@ -81,4 +81,4 @@ var Rectangle = require('../../util/combine/Rectangle');
 		}
 	};
 
-	module.exports = AtlasNode;
+	export default AtlasNode;

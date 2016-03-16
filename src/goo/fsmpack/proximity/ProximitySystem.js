@@ -1,6 +1,6 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var StringUtils = require('../../util/StringUtils');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import StringUtils from '../../util/StringUtils';
 
 /**
  * Processes all entities with a proximity component
@@ -77,4 +77,4 @@ ProximitySystem.prototype.process = function (/*entities*/) {
 	*/
 };
 
-module.exports = ProximitySystem;
+export default ProximitySystem;

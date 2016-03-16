@@ -1,7 +1,7 @@
-var TransformData = require('../../animationpack/clip/TransformData');
-var Vector3 = require('../../math/Vector3');
-var Quaternion = require('../../math/Quaternion');
-var Source = require('../../animationpack/blendtree/Source');
+import TransformData from '../../animationpack/clip/TransformData';
+import Vector3 from '../../math/Vector3';
+import Quaternion from '../../math/Quaternion';
+import Source from '../../animationpack/blendtree/Source';
 
 
 
@@ -157,4 +157,4 @@ var Source = require('../../animationpack/blendtree/Source');
 		return new ManagedTransformSource(this._sourceName, clonedData);
 	};
 
-	module.exports = ManagedTransformSource;
+	export default ManagedTransformSource;

@@ -1,6 +1,6 @@
-var Scripts = require('../scripts/Scripts');
-var BoundingBox = require('../renderer/bounds/BoundingBox');
-var ObjectUtils = require('../util/ObjectUtils');
+import Scripts from '../scripts/Scripts';
+import BoundingBox from '../renderer/bounds/BoundingBox';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -190,4 +190,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		return mergedWorldBound;
 	};
 
-	module.exports = EntityUtils;
+	export default EntityUtils;

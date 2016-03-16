@@ -1,7 +1,7 @@
-var Vector3 = require('../../math/Vector3');
-var MathUtils = require('../../math/MathUtils');
-var BoundingVolume = require('../../renderer/bounds/BoundingVolume');
-var MeshData = require('../../renderer/MeshData');
+import Vector3 from '../../math/Vector3';
+import MathUtils from '../../math/MathUtils';
+import BoundingVolume from '../../renderer/bounds/BoundingVolume';
+import MeshData from '../../renderer/MeshData';
 
 
 
@@ -358,4 +358,4 @@ var MeshData = require('../../renderer/MeshData');
 		return new BoundingSphere(this.center, this.radius);
 	};
 
-	module.exports = BoundingSphere;
+	export default BoundingSphere;

@@ -48,4 +48,4 @@ OccludeeTriangleData.prototype.clear = function () {
 	this.indexCount = 0;
 };
 
-module.exports = OccludeeTriangleData;
+export default OccludeeTriangleData;

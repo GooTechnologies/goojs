@@ -1,7 +1,7 @@
-var LogicLayer = require('./LogicLayer');
-var LogicNode = require('./LogicNode');
-var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface');
+import LogicLayer from './LogicLayer';
+import LogicNode from './LogicNode';
+import LogicNodes from './LogicNodes';
+import LogicInterface from './LogicInterface';
 
 /**
  * Logic node to be used as Layer input.
@@ -40,4 +40,4 @@ LogicNodeInput.logicInterface.addConfigEntry({
 	label: 'Name'
 });
 
-module.exports = LogicNodeInput;
+export default LogicNodeInput;

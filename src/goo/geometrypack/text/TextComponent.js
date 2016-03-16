@@ -1,6 +1,6 @@
-var Component = require('../../entities/components/Component');
-var MeshDataComponent = require('../../entities/components/MeshDataComponent');
-var TextMeshGenerator = require('./TextMeshGenerator');
+import Component from '../../entities/components/Component';
+import MeshDataComponent from '../../entities/components/MeshDataComponent';
+import TextMeshGenerator from './TextMeshGenerator';
 
 /**
  * Stores a font and handles the text mesh on an entity
@@ -61,4 +61,4 @@ TextComponent.prototype.setText = function (text, options) {
 	return this;
 };
 
-module.exports = TextComponent;
+export default TextComponent;

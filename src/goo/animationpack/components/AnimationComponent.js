@@ -1,9 +1,9 @@
-var Component = require('../../entities/components/Component');
-var World = require('../../entities/World'); //! AT: this should not exist
-var AnimationLayer = require('../../animationpack/layer/AnimationLayer');
-var JointData = require('../../animationpack/clip/JointData');
-var TransformData = require('../../animationpack/clip/TransformData');
-var TriggerData = require('../../animationpack/clip/TriggerData');
+import Component from '../../entities/components/Component';
+import World from '../../entities/World'; //! AT: this should not exist
+import AnimationLayer from '../../animationpack/layer/AnimationLayer';
+import JointData from '../../animationpack/clip/JointData';
+import TransformData from '../../animationpack/clip/TransformData';
+import TriggerData from '../../animationpack/clip/TriggerData';
 
 
 
@@ -249,4 +249,4 @@ AnimationComponent.prototype.clone = function () {
 	return cloned;
 };
 
-module.exports = AnimationComponent;
+export default AnimationComponent;

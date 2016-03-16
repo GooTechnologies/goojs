@@ -1,11 +1,11 @@
-var Box = require('../shapes/Box');
-var Quad = require('../shapes/Quad');
-var Sphere = require('../shapes/Sphere');
-var Cylinder = require('../shapes/Cylinder');
-var Torus = require('../shapes/Torus');
-var Disk = require('../shapes/Disk');
-var Cone = require('../shapes/Cone');
-var ObjectUtil = require('../util/ObjectUtil');
+import Box from '../shapes/Box';
+import Quad from '../shapes/Quad';
+import Sphere from '../shapes/Sphere';
+import Cylinder from '../shapes/Cylinder';
+import Torus from '../shapes/Torus';
+import Disk from '../shapes/Disk';
+import Cone from '../shapes/Cone';
+import ObjectUtil from '../util/ObjectUtil';
 
 
 
@@ -202,4 +202,4 @@ var ObjectUtil = require('../util/ObjectUtil');
 		_cacheMap.clear();
 	};
 
-	module.exports = ShapeCreatorMemoized;
+	export default ShapeCreatorMemoized;

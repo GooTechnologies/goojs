@@ -1,11 +1,11 @@
-var ComponentHandler = require('../loaders/handlers/ComponentHandler');
-var ScriptComponent = require('../entities/components/ScriptComponent');
-var RSVP = require('../util/rsvp');
-var ObjectUtils = require('../util/ObjectUtils');
-var PromiseUtils = require('../util/PromiseUtils');
-var SystemBus = require('../entities/SystemBus');
-var Scripts = require('../scripts/Scripts');
-var ScriptUtils = require('../scripts/ScriptUtils');
+import ComponentHandler from '../loaders/handlers/ComponentHandler';
+import ScriptComponent from '../entities/components/ScriptComponent';
+import RSVP from '../util/rsvp';
+import ObjectUtils from '../util/ObjectUtils';
+import PromiseUtils from '../util/PromiseUtils';
+import SystemBus from '../entities/SystemBus';
+import Scripts from '../scripts/Scripts';
+import ScriptUtils from '../scripts/ScriptUtils';
 
 	/**
 	 * @hidden
@@ -230,4 +230,4 @@ var ScriptUtils = require('../scripts/ScriptUtils');
 		}
 	};
 
-	module.exports = ScriptComponentHandler;
+	export default ScriptComponentHandler;

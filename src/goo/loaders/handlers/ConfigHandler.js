@@ -1,5 +1,5 @@
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -166,4 +166,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		return ConfigHandler.handlerClasses[type] = klass;
 	};
 
-	module.exports = ConfigHandler;
+	export default ConfigHandler;

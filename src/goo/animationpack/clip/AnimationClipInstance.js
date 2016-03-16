@@ -1,4 +1,4 @@
-var World = require('../../entities/World');
+import World from '../../entities/World';
 
 
 
@@ -64,4 +64,4 @@ var World = require('../../entities/World');
 		return cloned;
 	};
 
-	module.exports = AnimationClipInstance;
+	export default AnimationClipInstance;

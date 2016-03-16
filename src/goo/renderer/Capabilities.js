@@ -157,4 +157,4 @@ Capabilities.getCapabilitiesString = function () {
 	return caps.join('\n');
 };
 
-module.exports = Capabilities;
+export default Capabilities;

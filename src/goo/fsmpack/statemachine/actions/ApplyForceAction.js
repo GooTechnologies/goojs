@@ -1,5 +1,5 @@
-var Action = require('./Action');
-var Vector3 = require('../../../math/Vector3');
+import Action from './Action';
+import Vector3 from '../../../math/Vector3';
 
 	function ApplyForceAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -59,4 +59,4 @@ var Vector3 = require('../../../math/Vector3');
 		SystemBus.removeListener('goo.physics.substep', this.substepListener);
 	};
 
-	module.exports = ApplyForceAction;
+	export default ApplyForceAction;

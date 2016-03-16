@@ -1,4 +1,4 @@
-var Source = require('../../animationpack/blendtree/Source');
+import Source from '../../animationpack/blendtree/Source';
 
 
 	/**
@@ -51,4 +51,4 @@ var Source = require('../../animationpack/blendtree/Source');
 		return cloned;
 	};
 
-	module.exports = FrozenClipSource;
+	export default FrozenClipSource;

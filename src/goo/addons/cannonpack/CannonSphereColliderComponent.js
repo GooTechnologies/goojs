@@ -1,4 +1,4 @@
-var Component = require('../../entities/components/Component');
+import Component from '../../entities/components/Component';
 
 
 
@@ -21,4 +21,4 @@ var Component = require('../../entities/components/Component');
 	CannonSphereColliderComponent.prototype = Object.create(Component.prototype);
 	CannonSphereColliderComponent.constructor = CannonSphereColliderComponent;
 
-	module.exports = CannonSphereColliderComponent;
+	export default CannonSphereColliderComponent;

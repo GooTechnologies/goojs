@@ -1,5 +1,5 @@
-var System = require('../../entities/systems/System');
-var World = require('../../entities/World');
+import System from '../../entities/systems/System';
+import World from '../../entities/World';
 
 
 
@@ -48,4 +48,4 @@ var World = require('../../entities/World');
 		}
 	};
 
-	module.exports = AnimationSystem;
+	export default AnimationSystem;

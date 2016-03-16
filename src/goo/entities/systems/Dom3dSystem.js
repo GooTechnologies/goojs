@@ -1,13 +1,13 @@
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
-var Renderer = require('../../renderer/Renderer');
-var Material = require('../../renderer/Material');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
-var Quad = require('../../shapes/Quad');
-var Matrix4x4 = require('../../math/Matrix4x4');
-var Vector3 = require('../../math/Vector3');
-var Ray = require('../../math/Ray');
-var MathUtils = require('../../math/MathUtils');
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
+import Renderer from '../../renderer/Renderer';
+import Material from '../../renderer/Material';
+import ShaderLib from '../../renderer/shaders/ShaderLib';
+import Quad from '../../shapes/Quad';
+import Matrix4x4 from '../../math/Matrix4x4';
+import Vector3 from '../../math/Vector3';
+import Ray from '../../math/Ray';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -281,4 +281,4 @@ var MathUtils = require('../../math/MathUtils');
 		}
 	};
 
-	module.exports = Dom3dSystem;
+	export default Dom3dSystem;

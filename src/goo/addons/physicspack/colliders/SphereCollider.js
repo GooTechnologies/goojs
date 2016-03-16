@@ -1,4 +1,4 @@
-var Collider = require('../../../addons/physicspack/colliders/Collider');
+import Collider from '../../../addons/physicspack/colliders/Collider';
 
 
 
@@ -43,4 +43,4 @@ var Collider = require('../../../addons/physicspack/colliders/Collider');
 		});
 	};
 
-	module.exports = SphereCollider;
+	export default SphereCollider;

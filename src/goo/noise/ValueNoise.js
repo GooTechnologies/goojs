@@ -1,5 +1,5 @@
 /*jshint bitwise: false */
-var Noise = require('./Noise');
+import Noise from './Noise';
 
 
 
@@ -157,4 +157,4 @@ ValueNoise.evaluate4d = function (px, py, pz, pw, scale) {
 	return result;
 };
 
-module.exports = ValueNoise;
+export default ValueNoise;

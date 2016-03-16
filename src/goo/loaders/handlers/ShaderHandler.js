@@ -1,10 +1,10 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var Material = require('../../renderer/Material');
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
-var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
-var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import Material from '../../renderer/Material';
+import MeshData from '../../renderer/MeshData';
+import Shader from '../../renderer/Shader';
+import ShaderBuilder from '../../renderer/shaders/ShaderBuilder';
+import RSVP from '../../util/rsvp';
+import PromiseUtils from '../../util/PromiseUtils';
 
 
 
@@ -101,4 +101,4 @@ var PromiseUtils = require('../../util/PromiseUtils');
 		}.bind(this));
 	};
 
-	module.exports = ShaderHandler;
+	export default ShaderHandler;

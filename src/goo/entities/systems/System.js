@@ -140,4 +140,4 @@
 		this._activeEntities = [];
 	};
 
-	module.exports = System;
+	export default System;

@@ -1,7 +1,7 @@
-var Scripts = require('../scripts/Scripts');
-var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
-var PanCamControlScript = require('../scriptpack/PanCamScript');
-var ObjectUtils = require('../util/ObjectUtils');
+import Scripts from '../scripts/Scripts';
+import OrbitCamControlScript from '../scripts/OrbitCamControlScript';
+import PanCamControlScript from '../scriptpack/PanCamScript';
+import ObjectUtils from '../util/ObjectUtils';
 
 	function OrbitNPan() {
 		var orbitScript = Scripts.create(OrbitCamControlScript);
@@ -66,4 +66,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		parameters:	params
 	};
 
-module.exports = OrbitNPan;
+export default OrbitNPan;

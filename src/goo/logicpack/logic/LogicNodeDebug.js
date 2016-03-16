@@ -1,7 +1,7 @@
-var LogicLayer = require('./LogicLayer');
-var LogicNode = require('./LogicNode');
-var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface');
+import LogicLayer from './LogicLayer';
+import LogicNode from './LogicNode';
+import LogicNodes from './LogicNodes';
+import LogicInterface from './LogicInterface';
 
 /**
  * Logic node that writes output to the console.
@@ -31,4 +31,4 @@ LogicNodeDebug.inportFloat = LogicNodeDebug.logicInterface.addInputProperty('Flo
 
 LogicNodes.registerType('LogicNodeDebug', LogicNodeDebug);
 
-module.exports = LogicNodeDebug;
+export default LogicNodeDebug;

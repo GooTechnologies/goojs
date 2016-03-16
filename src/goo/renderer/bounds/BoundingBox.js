@@ -1,7 +1,7 @@
-var Vector3 = require('../../math/Vector3');
-var BoundingVolume = require('../../renderer/bounds/BoundingVolume');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
-var MathUtils = require('../../math/MathUtils');
+import Vector3 from '../../math/Vector3';
+import BoundingVolume from '../../renderer/bounds/BoundingVolume';
+import BoundingSphere from '../../renderer/bounds/BoundingSphere';
+import MathUtils from '../../math/MathUtils';
 
 
 
@@ -580,4 +580,4 @@ var MathUtils = require('../../math/MathUtils');
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 
-	module.exports = BoundingBox;
+	export default BoundingBox;

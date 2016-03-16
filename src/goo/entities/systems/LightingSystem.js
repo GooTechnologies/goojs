@@ -1,6 +1,6 @@
-var Capabilities = require('../../renderer/Capabilities');
-var System = require('../../entities/systems/System');
-var SystemBus = require('../../entities/SystemBus');
+import Capabilities from '../../renderer/Capabilities';
+import System from '../../entities/systems/System';
+import SystemBus from '../../entities/SystemBus';
 
 
 
@@ -76,4 +76,4 @@ var SystemBus = require('../../entities/SystemBus');
 		});
 	};
 
-	module.exports = LightingSystem;
+	export default LightingSystem;

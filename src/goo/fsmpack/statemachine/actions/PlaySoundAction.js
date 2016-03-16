@@ -1,5 +1,5 @@
-var Action = require('./Action');
-var PromiseUtil = require('./../../../util/PromiseUtil');
+import Action from './Action';
+import PromiseUtil from './../../../util/PromiseUtil';
 
 	function PlaySoundAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -55,4 +55,4 @@ var PromiseUtil = require('./../../../util/PromiseUtil');
 		}.bind(this));
 	};
 
-	module.exports = PlaySoundAction;
+	export default PlaySoundAction;

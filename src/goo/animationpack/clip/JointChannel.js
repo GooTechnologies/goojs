@@ -1,5 +1,5 @@
-var TransformChannel = require('../../animationpack/clip/TransformChannel');
-var JointData = require('../../animationpack/clip/JointData');
+import TransformChannel from '../../animationpack/clip/TransformChannel';
+import JointData from '../../animationpack/clip/JointData';
 
 
 
@@ -60,4 +60,4 @@ var JointData = require('../../animationpack/clip/JointData');
 		return rVal;
 	};
 
-	module.exports = JointChannel;
+	export default JointChannel;

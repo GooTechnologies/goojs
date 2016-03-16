@@ -1,7 +1,7 @@
-var Vector3 = require('./Vector3');
-var Matrix3 = require('./Matrix3');
-var Matrix4 = require('./Matrix4');
-var MathUtils = require('./MathUtils');
+import Vector3 from './Vector3';
+import Matrix3 from './Matrix3';
+import Matrix4 from './Matrix4';
+import MathUtils from './MathUtils';
 
 
 
@@ -322,4 +322,4 @@ var MathUtils = require('./MathUtils');
 		return clone;
 	};
 
-	module.exports = Transform;
+	export default Transform;

@@ -45,4 +45,4 @@ LogicNodes.getAllTypes = function () {
 	return out;
 };
 
-module.exports = LogicNodes;
+export default LogicNodes;

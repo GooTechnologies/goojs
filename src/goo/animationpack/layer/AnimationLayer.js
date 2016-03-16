@@ -1,10 +1,10 @@
-var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
-var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
-var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
-var SteadyState = require('../../animationpack/state/SteadyState');
-var LayerLerpBlender = require('../../animationpack/layer/LayerLerpBlender');
-var World = require('../../entities/World');
-var MathUtils = require('../../math/MathUtils');
+import FadeTransitionState from '../../animationpack/state/FadeTransitionState';
+import SyncFadeTransitionState from '../../animationpack/state/SyncFadeTransitionState';
+import FrozenTransitionState from '../../animationpack/state/FrozenTransitionState';
+import SteadyState from '../../animationpack/state/SteadyState';
+import LayerLerpBlender from '../../animationpack/layer/LayerLerpBlender';
+import World from '../../entities/World';
+import MathUtils from '../../math/MathUtils';
 
 	/**
 	 * Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
@@ -336,4 +336,4 @@ var MathUtils = require('../../math/MathUtils');
 		return cloned;
 	};
 
-	module.exports = AnimationLayer;
+	export default AnimationLayer;

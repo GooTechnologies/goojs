@@ -1,7 +1,7 @@
-var Component = require('../../entities/components/Component');
-var Vector3 = require('../../math/Vector3');
-var Camera = require('../../renderer/Camera');
-var SystemBus = require('../../entities/SystemBus');
+import Component from '../../entities/components/Component';
+import Vector3 from '../../math/Vector3';
+import Camera from '../../renderer/Camera';
+import SystemBus from '../../entities/SystemBus';
 
 
 
@@ -133,4 +133,4 @@ var SystemBus = require('../../entities/SystemBus');
 		}
 	};
 
-	module.exports = CameraComponent;
+	export default CameraComponent;

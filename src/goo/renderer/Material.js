@@ -1,5 +1,5 @@
-var Shader = require('../renderer/Shader');
-var ObjectUtils = require('../util/ObjectUtils');
+import Shader from '../renderer/Shader';
+import ObjectUtils from '../util/ObjectUtils';
 
 
 
@@ -356,4 +356,4 @@ var ObjectUtils = require('../util/ObjectUtils');
 		this.uniforms = {};
 	};
 
-	module.exports = Material;
+	export default Material;

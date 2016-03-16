@@ -13,4 +13,4 @@ Pass.prototype.updateSize = function (/* size, renderer */) {};
 
 Pass.prototype.invalidateHandles = function (/* renderer */) {};
 
-module.exports = Pass;
+export default Pass;

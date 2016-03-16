@@ -1,5 +1,5 @@
-var System = require('../../../entities/systems/System');
-var SystemBus = require('../../../entities/SystemBus');
+import System from '../../../entities/systems/System';
+import SystemBus from '../../../entities/SystemBus';
 
 
 
@@ -53,4 +53,4 @@ var SystemBus = require('../../../entities/SystemBus');
 		});
 	};
 
-	module.exports = ColliderSystem;
+	export default ColliderSystem;

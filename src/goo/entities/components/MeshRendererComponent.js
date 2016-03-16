@@ -1,5 +1,5 @@
-var Component = require('../../entities/components/Component');
-var Material = require('../../renderer/Material');
+import Component from '../../entities/components/Component';
+import Material from '../../renderer/Material';
 
 
 
@@ -166,4 +166,4 @@ var Material = require('../../renderer/Material');
 		}
 	};
 
-	module.exports = MeshRendererComponent;
+	export default MeshRendererComponent;

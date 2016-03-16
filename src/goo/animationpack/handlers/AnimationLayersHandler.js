@@ -1,10 +1,10 @@
-var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
-var AnimationLayer = require('../../animationpack/layer/AnimationLayer');
-var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
-var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
-var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
-var RSVP = require('../../util/rsvp');
-var ObjectUtils = require('../../util/ObjectUtils');
+import ConfigHandler from '../../loaders/handlers/ConfigHandler';
+import AnimationLayer from '../../animationpack/layer/AnimationLayer';
+import FadeTransitionState from '../../animationpack/state/FadeTransitionState';
+import SyncFadeTransitionState from '../../animationpack/state/SyncFadeTransitionState';
+import FrozenTransitionState from '../../animationpack/state/FrozenTransitionState';
+import RSVP from '../../util/rsvp';
+import ObjectUtils from '../../util/ObjectUtils';
 
 
 
@@ -122,4 +122,4 @@ var ObjectUtils = require('../../util/ObjectUtils');
 		});
 	};
 
-	module.exports = AnimationLayersHandler;
+	export default AnimationLayersHandler;
