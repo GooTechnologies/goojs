@@ -1,3 +1,17 @@
+v0.15.35 --- 2016-03-16
+
+### Additions
+  
+  + Added timeline autoStart property
+  + Use entity meta data as entity attributes
+
+### Fixes
+
+  * Made tween move action be additive again, when set to relative
+  * Pick action now works with html components again (also has touch support)
+  * Bugfixes for counter actions
+  * update gizmos just before rendering , to avoid glitches
+
 v0.15.34 --- 2016-03-14
 
 ### Additions
