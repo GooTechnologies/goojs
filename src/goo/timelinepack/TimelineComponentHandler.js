@@ -39,7 +39,6 @@ var TWEEN = require('../util/TWEEN');
 		rotationZ: ValueChannel.getRotationTweener.bind(null, 2)
 	};
 
-	//! AT: requires TWEEN
 	function getEasingFunction(easingString) {
 		if (!easingString) {
 			return TWEEN.Easing.Linear.None;
@@ -183,6 +182,8 @@ var TWEEN = require('../util/TWEEN');
 				component.duration = +config.duration;
 			}
 			component.loop = (config.loop.enabled === true);
+
+			component.autoStart = (config.autoStart !== undefined ? config.autoStart : true);
 
 			// remove existing channels in the component that are not mentioned in the config anymore
 			component.channels = component.channels.filter(function (channel) {

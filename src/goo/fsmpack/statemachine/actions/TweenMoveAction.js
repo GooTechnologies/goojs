@@ -9,6 +9,8 @@ var TWEEN = require('../../../util/TWEEN');
 
 		this.fromPos = new Vector3();
 		this.toPos = new Vector3();
+		this.deltaPos = new Vector3();
+		this.oldPos = new Vector3();
 		this.completed = false;
 	}
 
@@ -80,6 +82,7 @@ var TWEEN = require('../../../util/TWEEN');
 		this.fromPos.set(transformComponent.transform.translation);
 		this.toPos.setDirect(this.to[0], this.to[1], this.to[2]);
 		if (this.relative) {
+			this.oldPos.set(this.fromPos);
 			this.toPos.add(this.fromPos);
 		}
 
@@ -96,7 +99,14 @@ var TWEEN = require('../../../util/TWEEN');
 		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
 		var fT = this.easing(t);
 
-		transformComponent.transform.translation.set(this.fromPos).lerp(this.toPos, fT);
+		if (this.relative) {
+			this.deltaPos.set(this.fromPos).lerp(this.toPos, fT).sub(this.oldPos);
+			transformComponent.transform.translation.add(this.deltaPos);
+			this.oldPos.add(this.deltaPos);
+		} else {
+			transformComponent.transform.translation.set(this.fromPos).lerp(this.toPos, fT);
+		}
+
 		transformComponent.setUpdated();
 
 		if (t >= 1) {

@@ -248,10 +248,13 @@ var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
 			this._dirty = false;
 		}
 
-		this.activeGizmo.updateTransforms();
 	};
 
 	GizmoRenderSystem.prototype.render = function (renderer) {
+		if (this.activeGizmo) {
+			this.activeGizmo.updateTransforms();
+		}
+
 		renderer.checkResize(this.camera);
 		this._devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 

@@ -631,6 +631,7 @@ var Material = require('../renderer/Material');
 		evt.type = type;
 		this._eventTriggered[type] = evt.domEvent;
 		this._dispatchEvent(evt);
+		SystemBus.emit('goo.trigger.' + type, evt);
 	};
 
 

@@ -56,8 +56,8 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 	};
 
 	CompareCountersAction.prototype.compare = function (fsm) {
-		var value1 = fsm.getFsm().getVariable(this.name1);
-		var value2 = fsm.getFsm().getVariable(this.name2);
+		var value1 = +fsm.getFsm().getVariable(this.name1);
+		var value2 = +fsm.getFsm().getVariable(this.name2);
 
 		if (value1 === undefined || value2 === undefined) {
 			return;

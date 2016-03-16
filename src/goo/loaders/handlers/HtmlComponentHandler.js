@@ -67,7 +67,7 @@ var PromiseUtils = require('../../util/PromiseUtils');
 				domElement = document.createElement('div');
 				domElement.id = safeEntityId;
 				domElement.className = 'goo-entity';
-				domElement.addEventListener('mousedown', function (domEvent) {
+				var mouseListener = function (domEvent) {
 					var gooRunner = entity._world.gooRunner;
 					var evt = {
 						entity: entity,
@@ -76,36 +76,36 @@ var PromiseUtils = require('../../util/PromiseUtils');
 						y: domEvent.pageY,
 						domEvent: domEvent,
 						id: entity.id,
-						type: 'mousedown'
+						type: domEvent.type
 					};
-					gooRunner.triggerEvent('mousedown', evt);
-				});
-				domElement.addEventListener('mouseup', function (domEvent) {
+					gooRunner.triggerEvent(domEvent.type, evt);
+				};
+				domElement.addEventListener('mousedown', mouseListener);
+				domElement.addEventListener('mouseup', mouseListener);
+				domElement.addEventListener('click', mouseListener);
+
+				var touchListener = function (domEvent) {
 					var gooRunner = entity._world.gooRunner;
+					var domTarget = gooRunner.renderer.domElement;
+
+					var x = domEvent.changedTouches[0].pageX - domTarget.getBoundingClientRect().left;
+					var y = domEvent.changedTouches[0].pageY - domTarget.getBoundingClientRect().top;
+
 					var evt = {
 						entity: entity,
 						depth: 0,
-						x: domEvent.pageX,
-						y: domEvent.pageY,
+						x: x,
+						y: y,
 						domEvent: domEvent,
 						id: entity.id,
-						type: 'mouseup'
+						type: domEvent.type
 					};
-					gooRunner.triggerEvent('mouseup', evt);
-				});
-				domElement.addEventListener('click', function (domEvent) {
-					var gooRunner = entity._world.gooRunner;
-					var evt = {
-						entity: entity,
-						depth: 0,
-						x: domEvent.pageX,
-						y: domEvent.pageY,
-						domEvent: domEvent,
-						id: entity.id,
-						type: 'click'
-					};
-					gooRunner.triggerEvent('click', evt);
-				});
+					gooRunner.triggerEvent(domEvent.type, evt);
+				};
+				domElement.addEventListener('touchstart', touchListener);
+				domElement.addEventListener('touchmove', touchListener);
+				domElement.addEventListener('touchend', touchListener);
+
 				component.domElement = domElement;
 				domElement.style.position = 'absolute';
 				domElement.style.top = 0;
