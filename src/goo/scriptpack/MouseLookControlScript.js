@@ -11,8 +11,12 @@ define([
 ) {
 	'use strict';
 
+	var allButtons = ['Any', 'Left', 'Middle', 'Right', 'None'];
+
 	function MouseLookControlScript() {
 		var buttonPressed = false;
+		var hasPointerLock = false;
+		var hasPointerLockSupport = false;
 		var lastX = 0, lastY = 0, x = 0, y = 0;
 		var angles;
 		var button;
@@ -22,7 +26,7 @@ define([
 
 		function mouseDown(e) {
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
-				if (button === -1 || e.button === button) {
+				if (button === -1 || e.button === button || (button === 3 && !hasPointerLockSupport)) {
 					buttonPressed = true;
 					lastX = x = e.clientX;
 					lastY = y = e.clientY;
@@ -32,61 +36,78 @@ define([
 
 		// Used when button is None.
 		// Helps attaching the lock if we failed in .setup().
-		function mouseDown2() {
-			if (!document.pointerLockElement) {
+		function mouseDownToRequestPointerLock() {
+			if (!hasPointerLock) {
 				GameUtils.requestPointerLock();
 			}
 		}
 
 		function mouseMove(e) {
+			if (hasPointerLock) {
+				return;
+			}
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
-				if (buttonPressed) {
-					if (e.movementX !== undefined) {
-						x += e.movementX;
-						y += e.movementY;
-					}	else {
-						x = e.clientX;
-						y = e.clientY;
-					}
+				if (hasPointerLock && e.movementX !== undefined) {
+					x += e.movementX;
+					y += e.movementY;
+				} else if (buttonPressed) {
+					x = e.clientX;
+					y = e.clientY;
 				}
 			}
 		}
+
+		function documentMouseMove(e) {
+			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
+				if (hasPointerLock && e.movementX !== undefined) {
+					x += e.movementX;
+					y += e.movementY;
+				}
+			}
+		}
+
 		function mouseUp() {
 			buttonPressed = false;
 		}
+
+		function documentMouseUp() {
+			if (hasPointerLock) {
+				buttonPressed = false;
+			}
+		}
+
 		function pointerLockChange() {
-			buttonPressed = !!document.pointerLockElement;
+			hasPointerLock = !!document.pointerLockElement;
 
 			if (document.pointerLockElement) {
 				// We are attached! No mousedown listener needed any more.
-				_environment.domElement.removeEventListener('mousedown', mouseDown2);
+				_environment.domElement.removeEventListener('mousedown', mouseDownToRequestPointerLock);
+				hasPointerLockSupport = true;
 			} else {
 				// Not attached.
-				_environment.domElement.addEventListener('mousedown', mouseDown2);
+				_environment.domElement.addEventListener('mousedown', mouseDownToRequestPointerLock);
 			}
 		}
 
 		function setup(parameters, environment) {
 			_environment = environment;
 			_parameters = parameters;
-			button = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.button) - 1;
+			button = allButtons.indexOf(parameters.button) - 1;
 			if (button < -1) {
 				button = -1;
 			}
 			var domElement = environment.domElement;
 			if (button === 3) {
 				document.addEventListener('pointerlockchange', pointerLockChange);
-				document.addEventListener('mousemove', mouseMove);
-				domElement.addEventListener('mousedown', mouseDown2);
-
-				// attempt to request a pointer lock; will succeed only if fullscreen is enabled.
 				GameUtils.requestPointerLock();
-			} else {
-				domElement.addEventListener('mousedown', mouseDown);
-				domElement.addEventListener('mouseup', mouseUp);
-				domElement.addEventListener('mouseleave', mouseUp);
-				domElement.addEventListener('mousemove', mouseMove);
+				document.addEventListener('mousemove', documentMouseMove);
+				document.addEventListener('mousemove', documentMouseUp);
+				domElement.addEventListener('mousedown', mouseDownToRequestPointerLock);
 			}
+
+			domElement.addEventListener('mousemove', mouseMove);
+			domElement.addEventListener('mousedown', mouseDown);
+			domElement.addEventListener('mouseup', mouseUp);
 
 			angles = new Vector3();
 			var rotation = environment.entity.transformComponent.transform.rotation;
@@ -128,16 +149,13 @@ define([
 			var domElement = environment.domElement;
 			if (button === 3) {
 				GameUtils.exitPointerLock();
-
-				document.removeEventListener('mousemove', mouseMove);
-				domElement.removeEventListener('mousedown', mouseDown2);
+				document.removeEventListener('mousemove', documentMouseMove);
 				document.removeEventListener('pointerlockchange', pointerLockChange);
-			} else {
-				domElement.removeEventListener('mousemove', mouseMove);
-				domElement.removeEventListener('mousedown', mouseDown);
-				domElement.removeEventListener('mouseup', mouseUp);
-				domElement.removeEventListener('mouseleave', mouseUp);
+				domElement.removeEventListener('mousedown', mouseDownToRequestPointerLock);
 			}
+			domElement.removeEventListener('mousemove', mouseMove);
+			domElement.removeEventListener('mousedown', mouseDown);
+			domElement.removeEventListener('mouseup', mouseUp);
 		}
 
 		return {
@@ -165,7 +183,7 @@ define([
 				type: 'string',
 				control: 'select',
 				'default': 'Left',
-				options: ['Any', 'Left', 'Middle', 'Right', 'None']
+				options: allButtons
 			},
 			{
 				key: 'speed',
