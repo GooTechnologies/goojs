@@ -1,4 +1,10 @@
 	describe('TextureHandler', function () {
+
+		var GooRunner = require('src/goo/entities/GooRunner');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Texture = require('src/goo/renderer/Texture');
+		var Configs = require('test/unit/loaders/Configs');
+
 		var gooRunner, loader;
 
 		beforeEach(function () {

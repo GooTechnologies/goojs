@@ -1,3 +1,5 @@
+var ScriptHandler = require('src/goo/scriptpack/ScriptHandler');
+
 	describe('ScriptHandler', function () {
 		describe('validateParameter', function () {
 			var validateParameter = ScriptHandler.validateParameter;

@@ -1,4 +1,8 @@
 	describe('CameraComponentHandler', function () {
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var World = require('src/goo/entities/World');
+		var Configs = require('test/unit/loaders/Configs');
+
 		var loader;
 
 		beforeEach(function () {

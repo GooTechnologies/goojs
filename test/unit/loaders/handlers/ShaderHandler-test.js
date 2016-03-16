@@ -1,4 +1,9 @@
 	describe('ShaderHandler', function () {
+		var GooRunner = require('src/goo/entities/GooRunner');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Shader = require('src/goo/renderer/Shader');
+		var Configs = require('test/unit/loaders/Configs');
+
 		var gooRunner, loader;
 
 		beforeEach(function () {

@@ -17,8 +17,9 @@ module.exports = function (config) {
 
 	files: [
 		'lib/cannon/cannon.min.js',
-		{ pattern: 'test/unit/**/*.png', include: false },
-		{ pattern: 'test/unit/**/particlepack/**/*-test.js' }
+		{ pattern: 'test/unit/**/*.mp4', included: false },
+		{ pattern: 'test/unit/**/*.png', included: false },
+		{ pattern: 'test/unit/**/*-test.js' }
 	],
 
 	// list of files to exclude

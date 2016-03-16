@@ -7,7 +7,9 @@
 		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
 		var Configs = require('test/unit/loaders/Configs');
 
+		require('src/goo/animationpack/handlers/AnimationHandlers');
 		require('src/goo/loaders/handlers/MeshDataComponentHandler');
+		require('src/goo/loaders/handlers/MeshDataHandler');
 
 		var loader;
 

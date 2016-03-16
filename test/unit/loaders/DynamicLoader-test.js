@@ -1,4 +1,14 @@
 	describe('DynamicLoader', function () {
+
+		var World = require('src/goo/entities/World');
+		var TransformSystem = require('src/goo/entities/systems/TransformSystem');
+		var CameraSystem = require('src/goo/entities/systems/CameraSystem');
+		var ParticlesSystem = require('src/goo/entities/systems/ParticlesSystem');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Configs = require('test/unit/loaders/Configs');
+
+		require('src/goo/loaders/handlers/EntityHandler');
+
 		var loader;
 
 		var entityRef = 'aaaabbbbaaaabbbbaaaabbbbaaaabbbb.entity';

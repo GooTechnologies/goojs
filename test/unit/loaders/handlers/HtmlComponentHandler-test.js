@@ -1,4 +1,12 @@
 	describe('HtmlComponentHandler', function () {
+
+		var World = require('src/goo/entities/World');
+		var HtmlComponent = require('src/goo/entities/components/HtmlComponent');
+		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+		var Configs = require('test/unit/loaders/Configs');
+
+		require('src/goo/loaders/handlers/HtmlComponentHandler');
+
 		var loader;
 
 		beforeEach(function () {
