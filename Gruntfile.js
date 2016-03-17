@@ -139,7 +139,15 @@ module.exports = function (grunt) {
 				browserDisconnectTimeout: 5000,
 				browserDisconnectTolerance: 1,
 				browserNoActivityTimeout: 60000,
-				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
+				browsers: ['Chrome']
+			},
+			coverage: {
+				configFile: 'test/unit/karma-coverage.conf.js',
+				singleRun: true,
+				browserDisconnectTimeout: 5000,
+				browserDisconnectTolerance: 1,
+				browserNoActivityTimeout: 60000,
+				browsers: ['Chrome']
 			}
 		},
 
@@ -198,7 +206,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
 	grunt.registerTask('tern',		 ['shell:tern']);
 	grunt.registerTask('unittest',	 ['karma:unit']);
-	grunt.registerTask('coverage',	 ['unittest']);
+	grunt.registerTask('coverage',	 ['karma:coverage']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
