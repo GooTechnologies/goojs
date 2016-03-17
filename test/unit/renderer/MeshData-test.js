@@ -25,6 +25,25 @@ define([
 			expect(normalsMD.indexCount).toEqual(nNormalsPerFace * nFaces * nVerticesPerLine);
 		});
 
+		it('can rebuild data with other counts', function () {
+			var box = new Box();
+
+			box.rebuildData(3, 3);
+
+			expect(box.vertexCount).toEqual(3);
+			expect(box.indexCount).toEqual(3);
+		});
+
+		it('can rebuild data with an indexCount of 0 and saveOldData', function () {
+			var box = new Box();
+			var oldVertexCount = box.vertexCount;
+
+			box.rebuildData(oldVertexCount, 0, true);
+
+			expect(box.vertexCount).toEqual(oldVertexCount);
+			expect(box.indexCount).toEqual(0);
+		});
+
 		it('can translate vertices', function () {
 			var box = new Quad();
 
