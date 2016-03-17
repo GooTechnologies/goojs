@@ -11,7 +11,7 @@ define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
+	'goo/renderer/light/DirectionalLight',
 	'goo/entities/EntitySelection',
 	'lib/purl',
 	'lib/RNG',
@@ -34,7 +34,7 @@ define([
 	OrbitCamControlScript,
 	ScriptComponent,
 	Vector3,
-	PointLight,
+	DirectionalLight,
 	EntitySelection,
 	purl,
 	RNG,
@@ -253,9 +253,10 @@ define([
 	 */
 	V.addLights = function () {
 		var world = V.goo.world;
-		world.createEntity(new PointLight(), [ 100, 100, 100]).addToWorld();
-		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
-		world.createEntity(new PointLight(), [-100, 100, -100]).addToWorld();
+		var dir1 = world.createEntity(new DirectionalLight(), [ 100, 100, 100]).addToWorld();
+		dir1.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+		var dir2 = world.createEntity(new DirectionalLight(), [-100, 100, -100]).addToWorld();
+		dir2.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 	};
 
 	/**

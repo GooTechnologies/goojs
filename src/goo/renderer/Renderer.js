@@ -1557,7 +1557,12 @@ define([
 			var texture = material.getTexture(textureSlot.mapping);
 
 			if (texture === undefined) {
-				continue;
+				if (textureSlot.format === 'sampler2D') {
+					texture = TextureCreator.DEFAULT_TEXTURE_2D;
+				} else if (textureSlot.format === 'samplerCube') {
+					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+				}
+				// continue;
 			}
 
 			var textureList = texture;

@@ -13,6 +13,7 @@
 		var path = root + 'visual-test/lib';
 		console.log('Configuring require to load visual-test modules from', path);
 		require.config({
+			waitSeconds: 100,
 			paths: {
 				'lib': path
 			}
