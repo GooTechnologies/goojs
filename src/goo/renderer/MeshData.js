@@ -112,7 +112,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 					savedAttributes[key] = view;
 				}
 			}
-			if (this.indexData) {
+			if (indexCount > 0 && this.indexData) {
 				savedIndices = this.indexData.data;
 			}
 		}
@@ -131,7 +131,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 				}
 			}
 
-			if (savedIndices) {
+			if (indexCount > 0 && savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
 		}
