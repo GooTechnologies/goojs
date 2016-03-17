@@ -1,7 +1,10 @@
+var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+var World = require('src/goo/entities/World');
+var Configs = require('test/unit/loaders/Configs');
+var CameraComponent = require('src/goo/entities/components/CameraComponent');
+var Camera = require('src/goo/renderer/Camera');
+
 	describe('CameraComponentHandler', function () {
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var World = require('src/goo/entities/World');
-		var Configs = require('test/unit/loaders/Configs');
 
 		var loader;
 

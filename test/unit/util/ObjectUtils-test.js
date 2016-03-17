@@ -1,3 +1,6 @@
+var ObjectUtils = require('src/goo/util/ObjectUtils');
+var CustomMatchers = require('test/unit/CustomMatchers');
+
 	describe('ObjectUtils', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
@@ -170,13 +173,15 @@
 				expect(clone(original)).toBeCloned(original);
 			});
 
-			it('clones html entities', function () {
-				var original = document.createElement('div');
-				original.classList.add('asd');
-				var cloned = clone(original);
+			if (typeof(module) === 'undefined') {
+				it('clones dom elements', function () {
+					var original = document.createElement('div');
+					original.classList.add('asd');
+					var cloned = clone(original);
 
-				expect(cloned).not.toBe(original);
-				expect(cloned.classList.contains('asd')).toBeTruthy();
-			});
+					expect(cloned).not.toBe(original);
+					expect(cloned.classList.contains('asd')).toBeTruthy();
+				});
+			}
 		});
 	});

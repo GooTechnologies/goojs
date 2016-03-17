@@ -1,8 +1,9 @@
-	describe('PosteffectsHandler', function () {
+var Configs = require('test/unit/loaders/Configs');
+var GooRunner = require('src/goo/entities/GooRunner');
+var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+require('src/goo/passpack/PosteffectsHandler');
 
-		var GooRunner = require('src/goo/entities/GooRunner');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		require('src/goo/passpack/PosteffectsHandler');
+	describe('PosteffectsHandler', function () {
 
 		var gooRunner, loader;
 
@@ -18,7 +19,9 @@
 		});
 
 		afterEach(function () {
-			gooRunner.clear();
+			if (gooRunner) {
+				gooRunner.clear();
+			}
 		});
 
 		it('loads a post effect', function (done) {

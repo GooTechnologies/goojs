@@ -1,4 +1,10 @@
+var EntitySelection = require('src/goo/entities/EntitySelection');
+var World = require('src/goo/entities/World');
+var TransformComponent = require('src/goo/entities/components/TransformComponent');
+
 	describe('EntitySelection', function () {
+		var world;
+
 		function someEntity() {
 			return world.createEntity();
 		}
@@ -10,8 +16,6 @@
 			}
 			return entities;
 		}
-
-		var world;
 
 		beforeEach(function () {
 			world = new World();

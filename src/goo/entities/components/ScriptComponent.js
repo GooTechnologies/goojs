@@ -1,9 +1,7 @@
 var Component = require('../../entities/components/Component');
 var SystemBus = require('../../entities/SystemBus');
-var Scripts = require('../../scripts/Scripts');
 var ObjectUtils = require('../../util/ObjectUtils');
-
-
+var gooClasses = typeof window !== 'undefined' ? window.goo : {};
 
 	/**
 	 * Contains scripts to be executed each frame when set on an active entity.
@@ -62,7 +60,6 @@ var ObjectUtils = require('../../util/ObjectUtils');
 			entity: entity,
 			entityData: {}
 		});
-
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (!script.context) {
@@ -76,7 +73,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 
 				if (script.setup && script.enabled) {
 					try {
-						script.setup(script.parameters, script.context, window.goo);
+						script.setup(script.parameters, script.context, gooClasses);
 					} catch (e) {
 						this._handleError(script, e, 'setup');
 					}
@@ -110,7 +107,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 				}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.context, window.goo);
+					script.update(script.parameters, script.context, gooClasses);
 				} catch (e) {
 					this._handleError(script, e, 'update');
 				}
@@ -132,7 +129,7 @@ var ObjectUtils = require('../../util/ObjectUtils');
 						script.enabled)
 				) {
 					try {
-						script.cleanup(script.parameters, script.context, window.goo);
+						script.cleanup(script.parameters, script.context, gooClasses);
 					} catch (e) {
 						this._handleError(script, e, 'cleanup');
 					}

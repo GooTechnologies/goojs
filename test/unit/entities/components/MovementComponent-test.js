@@ -1,4 +1,8 @@
 describe('MovementComponent', function () {
+
+	var MovementComponent = require('src/goo/entities/components/MovementComponent');
+	var Vector3 = require('src/goo/math/Vector3');
+
 	describe('Test velocity deltas', function () {
 		var spatialMovementComponent;
 

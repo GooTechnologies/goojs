@@ -1,3 +1,5 @@
+var EventTarget = require('src/goo/util/EventTarget');
+
 	function Test() {
 		EventTarget.apply(this, arguments);
 	}

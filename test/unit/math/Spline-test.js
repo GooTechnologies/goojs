@@ -1,3 +1,9 @@
+var Spline = require('../../../src/goo/math/splines/Spline');
+var Vector2 = require('../../../src/goo/math/Vector2');
+var Vector3 = require('../../../src/goo/math/Vector3');
+var Vector4 = require('../../../src/goo/math/Vector4');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 	describe('Spline', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

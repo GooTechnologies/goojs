@@ -16,7 +16,6 @@ var MeshRendererComponent = require('./components/MeshRendererComponent');
 var CameraComponent = require('./components/CameraComponent');
 var LightComponent = require('./components/LightComponent');
 var ScriptComponent = require('./components/ScriptComponent');
-var SoundComponent = require('./components/SoundComponent');
 var GameUtils = require('../util/GameUtils');
 var Logo = require('../util/Logo');
 var SystemBus = require('./SystemBus');

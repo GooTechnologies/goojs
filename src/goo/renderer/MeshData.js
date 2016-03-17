@@ -6,12 +6,6 @@ var Vector3 = require('../math/Vector3');
 var Vector4 = require('../math/Vector4');
 var ObjectUtils = require('../util/ObjectUtils');
 
-
-
-
-	//! AT: why this?
-	var Uint8ClampedArray = window.Uint8ClampedArray;
-
 	/**
 	 * Stores all buffers for geometric data and similar attributes
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes

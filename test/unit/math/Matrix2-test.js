@@ -1,3 +1,6 @@
+var Matrix2 = require('../../../src/goo/math/Matrix2');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 	describe('Matrix2', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

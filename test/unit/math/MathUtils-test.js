@@ -1,3 +1,7 @@
+var MathUtils = require('src/goo/math/MathUtils');
+var Vector3 = require('src/goo/math/Vector3');
+var Vector2 = require('src/goo/math/Vector2');
+
 	describe('MathUtils', function () {
 		it('can convert to radians from degrees', function () {
 			expect(MathUtils.radFromDeg(90)).toEqual(Math.PI * 0.5);

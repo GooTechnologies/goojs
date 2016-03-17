@@ -4,6 +4,9 @@
   "author": "Goo Technologies AB <info@gootechnologies.com>",
   "description": "Goo Engine - the WebGL graphics engine",
   "homepage": "http://goocreate.com/",
+  "scripts": {
+    "nodetest": "NODE_PATH=. ./node_modules/jasmine-node/bin/jasmine-node --matchAll test/unit/{animationpack,entities,math,noise,particles,picking,quadpack,scripts,shapes,timelinepack}/*.js test/unit/{addons,animationpack,debugpack,entities,fsmpack}/**/*.js"
+  },
   "licenses": [
     {
       "type": "MIT",
