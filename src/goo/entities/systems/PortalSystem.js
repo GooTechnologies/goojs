@@ -66,8 +66,11 @@ define([
 		if (this.renderSystem.composers.length > 0) {
 			for (var i = 0; i < this.renderSystem.composers.length; i++) {
 				var composer = this.renderSystem.composers[i];
+				// var outpass = composer.passes[composer.passes.length - 1];
 				composer.render(renderer, this.renderSystem.currentTpf, camera, this.renderSystem.lights, null, true);
+				// composer.writeBuffer = writeBuffer;
 			}
+			// renderer.render(this.renderList, camera, this.renderSystem.lights, target, true, overrideMaterial);
 		} else {
 			renderer.render(this.renderList, camera, this.renderSystem.lights, target, true, overrideMaterial);
 		}
