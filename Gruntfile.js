@@ -2,7 +2,6 @@ var path = require('path');
 var webpack = require('webpack');
 var fs = require('fs');
 var toc = require('./tools/table-of-contents');
-var outWatch = require('./tools/build-watch.js');
 
 module.exports = function (grunt) {
 	grunt.initConfig({
@@ -216,8 +215,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 
-	grunt.registerTask('fast-watch', ['manual-watch', 'keepalive']);
-
 	grunt.registerTask('init-git', function () {
 		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
 		fs.chmodSync('.git/hooks/pre-commit', '777');
@@ -228,10 +225,6 @@ module.exports = function (grunt) {
 			this.data.path,
 			this.data.title
 		);
-	});
-
-	grunt.registerTask('manual-watch', function () {
-		outWatch.run();
 	});
 
 	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'generate-toc', 'copy']);
