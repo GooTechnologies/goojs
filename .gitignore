@@ -2,6 +2,7 @@
 node_modules/
 .idea
 
+out-tern/
 out-doc/
 src-preprocessed/
 
