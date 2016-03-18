@@ -1,8 +1,8 @@
 
-	describe('Pool', function () {
+		import Pool from 'src/goo/addons/physicspack/util/Pool';
+		import Vector3 from 'src/goo/math/Vector3';
 
-		var Pool = require('src/goo/addons/physicspack/util/Pool');
-		var Vector3 = require('src/goo/math/Vector3');
+	describe('Pool', function () {
 
 		function createPool() {
 			return new Pool({

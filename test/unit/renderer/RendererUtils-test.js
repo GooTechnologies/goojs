@@ -1,3 +1,6 @@
+import RendererUtils from 'src/goo/renderer/RendererUtils';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('RendererUtils', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

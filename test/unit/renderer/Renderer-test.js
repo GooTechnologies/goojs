@@ -1,3 +1,6 @@
+import RendererRecord from 'src/goo/renderer/RendererRecord';
+import Renderer from 'src/goo/renderer/Renderer';
+
 	describe('Renderer', function () {
 		describe('findOrCacheMaterialShader', function () {
 			var renderer;

@@ -1,3 +1,9 @@
+import Camera from 'src/goo/renderer/Camera';
+import Vector3 from 'src/goo/math/Vector3';
+import BoundingSphere from 'src/goo/renderer/bounds/BoundingSphere';
+import BoundingBox from 'src/goo/renderer/bounds/BoundingBox';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('BoundingSphere', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

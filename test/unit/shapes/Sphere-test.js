@@ -1,4 +1,4 @@
-var Sphere = require('src/goo/shapes/Sphere');
+import Sphere from 'src/goo/shapes/Sphere';
 
 	describe('Sphere', function () {
 		var a = new Sphere(8, 4);

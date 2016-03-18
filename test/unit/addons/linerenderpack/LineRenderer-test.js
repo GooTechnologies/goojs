@@ -1,8 +1,8 @@
-describe('LineRenderer', function () {
+import Vector3 from '../../../../src/goo/math/Vector3';
+import World from '../../../../src/goo/entities/World';
+import LineRenderer from '../../../../src/goo/addons/linerenderpack/LineRenderer';
 
-	var Vector3 = require('../../../../src/goo/math/Vector3');
-	var World = require('../../../../src/goo/entities/World');
-	var LineRenderer = require('../../../../src/goo/addons/linerenderpack/LineRenderer');
+describe('LineRenderer', function () {
 
 	var world;
 	var lineRenderer;

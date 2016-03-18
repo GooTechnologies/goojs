@@ -1,3 +1,7 @@
+import Vector3 from 'src/goo/math/Vector3';
+import SpotLight from 'src/goo/renderer/light/SpotLight';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('SpotLight', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

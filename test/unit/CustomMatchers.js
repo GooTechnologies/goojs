@@ -1,5 +1,5 @@
-var Matrix = require('../../src/goo/math/Matrix');
-var MathUtils = require('../../src/goo/math/MathUtils');
+import Matrix from '../../src/goo/math/Matrix';
+import MathUtils from '../../src/goo/math/MathUtils';
 
 function CustomMatchers(){}
 

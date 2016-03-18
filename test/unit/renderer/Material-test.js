@@ -1,3 +1,6 @@
+import Material from 'src/goo/renderer/Material';
+import ShaderLib from 'src/goo/renderer/shaders/ShaderLib';
+
 	describe('Material', function () {
 		describe('constructor', function () {
 			it('constructs a material given no parameters', function () {

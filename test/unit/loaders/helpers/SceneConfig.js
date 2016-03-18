@@ -1,4 +1,4 @@
-var _ = require('src/goo/util/ObjectUtil');
+import ObjectUtil from 'src/goo/util/ObjectUtil';
 
 module.exports = {
 		scene: function (complex) {
@@ -53,7 +53,7 @@ module.exports = {
 		},
 		environment: function () {
 			var config = this.gooObject('environment', 'Dummy');
-			_.extend(config, {
+			ObjectUtil.extend(config, {
 				backgroundColor: [1, 1, 1],
 				globalAmbient: [0.5, 0.5, 0.5],
 				skyboxRef: this.skybox().id,

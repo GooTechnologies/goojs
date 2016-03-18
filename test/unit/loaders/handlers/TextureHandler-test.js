@@ -1,9 +1,9 @@
+		import GooRunner from 'src/goo/entities/GooRunner';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Texture from 'src/goo/renderer/Texture';
+		import Configs from 'test/unit/loaders/Configs';
 	describe('TextureHandler', function () {
 
-		var GooRunner = require('src/goo/entities/GooRunner');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Texture = require('src/goo/renderer/Texture');
-		var Configs = require('test/unit/loaders/Configs');
 
 		var gooRunner, loader;
 

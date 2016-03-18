@@ -1,9 +1,9 @@
+		import World from 'src/goo/entities/World';
+		import HtmlComponent from 'src/goo/entities/components/HtmlComponent';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Configs from 'test/unit/loaders/Configs';
 	describe('HtmlComponentHandler', function () {
 
-		var World = require('src/goo/entities/World');
-		var HtmlComponent = require('src/goo/entities/components/HtmlComponent');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Configs = require('test/unit/loaders/Configs');
 
 		require('src/goo/loaders/handlers/HtmlComponentHandler');
 

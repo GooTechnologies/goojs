@@ -1,7 +1,8 @@
+import ConstantCurve from 'src/goo/addons/particlepack/curves/ConstantCurve';
+import LerpCurve from 'src/goo/addons/particlepack/curves/LerpCurve';
+
 	describe('LerpCurve', function () {
 
-		var ConstantCurve = require('src/goo/addons/particlepack/curves/ConstantCurve');
-		var LerpCurve = require('src/goo/addons/particlepack/curves/LerpCurve');
 
 		it('.getValueAt', function () {
 			var curve = new LerpCurve({

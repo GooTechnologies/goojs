@@ -1,5 +1,5 @@
-var WorldFittedTerrainScript = require('src/goo/scriptpack/WorldFittedTerrainScript');
-var Vector3 = require('src/goo/math/Vector3');
+import WorldFittedTerrainScript from 'src/goo/scriptpack/WorldFittedTerrainScript';
+import Vector3 from 'src/goo/math/Vector3';
 
 	xdescribe('WorldFittedTerrainScript', function () {
 		describe('Uses default dimensions', function () {

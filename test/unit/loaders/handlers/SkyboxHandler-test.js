@@ -1,18 +1,18 @@
+		import Entity from 'src/goo/entities/Entity';
+		import TransformComponent from 'src/goo/entities/components/TransformComponent';
+		import MeshDataComponent from 'src/goo/entities/components/MeshDataComponent';
+		import MeshRendererComponent from 'src/goo/entities/components/MeshRendererComponent';
+		import RenderSystem from 'src/goo/entities/systems/RenderSystem';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import EnvironmentHandler from 'src/goo/loaders/handlers/EnvironmentHandler';
+		import World from 'src/goo/entities/World';
+		import Texture from 'src/goo/renderer/Texture';
+		import Material from 'src/goo/renderer/Material';
+		import Box from 'src/goo/shapes/Box';
+		import Sphere from 'src/goo/shapes/Sphere';
+		import Configs from 'test/unit/loaders/Configs';
 	describe('SkyboxHandler', function () {
 
-		var Entity = require('src/goo/entities/Entity');
-		var TransformComponent = require('src/goo/entities/components/TransformComponent');
-		var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-		var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-		var RenderSystem = require('src/goo/entities/systems/RenderSystem');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var EnvironmentHandler = require('src/goo/loaders/handlers/EnvironmentHandler');
-		var World = require('src/goo/entities/World');
-		var Texture = require('src/goo/renderer/Texture');
-		var Material = require('src/goo/renderer/Material');
-		var Box = require('src/goo/shapes/Box');
-		var Sphere = require('src/goo/shapes/Sphere');
-		var Configs = require('test/unit/loaders/Configs');
 
 		var loader, world;
 		beforeEach(function () {

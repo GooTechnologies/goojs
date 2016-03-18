@@ -1,3 +1,8 @@
+import Box from 'src/goo/shapes/Box';
+import Quad from 'src/goo/shapes/Quad';
+import Transform from 'src/goo/math/Transform';
+import MeshData from 'src/goo/renderer/MeshData';
+
 	describe('MeshData', function () {
 		it('getNormalsMeshData: number of vertices and indices', function () {
 			var box = new Box();

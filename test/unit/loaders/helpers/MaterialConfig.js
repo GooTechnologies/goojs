@@ -1,9 +1,9 @@
-var _ = require('src/goo/util/ObjectUtil');
+import ObjectUtil from 'src/goo/util/ObjectUtil';
 
 module.exports = {
 		material: function () {
 			var material = this.gooObject('material', 'Dummy');
-			_.extend(material, {
+			ObjectUtil.extend(material, {
 				uniforms: {
 					materialAmbient: {
 						value: [0, 0, 0, 1],
@@ -37,7 +37,7 @@ module.exports = {
 		},
 		texture: function () {
 			var texture = this.gooObject('texture', 'Dummy');
-			_.extend(texture, {
+			ObjectUtil.extend(texture, {
 				magFilter: 'Bilinear',
 				minFilter: 'Trilinear',
 				offset: [0, 0],
@@ -52,7 +52,7 @@ module.exports = {
 		},
 		textureSVG: function () {
 			var texture = this.gooObject('texture', 'Dummy');
-			_.extend(texture, {
+			ObjectUtil.extend(texture, {
 				magFilter: 'Bilinear',
 				minFilter: 'Trilinear',
 				offset: [0, 0],
@@ -67,7 +67,7 @@ module.exports = {
 		},
 		shader: function () {
 			var shader = this.gooObject('shader', 'Dummy');
-			_.extend(shader, {
+			ObjectUtil.extend(shader, {
 				attributes: {
 					vertexPoisition: 'POSITION',
 					vertexNormal: 'NORMAL',

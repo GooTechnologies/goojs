@@ -1,4 +1,4 @@
-var ArrayUtils = require('src/goo/util/ArrayUtils');
+import ArrayUtils from 'src/goo/util/ArrayUtils';
 
 	describe('ArrayUtils', function () {
 		describe('fromKeys', function () {

@@ -1,8 +1,8 @@
+		import Vector from '../../../src/goo/math/Vector';
+		import Matrix from '../../../src/goo/math/Matrix';
+		import CustomMatchers from '../../../test/unit/CustomMatchers';
 	describe('Vector', function () {
 
-		var Vector = require('../../../src/goo/math/Vector');
-		var Matrix = require('../../../src/goo/math/Matrix');
-		var CustomMatchers = require('../../../test/unit/CustomMatchers');
 
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

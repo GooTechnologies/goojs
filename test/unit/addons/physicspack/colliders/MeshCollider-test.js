@@ -1,9 +1,9 @@
-	describe('MeshCollider', function () {
+import MeshCollider from 'src/goo/addons/physicspack/colliders/MeshCollider';
+import Vector3 from 'src/goo/math/Vector3';
+import Sphere from 'src/goo/shapes/Sphere';
+import Transform from 'src/goo/math/Transform';
 
-		var MeshCollider = require('src/goo/addons/physicspack/colliders/MeshCollider');
-		var Vector3 = require('src/goo/math/Vector3');
-		var Sphere = require('src/goo/shapes/Sphere');
-		var Transform = require('src/goo/math/Transform');
+	describe('MeshCollider', function () {
 
 		it('can clone', function () {
 			var collider = new MeshCollider({

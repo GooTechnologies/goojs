@@ -1,15 +1,15 @@
-	describe('MeshDataComponentHandler', function () {
 
-		var World = require('src/goo/entities/World');
-		var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-		var MeshData = require('src/goo/renderer/MeshData');
-		var SkeletonPose = require('src/goo/animationpack/SkeletonPose');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Configs = require('test/unit/loaders/Configs');
+		import World from 'src/goo/entities/World';
+		import MeshDataComponent from 'src/goo/entities/components/MeshDataComponent';
+		import MeshData from 'src/goo/renderer/MeshData';
+		import SkeletonPose from 'src/goo/animationpack/SkeletonPose';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Configs from 'test/unit/loaders/Configs';
 
 		require('src/goo/animationpack/handlers/AnimationHandlers');
 		require('src/goo/loaders/handlers/MeshDataComponentHandler');
 		require('src/goo/loaders/handlers/MeshDataHandler');
+	describe('MeshDataComponentHandler', function () {
 
 		var loader;
 

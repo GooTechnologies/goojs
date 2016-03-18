@@ -1,4 +1,4 @@
-var EventTarget = require('src/goo/util/EventTarget');
+import EventTarget from 'src/goo/util/EventTarget';
 
 	function Test() {
 		EventTarget.apply(this, arguments);

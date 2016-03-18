@@ -1,9 +1,9 @@
-var ValueChannel = require('src/goo/timelinepack/ValueChannel');
-var TransformComponent = require('src/goo/entities/components/TransformComponent');
-var MathUtils = require('src/goo/math/MathUtils');
-var Matrix3 = require('src/goo/math/Matrix3');
-var Entity = require('src/goo/entities/Entity');
-var CustomMatchers = require('test/unit/CustomMatchers');
+import ValueChannel from 'src/goo/timelinepack/ValueChannel';
+import TransformComponent from 'src/goo/entities/components/TransformComponent';
+import MathUtils from 'src/goo/math/MathUtils';
+import Matrix3 from 'src/goo/math/Matrix3';
+import Entity from 'src/goo/entities/Entity';
+import CustomMatchers from 'test/unit/CustomMatchers';
 
 	describe('ValueChannel', function () {
 		var channel;

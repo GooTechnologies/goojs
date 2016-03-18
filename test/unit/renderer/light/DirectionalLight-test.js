@@ -1,3 +1,7 @@
+import Vector3 from 'src/goo/math/Vector3';
+import DirectionalLight from 'src/goo/renderer/light/DirectionalLight';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('DirectionalLight', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

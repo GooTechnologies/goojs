@@ -1,9 +1,9 @@
-var EntityConfig = require('./helpers/EntityConfig');
-var AnimationConfig = require('./helpers/AnimationConfig');
-var MaterialConfig = require('./helpers/MaterialConfig');
-var MeshConfig = require('./helpers/MeshConfig');
-var SceneConfig = require('./helpers/SceneConfig');
-var PosteffectsConfig = require('./helpers/PosteffectsConfig');
+import EntityConfig from './helpers/EntityConfig';
+import AnimationConfig from './helpers/AnimationConfig';
+import MaterialConfig from './helpers/MaterialConfig';
+import MeshConfig from './helpers/MeshConfig';
+import SceneConfig from './helpers/SceneConfig';
+import PosteffectsConfig from './helpers/PosteffectsConfig';
 
 var bundle = {};
 var Configs = {

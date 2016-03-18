@@ -92,7 +92,12 @@ module.exports = function (config) {
 		},
 		plugins: [
 			new webpack.ProvidePlugin(require('./karmaWebpackProvidePluginSettings'))
-		]
+		],
+		module: {
+			loaders: [
+				{ test: /\.js$/, loader: 'babel-loader' }
+			]
+		}
 	}
   });
 };

@@ -1,7 +1,7 @@
+	import ProximitySystem from 'src/goo/fsmpack/proximity/ProximitySystem';
+	import ProximityComponent from 'src/goo/fsmpack/proximity/ProximityComponent';
+	import World from 'src/goo/entities/World';
 describe('ProximityComponent', function () {
-	var ProximitySystem = require('src/goo/fsmpack/proximity/ProximitySystem');
-	var ProximityComponent = require('src/goo/fsmpack/proximity/ProximityComponent');
-	var World = require('src/goo/entities/World');
 
 	var world, proximitySystem;
 

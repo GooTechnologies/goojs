@@ -1,15 +1,15 @@
 	/* global CANNON */
 
-	describe('ColliderComponent', function () {
+		import SphereCollider from 'src/goo/addons/physicspack/colliders/SphereCollider';
+		import Vector3 from 'src/goo/math/Vector3';
+		import World from 'src/goo/entities/World';
+		import TransformSystem from 'src/goo/entities/systems/TransformSystem';
+		import PhysicsMaterial from 'src/goo/addons/physicspack/PhysicsMaterial';
+		import PhysicsSystem from 'src/goo/addons/physicspack/systems/PhysicsSystem';
+		import ColliderSystem from 'src/goo/addons/physicspack/systems/ColliderSystem';
+		import ColliderComponent from 'src/goo/addons/physicspack/components/ColliderComponent';
 
-		var SphereCollider = require('src/goo/addons/physicspack/colliders/SphereCollider');
-		var Vector3 = require('src/goo/math/Vector3');
-		var World = require('src/goo/entities/World');
-		var TransformSystem = require('src/goo/entities/systems/TransformSystem');
-		var PhysicsMaterial = require('src/goo/addons/physicspack/PhysicsMaterial');
-		var PhysicsSystem = require('src/goo/addons/physicspack/systems/PhysicsSystem');
-		var ColliderSystem = require('src/goo/addons/physicspack/systems/ColliderSystem');
-		var ColliderComponent = require('src/goo/addons/physicspack/components/ColliderComponent');
+	describe('ColliderComponent', function () {
 
 		var world, system;
 

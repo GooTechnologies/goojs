@@ -1,6 +1,6 @@
-var MathUtils = require('src/goo/math/MathUtils');
-var Vector3 = require('src/goo/math/Vector3');
-var Vector2 = require('src/goo/math/Vector2');
+import MathUtils from 'src/goo/math/MathUtils';
+import Vector3 from 'src/goo/math/Vector3';
+import Vector2 from 'src/goo/math/Vector2';
 
 	describe('MathUtils', function () {
 		it('can convert to radians from degrees', function () {

@@ -1,6 +1,6 @@
-var Vector4 = require('src/goo/math/Vector4');
-var Matrix4 = require('src/goo/math/Matrix4');
-var CustomMatchers = require('test/unit/CustomMatchers');
+import Vector4 from 'src/goo/math/Vector4';
+import Matrix4 from 'src/goo/math/Matrix4';
+import CustomMatchers from 'test/unit/CustomMatchers';
 
 	describe('Vector4', function () {
 		beforeEach(function () {

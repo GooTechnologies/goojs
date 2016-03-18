@@ -1,3 +1,7 @@
+import Vector3 from 'src/goo/math/Vector3';
+import BoundingVolume from 'src/goo/renderer/bounds/BoundingVolume';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('BoundingVolume', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

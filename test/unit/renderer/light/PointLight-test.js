@@ -1,3 +1,7 @@
+import Vector3 from 'src/goo/math/Vector3';
+import PointLight from 'src/goo/renderer/light/PointLight';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('PointLight', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

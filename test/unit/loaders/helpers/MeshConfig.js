@@ -1,10 +1,10 @@
-var _ = require('src/goo/util/ObjectUtil');
+import ObjectUtil from 'src/goo/util/ObjectUtil';
 
 module.exports = {
 		mesh: function () {
 			var config = this.gooObject('mesh', 'Dummy');
 			var samples = 3;
-			_.extend(config, {
+			ObjectUtil.extend(config, {
 				binaryRef: this.binary(128),
 				type: 'Mesh',
 				indexLengths: [samples],

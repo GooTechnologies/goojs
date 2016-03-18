@@ -1,11 +1,11 @@
+		import World from 'src/goo/entities/World';
+		import LightComponent from 'src/goo/entities/components/LightComponent';
+		import PointLight from 'src/goo/renderer/light/PointLight';
+		import SpotLight from 'src/goo/renderer/light/SpotLight';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Configs from 'test/unit/loaders/Configs';
 	describe('LightComponentHandler', function () {
 
-		var World = require('src/goo/entities/World');
-		var LightComponent = require('src/goo/entities/components/LightComponent');
-		var PointLight = require('src/goo/renderer/light/PointLight');
-		var SpotLight = require('src/goo/renderer/light/SpotLight');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Configs = require('test/unit/loaders/Configs');
 
 		require('src/goo/loaders/handlers/LightComponentHandler');
 

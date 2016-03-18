@@ -1,7 +1,7 @@
-var GroundBoundMovementScript = require('src/goo/scriptpack/GroundBoundMovementScript');
-var MovementSystem = require('src/goo/entities/systems/MovementSystem');
-var MovementComponent = require('src/goo/entities/components/MovementComponent');
-var TransformComponent = require('src/goo/entities/components/TransformComponent');
+import GroundBoundMovementScript from 'src/goo/scriptpack/GroundBoundMovementScript';
+import MovementSystem from 'src/goo/entities/systems/MovementSystem';
+import MovementComponent from 'src/goo/entities/components/MovementComponent';
+import TransformComponent from 'src/goo/entities/components/TransformComponent';
 
 	xdescribe('Movement script tests', function () {
 		var movementSystem = new MovementSystem();

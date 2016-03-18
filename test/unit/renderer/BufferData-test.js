@@ -1,3 +1,6 @@
+import BufferData from 'src/goo/renderer/BufferData';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('BufferData', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

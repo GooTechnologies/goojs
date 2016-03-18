@@ -1,4 +1,4 @@
-var _ = require('src/goo/util/ObjectUtil');
+import ObjectUtil from 'src/goo/util/ObjectUtil';
 
 module.exports = {
 		entity: function (components) {
@@ -33,7 +33,7 @@ module.exports = {
 				};
 			},
 			light: function (type, options) {
-				var config = _.copyOptions({}, options, {
+				var config = ObjectUtil.copyOptions({}, options, {
 					type: type || 'PointLight',
 					color: [1, 1, 1],
 					intensity: 1,
@@ -48,7 +48,7 @@ module.exports = {
 				}
 				if (config.shadowCaster) {
 					config.shadowSettings = config.shadowSettings || {};
-					_.defaults(config.shadowSettings, {
+					ObjectUtil.defaults(config.shadowSettings, {
 						type: 'Blur',
 						projection: (config.type === 'DirectionalLight') ? 'Parallel' : 'Perspective',
 						near: 1,
@@ -214,7 +214,7 @@ module.exports = {
 				};
 			},
 			collider: function (type) {
-				return _.defaults({}, {
+				return ObjectUtil.defaults({}, {
 					shape: type || 'Box', // Box, Cylinder, Plane, Sphere
 					isTrigger: false,
 					friction: 0.3,

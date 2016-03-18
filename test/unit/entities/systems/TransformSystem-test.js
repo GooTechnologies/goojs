@@ -1,7 +1,7 @@
+		import Vector3 from 'src/goo/math/Vector3';
+		import TransformSystem from 'src/goo/entities/systems/TransformSystem';
+		import World from 'src/goo/entities/World';
 	describe('TransformSystem', function () {
-		var Vector3 = require('src/goo/math/Vector3');
-		var TransformSystem = require('src/goo/entities/systems/TransformSystem');
-		var World = require('src/goo/entities/World');
 
 		var world;
 

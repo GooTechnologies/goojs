@@ -1,3 +1,5 @@
+import Actions from 'src/goo/fsmpack/statemachine/actions/Actions';
+
 	describe('Actions', function () {
 		it('Every action has a key', function () {
 			var allActions = Actions.allActionsArray();

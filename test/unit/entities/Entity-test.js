@@ -1,19 +1,19 @@
+		import Entity from 'src/goo/entities/Entity';
+		import World from 'src/goo/entities/World';
+		import TransformComponent from 'src/goo/entities/components/TransformComponent';
+		import MeshDataComponent from 'src/goo/entities/components/MeshDataComponent';
+		import MeshRendererComponent from 'src/goo/entities/components/MeshRendererComponent';
+		import CameraComponent from 'src/goo/entities/components/CameraComponent';
+		import LightComponent from 'src/goo/entities/components/LightComponent';
+		import ScriptComponent from 'src/goo/entities/components/ScriptComponent';
+		import Component from 'src/goo/entities/components/Component';
+		import ScriptSystem from 'src/goo/entities/systems/ScriptSystem';
+		import Box from 'src/goo/shapes/Box';
+		import Camera from 'src/goo/renderer/Camera';
+		import PointLight from 'src/goo/renderer/light/PointLight';
+		import ShaderLib from 'src/goo/renderer/shaders/ShaderLib';
+		import Material from 'src/goo/renderer/Material';
 	describe('Entity', function () {
-		var Entity = require('src/goo/entities/Entity');
-		var World = require('src/goo/entities/World');
-		var TransformComponent = require('src/goo/entities/components/TransformComponent');
-		var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-		var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-		var CameraComponent = require('src/goo/entities/components/CameraComponent');
-		var LightComponent = require('src/goo/entities/components/LightComponent');
-		var ScriptComponent = require('src/goo/entities/components/ScriptComponent');
-		var Component = require('src/goo/entities/components/Component');
-		var ScriptSystem = require('src/goo/entities/systems/ScriptSystem');
-		var Box = require('src/goo/shapes/Box');
-		var Camera = require('src/goo/renderer/Camera');
-		var PointLight = require('src/goo/renderer/light/PointLight');
-		var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
-		var Material = require('src/goo/renderer/Material');
 
 		var world;
 

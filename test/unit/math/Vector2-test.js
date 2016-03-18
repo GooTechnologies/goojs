@@ -1,5 +1,5 @@
-var Vector2 = require('src/goo/math/Vector2');
-var CustomMatchers = require('test/unit/CustomMatchers');
+import Vector2 from 'src/goo/math/Vector2';
+import CustomMatchers from 'test/unit/CustomMatchers';
 
 	describe('Vector2', function () {
 		beforeEach(function () {

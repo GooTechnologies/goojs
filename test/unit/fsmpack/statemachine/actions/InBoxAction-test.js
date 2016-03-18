@@ -1,3 +1,6 @@
+import InBoxAction from 'src/goo/fsmpack/statemachine/actions/InBoxAction';
+import Vector3 from 'src/goo/math/Vector3';
+
 	describe('InBoxAction', function () {
 		describe('Check pos against boxes', function () {
 			var inBoxAction;

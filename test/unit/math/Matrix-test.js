@@ -1,5 +1,5 @@
-var Matrix = require('src/goo/math/Matrix');
-var CustomMatchers = require('test/unit/CustomMatchers');
+import Matrix from 'src/goo/math/Matrix';
+import CustomMatchers from 'test/unit/CustomMatchers';
 
 	describe('Matrix', function () {
 		beforeEach(function () {

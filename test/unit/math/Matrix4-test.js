@@ -1,9 +1,9 @@
-var Quaternion = require('../../../src/goo/math/Quaternion');
-var Matrix3 = require('../../../src/goo/math/Matrix3');
-var Matrix4 = require('../../../src/goo/math/Matrix4');
-var Vector3 = require('../../../src/goo/math/Vector3');
-var Vector4 = require('../../../src/goo/math/Vector4');
-var CustomMatchers = require('../../../test/unit/CustomMatchers');
+import Quaternion from '../../../src/goo/math/Quaternion';
+import Matrix3 from '../../../src/goo/math/Matrix3';
+import Matrix4 from '../../../src/goo/math/Matrix4';
+import Vector3 from '../../../src/goo/math/Vector3';
+import Vector4 from '../../../src/goo/math/Vector4';
+import CustomMatchers from '../../../test/unit/CustomMatchers';
 
 	describe('Matrix4', function () {
 		beforeEach(function () {

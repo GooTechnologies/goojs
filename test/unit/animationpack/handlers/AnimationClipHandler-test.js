@@ -1,9 +1,10 @@
-describe('AnimationClipHandler', function () {
 
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var AnimationClip = require('src/goo/animationpack/clip/AnimationClip');
-	var Configs = require('test/unit/loaders/Configs');
+	import World from 'src/goo/entities/World';
+	import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+	import AnimationClip from 'src/goo/animationpack/clip/AnimationClip';
+	import Configs from 'test/unit/loaders/Configs';
+
+describe('AnimationClipHandler', function () {
 
 	require('src/goo/animationpack/handlers/AnimationHandlers');
 

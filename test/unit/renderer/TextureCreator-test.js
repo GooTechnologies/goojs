@@ -1,3 +1,5 @@
+import TextureCreator from 'src/goo/renderer/TextureCreator';
+
 	describe('TextureCreator', function () {
 		var textureCreator;
 		var callbacks;

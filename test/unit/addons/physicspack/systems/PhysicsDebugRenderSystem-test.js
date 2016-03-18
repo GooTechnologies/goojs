@@ -1,16 +1,16 @@
-	describe('PhysicsDebugRenderSystem', function () {
 
-		var BoxCollider = require('src/goo/addons/physicspack/colliders/BoxCollider');
-		var SphereCollider = require('src/goo/addons/physicspack/colliders/SphereCollider');
-		var CylinderCollider = require('src/goo/addons/physicspack/colliders/CylinderCollider');
-		var PlaneCollider = require('src/goo/addons/physicspack/colliders/PlaneCollider');
-		var MeshCollider = require('src/goo/addons/physicspack/colliders/MeshCollider');
-		var PhysicsDebugRenderSystem = require('src/goo/addons/physicspack/systems/PhysicsDebugRenderSystem');
-		var ColliderSystem = require('src/goo/addons/physicspack/systems/ColliderSystem');
-		var PhysicsSystem = require('src/goo/addons/physicspack/systems/PhysicsSystem');
-		var Sphere = require('src/goo/shapes/Sphere');
-		var World = require('src/goo/entities/World');
-		var MeshData = require('src/goo/renderer/MeshData');
+		import BoxCollider from 'src/goo/addons/physicspack/colliders/BoxCollider';
+		import SphereCollider from 'src/goo/addons/physicspack/colliders/SphereCollider';
+		import CylinderCollider from 'src/goo/addons/physicspack/colliders/CylinderCollider';
+		import PlaneCollider from 'src/goo/addons/physicspack/colliders/PlaneCollider';
+		import MeshCollider from 'src/goo/addons/physicspack/colliders/MeshCollider';
+		import PhysicsDebugRenderSystem from 'src/goo/addons/physicspack/systems/PhysicsDebugRenderSystem';
+		import ColliderSystem from 'src/goo/addons/physicspack/systems/ColliderSystem';
+		import PhysicsSystem from 'src/goo/addons/physicspack/systems/PhysicsSystem';
+		import Sphere from 'src/goo/shapes/Sphere';
+		import World from 'src/goo/entities/World';
+		import MeshData from 'src/goo/renderer/MeshData';
+	describe('PhysicsDebugRenderSystem', function () {
 
 		var world, system;
 

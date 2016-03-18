@@ -1,6 +1,7 @@
+import Curve from 'src/goo/addons/particlepack/curves/Curve';
+
 	describe('Curve', function () {
 
-		var Curve = require('src/goo/addons/particlepack/curves/Curve');
 
 		it('.getValueAt', function () {
 			var curve = new Curve();

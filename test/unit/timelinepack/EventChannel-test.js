@@ -1,4 +1,4 @@
-var EventChannel = require('src/goo/timelinepack/EventChannel');
+import EventChannel from 'src/goo/timelinepack/EventChannel';
 
 	describe('EventChannel', function () {
 		var channel;

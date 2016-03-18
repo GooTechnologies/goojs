@@ -1,10 +1,10 @@
+		import Entity from 'src/goo/entities/Entity';
+		import LightComponent from 'src/goo/entities/components/LightComponent';
+		import TransformComponent from 'src/goo/entities/components/TransformComponent';
+		import LightingSystem from 'src/goo/entities/systems/LightingSystem';
+		import World from 'src/goo/entities/World';
 	describe('LightingSystem', function () {
 
-		var Entity = require('src/goo/entities/Entity');
-		var LightComponent = require('src/goo/entities/components/LightComponent');
-		var TransformComponent = require('src/goo/entities/components/TransformComponent');
-		var LightingSystem = require('src/goo/entities/systems/LightingSystem');
-		var World = require('src/goo/entities/World');
 
 		describe('inserted', function () {
 			it('will update a light\'s transform', function () {

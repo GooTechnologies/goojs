@@ -1,6 +1,6 @@
-	var Machine = require('src/goo/fsmpack/statemachine/Machine');
-	var State = require('src/goo/fsmpack/statemachine/State');
-	var StateMachineComponent = require('src/goo/fsmpack/statemachine/StateMachineComponent');
+	import Machine from 'src/goo/fsmpack/statemachine/Machine';
+	import State from 'src/goo/fsmpack/statemachine/State';
+	import StateMachineComponent from 'src/goo/fsmpack/statemachine/StateMachineComponent';
 
 	describe('StateMachineComponent', function () {
 		var stateMachineComponent;

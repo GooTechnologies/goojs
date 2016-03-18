@@ -1,7 +1,8 @@
+import SphereCollider from 'src/goo/addons/physicspack/colliders/SphereCollider';
+import Transform from 'src/goo/math/Transform';
+
 	describe('SphereCollider', function () {
 
-		var SphereCollider = require('src/goo/addons/physicspack/colliders/SphereCollider');
-		var Transform = require('src/goo/math/Transform');
 
 		it('can clone', function () {
 			var collider = new SphereCollider({

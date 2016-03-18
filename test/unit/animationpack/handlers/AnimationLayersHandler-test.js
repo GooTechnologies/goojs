@@ -1,10 +1,12 @@
+
+	import World from 'src/goo/entities/World';
+	import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+	import SteadyState from 'src/goo/animationpack/state/SteadyState';
+	import AnimationLayer from 'src/goo/animationpack/layer/AnimationLayer';
+	import Configs from 'test/unit/loaders/Configs';
+
 describe('AnimationLayersHandler', function () {
 
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var SteadyState = require('src/goo/animationpack/state/SteadyState');
-	var AnimationLayer = require('src/goo/animationpack/layer/AnimationLayer');
-	var Configs = require('test/unit/loaders/Configs');
 
 	require('src/goo/animationpack/handlers/AnimationHandlers');
 

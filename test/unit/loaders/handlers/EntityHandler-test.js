@@ -1,9 +1,9 @@
+		import World from 'src/goo/entities/World';
+		import Entity from 'src/goo/entities/Entity';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Configs from 'test/unit/loaders/Configs';
 	describe('EntityHandler', function () {
 
-		var World = require('src/goo/entities/World');
-		var Entity = require('src/goo/entities/Entity');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Configs = require('test/unit/loaders/Configs');
 
 		require('src/goo/loaders/handlers/EntityHandler');
 

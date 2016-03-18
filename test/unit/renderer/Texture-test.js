@@ -1,3 +1,6 @@
+import Texture from 'src/goo/renderer/Texture';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('Texture', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

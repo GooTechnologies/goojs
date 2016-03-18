@@ -1,3 +1,7 @@
+import Vector3 from 'src/goo/math/Vector3';
+import Light from 'src/goo/renderer/light/Light';
+import CustomMatchers from 'test/unit/CustomMatchers';
+
 	describe('Light', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

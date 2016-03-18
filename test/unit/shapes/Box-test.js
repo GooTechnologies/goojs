@@ -1,4 +1,4 @@
-var Box = require('src/goo/shapes/Box');
+import Box from 'src/goo/shapes/Box';
 
 	describe('Box', function () {
 		var a = new Box();

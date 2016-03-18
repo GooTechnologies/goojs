@@ -1,16 +1,16 @@
-	describe('TransformComponent', function () {
 
-		var Vector3 = require('src/goo/math/Vector3');
-		var Transform = require('src/goo/math/Transform');
-		var TransformSystem = require('src/goo/entities/systems/TransformSystem');
-		var TransformComponent = require('src/goo/entities/components/TransformComponent');
-		var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-		var HtmlComponent = require('src/goo/entities/components/HtmlComponent');
-		var LightComponent = require('src/goo/entities/components/LightComponent');
-		var Entity = require('src/goo/entities/Entity');
-		var EntitySelection = require('src/goo/entities/EntitySelection');
-		var World = require('src/goo/entities/World');
-		var CustomMatchers = require('test/unit/CustomMatchers');
+		import Vector3 from 'src/goo/math/Vector3';
+		import Transform from 'src/goo/math/Transform';
+		import TransformSystem from 'src/goo/entities/systems/TransformSystem';
+		import TransformComponent from 'src/goo/entities/components/TransformComponent';
+		import MeshRendererComponent from 'src/goo/entities/components/MeshRendererComponent';
+		import HtmlComponent from 'src/goo/entities/components/HtmlComponent';
+		import LightComponent from 'src/goo/entities/components/LightComponent';
+		import Entity from 'src/goo/entities/Entity';
+		import EntitySelection from 'src/goo/entities/EntitySelection';
+		import World from 'src/goo/entities/World';
+		import CustomMatchers from 'test/unit/CustomMatchers';
+	describe('TransformComponent', function () {
 
 		var world;
 

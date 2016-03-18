@@ -1,5 +1,5 @@
+		import Bus from 'src/goo/entities/Bus';
 	describe('Bus', function () {
-		var Bus = require('src/goo/entities/Bus');
 
 		var bus;
 

@@ -1,3 +1,15 @@
+import Shader from 'src/goo/renderer/Shader';
+import ShaderLib from 'src/goo/renderer/shaders/ShaderLib';
+import ObjectUtils from 'src/goo/util/ObjectUtils';
+import Camera from 'src/goo/renderer/Camera';
+import Texture from 'src/goo/renderer/Texture';
+import Material from 'src/goo/renderer/Material';
+import MeshData from 'src/goo/renderer/MeshData';
+import DirectionalLight from 'src/goo/renderer/light/DirectionalLight';
+import RendererRecord from 'src/goo/renderer/RendererRecord';
+import ShaderCall from 'src/goo/renderer/ShaderCall';
+import Box from 'src/goo/shapes/Box';
+
 (function () {
 	describe('Shader', function () {
 		describe('DefineKey', function () {

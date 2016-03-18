@@ -1,5 +1,5 @@
-var ObjectUtils = require('src/goo/util/ObjectUtils');
-var CustomMatchers = require('test/unit/CustomMatchers');
+import ObjectUtils from 'src/goo/util/ObjectUtils';
+import CustomMatchers from 'test/unit/CustomMatchers';
 
 	describe('ObjectUtils', function () {
 		beforeEach(function () {

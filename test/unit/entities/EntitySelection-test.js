@@ -1,6 +1,6 @@
-var EntitySelection = require('src/goo/entities/EntitySelection');
-var World = require('src/goo/entities/World');
-var TransformComponent = require('src/goo/entities/components/TransformComponent');
+import EntitySelection from 'src/goo/entities/EntitySelection';
+import World from 'src/goo/entities/World';
+import TransformComponent from 'src/goo/entities/components/TransformComponent';
 
 	describe('EntitySelection', function () {
 		var world;

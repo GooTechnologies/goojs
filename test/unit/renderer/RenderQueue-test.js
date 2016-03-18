@@ -1,3 +1,6 @@
+import RenderQueue from 'src/goo/renderer/RenderQueue';
+import Vector3 from 'src/goo/math/Vector3';
+
 	describe('RenderQueue Sorting', function () {
 		var createRenderable = function (name, renderQueueBucket, translation, defineKey) {
 			var renderable = {

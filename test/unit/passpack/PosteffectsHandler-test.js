@@ -1,6 +1,6 @@
-var Configs = require('test/unit/loaders/Configs');
-var GooRunner = require('src/goo/entities/GooRunner');
-var DynamicLoader = require('src/goo/loaders/DynamicLoader');
+import Configs from 'test/unit/loaders/Configs';
+import GooRunner from 'src/goo/entities/GooRunner';
+import DynamicLoader from 'src/goo/loaders/DynamicLoader';
 require('src/goo/passpack/PosteffectsHandler');
 
 	describe('PosteffectsHandler', function () {

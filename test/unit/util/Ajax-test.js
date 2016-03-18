@@ -1,4 +1,4 @@
-var Ajax = require('src/goo/util/Ajax');
+import Ajax from 'src/goo/util/Ajax';
 
 	var TestResponses = {
 		'good-url': {

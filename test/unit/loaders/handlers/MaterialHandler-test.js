@@ -1,12 +1,12 @@
-	describe('MaterialHandler', function () {
 
-		var World = require('src/goo/entities/World');
-		var Material = require('src/goo/renderer/Material');
-		var Shader = require('src/goo/renderer/Shader');
-		var Texture = require('src/goo/renderer/Texture');
-		var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
-		var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-		var Configs = require('test/unit/loaders/Configs');
+		import World from 'src/goo/entities/World';
+		import Material from 'src/goo/renderer/Material';
+		import Shader from 'src/goo/renderer/Shader';
+		import Texture from 'src/goo/renderer/Texture';
+		import ShaderLib from 'src/goo/renderer/shaders/ShaderLib';
+		import DynamicLoader from 'src/goo/loaders/DynamicLoader';
+		import Configs from 'test/unit/loaders/Configs';
+	describe('MaterialHandler', function () {
 
 		require('src/goo/loaders/handlers/MaterialHandler');
 

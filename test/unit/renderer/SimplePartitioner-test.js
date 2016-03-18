@@ -1,3 +1,10 @@
+import SimplePartitioner from 'src/goo/renderer/SimplePartitioner';
+import BoundingSphere from 'src/goo/renderer/bounds/BoundingSphere';
+import Entity from 'src/goo/entities/Entity';
+import Camera from 'src/goo/renderer/Camera';
+import Vector3 from 'src/goo/math/Vector3';
+import MeshRendererComponent from 'src/goo/entities/components/MeshRendererComponent';
+
 	describe('SimplePartitioner', function () {
 		var partitioner, camera;
 
