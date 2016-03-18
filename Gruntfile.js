@@ -116,6 +116,11 @@ module.exports = function (grunt) {
 					'examples/index.html'
 				]
 			},
+			coverage: {
+				src: [
+					'coverage/'
+				]
+			},
 			docs: [
 				'out-doc/'
 			]
