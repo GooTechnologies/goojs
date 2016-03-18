@@ -98,7 +98,7 @@ DebugRenderSystem.prototype.process = function (entities, tpf) {
 					renderable.transform.scale.setDirect(1, 1, 1);
 					renderable.transform.update();
 				}
-				DebugDrawHelper.update(renderables, component, this.camera);
+				DebugDrawHelper.update(renderables, component, this.camera, this.renderer);
 				for (var k = 0; k < renderables.length; k++) {
 					this.renderList[count++] = renderables[k];
 				}
@@ -133,6 +133,8 @@ DebugRenderSystem.prototype.process = function (entities, tpf) {
 };
 
 DebugRenderSystem.prototype.render = function (renderer) {
+	this.renderer = renderer;
+
 	renderer.checkResize(this.camera);
 
 	if (this.camera) {
