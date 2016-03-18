@@ -1,15 +1,24 @@
+import CannonBoxColliderComponent from './CannonBoxColliderComponent';
+import CannonCylinderColliderComponent from './CannonCylinderColliderComponent';
+import CannonDistanceJointComponent from './CannonDistanceJointComponent';
+import CannonPlaneColliderComponent from './CannonPlaneColliderComponent';
+import CannonRigidbodyComponent from './CannonRigidbodyComponent';
+import CannonSphereColliderComponent from './CannonSphereColliderComponent';
+import CannonSystem from './CannonSystem';
+import CannonTerrainColliderComponent from './CannonTerrainColliderComponent';
+
 module.exports = {
-	CannonBoxColliderComponent: require('./CannonBoxColliderComponent'),
-	CannonCylinderColliderComponent: require('./CannonCylinderColliderComponent'),
-	CannonDistanceJointComponent: require('./CannonDistanceJointComponent'),
-	CannonPlaneColliderComponent: require('./CannonPlaneColliderComponent'),
-	CannonRigidbodyComponent: require('./CannonRigidbodyComponent'),
-	CannonSphereColliderComponent: require('./CannonSphereColliderComponent'),
-	CannonSystem: require('./CannonSystem'),
-	CannonTerrainColliderComponent: require('./CannonTerrainColliderComponent')
+	CannonBoxColliderComponent,
+	CannonCylinderColliderComponent,
+	CannonDistanceJointComponent,
+	CannonPlaneColliderComponent,
+	CannonRigidbodyComponent,
+	CannonSphereColliderComponent,
+	CannonSystem,
+	CannonTerrainColliderComponent
 };
+
+import ObjectUtils from '../../util/ObjectUtils';
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

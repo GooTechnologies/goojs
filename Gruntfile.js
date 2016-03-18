@@ -11,7 +11,7 @@ module.exports = function (grunt) {
 		webpack: {
 			packsAndCore: {
 				entry: {
-					goo: ['./src/goo'],
+					goo: ['./index'],
 					animationpack: ['./src/goo/animationpack'],
 					fsmpack: ['./src/goo/fsmpack'],
 					geometrypack: ['./src/goo/geometrypack'],
@@ -39,7 +39,17 @@ module.exports = function (grunt) {
 				},
 				plugins: [
 					new webpack.optimize.CommonsChunkPlugin('goo', 'out/goo.js')
-				]
+				],
+				module: {
+					loaders: [{
+						test: /\.jsx?$/,
+						exclude: /(node_modules|bower_components)/,
+						loader: 'babel',
+						query: {
+							presets: ['es2015']
+						}
+					}]
+				}
 			}
 		},
 

@@ -1,10 +1,12 @@
+import LineRenderer from './LineRenderer';
+import LineRenderSystem from './LineRenderSystem';
+
 module.exports = {
-	LineRenderer: require('./LineRenderer'),
-	LineRenderSystem: require('./LineRenderSystem')
+	LineRenderer,
+	LineRenderSystem
 };
 
+import ObjectUtils from '../../util/ObjectUtils';
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

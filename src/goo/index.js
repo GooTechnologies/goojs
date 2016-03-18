@@ -1,5 +1,3 @@
-require('../../tools/MapSetPolyfill');
-
 module.exports = {
 	Bus: require('./entities/Bus'),
 	CameraComponent: require('./entities/components/CameraComponent'),

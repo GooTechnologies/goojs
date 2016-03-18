@@ -1,10 +1,14 @@
+import DoubleQuad from './DoubleQuad';
+import QuadComponent from './QuadComponent';
+import QuadComponentHandler from './QuadComponentHandler';
+
 module.exports = {
-	DoubleQuad: require('./DoubleQuad'),
-	QuadComponent: require('./QuadComponent'),
-	QuadComponentHandler: require('./QuadComponentHandler')
+	DoubleQuad,
+	QuadComponent,
+	QuadComponentHandler
 };
+
+import ObjectUtils from './../util/ObjectUtils';
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

@@ -1,18 +1,30 @@
+import BloomPass from './BloomPass';
+import BlurPass from './BlurPass';
+import DepthPass from './DepthPass';
+import DofPass from './DofPass';
+import DogPass from './DogPass';
+import index from './index';
+import MotionBlurPass from './MotionBlurPass';
+import PassLib from './PassLib';
+import PosteffectsHandler from './PosteffectsHandler';
+import ShaderLibExtra from './ShaderLibExtra';
+import SsaoPass from './SsaoPass';
+
 module.exports = {
-	BloomPass: require('./BloomPass'),
-	BlurPass: require('./BlurPass'),
-	DepthPass: require('./DepthPass'),
-	DofPass: require('./DofPass'),
-	DogPass: require('./DogPass'),
-	index: require('./index'),
-	MotionBlurPass: require('./MotionBlurPass'),
-	PassLib: require('./PassLib'),
-	PosteffectsHandler: require('./PosteffectsHandler'),
-	ShaderLibExtra: require('./ShaderLibExtra'),
-	SsaoPass: require('./SsaoPass')
+	BloomPass,
+	BlurPass,
+	DepthPass,
+	DofPass,
+	DogPass,
+	index,
+	MotionBlurPass,
+	PassLib,
+	PosteffectsHandler,
+	ShaderLibExtra,
+	SsaoPass
 };
+
+import ObjectUtils from './../util/ObjectUtils';
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

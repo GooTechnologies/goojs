@@ -1,19 +1,33 @@
+import BoundingVolumeMeshBuilder from './BoundingVolumeMeshBuilder';
+import MarkerComponent from './components/MarkerComponent';
+import DebugDrawHelper from './DebugDrawHelper';
+import Debugger from './Debugger';
+import EntityCounter from './EntityCounter';
+import index from './index';
+import CameraDebug from './shapes/CameraDebug';
+import LightDebug from './shapes/LightDebug';
+import MeshRendererDebug from './shapes/MeshRendererDebug';
+import SkeletonDebug from './shapes/SkeletonDebug';
+import DebugRenderSystem from './systems/DebugRenderSystem';
+import MarkerSystem from './systems/MarkerSystem';
+
 module.exports = {
-	BoundingVolumeMeshBuilder: require('./BoundingVolumeMeshBuilder'),
-	MarkerComponent: require('./components/MarkerComponent'),
-	DebugDrawHelper: require('./DebugDrawHelper'),
-	Debugger: require('./Debugger'),
-	EntityCounter: require('./EntityCounter'),
-	index: require('./index'),
-	CameraDebug: require('./shapes/CameraDebug'),
-	LightDebug: require('./shapes/LightDebug'),
-	MeshRendererDebug: require('./shapes/MeshRendererDebug'),
-	SkeletonDebug: require('./shapes/SkeletonDebug'),
-	DebugRenderSystem: require('./systems/DebugRenderSystem'),
-	MarkerSystem: require('./systems/MarkerSystem')
+	BoundingVolumeMeshBuilder,
+	MarkerComponent,
+	DebugDrawHelper,
+	Debugger,
+	EntityCounter,
+	index,
+	CameraDebug,
+	LightDebug,
+	MeshRendererDebug,
+	SkeletonDebug,
+	DebugRenderSystem,
+	MarkerSystem
 };
+
+import ObjectUtils from './../util/ObjectUtils';
+
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

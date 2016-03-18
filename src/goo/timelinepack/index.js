@@ -1,13 +1,18 @@
+import AbstractTimelineChannel from './AbstractTimelineChannel';
+import EventChannel from './EventChannel';
+import TimelineComponent from './TimelineComponent';
+import TimelineComponentHandler from './TimelineComponentHandler';
+import TimelineSystem from './TimelineSystem';
+import ValueChannel from './ValueChannel';
+import ObjectUtils from '../util/ObjectUtils';
+
 module.exports = {
-	AbstractTimelineChannel: require('./AbstractTimelineChannel'),
-	EventChannel: require('./EventChannel'),
-	TimelineComponent: require('./TimelineComponent'),
-	TimelineComponentHandler: require('./TimelineComponentHandler'),
-	TimelineSystem: require('./TimelineSystem'),
-	ValueChannel: require('./ValueChannel')
+	AbstractTimelineChannel,
+	EventChannel,
+	TimelineComponent,
+	TimelineComponentHandler,
+	TimelineSystem,
+	ValueChannel
 };
-if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
-}
+
+ObjectUtils.extend(window.goo, module.exports);

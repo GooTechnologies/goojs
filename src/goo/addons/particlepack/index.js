@@ -1,20 +1,33 @@
+import ParticleSystemComponent from './components/ParticleSystemComponent';
+import ConstantCurve from './curves/ConstantCurve';
+import Curve from './curves/Curve';
+import LerpCurve from './curves/LerpCurve';
+import LinearCurve from './curves/LinearCurve';
+import PolyCurve from './curves/PolyCurve';
+import Vector3Curve from './curves/Vector3Curve';
+import Vector4Curve from './curves/Vector4Curve';
+import ParticleSystemComponentHandler from './handlers/ParticleSystemComponentHandler';
+import ParticleData from './ParticleData';
+import ParticleDebugRenderSystem from './systems/ParticleDebugRenderSystem';
+import ParticleSystemSystem from './systems/ParticleSystemSystem';
+
 module.exports = {
-	ParticleSystemComponent: require('./components/ParticleSystemComponent'),
-	ConstantCurve: require('./curves/ConstantCurve'),
-	Curve: require('./curves/Curve'),
-	LerpCurve: require('./curves/LerpCurve'),
-	LinearCurve: require('./curves/LinearCurve'),
-	PolyCurve: require('./curves/PolyCurve'),
-	Vector3Curve: require('./curves/Vector3Curve'),
-	Vector4Curve: require('./curves/Vector4Curve'),
-	ParticleSystemComponentHandler: require('./handlers/ParticleSystemComponentHandler'),
-	ParticleData: require('./ParticleData'),
-	ParticleDebugRenderSystem: require('./systems/ParticleDebugRenderSystem'),
-	ParticleSystemSystem: require('./systems/ParticleSystemSystem')
+	ParticleSystemComponent,
+	ConstantCurve,
+	Curve,
+	LerpCurve,
+	LinearCurve,
+	PolyCurve,
+	Vector3Curve,
+	Vector4Curve,
+	ParticleSystemComponentHandler,
+	ParticleData,
+	ParticleDebugRenderSystem,
+	ParticleSystemSystem
 };
 
+import ObjectUtils from '../../util/ObjectUtils';
+
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

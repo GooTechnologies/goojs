@@ -1,10 +1,12 @@
+import P2Component from './P2Component';
+import P2System from './P2System';
+
 module.exports = {
-	P2Component: require('./P2Component'),
-	P2System: require('./P2System')
+	P2Component,
+	P2System
 };
 
+import ObjectUtils from '../../util/ObjectUtils';
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

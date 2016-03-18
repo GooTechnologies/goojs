@@ -1,31 +1,53 @@
+import AxisAlignedCamControlScript from './AxisAlignedCamControlScript';
+import BasicControlScript from './BasicControlScript';
+import ButtonScript from './ButtonScript';
+import CannonPickScript from './CannonPickScript';
+import FlyControlScript from './FlyControlScript';
+import GroundBoundMovementScript from './GroundBoundMovementScript';
+import HeightMapBoundingScript from './HeightMapBoundingScript';
+import LensFlareScript from './LensFlareScript';
+import MouseLookControlScript from './MouseLookControlScript';
+import OrbitNPanControlScript from './OrbitNPanControlScript';
+import PanCamScript from './PanCamScript';
+import PickAndRotateScript from './PickAndRotateScript';
+import PolyBoundingScript from './PolyBoundingScript';
+import RotationScript from './RotationScript';
+import ScriptComponentHandler from './ScriptComponentHandler';
+import ScriptHandler from './ScriptHandler';
+import ScriptHandlers from './ScriptHandlers';
+import ScriptRegister from './ScriptRegister';
+import SparseHeightMapBoundingScript from './SparseHeightMapBoundingScript';
+import WasdControlScript from './WasdControlScript';
+import WorldFittedTerrainScript from './WorldFittedTerrainScript';
+
 module.exports = {
-	AxisAlignedCamControlScript: require('./AxisAlignedCamControlScript'),
-	BasicControlScript: require('./BasicControlScript'),
-	ButtonScript: require('./ButtonScript'),
-	CannonPickScript: require('./CannonPickScript'),
-	FlyControlScript: require('./FlyControlScript'),
-	GroundBoundMovementScript: require('./GroundBoundMovementScript'),
-	HeightMapBoundingScript: require('./HeightMapBoundingScript'),
-	LensFlareScript: require('./LensFlareScript'),
-	MouseLookControlScript: require('./MouseLookControlScript'),
-	OrbitNPanControlScript: require('./OrbitNPanControlScript'),
-	PanCamScript: require('./PanCamScript'),
-	PickAndRotateScript: require('./PickAndRotateScript'),
-	PolyBoundingScript: require('./PolyBoundingScript'),
-	RotationScript: require('./RotationScript'),
-	ScriptComponentHandler: require('./ScriptComponentHandler'),
-	ScriptHandler: require('./ScriptHandler'),
-	ScriptHandlers: require('./ScriptHandlers'),
-	ScriptRegister: require('./ScriptRegister'),
-	SparseHeightMapBoundingScript: require('./SparseHeightMapBoundingScript'),
-	WasdControlScript: require('./WasdControlScript'),
-	WorldFittedTerrainScript: require('./WorldFittedTerrainScript')
+	AxisAlignedCamControlScript,
+	BasicControlScript,
+	ButtonScript,
+	CannonPickScript,
+	FlyControlScript,
+	GroundBoundMovementScript,
+	HeightMapBoundingScript,
+	LensFlareScript,
+	MouseLookControlScript,
+	OrbitNPanControlScript,
+	PanCamScript,
+	PickAndRotateScript,
+	PolyBoundingScript,
+	RotationScript,
+	ScriptComponentHandler,
+	ScriptHandler,
+	ScriptHandlers,
+	ScriptRegister,
+	SparseHeightMapBoundingScript,
+	WasdControlScript,
+	WorldFittedTerrainScript
 };
 
 require('./ScriptRegister');
 
+import ObjectUtils from './../util/ObjectUtils';
+
 if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
+	ObjectUtils.extend(window.goo, module.exports);
 }

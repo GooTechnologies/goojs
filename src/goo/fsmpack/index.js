@@ -1,89 +1,170 @@
+import MachineHandler from './MachineHandler';
+import ProximityComponent from './proximity/ProximityComponent';
+import ProximitySystem from './proximity/ProximitySystem';
+import Action from './statemachine/actions/Action';
+import Actions from './statemachine/actions/Actions';
+import AddLightAction from './statemachine/actions/AddLightAction';
+import AddPositionAction from './statemachine/actions/AddPositionAction';
+import AddVariableAction from './statemachine/actions/AddVariableAction';
+import ApplyImpulseAction from './statemachine/actions/ApplyImpulseAction';
+import ArrowsAction from './statemachine/actions/ArrowsAction';
+import CollidesAction from './statemachine/actions/CollidesAction';
+import CompareCounterAction from './statemachine/actions/CompareCounterAction';
+import CompareCountersAction from './statemachine/actions/CompareCountersAction';
+import CompareDistanceAction from './statemachine/actions/CompareDistanceAction';
+import CopyJointTransformAction from './statemachine/actions/CopyJointTransformAction';
+import DollyZoomAction from './statemachine/actions/DollyZoomAction';
+import EmitAction from './statemachine/actions/EmitAction';
+import EvalAction from './statemachine/actions/EvalAction';
+import FireAction from './statemachine/actions/FireAction';
+import GetPositionAction from './statemachine/actions/GetPositionAction';
+import HideAction from './statemachine/actions/HideAction';
+import HtmlAction from './statemachine/actions/HtmlAction';
+import InBoxAction from './statemachine/actions/InBoxAction';
+import IncrementCounterAction from './statemachine/actions/IncrementCounterAction';
+import InFrustumAction from './statemachine/actions/InFrustumAction';
+import KeyDownAction from './statemachine/actions/KeyDownAction';
+import KeyPressedAction from './statemachine/actions/KeyPressedAction';
+import KeyUpAction from './statemachine/actions/KeyUpAction';
+import LogMessageAction from './statemachine/actions/LogMessageAction';
+import LookAtAction from './statemachine/actions/LookAtAction';
+import MouseDownAction from './statemachine/actions/MouseDownAction';
+import MouseMoveAction from './statemachine/actions/MouseMoveAction';
+import MouseUpAction from './statemachine/actions/MouseUpAction';
+import MoveAction from './statemachine/actions/MoveAction';
+import MultiplyVariableAction from './statemachine/actions/MultiplyVariableAction';
+import NumberCompareAction from './statemachine/actions/NumberCompareAction';
+import PauseAnimationAction from './statemachine/actions/PauseAnimationAction';
+import PickAction from './statemachine/actions/PickAction';
+import PickAndExitAction from './statemachine/actions/PickAndExitAction';
+import RandomTransitionAction from './statemachine/actions/RandomTransitionAction';
+import RemoveAction from './statemachine/actions/RemoveAction';
+import RemoveLightAction from './statemachine/actions/RemoveLightAction';
+import RemoveParticlesAction from './statemachine/actions/RemoveParticlesAction';
+import ResumeAnimationAction from './statemachine/actions/ResumeAnimationAction';
+import RotateAction from './statemachine/actions/RotateAction';
+import ScaleAction from './statemachine/actions/ScaleAction';
+import SetAnimationAction from './statemachine/actions/SetAnimationAction';
+import SetClearColorAction from './statemachine/actions/SetClearColorAction';
+import SetCounterAction from './statemachine/actions/SetCounterAction';
+import SetLightRangeAction from './statemachine/actions/SetLightRangeAction';
+import SetPositionAction from './statemachine/actions/SetPositionAction';
+import SetRenderTargetAction from './statemachine/actions/SetRenderTargetAction';
+import SetRotationAction from './statemachine/actions/SetRotationAction';
+import SetVariableAction from './statemachine/actions/SetVariableAction';
+import ShakeAction from './statemachine/actions/ShakeAction';
+import ShowAction from './statemachine/actions/ShowAction';
+import SmokeAction from './statemachine/actions/SmokeAction';
+import SoundFadeInAction from './statemachine/actions/SoundFadeInAction';
+import SoundFadeOutAction from './statemachine/actions/SoundFadeOutAction';
+import SwitchCameraAction from './statemachine/actions/SwitchCameraAction';
+import TagAction from './statemachine/actions/TagAction';
+import TransitionAction from './statemachine/actions/TransitionAction';
+import TransitionOnMessageAction from './statemachine/actions/TransitionOnMessageAction';
+import TriggerEnterAction from './statemachine/actions/TriggerEnterAction';
+import TriggerLeaveAction from './statemachine/actions/TriggerLeaveAction';
+import TweenLightColorAction from './statemachine/actions/TweenLightColorAction';
+import TweenLookAtAction from './statemachine/actions/TweenLookAtAction';
+import TweenMoveAction from './statemachine/actions/TweenMoveAction';
+import TweenOpacityAction from './statemachine/actions/TweenOpacityAction';
+import TweenRotationAction from './statemachine/actions/TweenRotationAction';
+import TweenScaleAction from './statemachine/actions/TweenScaleAction';
+import TweenTextureOffsetAction from './statemachine/actions/TweenTextureOffsetAction';
+import WaitAction from './statemachine/actions/WaitAction';
+import WasdAction from './statemachine/actions/WasdAction';
+import FSMUtil from './statemachine/FSMUtil';
+import FsmUtils from './statemachine/FsmUtils';
+import Machine from './statemachine/Machine';
+import State from './statemachine/State';
+import StateMachineComponent from './statemachine/StateMachineComponent';
+import StateMachineSystem from './statemachine/StateMachineSystem';
+import StateMachineComponentHandler from './StateMachineComponentHandler';
+import StateMachineHandlers from './StateMachineHandlers';
+import ObjectUtils from './../util/ObjectUtils';
+
 module.exports = {
-	MachineHandler: require('./MachineHandler'),
-	ProximityComponent: require('./proximity/ProximityComponent'),
-	ProximitySystem: require('./proximity/ProximitySystem'),
-	Action: require('./statemachine/actions/Action'),
-	Actions: require('./statemachine/actions/Actions'),
-	AddLightAction: require('./statemachine/actions/AddLightAction'),
-	AddPositionAction: require('./statemachine/actions/AddPositionAction'),
-	AddVariableAction: require('./statemachine/actions/AddVariableAction'),
-	ApplyImpulseAction: require('./statemachine/actions/ApplyImpulseAction'),
-	ArrowsAction: require('./statemachine/actions/ArrowsAction'),
-	CollidesAction: require('./statemachine/actions/CollidesAction'),
-	CompareCounterAction: require('./statemachine/actions/CompareCounterAction'),
-	CompareCountersAction: require('./statemachine/actions/CompareCountersAction'),
-	CompareDistanceAction: require('./statemachine/actions/CompareDistanceAction'),
-	CopyJointTransformAction: require('./statemachine/actions/CopyJointTransformAction'),
-	DollyZoomAction: require('./statemachine/actions/DollyZoomAction'),
-	EmitAction: require('./statemachine/actions/EmitAction'),
-	EvalAction: require('./statemachine/actions/EvalAction'),
-	FireAction: require('./statemachine/actions/FireAction'),
-	GetPositionAction: require('./statemachine/actions/GetPositionAction'),
-	HideAction: require('./statemachine/actions/HideAction'),
-	HtmlAction: require('./statemachine/actions/HtmlAction'),
-	InBoxAction: require('./statemachine/actions/InBoxAction'),
-	IncrementCounterAction: require('./statemachine/actions/IncrementCounterAction'),
-	InFrustumAction: require('./statemachine/actions/InFrustumAction'),
-	KeyDownAction: require('./statemachine/actions/KeyDownAction'),
-	KeyPressedAction: require('./statemachine/actions/KeyPressedAction'),
-	KeyUpAction: require('./statemachine/actions/KeyUpAction'),
-	LogMessageAction: require('./statemachine/actions/LogMessageAction'),
-	LookAtAction: require('./statemachine/actions/LookAtAction'),
-	MouseDownAction: require('./statemachine/actions/MouseDownAction'),
-	MouseMoveAction: require('./statemachine/actions/MouseMoveAction'),
-	MouseUpAction: require('./statemachine/actions/MouseUpAction'),
-	MoveAction: require('./statemachine/actions/MoveAction'),
-	MultiplyVariableAction: require('./statemachine/actions/MultiplyVariableAction'),
-	NumberCompareAction: require('./statemachine/actions/NumberCompareAction'),
-	PauseAnimationAction: require('./statemachine/actions/PauseAnimationAction'),
-	PickAction: require('./statemachine/actions/PickAction'),
-	PickAndExitAction: require('./statemachine/actions/PickAndExitAction'),
-	RandomTransitionAction: require('./statemachine/actions/RandomTransitionAction'),
-	RemoveAction: require('./statemachine/actions/RemoveAction'),
-	RemoveLightAction: require('./statemachine/actions/RemoveLightAction'),
-	RemoveParticlesAction: require('./statemachine/actions/RemoveParticlesAction'),
-	ResumeAnimationAction: require('./statemachine/actions/ResumeAnimationAction'),
-	RotateAction: require('./statemachine/actions/RotateAction'),
-	ScaleAction: require('./statemachine/actions/ScaleAction'),
-	SetAnimationAction: require('./statemachine/actions/SetAnimationAction'),
-	SetClearColorAction: require('./statemachine/actions/SetClearColorAction'),
-	SetCounterAction: require('./statemachine/actions/SetCounterAction'),
-	SetLightRangeAction: require('./statemachine/actions/SetLightRangeAction'),
-	SetPositionAction: require('./statemachine/actions/SetPositionAction'),
-	SetRenderTargetAction: require('./statemachine/actions/SetRenderTargetAction'),
-	SetRotationAction: require('./statemachine/actions/SetRotationAction'),
-	SetVariableAction: require('./statemachine/actions/SetVariableAction'),
-	ShakeAction: require('./statemachine/actions/ShakeAction'),
-	ShowAction: require('./statemachine/actions/ShowAction'),
-	SmokeAction: require('./statemachine/actions/SmokeAction'),
-	SoundFadeInAction: require('./statemachine/actions/SoundFadeInAction'),
-	SoundFadeOutAction: require('./statemachine/actions/SoundFadeOutAction'),
-	SwitchCameraAction: require('./statemachine/actions/SwitchCameraAction'),
-	TagAction: require('./statemachine/actions/TagAction'),
-	TransitionAction: require('./statemachine/actions/TransitionAction'),
-	TransitionOnMessageAction: require('./statemachine/actions/TransitionOnMessageAction'),
-	TriggerEnterAction: require('./statemachine/actions/TriggerEnterAction'),
-	TriggerLeaveAction: require('./statemachine/actions/TriggerLeaveAction'),
-	TweenLightColorAction: require('./statemachine/actions/TweenLightColorAction'),
-	TweenLookAtAction: require('./statemachine/actions/TweenLookAtAction'),
-	TweenMoveAction: require('./statemachine/actions/TweenMoveAction'),
-	TweenOpacityAction: require('./statemachine/actions/TweenOpacityAction'),
-	TweenRotationAction: require('./statemachine/actions/TweenRotationAction'),
-	TweenScaleAction: require('./statemachine/actions/TweenScaleAction'),
-	TweenTextureOffsetAction: require('./statemachine/actions/TweenTextureOffsetAction'),
-	WaitAction: require('./statemachine/actions/WaitAction'),
-	WasdAction: require('./statemachine/actions/WasdAction'),
-	FSMUtil: require('./statemachine/FSMUtil'),
-	FsmUtils: require('./statemachine/FsmUtils'),
-	Machine: require('./statemachine/Machine'),
-	State: require('./statemachine/State'),
-	StateMachineComponent: require('./statemachine/StateMachineComponent'),
-	StateMachineSystem: require('./statemachine/StateMachineSystem'),
-	StateMachineComponentHandler: require('./StateMachineComponentHandler'),
-	StateMachineHandlers: require('./StateMachineHandlers')
+	MachineHandler,
+	ProximityComponent,
+	ProximitySystem,
+	Action,
+	Actions,
+	AddLightAction,
+	AddPositionAction,
+	AddVariableAction,
+	ApplyImpulseAction,
+	ArrowsAction,
+	CollidesAction,
+	CompareCounterAction,
+	CompareCountersAction,
+	CompareDistanceAction,
+	CopyJointTransformAction,
+	DollyZoomAction,
+	EmitAction,
+	EvalAction,
+	FireAction,
+	GetPositionAction,
+	HideAction,
+	HtmlAction,
+	InBoxAction,
+	IncrementCounterAction,
+	InFrustumAction,
+	KeyDownAction,
+	KeyPressedAction,
+	KeyUpAction,
+	LogMessageAction,
+	LookAtAction,
+	MouseDownAction,
+	MouseMoveAction,
+	MouseUpAction,
+	MoveAction,
+	MultiplyVariableAction,
+	NumberCompareAction,
+	PauseAnimationAction,
+	PickAction,
+	PickAndExitAction,
+	RandomTransitionAction,
+	RemoveAction,
+	RemoveLightAction,
+	RemoveParticlesAction,
+	ResumeAnimationAction,
+	RotateAction,
+	ScaleAction,
+	SetAnimationAction,
+	SetClearColorAction,
+	SetCounterAction,
+	SetLightRangeAction,
+	SetPositionAction,
+	SetRenderTargetAction,
+	SetRotationAction,
+	SetVariableAction,
+	ShakeAction,
+	ShowAction,
+	SmokeAction,
+	SoundFadeInAction,
+	SoundFadeOutAction,
+	SwitchCameraAction,
+	TagAction,
+	TransitionAction,
+	TransitionOnMessageAction,
+	TriggerEnterAction,
+	TriggerLeaveAction,
+	TweenLightColorAction,
+	TweenLookAtAction,
+	TweenMoveAction,
+	TweenOpacityAction,
+	TweenRotationAction,
+	TweenScaleAction,
+	TweenTextureOffsetAction,
+	WaitAction,
+	WasdAction,
+	FSMUtil,
+	FsmUtils,
+	Machine,
+	State,
+	StateMachineComponent,
+	StateMachineSystem,
+	StateMachineComponentHandler,
+	StateMachineHandlers
 };
-if (typeof(window) !== 'undefined') {
-	for (var key in module.exports) {
-		window.goo[key] = module.exports[key];
-	}
-}
+
+ObjectUtils.extend(window.goo, module.exports);
