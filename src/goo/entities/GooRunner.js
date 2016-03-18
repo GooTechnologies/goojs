@@ -16,13 +16,10 @@ import MeshRendererComponent from './components/MeshRendererComponent';
 import CameraComponent from './components/CameraComponent';
 import LightComponent from './components/LightComponent';
 import ScriptComponent from './components/ScriptComponent';
-import SoundComponent from './components/SoundComponent';
 import GameUtils from '../util/GameUtils';
 import Logo from '../util/Logo';
 import SystemBus from './SystemBus';
 import Material from '../renderer/Material';
-
-
 
 	/**
 	 * The main class that updates the world and calls the renderers.

@@ -1,5 +1,3 @@
-define(function () {
-
 
 	/**
 	 * Class to use for animation sources. Base class - not supposed to be used directly.
@@ -48,5 +46,4 @@ define(function () {
 	 */
 	Source.prototype.clone = function () {};
 
-	return Source;
-});
+	module.exports = Source;

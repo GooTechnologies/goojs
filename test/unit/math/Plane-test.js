@@ -1,3 +1,8 @@
+var Vector3 = require('../../../src/goo/math/Vector3');
+var Plane = require('../../../src/goo/math/Plane');
+var Ray = require('../../../src/goo/math/Ray');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 	describe('Plane', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

@@ -1,6 +1,6 @@
 // based on es6-collections by Andrea Giammarchi, @WebReflection
 // Object.is shim from the MDN
-(function () {
+(function (global) {
 	'use strict';
 
 	if (!Object.is) {
@@ -20,8 +20,8 @@
 	//shortcuts
 	var defineProperty = Object.defineProperty, is = Object.is;
 
-	if (!window.Set) {
-		window.Map = createCollection({
+	if (!global.Set) {
+		global.Map = createCollection({
 			// WeakMap#delete(key:void*):boolean
 			'delete': sharedDelete,
 			//:was Map#get(key:void*[, d3fault:void*]):void*
@@ -41,7 +41,7 @@
 			clear: sharedClear
 		});
 
-		window.Set = createCollection({
+		global.Set = createCollection({
 			// Set#has(value:void*):boolean
 			has: setHas,
 			// Set#add(value:void*):boolean
@@ -176,4 +176,4 @@
 			callback.call(context, value, value, self);
 		});
 	}
-})();
+})(this);

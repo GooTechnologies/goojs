@@ -6,12 +6,6 @@ import Vector3 from '../math/Vector3';
 import Vector4 from '../math/Vector4';
 import ObjectUtils from '../util/ObjectUtils';
 
-
-
-
-	//! AT: why this?
-	var Uint8ClampedArray = window.Uint8ClampedArray;
-
 	/**
 	 * Stores all buffers for geometric data and similar attributes
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
@@ -112,7 +106,7 @@ import ObjectUtils from '../util/ObjectUtils';
 					savedAttributes[key] = view;
 				}
 			}
-			if (this.indexData) {
+			if (indexCount > 0 && this.indexData) {
 				savedIndices = this.indexData.data;
 			}
 		}
@@ -131,7 +125,7 @@ import ObjectUtils from '../util/ObjectUtils';
 				}
 			}
 
-			if (savedIndices) {
+			if (indexCount > 0 && savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
 		}

@@ -1,3 +1,8 @@
+var Vector3 = require('../../../src/goo/math/Vector3');
+var Matrix3 = require('../../../src/goo/math/Matrix3');
+var Quaternion = require('../../../src/goo/math/Quaternion');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 	describe('Quaternion', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);

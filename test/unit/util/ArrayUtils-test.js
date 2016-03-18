@@ -1,3 +1,5 @@
+var ArrayUtils = require('src/goo/util/ArrayUtils');
+
 	describe('ArrayUtils', function () {
 		describe('fromKeys', function () {
 			it('returns an empty array for an empty collection', function () {

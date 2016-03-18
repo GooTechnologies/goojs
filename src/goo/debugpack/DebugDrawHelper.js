@@ -1,8 +1,4 @@
-import LightComponent from '../entities/components/LightComponent';
-import CameraComponent from '../entities/components/CameraComponent';
-import MeshRendererComponent from '../entities/components/MeshRendererComponent';
 import SkeletonPose from '../animationpack/SkeletonPose';
-import PointLight from '../renderer/light/PointLight';
 import DirectionalLight from '../renderer/light/DirectionalLight';
 import SpotLight from '../renderer/light/SpotLight';
 import LightDebug from './shapes/LightDebug';
@@ -11,11 +7,9 @@ import MeshRendererDebug from './shapes/MeshRendererDebug';
 import SkeletonDebug from './shapes/SkeletonDebug';
 import Material from '../renderer/Material';
 import ShaderLib from '../renderer/shaders/ShaderLib';
-import ShaderBuilder from '../renderer/shaders/ShaderBuilder';
 import Transform from '../math/Transform';
 import Camera from '../renderer/Camera';
 import Renderer from '../renderer/Renderer';
-
 
 	var DebugDrawHelper = {};
 
@@ -78,27 +72,34 @@ import Renderer from '../renderer/Renderer';
 		});
 	};
 
-	DebugDrawHelper.update = function (renderables, component, camera) {
+	DebugDrawHelper.update = function (renderables, component, camera, renderer) {
 		// major refactoring needed here
 
-		// rebuilding camera frustum if needed
-		if (component.camera && component.camera.changedProperties) {
+
+		if (component.camera) {
 			var camera = component.camera;
-			if (renderables.length > 1 &&
-				((camera.far / camera.near) !== renderables[1].farNear ||
-					camera.fov !== renderables[1].fov ||
-					camera.size !== renderables[1].size ||
-					camera.aspect !== renderables[1].aspect ||
-					camera.projectionMode !== renderables[1].projectionMode
-				)) {
-				renderables[1].meshData = CameraDebug.buildFrustum(camera);
-				renderables[1].farNear = camera.far / camera.near;
-				renderables[1].fov = camera.fov;
-				renderables[1].size = camera.size;
-				renderables[1].aspect = camera.aspect;
-				renderables[1].projectionMode = camera.projectionMode;
+
+			if (renderer) {
+				renderer.checkResize(camera, true);
 			}
-			component.camera.changedProperties = false;
+
+			if(component.camera.changedProperties){
+				if (renderables.length > 1 &&
+					((camera.far / camera.near) !== renderables[1].farNear ||
+						camera.fov !== renderables[1].fov ||
+						camera.size !== renderables[1].size ||
+						camera.aspect !== renderables[1].aspect ||
+						camera.projectionMode !== renderables[1].projectionMode
+					)) {
+					renderables[1].meshData = CameraDebug.buildFrustum(camera);
+					renderables[1].farNear = camera.far / camera.near;
+					renderables[1].fov = camera.fov;
+					renderables[1].size = camera.size;
+					renderables[1].aspect = camera.aspect;
+					renderables[1].projectionMode = camera.projectionMode;
+				}
+				component.camera.changedProperties = false;
+			}
 		}
 
 		// updating materials

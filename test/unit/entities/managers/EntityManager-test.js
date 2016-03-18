@@ -1,4 +1,8 @@
 	describe('EntityManager', function () {
+
+		var World = require('src/goo/entities/World');
+		var EntityManager = require('src/goo/entities/managers/EntityManager');
+
 		var world;
 		var entityManager;
 		beforeEach(function () {

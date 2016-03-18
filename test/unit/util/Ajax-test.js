@@ -1,3 +1,5 @@
+var Ajax = require('src/goo/util/Ajax');
+
 	var TestResponses = {
 		'good-url': {
 			readyState: 4,

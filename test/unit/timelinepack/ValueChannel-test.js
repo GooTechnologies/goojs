@@ -1,3 +1,10 @@
+var ValueChannel = require('src/goo/timelinepack/ValueChannel');
+var TransformComponent = require('src/goo/entities/components/TransformComponent');
+var MathUtils = require('src/goo/math/MathUtils');
+var Matrix3 = require('src/goo/math/Matrix3');
+var Entity = require('src/goo/entities/Entity');
+var CustomMatchers = require('test/unit/CustomMatchers');
+
 	describe('ValueChannel', function () {
 		var channel;
 		beforeEach(function () {

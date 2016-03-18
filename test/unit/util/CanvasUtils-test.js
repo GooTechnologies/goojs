@@ -1,3 +1,6 @@
+
+var CanvasUtils = require('src/goo/util/CanvasUtils');
+
 	describe('CanvasUtils', function () {
 		describe('Rendering an SVG to canvas', function () {
 			var renderSize = 300;

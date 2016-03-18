@@ -1,4 +1,12 @@
 describe('CameraComponent', function () {
+
+	var Entity = require('src/goo/entities/Entity');
+	var World = require('src/goo/entities/World');
+	var SystemBus = require('src/goo/entities/SystemBus');
+	var Camera = require('src/goo/renderer/Camera');
+	var CameraComponent = require('src/goo/entities/components/CameraComponent');
+	var CustomMatchers = require('test/unit/CustomMatchers');
+
 	var world;
 
 	beforeEach(function () {

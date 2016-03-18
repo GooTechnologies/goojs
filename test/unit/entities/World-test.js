@@ -1,4 +1,25 @@
+	var Manager = require('src/goo/entities/managers/Manager');
+	var Entity = require('src/goo/entities/Entity');
+	var System = require('src/goo/entities/systems/System');
+	var World = require('src/goo/entities/World');
+	var TransformComponent = require('src/goo/entities/components/TransformComponent');
+	var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
+	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
+	var CameraComponent = require('src/goo/entities/components/CameraComponent');
+	var LightComponent = require('src/goo/entities/components/LightComponent');
+	var ScriptComponent = require('src/goo/entities/components/ScriptComponent');
+	var Component = require('src/goo/entities/components/Component');
+	var ScriptSystem = require('src/goo/entities/systems/ScriptSystem');
+	var TransformSystem = require('src/goo/entities/systems/TransformSystem');
+	var Box = require('src/goo/shapes/Box');
+	var Camera = require('src/goo/renderer/Camera');
+	var PointLight = require('src/goo/renderer/light/PointLight');
+	var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
+	var Material = require('src/goo/renderer/Material');
+	var EntitySelection = require('src/goo/entities/EntitySelection');
+
 	describe('World with Systems', function () {
+
 		var world;
 
 		beforeEach(function () {

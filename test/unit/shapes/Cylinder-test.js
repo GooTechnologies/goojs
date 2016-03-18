@@ -1,3 +1,5 @@
+var Cylinder = require('src/goo/shapes/Cylinder');
+
 	describe('Cylinder', function () {
 		var a = new Cylinder();
 

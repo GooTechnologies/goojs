@@ -5,7 +5,8 @@
   "description": "Goo Engine - the WebGL graphics engine",
   "homepage": "http://goocreate.com/",
   "scripts": {
-    "compile": "babel src --out-dir es5"
+    "compile": "babel src --out-dir es5",
+    "nodetest": "NODE_PATH=. ./node_modules/jasmine-node/bin/jasmine-node --matchAll test/unit/{animationpack,entities,math,noise,particles,picking,quadpack,scripts,shapes,timelinepack}/*.js test/unit/{addons,animationpack,debugpack,entities,fsmpack}/**/*.js"
   },
   "licenses": [
     {
@@ -18,10 +19,12 @@
     "async": "~0.9.0",
     "babel": "^6.5.2",
     "babel-core": "^6.7.2",
+    "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.6.0",
     "coffee-script": "1.9.2",
     "colors": "~1.1.0",
     "commander": "~2.8.1",
+    "core-js": "^2.2.0",
     "escodegen": "~1.6.1",
     "eslint": "^0.23.0",
     "esprima": "~2.2.0",
@@ -45,14 +48,15 @@
     "grunt-webpack": "^1.0.11",
     "grunt-wrap": "~0.3.0",
     "handlebars": "^3.0.3",
+    "istanbul-instrumenter-loader": "^0.2.0",
     "jasmine-core": "^2.4.1",
     "jasmine-fixture": "^2.0.0",
     "jasmine-node": "~2.0.0",
     "jshint": "2.7.0",
-    "karma": "~0.13.0",
+    "karma": "^0.13.22",
     "karma-chrome-launcher": "~0.2.0",
     "karma-coffee-preprocessor": "~0.3.0",
-    "karma-coverage": "latest",
+    "karma-coverage": "^0.5.5",
     "karma-firefox-launcher": "~0.1.0",
     "karma-jasmine": "^0.3.7",
     "karma-jasmine-jquery": "^0.1.1",

@@ -1,4 +1,6 @@
 	describe('Bus', function () {
+		var Bus = require('src/goo/entities/Bus');
+
 		var bus;
 
 		beforeEach(function () {
@@ -350,8 +352,8 @@
 
 		describe('clear', function () {
 			it('clears the system bus of any channels or listeners', function () {
-				bus.addListener('main', function (data) {});
-				bus.addListener('main.second', function (data) {});
+				bus.addListener('main', function (/*data*/) {});
+				bus.addListener('main.second', function (/*data*/) {});
 				bus.clear();
 				var newBus = new Bus();
 				bus._emitOnEachChildChannel = newBus._emitOnEachChildChannel = null; // this function is the only thing that differ in the following test

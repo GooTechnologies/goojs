@@ -26,7 +26,7 @@
 
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: window.__karma__ ? './' : 'loaders/res'
+				rootPath: typeof(window) !== 'undefined' && window.__karma__ ? './' : 'loaders/res'
 			});
 		});
 

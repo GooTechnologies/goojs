@@ -1,3 +1,11 @@
+v0.15.36 --- 2016-03-17
+
+### Fixes
+
+  * MouseLookControlScript in pointer lock mode fallbacks to "any button" if theres no pointer lock support
+  * Fixed handling of custom attributes
+  * Fixed bug in MeshData rebuild for indexCount = 0
+
 v0.15.35 --- 2016-03-16
 
 ### Additions
