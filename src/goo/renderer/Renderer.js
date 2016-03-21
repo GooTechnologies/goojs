@@ -1564,7 +1564,6 @@ define([
 				} else if (textureSlot.format === 'samplerCube') {
 					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
 				}
-				// continue;
 			}
 
 			var textureList = texture;
