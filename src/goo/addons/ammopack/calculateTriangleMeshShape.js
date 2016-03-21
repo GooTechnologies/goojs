@@ -1,7 +1,5 @@
+/* global Ammo */
 
-/*global Ammo */
-
-// TODO: instead of using this scale parameter, "simply" scale the vertices with the real entity transform
 module.exports = function (entity, scale) {
 	scale = scale || [1, 1, 1];
 	var floatByteSize = 4;

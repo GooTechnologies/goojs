@@ -1,5 +1,3 @@
-
-
 /**
  * Base class for physics joints, for example hinge or balljoint.
  * @param {Object} [settings]

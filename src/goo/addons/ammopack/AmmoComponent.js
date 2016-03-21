@@ -11,9 +11,7 @@ var BoundingBox = require('../../renderer/bounds/BoundingBox');
 var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 var ObjectUtils = require('../../util/ObjectUtils');
 
-
-
-/*global Ammo */
+/* global Ammo */
 
 /**
  * Adds Ammo physics to a Goo entity.
@@ -174,8 +172,6 @@ AmmoComponent.prototype.initialize = function (entity) {
 };
 
 AmmoComponent.prototype.showBounds = function (entity) {
-	// entity.meshRendererComponent.worldBound
-	// entity.meshDataComponent.computeBoundFromPoints();
 	var bound = EntityUtils.getTotalBoundingBox(entity);
 	var bv;
 
@@ -188,7 +184,6 @@ AmmoComponent.prototype.showBounds = function (entity) {
 	}
 
 	bv.transformComponent.setTranslation(bound.center);
-	//entity.transformComponent.attachChild( bv.transformComponent );
 
 	bv.addToWorld();
 	this.bv = bv;

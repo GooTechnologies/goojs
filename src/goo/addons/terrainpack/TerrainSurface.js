@@ -1,8 +1,6 @@
 var MeshData = require('../../renderer/MeshData');
 var MathUtils = require('../../math/MathUtils');
 
-
-
 /**
  * A grid-like surface shape
  * @param {array} heightMatrix The height data by x and z axis.

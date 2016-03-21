@@ -1,125 +1,125 @@
 var Vector3 = require('../../math/Vector3');
 
+/**
+ * Container for particle data in the ParticleSystemComponent.
+ * @class
+ * @constructor
+ * @param {ParticleSystemComponent} particleComponent
+ */
+function ParticleData(particleComponent) {
+
 	/**
-	 * Container for particle data in the ParticleSystemComponent.
-	 * @class
-	 * @constructor
-	 * @param {ParticleSystemComponent} particleComponent
+	 * The owner component
+	 * @type {number}
 	 */
-	function ParticleData(particleComponent) {
+	this.component = particleComponent;
 
-		/**
-		 * The owner component
-		 * @type {number}
-		 */
-		this.component = particleComponent;
+	/**
+	 * @type {number}
+	 */
+	this.index = 0;
 
-		/**
-		 * @type {number}
-		 */
-		this.index = 0;
+	/**
+	 * @type {number}
+	 */
+	this.lifeTime = 1;
 
-		/**
-		 * @type {number}
-		 */
-		this.lifeTime = 1;
+	/**
+	 * @type {number}
+	 */
+	this.emitTime = 0;
 
-		/**
-		 * @type {number}
-		 */
-		this.emitTime = 0;
+	/**
+	 * @type {number}
+	 */
+	this.active = 1;
 
-		/**
-		 * @type {number}
-		 */
-		this.active = 1;
+	/**
+	 * @type {Vector3}
+	 */
+	this.startPosition = new Vector3();
 
-		/**
-		 * @type {Vector3}
-		 */
-		this.startPosition = new Vector3();
+	/**
+	 * @type {Vector3}
+	 */
+	this.startDirection = new Vector3();
 
-		/**
-		 * @type {Vector3}
-		 */
-		this.startDirection = new Vector3();
+	/**
+	 * @type {number}
+	 */
+	this.startAngle = 0;
 
-		/**
-		 * @type {number}
-		 */
-		this.startAngle = 0;
+	/**
+	 * @type {number}
+	 */
+	this.startSize = 1;
 
-		/**
-		 * @type {number}
-		 */
-		this.startSize = 1;
+	/**
+	 * @type {number}
+	 */
+	this.sortValue = 0;
 
-		/**
-		 * @type {number}
-		 */
-		this.sortValue = 0;
+	/**
+	 * @type {number}
+	 */
+	this.emitRandom = 0;
 
-		/**
-		 * @type {number}
-		 */
-		this.emitRandom = 0;
+	/**
+	 * @type {number}
+	 */
+	this.loopAfter = 0;
+}
 
-		/**
-		 * @type {number}
-		 */
-		this.loopAfter = 0;
+var dirDelta = new Vector3();
+var gravityDelta = new Vector3();
+var localVelocityDelta = new Vector3();
+var worldVelocityDelta = new Vector3();
+
+/**
+ * Get the world position of the particle
+ * @param {Vector3} store
+ */
+ParticleData.prototype.getWorldPosition = function (store) {
+	if (!this.active) {
+		return store;
 	}
 
-	var dirDelta = new Vector3();
-	var gravityDelta = new Vector3();
-	var localVelocityDelta = new Vector3();
-	var worldVelocityDelta = new Vector3();
+	var component = this.component;
 
-	/**
-	 * Get the world position of the particle
-	 * @param {Vector3} store
-	 */
-	ParticleData.prototype.getWorldPosition = function (store) {
-		if (!this.active) {
-			return store;
-		}
+	// pos + dir * t + 0.5 * t * t * g
+	var age = component.time - this.emitTime;
 
-		var component = this.component;
+	if (component.loop) {
+		age = age % this.loopAfter;
+	}
 
-		// pos + dir * t + 0.5 * t * t * g
-		var age = component.time - this.emitTime;
+	dirDelta.copy(this.startDirection).scale(age);
+	gravityDelta.copy(component.localSpace ? component._localGravity : component.gravity).scale(age * age * 0.5);
+	store.copy(this.startPosition).add(dirDelta).add(gravityDelta);
 
-		if (component.loop) {
-			age = age % this.loopAfter;
-		}
+	// Add velocity over lifetime
+	if (component.localVelocityOverLifetime) {
+		var unitAge = age / this.loopAfter;
+		component.localVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
+		localVelocityDelta.applyPost(component._localToWorldRotation);
+		store.add(localVelocityDelta);
+	}
 
-		dirDelta.copy(this.startDirection).scale(age);
-		gravityDelta.copy(component.localSpace ? component._localGravity : component.gravity).scale(age * age * 0.5);
-		store.copy(this.startPosition).add(dirDelta).add(gravityDelta);
+	if (component.worldVelocityOverLifetime) {
+		var unitAge = age / this.loopAfter;
+		component.worldVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
+		worldVelocityDelta.applyPost(component._worldToLocalRotation);
+		store.add(worldVelocityDelta);
+	}
 
-		// Add velocity over lifetime
-		if (component.localVelocityOverLifetime) {
-			var unitAge = age / this.loopAfter;
-			component.localVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, localVelocityDelta);
-			localVelocityDelta.applyPost(component._localToWorldRotation);
-			store.add(localVelocityDelta);
-		}
+	if (component.localSpace) {
+		// Transform to world space
+		var worldTransform = component.entity.transformComponent.worldTransform;
+		store.applyPost(worldTransform.rotation);
+		store.add(worldTransform.translation);
+	}
 
-		if (component.worldVelocityOverLifetime) {
-			var unitAge = age / this.loopAfter;
-			component.worldVelocityOverLifetime.getVec3IntegralValueAt(unitAge, this.emitRandom, worldVelocityDelta);
-			worldVelocityDelta.applyPost(component._worldToLocalRotation);
-			store.add(worldVelocityDelta);
-		}
+	return store;
+};
 
-		if (component.localSpace) {
-			// Transform to world space
-			var worldTransform = component.entity.transformComponent.worldTransform;
-			store.applyPost(worldTransform.rotation);
-			store.add(worldTransform.translation);
-		}
-
-		return store;
-	};
-
-	module.exports = ParticleData;
+module.exports = ParticleData;

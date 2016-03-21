@@ -1,42 +1,41 @@
 var Curve = require('../../../addons/particlepack/curves/Curve');
 
+/**
+ * A curve with a constant value.
+ * @class
+ * @constructor
+ * @extends Curve
+ * @param {object} [options]
+ * @param {number} [options.value=1]
+ */
+function ConstantCurve(options) {
+	options = options || {};
+
+	Curve.call(this, options);
 
 	/**
-	 * A curve with a constant value.
-	 * @class
-	 * @constructor
-	 * @extends Curve
-	 * @param {object} [options]
-	 * @param {number} [options.value=1]
+	 * @type {number}
 	 */
-	function ConstantCurve(options) {
-		options = options || {};
+	this.value = options.value !== undefined ? options.value : 1;
+}
+ConstantCurve.prototype = Object.create(Curve.prototype);
+ConstantCurve.prototype.constructor = ConstantCurve;
 
-		Curve.call(this, options);
+ConstantCurve.prototype.toGLSL = function (/*timeVariableName, lerpValueVariableName*/) {
+	return Curve.numberToGLSL(this.value);
+};
 
-		/**
-		 * @type {number}
-		 */
-		this.value = options.value !== undefined ? options.value : 1;
-	}
-	ConstantCurve.prototype = Object.create(Curve.prototype);
-	ConstantCurve.prototype.constructor = ConstantCurve;
+ConstantCurve.prototype.integralToGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
+	var value = Curve.numberToGLSL(this.value);
+	return '(' + value + '*' + timeVariableName + ')';
+};
 
-	ConstantCurve.prototype.toGLSL = function (/*timeVariableName, lerpValueVariableName*/) {
-		return Curve.numberToGLSL(this.value);
-	};
+ConstantCurve.prototype.getValueAt = function (/*t, lerpFactor*/) {
+	return this.value;
+};
 
-	ConstantCurve.prototype.integralToGLSL = function (timeVariableName/*, lerpValueVariableName*/) {
-		var value = Curve.numberToGLSL(this.value);
-		return '(' + value + '*' + timeVariableName + ')';
-	};
+ConstantCurve.prototype.getIntegralValueAt = function (t /*, lerpFactor*/) {
+	return this.value * t;
+};
 
-	ConstantCurve.prototype.getValueAt = function (/*t, lerpFactor*/) {
-		return this.value;
-	};
-
-	ConstantCurve.prototype.getIntegralValueAt = function (t /*, lerpFactor*/) {
-		return this.value * t;
-	};
-
-	module.exports = ConstantCurve;
+module.exports = ConstantCurve;

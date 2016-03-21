@@ -1,6 +1,6 @@
 var System = require('../../entities/systems/System');
 
-
+/* global p2 */
 
 /**
  * Handles integration with p2.js.

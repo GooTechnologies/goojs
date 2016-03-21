@@ -1,5 +1,3 @@
-
-
 /**
  * Base class for Colliders.
  */
