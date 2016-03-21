@@ -237,7 +237,7 @@ define([
 	 * @param [nSpheres=15] The number of shapes to add.
 	 */
 	V.addColoredSpheres = function (nSpheres) {
-		return V.addColoredShapes(nSpheres, new Sphere(32, 32));
+		return V.addColoredShapes(nSpheres, new Sphere(8, 8));
 	};
 
 	/**

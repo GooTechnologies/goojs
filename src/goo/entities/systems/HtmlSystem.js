@@ -51,11 +51,12 @@ define([
 		}
 
 		var camera = Renderer.mainCamera;
-		var screenWidth = this.renderer.domElement.width;
-		var screenHeight = this.renderer.domElement.height;
-
 		var renderer = this.renderer;
-		var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
+
+		var screenWidth = renderer.viewportWidth / renderer.devicePixelRatio;
+		var screenHeight = renderer.viewportHeight / renderer.devicePixelRatio;
+		var offsetLeft = renderer.domElement.offsetLeft;
+		var offsetTop = renderer.domElement.offsetTop;
 
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
@@ -88,25 +89,23 @@ define([
 			if (tmpVector.z < 0) {
 				if (component.hidden !== true) {
 					component.domElement.style.display = 'none';
-					//component.hidden = true;
 				}
 				continue;
 			}
 			// Else visible
 			component.domElement.style.display = '';
 
-			var fx = tmpVector.x / devicePixelRatio;
-			var fy = tmpVector.y / devicePixelRatio;
+			var fx = tmpVector.x / renderer.devicePixelRatio;
+			var fy = tmpVector.y / renderer.devicePixelRatio;
 
-			if(component.pixelPerfect){
+			if (component.pixelPerfect) {
 				fx = Math.floor(fx);
 				fy = Math.floor(fy);
 			}
 
 			this.setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) ' +
-				'translate(' + fx + 'px, ' + fy + 'px)' +
-				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
+				'translate(' + (fx + offsetLeft) + 'px, ' + (fy + offsetTop) + 'px)');
 
 			component.domElement.style.zIndex = MAX_Z_INDEX - Math.round(tmpVector.z * MAX_Z_INDEX);
 		}
