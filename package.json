@@ -36,7 +36,6 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-eslint": "^18.0.0",
     "grunt-karma": "^0.12.1",
-    "grunt-keepalive": "0.0.1",
     "grunt-preprocess": "^5.0.1",
     "grunt-shell": "^1.1.2",
     "grunt-webpack": "^1.0.11",
