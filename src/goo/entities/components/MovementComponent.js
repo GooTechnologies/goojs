@@ -1,8 +1,6 @@
 var Vector3 = require('../../math/Vector3');
 var Component = require('../../entities/components/Component');
 
-
-
 /**
  * Holds the movement parameters of an entity.
  * Typically useful for anything which has a speed and/or

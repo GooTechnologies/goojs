@@ -1,53 +1,51 @@
 var MeshData = require('../../renderer/MeshData');
 
+function MeshRendererDebug() {
+	this._meshes = [buildBox(1, 1, 1), null];
+}
 
+MeshRendererDebug.prototype.getMesh = function () {
+	return this._meshes;
+};
 
-	function MeshRendererDebug() {
-		this._meshes = [buildBox(1, 1, 1), null];
-	}
+function buildBox(dx, dy, dz) {
+	var verts = [
+		 dx,  dy,  dz,
+		 dx,  dy, -dz,
+		 dx, -dy,  dz,
+		 dx, -dy, -dz,
+		-dx,  dy,  dz,
+		-dx,  dy, -dz,
+		-dx, -dy,  dz,
+		-dx, -dy, -dz
+	];
 
-	MeshRendererDebug.prototype.getMesh = function () {
-		return this._meshes;
-	};
+	var indices = [
+		0, 1,
+		0, 2,
+		1, 3,
+		2, 3,
 
-	function buildBox(dx, dy, dz) {
-		var verts = [
-			 dx,  dy,  dz,
-			 dx,  dy, -dz,
-			 dx, -dy,  dz,
-			 dx, -dy, -dz,
-			-dx,  dy,  dz,
-			-dx,  dy, -dz,
-			-dx, -dy,  dz,
-			-dx, -dy, -dz
-		];
+		4, 5,
+		4, 6,
+		5, 7,
+		6, 7,
 
-		var indices = [
-			0, 1,
-			0, 2,
-			1, 3,
-			2, 3,
+		0, 4,
+		1, 5,
+		2, 6,
+		3, 7
+	];
 
-			4, 5,
-			4, 6,
-			5, 7,
-			6, 7,
+	var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length / 3, indices.length);
 
-			0, 4,
-			1, 5,
-			2, 6,
-			3, 7
-		];
+	meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+	meshData.getIndexBuffer().set(indices);
 
-		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length / 3, indices.length);
+	meshData.indexLengths = null;
+	meshData.indexModes = ['Lines'];
 
-		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
-		meshData.getIndexBuffer().set(indices);
+	return meshData;
+}
 
-		meshData.indexLengths = null;
-		meshData.indexModes = ['Lines'];
-
-		return meshData;
-	}
-
-	module.exports = MeshRendererDebug;
+module.exports = MeshRendererDebug;

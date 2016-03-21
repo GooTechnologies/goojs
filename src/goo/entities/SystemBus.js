@@ -1,7 +1,5 @@
 var Bus = require('./Bus');
 
-
-
 /**
  * SystemBus is a global instance of the {@link Bus} class.
  * @target-class SystemBus SystemBus constructor

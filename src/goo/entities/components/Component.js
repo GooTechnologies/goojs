@@ -1,7 +1,5 @@
 var EntitySelection = require('../EntitySelection');
 
-
-
 /**
  * Base class/module for all components. Should not be used directly.
  * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.

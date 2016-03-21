@@ -1,8 +1,6 @@
 var Component = require('../../entities/components/Component');
 var BoundingVolumeMeshBuilder = require('../../debugpack/BoundingVolumeMeshBuilder');
 
-
-
 /**
  * Holds the necessary data for a marker
  * @param {Entity} entity The entity this component is attached to

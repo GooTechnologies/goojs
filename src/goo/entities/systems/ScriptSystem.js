@@ -1,113 +1,111 @@
 var System = require('../../entities/systems/System');
 var SystemBus = require('../../entities/SystemBus');
 
+/**
+ * Processes all entities with script components, running the scripts where applicable
+ * @extends System
+ */
+function ScriptSystem(world) {
+	System.call(this, 'ScriptSystem', ['ScriptComponent']);
 
+	//! AT: why this?
+	this._world = world;
 
-	/**
-	 * Processes all entities with script components, running the scripts where applicable
-	 * @extends System
-	 */
-	function ScriptSystem(world) {
-		System.call(this, 'ScriptSystem', ['ScriptComponent']);
+	var renderer = this._world.gooRunner.renderer;
+	// General world environment
+	this.context = {
+		domElement: renderer.domElement,
+		viewportWidth: renderer.viewportWidth,
+		viewportHeight: renderer.viewportHeight,
+		world: world,
+		activeCameraEntity: null,
+		worldData: {},
+		playTime: 0
+	};
 
-		//! AT: why this?
-		this._world = world;
+	this._playing = true;
 
-		var renderer = this._world.gooRunner.renderer;
-		// General world environment
-		this.context = {
-			domElement: renderer.domElement,
-			viewportWidth: renderer.viewportWidth,
-			viewportHeight: renderer.viewportHeight,
-			world: world,
-			activeCameraEntity: null,
-			worldData: {},
-			playTime: 0
-		};
+	SystemBus.addListener('goo.setCurrentCamera', function (data) {
+		this.context.activeCameraEntity = data.entity;
+	}.bind(this));
 
-		this._playing = true;
+	SystemBus.addListener('goo.viewportResize', function (data) {
+		this.context.viewportWidth = data.width;
+		this.context.viewportHeight = data.height;
+	}.bind(this));
 
-		SystemBus.addListener('goo.setCurrentCamera', function (data) {
-			this.context.activeCameraEntity = data.entity;
-		}.bind(this));
+	this.manualSetup = false;
 
-		SystemBus.addListener('goo.viewportResize', function (data) {
-			this.context.viewportWidth = data.width;
-			this.context.viewportHeight = data.height;
-		}.bind(this));
+	this.priority = 500;
+}
 
-		this.manualSetup = false;
+ScriptSystem.prototype = Object.create(System.prototype);
+ScriptSystem.prototype.constructor = ScriptSystem;
 
-		this.priority = 500;
+/*
+ScriptSystem.prototype.inserted = function (entity) {
+	if (!this.manualSetup) {
+		entity.scriptComponent.setup(entity);
+	}
+};*/
+
+ScriptSystem.prototype.play = function () {
+	this.context.playTime = 0;
+	this._playing = true;
+};
+
+ScriptSystem.prototype.resume = function () {
+	this._playing = true;
+};
+
+ScriptSystem.prototype.pause = function () {
+	this._playing = false;
+};
+
+ScriptSystem.prototype.stop = ScriptSystem.prototype.pause;
+
+ScriptSystem.prototype.process = function (entities, tpf) {
+	// Update scripts
+	for (var i = 0; i < entities.length; i++) {
+		var scriptComponent = entities[i].scriptComponent;
+		scriptComponent.run(entities[i], tpf);
 	}
 
-	ScriptSystem.prototype = Object.create(System.prototype);
-	ScriptSystem.prototype.constructor = ScriptSystem;
+	// update play time
+	if (this._playing) {
+		this.context.playTime += tpf;
+	}
+};
 
-	/*
-	ScriptSystem.prototype.inserted = function (entity) {
-		if (!this.manualSetup) {
-			entity.scriptComponent.setup(entity);
-		}
-	};*/
+ScriptSystem.prototype.addedComponent = function (entity, component) {
+	if (component.type === 'ScriptComponent' && !this.manualSetup) {
+		component.setup(entity);
+	}
+};
 
-	ScriptSystem.prototype.play = function () {
-		this.context.playTime = 0;
-		this._playing = true;
-	};
+ScriptSystem.prototype.removedComponent = function (entity, component) {
+	if (component.type === 'ScriptComponent' && !this.manualSetup) {
+		component.cleanup();
+	}
+};
 
-	ScriptSystem.prototype.resume = function () {
-		this._playing = true;
-	};
+/*
+ScriptSystem.prototype.deleted = function (entity) {
+	if (entity.scriptComponent && !this.manualSetup) {
+		entity.scriptComponent.cleanup();
+	}
+};*/
 
-	ScriptSystem.prototype.pause = function () {
-		this._playing = false;
-	};
+ScriptSystem.prototype.clear = function () {
+	for (var i = 0; i < this._activeEntities.length; i++) {
+		var entity = this._activeEntities[i];
+		entity.scriptComponent.cleanup();
+	}
 
-	ScriptSystem.prototype.stop = ScriptSystem.prototype.pause;
+	this._world = null;
+	this.context = null;
 
-	ScriptSystem.prototype.process = function (entities, tpf) {
-		// Update scripts
-		for (var i = 0; i < entities.length; i++) {
-			var scriptComponent = entities[i].scriptComponent;
-			scriptComponent.run(entities[i], tpf);
-		}
+	System.prototype.clear.call(this);
+};
 
-		// update play time
-		if (this._playing) {
-			this.context.playTime += tpf;
-		}
-	};
-
-	ScriptSystem.prototype.addedComponent = function (entity, component) {
-		if (component.type === 'ScriptComponent' && !this.manualSetup) {
-			component.setup(entity);
-		}
-	};
-
-	ScriptSystem.prototype.removedComponent = function (entity, component) {
-		if (component.type === 'ScriptComponent' && !this.manualSetup) {
-			component.cleanup();
-		}
-	};
-
-	/*
-	ScriptSystem.prototype.deleted = function (entity) {
-		if (entity.scriptComponent && !this.manualSetup) {
-			entity.scriptComponent.cleanup();
-		}
-	};*/
-
-	ScriptSystem.prototype.clear = function () {
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			var entity = this._activeEntities[i];
-			entity.scriptComponent.cleanup();
-		}
-
-		this._world = null;
-		this.context = null;
-
-		System.prototype.clear.call(this);
-	};
-
-	module.exports = ScriptSystem;
+module.exports = ScriptSystem;

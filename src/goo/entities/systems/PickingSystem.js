@@ -1,7 +1,5 @@
 var System = require('../../entities/systems/System');
 
-
-
 /**
  * Helps gather pickable entities
  * @extends System

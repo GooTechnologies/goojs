@@ -1,74 +1,72 @@
 var System = require('../../entities/systems/System');
 var BoundingBox = require('../../renderer/bounds/BoundingBox');
 
+/**
+ * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
+ * @extends System
+ */
+function BoundingUpdateSystem () {
+	System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
+	this._worldBound = new BoundingBox();
+	this._computeWorldBound = null;
+}
 
+BoundingUpdateSystem.prototype = Object.create(System.prototype);
+BoundingUpdateSystem.prototype.constructor = BoundingUpdateSystem;
 
-	/**
-	 * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
-	 * @extends System
-	 */
-	function BoundingUpdateSystem () {
-		System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
-		this._worldBound = new BoundingBox();
+BoundingUpdateSystem.prototype.process = function (entities) {
+	var l = entities.length;
+	if (l === 0) {
 		this._computeWorldBound = null;
+		return;
 	}
 
-	BoundingUpdateSystem.prototype = Object.create(System.prototype);
-	BoundingUpdateSystem.prototype.constructor = BoundingUpdateSystem;
+	for (var i = 0; i < l; i++) {
+		var entity = entities[i];
+		var meshDataComponent = entity.meshDataComponent;
+		var transformComponent = entity.transformComponent;
+		var meshRendererComponent = entity.meshRendererComponent;
 
-	BoundingUpdateSystem.prototype.process = function (entities) {
-		var l = entities.length;
-		if (l === 0) {
-			this._computeWorldBound = null;
-			return;
+		if (meshDataComponent.autoCompute) {
+			meshDataComponent.computeBoundFromPoints();
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
+		} else if (transformComponent._updated) {
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
+			// meshDataComponent.setDirty(false);
 		}
+	}
+	if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
+		//this._worldBound = new BoundingSphere(new Vector3(0, 0, 0), 0); // optional for including the center of the scene into the world bound
 
+		// generally we don't want particle systems to end up in our world bound computing since they have huge world bounds and can mess up stuff
 		for (var i = 0; i < l; i++) {
-			var entity = entities[i];
-			var meshDataComponent = entity.meshDataComponent;
-			var transformComponent = entity.transformComponent;
-			var meshRendererComponent = entity.meshRendererComponent;
-
-			if (meshDataComponent.autoCompute) {
-				meshDataComponent.computeBoundFromPoints();
-				meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
-			} else if (transformComponent._updated) {
-				meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
-				// meshDataComponent.setDirty(false);
+			if (!entities[i].particleComponent) {
+				this._worldBound = entities[i].meshRendererComponent.worldBound.clone();
+				break;
 			}
 		}
-		if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
-			//this._worldBound = new BoundingSphere(new Vector3(0, 0, 0), 0); // optional for including the center of the scene into the world bound
 
-			// generally we don't want particle systems to end up in our world bound computing since they have huge world bounds and can mess up stuff
-			for (var i = 0; i < l; i++) {
-				if (!entities[i].particleComponent) {
-					this._worldBound = entities[i].meshRendererComponent.worldBound.clone();
-					break;
-				}
+		for (; i < l; i++) {
+			if (!entities[i].particleComponent) {
+				var mrc = entities[i].meshRendererComponent;
+				this._worldBound = this._worldBound.merge(mrc.worldBound);
 			}
-
-			for (; i < l; i++) {
-				if (!entities[i].particleComponent) {
-					var mrc = entities[i].meshRendererComponent;
-					this._worldBound = this._worldBound.merge(mrc.worldBound);
-				}
-			}
-
-			this._computeWorldBound(this._worldBound);
-			this._computeWorldBound = null;
 		}
-	};
 
-	// function named get actually does a set
-	BoundingUpdateSystem.prototype.getWorldBound = function (callback) {
-		this._computeWorldBound = callback;
-	};
+		this._computeWorldBound(this._worldBound);
+		this._computeWorldBound = null;
+	}
+};
 
-	BoundingUpdateSystem.prototype.deleted = function (entity) {
-		if (entity.meshRendererComponent) {
-			entity.meshRendererComponent.worldBound = new BoundingBox();
-		}
-	};
+// function named get actually does a set
+BoundingUpdateSystem.prototype.getWorldBound = function (callback) {
+	this._computeWorldBound = callback;
+};
 
-	module.exports = BoundingUpdateSystem;
+BoundingUpdateSystem.prototype.deleted = function (entity) {
+	if (entity.meshRendererComponent) {
+		entity.meshRendererComponent.worldBound = new BoundingBox();
+	}
+};
+
+module.exports = BoundingUpdateSystem;

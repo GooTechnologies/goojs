@@ -1,8 +1,6 @@
 var Component = require('../entities/components/Component');
 var StringUtils = require('../util/StringUtils');
 
-
-
 /**
  * An Entity is a generic container of data.
  * This data is wrapped in [Components]{@link Component}, which usually provide isolated features (transforms, geometries, materials, scripts and so on).

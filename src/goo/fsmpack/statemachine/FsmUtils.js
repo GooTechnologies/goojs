@@ -1,8 +1,6 @@
 /*jshint bitwise: false */
 
-
-function FsmUtils() {
-}
+function FsmUtils() {}
 
 FsmUtils.setParameters = function (settings, externalParameters) {
 	for (var i = 0; i < externalParameters.length; i++) {
