@@ -29,7 +29,7 @@
     "no-lonely-if": 2,
     "operator-assignment": [2, "always"],
     "padded-blocks": [2, "never"],
-    "space-after-keywords": [2, "always"],
+    "keyword-spacing": 2,
     "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }]
   },
   "env": {
