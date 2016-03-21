@@ -5,8 +5,6 @@ var JointData = require('../../animationpack/clip/JointData');
 var TransformData = require('../../animationpack/clip/TransformData');
 var TriggerData = require('../../animationpack/clip/TriggerData');
 
-
-
 /**
  * Holds the animation data.
  * @extends Component

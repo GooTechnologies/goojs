@@ -1,5 +1,3 @@
-
-
 /**
  * Base class for a state in our animation system
  * @private
