@@ -348,7 +348,7 @@ define([
 	 *
 	 * @param {Camera} [camera] optional camera argument.
 	 */
-	Renderer.prototype.checkResize = function (camera) {
+	Renderer.prototype.checkResize = function (camera, skipSetSize) {
 		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
@@ -370,7 +370,9 @@ define([
 		}
 
 		var aspect = adjustWidth / adjustHeight;
-		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+		if(!skipSetSize){
+			this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+		}
 
 		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;

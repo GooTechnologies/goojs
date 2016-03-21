@@ -36,13 +36,12 @@ define([
 
 	// Copied from CSSTransformComponent
 	HtmlSystem.prototype.setStyle = function (element, property, style) {
-		var cachedStyle = this.styleCache.get(element);
-
-		if (style !== cachedStyle) {
+		if (element.styleDirty || style !== this.styleCache.get(element)) {
 			for (var j = 0; j < this.prefixes.length; j++) {
 				element.style[this.prefixes[j] + property] = style;
 			}
 			this.styleCache.set(element, style);
+			element.styleDirty = false;
 		}
 	};
 
