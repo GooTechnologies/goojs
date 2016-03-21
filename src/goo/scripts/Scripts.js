@@ -1,8 +1,6 @@
 var ScriptUtils = require('../scripts/ScriptUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 
-
-
 // the collection of scripts
 var _scripts = {};
 

@@ -1,8 +1,8 @@
 var Vector3 = require('../math/Vector3');
-var Scripts = require('../scripts/Scripts');
-var ScriptUtils = require('../scripts/ScriptUtils');
 var Renderer = require('../renderer/Renderer');
 var Plane = require('../math/Plane');
+
+/* global CANNON */
 
 function CannonPickScript() {
 	var pickButton;

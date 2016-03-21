@@ -1,6 +1,3 @@
-
-
-
 /**
  * EventTarget is implemented by objects that can receive events and may have listeners for them.
  * @example

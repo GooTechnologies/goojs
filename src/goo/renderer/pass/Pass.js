@@ -1,5 +1,3 @@
-
-
 /**
  * Base pass class
  */

@@ -1,7 +1,5 @@
 var Capabilities = require('../renderer/Capabilities');
 
-
-
 /**
  * Utility for creating index buffers of appropriate type
  */

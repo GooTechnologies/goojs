@@ -2,41 +2,39 @@ var Gizmo = require('../../util/gizmopack/Gizmo');
 var Vector3 = require('../../math/Vector3');
 var TranslationGizmo = require('../../util/gizmopack/TranslationGizmo');
 
+/**
+ * @extends Gizmo
+ * @hidden
+ */
+function GlobalTranslationGizmo() {
+	Gizmo.call(this, 'GlobalTranslationGizmo');
 
+	this.realTranslation = new Vector3();
+	this._snap = false;
 
-	/**
-	 * @extends Gizmo
-	 * @hidden
-	 */
-	function GlobalTranslationGizmo() {
-		Gizmo.call(this, 'GlobalTranslationGizmo');
+	this.compileRenderables();
+}
 
-		this.realTranslation = new Vector3();
-		this._snap = false;
+GlobalTranslationGizmo.prototype = Object.create(Gizmo.prototype);
+GlobalTranslationGizmo.prototype.constructor = GlobalTranslationGizmo;
 
-		this.compileRenderables();
-	}
+GlobalTranslationGizmo.prototype.activate = TranslationGizmo.prototype.activate;
+GlobalTranslationGizmo.prototype.process = TranslationGizmo.prototype.process;
 
-	GlobalTranslationGizmo.prototype = Object.create(Gizmo.prototype);
-	GlobalTranslationGizmo.prototype.constructor = GlobalTranslationGizmo;
+GlobalTranslationGizmo.prototype.copyTransform = function (transform) {
+	Gizmo.prototype.copyTransform.call(this, transform);
 
-	GlobalTranslationGizmo.prototype.activate = TranslationGizmo.prototype.activate;
-	GlobalTranslationGizmo.prototype.process = TranslationGizmo.prototype.process;
+	this.transform.rotation.setIdentity();
+	this.updateTransforms();
+};
 
-	GlobalTranslationGizmo.prototype.copyTransform = function (transform) {
-		Gizmo.prototype.copyTransform.call(this, transform);
+GlobalTranslationGizmo.prototype.setSnap = TranslationGizmo.prototype.setSnap;
 
-		this.transform.rotation.setIdentity();
-		this.updateTransforms();
-	};
+GlobalTranslationGizmo.prototype._addTranslation = TranslationGizmo.prototype._addTranslation;
 
-	GlobalTranslationGizmo.prototype.setSnap = TranslationGizmo.prototype.setSnap;
+GlobalTranslationGizmo.prototype._moveOnPlane = TranslationGizmo.prototype._moveOnPlane;
+GlobalTranslationGizmo.prototype._moveOnLine = TranslationGizmo.prototype._moveOnLine;
 
-	GlobalTranslationGizmo.prototype._addTranslation = TranslationGizmo.prototype._addTranslation;
+GlobalTranslationGizmo.prototype.compileRenderables = TranslationGizmo.prototype.compileRenderables;
 
-	GlobalTranslationGizmo.prototype._moveOnPlane = TranslationGizmo.prototype._moveOnPlane;
-	GlobalTranslationGizmo.prototype._moveOnLine = TranslationGizmo.prototype._moveOnLine;
-
-	GlobalTranslationGizmo.prototype.compileRenderables = TranslationGizmo.prototype.compileRenderables;
-
-	module.exports = GlobalTranslationGizmo;
+module.exports = GlobalTranslationGizmo;

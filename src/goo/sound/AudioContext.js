@@ -1,5 +1,3 @@
-
-
 // we presume there is support
 var supported = true;
 

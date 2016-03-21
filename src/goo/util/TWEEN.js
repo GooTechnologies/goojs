@@ -11,9 +11,6 @@
  * @author endel / http://endel.me
  */
 
-
-
-
 var TWEEN = (function () {
 
 	var _tweens = [];

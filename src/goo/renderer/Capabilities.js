@@ -1,5 +1,3 @@
-
-
 /**
  * Enabled and stores webgl extensions and capabilities
 

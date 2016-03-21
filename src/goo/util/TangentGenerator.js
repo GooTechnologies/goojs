@@ -2,8 +2,6 @@ var Vector2 = require('../math/Vector2');
 var Vector3 = require('../math/Vector3');
 var MeshData = require('../renderer/MeshData');
 
-
-
 /**
  * The TangentGenerator can generate and add a buffer with tangent information to a MeshData
  */

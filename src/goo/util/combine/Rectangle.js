@@ -1,6 +1,3 @@
-
-
-
 /**
  * Rectangle
  * @hidden

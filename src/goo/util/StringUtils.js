@@ -1,6 +1,5 @@
 /*jshint bitwise: false */
 
-
 /**
  * Provides string manipulation methods
  */

@@ -1,6 +1,3 @@
-
-
-
 /**
  * Utilities for arrays and typed arrays
  */
