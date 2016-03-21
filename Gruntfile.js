@@ -225,6 +225,19 @@ module.exports = function (grunt) {
 		);
 	});
 
+	grunt.registerTask('refs', function () {
+		var done = this.async();
+		require('child_process')
+			.exec('node test/e2etesting/generate-reference-screenshots', function (error, stdout, stderr) {
+			console.log('stdout: ' + stdout);
+			console.log('stderr: ' + stderr);
+			if (error !== null) {
+				console.log('exec error: ' + error);
+			}
+			done();
+		});
+	});
+
 	grunt.registerTask('minify', ['webpack', 'preprocess', 'uglify', 'wrap', 'generate-toc', 'copy']);
 	grunt.registerTask('minify-no-mangle', ['minify']); // TODO
 	grunt.registerTask('minify-dev', ['webpack', 'wrap', 'copy']);

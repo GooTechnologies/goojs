@@ -319,8 +319,8 @@ V.process = function (renderLoops) {
 		// render some frames
 		delay(renderLoops || 3, function () {
 			time += 100;
-			V._updateFrame(time);
-			V.stopGameLoop();
+			V.goo._updateFrame(time);
+			V.goo.stopGameLoop();
 			window.testLoaded = true;
 		});
 	});
