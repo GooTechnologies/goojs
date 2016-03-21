@@ -4,7 +4,6 @@
  */
 function LogicNodes() {}
 
-
 LogicNodes.types = {};
 
 /**

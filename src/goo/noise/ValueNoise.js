@@ -1,8 +1,6 @@
 /*jshint bitwise: false */
 var Noise = require('./Noise');
 
-
-
 /**
  * Value noise is simpler and computationally lighter than Perlin noise yet produce visually similar results when used in fractals.
  *  Only used to define the class. Should never be instantiated.

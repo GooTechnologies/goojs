@@ -1,7 +1,7 @@
 var LogicLayer = require('./LogicLayer');
 var LogicNode = require('./LogicNode');
 var LogicInterface = require('./LogicInterface');
-var LogicNodes = require('./LogicNodes')
+var LogicNodes = require('./LogicNodes');
 
 /**
  * Logic node implementing a time counter. Processed every frame and time is increased. Output

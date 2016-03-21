@@ -1,46 +1,44 @@
 var BoundingTree = require('../picking/BoundingTree');
 
+/**
+ * Primitive pick logic
+ */
+function PrimitivePickLogic () {}
 
+PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
+	// look in pick tree for intersection
+	var tree = entity.meshDataComponent.meshData.__boundingTree;
+	if (!tree) {
+		return null;
+	}
 
-	/**
-	 * Primitive pick logic
-	 */
-	function PrimitivePickLogic () {}
+	return tree.findPick(pickRay, entity, {});
+};
 
-	PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
-		// look in pick tree for intersection
-		var tree = entity.meshDataComponent.meshData.__boundingTree;
-		if (!tree) {
-			return null;
-		}
+PrimitivePickLogic.prototype.added = function (entity) {
+	// Build boundingtree if not existing
+	if (!this.isConstructed(entity)) {
+		this.rebuild(entity);
+	}
+};
 
-		return tree.findPick(pickRay, entity, {});
-	};
+PrimitivePickLogic.prototype.removed = function (entity) {
+	// clear bounding tree
+	if ( entity.meshDataComponent && entity.meshDataComponent.meshData) {
+		entity.meshDataComponent.meshData.__boundingTree = null;
+	}
+};
 
-	PrimitivePickLogic.prototype.added = function (entity) {
-		// Build boundingtree if not existing
-		if (!this.isConstructed(entity)) {
-			this.rebuild(entity);
-		}
-	};
+PrimitivePickLogic.prototype.isConstructed = function (entity) {
+	return !!entity.meshDataComponent.meshData.__boundingTree;
+};
 
-	PrimitivePickLogic.prototype.removed = function (entity) {
-		// clear bounding tree
-		if ( entity.meshDataComponent && entity.meshDataComponent.meshData) {
-			entity.meshDataComponent.meshData.__boundingTree = null;
-		}
-	};
+PrimitivePickLogic.prototype.rebuild = function (entity) {
+	// build bounding tree
+	entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
 
-	PrimitivePickLogic.prototype.isConstructed = function (entity) {
-		return !!entity.meshDataComponent.meshData.__boundingTree;
-	};
+	// calculate bounding tree.
+	entity.meshDataComponent.meshData.__boundingTree.construct(entity);
+};
 
-	PrimitivePickLogic.prototype.rebuild = function (entity) {
-		// build bounding tree
-		entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
-
-		// calculate bounding tree.
-		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
-	};
-
-	module.exports = PrimitivePickLogic;
+module.exports = PrimitivePickLogic;

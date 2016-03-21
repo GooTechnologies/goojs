@@ -1,5 +1,3 @@
-
-
 /**
  * A Particle influence modifies particles in some way over time.
  * @param {Object} [settings]

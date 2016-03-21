@@ -2,8 +2,7 @@ var LogicLayer = require('./LogicLayer');
 var LogicNode = require('./LogicNode');
 var LogicNodes = require('./LogicNodes');
 var LogicInterface = require('./LogicInterface');
-var MeshRendererComponent = require('../../entities/components/MeshRendererComponent');
-var Vector3 = require('../../math/Vector3')
+var Vector3 = require('../../math/Vector3');
 
 /**
  * Logic node that connects to the MeshRendererComponent of an entity.

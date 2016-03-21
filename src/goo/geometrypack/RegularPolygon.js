@@ -1,26 +1,23 @@
-var MeshData = require('../renderer/MeshData');
 var PolyLine = require('../geometrypack/PolyLine');
 
+/**
+ * Regular polygon mesh
+ */
+function RegularPolygon(nSegments, radius) {
+	this.nSegments = nSegments || 5;
+	this.radius = radius || 1;
 
-
-	/**
-	 * Regular polygon mesh
-	 */
-	function RegularPolygon(nSegments, radius) {
-		this.nSegments = nSegments || 5;
-		this.radius = radius || 1;
-
-		var verts = [];
-		var ak = Math.PI * 2 / nSegments;
-		for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
-			verts.push(Math.cos(k) * this.radius, Math.sin(k) * this.radius, 0);
-		}
-
-		PolyLine.call(this, verts, true);
-
-		this.rebuild();
+	var verts = [];
+	var ak = Math.PI * 2 / nSegments;
+	for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
+		verts.push(Math.cos(k) * this.radius, Math.sin(k) * this.radius, 0);
 	}
 
-	RegularPolygon.prototype = Object.create(PolyLine.prototype);
+	PolyLine.call(this, verts, true);
 
-	module.exports = RegularPolygon;
+	this.rebuild();
+}
+
+RegularPolygon.prototype = Object.create(PolyLine.prototype);
+
+module.exports = RegularPolygon;

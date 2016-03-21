@@ -1,7 +1,7 @@
 var LogicLayer = require('./LogicLayer');
 var LogicNode = require('./LogicNode');
 var LogicNodes = require('./LogicNodes');
-var LogicInterface = require('./LogicInterface')
+var LogicInterface = require('./LogicInterface');
 
 /**
  * Logic node that multiplies two inputs.

@@ -1,7 +1,5 @@
 /*jshint bitwise: false */
 
-
-
 /**
  * @private
  */

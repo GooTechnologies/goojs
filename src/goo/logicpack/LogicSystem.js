@@ -1,6 +1,4 @@
 var System = require('../entities/systems/System');
-var SystemBus = require('../entities/SystemBus');
-var Renderer = require('../renderer/Renderer');
 var LogicLayer = require('./logic/LogicLayer');
 var LogicInterface = require('./logic/LogicInterface');
 

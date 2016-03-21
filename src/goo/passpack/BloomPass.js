@@ -6,135 +6,133 @@ var ShaderLib = require('../renderer/shaders/ShaderLib');
 var ShaderLibExtra = require('../passpack/ShaderLibExtra');
 var Pass = require('../renderer/pass/Pass');
 
+/**
+ * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
+ * <pre>
+ * settings: {
+ *     strength: 1.0,
+ *     sigma: 4.0,
+ *     sizeX: 256,
+ *     sizeY: 256
+ * }
+ * </pre>
+ */
+function BloomPass(settings) {
+	settings = settings || {};
 
+	this.target = settings.target !== undefined ? settings.target : null;
+	var strength = settings.strength !== undefined ? settings.strength : 0.0;
+	var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
+	var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
+	this.downsampleAmount = settings.downsampleAmount !== undefined ? Math.max(settings.downsampleAmount, 1) : 4;
 
-	/**
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
-	 * <pre>
-	 * settings: {
-	 *     strength: 1.0,
-	 *     sigma: 4.0,
-	 *     sizeX: 256,
-	 *     sizeY: 256
-	 * }
-	 * </pre>
-	 */
-	function BloomPass(settings) {
-		settings = settings || {};
+	var width = window.innerWidth || 1024;
+	var height = window.innerHeight || 1024;
+	this.updateSize({
+		x: 0,
+		y: 0,
+		width: width,
+		height: height
+	});
 
-		this.target = settings.target !== undefined ? settings.target : null;
-		var strength = settings.strength !== undefined ? settings.strength : 0.0;
-		var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
-		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
-		this.downsampleAmount = settings.downsampleAmount !== undefined ? Math.max(settings.downsampleAmount, 1) : 4;
+	this.renderable = {
+		meshData: FullscreenUtils.quad,
+		materials: []
+	};
 
-		var width = window.innerWidth || 1024;
-		var height = window.innerHeight || 1024;
-		this.updateSize({
-			x: 0,
-			y: 0,
-			width: width,
-			height: height
-		});
+	this.copyMaterial = new Material(ShaderLib.copyPure);
+	this.copyMaterial.uniforms.opacity = strength;
+	this.copyMaterial.blendState.blending = 'AdditiveBlending';
 
-		this.renderable = {
-			meshData: FullscreenUtils.quad,
-			materials: []
-		};
+	this.convolutionShader = ObjectUtils.deepClone(ShaderLib.convolution);
+	this.convolutionShader.defines = {
+		'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+		'KERNEL_SIZE_INT': kernelSize.toFixed(0)
+	};
+	this.convolutionMaterial = new Material(this.convolutionShader);
+	this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
+	this.convolutionMaterial.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
 
-		this.copyMaterial = new Material(ShaderLib.copyPure);
-		this.copyMaterial.uniforms.opacity = strength;
-		this.copyMaterial.blendState.blending = 'AdditiveBlending';
+	this.bcMaterial = new Material(ShaderLibExtra.brightnesscontrast);
+	this.bcMaterial.uniforms.brightness = 0.0;
+	this.bcMaterial.uniforms.contrast = 0.0;
 
-		this.convolutionShader = ObjectUtils.deepClone(ShaderLib.convolution);
-		this.convolutionShader.defines = {
-			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
-			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
-		};
-		this.convolutionMaterial = new Material(this.convolutionShader);
-		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
-		this.convolutionMaterial.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
+	this.enabled = true;
+	this.clear = false;
+	this.needsSwap = false;
+}
 
-		this.bcMaterial = new Material(ShaderLibExtra.brightnesscontrast);
-		this.bcMaterial.uniforms.brightness = 0.0;
-		this.bcMaterial.uniforms.contrast = 0.0;
+BloomPass.prototype = Object.create(Pass.prototype);
+BloomPass.prototype.constructor = BloomPass;
 
-		this.enabled = true;
-		this.clear = false;
-		this.needsSwap = false;
+BloomPass.prototype.destroy = function (renderer) {
+	if (this.renderTargetX) {
+		this.renderTargetX.destroy(renderer.context);
 	}
+	if (this.renderTargetY) {
+		this.renderTargetY.destroy(renderer.context);
+	}
+	this.convolutionMaterial.shader.destroy();
+	this.copyMaterial.shader.destroy();
+	this.bcMaterial.shader.destroy();
+};
 
-	BloomPass.prototype = Object.create(Pass.prototype);
-	BloomPass.prototype.constructor = BloomPass;
+BloomPass.prototype.invalidateHandles = function (renderer) {
+	renderer.invalidateMaterial(this.convolutionMaterial);
+	renderer.invalidateMaterial(this.copyMaterial);
+	renderer.invalidateMaterial(this.convolutionMaterial);
+	renderer.invalidateMaterial(this.bcMaterial);
+	renderer.invalidateRenderTarget(this.renderTargetX);
+	renderer.invalidateRenderTarget(this.renderTargetY);
+	renderer.invalidateMeshData(this.renderable.meshData);
+};
 
-	BloomPass.prototype.destroy = function (renderer) {
-		if (this.renderTargetX) {
-			this.renderTargetX.destroy(renderer.context);
-		}
-		if (this.renderTargetY) {
-			this.renderTargetY.destroy(renderer.context);
-		}
-		this.convolutionMaterial.shader.destroy();
-		this.copyMaterial.shader.destroy();
-		this.bcMaterial.shader.destroy();
-	};
+BloomPass.prototype.updateSize = function (size, renderer) {
+	var sizeX = size.width / this.downsampleAmount;
+	var sizeY = size.height / this.downsampleAmount;
+	if (this.renderTargetX) {
+		this.renderTargetX.destroy(renderer.context);
+	}
+	if (this.renderTargetY) {
+		this.renderTargetY.destroy(renderer.context);
+	}
+	this.renderTargetX = new RenderTarget(sizeX, sizeY);
+	this.renderTargetY = new RenderTarget(sizeX, sizeY);
+};
 
-	BloomPass.prototype.invalidateHandles = function (renderer) {
-		renderer.invalidateMaterial(this.convolutionMaterial);
-		renderer.invalidateMaterial(this.copyMaterial);
-		renderer.invalidateMaterial(this.convolutionMaterial);
-		renderer.invalidateMaterial(this.bcMaterial);
-		renderer.invalidateRenderTarget(this.renderTargetX);
-		renderer.invalidateRenderTarget(this.renderTargetY);
-		renderer.invalidateMeshData(this.renderable.meshData);
-	};
+BloomPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
+	// Brightness & contrast
+	this.renderable.materials[0] = this.bcMaterial;
 
-	BloomPass.prototype.updateSize = function (size, renderer) {
-		var sizeX = size.width / this.downsampleAmount;
-		var sizeY = size.height / this.downsampleAmount;
-		if (this.renderTargetX) {
-			this.renderTargetX.destroy(renderer.context);
-		}
-		if (this.renderTargetY) {
-			this.renderTargetY.destroy(renderer.context);
-		}
-		this.renderTargetX = new RenderTarget(sizeX, sizeY);
-		this.renderTargetY = new RenderTarget(sizeX, sizeY);
-	};
+	this.bcMaterial.setTexture('DIFFUSE_MAP', readBuffer);
+	renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
 
-	BloomPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
-		// Brightness & contrast
-		this.renderable.materials[0] = this.bcMaterial;
+	// Blur Y
+	this.renderable.materials[0] = this.convolutionMaterial;
 
-		this.bcMaterial.setTexture('DIFFUSE_MAP', readBuffer);
-		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
+	this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
+	this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurY;
 
-		// Blur Y
-		this.renderable.materials[0] = this.convolutionMaterial;
+	renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
 
-		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
-		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurY;
+	// Blur X
+	this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
+	this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
 
-		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetX, true);
+	renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
 
-		// Blur X
-		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
-		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
+	// Additive blend
+	this.renderable.materials[0] = this.copyMaterial;
+	this.copyMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
 
-		renderer.render(this.renderable, FullscreenUtils.camera, [], this.renderTargetY, true);
+	if (this.target !== null) {
+		renderer.render(this.renderable, FullscreenUtils.camera, [], this.target, this.clear);
+	} else {
+		renderer.render(this.renderable, FullscreenUtils.camera, [], readBuffer, this.clear);
+	}
+};
 
-		// Additive blend
-		this.renderable.materials[0] = this.copyMaterial;
-		this.copyMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
+BloomPass.blurX = [0.001953125, 0.0];
+BloomPass.blurY = [0.0, 0.001953125];
 
-		if (this.target !== null) {
-			renderer.render(this.renderable, FullscreenUtils.camera, [], this.target, this.clear);
-		} else {
-			renderer.render(this.renderable, FullscreenUtils.camera, [], readBuffer, this.clear);
-		}
-	};
-
-	BloomPass.blurX = [0.001953125, 0.0];
-	BloomPass.blurY = [0.0, 0.001953125];
-
-	module.exports = BloomPass;
+module.exports = BloomPass;

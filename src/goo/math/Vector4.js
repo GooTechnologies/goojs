@@ -2,8 +2,6 @@ var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('./MathUtils');
 var Vector = require('./Vector');
 
-
-
 /**
  * Vector with 4 components
  * @extends Vector

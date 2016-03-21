@@ -1,5 +1,3 @@
-
-
 /**
  * Container class, which holds the data needed to render triangles.
  * @param parameters

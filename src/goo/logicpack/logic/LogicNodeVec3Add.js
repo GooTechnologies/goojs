@@ -2,7 +2,7 @@ var LogicLayer = require('./LogicLayer');
 var LogicNode = require('./LogicNode');
 var LogicNodes = require('./LogicNodes');
 var LogicInterface = require('./LogicInterface');
-var Vector3 = require('../../math/Vector3')
+var Vector3 = require('../../math/Vector3');
 
 /**
  * Logic node that adds Vec3 inputs.

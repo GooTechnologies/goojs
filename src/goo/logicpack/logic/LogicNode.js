@@ -1,5 +1,3 @@
-
-
 /**
  * Base class/module for all logic boxes
  * @private

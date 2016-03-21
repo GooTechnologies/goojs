@@ -1,44 +1,42 @@
 var MeshData = require('../renderer/MeshData');
 var MathUtils = require('../math/MathUtils');
 
+/**
+ * Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
+ * @param {Array<number>} verts array with 9 elements. These 9 elements must be 3 x, y, z positions.
+ */
+function Triangle(verts) {
+	this.verts = verts;
 
+	var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]);
+	MeshData.call(this, attributeMap, 3, 3);
 
-	/**
-	 * Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
-	 * @param {Array<number>} verts array with 9 elements. These 9 elements must be 3 x, y, z positions.
-	 */
-	function Triangle(verts) {
-		this.verts = verts;
+	this.rebuild();
+}
 
-		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]);
-		MeshData.call(this, attributeMap, 3, 3);
+Triangle.prototype = Object.create(MeshData.prototype);
+Triangle.prototype.constructor = Triangle;
 
-		this.rebuild();
-	}
+/**
+ * Builds or rebuilds the mesh data.
+ * @returns {Triangle} Self for chaining.
+ */
+Triangle.prototype.rebuild = function () {
+	this.getAttributeBuffer(MeshData.POSITION).set(this.verts);
 
-	Triangle.prototype = Object.create(MeshData.prototype);
-	Triangle.prototype.constructor = Triangle;
+	var normals = MathUtils.getTriangleNormal(
+		this.verts[0], this.verts[1], this.verts[2],
+		this.verts[3], this.verts[4], this.verts[5],
+		this.verts[6], this.verts[7], this.verts[8]);
 
-	/**
-	 * Builds or rebuilds the mesh data.
-	 * @returns {Triangle} Self for chaining.
-	 */
-	Triangle.prototype.rebuild = function () {
-		this.getAttributeBuffer(MeshData.POSITION).set(this.verts);
+	this.getAttributeBuffer(MeshData.NORMAL).set([
+		normals[0], normals[1], normals[2],
+		normals[0], normals[1], normals[2],
+		normals[0], normals[1], normals[2]]);
 
-		var normals = MathUtils.getTriangleNormal(
-			this.verts[0], this.verts[1], this.verts[2],
-			this.verts[3], this.verts[4], this.verts[5],
-			this.verts[6], this.verts[7], this.verts[8]);
+	this.getIndexBuffer().set([0, 1, 2]);
 
-		this.getAttributeBuffer(MeshData.NORMAL).set([
-			normals[0], normals[1], normals[2],
-			normals[0], normals[1], normals[2],
-			normals[0], normals[1], normals[2]]);
+	return this;
+};
 
-		this.getIndexBuffer().set([0, 1, 2]);
-
-		return this;
-	};
-
-	module.exports = Triangle;
+module.exports = Triangle;

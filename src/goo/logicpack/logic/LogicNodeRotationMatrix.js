@@ -3,7 +3,7 @@ var LogicNode = require('./LogicNode');
 var LogicNodes = require('./LogicNodes');
 var LogicInterface = require('./LogicInterface');
 var Vector3 = require('../../math/Vector3');
-var Matrix3 = require('../../math/Matrix3')
+var Matrix3 = require('../../math/Matrix3');
 
 /**
  * Logic node that constructs a rotation matrix.
