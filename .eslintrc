@@ -23,7 +23,7 @@
     "no-redeclare": 0,
     "complexity": [2, 10],
     "no-throw-literal": 2,
-    "indent": [2, "tab", { "SwitchCase": 2 }],
+    "indent": [2, "tab", { "SwitchCase": 1 }],
     "consistent-this": [2, "that"],
     "consistent-return": 0,
     "no-lonely-if": 2,
