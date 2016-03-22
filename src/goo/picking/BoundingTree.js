@@ -19,8 +19,14 @@ define([
 		this.localBound = null;
 		this.worldBound = null;
 
+		this.section = 0;
+		this.start = 0;
+		this.end = 0;
+
 		this.boundType = boundType ? boundType : BoundingTree.BOUNDTYPE_BOX;
 	}
+
+	var vecStore = new Vector3();
 
 	BoundingTree.BOUNDTYPE_SPHERE = 'sphere';
 	BoundingTree.BOUNDTYPE_BOX = 'box';
@@ -152,17 +158,13 @@ define([
 		}
 	};
 
-	BoundingTree.prototype.findPick = function (ray, entity, store) {
-		var result = store;
+	BoundingTree.prototype.findPick = function (ray, entity, result) {
 		if (!result) {
-			result = {};
+			result = [];
 		}
 
-		var worldTransform = entity.transformComponent.worldTransform;
-		this.localBound.transform(worldTransform, this.worldBound);
-
 		// if our ray doesn't hit the bounds, then it must not hit a primitive.
-		if (!this.worldBound.intersectsRay(ray)) {
+		if (!this.localBound.intersectsRay(ray)) {
 			return result;
 		}
 
@@ -178,35 +180,33 @@ define([
 			var data = entity.meshDataComponent.meshData;
 
 			var vertices = null;
-			var vecStore = new Vector3();
-			for (var i = this.start; i < this.end; i++) {
+			for (var i = this.start, l = this.end; i < l; i++) {
 				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
-				for (var t = 0; t < vertices.length; t++) {
-					vertices[t].applyPostPoint(worldTransform.matrix);
-				}
 				if (ray.intersects(vertices, false, vecStore)) {
-					result.distances = result.distances || [];
-					result.distances.push(ray.origin.distance(vecStore));
-					result.points = result.points || [];
-					var vec = new Vector3();
-					vec.set(vecStore);
-					result.points.push(vec);
+					var worldTransform = entity.transformComponent.worldTransform;
 
-					result.vertices = result.vertices || [];
+					var point = new Vector3();
+					point.set(vecStore);
+					point.applyPostPoint(worldTransform.matrix);
+
+					vecStore.sub(ray.origin);
+					vecStore.applyPostPoint(worldTransform.matrix);
+					var distance = vecStore.length();
+
 					var verticesCopy = [];
 					for (var copyIndex = vertices.length - 1; copyIndex >= 0; copyIndex--) {
 						verticesCopy[copyIndex] = new Vector3().set(vertices[copyIndex]);
+						verticesCopy[copyIndex].applyPostPoint(worldTransform.matrix);
 					}
-					result.vertices.push(verticesCopy);
+
+					result.push({
+						distance: distance,
+						point: point,
+						vertices: verticesCopy,
+					});
 				}
 			}
 		}
-
-		// if (result.hits) {
-		// 	result.hits.sort(function (a, b) {
-		// 		return a.distance - b.distance;
-		// 	});
-		// }
 
 		return result;
 	};
