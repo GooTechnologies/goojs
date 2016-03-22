@@ -1,6 +1,7 @@
 require([
 	'goo/renderer/Camera',
 	'goo/math/MathUtils',
+	'goo/shapes/Sphere',
 	'goo/math/Vector3',
 	'goo/entities/components/HtmlComponent',
 	'goo/entities/systems/HtmlSystem',
@@ -8,6 +9,7 @@ require([
 ], function (
 	Camera,
 	MathUtils,
+	Sphere,
 	Vector3,
 	HtmlComponent,
 	HtmlSystem,
@@ -27,7 +29,7 @@ require([
 	world.setSystem(new HtmlSystem(goo.renderer));
 
 	// add spheres
-	var spheres = V.addColoredSpheres(20);
+	var spheres = V.addColoredShapes(15, new Sphere(8, 8));
 
 	// and html elements for every sphere
 	spheres.each(function (entity) {
