@@ -829,14 +829,10 @@ define([
 			2, 6, 10, 14
 		],
 		prevertex: [
-			'#ifdef JOINTIDS',
-			'attribute vec4 vertexJointIDs;',
-			'#endif',
-			'#ifdef WEIGHTS',
-			'attribute vec4 vertexWeights;',
-			'#endif',
-			'#ifdef JOINT_COUNT',
-			'uniform vec4 jointPalette[JOINT_COUNT];',
+			'#if defined(JOINT_COUNT) && defined(WEIGHTS) && defined(JOINTIDS)',
+				'attribute vec4 vertexJointIDs;',
+				'attribute vec4 vertexWeights;',
+				'uniform vec4 jointPalette[JOINT_COUNT];',
 			'#endif'
 		].join('\n'),
 		vertex: [

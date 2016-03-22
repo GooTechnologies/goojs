@@ -221,7 +221,7 @@ define([
 	};
 
 	// Add Object.freeze when fast enough in browsers
-	var colorInfo = new Uint8Array([255, 255, 255, 255]);
+	var colorInfo = new Uint8Array([0, 0, 0, 255]);
 	TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
