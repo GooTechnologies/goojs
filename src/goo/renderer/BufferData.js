@@ -54,8 +54,10 @@ define([
 	 * @param {WebGLRenderingContext} context
 	 */
 	BufferData.prototype.destroy = function (context) {
-		context.deleteBuffer(this.glBuffer);
-		this.glBuffer = null;
+		if (this.glBuffer) {
+			context.deleteBuffer(this.glBuffer);
+			this.glBuffer = null;
+		}
 	};
 
 	BufferData.prototype.copy = function (source) {

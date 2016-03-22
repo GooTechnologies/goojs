@@ -263,6 +263,8 @@ define([
 			domElement.setAttribute('style', 'position: absolute; top: 0; left: 0; z-index: 1; display: none');
 		}
 
+		domElement.styleDirty = true;
+
 		return PromiseUtils.resolve();
 	};
 
