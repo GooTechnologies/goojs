@@ -58,8 +58,8 @@ define([
 		var camera = Renderer.mainCamera;
 		var renderer = this.renderer;
 
-		var screenWidth = renderer.viewportWidth / renderer.devicePixelRatio;
-		var screenHeight = renderer.viewportHeight / renderer.devicePixelRatio;
+		var screenWidth = renderer.viewportWidth;
+		var screenHeight = renderer.viewportHeight;
 		var offsetLeft = renderer.domElement.offsetLeft;
 		var offsetTop = renderer.domElement.offsetTop;
 

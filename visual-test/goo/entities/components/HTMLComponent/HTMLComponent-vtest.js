@@ -19,7 +19,9 @@ require([
 
 	V.describe('All spheres have an html component attached which should have it\'s transform synced');
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({
+		useDevicePixelRatio: true
+	});
 	var world = goo.world;
 
 	V.addLights();
