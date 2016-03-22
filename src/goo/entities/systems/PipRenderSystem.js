@@ -153,17 +153,20 @@ define([
 				'-1.0,',
 				'1.0',
 			');',
-			// 'gl_Position = viewProjectionMatrix * (worldMatrix * vec4(vertexPosition, 1.0));',
 		'}'
 		].join('\n'),
 		fshader: [
 		'uniform sampler2D diffuseMap;',
+		'uniform vec2 resolution;',
 
 		'varying vec2 texCoord0;',
+		'const vec3 edgeCol = vec3(0.2, 0.2, 0.2);',
 
-		'void main(void)',
-		'{',
-			'gl_FragColor = vec4(texture2D(diffuseMap, texCoord0).rgb, 1.0);',
+		'void main(void) {',
+			'vec3 color = texture2D(diffuseMap, texCoord0).rgb;',
+			'float edge = step(10.0 / resolution.x, min(texCoord0.x, 1.0 - texCoord0.x)) *',
+						 'step(10.0 / resolution.y, min(texCoord0.y, 1.0 - texCoord0.y));',
+			'gl_FragColor = vec4(mix(edgeCol, color, edge), 1.0);',
 		'}'
 		].join('\n')
 	};
