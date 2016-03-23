@@ -15,6 +15,30 @@ define(function () {
 	};
 
 	/**
+	 * Gets the first item in an array that matches the specified predicate.
+	 *
+	 * @param {Array} array
+	 *        The array which is to be searched.
+	 * @param {Function} predicate
+	 *        The preficate which will receive each item of the array and the
+	 *        current index.
+	 *
+	 * @return {*}
+	 *         The first item that matches the predicate or undefined if no
+	 *         items matched the predicate.
+	 */
+	ObjectUtils.find = function (array, predicate) {
+		for (var i = 0; i < array.length; ++i) {
+			var item = array[i];
+			if (predicate(item, i)) {
+				return item;
+			}
+		}
+
+		return undefined;
+	};
+
+	/**
 	 * Copies properties from an object onto another object if they're not already present
 	 * @param {Object} destination Destination object to copy to
 	 * @param {Object} source Source object to copy from
