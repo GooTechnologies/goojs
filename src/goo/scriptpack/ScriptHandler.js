@@ -171,6 +171,7 @@ define([
 				script.exit = newScript.exit;
 				script.parameters = {};
 				script.enabled = false;
+				script.body = config.body;
 			} catch (e) {
 				var err = {
 					message: e.toString()
@@ -584,7 +585,7 @@ define([
 	 * Load an external script
 	 */
 	function loadExternalScript(script, scriptElem, url) {
-		return PromiseUtils.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve) {
 			var timeoutHandler;
 			var handled = false;
 
@@ -717,10 +718,13 @@ define([
 			outScript.errors = errors;
 			return;
 		}
+
+		outScript.externals.parameters = [];
+
 		if (!externals.parameters) {
 			return;
 		}
-		outScript.externals.parameters = [];
+
 		var duplicateChecker = {};
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var parameter = externals.parameters[i];

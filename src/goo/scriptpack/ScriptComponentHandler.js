@@ -49,7 +49,7 @@ define([
 			if (!component) { return; }
 
 			return RSVP.all(_.map(config.scripts, function (instanceConfig) {
-				return that._updateScriptInstance(instanceConfig, options);
+				return that._updateScriptInstance(component, instanceConfig, options);
 			}, null, 'sortValue'))
 			.then(function (scripts) {
 				component.scripts = scripts;
@@ -58,10 +58,10 @@ define([
 		});
 	};
 
-	ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
+	ScriptComponentHandler.prototype._updateScriptInstance = function (component, instanceConfig, options) {
 		var that = this;
 
-		return this._createOrLoadScript(instanceConfig)
+		return this._createOrLoadScript(component, instanceConfig)
 		.then(function (script) {
 			var newParameters = instanceConfig.options || {};
 			if (script.parameters) {
@@ -72,13 +72,17 @@ define([
 				ScriptUtils.fillDefaultValues(newParameters, script.externals.parameters);
 			}
 
-			// We need to duplicate the script so we can have multiple
-			// similar scripts with different parameters.
-			// TODO: Check if script exists in the component and just update it
-			// instead of creating a new one.
-			var newScript = Object.create(script);
-			newScript.parameters = {};
-			newScript.enabled = false;
+			var newScript = null;
+			if (script.context) {
+				newScript = script;
+				newScript.parameters = {};
+			} else {
+				// We need to duplicate the script so we can have multiple
+				// similar scripts with different parameters.
+				newScript = Object.create(script);
+				newScript.parameters = {};
+				newScript.enabled = false;
+			}
 
 			return that._setParameters(
 				newScript.parameters,
@@ -104,17 +108,49 @@ define([
 	 *
 	 * @private
 	 */
-	ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
+	ScriptComponentHandler.prototype._createOrLoadScript = function (component, instanceConfig) {
+		var that = this;
 		var ref = instanceConfig.scriptRef;
 		var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
 		var isEngineScript = ref.indexOf(prefix) === 0;
 
+		var existingScript = that._findScript(component, instanceConfig.id);
+
+		var promise = null;
+
 		if (isEngineScript) {
-			return this._createEngineScript(ref.slice(prefix.length));
+			if (existingScript) {
+				return PromiseUtils.resolve(existingScript);
+			}
+			promise = that._createEngineScript(ref.slice(prefix.length));
 		} else {
-			return this._load(ref, { reload: true });
+			promise = that._load(ref)
+			.then(function (script) {
+				if (existingScript && existingScript.body === script.body) {
+					return existingScript;
+				}
+
+				// New body so reload the script.
+				return that._load(ref, { reload: true });
+			});
 		}
+
+		return promise.then(function (script) {
+			script.instanceId = instanceConfig.id;
+			return script;
+		});
 	};
+
+	ScriptComponentHandler.prototype._findScript = function (component, instanceId) {
+		for (var i = 0; i < component.scripts.length; ++i) {
+			var script = component.scripts[i];
+			if (script.instanceId === instanceId) {
+				return script;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Creates a new instance of one of the default scripts provided by the
