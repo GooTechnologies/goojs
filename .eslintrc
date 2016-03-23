@@ -1,40 +1,41 @@
 {
-  "globals": {
-    "performance": true,
-    "jasmine": true,
-    "describe": true,
-    "xdescribe": true,
-    "beforeEach": true,
-    "afterEach": true,
-    "it": true,
-    "xit": true,
-    "expect": true,
-    "spyOn": true
-  },
-  "rules": {
-    "quotes": [2, "single", "avoid-escape"],
-    "no-underscore-dangle": 0,
-    "no-shadow": 0,
-    "no-loop-func": 0,
-    "eol-last": 0,
-    "no-use-before-define": 2,
-    "new-cap": 0,
-    "no-constant-condition": 0,
-    "no-redeclare": 0,
-    "complexity": [2, 10],
-    "no-throw-literal": 2,
-    "indent": [2, "tab", { "SwitchCase": 2 }],
-    "consistent-this": [2, "that"],
-    "consistent-return": 0,
-    "no-lonely-if": 2,
-    "operator-assignment": [2, "always"],
-    "padded-blocks": [2, "never"],
-    "space-after-keywords": [2, "always"],
-    "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }]
-  },
-  "env": {
-    "browser": true,
-    "node": true,
-    "amd": true
-  }
+    "extends": "eslint:recommended",
+    "globals": {
+        "performance": true,
+        "jasmine": true,
+        "describe": true,
+        "xdescribe": true,
+        "beforeEach": true,
+        "afterEach": true,
+        "it": true,
+        "xit": true,
+        "expect": true,
+        "spyOn": true,
+        "Map": true,
+    },
+    "rules": {
+        "quotes": [2, "single", "avoid-escape"],
+        "no-underscore-dangle": 0,
+        "no-shadow": 0,
+        "no-loop-func": 0,
+        "eol-last": 0,
+        "no-use-before-define": 0,
+        "new-cap": 0,
+        "no-constant-condition": 0,
+        "no-redeclare": 0,
+        "complexity": [2, 10],
+        "no-throw-literal": 2,
+        "indent": [2, "tab", { "SwitchCase": 2 }],
+        "consistent-this": [2, "that"],
+        "consistent-return": 0,
+        "no-lonely-if": 2,
+        "operator-assignment": [2, "always"],
+        "padded-blocks": [2, "never"],
+        "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }]
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "amd": true
+    }
 }
