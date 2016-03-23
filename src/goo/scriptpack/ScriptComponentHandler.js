@@ -147,7 +147,7 @@ define([
 		}
 
 		return this._createEngineScript(instanceConfig.scriptRef.slice(prefix.length));
-	}
+	};
 
 	/**
 	 * Creates or loads a custom script. If the component already has an instance
@@ -175,7 +175,7 @@ define([
 			// New script or the body was changed so reload the script.
 			return that._load(ref, { reload: true });
 		});
-	}
+	};
 
 	/**
 	 * Searches the specified component to try to find the specified script
@@ -193,7 +193,7 @@ define([
 		return _.find(component.scripts, function (script) {
 			return script.instanceId === instanceId;
 		});
-	}
+	};
 
 	/**
 	 * Creates a new instance of one of the default scripts provided by the
