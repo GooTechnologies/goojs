@@ -67,7 +67,6 @@ define(['goo/entities/systems/System'], function (System) {
 					});
 				}
 			}
-
 			// just use bounding pick instead... first must have a world bound
 			else if (meshRendererComponent.worldBound) {
 				// pick ray must intersect world bound
