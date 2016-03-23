@@ -13,7 +13,12 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 
 		this.installedAPI = new Set();
 
-		this.forceDebug = false;
+		/**
+		 * Debug level for the component. Can be 'none', 'normal' or 'full'.
+		 * None will prevent the rendering of any debug meshes for the component.
+		 * @type {string}
+		 */
+		this.debugLevel = 'normal';
 	}
 
 	/**
