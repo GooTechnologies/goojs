@@ -7,7 +7,6 @@ define([
 
 	function ScriptUtils() {}
 
-
 	ScriptUtils.DEFAULTS_BY_TYPE = {
 		'float': 0,
 		'int': 0,
@@ -64,7 +63,9 @@ define([
 		};
 
 		return {
+			array: Array.isArray,
 			'float': _.isNumber,
+			'number': _.isNumber,
 			'string': _.isString,
 			'boolean': _.isBoolean,
 			'int': _.isInteger,
@@ -79,6 +80,82 @@ define([
 			'texture': isRef('texture')
 		};
 	})();
+
+	// The allowed types for the script parameters.
+	ScriptUtils.PARAMETER_TYPES = [
+		'string',
+		'int',
+		'float',
+		'vec2',
+		'vec3',
+		'vec4',
+		'boolean',
+		'texture',
+		'sound',
+		'camera',
+		'entity',
+		'animation'
+	];
+
+	// Specifies which controls can be used with each type.
+	ScriptUtils.PARAMETER_CONTROLS = (function () {
+		var typeControls = {
+			'string': ['key'],
+			'int': ['spinner', 'slider', 'jointSelector'],
+			'float': ['spinner', 'slider'],
+			'vec2': [],
+			'vec3': ['color'],
+			'vec4': ['color'],
+			'boolean': ['checkbox'],
+			'texture': [],
+			'image': [],
+			'sound': [],
+			'camera': [],
+			'entity': [],
+			'animation': []
+		};
+
+		// Add the controls that can be used with any type to the mapping of
+		// controls that ca be used for each type.
+		for (var type in typeControls) {
+			Array.prototype.push.apply(typeControls[type], ['dropdown', 'select']);
+		}
+
+		return typeControls;
+	})();
+
+	ScriptUtils.PROPERTY_TYPES = [
+		{
+			prop: 'key',
+			type: 'string',
+			mustBeDefined: true,
+			minLength: 1
+		},
+		{
+			prop: 'type',
+			type: 'string',
+			mustBeDefined: true,
+			minLength: 1,
+			getAllowedValues: function () {
+				return ScriptUtils.PARAMETER_TYPES;
+			}
+		},
+		{
+			prop: 'control',
+			type: 'string',
+			getAllowedValues: function (parameter) {
+				// Allowed controls depend on the parameter type.
+				return ScriptUtils.PARAMETER_CONTROLS[parameter.type];
+			}
+		},
+		{ prop: 'name', type: 'string' },
+		{ prop: 'min', type: 'number' },
+		{ prop: 'max', type: 'number' },
+		{ prop: 'scale', type: 'number' },
+		{ prop: 'decimals', type: 'number' },
+		{ prop: 'precision', type: 'number' },
+		{ prop: 'exponential', type: 'boolean' }
+	];
 
 	/**
 	 * Fill a passed parameters object with defaults from spec

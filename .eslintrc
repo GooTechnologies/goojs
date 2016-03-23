@@ -17,7 +17,7 @@
     "no-shadow": 0,
     "no-loop-func": 0,
     "eol-last": 0,
-    "no-use-before-define": 2,
+    "no-use-before-define": 0,
     "new-cap": 0,
     "no-constant-condition": 0,
     "no-redeclare": 0,
