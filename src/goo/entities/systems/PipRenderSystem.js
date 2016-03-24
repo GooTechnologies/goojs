@@ -65,6 +65,9 @@ define([
 
 		this._viewportResizeHandler = function (size) {
 			this.size = size;
+			if (this.camera && this.renderer) {
+				this.renderer.checkResize(this.camera, true);
+			}
 		}.bind(this);
 
 		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
