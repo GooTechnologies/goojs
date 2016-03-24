@@ -45,10 +45,8 @@ define([
 
 	KeyDownAction.prototype.enter = function (fsm) {
 		this.eventListener = function (event) {
-			if (this.key) {
-				if (event.which === +this.key) {
-					fsm.send(this.transitions.keydown);
-				}
+			if (this.key && event.which === +this.key) {
+				fsm.send(this.transitions.keydown);
 			}
 		}.bind(this);
 		document.addEventListener('keydown', this.eventListener);
