@@ -4,8 +4,10 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/shapes/Quad',
+	'goo/util/ObjectUtils',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtils'
@@ -15,8 +17,10 @@ define([
 	MeshData,
 	Shader,
 	Quad,
+	ObjectUtils,
 	RenderTarget,
 	Material,
+	Texture,
 	ShaderLib,
 	FullscreenPass,
 	FullscreenUtils
@@ -45,12 +49,26 @@ define([
 
 		var material = new Material(renderPipQuad);
 		material.setTexture('DIFFUSE_MAP', this.target);
-
 		this.quad = new Quad(1, 1);
 		this.aspect = 1;
-		this.renderable = {
+		this.renderableQuad = {
 			meshData: this.quad,
 			materials: [material]
+		};
+
+		this.textureLock = this.getLockTexture(true);
+		this.textureUnlock = this.getLockTexture(false);
+
+		var renderPipQuadNoEdge = ObjectUtils.deepClone(renderPipQuad);
+		renderPipQuadNoEdge.defines.EDGE = false;
+		this.materialLock = new Material(renderPipQuadNoEdge);
+		this.materialLock.blendState.blending = 'TransparencyBlending';
+		this.materialLock.setTexture('DIFFUSE_MAP', this.textureLock);
+		this.quadLock = new Quad(1, 1);
+		this.updateQuad(this.quadLock, 12, 15, 20, 20);
+		this.renderableLock = {
+			meshData: this.quadLock,
+			materials: [this.materialLock]
 		};
 
 		this.renderList = [];
@@ -65,7 +83,6 @@ define([
 		this.size = null;
 
 		this._viewportResizeHandler = function (size) {
-			// this.dirty = true;
 			this.size = size;
 		}.bind(this);
 
@@ -74,6 +91,53 @@ define([
 
 	PipRenderSystem.prototype = Object.create(System.prototype);
 	PipRenderSystem.prototype.constructor = PipRenderSystem;
+
+	PipRenderSystem.prototype.getLockTexture = function (lock) {
+		var canvas = document.createElement('canvas');
+		canvas.width = 20;
+		canvas.height = 20;
+		var ctx = canvas.getContext('2d');
+
+		ctx.scale(0.2, 0.2);
+
+		ctx.translate(lock ? 0 : -18, 0);
+		ctx.strokeStyle = "rgb(30, 30, 30)";
+		ctx.lineWidth = 12;
+		ctx.beginPath();
+		ctx.arc(50, 35, 16, Math.PI, Math.PI * 2);
+		ctx.stroke();
+
+		ctx.translate(lock ? 0 : 30, 0);
+		ctx.lineWidth = 1;
+		ctx.fillStyle = "rgb(30, 30, 30)";
+		ctx.fillRect(20, 38, 60, 55);
+
+		ctx.fillStyle = "rgb(180, 180, 180)";
+		ctx.beginPath();
+		ctx.ellipse(50, 60, 7, 7, 0, 0, Math.PI * 2);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.moveTo(50, 60);
+		ctx.lineTo(45, 77);
+		ctx.lineTo(55, 77);
+		ctx.fill();
+
+		var texture = new Texture(canvas, {
+			minFilter: 'NearestNeighborNoMipMaps',
+			magFilter: 'NearestNeighbor'
+		}, 20, 20);
+		return texture;
+	};	
+
+	PipRenderSystem.prototype.updateQuad = function (quad, x, y, width, height) {
+		quad.getAttributeBuffer(MeshData.POSITION).set([
+			x, y, 0,
+			x, y + height, 0,
+			x + width, y + height, 0,
+			x + width, y, 0
+		]);
+		quad.setVertexDataUpdated();
+	};
 
 	PipRenderSystem.prototype.render = function (renderer) {
 		if (!this.camera || !this.size) {
@@ -86,13 +150,8 @@ define([
 			var height = this.size.height * 0.2;
 			var width = height * aspect;
 
-			this.quad.getAttributeBuffer(MeshData.POSITION).set([
-				10, 10, 0,
-				10, height, 0,
-				width, height, 0,
-				width, 10, 0
-			]);
-			this.quad.setVertexDataUpdated();
+			this.updateQuad(this.quad, 10, 10, width, height);
+			this.updateQuad(this.quadLock, 12, height - 15, 20, 20);
 		}
 
 		renderer.updateShadows(this.renderSystem.partitioner, this.renderSystem.entities, this.renderSystem.lights);
@@ -120,10 +179,14 @@ define([
 			renderer.render(this.renderList, this.camera, this.renderSystem.lights, this.target, true, overrideMaterial);
 		}
 
-		renderer.render(this.renderable, FullscreenUtils.camera, [], null, this.clear);
+		renderer.render(this.renderableQuad, FullscreenUtils.camera, [], null, false);
+		renderer.render(this.renderableLock, FullscreenUtils.camera, [], null, false);
 	};
 
 	var renderPipQuad = {
+		defines: {
+			EDGE: true
+		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexUV0: MeshData.TEXCOORD0
@@ -160,13 +223,17 @@ define([
 		'uniform vec2 resolution;',
 
 		'varying vec2 texCoord0;',
-		'const vec3 edgeCol = vec3(0.2, 0.2, 0.2);',
+		'const vec4 edgeCol = vec4(0.2, 0.2, 0.2, 1.0);',
 
 		'void main(void) {',
-			'vec3 color = texture2D(diffuseMap, texCoord0).rgb;',
-			'float edge = step(10.0 / resolution.x, min(texCoord0.x, 1.0 - texCoord0.x)) *',
-						 'step(10.0 / resolution.y, min(texCoord0.y, 1.0 - texCoord0.y));',
-			'gl_FragColor = vec4(mix(edgeCol, color, edge), 1.0);',
+			'vec4 color = texture2D(diffuseMap, texCoord0);',
+			'#ifdef EDGE',
+				'float edge = step(10.0 / resolution.x, min(texCoord0.x, 1.0 - texCoord0.x)) *',
+							 'step(10.0 / resolution.y, min(texCoord0.y, 1.0 - texCoord0.y));',
+				'gl_FragColor = mix(edgeCol, color, edge);',
+			'#else',
+				'gl_FragColor = color;',
+			'#endif',
 		'}'
 		].join('\n')
 	};
