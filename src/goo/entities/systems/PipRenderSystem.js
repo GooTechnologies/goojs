@@ -55,19 +55,18 @@ define([
 		this.renderList = [];
 		this.usePostEffects = false;
 		this.camera = null;
+		this.size = null;
+		this.dirty = false;
 
 		SystemBus.addListener('goo.setPipCamera', function (newCam) {
 			this.camera = newCam.camera;
 			this.usePostEffects = newCam.usePostEffects !== undefined ? newCam.usePostEffects : false;
+			this.dirty = true;
 		}.bind(this));
-
-		this.size = null;
 
 		this._viewportResizeHandler = function (size) {
 			this.size = size;
-			if (this.camera && this.renderer) {
-				this.renderer.checkResize(this.camera, true);
-			}
+			this.dirty = true;
 		}.bind(this);
 
 		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
@@ -92,6 +91,11 @@ define([
 		}
 
 		this.renderer = renderer;
+
+		if (this.dirty) {
+			this.dirty = false;
+			renderer.checkResize(this.camera, true);
+		}
 
 		var aspect = this.camera.aspect;
 		if (aspect !== this.aspect) {
