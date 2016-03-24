@@ -590,5 +590,23 @@ define([
 			//! AT: components will be visible if attached after the entity was hidden
 			// same goes for entities attached after the parent was hidden
 		})();
+
+		it('can sync', function () {
+			var parentEntity = world.createEntity().addToWorld();
+			var childEntity = world.createEntity().addToWorld();
+			parentEntity.transformComponent.attachChild(childEntity.transformComponent);
+			parentEntity.transformComponent.transform.translation.x = 1;
+			parentEntity.transformComponent.transform.update();
+			parentEntity.transformComponent.setUpdated();
+
+			parentEntity.transformComponent.sync();
+
+			expect(parentEntity.transformComponent.worldTransform.translation.x).toBe(1);
+			expect(childEntity.transformComponent.worldTransform.translation.x).toBe(0);
+
+			childEntity.transformComponent.sync();
+
+			expect(childEntity.transformComponent.worldTransform.translation.x).toBe(1);
+		});
 	});
 });
