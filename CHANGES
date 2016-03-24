@@ -1,4 +1,15 @@
-v0.15.37 --- 2016-03-23
+v0.15.38 --- 2016-03-24
+
+### Additions
+  
+  + Added DomEventAction
+
+### Fixes
+
+  * Cannot call map on HTML node list.
+  * Fixed particlecomponent update position even if paused + update to TransformComponent.prototype.sync
+ 
+v0.15.37 --- 2016-03-24
 
 ### Fixes
 
@@ -9,6 +20,7 @@ v0.15.37 --- 2016-03-23
   * Debug frustums update correctly for cameras that are not the main camera
   * Fixes for "texture not set" warnings. Engine now works with webgl insight as well
   * Skyboxhandler bail early if the textures are same
+  * Fix timeline autostart bug
 
 v0.15.36 --- 2016-03-17
 

@@ -1,5 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/ArrowsAction',
+	'goo/fsmpack/statemachine/actions/DomEventAction',
 	'goo/fsmpack/statemachine/actions/MouseUpAction',
 	'goo/fsmpack/statemachine/actions/MouseDownAction',
 	'goo/fsmpack/statemachine/actions/MouseMoveAction',

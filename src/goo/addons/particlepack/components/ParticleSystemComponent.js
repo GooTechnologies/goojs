@@ -350,7 +350,7 @@ define([
 		 * @readonly
 		 */
 		this.time = options.time || 0;
-		
+
 		/**
 		 * Force that makes particles fall.
 		 * @type {Vector3}
@@ -363,7 +363,7 @@ define([
 		 * @readonly
 		 */
 		this.boxExtents = options.boxExtents ? options.boxExtents.clone() : new Vector3(1, 1, 1);
-		
+
 		/**
 		 * Acts as a scale on the color curve. Should be used at runtime.
 		 * @type {Vector4}
@@ -419,7 +419,7 @@ define([
 	/**
 	 * No sorting of particles.
 	 * @type {number}
-	 * @readonly	 
+	 * @readonly
 	 */
 	ParticleSystemComponent.SORT_NONE = 1;
 
@@ -479,7 +479,7 @@ define([
 				this.material.shader.setDefine('COLOR_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.COLOR_CURVE_CODE);
 			}
 		},
-		
+
 		/**
 		 * Angle of the cone, if cone shape is used.
 		 * @target-class ParticleSystemComponent coneAngle member
@@ -821,7 +821,7 @@ define([
 				this.material.shader.setDefine('SIZE_CURVE_CODE', value ? value.toGLSL('t','emitRandom') : defines.SIZE_CURVE_CODE);
 			}
 		},
-		
+
 		/**
 		 * @target-class ParticleSystemComponent sortMode member
 		 * @type {string}
@@ -1507,7 +1507,7 @@ define([
 		var r = this.boundsRadius;
 		bounds.xExtent = bounds.yExtent = bounds.zExtent = r * 2;
 	};
-	
+
 	var tmpWorldPos = new Vector3();
 
 	/**
@@ -1564,14 +1564,6 @@ define([
 
 		this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
 
-		if (this.paused) {
-			return;
-		}
-
-		this._lastTime = this.time;
-		this.time += tpf;
-
-		var time = this.time;
 		var entity = this.entity;
 		var worldTransform = entity.transformComponent.worldTransform;
 		var particles = this.particles;
@@ -1583,7 +1575,17 @@ define([
 			copyPositionAndRotation(meshEntity.transformComponent.transform, entity.transformComponent.transform);
 			copyPositionAndRotation(meshEntity.transformComponent.worldTransform, entity.transformComponent.worldTransform);
 
-		} else {
+		}
+
+		if (this.paused) {
+			return;
+		}
+
+		this._lastTime = this.time;
+		this.time += tpf;
+		var time = this.time;
+
+		if (!this.localSpace) {
 
 			// Emit according to emit rate.
 			var emissionRate = this.emissionRate;
@@ -1665,7 +1667,7 @@ define([
 
 		var meshRendererComponent = new MeshRendererComponent(this.material);
 		meshRendererComponent.castShadows = meshRendererComponent.receiveShadows = meshRendererComponent.isPickable = meshRendererComponent.isReflectable = false;
-		
+
 		this.meshEntity = this.entity._world.createEntity(meshData, 'ParticleSystemComponentMesh')
 			.set(meshRendererComponent)
 			.addToWorld();
@@ -1684,7 +1686,7 @@ define([
 		this.meshEntity.removeFromWorld();
 		this.entity = this.meshEntity = null;
 	};
-	
+
 	/**
 	 * @private
 	 * @param obj
