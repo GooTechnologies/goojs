@@ -34,7 +34,8 @@ define([
 	TimelineComponentHandler.prototype._prepare = function (/*config*/) {};
 
 	TimelineComponentHandler.prototype._create = function () {
-		return new TimelineComponent();
+		var component = new TimelineComponent();
+		return component;
 	};
 
 	TimelineComponentHandler.tweenMap = {
@@ -194,6 +195,11 @@ define([
 			component.loop = (config.loop.enabled === true);
 
 			component.autoStart = (config.autoStart !== undefined ? config.autoStart : true);
+			if (component.autoStart) {
+				component.start();
+			} else {
+				component.stop();
+			}
 
 			// remove existing channels in the component that are not mentioned in the config anymore
 			component.channels = component.channels.filter(function (channel) {

@@ -1,3 +1,15 @@
+v0.15.37 --- 2016-03-23
+
+### Fixes
+
+  * Add support for adding custom html attributes in html components
+  * Performance fixes for HtmlSystem
+  * PickingSystem performance improvements + added visual test for picking
+  * Correctly invalidate style cache in the HTML system
+  * Debug frustums update correctly for cameras that are not the main camera
+  * Fixes for "texture not set" warnings. Engine now works with webgl insight as well
+  * Skyboxhandler bail early if the textures are same
+
 v0.15.36 --- 2016-03-17
 
 ### Fixes
