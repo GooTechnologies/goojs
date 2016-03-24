@@ -233,7 +233,7 @@ define([
 			});
 		}
 
-		var images = domElement.getElementsByTagName('IMG');
+		var images = [].slice.apply(domElement.getElementsByTagName('IMG'));
 		return RSVP.all(images.map(loadImage));
 	};
 
