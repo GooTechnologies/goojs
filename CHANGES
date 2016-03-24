@@ -1,3 +1,14 @@
+v0.15.38 --- 2016-03-24
+
+### Additions
+  
+  + Added DomEventAction
+
+### Fixes
+
+  * Cannot call map on HTML node list.
+  * Fixed particlecomponent update position even if paused + update to TransformComponent.prototype.sync
+ 
 v0.15.37 --- 2016-03-24
 
 ### Fixes
