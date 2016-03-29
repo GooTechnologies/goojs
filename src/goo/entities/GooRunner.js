@@ -338,7 +338,7 @@ define([
 
 		var tpf = (time - this.start) / 1000.0;
 
-		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
+		if (tpf < 0) { // skip a loop - original start time probably bad.
 			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 			return;
