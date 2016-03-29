@@ -8,6 +8,7 @@ v0.15.39 --- 2016-03-29
 
   * ShakeAction fix, so it can transition to itself
   * Minor code fix in KeyDownAction
+  * Change statemachine system cleanup to be synchronous and properly clean up actions
 
 v0.15.38 --- 2016-03-24
 
