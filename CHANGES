@@ -1,3 +1,10 @@
+v0.15.40 --- 2016-03-29
+
+### Fixes
+
+  * Added convenience methods for adding/removing stats panel. Fixed stats info bug
+  * Removed old tpf cap
+
 v0.15.39 --- 2016-03-29
 
 ### Additions
