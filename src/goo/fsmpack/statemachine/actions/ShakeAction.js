@@ -125,8 +125,8 @@ define([
 		if (t >= 1) {
 			translation.sub(this.oldVal);
 			transformComponent.setUpdated();
-			fsm.send(this.eventToEmit);
 			this.completed = true;
+			fsm.send(this.eventToEmit);
 		}
 	};
 
