@@ -113,11 +113,7 @@ define([
 		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
 		if (parameters.showStats) {
-			this.stats = new Stats();
-			this.stats.domElement.style.position = 'absolute';
-			this.stats.domElement.style.left = '10px';
-			this.stats.domElement.style.top = '10px';
-			document.body.appendChild(this.stats.domElement);
+			this.addStats();
 		}
 		if (parameters.logo === undefined || parameters.logo) {
 			var logoDiv = this._buildLogo(parameters.logo);
@@ -456,8 +452,8 @@ define([
 		if (this.stats) {
 			this.stats.update(
 				this.renderer.info.toString() + '<br>' +
-				'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
-				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
+				'Transforms: ' + this.world.getSystem('TransformSystem').numUpdates +
+				'<br>Cached shaders: ' + this.renderer.rendererRecord.shaderCache.size
 			);
 		}
 
@@ -881,6 +877,27 @@ define([
 		this.callbacksNextFrame = null;
 		this._takeSnapshots = null;
 		this._events = null;
+	};
+
+	/**
+	 * Adds a small stats widget showing fps, rendercalls, vertices, indices, transform updates and cached shaders
+	 */
+	GooRunner.prototype.addStats = function () {
+		this.stats = new Stats();
+		this.stats.domElement.style.position = 'absolute';
+		this.stats.domElement.style.left = '10px';
+		this.stats.domElement.style.top = '10px';
+		document.body.appendChild(this.stats.domElement);
+	};
+
+	/**
+	 * Removes stats widget
+	 */
+	GooRunner.prototype.removeStats = function () {
+		if (this.stats) {
+			this.stats.domElement.parentNode.removeChild(this.stats.domElement);
+			this.stats = null;
+		}
 	};
 
 	return GooRunner;
