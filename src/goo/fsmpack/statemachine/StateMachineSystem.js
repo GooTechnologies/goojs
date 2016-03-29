@@ -127,7 +127,6 @@ define([
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
 	StateMachineSystem.prototype.stop = function () {
-		console.log('stopping system');
 		this.passive = true;
 		this.paused = false;
 
