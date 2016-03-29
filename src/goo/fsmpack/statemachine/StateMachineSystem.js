@@ -16,7 +16,6 @@ define([
 		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
 
 		this.engine = engine;
-		this.resetRequest = false;
 		this.passive = false;
 		this.paused = false;
 
@@ -62,27 +61,11 @@ define([
 	};
 
 	StateMachineSystem.prototype.process = function (entities, tpf) {
-		var component;
-
-		if (this.resetRequest) {
-			this.resetRequest = false;
-			for (var i = 0; i < entities.length; i++) {
-				component = entities[i].stateMachineComponent;
-				component.kill();
-				component.cleanup();
-			}
-			this.time = 0;
-			// remove all sounds a bit hard but in reality no tween should remain alive between runs
-			TWEEN.removeAll();
-			this.passive = true;
-			return;
-		}
-
 		this.time += tpf;
 
 		// Enter unentered components
 		for (var i = 0; i < entities.length; i++) {
-			component = entities[i].stateMachineComponent;
+			var component = entities[i].stateMachineComponent;
 			if (!component.entered) {
 				// component.init(); // why was this done?
 				component.doEnter();
@@ -144,9 +127,17 @@ define([
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
 	StateMachineSystem.prototype.stop = function () {
-		this.passive = false;
-		this.resetRequest = true;
+		console.log('stopping system');
+		this.passive = true;
 		this.paused = false;
+
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var component = this._activeEntities[i].stateMachineComponent;
+			component.kill();
+			component.cleanup();
+		}
+		this.time = 0;
+		TWEEN.removeAll();
 
 		for (var key in this._listeners) {
 			document.removeEventListener(key, this._listeners[key]);
