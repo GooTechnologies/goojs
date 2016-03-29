@@ -83,7 +83,7 @@ define([
 			if (innerHtmlChanged || styleChanged) {
 				promise = that._updateHtml(domElement, entity, config, options);
 			} else {
-				promise = that._updateAttributes(domElement, config);
+				promise = that._updateAttributes(domElement, entity, config);
 			}
 
 			return promise.then(function () {
@@ -199,7 +199,7 @@ define([
 		}
 
 		domElement.innerHTML = wrappedStyle + config.innerHtml;
-		this._updateAttributes(domElement, config);
+		this._updateAttributes(domElement, entity, config);
 
 		return this._loadImages(domElement, options);
 	};
@@ -249,7 +249,7 @@ define([
 	 * @return {Promise}
 	 * @private
 	 */
-	HtmlComponentHandler.prototype._updateAttributes = function (domElement, config) {
+	HtmlComponentHandler.prototype._updateAttributes = function (domElement, entity, config) {
 		var attrs = config.attributes || {};
 		var attrNames = Object.keys(attrs);
 		while (attrNames.length) {
@@ -263,7 +263,9 @@ define([
 			domElement.setAttribute('style', 'position: absolute; top: 0; left: 0; z-index: 1; display: none');
 		}
 
-		domElement.styleDirty = true;
+		// We need to have the HTML system update again so we clear the style
+		// cache.
+		entity._world.getSystem('HtmlSystem').clearStyleCache(domElement);
 
 		return PromiseUtils.resolve();
 	};

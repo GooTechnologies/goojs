@@ -39,15 +39,18 @@ define([
 			this.styleCache.set(element, elementCache);
 		}
 
-		if (element.styleDirty || style !== elementCache.get(property)) {
+		if (style !== elementCache.get(property)) {
 			element.style[property] = style;
 			if (doPrefix) {
 				element.style['-webkit-' + property] = style;
 			}
 
 			elementCache.set(property, style);
-			element.styleDirty = false;
 		}
+	};
+
+	HtmlSystem.prototype.clearStyleCache = function (element) {
+		this.styleCache.delete(element);
 	};
 
 	HtmlSystem.prototype.process = function (entities) {
