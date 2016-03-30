@@ -473,9 +473,22 @@ define([
 		this.y = y;
 		this.z = z;
 		this.w = w;
-
 		return this;
 	};
+
+	/**
+	 * Set the quaternion components from an array (ordered x, y, z, w).
+	 * @param {array} array
+	 * @return {Quaternion} The self object.
+	 */
+	Quaternion.prototype.setArray = function (array) {
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+		this.w = array[3];
+		return this;
+	};
+
 
 	// SHIM START
 
@@ -733,22 +746,6 @@ define([
 			target.w = lhs.w - rhs;
 
 			return target;
-		}
-	);
-
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	Quaternion.prototype.setArray = ObjectUtils.warnOnce(
-		'Quaternion.prototype.setArray is deprecated.',
-		function (array) {
-			this.x = array[0];
-			this.y = array[1];
-			this.z = array[2];
-			this.w = array[3];
-
-			return this;
 		}
 	);
 
