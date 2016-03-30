@@ -1,3 +1,9 @@
+v0.15.43 --- 2016-03-30
+
+### Fixes
+
+ * Fixed another bug in the PipRenderSystem, so the quad updates when the viewport size changes.
+
 v0.15.42 --- 2016-03-30
 
 ### Fixes
@@ -21,7 +27,7 @@ v0.15.40 --- 2016-03-29
 v0.15.39 --- 2016-03-29
 
 ### Additions
-  
+
   + Added PiP (Picture in Picture) rendering functionality
 
 ### Fixes
@@ -33,14 +39,14 @@ v0.15.39 --- 2016-03-29
 v0.15.38 --- 2016-03-24
 
 ### Additions
-  
+
   + Added DomEventAction
 
 ### Fixes
 
   * Cannot call map on HTML node list.
   * Fixed particlecomponent update position even if paused + update to TransformComponent.prototype.sync
- 
+
 v0.15.37 --- 2016-03-24
 
 ### Fixes
@@ -65,7 +71,7 @@ v0.15.36 --- 2016-03-17
 v0.15.35 --- 2016-03-16
 
 ### Additions
-  
+
   + Added timeline autoStart property
   + Use entity meta data as entity attributes
 
@@ -79,7 +85,7 @@ v0.15.35 --- 2016-03-16
 v0.15.34 --- 2016-03-14
 
 ### Additions
-  
+
   + Setting depth function is now supported (Material.depthState.depthFunc)
 
 ### Fixes
@@ -92,7 +98,7 @@ v0.15.34 --- 2016-03-14
 v0.15.33 --- 2016-03-09
 
 ### Fixes
-  
+
   * Fix requestFullscreen on Safari and IE/Edge
   * Transition triggerEnterAction on the actual event and not next frame
   * ClickAction optimization, don't pickSync if already diff too much
