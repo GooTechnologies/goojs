@@ -46,7 +46,7 @@ define([
 		var material = new Material(renderPipQuad);
 		material.setTexture('DIFFUSE_MAP', this.target);
 		this.quad = new Quad(1, 1);
-		this.aspect = 1;
+		this.aspect = null;
 		this.renderableQuad = {
 			meshData: this.quad,
 			materials: [material]
