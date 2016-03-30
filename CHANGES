@@ -1,3 +1,9 @@
+v0.15.41 --- 2016-03-30
+
+### Fixes
+
+  * Clear the html system style cache when an element's style gets updated in the loader.
+
 v0.15.40 --- 2016-03-29
 
 ### Fixes
