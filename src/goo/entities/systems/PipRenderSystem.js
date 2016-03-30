@@ -47,6 +47,8 @@ define([
 		material.setTexture('DIFFUSE_MAP', this.target);
 		this.quad = new Quad(1, 1);
 		this.aspect = null;
+		this.width = null;
+		this.height = null;
 		this.renderableQuad = {
 			meshData: this.quad,
 			materials: [material]
@@ -98,10 +100,13 @@ define([
 		}
 
 		var aspect = this.camera.aspect;
-		if (aspect !== this.aspect) {
+		var height = this.size.height * 0.2;
+		var width = height * aspect;
+
+		if (aspect !== this.aspect || width !== this.width || height !== this.height) {
 			this.aspect = aspect;
-			var height = this.size.height * 0.2;
-			var width = height * aspect;
+			this.width = width;
+			this.height = height;
 
 			this.updateQuad(this.quad, 10, 10, width, height);
 		}
@@ -160,7 +165,7 @@ define([
 
 		'void main(void) {',
 			'texCoord0 = vertexUV0;',
-			
+
 			'gl_Position = vec4(',
 				'2.0 * vertexPosition.x / resolution.x - 1.0,',
 				'2.0 * vertexPosition.y / resolution.y - 1.0,',
