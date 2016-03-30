@@ -1,3 +1,10 @@
+v0.15.42 --- 2016-03-30
+
+### Fixes
+
+  * Fixed bug in PiP when aspect ratio is 1
+  * Undeprecated Quaternion.prototype.setArray
+
 v0.15.41 --- 2016-03-30
 
 ### Fixes
