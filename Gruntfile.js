@@ -34,7 +34,7 @@ module.exports = function (grunt) {
 					logicpack: ['./src/goo/logicpack']
 				},
 				output: {
-					filename: "out/[name].js"
+					filename: 'out/[name].js'
 				},
 				plugins: [
 					new webpack.optimize.CommonsChunkPlugin('goo', 'out/goo.js')
@@ -53,7 +53,7 @@ module.exports = function (grunt) {
 						DEBUG: false
 					}
 				}
-			},
+			}
 		},
 
 		wrap: {
@@ -227,8 +227,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('refs', function () {
 		var done = this.async();
-		require('child_process')
-			.exec('node test/e2etesting/generate-reference-screenshots', function (error, stdout, stderr) {
+		require('child_process').exec('node test/e2etesting/generate-reference-screenshots', function (error, stdout, stderr) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
 			if (error !== null) {
