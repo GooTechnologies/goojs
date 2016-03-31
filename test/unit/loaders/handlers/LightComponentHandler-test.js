@@ -1,11 +1,11 @@
-var World = require('../../src/goo/entities/World');
-var LightComponent = require('../../src/goo/entities/components/LightComponent');
-var PointLight = require('../../src/goo/renderer/light/PointLight');
-var SpotLight = require('../../src/goo/renderer/light/SpotLight');
-var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
-var Configs = require('../../../test/unit/loaders/Configs');
+var World = require('../../../../src/goo/entities/World');
+var LightComponent = require('../../../../src/goo/entities/components/LightComponent');
+var PointLight = require('../../../../src/goo/renderer/light/PointLight');
+var SpotLight = require('../../../../src/goo/renderer/light/SpotLight');
+var DynamicLoader = require('../../../../src/goo/loaders/DynamicLoader');
+var Configs = require('../../../../test/unit/loaders/Configs');
 
-require('../../src/goo/loaders/handlers/LightComponentHandler');
+require('../../../../src/goo/loaders/handlers/LightComponentHandler');
 
 describe('LightComponentHandler', function () {
 	var loader;

@@ -1,19 +1,18 @@
+var Entity = require('../../../../src/goo/entities/Entity');
+var TransformComponent = require('../../../../src/goo/entities/components/TransformComponent');
+var MeshDataComponent = require('../../../../src/goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('../../../../src/goo/entities/components/MeshRendererComponent');
+var RenderSystem = require('../../../../src/goo/entities/systems/RenderSystem');
+var DynamicLoader = require('../../../../src/goo/loaders/DynamicLoader');
+var EnvironmentHandler = require('../../../../src/goo/loaders/handlers/EnvironmentHandler');
+var World = require('../../../../src/goo/entities/World');
+var Texture = require('../../../../src/goo/renderer/Texture');
+var Material = require('../../../../src/goo/renderer/Material');
+var Box = require('../../../../src/goo/shapes/Box');
+var Sphere = require('../../../../src/goo/shapes/Sphere');
+var Configs = require('../../../../test/unit/loaders/Configs');
+
 describe('SkyboxHandler', function () {
-
-	var Entity = require('../../src/goo/entities/Entity');
-	var TransformComponent = require('../../src/goo/entities/components/TransformComponent');
-	var MeshDataComponent = require('../../src/goo/entities/components/MeshDataComponent');
-	var MeshRendererComponent = require('../../src/goo/entities/components/MeshRendererComponent');
-	var RenderSystem = require('../../src/goo/entities/systems/RenderSystem');
-	var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
-	var EnvironmentHandler = require('../../src/goo/loaders/handlers/EnvironmentHandler');
-	var World = require('../../src/goo/entities/World');
-	var Texture = require('../../src/goo/renderer/Texture');
-	var Material = require('../../src/goo/renderer/Material');
-	var Box = require('../../src/goo/shapes/Box');
-	var Sphere = require('../../src/goo/shapes/Sphere');
-	var Configs = require('../../../test/unit/loaders/Configs');
-
 	var loader, world;
 	beforeEach(function () {
 		world = new World();

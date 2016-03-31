@@ -1,18 +1,18 @@
-var World = require('../../src/goo/entities/World');
-var TransformSystem = require('../../src/goo/entities/systems/TransformSystem');
-var CameraSystem = require('../../src/goo/entities/systems/CameraSystem');
-var ParticlesSystem = require('../../src/goo/entities/systems/ParticlesSystem');
-var BoundingUpdateSystem = require('../../src/goo/entities/systems/BoundingUpdateSystem');
-var LightingSystem = require('../../src/goo/entities/systems/LightingSystem');
-var AnimationSystem = require('../../src/goo/animationpack/systems/AnimationSystem');
-var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
-var AudioContext = require('../../src/goo/sound/AudioContext');
-var SoundSystem = require('../../src/goo/entities/systems/SoundSystem');
-var RenderSystem = require('../../src/goo/entities/systems/RenderSystem');
+var World = require('../../../src/goo/entities/World');
+var TransformSystem = require('../../../src/goo/entities/systems/TransformSystem');
+var CameraSystem = require('../../../src/goo/entities/systems/CameraSystem');
+var ParticlesSystem = require('../../../src/goo/entities/systems/ParticlesSystem');
+var BoundingUpdateSystem = require('../../../src/goo/entities/systems/BoundingUpdateSystem');
+var LightingSystem = require('../../../src/goo/entities/systems/LightingSystem');
+var AnimationSystem = require('../../../src/goo/animationpack/systems/AnimationSystem');
+var DynamicLoader = require('../../../src/goo/loaders/DynamicLoader');
+var AudioContext = require('../../../src/goo/sound/AudioContext');
+var SoundSystem = require('../../../src/goo/entities/systems/SoundSystem');
+var RenderSystem = require('../../../src/goo/entities/systems/RenderSystem');
 var Configs = require('../../../test/unit/loaders/Configs');
 
-require('../../src/goo/loaders/handlers/EntityHandler');
-require('../../src/goo/animationpack/handlers/AnimationHandlers');
+require('../../../src/goo/loaders/handlers/EntityHandler');
+require('../../../src/goo/animationpack/handlers/AnimationHandlers');
 
 describe('DynamicLoader', function () {
 	var loader;

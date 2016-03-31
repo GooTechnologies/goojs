@@ -1,4 +1,4 @@
-var PromiseUtils = require('../../src/goo/util/PromiseUtils');
+var PromiseUtils = require('../../../src/goo/util/PromiseUtils');
 
 describe('PromiseUtils', function () {
 	describe('delay', function () {

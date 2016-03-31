@@ -1,4 +1,4 @@
-var StringUtils = require('../../src/goo/util/StringUtils');
+var StringUtils = require('../../../src/goo/util/StringUtils');
 
 describe('StringUtils', function() {
 	it('parses URLs', function () {
