@@ -1,7 +1,6 @@
-var ConstantCurve = require('../../src/goo/addons/particlepack/curves/ConstantCurve');
+var ConstantCurve = require('../../../../../src/goo/addons/particlepack/curves/ConstantCurve');
 
 describe('ConstantCurve', function () {
-
 	it('.getValueAt', function () {
 		var set = new ConstantCurve({ value: 123 });
 		expect(set.getValueAt(0)).toBe(123);
