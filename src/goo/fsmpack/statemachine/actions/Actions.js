@@ -1,6 +1,6 @@
 var _actions = {};
 
-var Actions = function(){};
+var Actions = function () {};
 
 var IGNORED_ACTIONS = [
 	'Eval',
@@ -41,8 +41,11 @@ Actions.allActionsArray = function () {
 	return array;
 };
 
+
+// TODO: check
 var allActions = {
 	ArrowsAction: require('./ArrowsAction'),
+	DomEventAction: require('./DomEventAction'),
 	MouseUpAction: require('./MouseUpAction'),
 	MouseDownAction: require('./MouseDownAction'),
 	MouseMoveAction: require('./MouseMoveAction'),

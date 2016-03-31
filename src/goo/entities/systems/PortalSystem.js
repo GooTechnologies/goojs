@@ -58,14 +58,7 @@ PortalSystem.prototype.render = function (renderer, camera, target, overrideMate
 
 	this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
 
-	if (this.renderSystem.composers.length > 0) {
-		for (var i = 0; i < this.renderSystem.composers.length; i++) {
-			var composer = this.renderSystem.composers[i];
-			composer.render(renderer, this.renderSystem.currentTpf, camera, this.renderSystem.lights, null, true);
-		}
-	} else {
-		renderer.render(this.renderList, camera, this.renderSystem.lights, target, true, overrideMaterial);
-	}
+	renderer.render(this.renderList, camera, this.renderSystem.lights, target, true, overrideMaterial);
 };
 
 module.exports = PortalSystem;

@@ -42,9 +42,9 @@ function TransformComponent() {
 	this._dirty = true;
 	this._updated = false;
 
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	Object.seal(this);
-	// @endif
+	// #endif
 }
 
 TransformComponent.type = 'TransformComponent';
@@ -662,6 +662,36 @@ TransformComponent.prototype.updateWorldTransform = function () {
 	this._dirty = false;
 	this._updated = true;
 };
+
+/**
+ * Update the local and world transforms of the entity tree above this component (and the component itself).
+ */
+TransformComponent.prototype.sync = (function () {
+	var parents = [];
+	return function () {
+		var current = this;
+
+		while (current !== null) {
+			parents.push(current);
+			current = current.parent;
+		}
+
+		var update = false;
+		for (var i = parents.length - 1; i >= 0; i--) {
+			var component = parents[i];
+			if (component._dirty || update) {
+				update = true; // update the rest of the tree branch
+				component.updateTransform();
+				component.updateWorldTransform();
+				component._dirty = false;
+			}
+		}
+
+		parents.length = 0;
+
+		return this;
+	};
+})();
 
 TransformComponent.applyOnEntity = function (obj, entity) {
 	var transformComponent = entity.transformComponent;

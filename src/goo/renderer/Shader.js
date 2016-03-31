@@ -503,7 +503,7 @@ Shader.prototype.compile = function (renderer) {
 	for (var key in this.uniformMapping) {
 		var uniform = context.getUniformLocation(this.shaderProgram, key);
 
-		if (uniform === null) {
+		if (!uniform) {
 			var l = this.textureSlots.length;
 			for (var i = 0; i < l; i++) {
 				var slot = this.textureSlots[i];

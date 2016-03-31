@@ -16,9 +16,9 @@ function BufferData(data, target) {
 	this._dataUsage = 'StaticDraw';
 	this._dataNeedsRefresh = false;
 
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	Object.seal(this);
-	// @endif
+	// #endif
 }
 
 /**
@@ -49,8 +49,10 @@ BufferData.prototype.setDataNeedsRefresh = function () {
  * @param {WebGLRenderingContext} context
  */
 BufferData.prototype.destroy = function (context) {
-	context.deleteBuffer(this.glBuffer);
-	this.glBuffer = null;
+	if (this.glBuffer) {
+		context.deleteBuffer(this.glBuffer);
+		this.glBuffer = null;
+	}
 };
 
 BufferData.prototype.copy = function (source) {

@@ -71,7 +71,12 @@ DebugRenderSystem.prototype.process = function (entities, tpf) {
 			if (!entity._hidden && entity.hasComponent(componentName)) {
 				var component = entity.getComponent(componentName);
 
-				var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
+				// Don't debug components that have been marked.
+				if (component.debugLevel === 'none') {
+					continue;
+				}
+
+				var options = { full: this.doRender[componentName] || component.debugLevel === 'full' };
 				var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
 				if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
@@ -172,6 +177,5 @@ DebugRenderSystem.prototype.cleanup = function () {
 	SystemBus.removeListener('goo.setCurrentCamera', this.cameraListener);
 	SystemBus.removeListener('goo.setLights', this.lightsListener);
 };
-
 
 module.exports = DebugRenderSystem;

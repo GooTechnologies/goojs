@@ -107,6 +107,11 @@ SkyboxHandler.prototype._updateSphere = function (ref, config, options, skybox) 
 				return;
 			}
 
+			// Check if skybox is the same
+			if (texture === skybox.textures[0] && that._activeSkyshape === that._skysphere) {
+				return that._skysphere;
+			}
+
 			if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
 				var skyTex = that._skysphereTexture;
 				skybox.textures = [texture];
@@ -152,7 +157,7 @@ SkyboxHandler.prototype._updateBox = function (ref, config, options, skybox) {
 	// Load all textures
 	return RSVP.all(promises).then(function (textures) {
 		// Check if skybox is the same
-		if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {
+		if (isEqual(textures, skybox.textures) && that._activeSkyshape === that._skybox) {
 			return that._skybox;
 		}
 

@@ -173,9 +173,9 @@ function Renderer(parameters) {
 
 	this._definesIndices = [];
 
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	Object.seal(this);
-	// @endif
+	// #endif
 }
 
 /**
@@ -1535,7 +1535,11 @@ Renderer.prototype.updateTextures = function (material) {
 		var texture = material.getTexture(textureSlot.mapping);
 
 		if (texture === undefined) {
-			continue;
+			if (textureSlot.format === 'sampler2D') {
+				texture = TextureCreator.DEFAULT_TEXTURE_2D;
+			} else if (textureSlot.format === 'samplerCube') {
+				texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+			}
 		}
 
 		var textureList = texture;

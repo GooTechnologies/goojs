@@ -2,7 +2,6 @@ var EntitySelection = require('../EntitySelection');
 
 /**
  * Base class/module for all components. Should not be used directly.
- * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
  */
 function Component() {
 	/**
@@ -13,7 +12,12 @@ function Component() {
 
 	this.installedAPI = new Set();
 
-	this.forceDebug = false;
+	/**
+	 * Debug level for the component. Can be 'none', 'normal' or 'full'.
+	 * None will prevent the rendering of any debug meshes for the component.
+	 * @type {string}
+	 */
+	this.debugLevel = 'normal';
 }
 
 /**

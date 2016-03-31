@@ -58,7 +58,7 @@ var labels = {
 	complete: 'On Shake Complete'
 };
 
-ShakeAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+ShakeAction.getTransitionLabel = function (transitionKey /*, actionConfig*/) {
 	return labels[transitionKey];
 };
 
@@ -117,8 +117,8 @@ ShakeAction.prototype.update = function (fsm) {
 	if (t >= 1) {
 		translation.sub(this.oldVal);
 		transformComponent.setUpdated();
-		fsm.send(this.eventToEmit);
 		this.completed = true;
+		fsm.send(this.eventToEmit);
 	}
 };
 

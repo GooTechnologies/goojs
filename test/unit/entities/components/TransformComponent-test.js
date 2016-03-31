@@ -1,17 +1,16 @@
+var Vector3 = require('src/goo/math/Vector3');
+var Transform = require('src/goo/math/Transform');
+var TransformSystem = require('src/goo/entities/systems/TransformSystem');
+var TransformComponent = require('src/goo/entities/components/TransformComponent');
+var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
+var HtmlComponent = require('src/goo/entities/components/HtmlComponent');
+var LightComponent = require('src/goo/entities/components/LightComponent');
+var Entity = require('src/goo/entities/Entity');
+var EntitySelection = require('src/goo/entities/EntitySelection');
+var World = require('src/goo/entities/World');
+var CustomMatchers = require('test/unit/CustomMatchers');
+
 describe('TransformComponent', function () {
-
-	var Vector3 = require('src/goo/math/Vector3');
-	var Transform = require('src/goo/math/Transform');
-	var TransformSystem = require('src/goo/entities/systems/TransformSystem');
-	var TransformComponent = require('src/goo/entities/components/TransformComponent');
-	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-	var HtmlComponent = require('src/goo/entities/components/HtmlComponent');
-	var LightComponent = require('src/goo/entities/components/LightComponent');
-	var Entity = require('src/goo/entities/Entity');
-	var EntitySelection = require('src/goo/entities/EntitySelection');
-	var World = require('src/goo/entities/World');
-	var CustomMatchers = require('test/unit/CustomMatchers');
-
 	var world;
 
 	beforeEach(function () {
@@ -574,4 +573,22 @@ describe('TransformComponent', function () {
 		//! AT: components will be visible if attached after the entity was hidden
 		// same goes for entities attached after the parent was hidden
 	})();
+
+	it('can sync', function () {
+		var parentEntity = world.createEntity().addToWorld();
+		var childEntity = world.createEntity().addToWorld();
+		parentEntity.transformComponent.attachChild(childEntity.transformComponent);
+		parentEntity.transformComponent.transform.translation.x = 1;
+		parentEntity.transformComponent.transform.update();
+		parentEntity.transformComponent.setUpdated();
+
+		parentEntity.transformComponent.sync();
+
+		expect(parentEntity.transformComponent.worldTransform.translation.x).toBe(1);
+		expect(childEntity.transformComponent.worldTransform.translation.x).toBe(0);
+
+		childEntity.transformComponent.sync();
+
+		expect(childEntity.transformComponent.worldTransform.translation.x).toBe(1);
+	});
 });

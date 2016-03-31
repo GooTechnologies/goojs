@@ -35,6 +35,7 @@ module.exports = {
 	MovementSystem: require('./entities/systems/MovementSystem'),
 	ParticlesSystem: require('./entities/systems/ParticlesSystem'),
 	PickingSystem: require('./entities/systems/PickingSystem'),
+	PipRenderSystem: require('./entities/systems/PipRenderSystem'),
 	PortalSystem: require('./entities/systems/PortalSystem'),
 	RenderSystem: require('./entities/systems/RenderSystem'),
 	ScriptSystem: require('./entities/systems/ScriptSystem'),

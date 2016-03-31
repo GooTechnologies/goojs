@@ -18,12 +18,12 @@ var ObjectUtils = require('../util/ObjectUtils');
  * @param {number} w
  */
 function Quaternion(x, y, z, w) {
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	this._x = 0;
 	this._y = 0;
 	this._z = 0;
 	this._w = 1;
-	// @endif
+	// #endif
 
 	if (arguments.length === 0) {
 		// Nothing given
@@ -50,14 +50,14 @@ function Quaternion(x, y, z, w) {
 		this.w = w;
 	}
 
-	// @ifdef DEBUG
+	// #ifdef DEBUG
 	Object.seal(this);
-	// @endif
+	// #endif
 }
 
-// @ifdef DEBUG
+// #ifdef DEBUG
 Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
-// @endif
+// #endif
 
 Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
 Quaternion.prototype.dot = Vector4.prototype.dot;
@@ -439,13 +439,13 @@ Quaternion.prototype.dot = function (q) {
 	return this.x * q.x + this.y * q.y + this.z * q.z + this.w * q.w;
 };
 
-// @ifdef DEBUG
+// #ifdef DEBUG
 Vector.addReturnChecks(Quaternion.prototype, [
 	'dot', 'dotDirect',
 	'length', 'lengthSquared',
 	'distance', 'distanceSquared'
 ]);
-// @endif
+// #endif
 
 /**
  * Sets the vector's values from 4 numeric arguments
@@ -463,9 +463,22 @@ Quaternion.prototype.setDirect = function (x, y, z, w) {
 	this.y = y;
 	this.z = z;
 	this.w = w;
-
 	return this;
 };
+
+/**
+ * Set the quaternion components from an array (ordered x, y, z, w).
+ * @param {array} array
+ * @return {Quaternion} The self object.
+ */
+Quaternion.prototype.setArray = function (array) {
+	this.x = array[0];
+	this.y = array[1];
+	this.z = array[2];
+	this.w = array[3];
+	return this;
+};
+
 
 // SHIM START
 
@@ -730,22 +743,6 @@ Quaternion.scalarSub = ObjectUtils.warnOnce(
  * @hidden
  * @deprecated
  */
-Quaternion.prototype.setArray = ObjectUtils.warnOnce(
-	'Quaternion.prototype.setArray is deprecated.',
-	function (array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
-		this.w = array[3];
-
-		return this;
-	}
-);
-
-/**
- * @hidden
- * @deprecated
- */
 Quaternion.prototype.setVector = ObjectUtils.warnOnce(
 	'Quaternion.prototype.setVector is deprecated.',
 	function (quat) {
@@ -814,5 +811,4 @@ Quaternion.prototype.scalarDiv = ObjectUtils.warnOnce(
 );
 
 // SHIM END
-
 module.exports = Quaternion;

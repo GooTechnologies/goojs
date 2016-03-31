@@ -1546,14 +1546,6 @@ var ObjectUtils = require('../../../util/ObjectUtils');
 
 		this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
 
-		if (this.paused) {
-			return;
-		}
-
-		this._lastTime = this.time;
-		this.time += tpf;
-
-		var time = this.time;
 		var entity = this.entity;
 		var worldTransform = entity.transformComponent.worldTransform;
 		var particles = this.particles;
@@ -1565,7 +1557,17 @@ var ObjectUtils = require('../../../util/ObjectUtils');
 			copyPositionAndRotation(meshEntity.transformComponent.transform, entity.transformComponent.transform);
 			copyPositionAndRotation(meshEntity.transformComponent.worldTransform, entity.transformComponent.worldTransform);
 
-		} else {
+		}
+
+		if (this.paused) {
+			return;
+		}
+
+		this._lastTime = this.time;
+		this.time += tpf;
+		var time = this.time;
+
+		if (!this.localSpace) {
 
 			// Emit according to emit rate.
 			var emissionRate = this.emissionRate;

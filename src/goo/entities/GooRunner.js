@@ -77,11 +77,7 @@ function GooRunner(parameters) {
 	this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
 	if (parameters.showStats) {
-		this.stats = new Stats();
-		this.stats.domElement.style.position = 'absolute';
-		this.stats.domElement.style.left = '10px';
-		this.stats.domElement.style.top = '10px';
-		document.body.appendChild(this.stats.domElement);
+		this.addStats();
 	}
 	if (parameters.logo === undefined || parameters.logo) {
 		var logoDiv = this._buildLogo(parameters.logo);
@@ -302,7 +298,7 @@ GooRunner.prototype._updateFrame = function (time) {
 
 	var tpf = (time - this.start) / 1000.0;
 
-	if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
+	if (tpf < 0) { // skip a loop - original start time probably bad.
 		this.start = time;
 		this.animationId = window.requestAnimationFrame(this.run.bind(this));
 		return;
@@ -420,8 +416,8 @@ GooRunner.prototype._updateFrame = function (time) {
 	if (this.stats) {
 		this.stats.update(
 			this.renderer.info.toString() + '<br>' +
-			'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
-			'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
+			'Transforms: ' + this.world.getSystem('TransformSystem').numUpdates +
+			'<br>Cached shaders: ' + this.renderer.rendererRecord.shaderCache.size
 		);
 	}
 
@@ -845,6 +841,27 @@ GooRunner.prototype.clear = function () {
 	this.callbacksNextFrame = null;
 	this._takeSnapshots = null;
 	this._events = null;
+};
+
+/**
+ * Adds a small stats widget showing fps, rendercalls, vertices, indices, transform updates and cached shaders
+ */
+GooRunner.prototype.addStats = function () {
+	this.stats = new Stats();
+	this.stats.domElement.style.position = 'absolute';
+	this.stats.domElement.style.left = '10px';
+	this.stats.domElement.style.top = '10px';
+	document.body.appendChild(this.stats.domElement);
+};
+
+/**
+ * Removes stats widget
+ */
+GooRunner.prototype.removeStats = function () {
+	if (this.stats) {
+		this.stats.domElement.parentNode.removeChild(this.stats.domElement);
+		this.stats = null;
+	}
 };
 
 module.exports = GooRunner;

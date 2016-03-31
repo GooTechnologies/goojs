@@ -1,9 +1,14 @@
 var BoundingTree = require('../picking/BoundingTree');
+var Ray = require('../math/Ray');
+var Matrix4 = require('../math/Matrix4');
 
 /**
  * Primitive pick logic
  */
-function PrimitivePickLogic () {}
+function PrimitivePickLogic() {
+	this.invRay = new Ray();
+	this.invMatrix = new Matrix4();
+}
 
 PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 	// look in pick tree for intersection
@@ -12,7 +17,28 @@ PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 		return null;
 	}
 
-	return tree.findPick(pickRay, entity, {});
+	var worldTransform = entity.transformComponent.worldTransform;
+	this.invMatrix.copy(worldTransform.matrix).invert();
+	this.invRay.origin.set(pickRay.origin).applyPostPoint(this.invMatrix);
+	this.invRay.direction.set(pickRay.direction).applyPostVector(this.invMatrix);
+
+	var result = tree.findPick(this.invRay, entity);
+
+	var rebuildResult = {};
+	if (result.length > 0) {
+		result.sort(function (a, b) {
+			return a.distance - b.distance;
+		});
+		rebuildResult.distances = [];
+		rebuildResult.points = [];
+		rebuildResult.vertices = [];
+		result.forEach(function (value) {
+			rebuildResult.distances.push(value.distance);
+			rebuildResult.points.push(value.point);
+			rebuildResult.vertices.push(value.vertices);
+		});
+	}
+	return rebuildResult;
 };
 
 PrimitivePickLogic.prototype.added = function (entity) {
