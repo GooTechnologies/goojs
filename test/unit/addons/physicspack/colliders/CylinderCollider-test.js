@@ -1,7 +1,7 @@
 describe('CylinderCollider', function () {
 
-	var CylinderCollider = require('../../src/goo/addons/physicspack/colliders/CylinderCollider');
-	var Transform = require('../../src/goo/math/Transform');
+	var CylinderCollider = require('../../../../../src/goo/addons/physicspack/colliders/CylinderCollider');
+	var Transform = require('../../../../../src/goo/math/Transform');
 
 	it('can clone', function () {
 		var collider = new CylinderCollider({

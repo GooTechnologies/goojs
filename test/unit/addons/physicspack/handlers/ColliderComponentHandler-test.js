@@ -1,14 +1,14 @@
-var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
-var Vector3 = require('../../src/goo/math/Vector3');
-var World = require('../../src/goo/entities/World');
-var BoxCollider = require('../../src/goo/addons/physicspack/colliders/BoxCollider');
-var PlaneCollider = require('../../src/goo/addons/physicspack/colliders/PlaneCollider');
-var CylinderCollider = require('../../src/goo/addons/physicspack/colliders/CylinderCollider');
-var SphereCollider = require('../../src/goo/addons/physicspack/colliders/SphereCollider');
-var ColliderComponent = require('../../src/goo/addons/physicspack/components/ColliderComponent');
-var Configs = require('../../../test/unit/loaders/Configs');
+var DynamicLoader = require('../../../../../src/goo/loaders/DynamicLoader');
+var Vector3 = require('../../../../../src/goo/math/Vector3');
+var World = require('../../../../../src/goo/entities/World');
+var BoxCollider = require('../../../../../src/goo/addons/physicspack/colliders/BoxCollider');
+var PlaneCollider = require('../../../../../src/goo/addons/physicspack/colliders/PlaneCollider');
+var CylinderCollider = require('../../../../../src/goo/addons/physicspack/colliders/CylinderCollider');
+var SphereCollider = require('../../../../../src/goo/addons/physicspack/colliders/SphereCollider');
+var ColliderComponent = require('../../../../../src/goo/addons/physicspack/components/ColliderComponent');
+var Configs = require('../../../../../test/unit/loaders/Configs');
 
-require('../../src/goo/addons/physicspack/handlers/ColliderComponentHandler');
+require('../../../../../src/goo/addons/physicspack/handlers/ColliderComponentHandler');
 
 describe('ColliderComponentHandler', function () {
 	var loader;

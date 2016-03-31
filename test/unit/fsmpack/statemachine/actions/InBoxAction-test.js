@@ -1,3 +1,6 @@
+var InBoxAction = require('../../../../../src/goo/fsmpack/statemachine/actions/InBoxAction');
+var Vector3 = require('../../../../../src/goo/math/Vector3');
+
 describe('InBoxAction', function () {
 	describe('Check pos against boxes', function () {
 		var inBoxAction;

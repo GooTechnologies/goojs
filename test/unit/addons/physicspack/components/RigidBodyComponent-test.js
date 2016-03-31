@@ -2,16 +2,16 @@
 
 describe('RigidBodyComponent', function () {
 
-	var SphereCollider = require('../../src/goo/addons/physicspack/colliders/SphereCollider');
-	var Vector3 = require('../../src/goo/math/Vector3');
-	var Quaternion = require('../../src/goo/math/Quaternion');
-	var World = require('../../src/goo/entities/World');
-	var SystemBus = require('../../src/goo/entities/SystemBus');
-	var PhysicsMaterial = require('../../src/goo/addons/physicspack/PhysicsMaterial');
-	var PhysicsSystem = require('../../src/goo/addons/physicspack/systems/PhysicsSystem');
-	var ColliderComponent = require('../../src/goo/addons/physicspack/components/ColliderComponent');
-	var RigidBodyComponent = require('../../src/goo/addons/physicspack/components/RigidBodyComponent');
-	var BallJoint = require('../../src/goo/addons/physicspack/joints/BallJoint');
+	var SphereCollider = require('../../../../../src/goo/addons/physicspack/colliders/SphereCollider');
+	var Vector3 = require('../../../../../src/goo/math/Vector3');
+	var Quaternion = require('../../../../../src/goo/math/Quaternion');
+	var World = require('../../../../../src/goo/entities/World');
+	var SystemBus = require('../../../../../src/goo/entities/SystemBus');
+	var PhysicsMaterial = require('../../../../../src/goo/addons/physicspack/PhysicsMaterial');
+	var PhysicsSystem = require('../../../../../src/goo/addons/physicspack/systems/PhysicsSystem');
+	var ColliderComponent = require('../../../../../src/goo/addons/physicspack/components/ColliderComponent');
+	var RigidBodyComponent = require('../../../../../src/goo/addons/physicspack/components/RigidBodyComponent');
+	var BallJoint = require('../../../../../src/goo/addons/physicspack/joints/BallJoint');
 
 	var world, system, rigidBodyComponent, colliderComponent, entity;
 
