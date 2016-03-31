@@ -72,7 +72,6 @@ def copy_to_release_dir(release_dir, engine_folders):
 		shutil.copytree(source, dest_path)
 		print 'Copied "%s" into "%s"' % (source, dest_path)
 
-	shutil.copy('lib/require.js', release_lib_folder)
 	shutil.copy('lib/ammo.small.js', release_lib_folder)
 	shutil.copy('lib/polyk.js', release_lib_folder)
 	shutil.copy('COPYING', base_folder)
