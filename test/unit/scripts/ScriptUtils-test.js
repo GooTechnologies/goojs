@@ -1,4 +1,4 @@
-var ScriptUtils = require('src/goo/scripts/ScriptUtils');
+var ScriptUtils = require('../../../src/goo/scripts/ScriptUtils');
 
 describe('ScriptUtils', function () {
 	it('defaults missing keys', function () {

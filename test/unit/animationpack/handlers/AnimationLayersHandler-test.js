@@ -1,13 +1,12 @@
+var World = require('../../../../src/goo/entities/World');
+var DynamicLoader = require('../../../../src/goo/loaders/DynamicLoader');
+var SteadyState = require('../../../../src/goo/animationpack/state/SteadyState');
+var AnimationLayer = require('../../../../src/goo/animationpack/layer/AnimationLayer');
+var Configs = require('../../../../test/unit/loaders/Configs');
+
+require('../../../../src/goo/animationpack/handlers/AnimationHandlers');
+
 describe('AnimationLayersHandler', function () {
-
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var SteadyState = require('src/goo/animationpack/state/SteadyState');
-	var AnimationLayer = require('src/goo/animationpack/layer/AnimationLayer');
-	var Configs = require('test/unit/loaders/Configs');
-
-	require('src/goo/animationpack/handlers/AnimationHandlers');
-
 	var loader;
 
 	beforeEach(function () {

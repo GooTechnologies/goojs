@@ -1,9 +1,9 @@
 describe('MeshRendererComponentHandler', function () {
-	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-	var Material = require('src/goo/renderer/Material');
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var Configs = require('test/unit/loaders/Configs');
+	var MeshRendererComponent = require('../../src/goo/entities/components/MeshRendererComponent');
+	var Material = require('../../src/goo/renderer/Material');
+	var World = require('../../src/goo/entities/World');
+	var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
+	var Configs = require('../../../test/unit/loaders/Configs');
 
 	var loader;
 

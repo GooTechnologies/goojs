@@ -1,5 +1,5 @@
-var Noise = require('src/goo/noise/Noise');
-var ValueNoise = require('src/goo/noise/ValueNoise');
+var Noise = require('../../../src/goo/noise/Noise');
+var ValueNoise = require('../../../src/goo/noise/ValueNoise');
 
 describe('Noise.fractal2d', function () {
 	it('Contains correctly generated values', function () {

@@ -1,7 +1,7 @@
 describe('Pool', function () {
 
-	var Pool = require('src/goo/addons/physicspack/util/Pool');
-	var Vector3 = require('src/goo/math/Vector3');
+	var Pool = require('../../src/goo/addons/physicspack/util/Pool');
+	var Vector3 = require('../../src/goo/math/Vector3');
 
 	function createPool() {
 		return new Pool({

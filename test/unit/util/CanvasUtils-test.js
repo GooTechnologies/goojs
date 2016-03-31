@@ -1,4 +1,4 @@
-var CanvasUtils = require('src/goo/util/CanvasUtils');
+var CanvasUtils = require('../../src/goo/util/CanvasUtils');
 
 describe('CanvasUtils', function () {
 	describe('Rendering an SVG to canvas', function () {

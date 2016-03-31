@@ -1,8 +1,8 @@
 describe('Vector3Curve', function () {
 
-	var Vector3Curve = require('src/goo/addons/particlepack/curves/Vector3Curve');
-	var ConstantCurve = require('src/goo/addons/particlepack/curves/ConstantCurve');
-	var Vector3 = require('src/goo/math/Vector3');
+	var Vector3Curve = require('../../src/goo/addons/particlepack/curves/Vector3Curve');
+	var ConstantCurve = require('../../src/goo/addons/particlepack/curves/ConstantCurve');
+	var Vector3 = require('../../src/goo/math/Vector3');
 
 	it('.getVec3ValueAt', function () {
 		var curve = new Vector3Curve({

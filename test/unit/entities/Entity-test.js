@@ -1,20 +1,20 @@
-describe('Entity', function () {
-	var Entity = require('src/goo/entities/Entity');
-	var World = require('src/goo/entities/World');
-	var TransformComponent = require('src/goo/entities/components/TransformComponent');
-	var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-	var CameraComponent = require('src/goo/entities/components/CameraComponent');
-	var LightComponent = require('src/goo/entities/components/LightComponent');
-	var ScriptComponent = require('src/goo/entities/components/ScriptComponent');
-	var Component = require('src/goo/entities/components/Component');
-	var ScriptSystem = require('src/goo/entities/systems/ScriptSystem');
-	var Box = require('src/goo/shapes/Box');
-	var Camera = require('src/goo/renderer/Camera');
-	var PointLight = require('src/goo/renderer/light/PointLight');
-	var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
-	var Material = require('src/goo/renderer/Material');
+var Entity = require('../../../src/goo/entities/Entity');
+var World = require('../../../src/goo/entities/World');
+var TransformComponent = require('../../../src/goo/entities/components/TransformComponent');
+var MeshDataComponent = require('../../../src/goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('../../../src/goo/entities/components/MeshRendererComponent');
+var CameraComponent = require('../../../src/goo/entities/components/CameraComponent');
+var LightComponent = require('../../../src/goo/entities/components/LightComponent');
+var ScriptComponent = require('../../../src/goo/entities/components/ScriptComponent');
+var Component = require('../../../src/goo/entities/components/Component');
+var ScriptSystem = require('../../../src/goo/entities/systems/ScriptSystem');
+var Box = require('../../../src/goo/shapes/Box');
+var Camera = require('../../../src/goo/renderer/Camera');
+var PointLight = require('../../../src/goo/renderer/light/PointLight');
+var ShaderLib = require('../../../src/goo/renderer/shaders/ShaderLib');
+var Material = require('../../../src/goo/renderer/Material');
 
+describe('Entity', function () {
 	var world;
 
 	beforeEach(function () {

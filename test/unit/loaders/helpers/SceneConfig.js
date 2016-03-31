@@ -1,4 +1,4 @@
-var _ = require('src/goo/util/ObjectUtil');
+var _ = require('../../../../src/goo/util/ObjectUtil');
 
 module.exports = {
 	scene: function (complex) {

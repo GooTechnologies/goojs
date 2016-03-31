@@ -1,8 +1,8 @@
 describe('BoxCollider', function () {
 
-	var BoxCollider = require('src/goo/addons/physicspack/colliders/BoxCollider');
-	var Vector3 = require('src/goo/math/Vector3');
-	var Transform = require('src/goo/math/Transform');
+	var BoxCollider = require('../../src/goo/addons/physicspack/colliders/BoxCollider');
+	var Vector3 = require('../../src/goo/math/Vector3');
+	var Transform = require('../../src/goo/math/Transform');
 
 	it('can clone', function () {
 		var collider = new BoxCollider({

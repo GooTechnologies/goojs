@@ -1,12 +1,11 @@
+var Entity = require('../../../../src/goo/entities/Entity');
+var World = require('../../../../src/goo/entities/World');
+var SystemBus = require('../../../../src/goo/entities/SystemBus');
+var Camera = require('../../../../src/goo/renderer/Camera');
+var CameraComponent = require('../../../../src/goo/entities/components/CameraComponent');
+var CustomMatchers = require('../../../../test/unit/CustomMatchers');
+
 describe('CameraComponent', function () {
-
-	var Entity = require('src/goo/entities/Entity');
-	var World = require('src/goo/entities/World');
-	var SystemBus = require('src/goo/entities/SystemBus');
-	var Camera = require('src/goo/renderer/Camera');
-	var CameraComponent = require('src/goo/entities/components/CameraComponent');
-	var CustomMatchers = require('test/unit/CustomMatchers');
-
 	var world;
 
 	beforeEach(function () {
@@ -35,7 +34,8 @@ describe('CameraComponent', function () {
 			var listener = jasmine.createSpy('camera-listener');
 			SystemBus.addListener('goo.setCurrentCamera', listener);
 			entity.setAsMainCamera();
-			expect(listener).toHaveBeenCalledWith({
+			expect(listener).toHaveBeenCalledWith(
+				{
 					camera: camera,
 					entity: entity
 				},

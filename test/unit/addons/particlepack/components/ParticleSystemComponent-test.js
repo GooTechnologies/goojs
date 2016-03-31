@@ -1,15 +1,15 @@
-describe('ParticleSystemComponent', function () {
-	var CustomMatchers = require('../../../CustomMatchers');
-	var LinearCurve = require('../../../../../src/goo/addons/particlepack/curves/LinearCurve');
-	var MeshData = require('../../../../../src/goo/renderer/MeshData');
-	var ParticleSystemComponent = require('../../../../../src/goo/addons/particlepack/components/ParticleSystemComponent');
-	var Texture = require('../../../../../src/goo/renderer/Texture');
-	var TransformComponent = require('../../../../../src/goo/entities/components/TransformComponent');
-	var Vector3 = require('../../../../../src/goo/math/Vector3');
-	var Vector3Curve = require('../../../../../src/goo/addons/particlepack/curves/Vector3Curve');
-	var Vector4Curve = require('../../../../../src/goo/addons/particlepack/curves/Vector4Curve');
-	var World = require('../../../../../src/goo/entities/World');
+var CustomMatchers = require('../../../CustomMatchers');
+var LinearCurve = require('../../../../../src/goo/addons/particlepack/curves/LinearCurve');
+var MeshData = require('../../../../../src/goo/renderer/MeshData');
+var ParticleSystemComponent = require('../../../../../src/goo/addons/particlepack/components/ParticleSystemComponent');
+var Texture = require('../../../../../src/goo/renderer/Texture');
+var TransformComponent = require('../../../../../src/goo/entities/components/TransformComponent');
+var Vector3 = require('../../../../../src/goo/math/Vector3');
+var Vector3Curve = require('../../../../../src/goo/addons/particlepack/curves/Vector3Curve');
+var Vector4Curve = require('../../../../../src/goo/addons/particlepack/curves/Vector4Curve');
+var World = require('../../../../../src/goo/entities/World');
 
+describe('ParticleSystemComponent', function () {
 	var world;
 
 	beforeEach(function () {
@@ -26,7 +26,6 @@ describe('ParticleSystemComponent', function () {
 	});
 
 	it('can clone', function () {
-
 		var texture = new Texture();
 
 		var component = new ParticleSystemComponent({

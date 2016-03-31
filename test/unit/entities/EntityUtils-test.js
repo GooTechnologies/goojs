@@ -1,11 +1,11 @@
-var EntityUtils = require('src/goo/entities/EntityUtils');
-var Entity = require('src/goo/entities/Entity');
-var World = require('src/goo/entities/World');
-var TransformComponent = require('src/goo/entities/components/TransformComponent');
-var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-var TransformSystem = require('src/goo/entities/systems/TransformSystem');
-var Box = require('src/goo/shapes/Box');
+var EntityUtils = require('../../../src/goo/entities/EntityUtils');
+var Entity = require('../../../src/goo/entities/Entity');
+var World = require('../../../src/goo/entities/World');
+var TransformComponent = require('../../../src/goo/entities/components/TransformComponent');
+var MeshDataComponent = require('../../../src/goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('../../../src/goo/entities/components/MeshRendererComponent');
+var TransformSystem = require('../../../src/goo/entities/systems/TransformSystem');
+var Box = require('../../../src/goo/shapes/Box');
 
 describe('EntityUtils', function () {
 	var world;

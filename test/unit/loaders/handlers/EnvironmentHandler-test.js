@@ -1,16 +1,15 @@
+var World = require('../../src/goo/entities/World');
+var TransformComponent = require('../../src/goo/entities/components/TransformComponent');
+var MeshDataComponent = require('../../src/goo/entities/components/MeshDataComponent');
+var MeshRendererComponent = require('../../src/goo/entities/components/MeshRendererComponent');
+var RenderSystem = require('../../src/goo/entities/systems/RenderSystem');
+var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
+var ShaderBuilder = require('../../src/goo/renderer/shaders/ShaderBuilder');
+var Configs = require('../../../test/unit/loaders/Configs');
+
+require('../../src/goo/loaders/handlers/EnvironmentHandler');
+
 describe('EnvironmentHandler', function () {
-
-	var World = require('src/goo/entities/World');
-	var TransformComponent = require('src/goo/entities/components/TransformComponent');
-	var MeshDataComponent = require('src/goo/entities/components/MeshDataComponent');
-	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-	var RenderSystem = require('src/goo/entities/systems/RenderSystem');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var ShaderBuilder = require('src/goo/renderer/shaders/ShaderBuilder');
-	var Configs = require('test/unit/loaders/Configs');
-
-	require('src/goo/loaders/handlers/EnvironmentHandler');
-
 	var loader, world;
 
 	beforeEach(function () {

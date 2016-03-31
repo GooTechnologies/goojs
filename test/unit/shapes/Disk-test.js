@@ -1,4 +1,4 @@
-var Disk = require('src/goo/shapes/Disk');
+var Disk = require('../../../src/goo/shapes/Disk');
 
 describe('Disk', function () {
 	var a = new Disk(8, 1);

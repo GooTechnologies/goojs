@@ -1,4 +1,4 @@
-var Selection = require('src/goo/entities/Selection');
+var Selection = require('../../../src/goo/entities/Selection');
 
 describe('Selection', function () {
 	function someObject() {

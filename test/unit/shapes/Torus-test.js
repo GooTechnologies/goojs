@@ -1,4 +1,4 @@
-var Torus = require('src/goo/shapes/Torus');
+var Torus = require('../../../src/goo/shapes/Torus');
 
 describe('Torus', function () {
 	var a = new Torus(8, 4);

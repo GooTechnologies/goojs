@@ -1,11 +1,10 @@
+var World = require('../../../../src/goo/entities/World');
+var Entity = require('../../../../src/goo/entities/Entity');
+var ShaderLib = require('../../../../src/goo/renderer/shaders/ShaderLib');
+var Material = require('../../../../src/goo/renderer/Material');
+var MeshRendererComponent = require('../../../../src/goo/entities/components/MeshRendererComponent');
+
 describe('MeshRendererComponent', function () {
-
-	var World = require('src/goo/entities/World');
-	var Entity = require('src/goo/entities/Entity');
-	var ShaderLib = require('src/goo/renderer/shaders/ShaderLib');
-	var Material = require('src/goo/renderer/Material');
-	var MeshRendererComponent = require('src/goo/entities/components/MeshRendererComponent');
-
 	var world;
 
 	beforeEach(function () {

@@ -1,4 +1,4 @@
-var Cone = require('src/goo/shapes/Cone');
+var Cone = require('../../../src/goo/shapes/Cone');
 
 describe('Cone', function () {
 	var a = new Cone(8, 1, 1);

@@ -1,12 +1,11 @@
+var World = require('../../../../src/goo/entities/World');
+var DynamicLoader = require('../../../../src/goo/loaders/DynamicLoader');
+var AnimationClip = require('../../../../src/goo/animationpack/clip/AnimationClip');
+var Configs = require('../../../../test/unit/loaders/Configs');
+
+require('../../../../src/goo/animationpack/handlers/AnimationHandlers');
+
 describe('AnimationClipHandler', function () {
-
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var AnimationClip = require('src/goo/animationpack/clip/AnimationClip');
-	var Configs = require('test/unit/loaders/Configs');
-
-	require('src/goo/animationpack/handlers/AnimationHandlers');
-
 	var loader;
 
 	beforeEach(function () {

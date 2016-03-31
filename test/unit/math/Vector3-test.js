@@ -1,7 +1,7 @@
-var Matrix3 = require('src/goo/math/Matrix3');
-var Vector3 = require('src/goo/math/Vector3');
-var Matrix4 = require('src/goo/math/Matrix4');
-var CustomMatchers = require('test/unit/CustomMatchers');
+var Matrix3 = require('../../../src/goo/math/Matrix3');
+var Vector3 = require('../../../src/goo/math/Vector3');
+var Matrix4 = require('../../../src/goo/math/Matrix4');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
 
 describe('Vector3', function () {
 	beforeEach(function () {

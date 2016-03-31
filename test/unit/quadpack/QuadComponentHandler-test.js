@@ -1,12 +1,11 @@
+var World = require('../../../src/goo/entities/World');
+var DynamicLoader = require('../../../src/goo/loaders/DynamicLoader');
+var QuadComponent = require('../../../src/goo/quadpack/QuadComponent');
+var Configs = require('../../../test/unit/loaders/Configs');
+
+require('../../../src/goo/quadpack/QuadComponentHandler');
+
 describe('QuadComponentHandler', function () {
-
-	var World = require('src/goo/entities/World');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var QuadComponent = require('src/goo/quadpack/QuadComponent');
-	var Configs = require('test/unit/loaders/Configs');
-
-	require('src/goo/quadpack/QuadComponentHandler');
-
 	var loader;
 
 	beforeEach(function () {

@@ -1,7 +1,6 @@
+var Curve = require('../../src/goo/addons/particlepack/curves/Curve');
+
 describe('Curve', function () {
-
-	var Curve = require('src/goo/addons/particlepack/curves/Curve');
-
 	it('.getValueAt', function () {
 		var curve = new Curve();
 		expect(curve.getValueAt(0)).toBe(0);
@@ -11,5 +10,4 @@ describe('Curve', function () {
 		var curve = new Curve();
 		expect(curve.toGLSL('t')).toBe('0.0');
 	});
-
 });

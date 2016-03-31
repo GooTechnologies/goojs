@@ -1,7 +1,7 @@
 describe('PolyCurve', function () {
-	var PolyCurve = require('src/goo/addons/particlepack/curves/PolyCurve');
-	var Curve = require('src/goo/addons/particlepack/curves/Curve');
-	var LinearCurve = require('src/goo/addons/particlepack/curves/LinearCurve');
+	var PolyCurve = require('../../src/goo/addons/particlepack/curves/PolyCurve');
+	var Curve = require('../../src/goo/addons/particlepack/curves/Curve');
+	var LinearCurve = require('../../src/goo/addons/particlepack/curves/LinearCurve');
 
 	it('can add a segment', function () {
 		var set = new PolyCurve();

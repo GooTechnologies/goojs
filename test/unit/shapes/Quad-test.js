@@ -1,4 +1,4 @@
-var Quad = require('src/goo/shapes/Quad');
+var Quad = require('../../../src/goo/shapes/Quad');
 
 describe('Quad', function () {
 	var a = new Quad();

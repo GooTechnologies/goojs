@@ -1,11 +1,10 @@
+var World = require('../../src/goo/entities/World');
+var Entity = require('../../src/goo/entities/Entity');
+var DynamicLoader = require('../../src/goo/loaders/DynamicLoader');
+var Configs = require('../../../test/unit/loaders/Configs');
+require('../../src/goo/animationpack/handlers/AnimationHandlers');
+
 describe('ProjectHandler', function () {
-
-	var World = require('src/goo/entities/World');
-	var Entity = require('src/goo/entities/Entity');
-	var DynamicLoader = require('src/goo/loaders/DynamicLoader');
-	var Configs = require('test/unit/loaders/Configs');
-	require('src/goo/animationpack/handlers/AnimationHandlers');
-
 	var loader;
 
 	beforeEach(function () {
