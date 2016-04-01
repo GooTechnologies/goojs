@@ -51,17 +51,15 @@ EntityCombiner.prototype._combineList = function (entities) {
 	}
 	if (subs.length > 1) {
 		root = this.world.createEntity('RootCombined').addToWorld();
-		baseSubs.put(root, subs);
+		baseSubs.set(root, subs);
 	}
 
-	var keys = baseSubs.getKeys();
-	for (var i = 0; i < keys.length; i++) {
-		var entity = keys[i];
-		var combineList = baseSubs.get(entity);
+	var that = this;
+	baseSubs.forEach(function (combineList, entity) {
 		if (combineList.length > 0) {
-			this._combine(entity, combineList);
+			that._combine(entity, combineList);
 		}
-	}
+	});
 };
 
 EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
@@ -72,7 +70,7 @@ EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
 	// Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
 	if (!subs || entity.static === false) {
 		subs = [];
-		baseSubs.put(entity, subs);
+		baseSubs.set(entity, subs);
 	}
 
 	if (entity.static && entity.meshDataComponent && entity.meshRendererComponent &&
@@ -112,27 +110,22 @@ EntityCombiner.prototype._combine = function (root, combineList) {
 		var set = entities.get(key);
 		if (!set) {
 			set = new Map();
-			entities.put(key, set);
+			entities.set(key, set);
 		}
 		var set2 = set.get(key2);
 		if (!set2) {
 			set2 = [];
-			set.put(key2, set2);
+			set.set(key2, set2);
 		}
 
 		set2.push(entity);
 	}
 
-	var sets = entities.getKeys();
-	for (var i = 0; i < sets.length; i++) {
-		var material = sets[i];
-		var entities2 = entities.get(material);
-		var sets2 = entities2.getKeys();
-		for (var j = 0; j < sets2.length; j++) {
-			var toCombine = entities2.get(sets2[j]);
-
+	var that = this;
+	entities.forEach(function (entities2, material) {
+		entities2.forEach(function (toCombine) {
 			if (toCombine.length === 1) {
-				continue;
+				return;
 			}
 
 			var meshBuilder = new MeshBuilder();
@@ -147,12 +140,12 @@ EntityCombiner.prototype._combine = function (root, combineList) {
 
 				meshBuilder.addMeshData(entity.meshDataComponent.meshData, calcTransform);
 
-				if (this.removeOldData) {
+				if (that.removeOldData) {
 					entity.clearComponent('meshDataComponent');
 					entity.clearComponent('meshRendererComponent');
 
 					// Remove empty leaf children
-					if (!this.keepEntities && entity._components.length === 1 && entity.transformComponent.children.length === 0) {
+					if (!that.keepEntities && entity._components.length === 1 && entity.transformComponent.children.length === 0) {
 						entity.removeFromWorld();
 					}
 				} else {
@@ -163,13 +156,13 @@ EntityCombiner.prototype._combine = function (root, combineList) {
 			var meshDatas = meshBuilder.build();
 
 			for (var key in meshDatas) {
-				var entity = this.world.createEntity(meshDatas[key], material);
+				var entity = that.world.createEntity(meshDatas[key], material);
 				entity.addToWorld();
 				root.attachChild(entity);
-				this.createdEntities.push(entity);
+				that.createdEntities.push(entity);
 			}
-		}
-	}
+		});
+	});
 };
 
 EntityCombiner.prototype._calculateBounds = function (entities) {
@@ -201,7 +194,7 @@ EntityCombiner.prototype._calculateBounds = function (entities) {
 	return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 };
 
-EntityCombiner.prototype.cleanup = function (entities) {
+EntityCombiner.prototype.cleanup = function () {
 	for (var i = 0; i < this.createdEntities.length; i++) {
 		var entity = this.createdEntities[i];
 
@@ -212,31 +205,5 @@ EntityCombiner.prototype.cleanup = function (entities) {
 		});
 	}
 };
-
-function Map() {
-	var keys = [],
-		values = [];
-
-	return {
-		put: function (key, value) {
-			var index = keys.indexOf(key);
-			if (index === -1) {
-				keys.push(key);
-				values.push(value);
-			} else {
-				values[index] = value;
-			}
-		},
-		get: function (key) {
-			return values[keys.indexOf(key)];
-		},
-		getKeys: function () {
-			return keys;
-		},
-		getValues: function () {
-			return values;
-		}
-	};
-}
 
 module.exports = EntityCombiner;
