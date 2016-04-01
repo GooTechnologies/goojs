@@ -97,3 +97,5 @@ goo.V.attachToGlobal();
 	});
 
 	gooRunner.renderer.setClearColor(0, 0, 0, 1);
+
+	V.process();

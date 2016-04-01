@@ -9,6 +9,8 @@ goo.V.attachToGlobal();
 	V.addLights();
 	V.addOrbitCamera(new Vector3(150, Math.PI / 2, 0.3));
 
+	V.addSpheres(2);
+
 	var optionsObjects = [
 
 	{
@@ -126,3 +128,5 @@ goo.V.attachToGlobal();
 		world.createEntity(position).addToWorld().set(htmlComponent);
 	}
 	gooRunner.renderer.setClearColor(0, 0, 0, 1);
+
+	V.process();
