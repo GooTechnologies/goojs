@@ -46,7 +46,7 @@ function createMockXhr(mockResponses) {
 		this.onreadystatechange = callback;
 	};
 
-	MockXHR.prototype.removeEventListener = function (eventName, callback) {
+	MockXHR.prototype.removeEventListener = function (/*eventName, callback*/) {
 		// does nothing!
 	};
 

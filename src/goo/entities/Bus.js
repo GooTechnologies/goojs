@@ -109,7 +109,7 @@ Bus.prototype._emitToSingle = function (channelName, data, storeEmit) {
  * @param {Function} callback function (data)
  * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
  * @example
- * bus.addListener('channel', function(data){
+ * bus.addListener('channel', function (data){
  *     console.log('Received message with data:', data);
  * });
  */

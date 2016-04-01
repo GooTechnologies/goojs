@@ -8,7 +8,7 @@ var SoftwareRenderer = require('./scanline/SoftwareRenderer');
  * The occluder-entities are rendered to a depth-buffer in {SoftwareRenderer} and all the
  * entities in the renderList are ultimately occlusion culled based on that depth-buffer.
  */
-function OcclusionPartitioner (parameters) {
+function OcclusionPartitioner(parameters) {
 	this._viewFrustumCuller = new SimplePartitioner();
 
 	/**

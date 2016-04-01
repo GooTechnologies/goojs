@@ -7,7 +7,7 @@ var Source = require('../../animationpack/blendtree/Source');
  * @param {number} frozenTime The time we are frozen at.
  * @extends Source
  */
-function FrozenClipSource (source, frozenTime) {
+function FrozenClipSource(source, frozenTime) {
 	Source.call(this);
 	this._source = source;
 	this._time = frozenTime;

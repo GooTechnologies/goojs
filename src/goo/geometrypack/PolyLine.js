@@ -104,9 +104,9 @@ PolyLine.prototype.mul = function (rhs) {
 	 * @param {function (number) : number} [options.twist] Takes values between 0 and 1; the returned value is used to twist the extruded PolyLine along the tangent of the extruding PolyLine. The twist value is expressed in radians.
 	 * @returns {Surface} The resulting surface
 	 */
-	PolyLine.prototype.pipe = function (that, options) {
+	PolyLine.prototype.pipe = function (polyLine, options) {
 		options = options || {};
-		var thatNVerts = that.verts.length / 3;
+		var polyLineNVerts = polyLine.verts.length / 3;
 		var verts = [];
 
 		var forward = new Vector3();
@@ -134,8 +134,8 @@ PolyLine.prototype.mul = function (rhs) {
 			right.copy(forward).cross(up).normalize();
 			up.copy(right).cross(forward);
 
-			for (var j = 0; j < that.verts.length; j += 3) {
-				var vertex = new Vector3(that.verts[j + 0], that.verts[j + 1], that.verts[j + 2]);
+			for (var j = 0; j < polyLine.verts.length; j += 3) {
+				var vertex = new Vector3(polyLine.verts[j + 0], polyLine.verts[j + 1], polyLine.verts[j + 2]);
 				vertex.applyPost(rotation);
 				vertex.scale(scale);
 				vertex.addDirect(this.verts[i + 0], this.verts[i + 1], this.verts[i + 2]);
@@ -144,7 +144,7 @@ PolyLine.prototype.mul = function (rhs) {
 			}
 		}
 
-		return new Surface(verts, thatNVerts);
+		return new Surface(verts, polyLineNVerts);
 	};
 })();
 

@@ -63,7 +63,7 @@ TweenRotationAction.external = {
 	}]
 };
 
-TweenRotationAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenRotationAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Rotation Complete' : undefined;
 };
 

@@ -28,7 +28,7 @@ var labels = {
 	touchmove: 'On touch move'
 };
 
-MouseMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+MouseMoveAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

@@ -48,7 +48,7 @@ var labels = {
 	greater: ' > X'
 };
 
-CompareCounterAction.getTransitionLabel = function(transitionKey, actionConfig){
+CompareCounterAction.getTransitionLabel = function (transitionKey, actionConfig){
 	if(labels[transitionKey]){
 		return 'On ' + (actionConfig.options.name || 'Counter') + labels[transitionKey];
 	}

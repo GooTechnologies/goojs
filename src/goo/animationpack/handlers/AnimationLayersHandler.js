@@ -1,8 +1,5 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var AnimationLayer = require('../../animationpack/layer/AnimationLayer');
-var FadeTransitionState = require('../../animationpack/state/FadeTransitionState');
-var SyncFadeTransitionState = require('../../animationpack/state/SyncFadeTransitionState');
-var FrozenTransitionState = require('../../animationpack/state/FrozenTransitionState');
 var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 

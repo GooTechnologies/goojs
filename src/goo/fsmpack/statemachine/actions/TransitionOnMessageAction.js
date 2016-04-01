@@ -27,7 +27,7 @@ TransitionOnMessageAction.external = {
 	}]
 };
 
-TransitionOnMessageAction.getTransitionLabel = function(transitionKey, actionConfig){
+TransitionOnMessageAction.getTransitionLabel = function (transitionKey, actionConfig){
 	var label = actionConfig.options.channel ? '"' + actionConfig.options.channel + '"' : '';
 	return transitionKey === 'transition' ? 'On ' + label + ' event' : 'On Message';
 };

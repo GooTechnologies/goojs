@@ -19,7 +19,7 @@ function ArrayUtils() {}
  *
  * @returns Typed array
  */
-ArrayUtils.getTypedArray = function(arrayBuffer, pointer) {
+ArrayUtils.getTypedArray = function (arrayBuffer, pointer) {
 	var start = pointer[0];
 	var length = pointer[1];
 	var format = pointer[2];
@@ -41,7 +41,7 @@ ArrayUtils.getTypedArray = function(arrayBuffer, pointer) {
 	}
 };
 
-ArrayUtils.remove = function(array, value, equals) {
+ArrayUtils.remove = function (array, value, equals) {
 	var idx = -1;
 	if (typeof equals === 'function') {
 		for (var i = 0; i < array.length; i++) {
@@ -65,7 +65,7 @@ ArrayUtils.remove = function(array, value, equals) {
  * @param predicate
  * @returns {*}
  */
-ArrayUtils.find = function(array, predicate) {
+ArrayUtils.find = function (array, predicate) {
 	for (var i = 0; i < array.length; i++) {
 		if (predicate(array[i])) {
 			return array[i];

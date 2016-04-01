@@ -87,12 +87,12 @@ Box.prototype.rebuild = function () {
 
 	var verts = [
 		-xExtent, -yExtent, -zExtent,
-		 xExtent, -yExtent, -zExtent,
-		 xExtent,  yExtent, -zExtent,
+		xExtent, -yExtent, -zExtent,
+		xExtent,  yExtent, -zExtent,
 		-xExtent,  yExtent, -zExtent,
-		 xExtent, -yExtent,  zExtent,
+		xExtent, -yExtent,  zExtent,
 		-xExtent, -yExtent,  zExtent,
-		 xExtent,  yExtent,  zExtent,
+		xExtent,  yExtent,  zExtent,
 		-xExtent,  yExtent,  zExtent
 	];
 
@@ -118,12 +118,12 @@ Box.prototype.rebuild = function () {
 	this.getAttributeBuffer(MeshData.POSITION).set(vertices);
 
 	var norms = [
-		 0, 0, -1,
-		 1, 0, 0,
-		 0, 0, 1,
+		0, 0, -1,
+		1, 0, 0,
+		0, 0, 1,
 		-1, 0, 0,
-		 0, 1, 0,
-		 0, -1, 0
+		0, 1, 0,
+		0, -1, 0
 	];
 
 	var normals = [];
@@ -168,8 +168,8 @@ Box.prototype.rebuild = function () {
 	this.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
 
 	this.getIndexBuffer().set([
-		 2,  1,  0,  3,  2,  0,
-		 6,  5,  4,  7,  6,  4,
+		2,  1,  0,  3,  2,  0,
+		6,  5,  4,  7,  6,  4,
 		10,  9,  8, 11, 10,  8,
 		14, 13, 12, 15, 14, 12,
 		18, 17, 16, 19, 18, 16,

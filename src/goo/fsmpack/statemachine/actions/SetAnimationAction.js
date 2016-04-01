@@ -37,7 +37,7 @@ var labels = {
 	complete: 'On animation complete'
 };
 
-SetAnimationAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+SetAnimationAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

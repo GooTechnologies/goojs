@@ -1,3 +1,7 @@
+var Vector3 = require('../../../../src/goo/math/Vector3');
+var Light = require('../../../../src/goo/renderer/light/Light');
+var CustomMatchers = require('../../../../test/unit/CustomMatchers');
+
 describe('Light', function () {
 	beforeEach(function () {
 		jasmine.addMatchers(CustomMatchers);

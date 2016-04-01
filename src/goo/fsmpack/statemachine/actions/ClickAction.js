@@ -24,7 +24,7 @@ ClickAction.external = {
 	}]
 };
 
-ClickAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+ClickAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Click/Tap Entity';
 };
 

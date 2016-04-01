@@ -1,3 +1,5 @@
+/* global poly2tri */
+
 var Vector2 = require('../../math/Vector2');
 var Transform = require('../../math/Transform');
 var MeshBuilder = require('../../util/MeshBuilder');

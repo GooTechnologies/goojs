@@ -30,7 +30,7 @@ var labels = {
 	complete: 'On Sound End'
 };
 
-PlaySoundAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+PlaySoundAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

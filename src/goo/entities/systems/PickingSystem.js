@@ -4,7 +4,7 @@ var System = require('../../entities/systems/System');
  * Helps gather pickable entities
  * @extends System
  */
-function PickingSystem (settings) {
+function PickingSystem(settings) {
 	System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);
 	this.passive = true;
 	this.pickRay = null;

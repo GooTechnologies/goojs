@@ -36,7 +36,7 @@ var labels = {
 	touchDown: 'On touch start'
 };
 
-MouseDownAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+MouseDownAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

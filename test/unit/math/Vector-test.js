@@ -1,9 +1,8 @@
+var Vector = require('../../../src/goo/math/Vector');
+var Matrix = require('../../../src/goo/math/Matrix');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 describe('Vector', function () {
-
-	var Vector = require('../../../src/goo/math/Vector');
-	var Matrix = require('../../../src/goo/math/Matrix');
-	var CustomMatchers = require('../../../test/unit/CustomMatchers');
-
 	beforeEach(function () {
 		jasmine.addMatchers(CustomMatchers);
 	});
@@ -78,13 +77,11 @@ describe('Vector', function () {
 
 	it('can apply matrices', function () {
 		var a = new Vector(2).set(1, 2);
-		var b = new Vector(2).set(1, 2);
 		var c = new Matrix(2, 2).set(1, 2, 3, 4);
 
 		a.apply(c);
 
 		expect(a).toBeCloseToVector(new Vector(2).set(7, 10));
-		//expect(Vector.apply(c, b)).toBeCloseToVector(new Vector(2).set(7, 10));
 	});
 
 

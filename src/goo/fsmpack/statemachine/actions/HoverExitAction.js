@@ -13,7 +13,7 @@ HoverExitAction.prototype.constructor = HoverExitAction;
 
 HoverExitAction.types = {
 	fast: 'Bounding (Fast)',
-	slow: 'Per pixel (Slow)',
+	slow: 'Per pixel (Slow)'
 };
 
 HoverExitAction.external = {
@@ -37,7 +37,7 @@ HoverExitAction.external = {
 	}]
 };
 
-HoverExitAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+HoverExitAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Entity Hover Exit';
 };
 

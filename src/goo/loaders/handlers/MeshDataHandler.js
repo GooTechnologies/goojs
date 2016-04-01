@@ -7,7 +7,6 @@ var ArrayUtils = require('../../util/ArrayUtils');
 
 var WEIGHTS_PER_VERT = 4;
 
-/*jshint eqeqeq: false, -W041, bitwise: false */
 /**
  * Handler for meshdata. Will not update, only create once
  * @param {World} world

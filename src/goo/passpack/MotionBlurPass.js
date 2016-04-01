@@ -87,38 +87,38 @@ var blendShader = {
 		motionMap: 'MOTION_MAP'
 	},
 	vshader: [
-	'attribute vec3 vertexPosition;',
-	'attribute vec2 vertexUV0;',
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
 
-	'uniform mat4 viewProjectionMatrix;',
-	'uniform mat4 worldMatrix;',
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
 
-	'varying vec2 texCoord0;',
+		'varying vec2 texCoord0;',
 
-	'void main(void) {',
-		'texCoord0 = vertexUV0;',
-		'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-	'}'
+		'void main(void) {',
+		'  texCoord0 = vertexUV0;',
+		'  gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'
 	].join('\n'),
 	fshader: [
-	'uniform sampler2D diffuseMap;',
-	'uniform sampler2D motionMap;',
-	'uniform float blend;',
-	'uniform float scale;',
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D motionMap;',
+		'uniform float blend;',
+		'uniform float scale;',
 
-	'varying vec2 texCoord0;',
+		'varying vec2 texCoord0;',
 
-	'void main(void)',
-	'{',
-		'vec4 colA = texture2D(diffuseMap, texCoord0);',
-		'#ifdef MOTION_MAP',
-		'vec4 colB = texture2D(motionMap, (texCoord0 - 0.5) / scale + 0.5);',
-		'float wBlend = blend;// * length(colB) / sqrt(3.0);',
-		'gl_FragColor = mix(colA, colB, wBlend);',
-		'#else',
-		'gl_FragColor = colA;',
-		'#endif',
-	'}'
+		'void main(void)',
+		'{',
+		'    vec4 colA = texture2D(diffuseMap, texCoord0);',
+		'    #ifdef MOTION_MAP',
+		'    vec4 colB = texture2D(motionMap, (texCoord0 - 0.5) / scale + 0.5);',
+		'    float wBlend = blend;// * length(colB) / sqrt(3.0);',
+		'    gl_FragColor = mix(colA, colB, wBlend);',
+		'    #else',
+		'    gl_FragColor = colA;',
+		'    #endif',
+		'}'
 	].join('\n')
 };
 

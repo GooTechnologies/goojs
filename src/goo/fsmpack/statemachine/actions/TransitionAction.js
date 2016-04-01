@@ -24,7 +24,7 @@ var labels = {
 	transition: 'On Enter'
 };
 
-TransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+TransitionAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

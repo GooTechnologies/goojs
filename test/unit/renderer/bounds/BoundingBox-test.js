@@ -1,3 +1,10 @@
+var Vector3 = require('../../../../src/goo/math/Vector3');
+var BoundingBox = require('../../../../src/goo/renderer/bounds/BoundingBox');
+var BoundingSphere = require('../../../../src/goo/renderer/bounds/BoundingSphere');
+var MeshData = require('../../../../src/goo/renderer/MeshData');
+var Box = require('../../../../src/goo/shapes/Box');
+var CustomMatchers = require('../../../../test/unit/CustomMatchers');
+
 describe('BoundingBox', function () {
 	beforeEach(function () {
 		jasmine.addMatchers(CustomMatchers);

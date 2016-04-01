@@ -426,7 +426,7 @@ Vector.prototype.length = ObjectUtils.warnOnce('Vector.prototype.length is depre
  * @hidden
  * @deprecated
  */
-Vector.prototype.scale = ObjectUtils.warnOnce('Vector.prototype.scale is deprecated.', function(factor) {
+Vector.prototype.scale = ObjectUtils.warnOnce('Vector.prototype.scale is deprecated.', function (factor) {
 	for (var i = this._size - 1; i >= 0; i--) {
 		this.data[i] *= factor;
 	}

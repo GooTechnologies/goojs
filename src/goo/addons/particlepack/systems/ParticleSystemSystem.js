@@ -63,7 +63,7 @@ ParticleSystemSystem.prototype.resume = function () {
 /**
  * Play all ParticleSystemComponents.
  */
-ParticleSystemSystem.prototype.play = function() {
+ParticleSystemSystem.prototype.play = function () {
 	var entities = this._activeEntities;
 	for (var i = 0; i < entities.length; i++) {
 		var component = entities[i].particleSystemComponent;

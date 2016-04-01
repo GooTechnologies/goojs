@@ -1,3 +1,5 @@
+/* global opentype */
+
 var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
 var TextComponent = require('../../geometrypack/text/TextComponent');
 var PromiseUtils = require('../../util/PromiseUtils');
@@ -54,7 +56,7 @@ TextComponentHandler.prototype.update = function (entity, config, options) {
 
 		// load font
 
-		return PromiseUtils.createPromise(function (resolve, reject) {
+		return PromiseUtils.createPromise(function (resolve) {
 			opentype.load(config.font.fontRef, function (err, font) {
 				if (err) {
 					console.error(err);

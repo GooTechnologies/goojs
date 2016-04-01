@@ -62,7 +62,7 @@ TweenMoveAction.external = {
 	}]
 };
 
-TweenMoveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenMoveAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Move Complete' : undefined;
 };
 

@@ -68,11 +68,11 @@ function PickAndRotateScript() {
 		}
 	}
 
-	function mouseUp(event) {
+	function mouseUp() {
 		mouseState.down = false;
 	}
 
-	function setup(_args, _ctx, goo) {
+	function setup(_args, _ctx) {
 		args = _args;
 		ctx = _ctx;
 
@@ -101,9 +101,9 @@ function PickAndRotateScript() {
 		};
 	}
 
-	function update(args, ctx, goo) {}
+	function update(/* args, ctx */) {}
 
-	function cleanup(args, ctx, goo) {
+	function cleanup(args, ctx) {
 		ctx.domElement.removeEventListener('mousemove', mouseMove);
 		ctx.domElement.removeEventListener('touchmove', mouseMove);
 		ctx.domElement.removeEventListener('mouseup', mouseUp);

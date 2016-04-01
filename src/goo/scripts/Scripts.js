@@ -20,7 +20,7 @@ Scripts.register = function (factoryFunction) {
 
 Scripts.addClass = ObjectUtils.warnOnce(
 	'Scripts.addClass is deprecated; please consider using the global goo object instead',
-	function (name, klass) {
+	function (/* name, klass */) {
 		// deprecated as of v0.15.3 and scheduled for removal in version 0.17.0
 	}
 );

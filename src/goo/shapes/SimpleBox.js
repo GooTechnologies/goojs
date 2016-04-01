@@ -39,13 +39,13 @@ SimpleBox.prototype.rebuild = function () {
 
 	this.getAttributeBuffer(MeshData.POSITION).set([
 		-xExtent, -yExtent, -zExtent,
-		 xExtent, -yExtent, -zExtent,
-		 xExtent,  yExtent, -zExtent,
+		xExtent, -yExtent, -zExtent,
+		xExtent,  yExtent, -zExtent,
 		-xExtent,  yExtent, -zExtent,
 
 		-xExtent, -yExtent,  zExtent,
-		 xExtent, -yExtent,  zExtent,
-		 xExtent,  yExtent,  zExtent,
+		xExtent, -yExtent,  zExtent,
+		xExtent,  yExtent,  zExtent,
 		-xExtent,  yExtent,  zExtent
 	]);
 

@@ -25,7 +25,7 @@ var MeshData = require('../../renderer/MeshData');
  * @param {number} [settings.particleCount=100]
  * @extends Component
  */
-function ParticleComponent (settings) {
+function ParticleComponent(settings) {
 	Component.apply(this, arguments);
 
 	this.type = 'ParticleComponent';

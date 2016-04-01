@@ -292,9 +292,8 @@ Forrest.prototype.createForrestPatch = function (patchX, patchZ, levelOfDetail, 
 			var vegetationType = this.determineVegTypeAtPos(pos);
 
 			if (vegetationType) {
-				 this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
+				this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
 			}
-			// console.count('tree');
 		}
 	}
 

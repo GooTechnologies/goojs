@@ -1,5 +1,3 @@
-/*jshint bitwise: false */
-
 function FsmUtils() {}
 
 FsmUtils.setParameters = function (settings, externalParameters) {
@@ -164,7 +162,7 @@ function buildKeyInverse(assoc) {
 
 FsmUtils.keyInverse = buildKeyInverse(FsmUtils.keys);
 
-FsmUtils.keyForCode = function(code) {
+FsmUtils.keyForCode = function (code) {
 	if (FsmUtils.keyInverse[code]) {
 		return FsmUtils.keyInverse[code];
 	}
@@ -178,12 +176,12 @@ var s4 = function () {
 };
 
 // Random unique id
-FsmUtils.guid = function() {
+FsmUtils.guid = function () {
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 		s4() + '-' + s4() + s4() + s4();
 };
 
-FsmUtils.getValue = function(par, fsm) {
+FsmUtils.getValue = function (par, fsm) {
 	if (typeof par === 'number') {
 		return par;
 	} else {

@@ -46,7 +46,7 @@ var labels = {
 	outside: 'On Outside Box'
 };
 
-InBoxAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+InBoxAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

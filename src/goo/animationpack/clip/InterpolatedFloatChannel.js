@@ -9,7 +9,7 @@ var MathUtils = require('../../math/MathUtils');
  * @param {Array<number>} values our value samples. Entries may be null. Should have as many entries as the times array.
  * @private
  */
-function InterpolatedFloatChannel (channelName, times, values, blendType) {
+function InterpolatedFloatChannel(channelName, times, values, blendType) {
 	AbstractAnimationChannel.call(this, channelName, times, blendType);
 	this._values = values ? values.slice(0) : null;
 }

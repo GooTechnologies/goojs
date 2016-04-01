@@ -140,43 +140,42 @@ var renderPipQuad = {
 		resolution: Shader.RESOLUTION
 	},
 	vshader: [
-	'attribute vec3 vertexPosition;',
-	'attribute vec2 vertexUV0;',
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
 
-	'uniform mat4 viewProjectionMatrix;',
-	'uniform mat4 worldMatrix;',
-	'uniform vec2 resolution;',
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform vec2 resolution;',
 
-	'varying vec2 texCoord0;',
+		'varying vec2 texCoord0;',
 
-	'void main(void) {',
-		'texCoord0 = vertexUV0;',
+		'void main(void) {',
+		'  texCoord0 = vertexUV0;',
 
-		'gl_Position = vec4(',
-			'2.0 * vertexPosition.x / resolution.x - 1.0,',
-			'2.0 * vertexPosition.y / resolution.y - 1.0,',
-			'-1.0,',
-			'1.0',
-		');',
-	'}'
+		'  gl_Position = vec4(',
+		'    2.0 * vertexPosition.x / resolution.x - 1.0,',
+		'    2.0 * vertexPosition.y / resolution.y - 1.0,',
+		'    -1.0,',
+		'    1.0',
+		'  );',
+		'}'
 	].join('\n'),
 	fshader: [
-	'uniform sampler2D diffuseMap;',
-	'uniform vec2 resolution;',
+		'uniform sampler2D diffuseMap;',
+		'uniform vec2 resolution;',
 
-	'varying vec2 texCoord0;',
-	'const vec4 edgeCol = vec4(0.2, 0.2, 0.2, 1.0);',
+		'varying vec2 texCoord0;',
+		'const vec4 edgeCol = vec4(0.2, 0.2, 0.2, 1.0);',
 
-	'void main(void) {',
-		'vec4 color = texture2D(diffuseMap, texCoord0);',
-		'#ifdef EDGE',
-			'float edge = step(10.0 / resolution.x, min(texCoord0.x, 1.0 - texCoord0.x)) *',
-						 'step(10.0 / resolution.y, min(texCoord0.y, 1.0 - texCoord0.y));',
-			'gl_FragColor = mix(edgeCol, color, edge);',
-		'#else',
-			'gl_FragColor = color;',
-		'#endif',
-	'}'
+		'void main(void) {',
+		'  vec4 color = texture2D(diffuseMap, texCoord0);',
+		'  #ifdef EDGE',
+		'  float edge = step(10.0 / resolution.x, min(texCoord0.x, 1.0 - texCoord0.x)) * step(10.0 / resolution.y, min(texCoord0.y, 1.0 - texCoord0.y));',
+		'  gl_FragColor = mix(edgeCol, color, edge);',
+		'  #else',
+		'  gl_FragColor = color;',
+		'  #endif',
+		'}'
 	].join('\n')
 };
 

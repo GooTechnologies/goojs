@@ -47,7 +47,7 @@ var labels = {
 	right: 'On key RIGHT'
 };
 
-ArrowsAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+ArrowsAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

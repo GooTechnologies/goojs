@@ -122,7 +122,7 @@ RotationGizmo.prototype.process = function (mouseState, oldMouseState) {
 })();
 
 // --- functions for snapping to certain angles
-function inclinedType2 (size, t) {
+function inclinedType2(size, t) {
 	return function (x) {
 		var z = x % size;
 		z += z < 0 ? size : 0;

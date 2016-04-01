@@ -27,7 +27,7 @@ var pink = [255, 0, 255];
  * @param renderer
  * @constructor
  */
-function BoundingSphereOcclusionChecker (renderer) {
+function BoundingSphereOcclusionChecker(renderer) {
 	this.renderer = renderer;
 	this._clipY = renderer.height - 1;
 	this._clipX = renderer.width - 1;

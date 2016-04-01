@@ -54,7 +54,7 @@ TweenLightColorAction.external = {
 	}]
 };
 
-TweenLightColorAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenLightColorAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Light Complete' : undefined;
 };
 

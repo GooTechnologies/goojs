@@ -1,4 +1,3 @@
-/*jshint bitwise: false */
 var DdsUtils = require('../../loaders/dds/DdsUtils');
 var Capabilities = require('../../renderer/Capabilities');
 
@@ -39,7 +38,7 @@ DdsPixelFormat.read = function (data) { // Int32Array
 	var format = new DdsPixelFormat();
 	format.dwSize = data[DdsPixelFormat.HEADER_OFFSET + 0];
 	if (format.dwSize !== 32) {
-		throw ('invalid pixel format size: ' + format.dwSize);
+		throw new Error('invalid pixel format size: ' + format.dwSize);
 	}
 	format.dwFlags = data[DdsPixelFormat.HEADER_OFFSET + 1];
 	format.dwFourCC = data[DdsPixelFormat.HEADER_OFFSET + 2];
@@ -120,7 +119,7 @@ DdsHeader.read = function (data) { // Int32Array
 	var header = new DdsHeader();
 	header.dwSize = data[1];
 	if (header.dwSize !== 124) {
-		throw ('invalid dds header size: ' + header.dwSize);
+		throw new Error('invalid dds header size: ' + header.dwSize);
 	}
 	header.dwFlags = data[2];
 	header.dwHeight = data[3];
@@ -368,17 +367,17 @@ DdsLoader.populate = function (texture, info, data) {
 
 		// DXT2 format - unsupported
 		else if (fourCC === DdsUtils.getIntFromString('DXT2')) {
-			throw 'DXT2 is not supported.';
+			throw new Error('DXT2 is not supported.');
 		}
 
 		// DXT4 format - unsupported
 		else if (fourCC === DdsUtils.getIntFromString('DXT4')) {
-			throw 'DXT4 is not supported.';
+			throw new Error('DXT4 is not supported.');
 		}
 
 		// Unsupported compressed type.
 		else {
-			throw 'unsupported compressed dds format found (' + fourCC + ')';
+			throw new Error('unsupported compressed dds format found (' + fourCC + ')');
 		}
 	}
 
@@ -458,7 +457,7 @@ DdsLoader.prototype.load = function (buffer, tex, flipped, arrayByteOffset, arra
 	// Read and check magic word...
 	var dwMagic = header[0];
 	if (dwMagic !== DdsUtils.getIntFromString('DDS ')) {
-		throw 'Not a dds file.';
+		throw new Error('Not a dds file.');
 	}
 //		console.info('Reading DDS file.');
 

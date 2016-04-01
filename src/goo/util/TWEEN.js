@@ -295,7 +295,7 @@ TWEEN.Tween = function (object) {
 				for (var property in _valuesStartRepeat) {
 
 					if (typeof( _valuesEnd[property] ) === "string") {
-						_valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property], 10);
+						_valuesStartRepeat[property] += parseFloat(_valuesEnd[property], 10);
 					}
 
 					_valuesStart[property] = _valuesStartRepeat[property];

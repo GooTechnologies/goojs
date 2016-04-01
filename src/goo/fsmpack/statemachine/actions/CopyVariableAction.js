@@ -1,4 +1,5 @@
 var Action = require('./Action');
+var FsmUtils = require('../FsmUtils');
 
 function CopyVariableAction(/*id, settings*/) {
 	Action.apply(this, arguments);

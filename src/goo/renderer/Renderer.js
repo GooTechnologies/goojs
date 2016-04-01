@@ -1,16 +1,12 @@
-/*jshint bitwise: false*/
 var Capabilities = require('../renderer/Capabilities');
 var RendererRecord = require('../renderer/RendererRecord');
 var RendererUtils = require('../renderer/RendererUtils');
 var TextureCreator = require('../renderer/TextureCreator');
 var RenderTarget = require('../renderer/pass/RenderTarget');
 var Vector4 = require('../math/Vector4');
-var Entity = require('../entities/Entity');
 var Texture = require('../renderer/Texture');
-var DdsLoader = require('../loaders/dds/DdsLoader');
-var DdsUtils = require('../loaders/dds/DdsUtils');
+require('../loaders/dds/DdsLoader'); // todo: unused?
 var Material = require('../renderer/Material');
-var Transform = require('../math/Transform');
 var RenderQueue = require('../renderer/RenderQueue');
 var ShaderLib = require('../renderer/shaders/ShaderLib');
 var ShadowHandler = require('../renderer/shadow/ShadowHandler');
@@ -34,7 +30,7 @@ var STUB_METHOD = function () {};
  * @param {boolean} [parameters.preserveDrawingBuffer=false]
  * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc).
  * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas.
- * @param {function(string)} [parameters.onError] Called with message when error occurs.
+ * @param {function (string)} [parameters.onError] Called with message when error occurs.
  */
 function Renderer(parameters) {
 	parameters = parameters || {};
@@ -192,7 +188,6 @@ Renderer.prototype.setupDebugging = function (parameters) {
 		if (request.readyState === 4) {
 			if (request.status >= 200 && request.status <= 299) {
 				// Yes, eval is intended, sorry checkstyle
-				// jshint evil:true
 				window['eval'].call(window, request.responseText);
 			}
 		}
@@ -217,7 +212,7 @@ Renderer.prototype.setupDebugging = function (parameters) {
  *
  */
 Renderer.prototype.establishContext = function () {
-	if (!!window.WebGLRenderingContext) {
+	if (window.WebGLRenderingContext) {
 		//! AT: this list may require cleanup
 		var contextNames = ['experimental-webgl', 'webgl', 'moz-webgl', 'webkit-3d'];
 		for (var i = 0; i < contextNames.length; i++) {
@@ -227,16 +222,13 @@ Renderer.prototype.establishContext = function () {
 					// WebGL is supported & enabled
 					break;
 				}
-			} catch (e) {}
+			} catch (e) {
+				// nothing
+			}
 		}
 		if (!this.context) {
 			// WebGL is supported but disabled
-			throw {
-				name: 'GooWebGLError',
-				message: 'WebGL is supported but disabled',
-				supported: true,
-				enabled: false
-			};
+			throw new Error('WebGL is supported but disabled');
 		}
 	}
 

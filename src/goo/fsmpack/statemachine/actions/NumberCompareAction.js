@@ -57,7 +57,7 @@ var labels = {
 	greater: 'On X > Y'
 };
 
-NumberCompareAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+NumberCompareAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

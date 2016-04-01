@@ -57,10 +57,8 @@ EdgeMap.prototype.clear = function () {
 	this.numberOfSharedEdges = 0;
 };
 
-/*jshint bitwise: false */
 EdgeMap.prototype._indicesToKey = function (i1, i2) {
 	return (i1 << 8) + i2;
 };
-/*jshint bitwise: true*/
 
 module.exports = EdgeMap;

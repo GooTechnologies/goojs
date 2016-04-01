@@ -4,13 +4,11 @@ var OccludeeTriangleData = require('./OccludeeTriangleData');
 
 // Cohen-Sutherland area constants.
 // (Clipping method for the bounding box)
-/*jshint bitwise: false */
 var INSIDE = 0x0;	// 0000
 var LEFT = 0x1;     // 0001
 var RIGHT = 0x2;	// 0010
 var BELOW = 0x4;	// 0100
 var ABOVE = 0x8;	// 1000
-/*jshint bitwise: true */
 
 var outCodes = new Uint8Array(8);
 
@@ -64,7 +62,7 @@ var combinedMatrix = new Matrix4();
 /**
  * @param {SoftwareRenderer} renderer
  */
-function BoundingBoxOcclusionChecker (renderer) {
+function BoundingBoxOcclusionChecker(renderer) {
 	this.renderer = renderer;
 
 	this._clipY = renderer.height - 1;
@@ -207,7 +205,6 @@ BoundingBoxOcclusionChecker.prototype._clipBox = function (positions) {
 	maxY = -Infinity;
 	// NOTE: The depth is inversed at this point, (1 / w), the minimum depth is the largest.
 	minDepth = -Infinity;
-	/*jshint bitwise: false */
 
 	var vPos;
 	for (var i = 0; i < 8; i++) {
@@ -360,7 +357,6 @@ BoundingBoxOcclusionChecker.prototype._clipBox = function (positions) {
 			minDepth = Math.max(minDepth, depth);
 		}
 	}
-	/*jshint bitwise: true */
 	minMaxArray[0] = minX;
 	minMaxArray[1] = maxX;
 	minMaxArray[2] = minY;
@@ -378,7 +374,6 @@ BoundingBoxOcclusionChecker.prototype._clipBox = function (positions) {
 BoundingBoxOcclusionChecker.prototype._calculateOutCode = function (coordinate) {
 	// Regard the coordinate as being inside the clip window initially.
 	var outcode = INSIDE;
-	/*jshint bitwise: false */
 	if (coordinate.x < 0) {
 		outcode |= LEFT;
 	} else if (coordinate.x > this._clipX) {
@@ -390,7 +385,6 @@ BoundingBoxOcclusionChecker.prototype._calculateOutCode = function (coordinate) 
 	} else if (coordinate.y > this._clipY) {
 		outcode |= ABOVE;
 	}
-	/* jshint bitwise: true */
 	return outcode;
 };
 

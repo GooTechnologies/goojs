@@ -48,7 +48,7 @@ ConfigHandler.prototype._remove = function (ref) {
  * @param {Object} config
  * @private
  */
-ConfigHandler.prototype._prepare = function (config) {};
+ConfigHandler.prototype._prepare = function (/*config*/) {};
 
 /**
  * Loads object for given ref

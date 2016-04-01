@@ -37,7 +37,7 @@ var labels = {
 	transition2: 'On random outcome B'
 };
 
-RandomTransitionAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+RandomTransitionAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

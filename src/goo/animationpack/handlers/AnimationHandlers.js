@@ -1,5 +1,7 @@
-var AnimationClipHandler = require('../../animationpack/handlers/AnimationClipHandler');
-var AnimationComponentHandler = require('../../animationpack/handlers/AnimationComponentHandler');
-var AnimationLayersHandler = require('../../animationpack/handlers/AnimationLayersHandler');
-var AnimationStateHandler = require('../../animationpack/handlers/AnimationStateHandler');
-var SkeletonHandler = require('../../animationpack/handlers/SkeletonHandler');
+module.exports = {
+	AnimationClipHandler: require('../../animationpack/handlers/AnimationClipHandler'),
+	AnimationComponentHandler: require('../../animationpack/handlers/AnimationComponentHandler'),
+	AnimationLayersHandler: require('../../animationpack/handlers/AnimationLayersHandler'),
+	AnimationStateHandler: require('../../animationpack/handlers/AnimationStateHandler'),
+	SkeletonHandler: require('../../animationpack/handlers/SkeletonHandler')
+};

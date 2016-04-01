@@ -48,7 +48,7 @@ describe('DynamicLoader', function () {
 
 		loader.update(bundleRef, Configs.get());
 		// Load bundle
-		loader.load(bundleRef).then(function (/* bundle */) {
+		loader.load(bundleRef).then(function (/* bundle */) {
 			var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 			expect(keys).toContain(config.id);

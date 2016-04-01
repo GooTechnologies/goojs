@@ -1,6 +1,5 @@
 var Material = require('../../renderer/Material');
 var MeshData = require('../../renderer/MeshData');
-var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var Shader = require('../../renderer/Shader');
 var Transform = require('../../math/Transform');
 

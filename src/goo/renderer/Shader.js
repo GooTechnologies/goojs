@@ -656,7 +656,6 @@ function setupDefaultCallbacks(defaultCallbacks) {
 	};
 
 	for (var i = 0; i < 16; i++) {
-		/*jshint loopfunc: true */
 		defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
 			return function (uniformCall) {
 				uniformCall.uniform1i(i);
@@ -665,7 +664,6 @@ function setupDefaultCallbacks(defaultCallbacks) {
 	}
 
 	for (var i = 0; i < 8; i++) {
-		/*jshint loopfunc: true */
 		defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 			return function (uniformCall, shaderInfo) {
 				var light = shaderInfo.lights[i];

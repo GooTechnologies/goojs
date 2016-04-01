@@ -21,16 +21,16 @@ function Material(name, shaderDefinition) {
 
 	//! AT: horrendous type checking follows
 	// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
-	if (typeof arguments[0] === 'string') {
-		this.name = arguments[0];
-	} else if (arguments[0] && arguments[0].vshader && arguments[0].fshader) {
-		this.shader = Material.createShader(arguments[0]);
+	if (typeof name === 'string') {
+		this.name = name;
+	} else if (name && name.vshader && name.fshader) {
+		this.shader = Material.createShader(name);
 	}
 
-	if (arguments[1] && arguments[1].vshader && arguments[1].fshader) {
-		this.shader = Material.createShader(arguments[1]);
-	} else if (typeof arguments[1] === 'string') {
-		this.name = arguments[1];
+	if (shaderDefinition && shaderDefinition.vshader && shaderDefinition.fshader) {
+		this.shader = Material.createShader(shaderDefinition);
+	} else if (typeof shaderDefinition === 'string') {
+		this.name = shaderDefinition;
 	}
 
 	/** Possible overrides for shader uniforms

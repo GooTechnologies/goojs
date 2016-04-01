@@ -1,3 +1,15 @@
+var DirectionalLight = require('../../../src/goo/renderer/light/DirectionalLight');
+var Texture = require('../../../src/goo/renderer/Texture');
+var Camera = require('../../../src/goo/renderer/Camera');
+var Box = require('../../../src/goo/shapes/Box');
+var Material = require('../../../src/goo/renderer/Material');
+var MeshData = require('../../../src/goo/renderer/MeshData');
+var Shader = require('../../../src/goo/renderer/Shader');
+var ShaderLib = require('../../../src/goo/renderer/shaders/ShaderLib');
+var ShaderCall = require('../../../src/goo/renderer/ShaderCall');
+var RendererRecord = require('../../../src/goo/renderer/RendererRecord');
+var ObjectUtils = require('../../../src/goo/util/ObjectUtils');
+
 (function () {
 	describe('Shader', function () {
 		describe('DefineKey', function () {
@@ -289,47 +301,46 @@
 		});
 	});
 
-	function createContext () {
-		/* jshint unused:false */
+	function createContext() {
 		return {
-			createShader: function (type) { return {}; },
-			shaderSource: function (shader, source) {},
-			compileShader: function (shader) {},
-			getShaderParameter: function (shader, parameter) { return true; },
-			getProgramParameter: function (shader, parameter) { return true; },
-			getShaderInfoLog: function (shader) { return ''; },
-			getProgramInfoLog: function (shader) { return ''; },
-			createProgram: function (shader) { return {}; },
+			createShader: function (/*type*/) { return {}; },
+			shaderSource: function (/*shader, source*/) {},
+			compileShader: function (/*shader*/) {},
+			getShaderParameter: function (/*shader, parameter*/) { return true; },
+			getProgramParameter: function (/*shader, parameter*/) { return true; },
+			getShaderInfoLog: function (/*shader*/) { return ''; },
+			getProgramInfoLog: function (/*shader*/) { return ''; },
+			createProgram: function (/*shader*/) { return {}; },
 			getError: function () { return 0; },
-			attachShader: function (program, source) {},
-			linkProgram: function (program) {},
-			useProgram: function (program) {},
+			attachShader: function (/*program, source*/) {},
+			linkProgram: function (/*program*/) {},
+			useProgram: function (/*program*/) {},
 
-			getAttribLocation: function (program, key) { return {}; },
-			getUniformLocation: function (program, key) { return {}; },
+			getAttribLocation: function (/*program, key*/) { return {}; },
+			getUniformLocation: function (/*program, key*/) { return {}; },
 
-			uniform1f: function (location, v0) {},
-			uniform1i: function (location, v0) {},
-			uniform2f: function (location, v0, v1) {},
-			uniform2i: function (location, v0, v1) {},
-			uniform3f: function (location, v0, v1, v2) {},
-			uniform3i: function (location, v0, v1, v2) {},
-			uniform4f: function (location, v0, v1, v2, v3) {},
-			uniform4i: function (location, v0, v1, v2, v3) {},
+			uniform1f: function (/*location, v0*/) {},
+			uniform1i: function (/*location, v0*/) {},
+			uniform2f: function (/*location, v0, v1*/) {},
+			uniform2i: function (/*location, v0, v1*/) {},
+			uniform3f: function (/*location, v0, v1, v2*/) {},
+			uniform3i: function (/*location, v0, v1, v2*/) {},
+			uniform4f: function (/*location, v0, v1, v2, v3*/) {},
+			uniform4i: function (/*location, v0, v1, v2, v3*/) {},
 
-			uniform1iv: function (location, values) {},
-			uniform2iv: function (location, values) {},
-			uniform3iv: function (location, values) {},
-			uniform4iv: function (location, values) {},
+			uniform1iv: function (/*location, values*/) {},
+			uniform2iv: function (/*location, values*/) {},
+			uniform3iv: function (/*location, values*/) {},
+			uniform4iv: function (/*location, values*/) {},
 
-			uniform1fv: function (location, values) {},
-			uniform2fv: function (location, values) {},
-			uniform3fv: function (location, values) {},
-			uniform4fv: function (location, values) {},
+			uniform1fv: function (/*location, values*/) {},
+			uniform2fv: function (/*location, values*/) {},
+			uniform3fv: function (/*location, values*/) {},
+			uniform4fv: function (/*location, values*/) {},
 
-			uniformMatrix2fv: function (location, transpose, data) {},
-			uniformMatrix3fv: function (location, transpose, data) {},
-			uniformMatrix4fv: function (location, transpose, data) {},
+			uniformMatrix2fv: function (/*location, transpose, data*/) {},
+			uniformMatrix3fv: function (/*location, transpose, data*/) {},
+			uniformMatrix4fv: function (/*location, transpose, data*/) {}
 		};
 	}
 

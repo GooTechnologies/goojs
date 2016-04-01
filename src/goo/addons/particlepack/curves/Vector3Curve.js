@@ -30,11 +30,11 @@ Vector3Curve.prototype = Object.create(Curve.prototype);
 Vector3Curve.prototype.constructor = Vector3Curve;
 
 Vector3Curve.prototype.toGLSL = function (timeVariableName, lerpValueVariableName) {
-	return 'vec3(' + [this.x, this.y, this.z].map(function(c) { return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
+	return 'vec3(' + [this.x, this.y, this.z].map(function (c) { return c.toGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 };
 
 Vector3Curve.prototype.integralToGLSL = function (timeVariableName, lerpValueVariableName) {
-	return 'vec3(' + [this.x, this.y, this.z].map(function(c) { return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
+	return 'vec3(' + [this.x, this.y, this.z].map(function (c) { return c.integralToGLSL(timeVariableName, lerpValueVariableName); }).join(',') + ')';
 };
 
 Vector3Curve.prototype.getVec3ValueAt = function (t, lerpValue, store) {

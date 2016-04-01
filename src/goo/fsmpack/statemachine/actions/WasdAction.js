@@ -47,7 +47,7 @@ var labels = {
 	d: 'On Key D Pressed'
 };
 
-WasdAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+WasdAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

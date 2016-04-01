@@ -60,7 +60,7 @@ DollyZoomAction.external = {
 	}]
 };
 
-DollyZoomAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+DollyZoomAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Dolly Zoom Complete';
 };
 

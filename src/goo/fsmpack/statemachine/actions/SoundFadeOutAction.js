@@ -35,7 +35,7 @@ var labels = {
 	complete: 'On Sound Fade Out Complete'
 };
 
-SoundFadeOutAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+SoundFadeOutAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

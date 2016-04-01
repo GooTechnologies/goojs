@@ -24,12 +24,10 @@ EvalAction.external = {
 };
 
 EvalAction.prototype.enter = function () {
-	/* jshint evil: true */
 	this.expressionFunction = new Function('goo', this.expression);
 };
 
 EvalAction.prototype.update = function (fsm) {
-	/* jshint evil: true */
 	if (this.expressionFunction) {
 		try {
 			this.expressionFunction(fsm.getEvalProxy());

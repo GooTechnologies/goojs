@@ -1,3 +1,6 @@
+var RendererUtils = require('../../../src/goo/renderer/RendererUtils');
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+
 describe('RendererUtils', function () {
 	beforeEach(function () {
 		jasmine.addMatchers(CustomMatchers);

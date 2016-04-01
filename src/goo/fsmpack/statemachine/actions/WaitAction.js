@@ -48,7 +48,7 @@ WaitAction.external = {
 	}]
 };
 
-WaitAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+WaitAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'timeUp' ? 'On Wait End' : undefined;
 };
 

@@ -56,7 +56,7 @@ TweenLookAtAction.external = {
 	}]
 };
 
-TweenLookAtAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenLookAtAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween LookAt Complete' : undefined;
 };
 

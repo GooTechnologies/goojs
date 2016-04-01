@@ -20,7 +20,7 @@ HtmlAction.external = {
 	}]
 };
 
-HtmlAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+HtmlAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On HTML Pick';
 };
 

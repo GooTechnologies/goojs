@@ -69,7 +69,7 @@ var labels = {
 	greater: 'On camera distance > X'
 };
 
-CompareDistanceAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+CompareDistanceAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

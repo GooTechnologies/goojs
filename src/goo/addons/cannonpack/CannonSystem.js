@@ -1,8 +1,5 @@
 var System = require('../../entities/systems/System');
-var BoundingBox = require('../../renderer/bounds/BoundingBox');
-var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 var Quaternion = require('../../math/Quaternion');
-var Transform = require('../../math/Transform');
 var Vector3 = require('../../math/Vector3');
 var ObjectUtils = require('../../util/ObjectUtils');
 

@@ -26,7 +26,7 @@ function Component() {
  * @param {Entity} entity
  * @returns {boolean} True if the data was used.
  */
-Component.applyOnEntity = function (argument, entity) {
+Component.applyOnEntity = function (/*argument, entity*/) {
 	return false;
 };
 
@@ -34,13 +34,13 @@ Component.applyOnEntity = function (argument, entity) {
  * Called when the component was added to an entity
  * @param {Entity} entity
  */
-Component.prototype.attached = function (entity) {};
+Component.prototype.attached = function (/*entity*/) {};
 
 /**
  * Called when the component was removed from an entity
  * @param {Entity} entity
  */
-Component.prototype.detached = function (entity) {};
+Component.prototype.detached = function (/*entity*/) {};
 
 /**
  * Injects public methods of this component into the host entity.

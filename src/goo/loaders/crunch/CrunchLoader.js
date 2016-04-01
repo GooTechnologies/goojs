@@ -21,7 +21,7 @@
  *    distribution.
  */
 
-/*jshint bitwise: false */var DdsLoader = require('../../loaders/dds/DdsLoader');
+require('../../loaders/dds/DdsLoader'); // needed?
 var DdsUtils = require('../../loaders/dds/DdsUtils');
 var Capabilities = require('../../renderer/Capabilities');
 

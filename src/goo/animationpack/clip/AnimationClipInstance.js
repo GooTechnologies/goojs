@@ -4,7 +4,7 @@ var World = require('../../entities/World');
  * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
  *        instance, etc.
  */
-function AnimationClipInstance () {
+function AnimationClipInstance() {
 	this._active = true;
 	this._loopCount = 0;
 	this._timeScale = 1.0;

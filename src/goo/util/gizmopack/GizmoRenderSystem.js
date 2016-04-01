@@ -322,42 +322,41 @@ var customPickingShader = {
 		}
 	},
 	vshader: [
-	'attribute vec3 vertexPosition;',
-	'#ifdef NORMAL',
-		'attribute vec3 vertexNormal;',
-	'#endif',
-
-	'uniform mat4 viewMatrix;',
-	'uniform mat4 projectionMatrix;',
-	'uniform mat4 worldMatrix;',
-	'uniform float cameraFar;',
-	'uniform float thickness;',
-
-	'varying float depth;',
-
-	'void main() {',
+		'attribute vec3 vertexPosition;',
 		'#ifdef NORMAL',
-			'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
-		'#else',
-			'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+		'attribute vec3 vertexNormal;',
 		'#endif',
 
-		'depth = length(mvPosition.xyz) / cameraFar;',
-		'gl_Position = projectionMatrix * mvPosition;',
-	'}'
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform float cameraFar;',
+		'uniform float thickness;',
+
+		'varying float depth;',
+
+		'void main() {',
+		'  #ifdef NORMAL',
+		'  vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+		'  #else',
+		'  vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+		'  #endif',
+		'  depth = length(mvPosition.xyz) / cameraFar;',
+		'  gl_Position = projectionMatrix * mvPosition;',
+		'}'
 	].join('\n'),
 	fshader: [
-	'uniform float id;',
+		'uniform float id;',
 
-	'varying float depth;',
+		'varying float depth;',
 
-	ShaderFragment.methods.packDepth16,
+		ShaderFragment.methods.packDepth16,
 
-	'void main() {',
-		'vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
-		'vec2 packedDepth = packDepth16(depth);',
-		'gl_FragColor = vec4(packedId, packedDepth);',
-	'}'
+		'void main() {',
+		'  vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
+		'  vec2 packedDepth = packDepth16(depth);',
+		'  gl_FragColor = vec4(packedId, packedDepth);',
+		'}'
 	].join('\n')
 };
 

@@ -66,7 +66,7 @@ TweenTextureOffsetAction.external = {
 	}]
 };
 
-TweenTextureOffsetAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenTextureOffsetAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On UV Tween Complete' : undefined;
 };
 

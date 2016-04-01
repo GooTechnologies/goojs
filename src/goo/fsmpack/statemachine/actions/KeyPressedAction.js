@@ -28,7 +28,7 @@ KeyPressedAction.external = {
 	}]
 };
 
-KeyPressedAction.getTransitionLabel = function(transitionKey, actionConfig){
+KeyPressedAction.getTransitionLabel = function (transitionKey, actionConfig){
 	return 'On Key ' + (actionConfig.options.key || '') + ' pressed';
 };
 

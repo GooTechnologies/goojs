@@ -1,3 +1,5 @@
+/*eslint indent: "off" */
+
 var MeshData = require('../../renderer/MeshData');
 var Shader = require('../../renderer/Shader');
 var ShaderFragment = require('../../renderer/shaders/ShaderFragment');

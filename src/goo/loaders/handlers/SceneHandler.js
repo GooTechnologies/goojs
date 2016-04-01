@@ -1,6 +1,5 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var SystemBus = require('../../entities/SystemBus');
-var ArrayUtils = require('../../util/ArrayUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 var RSVP = require('../../util/rsvp');
 

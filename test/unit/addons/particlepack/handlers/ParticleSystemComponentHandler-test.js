@@ -96,7 +96,7 @@ describe('ParticleSystemComponentHandler', function () {
 					x: newConstantPolyCurve(x),
 					y: newConstantPolyCurve(y),
 					z: newConstantPolyCurve(z),
-					w: newConstantPolyCurve(w),
+					w: newConstantPolyCurve(w)
 				});
 			}
 			function newVector3Curve(x,y,z){

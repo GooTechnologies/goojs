@@ -1,5 +1,4 @@
 var Vector3 = require('../math/Vector3');
-var Scripts = require('../scripts/Scripts');
 var ScriptUtils = require('../scripts/ScriptUtils');
 
 function WasdControlScript() {

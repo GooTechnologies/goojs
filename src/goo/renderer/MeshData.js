@@ -463,22 +463,22 @@ MeshData.prototype.makeInterleavedData = function () {
 
 MeshData.prototype.getDataMethod = function (type) {
 	switch (type) {
-	case 'Byte':
-		return 'setInt8';
-	case 'UnsignedByte':
-		return 'setUInt8';
-	case 'Short':
-		return 'setInt16';
-	case 'UnsignedShort':
-		return 'setUInt16';
-	case 'Int':
-		return 'setInt32';
-	case 'HalfFloat':
-		return 'setInt16';
-	case 'Float':
-		return 'setFloat32';
-	// case 'Double':
-		// return 'setFloat64';
+		case 'Byte':
+			return 'setInt8';
+		case 'UnsignedByte':
+			return 'setUInt8';
+		case 'Short':
+			return 'setInt16';
+		case 'UnsignedShort':
+			return 'setUInt16';
+		case 'Int':
+			return 'setInt32';
+		case 'HalfFloat':
+			return 'setInt16';
+		case 'Float':
+			return 'setFloat32';
+		// case 'Double':
+			// return 'setFloat64';
 	}
 };
 
@@ -567,47 +567,47 @@ MeshData.prototype.applyFunction = function (attributeName, fun) {
 	var count = this.attributeMap[attributeName].count;
 
 	switch (count) {
-	case 1:
-		for (var i = 0; i < viewLength; i++) {
-			view[i] = fun(view[i]);
-		}
-		break;
-	case 2:
-		vert = new Vector2();
-		for (var i = 0; i < viewLength; i += 2) {
-			vert.setDirect(view[i + 0], view[i + 1]);
+		case 1:
+			for (var i = 0; i < viewLength; i++) {
+				view[i] = fun(view[i]);
+			}
+			break;
+		case 2:
+			vert = new Vector2();
+			for (var i = 0; i < viewLength; i += 2) {
+				vert.setDirect(view[i + 0], view[i + 1]);
 
-			outVert = fun(vert);
+				outVert = fun(vert);
 
-			view[i + 0] = outVert.x;
-			view[i + 1] = outVert.y;
-		}
-		break;
-	case 3:
-		vert = new Vector3();
-		for (var i = 0; i < viewLength; i += 3) {
-			vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+			}
+			break;
+		case 3:
+			vert = new Vector3();
+			for (var i = 0; i < viewLength; i += 3) {
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 
-			outVert = fun(vert);
+				outVert = fun(vert);
 
-			view[i + 0] = outVert.x;
-			view[i + 1] = outVert.y;
-			view[i + 2] = outVert.z;
-		}
-		break;
-	case 4:
-		vert = new Vector4();
-		for (var i = 0; i < viewLength; i += 4) {
-			vert.setDirect(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
+			}
+			break;
+		case 4:
+			vert = new Vector4();
+			for (var i = 0; i < viewLength; i += 4) {
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
 
-			outVert = fun(vert);
+				outVert = fun(vert);
 
-			view[i + 0] = outVert.x;
-			view[i + 1] = outVert.y;
-			view[i + 2] = outVert.z;
-			view[i + 3] = outVert.w;
-		}
-		break;
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
+				view[i + 3] = outVert.w;
+			}
+			break;
 	}
 
 	return this;
@@ -688,44 +688,44 @@ MeshData.prototype.buildWireframeData = function () {
 		var primitiveCount = this.getPrimitiveCount(section);
 		for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 			switch (indexMode) {
-			case 'Triangles':
-			case 'TriangleFan':
-			case 'TriangleStrip':
-				var i1 = getIndex(primitiveIndex, 0, section);
-				var i2 = getIndex(primitiveIndex, 1, section);
-				var i3 = getIndex(primitiveIndex, 2, section);
+				case 'Triangles':
+				case 'TriangleFan':
+				case 'TriangleStrip':
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
+					var i3 = getIndex(primitiveIndex, 2, section);
 
-				targetI[indexCount + 0] = i1;
-				targetI[indexCount + 1] = i2;
-				targetI[indexCount + 2] = i2;
-				targetI[indexCount + 3] = i3;
-				targetI[indexCount + 4] = i3;
-				targetI[indexCount + 5] = i1;
-				indexCount += 6;
-				break;
-			case 'Lines':
-			case 'LineStrip':
-				var i1 = getIndex(primitiveIndex, 0, section);
-				var i2 = getIndex(primitiveIndex, 1, section);
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					targetI[indexCount + 2] = i2;
+					targetI[indexCount + 3] = i3;
+					targetI[indexCount + 4] = i3;
+					targetI[indexCount + 5] = i1;
+					indexCount += 6;
+					break;
+				case 'Lines':
+				case 'LineStrip':
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
 
-				targetI[indexCount + 0] = i1;
-				targetI[indexCount + 1] = i2;
-				indexCount += 2;
-				break;
-			case 'LineLoop':
-				var i1 = getIndex(primitiveIndex, 0, section);
-				var i2 = getIndex(primitiveIndex, 1, section);
-				if (primitiveIndex === primitiveCount - 1) {
-					i2 = getIndex(0, 0, section);
-				}
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					indexCount += 2;
+					break;
+				case 'LineLoop':
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
+					if (primitiveIndex === primitiveCount - 1) {
+						i2 = getIndex(0, 0, section);
+					}
 
-				targetI[indexCount + 0] = i1;
-				targetI[indexCount + 1] = i2;
-				indexCount += 2;
-				break;
-			case 'Points':
-				// Not supported in wireframe
-				break;
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					indexCount += 2;
+					break;
+				case 'Points':
+					// Not supported in wireframe
+					break;
 			}
 		}
 	}
@@ -776,66 +776,65 @@ MeshData.prototype.buildFlatMeshData = function () {
 		var flip = false;
 		for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 			switch (indexMode) {
-			/*jshint -W086 */
-			case 'TriangleStrip':
-				flip = (primitiveIndex % 2 === 1) ? true : false;
-				// fall through intended?
-			case 'Triangles':
-			case 'TriangleFan':
-				var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
-				var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
-				var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
-				if (flip) {
-					var f = i3;
-					i3 = i2;
-					i2 = f;
-				}
-				for (var key in attribs) {
-					if (key === MeshData.NORMAL) {
-						continue;
+				case 'TriangleStrip':
+					flip = (primitiveIndex % 2 === 1) ? true : false;
+					// fall through intended?
+				case 'Triangles':
+				case 'TriangleFan':
+					var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
+					var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
+					var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
+					if (flip) {
+						var f = i3;
+						i3 = i2;
+						i2 = f;
 					}
-					var count = attributeMap[key].count;
-					for (var i = 0; i < count; i++) {
-						attribs[key].values[indexCount * count + i] = attribs[key].oldBuffer[i1 * count + i];
-						attribs[key].values[(indexCount + 1) * count + i] = attribs[key].oldBuffer[i2 * count + i];
-						attribs[key].values[(indexCount + 2) * count + i] = attribs[key].oldBuffer[i3 * count + i];
-					}
-					if (key === MeshData.POSITION) {
-						v1.setDirect(
-							attribs[key].values[indexCount * 3],
-							attribs[key].values[indexCount * 3 + 1],
-							attribs[key].values[indexCount * 3 + 2]
-						);
-						v2.setDirect(
-							attribs[key].values[(indexCount + 1) * 3],
-							attribs[key].values[(indexCount + 1) * 3 + 1],
-							attribs[key].values[(indexCount + 1) * 3 + 2]
-						);
-						v3.setDirect(
-							attribs[key].values[(indexCount + 2) * 3],
-							attribs[key].values[(indexCount + 2) * 3 + 1],
-							attribs[key].values[(indexCount + 2) * 3 + 2]
-						);
-						v2.sub(v1);
-						v3.sub(v1);
-						v2.cross(v3).normalize();
+					for (var key in attribs) {
+						if (key === MeshData.NORMAL) {
+							continue;
+						}
+						var count = attributeMap[key].count;
+						for (var i = 0; i < count; i++) {
+							attribs[key].values[indexCount * count + i] = attribs[key].oldBuffer[i1 * count + i];
+							attribs[key].values[(indexCount + 1) * count + i] = attribs[key].oldBuffer[i2 * count + i];
+							attribs[key].values[(indexCount + 2) * count + i] = attribs[key].oldBuffer[i3 * count + i];
+						}
+						if (key === MeshData.POSITION) {
+							v1.setDirect(
+								attribs[key].values[indexCount * 3],
+								attribs[key].values[indexCount * 3 + 1],
+								attribs[key].values[indexCount * 3 + 2]
+							);
+							v2.setDirect(
+								attribs[key].values[(indexCount + 1) * 3],
+								attribs[key].values[(indexCount + 1) * 3 + 1],
+								attribs[key].values[(indexCount + 1) * 3 + 2]
+							);
+							v3.setDirect(
+								attribs[key].values[(indexCount + 2) * 3],
+								attribs[key].values[(indexCount + 2) * 3 + 1],
+								attribs[key].values[(indexCount + 2) * 3 + 2]
+							);
+							v2.sub(v1);
+							v3.sub(v1);
+							v2.cross(v3).normalize();
 
-						if (attribs[MeshData.NORMAL]) {
-							attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.x;
-							attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.y;
-							attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.z;
+							if (attribs[MeshData.NORMAL]) {
+								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.z;
 
-							attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.x;
-							attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.y;
-							attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.z;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.z;
 
-							attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.x;
-							attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.y;
-							attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.z;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.z;
+							}
 						}
 					}
-				}
-				indexCount += 3;
+					indexCount += 3;
 			}
 		}
 	}

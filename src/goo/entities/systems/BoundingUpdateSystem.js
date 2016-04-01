@@ -5,7 +5,7 @@ var BoundingBox = require('../../renderer/bounds/BoundingBox');
  * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
  * @extends System
  */
-function BoundingUpdateSystem () {
+function BoundingUpdateSystem() {
 	System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
 	this._worldBound = new BoundingBox();
 	this._computeWorldBound = null;

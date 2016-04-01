@@ -3,7 +3,6 @@ var MeshRendererComponent = require('../../entities/components/MeshRendererCompo
 var Material = require('../../renderer/Material');
 var ShaderLib = require('../../renderer/shaders/ShaderLib');
 var RSVP = require('../../util/rsvp');
-var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
 /**

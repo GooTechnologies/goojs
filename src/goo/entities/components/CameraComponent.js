@@ -8,7 +8,7 @@ var SystemBus = require('../../entities/SystemBus');
  * @param {Camera} camera Camera to contain in this component.
  * @extends Component
  */
-function CameraComponent (camera) {
+function CameraComponent(camera) {
 	Component.apply(this, arguments);
 
 	this.type = 'CameraComponent';

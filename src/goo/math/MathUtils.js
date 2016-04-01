@@ -361,33 +361,33 @@ MathUtils.fastRandom = function () {
  * @returns {number} the half-float representation
  */
 MathUtils.floatToHalfFloat = (function () {
-    var floatView = new Float32Array(1);
-    var int32View = new Int32Array(floatView.buffer);
+	var floatView = new Float32Array(1);
+	var int32View = new Int32Array(floatView.buffer);
 
-    return function (fval) {
-        floatView[0] = fval;
-        var fbits = int32View[0];
-        var sign = (fbits >> 16) & 0x8000;
-        var val = (fbits & 0x7fffffff) + 0x1000;
+	return function (fval) {
+		floatView[0] = fval;
+		var fbits = int32View[0];
+		var sign = (fbits >> 16) & 0x8000;
+		var val = (fbits & 0x7fffffff) + 0x1000;
 
-        if (val >= 0x47800000) {
-            if ((fbits & 0x7fffffff) >= 0x47800000) {
-                if (val < 0x7f800000) {
-                    return sign | 0x7c00;
-                }
-                return sign | 0x7c00 | (fbits & 0x007fffff) >> 13;
-            }
-            return sign | 0x7bff;
-        }
-        if (val >= 0x38800000) {
-            return sign | val - 0x38000000 >> 13;
-        }
-        if (val < 0x33000000) {
-            return sign;
-        }
-        val = (fbits & 0x7fffffff) >> 23;
-        return sign | ((fbits & 0x7fffff | 0x800000) + (0x800000 >>> val - 102) >> 126 - val);
-    };
+		if (val >= 0x47800000) {
+			if ((fbits & 0x7fffffff) >= 0x47800000) {
+				if (val < 0x7f800000) {
+					return sign | 0x7c00;
+				}
+				return sign | 0x7c00 | (fbits & 0x007fffff) >> 13;
+			}
+			return sign | 0x7bff;
+		}
+		if (val >= 0x38800000) {
+			return sign | val - 0x38000000 >> 13;
+		}
+		if (val < 0x33000000) {
+			return sign;
+		}
+		val = (fbits & 0x7fffffff) >> 23;
+		return sign | ((fbits & 0x7fffff | 0x800000) + (0x800000 >>> val - 102) >> 126 - val);
+	};
 })();
 
 /**

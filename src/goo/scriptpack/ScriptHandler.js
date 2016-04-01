@@ -1,10 +1,5 @@
 var ConfigHandler = require('../loaders/handlers/ConfigHandler');
 var RSVP = require('../util/rsvp');
-var OrbitCamControlScript = require('../scripts/OrbitCamControlScript');
-var OrbitNPanControlScript = require('../scriptpack/OrbitNPanControlScript');
-var FlyControlScript = require('../scriptpack/FlyControlScript');
-var WasdControlScript = require('../scriptpack/WasdControlScript');
-var BasicControlScript = require('../scriptpack/BasicControlScript');
 var PromiseUtils = require('../util/PromiseUtils');
 var ObjectUtils = require('../util/ObjectUtils');
 var ArrayUtils = require('../util/ArrayUtils');
@@ -565,7 +560,7 @@ var TYPE_CONTROLS = (function () {
  * Load an external script
  */
 function loadExternalScript(script, scriptElem, url) {
-	return PromiseUtils.createPromise(function (resolve, reject) {
+	return PromiseUtils.createPromise(function (resolve) {
 		var timeoutHandler;
 		var handled = false;
 

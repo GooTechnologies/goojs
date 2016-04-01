@@ -22,7 +22,7 @@ TriggerLeaveAction.external = {
 	}]
 };
 
-TriggerLeaveAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TriggerLeaveAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'leave' ? 'On Trigger Leave' : undefined;
 };
 

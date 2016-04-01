@@ -1,4 +1,3 @@
-var LogicLayer = require('./LogicLayer');
 var LogicNode = require('./LogicNode');
 var LogicNodes = require('./LogicNodes');
 var LogicInterface = require('./LogicInterface');

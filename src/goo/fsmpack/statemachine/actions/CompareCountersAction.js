@@ -47,7 +47,7 @@ var operators = {
 	greater: '>'
 };
 
-CompareCountersAction.getTransitionLabel = function(transitionKey, actionConfig){
+CompareCountersAction.getTransitionLabel = function (transitionKey, actionConfig){
 	if (operators[transitionKey]) {
 		return 'On ' + (actionConfig.options.name1 || 'Counter1') + ' ' + operators[transitionKey] + ' ' + (actionConfig.options.name2 || 'counter2');
 	}

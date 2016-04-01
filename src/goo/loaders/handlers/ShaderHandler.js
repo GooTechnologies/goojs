@@ -1,7 +1,5 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var Material = require('../../renderer/Material');
-var MeshData = require('../../renderer/MeshData');
-var Shader = require('../../renderer/Shader');
 var ShaderBuilder = require('../../renderer/shaders/ShaderBuilder');
 var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');

@@ -1,6 +1,5 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 
-/*jshint eqeqeq: false, -W041 */
 /**
  * Handler for loading project into engine (actually loading mainScene)
  * @private

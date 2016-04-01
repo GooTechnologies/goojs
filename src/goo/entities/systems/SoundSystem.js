@@ -235,7 +235,7 @@ SoundSystem.prototype.resume = function () {
 /**
  * Resumes playing of all sounds that were paused.
  */
-SoundSystem.prototype.play = function() {
+SoundSystem.prototype.play = function () {
 	this.resume();
 	this.passive = false;
 };

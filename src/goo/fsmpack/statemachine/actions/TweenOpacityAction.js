@@ -52,7 +52,7 @@ TweenOpacityAction.external = {
 	}]
 };
 
-TweenOpacityAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenOpacityAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Opacity Complete' : undefined;
 };
 

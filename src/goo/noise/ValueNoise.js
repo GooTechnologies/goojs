@@ -1,4 +1,3 @@
-/*jshint bitwise: false */
 var Noise = require('./Noise');
 
 /**

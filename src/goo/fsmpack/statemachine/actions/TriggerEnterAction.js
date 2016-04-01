@@ -22,7 +22,7 @@ TriggerEnterAction.external = {
 	}]
 };
 
-TriggerEnterAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TriggerEnterAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'enter' ? 'On Trigger Enter' : undefined;
 };
 

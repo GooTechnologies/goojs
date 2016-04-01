@@ -2,7 +2,7 @@
  * Transient class that maintains the current triggers and armed status for a {@link TriggerChannel}.
  * @private
  */
-function TriggerData () {
+function TriggerData() {
 	this._currentTriggers = [];
 	this._currentIndex = -1;
 	this.armed = false;

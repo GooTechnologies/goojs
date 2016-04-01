@@ -1,6 +1,6 @@
 var StringUtils = require('../../../src/goo/util/StringUtils');
 
-describe('StringUtils', function() {
+describe('StringUtils', function () {
 	it('parses URLs', function () {
 		var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
 		var parts = StringUtils.parseURL(url);

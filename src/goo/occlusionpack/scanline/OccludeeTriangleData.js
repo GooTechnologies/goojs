@@ -3,7 +3,7 @@
  * @param parameters
  * @constructor
  */
-function OccludeeTriangleData (parameters) {
+function OccludeeTriangleData(parameters) {
 	var numberOfPositions = parameters.numberOfPositions;
 	var numberOfIndices = parameters.numberOfIndices;
 	/*

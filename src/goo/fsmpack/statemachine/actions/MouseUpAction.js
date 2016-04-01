@@ -36,7 +36,7 @@ var labels = {
 	touchUp: 'On touch end'
 };
 
-MouseUpAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+MouseUpAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

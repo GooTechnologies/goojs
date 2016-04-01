@@ -2,7 +2,7 @@
  * Base class for a state in our animation system
  * @private
  */
-function AbstractState () {
+function AbstractState() {
 	this._globalStartTime = 0;
 	this.onFinished = null;
 }

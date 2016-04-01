@@ -8,7 +8,7 @@ var MathUtils = require('../../math/MathUtils');
  * @param {string} blendType the blendtype between transform keyframes of the channel. Defaults to AbstractAnimationChannel.BLENDTYPES.LINEAR
  * @private
  */
-function AbstractAnimationChannel (channelName, times, blendType) {
+function AbstractAnimationChannel(channelName, times, blendType) {
 	this._blendType = blendType || AbstractAnimationChannel.BLENDTYPES.LINEAR;
 	this._channelName = channelName;
 

@@ -90,7 +90,7 @@ ParticleData.prototype.getWorldPosition = function (store) {
 	var age = component.time - this.emitTime;
 
 	if (component.loop) {
-		age = age % this.loopAfter;
+		age %= this.loopAfter;
 	}
 
 	dirDelta.copy(this.startDirection).scale(age);

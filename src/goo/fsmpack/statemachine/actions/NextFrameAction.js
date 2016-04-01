@@ -25,7 +25,7 @@ var labels = {
 	transition: 'On Next Frame'
 };
 
-NextFrameAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+NextFrameAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

@@ -2,7 +2,7 @@
  *
  * @constructor
  */
-function EdgeData () {
+function EdgeData() {
 	var integerElements = 2;
 	var floatElements = 8;
 	var integerBytes = integerElements * Int16Array.BYTES_PER_ELEMENT;

@@ -4,7 +4,7 @@ var TransformData = require('../../animationpack/clip/TransformData');
  * Describes transform of a joint.
  * @param {JointData} [source] source to copy
  */
-function JointData (source) {
+function JointData(source) {
 	TransformData.call(this, source);
 	this._jointIndex = source ? source._jointIndex : 0;
 }

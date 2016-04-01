@@ -1,2 +1,2 @@
-var ScriptHandler = require('./ScriptHandler');
-var ScriptComponentHandler = require('./ScriptComponentHandler');
+require('./ScriptHandler');
+require('./ScriptComponentHandler');

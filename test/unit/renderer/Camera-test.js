@@ -1,3 +1,9 @@
+var CustomMatchers = require('../../../test/unit/CustomMatchers');
+var Camera = require('../../../src/goo/renderer/Camera');
+var BoundingSphere = require('../../../src/goo/renderer/bounds/BoundingSphere');
+var BoundingBox = require('../../../src/goo/renderer/bounds/BoundingBox');
+var Vector3 = require('../../../src/goo/math/Vector3');
+
 describe('Camera', function () {
 	var camera;
 

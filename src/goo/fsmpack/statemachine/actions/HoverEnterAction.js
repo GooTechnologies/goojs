@@ -13,7 +13,7 @@ HoverEnterAction.prototype.constructor = HoverEnterAction;
 
 HoverEnterAction.types = {
 	fast: 'Bounding (Fast)',
-	slow: 'Per pixel (Slow)',
+	slow: 'Per pixel (Slow)'
 };
 
 HoverEnterAction.external = {
@@ -37,7 +37,7 @@ HoverEnterAction.external = {
 	}]
 };
 
-HoverEnterAction.getTransitionLabel = function(/*transitionKey, actionConfig*/){
+HoverEnterAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Entity Hover Enter';
 };
 

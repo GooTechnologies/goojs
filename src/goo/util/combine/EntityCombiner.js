@@ -201,7 +201,7 @@ EntityCombiner.prototype._calculateBounds = function (entities) {
 	return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 };
 
-EntityCombiner.prototype.cleanup = function (entities) {
+EntityCombiner.prototype.cleanup = function () {
 	for (var i = 0; i < this.createdEntities.length; i++) {
 		var entity = this.createdEntities[i];
 
@@ -213,6 +213,8 @@ EntityCombiner.prototype.cleanup = function (entities) {
 	}
 };
 
+
+// TODO: remove & test, use native Map instead
 function Map() {
 	var keys = [],
 		values = [];

@@ -103,7 +103,7 @@ describe('Selection', function () {
 	describe('filter', function () {
 		it('returns itself when applied to an empty selection', function () {
 			var selection = new Selection();
-			selection.filter(function (element) { return true; });
+			selection.filter(function () { return true; });
 			expect(selection).toEqual(selection);
 			expect(selection).toBe(selection);
 		});
@@ -122,7 +122,7 @@ describe('Selection', function () {
 	describe('map', function () {
 		it('returns itself when applied to an empty selection', function () {
 			var selection = new Selection();
-			selection.map(function (element) { return 1; });
+			selection.map(function () { return 1; });
 			expect(selection).toEqual(selection);
 			expect(selection).toBe(selection);
 		});
@@ -141,7 +141,7 @@ describe('Selection', function () {
 	describe('reduce', function () {
 		it('returns itself when applied to an empty selection', function () {
 			var selection = new Selection();
-			selection.reduce(function (element) { return 1; });
+			selection.reduce(function () { return 1; });
 			expect(selection).toEqual(selection);
 			expect(selection).toBe(selection);
 		});

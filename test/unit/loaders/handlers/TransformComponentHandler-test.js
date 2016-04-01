@@ -56,7 +56,7 @@ describe('TransformComponentHandler', function () {
 		newConfig.id = config.id;
 
 		loader.preload(Configs.get());
-		loader.load(config.id).then(function (entity) {
+		loader.load(config.id).then(function (/*entity*/) {
 			//component = entity.transformComponent;
 
 			return loader.update(config.id, newConfig);

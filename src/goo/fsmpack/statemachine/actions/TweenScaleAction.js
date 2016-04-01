@@ -60,7 +60,7 @@ TweenScaleAction.external = {
 	}]
 };
 
-TweenScaleAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+TweenScaleAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Scale Complete' : undefined;
 };
 

@@ -6,7 +6,7 @@
  * @param {boolean} [settings.enabled=true]
  * @example-link http://code.gooengine.com/latest/visual-test/goo/particles/ParticleInfluence-vtest.html Working example
  */
-function ParticleInfluence (settings) {
+function ParticleInfluence(settings) {
 	settings = settings || {};
 
 	/**

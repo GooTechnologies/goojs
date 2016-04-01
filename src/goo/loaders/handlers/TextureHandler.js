@@ -3,16 +3,13 @@ var Texture = require('../../renderer/Texture');
 var DdsLoader = require('../../loaders/dds/DdsLoader');
 var CrunchLoader = require('../../loaders/crunch/CrunchLoader');
 var TgaLoader = require('../../loaders/tga/TgaLoader');
-var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
-var RendererUtils = require('../../renderer/RendererUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 var CanvasUtils = require('../../util/CanvasUtils');
 var StringUtils = require('../../util/StringUtils');
 var SystemBus = require('../../entities/SystemBus');
 var MathUtils = require('../../math/MathUtils');
 
-/*jshint eqeqeq: false, -W041 */
 /**
  * Handler for loading materials into engine
  * @extends ConfigHandler
@@ -129,7 +126,7 @@ TextureHandler.prototype._loadWebSupportedImage = function (texture, config, opt
 	});
 };
 
-TextureHandler.prototype._loadSpecialImage = function (texture, config, type, options) {
+TextureHandler.prototype._loadSpecialImage = function (texture, config, type/*, options*/) {
 	// Special (dds, tga, crn)
 	var Loader = TextureHandler.loaders[type];
 	var imageRef = config.imageRef;

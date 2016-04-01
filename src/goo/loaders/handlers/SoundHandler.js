@@ -1,7 +1,6 @@
 var ConfigHandler = require('../../loaders/handlers/ConfigHandler');
 var AudioContext = require('../../sound/AudioContext');
 var Sound = require('../../sound/Sound');
-var RSVP = require('../../util/rsvp');
 var PromiseUtils = require('../../util/PromiseUtils');
 var ObjectUtils = require('../../util/ObjectUtils');
 
@@ -103,9 +102,8 @@ SoundHandler.prototype._update = function (ref, config, options) {
 					sound.setAudioBuffer(that._audioCache[ref]);
 					return sound;
 				} else {
-					/*jshint -W083 */
 					return that.loadObject(ref).then(function (buffer) {
-						return PromiseUtils.createPromise(function (resolve, reject) {
+						return PromiseUtils.createPromise(function (resolve) {
 							AudioContext.getContext().decodeAudioData(buffer, function (audioBuffer) {
 								resolve(audioBuffer);
 							}, function (/*err*/) {

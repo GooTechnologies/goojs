@@ -1,5 +1,3 @@
-/*jshint bitwise: false */
-
 /**
  * Provides string manipulation methods
  */
@@ -131,7 +129,6 @@ StringUtils.toAscii = function (input) {
 	return input.replace(/([^\x00-\x7F])/g, 'x');
 };
 
-/*jshint bitwise: false */
 /**
 Js implementation of Java's hashcode (sort of). Somewhat useful for creating
 unique ideas that contain [A-Za-z0-9-_]
@@ -146,7 +143,7 @@ StringUtils.hashCode = function (str) {
 	for (var i = 0; i < str.length; i++) {
 		var character = str.charCodeAt(i);
 		hash = ((hash << 5) - hash) + character;
-		hash = hash & hash; // Convert to 32bit integer
+		hash &= hash; // Convert to 32bit integer
 	}
 
 	return btoa(hash).replace('/', '_').replace('+', '-');

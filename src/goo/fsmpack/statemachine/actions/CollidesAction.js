@@ -36,7 +36,7 @@ var labels = {
 	notCollides: 'On bounds Separate'
 };
 
-CollidesAction.getTransitionLabel = function(transitionKey /*, actionConfig*/){
+CollidesAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 

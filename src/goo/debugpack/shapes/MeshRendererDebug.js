@@ -10,10 +10,10 @@ MeshRendererDebug.prototype.getMesh = function () {
 
 function buildBox(dx, dy, dz) {
 	var verts = [
-		 dx,  dy,  dz,
-		 dx,  dy, -dz,
-		 dx, -dy,  dz,
-		 dx, -dy, -dz,
+		dx,  dy,  dz,
+		dx,  dy, -dz,
+		dx, -dy,  dz,
+		dx, -dy, -dz,
 		-dx,  dy,  dz,
 		-dx,  dy, -dz,
 		-dx, -dy,  dz,

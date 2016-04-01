@@ -1,30 +1,30 @@
 var ConfigHandler = require('./handlers/ConfigHandler');
-var ComponentHandler = require('./handlers/ComponentHandler');
 var Ajax = require('../util/Ajax');
 var RSVP = require('../util/rsvp');
 var StringUtils = require('../util/StringUtils');
 var PromiseUtils = require('../util/PromiseUtils');
 var ArrayUtils = require('../util/ArrayUtils');
 var ShapeCreatorMemoized = require('../util/ShapeCreatorMemoized');
-var CameraComponentHandler = require('./handlers/CameraComponentHandler');
-var EntityHandler = require('./handlers/EntityHandler');
-var LightComponentHandler = require('./handlers/LightComponentHandler');
-var MaterialHandler = require('./handlers/MaterialHandler');
-var MeshDataComponentHandler = require('./handlers/MeshDataComponentHandler');
-var MeshDataHandler = require('./handlers/MeshDataHandler');
-var MeshRendererComponentHandler = require('./handlers/MeshRendererComponentHandler');
-var SceneHandler = require('./handlers/SceneHandler');
-var ShaderHandler = require('./handlers/ShaderHandler');
-var TextureHandler = require('./handlers/TextureHandler');
-var TransformComponentHandler = require('./handlers/TransformComponentHandler');
-var ProjectHandler = require('./handlers/ProjectHandler');
-var SoundComponentHandler = require('./handlers/SoundComponentHandler');
-var SoundHandler = require('./handlers/SoundHandler');
-var EnvironmentHandler = require('./handlers/EnvironmentHandler');
-var SkyboxHandler = require('./handlers/SkyboxHandler');
-var HtmlComponentHandler = require('./handlers/HtmlComponentHandler');
 
-/*jshint eqeqeq: false, -W041, -W099 */
+// Todo: should these really be included here?
+require('./handlers/ComponentHandler');
+require('./handlers/CameraComponentHandler');
+require('./handlers/EntityHandler');
+require('./handlers/LightComponentHandler');
+require('./handlers/MaterialHandler');
+require('./handlers/MeshDataComponentHandler');
+require('./handlers/MeshDataHandler');
+require('./handlers/MeshRendererComponentHandler');
+require('./handlers/SceneHandler');
+require('./handlers/ShaderHandler');
+require('./handlers/TextureHandler');
+require('./handlers/TransformComponentHandler');
+require('./handlers/ProjectHandler');
+require('./handlers/SoundComponentHandler');
+require('./handlers/SoundHandler');
+require('./handlers/EnvironmentHandler');
+require('./handlers/SkyboxHandler');
+require('./handlers/HtmlComponentHandler');
 
 /**
  * Class to load objects into the engine, or to update objects based on the data model.
@@ -103,7 +103,7 @@ DynamicLoader.prototype.clear = function () {
  *
  * @param {string} ref Ref of object to load.
  * @param {Object} options
- * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
+ * @param {function (handled, total)} [options.progressCallback] Function called while loading the world.
  * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
  * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
  * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
@@ -309,7 +309,7 @@ var JSON_HASH_LENGTH = 32;
  * @returns {boolean}
  * @private
  */
-var isValidId = function(id) {
+var isValidId = function (id) {
 	if (typeof id !== 'string') {
 		return false;
 	}

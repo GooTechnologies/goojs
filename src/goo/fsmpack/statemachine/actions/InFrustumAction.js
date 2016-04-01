@@ -48,7 +48,7 @@ var labels = {
 	outside: 'On Outside Frustum'
 };
 
-InFrustumAction.getTransitionLabel = function(transitionKey/*, actionConfig*/){
+InFrustumAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 

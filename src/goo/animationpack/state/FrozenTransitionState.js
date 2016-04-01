@@ -4,7 +4,7 @@ var AbstractTransitionState = require('../../animationpack/state/AbstractTransit
  * A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target
  *        state moves forward in time during the blend as normal.
  */
-function FrozenTransitionState () {
+function FrozenTransitionState() {
 	AbstractTransitionState.call(this);
 }
 

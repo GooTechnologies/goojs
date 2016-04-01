@@ -32,7 +32,7 @@ var labels = {
 	mousedown: 'Mouse Button Pressed'
 };
 
-MousePressedAction.getTransitionLabel = function(transitionKey, actionConfig){
+MousePressedAction.getTransitionLabel = function (transitionKey, actionConfig){
 	if (labels[transitionKey]) {
 		return 'On ' + actionConfig.options.button + ' ' + labels[transitionKey];
 	}

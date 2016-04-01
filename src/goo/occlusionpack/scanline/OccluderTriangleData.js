@@ -3,7 +3,7 @@
  * @param parameters
  * @constructor
  */
-function OccluderTriangleData (parameters) {
+function OccluderTriangleData(parameters) {
 	var vertCount = parameters.vertCount;
 	var indexCount = parameters.indexCount;
 

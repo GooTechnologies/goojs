@@ -19,7 +19,7 @@ TaskScheduler.maxTimePerFrame = 50;
 
 // Engine loop must be disabled while running this
 TaskScheduler.each = function (queue) {
-	return PromiseUtils.createPromise(function (resolve, reject) {
+	return PromiseUtils.createPromise(function (resolve) {
 		var i = 0;
 
 		function process() {

@@ -1,5 +1,3 @@
-/*jshint bitwise: false */
-
 /**
  * @private
  */
@@ -159,13 +157,12 @@ TgaLoader.prototype.checkHeader = function () {
  */
 TgaLoader.prototype.parse = function (data) {
 	var _header,
-		numAlphaBits,
 		pixel_data,
 		pixel_size,
 		pixel_total;
 
 	_header = this.header;
-	numAlphaBits = _header.flags & 0xf;
+	// numAlphaBits = _header.flags & 0xf;
 	pixel_size = _header.pixel_size >> 3;
 	pixel_total = _header.width * _header.height * pixel_size;
 

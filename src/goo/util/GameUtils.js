@@ -2,7 +2,7 @@
  * Shims for standard gaming features
  * Only used to define the class. Should never be instantiated.
  */
-function GameUtils () {}
+function GameUtils() {}
 
 /** Supported features. All true by default.
  * @type {Object}
@@ -238,7 +238,7 @@ GameUtils.initFullscreenShims = function (global) {
 		});
 	}
 
-	function fullscreenchange () {
+	function fullscreenchange() {
 		var newEvent = document.createEvent('CustomEvent');
 		newEvent.initCustomEvent('fullscreenchange', true, false, null);
 		document.dispatchEvent(newEvent);
@@ -246,7 +246,7 @@ GameUtils.initFullscreenShims = function (global) {
 	document.addEventListener('webkitfullscreenchange', fullscreenchange, false);
 	document.addEventListener('mozfullscreenchange', fullscreenchange, false);
 
-	function fullscreenerror () {
+	function fullscreenerror() {
 		var newEvent = document.createEvent('CustomEvent');
 		newEvent.initCustomEvent('fullscreenerror', true, false, null);
 		document.dispatchEvent(newEvent);
@@ -332,7 +332,7 @@ GameUtils.initPointerLockShims = function (global) {
 		navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
 	}
 
-	function pointerlockchange () {
+	function pointerlockchange() {
 		var newEvent = document.createEvent('CustomEvent');
 		newEvent.initCustomEvent('pointerlockchange', true, false, null);
 		document.dispatchEvent(newEvent);
@@ -342,7 +342,7 @@ GameUtils.initPointerLockShims = function (global) {
 	document.addEventListener('mozpointerlockchange', pointerlockchange, false);
 	document.addEventListener('mozpointerlocklost', pointerlockchange, false);
 
-	function pointerlockerror () {
+	function pointerlockerror() {
 		var newEvent = document.createEvent('CustomEvent');
 		newEvent.initCustomEvent('pointerlockerror', true, false, null);
 		document.dispatchEvent(newEvent);

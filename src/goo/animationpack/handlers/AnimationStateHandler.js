@@ -107,7 +107,6 @@ AnimationStateHandler.prototype._parseClipSource = function (cfg, clipSource, op
 			} else {
 				return PromiseUtils.resolve(clipSource);
 			}
-			break;
 		case 'Lerp':
 			// TODO reuse object like the other parsers
 			var promises = [

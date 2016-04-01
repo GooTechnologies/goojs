@@ -1,3 +1,10 @@
+var SimplePartitioner = require('../../../src/goo/renderer/SimplePartitioner');
+var Camera = require('../../../src/goo/renderer/Camera');
+var BoundingSphere = require('../../../src/goo/renderer/bounds/BoundingSphere');
+var Vector3 = require('../../../src/goo/math/Vector3');
+var Entity = require('../../../src/goo/entities/Entity');
+var MeshRendererComponent = require('../../../src/goo/entities/components/MeshRendererComponent');
+
 describe('SimplePartitioner', function () {
 	var partitioner, camera;
 

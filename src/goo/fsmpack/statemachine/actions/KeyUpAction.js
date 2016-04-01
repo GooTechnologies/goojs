@@ -28,7 +28,7 @@ KeyUpAction.external = {
 	}]
 };
 
-KeyUpAction.getTransitionLabel = function(transitionKey, actionConfig){
+KeyUpAction.getTransitionLabel = function (transitionKey, actionConfig){
 	return 'On Key ' + (actionConfig.options.key || '') + ' up';
 };
 

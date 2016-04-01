@@ -23,7 +23,6 @@ Debugger.prototype._setUpREPL = function () {
 
 	// repl keypresses
 	document.getElementById('replintex').addEventListener('keyup', function (event) {
-		/* jshint evil: true */
 		//event.preventDefault();
 		event.stopPropagation();
 		var replinElemHandle = document.getElementById('replintex');

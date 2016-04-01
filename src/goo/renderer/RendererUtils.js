@@ -1,4 +1,3 @@
-/* jshint bitwise: false */
 var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('../math/MathUtils');
 var Capabilities = require('../renderer/Capabilities');

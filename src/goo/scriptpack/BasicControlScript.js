@@ -8,7 +8,7 @@ var Matrix3 = require('../math/Matrix3');
  *
  * @param {Element} domElement Element to add mouse/key listeners to
  */
-function BasicControlScript (properties) {
+function BasicControlScript(properties) {
 	properties = properties || {};
 	this.domElement = properties.domElement === undefined ? null : properties.domElement.domElement || properties.domElement;
 
