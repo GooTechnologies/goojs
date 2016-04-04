@@ -17,7 +17,9 @@ function TransformSystem() {
 TransformSystem.prototype = Object.create(System.prototype);
 TransformSystem.prototype.constructor = TransformSystem;
 
-TransformSystem.prototype.process = function (entities) {
+TransformSystem.prototype.onPreRender = function () {
+	var entities = this._activeEntities;
+
 	numUpdates = 0;
 	var i, transformComponent;
 	var l = entities.length;

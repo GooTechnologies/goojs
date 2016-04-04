@@ -43,7 +43,7 @@ CameraSystem.prototype.deleted = function () {
 	//this.findMainCamera();
 };
 
-CameraSystem.prototype.process = function () {
+CameraSystem.prototype.onPreRender = function () {
 	for (var i = 0; i < this._activeEntities.length; i++) {
 		var entity = this._activeEntities[i];
 		var transformComponent = entity.transformComponent;

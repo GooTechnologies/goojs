@@ -362,6 +362,8 @@ GooRunner.prototype._updateFrame = function (time) {
 		this.renderer.setRenderTarget();
 		//this.renderer.clear();
 
+		this.world.onPreRender();
+
 		// run the prerender callbacks
 		for (var i = 0; i < this.callbacksPreRender.length; i++) {
 			this.callbacksPreRender[i](this.world.tpf);
@@ -397,6 +399,8 @@ GooRunner.prototype._updateFrame = function (time) {
 
 			this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
 		}
+
+		this.world.onPostRender();
 	}
 
 	// run the post render callbacks
