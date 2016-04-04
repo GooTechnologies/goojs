@@ -136,6 +136,10 @@ System.prototype._process = function (tpf) {
 	this.process(this._activeEntities, tpf);
 };
 
+System.prototype._lateProcess = function (tpf) {
+	this.lateProcess(this._activeEntities, tpf);
+};
+
 System.prototype.clear = function () {
 	this._activeEntities = [];
 };

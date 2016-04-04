@@ -93,8 +93,6 @@ ScriptComponent.prototype.setup = function (entity) {
  * Runs the update function on every script attached to this entity.
  * @private
  * @param entity {Entity}
- * @param tpf {number}
- * @param context
  */
 ScriptComponent.prototype.run = function (entity) {
 	for (var i = 0; i < this.scripts.length; i++) {
@@ -110,6 +108,23 @@ ScriptComponent.prototype.run = function (entity) {
 				script.update(script.parameters, script.context, gooClasses);
 			} catch (e) {
 				this._handleError(script, e, 'update');
+			}
+		}
+	}
+};
+
+/**
+ * Runs the lateUpdate function on every script attached to this entity.
+ * @private
+ */
+ScriptComponent.prototype.lateRun = function () {
+	for (var i = 0; i < this.scripts.length; i++) {
+		var script = this.scripts[i];
+		if (script.lateUpdate && (script.enabled === undefined || script.enabled)) {
+			try {
+				script.lateUpdate(script.parameters, script.context, gooClasses);
+			} catch (e) {
+				this._handleError(script, e, 'lateUpdate');
 			}
 		}
 	}

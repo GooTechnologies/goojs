@@ -71,6 +71,11 @@ ScriptSystem.prototype.process = function (entities, tpf) {
 		scriptComponent.run(entities[i], tpf);
 	}
 
+	for (var i = 0; i < entities.length; i++) {
+		var scriptComponent = entities[i].scriptComponent;
+		scriptComponent.lateRun(entities[i], tpf);
+	}
+
 	// update play time
 	if (this._playing) {
 		this.context.playTime += tpf;

@@ -33,6 +33,7 @@ ScriptHandler.prototype._create = function () {
 		externals: {},
 		setup: null,
 		update: null,
+		lateUpdate: null,
 		run: null,
 		cleanup: null,
 		parameters: {},
@@ -112,6 +113,9 @@ ScriptHandler.prototype._updateFromCustom = function (script, config) {
 		' if (typeof update !== "undefined") {',
 		'  obj.update = update;',
 		' }',
+		' if (typeof lateUpdate !== "undefined") {',
+		'  obj.lateUpdate = lateUpdate;',
+		' }',
 		' if (typeof enter !== "undefined") {',
 		'  obj.enter = enter;',
 		' }',
@@ -142,6 +146,7 @@ ScriptHandler.prototype._updateFromCustom = function (script, config) {
 			ScriptHandler.validateParameters(newScript, script);
 			script.setup = newScript.setup;
 			script.update = newScript.update;
+			script.lateUpdate = newScript.lateUpdate;
 			script.cleanup = newScript.cleanup;
 			script.enter = newScript.enter;
 			script.exit = newScript.exit;
@@ -282,6 +287,7 @@ ScriptHandler.prototype._updateFromClass = function (script, config) {
 		script.externals = newScript.externals;
 		script.setup = newScript.setup;
 		script.update = newScript.update;
+		script.lateUpdate = newScript.lateUpdate;
 		script.run = newScript.run;
 		script.cleanup = newScript.cleanup;
 		script.enter = newScript.enter;
@@ -751,6 +757,7 @@ function setError(script, error) {
 
 		script.setup = null;
 		script.update = null;
+		script.lateUpdate = null;
 		script.run = null;
 		script.cleanup = null;
 		script.enter = null;
