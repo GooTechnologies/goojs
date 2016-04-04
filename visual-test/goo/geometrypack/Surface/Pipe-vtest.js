@@ -1,22 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/geometrypack/PolyLine',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	PolyLine,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Extruding a path along another path');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var path = PolyLine.fromCubicSpline([
 		-1,  0,  0.0,
@@ -76,4 +64,3 @@ require([
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 
 	V.process();
-});

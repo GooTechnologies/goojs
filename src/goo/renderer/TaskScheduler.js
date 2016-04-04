@@ -1,52 +1,45 @@
-define([
-	'goo/util/PromiseUtils'
-], function (
-	PromiseUtils
-	) {
-	'use strict';
+var PromiseUtils = require('../util/PromiseUtils');
 
-	(function performanceShim() {
-		window.performance = window.performance || {};
-		performance.now = (function () {
-			return performance.now ||
-				performance.mozNow ||
-				performance.msNow ||
-				performance.oNow ||
-				performance.webkitNow ||
-				function () {
-					return Date.now();
-				};
-		})();
-	})();
+var performance = typeof(window) !== 'undefined' ? window.performance : {};
 
-	function TaskScheduler() {}
+performance.now = (
+	performance.now ||
+	performance.mozNow ||
+	performance.msNow ||
+	performance.oNow ||
+	performance.webkitNow ||
+	function () {
+		return Date.now();
+	}
+);
 
-	TaskScheduler.maxTimePerFrame = 50;
+function TaskScheduler() {}
 
-	// Engine loop must be disabled while running this
-	TaskScheduler.each = function (queue) {
-		return PromiseUtils.createPromise(function (resolve, reject) {
-			var i = 0;
+TaskScheduler.maxTimePerFrame = 50;
 
-			function process() {
-				var startTime = performance.now();
-				while (i < queue.length && performance.now() - startTime < TaskScheduler.maxTimePerFrame) {
-					queue[i]();
-					i++;
-				}
+// Engine loop must be disabled while running this
+TaskScheduler.each = function (queue) {
+	return PromiseUtils.createPromise(function (resolve) {
+		var i = 0;
 
-				if (i < queue.length) {
-					// REVIEW: 4ms is 'lagom'? Should this number be hard-coded?
-					//! AT: 4 ms is the minimum amount as specified by the HTML standard
-					setTimeout(process, 4);
-				} else {
-					resolve();
-				}
+		function process() {
+			var startTime = performance.now();
+			while (i < queue.length && performance.now() - startTime < TaskScheduler.maxTimePerFrame) {
+				queue[i]();
+				i++;
 			}
 
-			process();
-		});
-	};
+			if (i < queue.length) {
+				// REVIEW: 4ms is 'lagom'? Should this number be hard-coded?
+				//! AT: 4 ms is the minimum amount as specified by the HTML standard
+				setTimeout(process, 4);
+			} else {
+				resolve();
+			}
+		}
 
-	return TaskScheduler;
-});
+		process();
+	});
+};
+
+module.exports = TaskScheduler;

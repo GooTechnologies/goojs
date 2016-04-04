@@ -1,30 +1,16 @@
-define([
-	'goo/renderer/Shader',
-	'goo/renderer/ShaderCall',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/renderer/Camera',
-	'goo/renderer/RendererRecord',
-	'goo/renderer/Texture',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/light/DirectionalLight',
-	'goo/util/ObjectUtils',
-	'goo/shapes/Box'
-], function (
-	Shader,
-	ShaderCall,
-	Material,
-	MeshData,
-	Camera,
-	RendererRecord,
-	Texture,
-	ShaderLib,
-	DirectionalLight,
-	ObjectUtils,
-	Box
-) {
-	'use strict';
+var DirectionalLight = require('../../../src/goo/renderer/light/DirectionalLight');
+var Texture = require('../../../src/goo/renderer/Texture');
+var Camera = require('../../../src/goo/renderer/Camera');
+var Box = require('../../../src/goo/shapes/Box');
+var Material = require('../../../src/goo/renderer/Material');
+var MeshData = require('../../../src/goo/renderer/MeshData');
+var Shader = require('../../../src/goo/renderer/Shader');
+var ShaderLib = require('../../../src/goo/renderer/shaders/ShaderLib');
+var ShaderCall = require('../../../src/goo/renderer/ShaderCall');
+var RendererRecord = require('../../../src/goo/renderer/RendererRecord');
+var ObjectUtils = require('../../../src/goo/util/ObjectUtils');
 
+(function () {
 	describe('Shader', function () {
 		describe('DefineKey', function () {
 			var shader;
@@ -185,7 +171,7 @@ define([
 			};
 
 			it('has applied the correct mappings to simple shader (simple)', function () {
-				var shaderDefinition = miniShaderDefinition;
+				var shaderDefinition = miniShaderDefinition();
 				var shaderInfo = createShaderInfo(shaderDefinition);
 				updateShader(shaderInfo);
 
@@ -233,6 +219,7 @@ define([
 			it('has applied the correct mappings to complex shader (uber)', function () {
 				var shaderDefinition = ShaderLib.uber;
 				var shaderInfo = createShaderInfo(shaderDefinition);
+
 
 				spyOn(shaderInfo.renderer.context, 'uniform1i').and.callThrough();
 				spyOn(shaderInfo.renderer.context, 'uniform1f').and.callThrough();
@@ -314,77 +301,78 @@ define([
 		});
 	});
 
-	var createContext = function () {
-		/* jshint unused:false */
+	function createContext() {
 		return {
-			createShader: function (type) { return {}; },
-			shaderSource: function (shader, source) {},
-			compileShader: function (shader) {},
-			getShaderParameter: function (shader, parameter) { return true; },
-			getProgramParameter: function (shader, parameter) { return true; },
-			getShaderInfoLog: function (shader) { return ''; },
-			getProgramInfoLog: function (shader) { return ''; },
-			createProgram: function (shader) { return {}; },
+			createShader: function (/*type*/) { return {}; },
+			shaderSource: function (/*shader, source*/) {},
+			compileShader: function (/*shader*/) {},
+			getShaderParameter: function (/*shader, parameter*/) { return true; },
+			getProgramParameter: function (/*shader, parameter*/) { return true; },
+			getShaderInfoLog: function (/*shader*/) { return ''; },
+			getProgramInfoLog: function (/*shader*/) { return ''; },
+			createProgram: function (/*shader*/) { return {}; },
 			getError: function () { return 0; },
-			attachShader: function (program, source) {},
-			linkProgram: function (program) {},
-			useProgram: function (program) {},
+			attachShader: function (/*program, source*/) {},
+			linkProgram: function (/*program*/) {},
+			useProgram: function (/*program*/) {},
 
-			getAttribLocation: function (program, key) { return {}; },
-			getUniformLocation: function (program, key) { return {}; },
+			getAttribLocation: function (/*program, key*/) { return {}; },
+			getUniformLocation: function (/*program, key*/) { return {}; },
 
-			uniform1f: function (location, v0) {},
-			uniform1i: function (location, v0) {},
-			uniform2f: function (location, v0, v1) {},
-			uniform2i: function (location, v0, v1) {},
-			uniform3f: function (location, v0, v1, v2) {},
-			uniform3i: function (location, v0, v1, v2) {},
-			uniform4f: function (location, v0, v1, v2, v3) {},
-			uniform4i: function (location, v0, v1, v2, v3) {},
+			uniform1f: function (/*location, v0*/) {},
+			uniform1i: function (/*location, v0*/) {},
+			uniform2f: function (/*location, v0, v1*/) {},
+			uniform2i: function (/*location, v0, v1*/) {},
+			uniform3f: function (/*location, v0, v1, v2*/) {},
+			uniform3i: function (/*location, v0, v1, v2*/) {},
+			uniform4f: function (/*location, v0, v1, v2, v3*/) {},
+			uniform4i: function (/*location, v0, v1, v2, v3*/) {},
 
-			uniform1iv: function (location, values) {},
-			uniform2iv: function (location, values) {},
-			uniform3iv: function (location, values) {},
-			uniform4iv: function (location, values) {},
+			uniform1iv: function (/*location, values*/) {},
+			uniform2iv: function (/*location, values*/) {},
+			uniform3iv: function (/*location, values*/) {},
+			uniform4iv: function (/*location, values*/) {},
 
-			uniform1fv: function (location, values) {},
-			uniform2fv: function (location, values) {},
-			uniform3fv: function (location, values) {},
-			uniform4fv: function (location, values) {},
+			uniform1fv: function (/*location, values*/) {},
+			uniform2fv: function (/*location, values*/) {},
+			uniform3fv: function (/*location, values*/) {},
+			uniform4fv: function (/*location, values*/) {},
 
-			uniformMatrix2fv: function (location, transpose, data) {},
-			uniformMatrix3fv: function (location, transpose, data) {},
-			uniformMatrix4fv: function (location, transpose, data) {},
+			uniformMatrix2fv: function (/*location, transpose, data*/) {},
+			uniformMatrix3fv: function (/*location, transpose, data*/) {},
+			uniformMatrix4fv: function (/*location, transpose, data*/) {}
 		};
-	};
+	}
 
-	var miniShaderDefinition = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
-		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX
-		},
-		vshader : [
-		'attribute vec3 vertexPosition;',
+	function miniShaderDefinition(){
+		return {
+			attributes : {
+				vertexPosition : MeshData.POSITION
+			},
+			uniforms : {
+				viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX
+			},
+			vshader : [
+			'attribute vec3 vertexPosition;',
 
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
 
-		'uniform float doesExist;',
-		'varying float test;',
+			'uniform float doesExist;',
+			'varying float test;',
 
-		'void main(void) {',
-			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-		'}'
-		].join('\n'),
-		fshader : [
-		'varying float test;',
-		'void main(void)',
-		'{',
-			'gl_FragColor = vec4(test);',
-		'}'
-		].join('\n')
-	};
-});
+			'void main(void) {',
+				'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'}'
+			].join('\n'),
+			fshader : [
+			'varying float test;',
+			'void main(void)',
+			'{',
+				'gl_FragColor = vec4(test);',
+			'}'
+			].join('\n')
+		};
+	}
+})();

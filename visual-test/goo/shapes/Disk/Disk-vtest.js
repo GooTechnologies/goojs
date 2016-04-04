@@ -1,22 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Disk',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Disk,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('3 disks of different height (positive, zero and negative)');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var material = new Material(ShaderLib.simpleLit);
 
@@ -40,4 +28,3 @@ require([
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 
 	V.process();
-});

@@ -1,20 +1,10 @@
-require([
-	'lib/V',
 
-	'goo/loaders/DynamicLoader',
-	'goo/geometrypack/text/TextComponentHandler'
-], function (
-	V,
-
-	DynamicLoader,
-	TextComponentHandler
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Text component handler');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// The loader takes care of loading the data
 	var loader = new DynamicLoader({
@@ -39,9 +29,8 @@ require([
 		return loader.load(projectId);
 	}).then(function () {
 		// This code will be called when the project has finished loading.
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		gooRunner.renderer.domElement.id = 'goo';
+		document.body.appendChild(gooRunner.renderer.domElement);
 	}).then(null, function (e) {
-
+		throw e;
 	});
-});

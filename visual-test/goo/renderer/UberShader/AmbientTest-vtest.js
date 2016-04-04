@@ -1,30 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/TextureCreator',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Quad,
-	Sphere,
-	Vector3,
-	MeshData,
-	TextureCreator,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Three spheres with materialAmbient set on ubershader. The middle sphere has its color continously updated.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(8, Math.PI / 2, 0));
 	V.addLights();
@@ -45,9 +25,8 @@ require([
 	material2.uniforms.materialAmbient = [0.0, 1.0, 0.0, 1.0];
 	material3.uniforms.materialAmbient = [0.0, 0.0, 1.0, 1.0];
 
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		material2.uniforms.materialAmbient[1] = Math.sin(world.time * 5) * 0.5 + 0.5;
 	});
 
 	V.process();
-});

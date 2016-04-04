@@ -39,6 +39,7 @@ function ScreenShooter(options) {
 ScreenShooter.prototype = new EventEmitter();
 
 ScreenShooter.prototype._storeImage = function (data, url, pngPath, callback) {
+
 	var self = this;
 	var driver = this.driver;
 	data = data.replace(/^data:image\/\w+;base64,/, '');

@@ -14,8 +14,7 @@
         "Map": true,
     },
     "rules": {
-        semi: [2, "always"],
-        "quotes": [2, "single", "avoid-escape"],
+        "quotes": "off",
         "no-underscore-dangle": 0,
         "no-shadow": 0,
         "no-loop-func": 0,
@@ -23,20 +22,21 @@
         "no-use-before-define": 0,
         "new-cap": 0,
         "no-constant-condition": 0,
+        "no-cond-assign": "off",
         "no-redeclare": 0,
-        "complexity": [2, 10],
         "no-throw-literal": 2,
-        "indent": [2, "tab", { "SwitchCase": 2 }],
-        "consistent-this": [2, "that"],
+        "indent": "off",
+        "consistent-this": "off",
         "consistent-return": 0,
-        "no-lonely-if": 2,
+        "no-lonely-if": "off",
         "operator-assignment": [2, "always"],
-        "padded-blocks": [2, "never"],
-        "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }]
+        "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }],
+        "no-console": "off"
     },
     "env": {
         "browser": true,
         "node": true,
-        "amd": true
+        "amd": true,
+        "es6": true
     }
 }

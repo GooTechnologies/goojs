@@ -1,61 +1,7 @@
-require([
-    'goo/entities/GooRunner',
-    'goo/entities/World',
-    'goo/renderer/Material',
-    'goo/renderer/shaders/ShaderLib',
-    'goo/renderer/Camera',
-    'goo/entities/components/CameraComponent',
-    'goo/scripts/OrbitCamControlScript',
-    'goo/entities/components/ScriptComponent',
-    'goo/renderer/MeshData',
-    'goo/entities/components/MeshRendererComponent',
-    'goo/math/Vector3',
-    'goo/renderer/light/PointLight',
-    'goo/renderer/light/DirectionalLight',
-    'goo/renderer/light/SpotLight',
-    'goo/entities/components/LightComponent',
-    'goo/addons/terrainpack/TerrainSurface',
-    'goo/shapes/Sphere',
-    'goo/scriptpack/WorldFittedTerrainScript',
-	'goo/entities/components/MovementComponent',
-	'goo/scriptpack/GroundBoundMovementScript',
-    'goo/renderer/TextureCreator',
-    'goo/util/CanvasUtils',
-    'goo/scripts/Scripts',
-    'goo/scriptpack/ScriptRegister'
-], function (
-    GooRunner,
-    World,
-    Material,
-    ShaderLib,
-    Camera,
-    CameraComponent,
-    OrbitCamControlScript,
-    ScriptComponent,
-    MeshData,
-    MeshRendererComponent,
-    Vector3,
-    PointLight,
-    DirectionalLight,
-    SpotLight,
-    LightComponent,
-    TerrainSurface,
-    Sphere,
-    WorldFittedTerrainScript,
-	MovementComponent,
-	GroundBoundMovementScript,
-    TextureCreator,
-    CanvasUtils,
-    Scripts,
-    ScriptRegister
-    ) {
-    'use strict';
+    goo.V.attachToGlobal();
 
-    //! schteppe: Outdated. Delete test?
-
-    var goo;
+    var gooRunner;
     var worldFittedTerrainScript = new WorldFittedTerrainScript();
-
 
     function addSpheres(goo, worldFittedTerrainScript, dims) {
         var meshData = new Sphere(32, 32);
@@ -69,7 +15,7 @@ require([
                 Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
                 Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
             ];
-            var sphereEntity = goo.world.createEntity(meshData, material);
+            var sphereEntity = gooRunner.world.createEntity(meshData, material);
 			sphereEntity.transformComponent.transform.translation.setDirect(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setDirect(1, 5, 2);
 
@@ -97,7 +43,7 @@ require([
 
             var light1 = new PointLight();
             light1.color.setDirect(0.1, 0.1,0.1);
-            var light1Entity = goo.world.createEntity('light');
+            var light1Entity = gooRunner.world.createEntity('light');
             light1Entity.setComponent(new LightComponent(light1));
             light1Entity.transformComponent.transform.translation.setDirect(
                 dims.minX*0.5+dims.maxX*0.50,
@@ -120,7 +66,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = goo.world.createEntity(meshData, material);
+			var sphereEntity = gooRunner.world.createEntity(meshData, material);
 
 			var px = dims.maxX * 0.5 + dims.minX * 0.5;
 			var pz = dims.minZ + (i / nSpheres * (dims.maxZ - dims.minZ));
@@ -194,7 +140,7 @@ require([
 
             var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
 
-            buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, 'terrain_mesh_1', goo.world);
+            buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, 'terrain_mesh_1', gooRunner.world);
 
             addSpheres(goo, worldFittedTerrainScript, dim1);
 			addNormalPointers(goo, worldFittedTerrainScript, dim1);
@@ -208,7 +154,7 @@ require([
             };
 
             var terrainData2 = worldFittedTerrainScript.addHeightData(matrix, dim2);
-            buildSurfaceMesh(terrainData2.script.matrixData, terrainData2.dimensions, 'terrain_mesh_2', goo.world);
+            buildSurfaceMesh(terrainData2.script.matrixData, terrainData2.dimensions, 'terrain_mesh_2', gooRunner.world);
             addSpheres(goo, worldFittedTerrainScript, dim2);
 			addNormalPointers(goo, worldFittedTerrainScript, dim2);
 
@@ -222,8 +168,8 @@ require([
             };
 
             var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
-            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, 'terrain_mesh_3', goo.world, '../../../resources/heightmap_small.png');
-        //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, 'terrain_mesh_3', goo.world);
+            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, 'terrain_mesh_3', gooRunner.world, '../../../resources/heightmap_small.png');
+        //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, 'terrain_mesh_3', gooRunner.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
 			addNormalPointers(goo, worldFittedTerrainScript, dim3);
             var dim4 = {
@@ -236,7 +182,7 @@ require([
             };
 
             var terrainData4 = worldFittedTerrainScript.addHeightData(matrix, dim4);
-            buildSurfaceMesh(terrainData4.script.matrixData, terrainData4.dimensions, 'terrain_mesh_4', goo.world);
+            buildSurfaceMesh(terrainData4.script.matrixData, terrainData4.dimensions, 'terrain_mesh_4', gooRunner.world);
             addSpheres(goo, worldFittedTerrainScript, dim4);
 			addNormalPointers(goo, worldFittedTerrainScript, dim4);
 
@@ -244,7 +190,7 @@ require([
 
             // Add camera
             var camera = new Camera(45, 1, 1, 1000);
-            var cameraEntity = goo.world.createEntity('CameraEntity');
+            var cameraEntity = gooRunner.world.createEntity('CameraEntity');
             cameraEntity.transformComponent.transform.translation.setDirect(0, 0, 20);
             cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Z);
             cameraEntity.setComponent(new CameraComponent(camera));
@@ -253,12 +199,12 @@ require([
             // Camera control set up
             var scripts = new ScriptComponent();
             scripts.scripts.push(Scripts.create('WASD', {
-                domElement : goo.renderer.domElement,
+                domElement : gooRunner.renderer.domElement,
                 walkSpeed : 25.0,
                 crawlSpeed : 10.0
             }));
             scripts.scripts.push(Scripts.create('MouseLookScript', {
-                domElement : goo.renderer.domElement
+                domElement : gooRunner.renderer.domElement
             }));
         //    scripts.scripts.push(worldFittedTerrainScript);
             cameraEntity.setComponent(scripts);
@@ -280,8 +226,8 @@ require([
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-		//	buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', goo.world, '../../resources/check.png');
-			buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', goo.world);
+		//	buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', gooRunner.world, '../../resources/check.png');
+			buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', gooRunner.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addNormalPointers(goo, worldFittedTerrainScript, dim);
@@ -299,8 +245,8 @@ require([
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_6', goo.world, '../../../resources/check.png');
-			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', goo.world);
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_6', gooRunner.world, '../../../resources/check.png');
+			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, 'terrain_mesh_5', gooRunner.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addNormalPointers(goo, worldFittedTerrainScript, dim);
@@ -309,11 +255,10 @@ require([
     }
 
     function init() {
-        goo = new GooRunner();
-        goo.renderer.domElement.id = 'goo';
-        document.body.appendChild(goo.renderer.domElement);
-		worldFittedTerrainScriptDemo(goo);
+        gooRunner = new GooRunner();
+        gooRunner.renderer.domElement.id = 'goo';
+        document.body.appendChild(gooRunner.renderer.domElement);
+		worldFittedTerrainScriptDemo(gooRunner);
     }
 
     init();
-});

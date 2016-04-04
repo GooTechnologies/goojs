@@ -1,20 +1,12 @@
-require([
-	'goo/geometrypack/text/TextComponent',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	TextComponent,
-	Vector3,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('The text mesh comes from a text component attached on an entity; the text is "zxc" and it should change to "asd" after one second');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
-	opentype.load('Roboto-Black.ttf', function (err, font) {
+	opentype.load('../../../lib/Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
 		var textComponent = new TextComponent();
@@ -35,4 +27,3 @@ require([
 	V.addLights();
 
 	V.process();
-});

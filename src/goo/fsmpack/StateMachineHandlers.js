@@ -1,4 +1,2 @@
-define([
-	'goo/fsmpack/StateMachineComponentHandler',
-	'goo/fsmpack/MachineHandler'
-], function () {});
+require('./StateMachineComponentHandler');
+require('./MachineHandler');

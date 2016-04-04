@@ -1,23 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/util/gizmopack/GizmoRenderSystem',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	GizmoRenderSystem,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Select and entity and transform it using the transform gizmos.',
@@ -106,7 +88,7 @@ require([
 			if (e.id < 16000) {
 				if (e.id >= 0) {
 					console.log('selected', e.id);
-					var entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
+					var entitySelected = gooRunner.world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
 					console.log('deselected');
@@ -117,8 +99,8 @@ require([
 			}
 		}
 
-		goo.addEventListener('mousedown', onPick);
-		goo.addEventListener('touchstart', onPick);
+		gooRunner.addEventListener('mousedown', onPick);
+		gooRunner.addEventListener('touchstart', onPick);
 
 		function onUnpick() {
 			gizmoRenderSystem.deactivate();
@@ -131,12 +113,12 @@ require([
 	function setupGizmos() {
 		gizmoRenderSystem = new GizmoRenderSystem();
 		gizmoRenderSystem.setActiveGizmo(0);
-		goo.setRenderSystem(gizmoRenderSystem);
+		gooRunner.setRenderSystem(gizmoRenderSystem);
 	}
 
 	// initialise goo
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var gizmoRenderSystem;
 
@@ -165,4 +147,3 @@ require([
 	gizmoRenderSystem.show(sphereEntity);
 
 	V.process();
-});

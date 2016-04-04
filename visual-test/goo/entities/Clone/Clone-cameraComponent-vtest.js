@@ -1,32 +1,13 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	Camera,
-	CameraComponent,
-	DebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Cloning camera components');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
 	debugRenderSystem.doRender.CameraComponent = true;
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
@@ -45,6 +26,4 @@ require([
 	world.createEntity(originalCameraComponent, [ 0, 0, 0]).addToWorld();
 	world.createEntity(clonedCameraComponent2, [ 2, 0, 0]).addToWorld();
 
-
 	V.process();
-});

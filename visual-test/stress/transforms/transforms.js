@@ -1,14 +1,7 @@
-require([
-	'lib/V',
-	'goo/shapes/Box'
-], function (
-	V,
-	Box
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 	V.addOrbitCamera();
 	V.addLights();
 
@@ -32,10 +25,9 @@ require([
 		entities.push(entity);
 	}
 
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		for (var i = 0; i < numBoxes; i++) {
 			var entity = entities[i];
 			entity.setRotation(0, 0, Math.sin(world.time) / numBoxes * 2);
 		}
 	});
-});

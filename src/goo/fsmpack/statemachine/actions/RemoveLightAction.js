@@ -1,32 +1,26 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-	'use strict';
+var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	function RemoveLightAction(/*id, settings*/) {
-		Action.apply(this, arguments);
+function RemoveLightAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+}
+
+RemoveLightAction.prototype = Object.create(Action.prototype);
+RemoveLightAction.prototype.constructor = RemoveLightAction;
+
+RemoveLightAction.external = {
+	key: 'Remove Light',
+	name: 'Remove Light',
+	type: 'light',
+	description: 'Removes the light attached to the entity.',
+	parameters: [],
+	transitions: []
+};
+
+RemoveLightAction.prototype.enter = function (fsm) {
+	var entity = fsm.getOwnerEntity();
+	if (entity.hasComponent('LightComponent')) {
+		entity.clearComponent('LightComponent');
 	}
+};
 
-	RemoveLightAction.prototype = Object.create(Action.prototype);
-	RemoveLightAction.prototype.constructor = RemoveLightAction;
-
-	RemoveLightAction.external = {
-		key: 'Remove Light',
-		name: 'Remove Light',
-		type: 'light',
-		description: 'Removes the light attached to the entity.',
-		parameters: [],
-		transitions: []
-	};
-
-	RemoveLightAction.prototype.enter = function (fsm) {
-		var entity = fsm.getOwnerEntity();
-		if (entity.hasComponent('LightComponent')) {
-			entity.clearComponent('LightComponent');
-		}
-	};
-
-	return RemoveLightAction;
-});
+module.exports = RemoveLightAction;

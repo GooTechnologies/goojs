@@ -107,7 +107,8 @@ function compileDoc(files) {
 			switch (extraComment.targetClass.itemType) {
 				case 'constructor':
 					targetClass.constructor = constructorFromComment(extraComment);
-					targetClass.requirePath = extraComment.requirePath.requirePath;
+					//! schteppe: had to comment out this, to make it work for commonjs. Require paths still sort of works though?
+					targetClass.requirePath = '';//extraComment.requirePath.requirePath;
 					targetClass.group = extraComment.group.group;
 					break;
 				case 'member':

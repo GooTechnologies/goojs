@@ -1,23 +1,5 @@
-require([
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'lib/V'
-], function (
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	DebugRenderSystem,
-	Box,
-	Sphere,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('All implemented shadow types');
 
@@ -26,7 +8,7 @@ require([
 		pointLight.range = 5;
 		pointLight.shadowSettings.shadowType = 'PCF';
 
-		goo.world.createEntity('pointLight', pointLight, [0, 0, 3]).addToWorld();
+		gooRunner.world.createEntity('pointLight', pointLight, [0, 0, 3]).addToWorld();
 
 
 		var pointlightGui = gui.addFolder('Point Light');
@@ -57,7 +39,7 @@ require([
 		directionalLight.shadowSettings.size = 10;
 		directionalLight.shadowSettings.shadowType = 'PCF';
 
-		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3]).addToWorld();
+		gooRunner.world.createEntity('directionalLight', directionalLight, [0, -5, 3]).addToWorld();
 
 
 		var directionallightGui = gui.addFolder('Directional Light');
@@ -86,7 +68,7 @@ require([
 		spotLight.range = 20;
 		spotLight.shadowSettings.shadowType = 'PCF';
 
-		var spotLightEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
+		var spotLightEntity = gooRunner.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
 
 
 		var spotLightGui = gui.addFolder('Spot Light' + ind++);
@@ -122,12 +104,12 @@ require([
 	}
 
 	var gui = new window.dat.GUI();
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
 	debugRenderSystem.doRender.LightComponent = true;
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	// add some spheres to cast the light on
@@ -135,7 +117,7 @@ require([
 		sphere.meshRendererComponent.castShadows = true;
 	});
 
-	var plane = goo.world.createEntity(
+	var plane = gooRunner.world.createEntity(
 		new Box(30, 30, 0.5),
 		V.getColoredMaterial(1, 1, 1, 1),
 		[0, 0, -6]
@@ -143,11 +125,11 @@ require([
 
 	gui.add(plane.meshRendererComponent, 'receiveShadows');
 
-	addPointLight(goo);
-	addDirectionalLight(goo);
-	addSpotLight(goo);
+	addPointLight(gooRunner);
+	addDirectionalLight(gooRunner);
+	addSpotLight(gooRunner);
 
-	addSpotLight(goo)
+	addSpotLight(gooRunner)
 		.set([3, -4, 5])
 		.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 
@@ -155,4 +137,3 @@ require([
 	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 
 	V.process();
-});

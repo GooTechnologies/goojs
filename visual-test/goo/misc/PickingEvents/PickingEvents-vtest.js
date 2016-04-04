@@ -1,9 +1,5 @@
-require([
-	'lib/V'
-], function (
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('The colored spheres change colors when clicked on or when the mouse exits/enters their projected image.');
 
@@ -12,7 +8,7 @@ require([
 		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;
 	}
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 	V.addColoredSpheres();
 	V.addLights();
 	V.addOrbitCamera();
@@ -20,7 +16,7 @@ require([
 	var lastEntity;
 	var lastDepth;
 
-	goo.addEventListener('mousemove', function(evt) {
+	gooRunner.addEventListener('mousemove', function(evt) {
 		if(evt.entity && lastEntity !== evt.entity) {
 			console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
 			var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
@@ -41,8 +37,7 @@ require([
 		}
 	};
 
-	goo.addEventListener('click', onPick);
-	goo.addEventListener('touchstart', onPick);
+	gooRunner.addEventListener('click', onPick);
+	gooRunner.addEventListener('touchstart', onPick);
 
 	V.process();
-});

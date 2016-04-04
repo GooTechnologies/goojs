@@ -1,27 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/math/Matrix4',
-	'goo/renderer/MeshData',
-	'goo/renderer/TextureCreator',
-	'goo/addons/linerenderpack/LineRenderSystem',
-	'lib/V'
-], function (Material,
-			 ShaderLib,
-			 Box,
-			 Quad,
-			 Sphere,
-			 Vector3,
-			 Matrix4,
-			 MeshData,
-			 TextureCreator,
-			 LineRenderSystem,
-			 V) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Render pulsating lines of all the different available preset colors.' +
 	'<br>' +
@@ -29,11 +6,11 @@ require([
 	'<br>' +
 	'The pulsating of lines should affect the amount of render calls.');
 
-	var goo = V.initGoo({showStats: true});
-	var world = goo.world;
+	var gooRunner = V.initGoo({showStats: true});
+	var world = gooRunner.world;
 	var lineRenderSystem = new LineRenderSystem(world);
 
-	goo.setRenderSystem(lineRenderSystem);
+	gooRunner.setRenderSystem(lineRenderSystem);
 
 	V.addOrbitCamera(new Vector3(Math.PI * 2, Math.PI / 2.3, 0.2));
 
@@ -73,7 +50,6 @@ require([
 
 	};
 
-	goo.callbacks.push(update);
+	gooRunner.callbacks.push(update);
 
 	V.process();
-});

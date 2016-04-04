@@ -1,21 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/RenderTarget',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	RenderTarget,
-	Box,
-	Quad,
-	Vector3,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('The quad is textured with a render target');
 
@@ -49,4 +33,3 @@ require([
 	addQuad(renderTarget);
 
 	V.process();
-});

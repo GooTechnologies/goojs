@@ -1,19 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/geometrypack/Surface',
-	'goo/renderer/TextureCreator',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Surface,
-	TextureCreator,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('A terrain-like surface generated from a heightmap stored as a matrix of floats');
 
@@ -32,8 +18,8 @@ require([
 		return matrix;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var heightMapSize = 64;
 
@@ -61,4 +47,3 @@ require([
 	V.addOrbitCamera(new Vector3(100, Math.PI / 2, 0));
 
 	V.process();
-});

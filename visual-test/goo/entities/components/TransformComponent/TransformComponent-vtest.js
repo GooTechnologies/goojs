@@ -1,21 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/debugpack/Debugger',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	MathUtils,
-	Debugger,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe([
 		'One of the box towers are assembled with the preserve-transform option enabled and one without.',
@@ -25,7 +8,7 @@ require([
 	var box11, box12, box13, box14, box15;
 	var box21, box22, box23, box24, box25;
 	var boxMeshData;
-	var goo, world;
+	var gooRunner, world;
 
 	function getColoredMaterial(r, g, b) {
 		var material = new Material(ShaderLib.simpleLit);
@@ -33,8 +16,8 @@ require([
 		return material;
 	}
 
-	function addOriginShape(goo) {
-		var world = goo.world;
+	function addOriginShape(gooRunner) {
+		var world = gooRunner.world;
 		var boxMeshData = new Box();
 		var box;
 
@@ -183,13 +166,13 @@ require([
 	}
 
 
-	goo = V.initGoo();
-	world = goo.world;
+	gooRunner = V.initGoo();
+	world = gooRunner.world;
 
 	boxMeshData = new Box();
 
 	// marking the origin
-	addOriginShape(goo);
+	addOriginShape(gooRunner);
 
 	// create the towers
 	createBoxTower1();
@@ -203,7 +186,6 @@ require([
 
 	setupGUI();
 
-	new Debugger(true, true).inject(goo);
+	new Debugger(true, true).inject(gooRunner);
 
 	V.process();
-});

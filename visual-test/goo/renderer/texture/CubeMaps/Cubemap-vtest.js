@@ -1,39 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/Camera',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Texture',
-	'goo/renderer/Capabilities',
-	'goo/shapes/Sphere',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/renderer/TextureCreator',
-	'goo/scripts/Scripts',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	ShaderBuilder,
-	Camera,
-	MeshData,
-	Shader,
-	Texture,
-	Capabilities,
-	Sphere,
-	OrbitCamControlScript,
-	ScriptComponent,
-	Vector3,
-	MathUtils,
-	TextureCreator,
-	Scripts,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Tests that cubemaps with mipmaps works with typed array images. Should display two spheres with checkerboard reflections (left using images and right using arrays).'
@@ -98,8 +64,8 @@ require([
 		return entity;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var settings = {};
 
@@ -152,4 +118,3 @@ require([
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0.5, 0));
 
 	V.process();
-});

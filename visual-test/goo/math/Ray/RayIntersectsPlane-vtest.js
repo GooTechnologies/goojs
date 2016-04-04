@@ -1,31 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData',
-	'goo/math/Ray',
-	'goo/math/Plane',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	MeshData,
-	Ray,
-	Plane,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('3 rays are intersecting 3 planes and all their points of intersection are marked with small spheres.');
 
 	// initialise goo
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// add some lights
 	V.addLights();
@@ -125,4 +104,3 @@ require([
 	// ---
 
 	V.process();
-});

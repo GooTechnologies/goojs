@@ -1,35 +1,28 @@
-define([
-	'goo/entities/World',
-	'goo/animationpack/clip/AnimationClip',
-	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-], function (
-	World,
-	AnimationClip,
-	DynamicLoader,
-	Configs
-) {
-	'use strict';
+var World = require('../../../../src/goo/entities/World');
+var DynamicLoader = require('../../../../src/goo/loaders/DynamicLoader');
+var AnimationClip = require('../../../../src/goo/animationpack/clip/AnimationClip');
+var Configs = require('../../../../test/unit/loaders/Configs');
 
-	describe('AnimationClipHandler', function () {
-		var loader;
-		
-		beforeEach(function () {
-			var world = new World();
-			loader = new DynamicLoader({
-				world: world,
-				rootPath: './',
-				ajax: false
-			});
+require('../../../../src/goo/animationpack/handlers/AnimationHandlers');
+
+describe('AnimationClipHandler', function () {
+	var loader;
+
+	beforeEach(function () {
+		var world = new World();
+		loader = new DynamicLoader({
+			world: world,
+			rootPath: './',
+			ajax: false
 		});
-		
-		it('loads a clip', function (done) {
-			var config = Configs.clip();
-			loader.preload(Configs.get());
-			loader.load(config.id).then(function (clip) {
-				expect(clip).toEqual(jasmine.any(AnimationClip));
-				done();
-			});
+	});
+
+	it('loads a clip', function (done) {
+		var config = Configs.clip();
+		loader.preload(Configs.get());
+		loader.load(config.id).then(function (clip) {
+			expect(clip).toEqual(jasmine.any(AnimationClip));
+			done();
 		});
 	});
 });

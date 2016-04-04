@@ -1,0 +1,12 @@
+{
+  "spec_dir": "",
+  "spec_files": [
+    "test/unit/{animationpack,entities,math,noise,particles,picking,quadpack,scripts,shapes,timelinepack}/*.js",
+   	"test/unit/{animationpack,debugpack,entities,fsmpack}/**/*.js"
+  ],
+  "helpers": [
+    "helpers/**/*.js"
+  ],
+  "stopSpecOnExpectationFailure": false,
+  "random": false
+}

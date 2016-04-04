@@ -1,17 +1,12 @@
-require([
-	'goo/entities/GooRunner'
-], function(
-	GooRunner
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = new GooRunner();
+	var gooRunner = new GooRunner();
 
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
 	// ---
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	var bat = world.createEntity('Bat').setTag('flying').setTag('mammal').addToWorld();
 	var seagull = world.createEntity('Seagull').setTag('flying').addToWorld();
@@ -30,4 +25,3 @@ require([
 	console.log('Flying mammals', flyingMammals.get().map(function (entity) { return entity.name; }));
 	console.log('Flying or mammals', flyingOrMammals.get().map(function (entity) { return entity.name; }));
 	console.log('!Mammals', notMammals.get().map(function (entity) { return entity.name; }));
-});

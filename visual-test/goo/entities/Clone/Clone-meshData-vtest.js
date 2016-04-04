@@ -1,24 +1,9 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	MeshData,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Cloning mesh data');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	V.addLights();
@@ -60,4 +45,3 @@ require([
 
 
 	V.process();
-});

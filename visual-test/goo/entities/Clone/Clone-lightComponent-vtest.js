@@ -1,32 +1,13 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	SpotLight,
-	LightComponent,
-	DebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Cloning light components');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
 	debugRenderSystem.doRender.LightComponent = true;
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
@@ -53,4 +34,3 @@ require([
 
 
 	V.process();
-});

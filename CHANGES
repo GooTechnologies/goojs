@@ -1,3 +1,65 @@
+v0.15.43 --- 2016-03-30
+
+### Fixes
+
+ * Fixed another bug in the PipRenderSystem, so the quad updates when the viewport size changes.
+
+v0.15.42 --- 2016-03-30
+
+### Fixes
+
+  * Fixed bug in PiP when aspect ratio is 1
+  * Undeprecated Quaternion.prototype.setArray
+
+v0.15.41 --- 2016-03-30
+
+### Fixes
+
+  * Clear the html system style cache when an element's style gets updated in the loader.
+
+v0.15.40 --- 2016-03-29
+
+### Fixes
+
+  * Added convenience methods for adding/removing stats panel. Fixed stats info bug
+  * Removed old tpf cap
+
+v0.15.39 --- 2016-03-29
+
+### Additions
+
+  + Added PiP (Picture in Picture) rendering functionality
+
+### Fixes
+
+  * ShakeAction fix, so it can transition to itself
+  * Minor code fix in KeyDownAction
+  * Change statemachine system cleanup to be synchronous and properly clean up actions
+
+v0.15.38 --- 2016-03-24
+
+### Additions
+
+  + Added DomEventAction
+
+### Fixes
+
+  * Cannot call map on HTML node list.
+  * Fixed particlecomponent update position even if paused + update to TransformComponent.prototype.sync
+
+v0.15.37 --- 2016-03-24
+
+### Fixes
+
+  * Add support for adding custom html attributes in html components
+  * Performance fixes for HtmlSystem
+  * PickingSystem performance improvements + added visual test for picking
+  * Correctly invalidate style cache in the HTML system
+  * Debug frustums update correctly for cameras that are not the main camera
+  * Fixes for "texture not set" warnings. Engine now works with webgl insight as well
+  * Skyboxhandler bail early if the textures are same
+  * Fix timeline autostart bug
+
 v0.15.36 --- 2016-03-17
 
 ### Fixes
@@ -9,7 +71,7 @@ v0.15.36 --- 2016-03-17
 v0.15.35 --- 2016-03-16
 
 ### Additions
-  
+
   + Added timeline autoStart property
   + Use entity meta data as entity attributes
 
@@ -23,7 +85,7 @@ v0.15.35 --- 2016-03-16
 v0.15.34 --- 2016-03-14
 
 ### Additions
-  
+
   + Setting depth function is now supported (Material.depthState.depthFunc)
 
 ### Fixes
@@ -36,7 +98,7 @@ v0.15.34 --- 2016-03-14
 v0.15.33 --- 2016-03-09
 
 ### Fixes
-  
+
   * Fix requestFullscreen on Safari and IE/Edge
   * Transition triggerEnterAction on the actual event and not next frame
   * ClickAction optimization, don't pickSync if already diff too much
