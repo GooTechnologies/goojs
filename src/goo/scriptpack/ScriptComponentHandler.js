@@ -47,7 +47,7 @@ ScriptComponentHandler.prototype.update = function (entity, config, options) {
 ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
 	var that = this;
 
-	return RSVP.all(_.map(config.scripts, function (instanceConfig) {
+	return RSVP.all(ObjectUtils.map(config.scripts, function (instanceConfig) {
 		return that._updateScriptInstance(component, instanceConfig, options);
 	}, null, 'sortValue'))
 	.then(function (scripts) {
@@ -63,7 +63,7 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 	.then(function (script) {
 		var newParameters = instanceConfig.options || {};
 		if (script.parameters) {
-			_.defaults(newParameters, script.parameters);
+			ObjectUtils.defaults(newParameters, script.parameters);
 		}
 
 		if (script.externals && script.externals.parameters) {
@@ -88,7 +88,7 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 			script.externals,
 			options
 		)
-		.then(_.constant(newScript));
+		.then(ObjectUtils.constant(newScript));
 	});
 };
 
@@ -188,7 +188,7 @@ ScriptComponentHandler.prototype._createOrLoadCustomScript = function (component
  * @private
  */
 ScriptComponentHandler.prototype._findScript = function (component, instanceId) {
-	return _.find(component.scripts, function (script) {
+	return ObjectUtils.find(component.scripts, function (script) {
 		return script.instanceId === instanceId;
 	});
 };
@@ -382,7 +382,7 @@ ScriptComponentHandler.prototype._setParameter = function (parameters, config, e
 	} else if (ScriptUtils.isRefType(type)) {
 		return setRefParam();
 	} else {
-		return setParam(_.clone(config));
+		return setParam(ObjectUtils.clone(config));
 	}
 };
 

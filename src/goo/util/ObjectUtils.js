@@ -255,6 +255,17 @@ ObjectUtils.property = function (propName) {
 };
 
 /**
+ * Gets whether the specified value is an array.
+ *
+ * @param {*} value Value which is to be tested.
+ *
+ * @returns {boolean} True if the value is an array and false otherwise.
+ */
+ObjectUtils.isArray = function (value) {
+	return Array.isArray(value);
+};
+
+/**
  * Gets whether the specified value is an object.
  *
  * @param {*} value Value which is to be tested.

@@ -16,7 +16,9 @@ ScriptUtils.DEFAULTS_BY_TYPE = {
 	'entity': null,
 	'image': null,
 	'sound': null,
-	'texture': null
+	'texture': null,
+	'json': null,
+	'text': null
 };
 
 ScriptUtils.REF_TYPES = [
@@ -59,7 +61,7 @@ ScriptUtils.TYPE_VALIDATORS = (function () {
 	};
 
 	return {
-		'array': Array.isArray,
+		'array': ObjectUtils.isArray,
 		'float': ObjectUtils.isNumber,
 		'number': ObjectUtils.isNumber,
 		'string': ObjectUtils.isString,
@@ -73,7 +75,9 @@ ScriptUtils.TYPE_VALIDATORS = (function () {
 		'entity': isRef('entity'),
 		'image': isRef('image'),
 		'sound': isRef('sound'),
-		'texture': isRef('texture')
+		'texture': isRef('texture'),
+		'json': isRef('json'),
+		'text': isRef('text'),
 	};
 })();
 
