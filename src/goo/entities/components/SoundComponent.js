@@ -41,7 +41,6 @@ function SoundComponent() {
 	this._oldPosition = new Vector3();
 	this._position = new Vector3();
 	this._orientation = new Vector3();
-	this._velocity = new Vector3();
 	this._attachedToCamera = false;
 
 	this._autoPlayDirty = false;
@@ -146,14 +145,14 @@ SoundComponent.prototype._autoPlaySounds = function () {
 };
 
 /**
- * Updates position, velocity and orientation of component and thereby all connected sounds.
+ * Updates position and orientation of component and thereby all connected sounds.
  * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
  * @param {Object} settings See {@link SoundSystem}
  * @param {Matrix4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
  * @param {number} tpf
  * @hidden
  */
-SoundComponent.prototype.process = function (settings, mvMat, tpf) {
+SoundComponent.prototype.process = function (settings, mvMat/*, tpf*/) {
 	this._pannerNode.rolloffFactor = settings.rolloffFactor;
 	this._pannerNode.maxDistance = settings.maxDistance;
 
@@ -170,7 +169,6 @@ SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 			this._isPanned = false;
 		}
 		this._pannerNode.setPosition(0, 0, 0);
-		this._pannerNode.setVelocity(0, 0, 0);
 		this._pannerNode.setOrientation(0, 0, 0);
 		return;
 	} else if (!this._isPanned) {
@@ -180,17 +178,11 @@ SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 	}
 
 	mvMat.getTranslation(this._position);
-	if (tpf > 0) {
-		this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
-	} else {
-		this._velocity.setDirect(0, 0, 0);
-	}
 	this._oldPosition.set(this._position);
 	this._orientation.setDirect(0, 0, -1);
 	this._orientation.applyPostVector(mvMat);
 
 	this._pannerNode.setPosition(this._position.x, this._position.y, this._position.z);
-	this._pannerNode.setVelocity(this._velocity.x, this._velocity.y, this._velocity.z);
 	this._pannerNode.setOrientation(this._orientation.x, this._orientation.y, this._orientation.z);
 };
 

@@ -18,7 +18,6 @@ var defaults = {
 var soundDefaults = {
 	volume: 1,
 	reverb: 0,
-	dopplerFactor: 1,
 	rolloffFactor: 0.4,
 	maxDistance: 100
 };

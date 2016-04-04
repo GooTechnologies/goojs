@@ -40,12 +40,6 @@ function SoundSystem() {
 	 * @type {number}
 	 * @readonly
 	 */
-	this.dopplerFactor = 0.05;
-
-	/**
-	 * @type {number}
-	 * @readonly
-	 */
 	this.volume = 1;
 
 	/**
@@ -90,11 +84,9 @@ SoundSystem.prototype._initializeAudioNodes = function () {
 	this._convolver.connect(this._wetNode);
 
 	this._listener = AudioContext.getContext().listener;
-	this._listener.dopplerFactor = 0;
 
 	// Everything is relative to the camera
 	this._listener.setPosition(0, 0, 0);
-	this._listener.setVelocity(0, 0, 0);
 	this._listener.setOrientation(
 		0, 0, -1, // Orientation
 		0, 1, 0  // Up
@@ -139,7 +131,6 @@ SoundSystem.prototype.deleted = function (entity) {
 /**
  * Update the environmental sound system properties. The settings are applied on the next process().
  * @param {Object} [config]
- * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
  * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
  * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
  * @param {number} [config.volume] Will be clamped between 0 and 1.
@@ -154,9 +145,6 @@ SoundSystem.prototype.updateConfig = function (config) {
 	}
 	if (config.rolloffFactor !== undefined) {
 		this.rolloffFactor = config.rolloffFactor;
-	}
-	if (config.dopplerFactor !== undefined) {
-		this.dopplerFactor = config.dopplerFactor * 0.05; // 0.05 ??? I have no idea
 	}
 	if (config.volume !== undefined) {
 		this.volume = MathUtils.clamp(config.volume, 0, 1);
@@ -276,7 +264,6 @@ SoundSystem.prototype.process = function (entities, tpf) {
 	}
 
 	if (this._dirty) {
-		this._listener.dopplerFactor = this.dopplerFactor;
 		this._outNode.gain.value = this.muted ? 0 : this.volume;
 		this._wetNode.gain.value = this.reverb;
 		this._dirty = false;
