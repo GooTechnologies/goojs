@@ -127,7 +127,7 @@ function LensFlareScript() {
 		flares = [];
 	}
 
-	function update(args, ctx) {
+	function lateUpdate(args, ctx) {
 		ctx.bounds.center.copy(ctx.entity.transformComponent.sync().worldTransform.translation);
 		if (ctx.activeCameraEntity.cameraComponent.camera.contains(ctx.bounds)) {
 			flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
@@ -151,7 +151,7 @@ function LensFlareScript() {
 
 	return {
 		setup: setup,
-		update: update,
+		lateUpdate: lateUpdate,
 		cleanup: cleanup
 	};
 }
@@ -241,8 +241,8 @@ function FlareGeometry(edgeRelevance) {
 }
 
 FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
-	this.camRot = cameraEntity.transformComponent.transform.rotation;
-	this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
+	this.camRot = cameraEntity.transformComponent.sync().transform.rotation;
+	this.centerVector.set(cameraEntity.transformComponent.sync().worldTransform.translation);
 	this.displacementVector.set(lightEntity.transformComponent.sync().worldTransform.translation);
 	this.displacementVector.sub(this.centerVector);
 	this.distance = this.displacementVector.length();
