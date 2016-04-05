@@ -75,7 +75,7 @@ TweenMoveAction.prototype.ready = function () {
 };
 
 TweenMoveAction.prototype.enter = function (fsm) {
-	var transformComponent = fsm.getOwnerEntity().transformComponent;
+	var transformComponent = fsm.getOwnerEntity().transformComponent.sync();
 
 	this.fromPos.set(transformComponent.transform.translation);
 	this.toPos.setDirect(this.to[0], this.to[1], this.to[2]);
@@ -92,7 +92,7 @@ TweenMoveAction.prototype.update = function (fsm) {
 	if (this.completed) {
 		return;
 	}
-	var transformComponent = fsm.getOwnerEntity().transformComponent;
+	var transformComponent = fsm.getOwnerEntity().transformComponent.sync();
 
 	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
 	var fT = this.easing(t);

@@ -120,9 +120,8 @@ AnimationComponent.prototype.apply = function (transformComponent) {
 			}
 		} else if (value instanceof TransformData) {
 			if (transformComponent) {
+				transformComponent.sync();
 				value.applyTo(transformComponent.transform);
-				transformComponent.updateTransform();
-				this._updateWorldTransform(transformComponent);
 			}
 		} else if (value instanceof TriggerData) {
 			if (value.armed) {
@@ -144,14 +143,6 @@ AnimationComponent.prototype.apply = function (transformComponent) {
 	}
 	if (pose) {
 		pose.updateTransforms();
-	}
-};
-
-AnimationComponent.prototype._updateWorldTransform = function (transformComponent) {
-	transformComponent.updateWorldTransform();
-
-	for (var i = 0; i < transformComponent.children.length; i++) {
-		this._updateWorldTransform(transformComponent.children[i]);
 	}
 };
 

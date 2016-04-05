@@ -214,7 +214,7 @@ RigidBodyComponent.numCylinderSegments = 10;
  * @param {Entity} entity
  */
 RigidBodyComponent.prototype.setTransformFromEntity = function (entity) {
-	var transform = entity.transformComponent.worldTransform;
+	var transform = entity.transformComponent.sync().worldTransform;
 	var body = this.cannonBody;
 	body.position.copy(transform.translation);
 	body.previousPosition.copy(transform.translation);

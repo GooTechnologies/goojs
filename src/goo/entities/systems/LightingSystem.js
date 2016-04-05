@@ -11,7 +11,6 @@ function LightingSystem() {
 	System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
 
 	this.overrideLights = null;
-	this._needsUpdate = true;
 
 	this.lights = [];
 }
@@ -26,7 +25,6 @@ LightingSystem.prototype.constructor = LightingSystem;
 LightingSystem.prototype.setOverrideLights = function (overrideLights) {
 	this.overrideLights = overrideLights;
 	SystemBus.emit('goo.setLights', this.overrideLights);
-	this._needsUpdate = true;
 };
 
 /**
@@ -34,7 +32,6 @@ LightingSystem.prototype.setOverrideLights = function (overrideLights) {
  */
 LightingSystem.prototype.clearOverrideLights = function () {
 	this.overrideLights = undefined;
-	this._needsUpdate = true;
 };
 
 LightingSystem.prototype.inserted = function (entity) {
@@ -52,9 +49,8 @@ LightingSystem.prototype.process = function (entities) {
 			var transformComponent = entity.transformComponent;
 			var lightComponent = entity.lightComponent;
 
-			if (transformComponent._updated || this._needsUpdate) {
-				lightComponent.updateLight(transformComponent.worldTransform);
-			}
+			transformComponent.sync();
+			lightComponent.updateLight(transformComponent.worldTransform);
 
 			if (!lightComponent.hidden) {
 				var light = lightComponent.light;
@@ -62,7 +58,6 @@ LightingSystem.prototype.process = function (entities) {
 				this.lights.push(light);
 			}
 		}
-		this._needsUpdate = false;
 
 		SystemBus.emit('goo.setLights', this.lights);
 	}

@@ -17,7 +17,7 @@ function TransformSystem() {
 TransformSystem.prototype = Object.create(System.prototype);
 TransformSystem.prototype.constructor = TransformSystem;
 
-TransformSystem.prototype.onPreRender = function () {
+TransformSystem.prototype.process = function () {
 	var entities = this._activeEntities;
 
 	numUpdates = 0;
@@ -25,7 +25,6 @@ TransformSystem.prototype.onPreRender = function () {
 	var l = entities.length;
 	for (i = 0; i < l; i++) {
 		transformComponent = entities[i].transformComponent;
-		transformComponent._updated = false;
 		if (transformComponent._dirty) {
 			transformComponent.updateTransform();
 		}

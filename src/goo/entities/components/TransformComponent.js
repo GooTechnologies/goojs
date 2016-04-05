@@ -40,7 +40,6 @@ function TransformComponent() {
 	this.worldTransform = new Transform();
 
 	this._dirty = true;
-	this._updated = false;
 
 	// #ifdef DEBUG
 	Object.seal(this);
@@ -660,7 +659,6 @@ TransformComponent.prototype.updateWorldTransform = function () {
 	this.worldTransform.updateNormalMatrix();
 
 	this._dirty = false;
-	this._updated = true;
 };
 
 /**
@@ -684,6 +682,13 @@ TransformComponent.prototype.sync = (function () {
 				component.updateTransform();
 				component.updateWorldTransform();
 				component._dirty = false;
+
+				// Parent was dirty but we set it to undirty. The children still need to be dirty because we didn't update them yet.
+				var children = component.children;
+				var l = children.length;
+				while (l--) {
+					children[l]._dirty = true;
+				}
 			}
 		}
 

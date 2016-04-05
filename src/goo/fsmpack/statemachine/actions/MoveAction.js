@@ -43,7 +43,7 @@ MoveAction.external = {
 
 MoveAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var transform = entity.transformComponent.transform;
+	var transform = entity.transformComponent.sync().transform;
 	this.forward = Vector3.fromArray(this.translation);
 	var orientation = transform.rotation;
 	this.forward.applyPost(orientation);
@@ -61,7 +61,7 @@ MoveAction.prototype.update = function (fsm) {
 
 MoveAction.prototype.applyMove = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var transform = entity.transformComponent.transform;
+	var transform = entity.transformComponent.sync().transform;
 	var translation = transform.translation;
 
 	if (this.oriented) {

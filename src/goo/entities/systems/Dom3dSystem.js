@@ -255,11 +255,6 @@ Dom3dSystem.prototype.process = function (entities) {
 			component.domElement.style.display = '';
 		}
 
-		if (!component.updated && !entity.transformComponent._updated) {
-			continue;
-		}
-		component.updated = false;
-
 		var worldTransform = entity.transformComponent.worldTransform;
 		style = this.getEntityCSSMatrix(worldTransform.matrix) +
 				' scale(' + this.precisionScale / component.width +

@@ -39,7 +39,7 @@ var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
 
 RotateAction.prototype.applyRotation = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var transform = entity.transformComponent.transform;
+	var transform = entity.transformComponent.sync().transform;
 
 	var rotationX = this.rotation[0];
 	var rotationY = this.rotation[1];
