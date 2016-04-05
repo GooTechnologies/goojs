@@ -27,7 +27,9 @@ ScriptUtils.REF_TYPES = [
 	'entity',
 	'image',
 	'sound',
-	'texture'
+	'texture',
+	'json',
+	'text'
 ];
 
 ScriptUtils.isRefType = function (type) {

@@ -35,24 +35,12 @@ ScriptComponentHandler.prototype.update = function (entity, config, options) {
 		if (!component) { return; }
 
 		return RSVP.all(ObjectUtils.map(config.scripts, function (instanceConfig) {
-			return that._updateScriptInstance(instanceConfig, options);
+			return that._updateScriptInstance(component, instanceConfig, options);
 		}, null, 'sortValue'))
 		.then(function (scripts) {
 			component.scripts = scripts;
 			return component;
 		});
-	});
-};
-
-ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
-	var that = this;
-
-	return RSVP.all(ObjectUtils.map(config.scripts, function (instanceConfig) {
-		return that._updateScriptInstance(component, instanceConfig, options);
-	}, null, 'sortValue'))
-	.then(function (scripts) {
-		component.scripts = scripts;
-		return component;
 	});
 };
 
@@ -199,77 +187,12 @@ ScriptComponentHandler.prototype._findScript = function (component, instanceId) 
  *
  * @param {Object} scriptName
  *		The name of the script which is to be created.
- *
- * @returns {RSVP.Promise}
- *		A promise which is resolved with the new script.
- *
- * @private
- */
-ScriptComponentHandler.prototype._createEngineScript = function (scriptName) {
-	var script = Scripts.create(scriptName);
-	if (!script) {
-		throw new Error('Unrecognized script name');
-	}
-
-	if (script.externals && script.externals.parameters) {
-		ScriptUtils.fillDefaultValues(newParameters, script.externals.parameters);
-	}
-
-	// We need to duplicate the script so we can have multiple
-	// similar scripts with different parameters.
-	// TODO: Check if script exists in the component and just update it
-	// instead of creating a new one.
-	var newScript = Object.create(script);
-	newScript.parameters = {};
-	newScript.enabled = false;
-
-	return that._setParameters(
-		newScript.parameters,
-		newParameters,
-		script.externals,
-		options
-	)
-	.then(ObjectUtils.constant(newScript));
-};
-
-/**
- * Depending on the reference specified in the script instance, creates an
- * engine script or loads the referenced script.
- *
- * @param {object} instanceConfig
- *        JSON configuration of the script instance. Should contain the
- *        "scriptRef" property which refers to the script which is to be
- *        loaded.
- *
- * @returns {Promise}
- *         A promise which is resolved with the referenced script.
- *
- * @private
- */
-ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
-	var ref = instanceConfig.scriptRef;
-	var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
-	var isEngineScript = ref.indexOf(prefix) === 0;
-
-	if (isEngineScript) {
-		return this._createEngineScript(ref.slice(prefix.length));
-	} else {
-		return this._load(ref, { reload: true });
-	}
-};
-
-/**
- * Creates a new instance of one of the default scripts provided by the
- * engine.
- *
- * @param {Object} scriptName
- *		The name of the script which is to be created.
- *
- * @returns {RSVP.Promise}
- *		A promise which is resolved with the new script.
- *
- * @private
- */
+	*
+	* @returns {RSVP.Promise}
+	*		A promise which is resolved with the new script.
+	*
+	* @private
+	*/
 ScriptComponentHandler.prototype._createEngineScript = function (scriptName) {
 	var script = Scripts.create(scriptName);
 	if (!script) {
