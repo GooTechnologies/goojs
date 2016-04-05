@@ -240,6 +240,15 @@ describe('Matrix4', function () {
 			expect(a.equals(c)).toBe(false);
 		});
 
+		it('can be tested for equality', function () {
+			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+			var b = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+			var c = new Matrix4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+			expect(a.equals(b, 0)).toBe(true);
+			expect(a.equals(c, 0)).toBe(false);
+		});
+
 		it('preserves behaviour of comparing with NaN', function () {
 			// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
 			var m1 = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);

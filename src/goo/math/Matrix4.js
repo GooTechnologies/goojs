@@ -600,28 +600,51 @@ Matrix4.prototype.setScale = function (scale) {
 /**
  * Compares two matrices for approximate equality
  * @param {Matrix4} rhs The matrix to compare against
+ * @param {number} [epsilon] Maximum tolerance
  * @returns {boolean}
  */
-Matrix4.prototype.equals = function (rhs) {
+Matrix4.prototype.equals = function (rhs, epsilon) {
 	var thisData = this.data;
 	var rhsData = rhs.data;
+	var eps = epsilon === undefined ? MathUtils.EPSILON : epsilon;
 
-	return (Math.abs(thisData[0] - rhsData[0]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[1] - rhsData[1]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[2] - rhsData[2]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[3] - rhsData[3]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[4] - rhsData[4]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[5] - rhsData[5]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[6] - rhsData[6]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[7] - rhsData[7]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[8] - rhsData[8]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[9] - rhsData[9]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[10] - rhsData[10]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[11] - rhsData[11]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[12] - rhsData[12]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[13] - rhsData[13]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[14] - rhsData[14]) <= MathUtils.EPSILON) &&
-		(Math.abs(thisData[15] - rhsData[15]) <= MathUtils.EPSILON);
+	if (eps === 0) {
+		return (
+			thisData[0] === rhsData[0] &&
+			thisData[1] === rhsData[1] &&
+			thisData[2] === rhsData[2] &&
+			thisData[3] === rhsData[3] &&
+			thisData[4] === rhsData[4] &&
+			thisData[5] === rhsData[5] &&
+			thisData[6] === rhsData[6] &&
+			thisData[7] === rhsData[7] &&
+			thisData[8] === rhsData[8] &&
+			thisData[9] === rhsData[9] &&
+			thisData[10] === rhsData[10] &&
+			thisData[11] === rhsData[11] &&
+			thisData[12] === rhsData[12] &&
+			thisData[13] === rhsData[13] &&
+			thisData[14] === rhsData[14] &&
+			thisData[15] === rhsData[15]
+		);
+	} else {
+		return (Math.abs(thisData[0] - rhsData[0]) <= eps) &&
+			(Math.abs(thisData[1] - rhsData[1]) <= eps) &&
+			(Math.abs(thisData[2] - rhsData[2]) <= eps) &&
+			(Math.abs(thisData[3] - rhsData[3]) <= eps) &&
+			(Math.abs(thisData[4] - rhsData[4]) <= eps) &&
+			(Math.abs(thisData[5] - rhsData[5]) <= eps) &&
+			(Math.abs(thisData[6] - rhsData[6]) <= eps) &&
+			(Math.abs(thisData[7] - rhsData[7]) <= eps) &&
+			(Math.abs(thisData[8] - rhsData[8]) <= eps) &&
+			(Math.abs(thisData[9] - rhsData[9]) <= eps) &&
+			(Math.abs(thisData[10] - rhsData[10]) <= eps) &&
+			(Math.abs(thisData[11] - rhsData[11]) <= eps) &&
+			(Math.abs(thisData[12] - rhsData[12]) <= eps) &&
+			(Math.abs(thisData[13] - rhsData[13]) <= eps) &&
+			(Math.abs(thisData[14] - rhsData[14]) <= eps) &&
+			(Math.abs(thisData[15] - rhsData[15]) <= eps);
+	}
 };
 
 /**
