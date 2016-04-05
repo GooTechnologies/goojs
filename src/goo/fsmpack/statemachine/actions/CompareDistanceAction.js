@@ -75,7 +75,7 @@ CompareDistanceAction.getTransitionLabel = function (transitionKey /*, actionCon
 
 CompareDistanceAction.prototype.compare = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var translation = entity.transformComponent.worldTransform.translation;
+	var translation = entity.transformComponent.sync().worldTransform.translation;
 	var delta;
 
 	if (this.camera) {

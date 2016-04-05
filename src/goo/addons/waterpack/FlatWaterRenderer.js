@@ -115,7 +115,7 @@ FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner,
 
 	this.waterCamera.copy(camera);
 	if (this.updateWaterPlaneFromEntity) {
-		waterPlane.constant = this.waterEntity.transformComponent.worldTransform.translation.y;
+		waterPlane.constant = this.waterEntity.transformComponent.sync().worldTransform.translation.y;
 	}
 	var aboveWater = camera.translation.y > waterPlane.constant;
 
@@ -169,7 +169,7 @@ FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner,
 		this.waterCamera.update();
 
 		if (this.skybox && this.followCam) {
-			var target = this.skybox.transformComponent.worldTransform;
+			var target = this.skybox.transformComponent.sync().worldTransform;
 			target.translation.set(camReflectPos);
 			target.update();
 		}
@@ -216,7 +216,7 @@ FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner,
 
 	if (aboveWater && this.skybox && this.followCam) {
 		var source = camera.translation;
-		var target = this.skybox.transformComponent.worldTransform;
+		var target = this.skybox.transformComponent.sync().worldTransform;
 		target.translation.set(source).add(this.offset);
 		target.update();
 		this.waterCamera._updatePMatrix = true;

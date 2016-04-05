@@ -117,7 +117,7 @@ CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
 		// Needed for getting the Rigidbody-local transform of each collider
 		// entity.transformComponent.updateTransform();
 		// entity.transformComponent.updateWorldTransform();
-		var bodyTransform = entity.transformComponent.worldTransform;
+		var bodyTransform = entity.transformComponent.sync().worldTransform;
 		var invBodyTransform = new Transform();
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
@@ -132,7 +132,7 @@ CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
 				// childEntity.transformComponent.updateTransform();
 				// childEntity.transformComponent.updateWorldTransform();
 
-				gooTrans.copy(childEntity.transformComponent.worldTransform);
+				gooTrans.copy(childEntity.transformComponent.sync().worldTransform);
 				var gooTrans2 = new Transform();
 				Transform.combine(invBodyTransform, gooTrans, gooTrans2);
 				gooTrans2.update();

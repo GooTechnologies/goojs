@@ -74,14 +74,14 @@ HtmlSystem.prototype.process = function (entities) {
 
 		// Behind camera
 		tmpVector.set(camera.translation)
-			.sub(entity.transformComponent.worldTransform.translation);
+			.sub(entity.transformComponent.sync().worldTransform.translation);
 		if (camera._direction.dot(tmpVector) > 0) {
 			this.setStyle(component.domElement, 'display', 'none');
 			continue;
 		}
 
 		// compute world position.
-		camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, tmpVector);
+		camera.getScreenCoordinates(entity.transformComponent.sync().worldTransform.translation, screenWidth, screenHeight, tmpVector);
 		// Behind near plane
 		if (tmpVector.z < 0) {
 			this.setStyle(component.domElement, 'display', 'none');

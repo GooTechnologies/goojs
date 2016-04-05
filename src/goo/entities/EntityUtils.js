@@ -145,7 +145,7 @@ EntityUtils.getRoot = function (entity) {
 	return entity;
 };
 
-//! AT: undocumented and used only once, in MeshBuilder
+//! SH: Unused
 EntityUtils.updateWorldTransform = function (transformComponent) {
 	transformComponent.updateWorldTransform();
 

@@ -126,7 +126,7 @@ BoundingBoxOcclusionChecker.prototype._doSSAABBOcclusionTest = function (entity,
 	// writes data to the global variable positionArray.
 	this._copyEntityVerticesToPositionArray(entity);
 
-	var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+	var entityWorldTransformMatrix = entity.transformComponent.sync().worldTransform.matrix;
 	combinedMatrix.mul2(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 	// TODO: Combine the transforms to pixel space.
 	// Projection transform + homogeneous divide. 32 values, due to 8 vertices.
@@ -431,7 +431,7 @@ BoundingBoxOcclusionChecker.prototype._projectionTransformTriangleData = functio
 	triangleData.clear();
 
 	// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-	var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+	var entityWorldTransformMatrix = entity.transformComponent.sync().worldTransform.matrix;
 	combinedMatrix.mul2(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
 	var maxPos = positionArray.length;

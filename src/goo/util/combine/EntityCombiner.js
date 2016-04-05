@@ -85,7 +85,7 @@ EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
 };
 
 EntityCombiner.prototype._combine = function (root, combineList) {
-	var rootTransform = root.transformComponent.worldTransform;
+	var rootTransform = root.transformComponent.sync().worldTransform;
 	var invertTransform = new Transform();
 	var calcTransform = new Transform();
 	rootTransform.invert(invertTransform);
@@ -133,7 +133,7 @@ EntityCombiner.prototype._combine = function (root, combineList) {
 				var entity = toCombine[k];
 
 				if (root !== entity) {
-					calcTransform.multiply(invertTransform, entity.transformComponent.worldTransform);
+					calcTransform.multiply(invertTransform, entity.transformComponent.sync().worldTransform);
 				} else {
 					calcTransform.setIdentity();
 				}

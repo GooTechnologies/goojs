@@ -97,11 +97,11 @@ CssTransformSystem.prototype.process = function (entities) {
 		scale = [scale, -scale, scale].join(',');
 
 		if (component.faceCamera) {
-			entity.transformComponent.worldTransform.matrix.getTranslation(tmpVector);
+			entity.transformComponent.sync().worldTransform.matrix.getTranslation(tmpVector);
 			tmpMatrix.copy(camera.getViewInverseMatrix());
 			tmpMatrix.setTranslation(tmpVector);
 		} else {
-			tmpMatrix.copy(entity.transformComponent.worldTransform.matrix);
+			tmpMatrix.copy(entity.transformComponent.sync().worldTransform.matrix);
 		}
 
 		style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(tmpMatrix) + 'scale3d(' + scale + ')';

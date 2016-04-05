@@ -521,7 +521,7 @@ TransformComponent.prototype.lookAt = function (position, up) {
 		if (position.transformComponent._dirty) {
 			position.transformComponent.updateWorldTransform();
 		}
-		this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
+		this.transform.lookAt(position.transformComponent.sync().worldTransform.translation, up);
 	} else {
 		if (Array.isArray(position)) {
 			position = Vector3.fromArray(position);
@@ -627,7 +627,7 @@ TransformComponent.prototype.detachChild = function (childComponent, keepTransfo
 	}
 
 	if (keepTransform) {
-		childComponent.transform.copy(childComponent.worldTransform);
+		childComponent.transform.copy(childComponent.sync().worldTransform);
 	}
 
 	var index = this.children.indexOf(childComponent);

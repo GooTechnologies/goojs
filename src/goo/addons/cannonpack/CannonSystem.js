@@ -52,7 +52,7 @@ CannonSystem.prototype.reset = function () {
 
 		if (entity.cannonRigidbodyComponent.added) {
 			var body = entity.cannonRigidbodyComponent.body;
-			var p = entity.transformComponent.worldTransform.translation;
+			var p = entity.transformComponent.sync().worldTransform.translation;
 			var q = new Quaternion();
 			q.fromRotationMatrix(entity.transformComponent.worldTransform.rotation);
 			body.position.set(p.x, p.y, p.z);

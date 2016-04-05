@@ -51,7 +51,7 @@ function updateWorldTransform(transformComponent) {
 	if (entity && entity.meshDataComponent && entity.meshRendererComponent) {
 		entity.meshRendererComponent.updateBounds(
 			entity.meshDataComponent.modelBound,
-			transformComponent.worldTransform
+			transformComponent.sync().worldTransform
 		);
 	}
 

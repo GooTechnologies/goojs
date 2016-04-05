@@ -35,7 +35,7 @@ LightingSystem.prototype.clearOverrideLights = function () {
 };
 
 LightingSystem.prototype.inserted = function (entity) {
-	entity.lightComponent.updateLight(entity.transformComponent.worldTransform);
+	entity.lightComponent.updateLight(entity.transformComponent.sync().worldTransform);
 };
 
 LightingSystem.prototype.process = function (entities) {
