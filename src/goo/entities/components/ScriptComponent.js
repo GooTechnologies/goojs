@@ -1,7 +1,10 @@
 var Component = require('../../entities/components/Component');
 var SystemBus = require('../../entities/SystemBus');
 var ObjectUtils = require('../../util/ObjectUtils');
-var gooClasses = typeof window !== 'undefined' ? window.goo : {};
+
+function getGooClasses(){
+	return (typeof window !== 'undefined' && window.goo) || {};
+}
 
 /**
  * Contains scripts to be executed each frame when set on an active entity.
@@ -73,7 +76,7 @@ ScriptComponent.prototype.setup = function (entity) {
 
 			if (script.setup && script.enabled) {
 				try {
-					script.setup(script.parameters, script.context, gooClasses);
+					script.setup(script.parameters, script.context, getGooClasses());
 				} catch (e) {
 					this._handleError(script, e, 'setup');
 				}
@@ -105,7 +108,7 @@ ScriptComponent.prototype.run = function (entity) {
 			}
 		} else if (script.update && (script.enabled === undefined || script.enabled)) {
 			try {
-				script.update(script.parameters, script.context, gooClasses);
+				script.update(script.parameters, script.context, getGooClasses());
 			} catch (e) {
 				this._handleError(script, e, 'update');
 			}
@@ -122,7 +125,7 @@ ScriptComponent.prototype.lateRun = function () {
 		var script = this.scripts[i];
 		if (script.lateUpdate && (script.enabled === undefined || script.enabled)) {
 			try {
-				script.lateUpdate(script.parameters, script.context, gooClasses);
+				script.lateUpdate(script.parameters, script.context, getGooClasses());
 			} catch (e) {
 				this._handleError(script, e, 'lateUpdate');
 			}
@@ -144,7 +147,7 @@ ScriptComponent.prototype.cleanup = function () {
 					script.enabled)
 			) {
 				try {
-					script.cleanup(script.parameters, script.context, gooClasses);
+					script.cleanup(script.parameters, script.context, getGooClasses());
 				} catch (e) {
 					this._handleError(script, e, 'cleanup');
 				}

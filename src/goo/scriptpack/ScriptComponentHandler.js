@@ -35,7 +35,7 @@ ScriptComponentHandler.prototype.update = function (entity, config, options) {
 		if (!component) { return; }
 
 		return RSVP.all(ObjectUtils.map(config.scripts, function (instanceConfig) {
-			return that._updateScriptInstance(instanceConfig, options);
+			return that._updateScriptInstance(component, instanceConfig, options);
 		}, null, 'sortValue'))
 		.then(function (scripts) {
 			component.scripts = scripts;
@@ -44,10 +44,10 @@ ScriptComponentHandler.prototype.update = function (entity, config, options) {
 	});
 };
 
-ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfig, options) {
+ScriptComponentHandler.prototype._updateScriptInstance = function (component, instanceConfig, options) {
 	var that = this;
 
-	return this._createOrLoadScript(instanceConfig)
+	return this._createOrLoadScript(component, instanceConfig)
 	.then(function (script) {
 		var newParameters = instanceConfig.options || {};
 		if (script.parameters) {
@@ -58,13 +58,17 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfi
 			ScriptUtils.fillDefaultValues(newParameters, script.externals.parameters);
 		}
 
-		// We need to duplicate the script so we can have multiple
-		// similar scripts with different parameters.
-		// TODO: Check if script exists in the component and just update it
-		// instead of creating a new one.
-		var newScript = Object.create(script);
-		newScript.parameters = {};
-		newScript.enabled = false;
+		var newScript = null;
+		if (script.context) {
+			newScript = script;
+			newScript.parameters = {};
+		} else {
+			// We need to duplicate the script so we can have multiple
+			// similar scripts with different parameters.
+			newScript = Object.create(script);
+			newScript.parameters = {};
+			newScript.enabled = false;
+		}
 
 		return that._setParameters(
 			newScript.parameters,
@@ -90,16 +94,91 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (instanceConfi
  *
  * @private
  */
-ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig) {
+ScriptComponentHandler.prototype._createOrLoadScript = function (component, instanceConfig) {
 	var ref = instanceConfig.scriptRef;
-	var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
-	var isEngineScript = ref.indexOf(prefix) === 0;
+	var isEngineScript = ref.indexOf(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX) === 0;
+
+	var promise = null;
 
 	if (isEngineScript) {
-		return this._createEngineScript(ref.slice(prefix.length));
+		promise = this._createOrLoadEngineScript(component, instanceConfig);
 	} else {
-		return this._load(ref, { reload: true });
+		promise = this._createOrLoadCustomScript(component, instanceConfig);
 	}
+
+	return promise.then(function (script) {
+		// Save the instance identifier so we can find the instance later
+		// when updating again.
+		script.instanceId = instanceConfig.id;
+		return script;
+	});
+};
+
+/**
+ * Creates or loads an engine script. If the component already has an instance
+ * of that script, it will be returned.
+ *
+ * @param {ScriptComponent} component
+ * @param {object} instanceConfig
+ *
+ * @return {Promise}
+ * @private
+ */
+ScriptComponentHandler.prototype._createOrLoadEngineScript = function (component, instanceConfig) {
+	var existingScript = this._findScript(component, instanceConfig.id);
+	var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
+
+	if (existingScript) {
+		return PromiseUtils.resolve(existingScript);
+	}
+
+	return this._createEngineScript(instanceConfig.scriptRef.slice(prefix.length));
+};
+
+/**
+ * Creates or loads a custom script. If the component already has an instance
+ * of that script with the same body, it will be returned.
+ *
+ * @param {ScriptComponent} component
+ * @param {object} instanceConfig
+ *
+ * @return {Promise}
+ * @private
+ */
+ScriptComponentHandler.prototype._createOrLoadCustomScript = function (component, instanceConfig) {
+	var that = this;
+	var ref = instanceConfig.scriptRef;
+
+	// Need to load the script (note that we are not reloading yet) so we
+	// can compare the new body with the old one.
+	return this._load(ref).then(function (script) {
+		var existingScript = that._findScript(component, instanceConfig.id);
+
+		if (existingScript && existingScript.body === script.body) {
+			return existingScript;
+		}
+
+		// New script or the body was changed so reload the script.
+		return that._load(ref, { reload: true });
+	});
+};
+
+/**
+ * Searches the specified component to try to find the specified script
+ * instance.
+ *
+ * @param {ScriptComponent} component
+ *        The component which is to be searched.
+ * @param {string} instanceId
+ *        The identifier of the script instance which is to be found.
+ *
+ * @return {object} The script which was found, or undefined if none was found.
+ * @private
+ */
+ScriptComponentHandler.prototype._findScript = function (component, instanceId) {
+	return ObjectUtils.find(component.scripts, function (script) {
+		return script.instanceId === instanceId;
+	});
 };
 
 /**
@@ -108,12 +187,12 @@ ScriptComponentHandler.prototype._createOrLoadScript = function (instanceConfig)
  *
  * @param {Object} scriptName
  *		The name of the script which is to be created.
- *
- * @returns {RSVP.Promise}
- *		A promise which is resolved with the new script.
- *
- * @private
- */
+	*
+	* @returns {RSVP.Promise}
+	*		A promise which is resolved with the new script.
+	*
+	* @private
+	*/
 ScriptComponentHandler.prototype._createEngineScript = function (scriptName) {
 	var script = Scripts.create(scriptName);
 	if (!script) {
@@ -222,7 +301,7 @@ ScriptComponentHandler.prototype._setParameter = function (parameters, config, e
 		// wait for the load to be completed. It will eventually resolve
 		// and the parameter will be set.
 		setRefParam();
-		return Promise.resolve();
+		return PromiseUtils.resolve();
 	} else if (ScriptUtils.isRefType(type)) {
 		return setRefParam();
 	} else {

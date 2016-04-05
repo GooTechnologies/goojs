@@ -33,7 +33,6 @@ ScriptHandler.prototype._create = function () {
 		externals: {},
 		setup: null,
 		update: null,
-		lateUpdate: null,
 		run: null,
 		cleanup: null,
 		parameters: {},
@@ -113,9 +112,6 @@ ScriptHandler.prototype._updateFromCustom = function (script, config) {
 		' if (typeof update !== "undefined") {',
 		'  obj.update = update;',
 		' }',
-		' if (typeof lateUpdate !== "undefined") {',
-		'  obj.lateUpdate = lateUpdate;',
-		' }',
 		' if (typeof enter !== "undefined") {',
 		'  obj.enter = enter;',
 		' }',
@@ -146,12 +142,12 @@ ScriptHandler.prototype._updateFromCustom = function (script, config) {
 			ScriptHandler.validateParameters(newScript, script);
 			script.setup = newScript.setup;
 			script.update = newScript.update;
-			script.lateUpdate = newScript.lateUpdate;
 			script.cleanup = newScript.cleanup;
 			script.enter = newScript.enter;
 			script.exit = newScript.exit;
 			script.parameters = {};
 			script.enabled = false;
+			script.body = config.body;
 		} catch (e) {
 			var err = {
 				message: e.toString()
@@ -245,7 +241,6 @@ function hasReferenceTo(scriptElement, scriptId) {
 	return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
 }
 
-
 /**
  * Gets all the script elements that refer to the specified custom script.
  *
@@ -269,7 +264,6 @@ function getReferringDependencies(scriptId) {
 	return dependencies;
 }
 
-
 /**
  * Update a script that is from the engine. Checks if the class name has changed
  * and if so, creates a new script object from the new class.
@@ -287,7 +281,6 @@ ScriptHandler.prototype._updateFromClass = function (script, config) {
 		script.externals = newScript.externals;
 		script.setup = newScript.setup;
 		script.update = newScript.update;
-		script.lateUpdate = newScript.lateUpdate;
 		script.run = newScript.run;
 		script.cleanup = newScript.cleanup;
 		script.enter = newScript.enter;
@@ -519,49 +512,6 @@ ScriptHandler.prototype._addGlobalErrorListener = function () {
 	});
 };
 
-// The allowed types for the script parameters.
-var PARAMETER_TYPES = [
-	'string',
-	'int',
-	'float',
-	'vec2',
-	'vec3',
-	'vec4',
-	'boolean',
-	'texture',
-	'sound',
-	'camera',
-	'entity',
-	'animation'
-];
-
-// Specifies which controls can be used with each type.
-var TYPE_CONTROLS = (function () {
-	var typeControls = {
-		'string': ['key'],
-		'int': ['spinner', 'slider', 'jointSelector'],
-		'float': ['spinner', 'slider'],
-		'vec2': [],
-		'vec3': ['color'],
-		'vec4': ['color'],
-		'boolean': ['checkbox'],
-		'texture': [],
-		'image': [],
-		'sound': [],
-		'camera': [],
-		'entity': [],
-		'animation': []
-	};
-
-	// Add the controls that can be used with any type to the mapping of
-	// controls that ca be used for each type.
-	for (var type in typeControls) {
-		Array.prototype.push.apply(typeControls[type], ['dropdown', 'select']);
-	}
-
-	return typeControls;
-})();
-
 /**
  * Load an external script
  */
@@ -606,41 +556,6 @@ function loadExternalScript(script, scriptElem, url) {
 	});
 }
 
-var TYPE_VALIDATORS = {
-	string: function (key, value) {
-		if (typeof value !== 'string' || value.length === 0) {
-			return { message: 'Property "' + key + '" must be a non-empty string' };
-		}
-	},
-	number: function (key, value) {
-		if (typeof value !== 'number') {
-			return { message: 'Property "' + key + '" must be a number' };
-		}
-	},
-	boolean: function (key, value) {
-		if (typeof value !== 'boolean') {
-			return { message: 'Property "' + key + '" must be a boolean' };
-		}
-	},
-	array: function (key, value) {
-		if (!(value instanceof Array)) {
-			return { message: 'Property "' + key + '" must be an array' };
-		}
-	}
-};
-
-var PROPERTY_VALIDATORS = [
-	{ name: 'key', validator: TYPE_VALIDATORS.string },
-	{ name: 'name', validator: TYPE_VALIDATORS.string },
-	{ name: 'control', validator: TYPE_VALIDATORS.string },
-	{ name: 'min', validator: TYPE_VALIDATORS.number },
-	{ name: 'max', validator: TYPE_VALIDATORS.number },
-	{ name: 'scale', validator: TYPE_VALIDATORS.number },
-	{ name: 'decimals', validator: TYPE_VALIDATORS.number },
-	{ name: 'precision', validator: TYPE_VALIDATORS.number },
-	{ name: 'exponential', validator: TYPE_VALIDATORS.boolean }
-];
-
 /**
  * Validates every property of a parameter defined by a user script.
  * Exposed as a static method only for testing purposes.
@@ -648,33 +563,30 @@ var PROPERTY_VALIDATORS = [
  * @param parameter
  * @returns {{message: string}|undefined} May return an error
  */
-ScriptHandler.validateParameter = function (parameter) {
-	// treat key separately; this needs to always be defined
-	if (typeof parameter.key !== 'string' || parameter.key.length === 0) {
-		return { message: 'Property "key" must be a non-empty string' };
-	}
+ ScriptHandler.validateParameter = function validateParameter(parameter) {
+	for (var i = 0; i < ScriptUtils.PROPERTY_TYPES.length; ++i) {
+		var entry = ScriptUtils.PROPERTY_TYPES[i];
+		var propValue = parameter[entry.prop];
+		var isPropDefined = typeof propValue !== 'undefined';
 
-	// check for types
-	for (var i = 0; i < PROPERTY_VALIDATORS.length; i++) {
-		var entry = PROPERTY_VALIDATORS[i];
+		var msgStart = 'Property "' + entry.prop + '" must be ';
 
-		if (typeof parameter[entry.name] !== 'undefined') {
-			var maybeError = entry.validator(entry.name, parameter[entry.name]);
-			if (maybeError) {
-				return maybeError;
+		if (entry.mustBeDefined || isPropDefined) {
+			var validator = ScriptUtils.TYPE_VALIDATORS[entry.type];
+			var allowedValues = entry.getAllowedValues ? entry.getAllowedValues(parameter) : null;
+
+			if (isPropDefined && entry.minLength && propValue.length < entry.minLength) {
+				return { message: msgStart + 'longer than ' + (entry.minLength - 1) };
+			}
+
+			if (allowedValues && allowedValues.indexOf(propValue) === -1) {
+				return { message: msgStart + 'one of: ' + allowedValues.join(', ') };
+			}
+
+			if (!validator(propValue)) {
+				return { message: msgStart + 'of type ' + entry.type };
 			}
 		}
-	}
-
-	// check for type in a list of allowed types; must be defined
-	if (PARAMETER_TYPES.indexOf(parameter.type) === -1) {
-		return { message: 'Property "type" must be one of: ' + PARAMETER_TYPES.join(', ') };
-	}
-
-	// check for controls in a list of controls; this depends on type
-	var allowedControls = TYPE_CONTROLS[parameter.type];
-	if (parameter.control !== undefined && allowedControls.indexOf(parameter.control) === -1) {
-		return { message: 'Property "control" must be one of: ' + allowedControls.join(', ') };
 	}
 };
 
@@ -685,7 +597,7 @@ ScriptHandler.validateParameter = function (parameter) {
  * @param script
  * @param outScript
  */
-ScriptHandler.validateParameters = function (script, outScript) {
+ScriptHandler.validateParameters = function validateParameters(script, outScript) {
 	var errors = script.errors || [];
 	if (typeof script.externals !== 'object') {
 		outScript.externals = {};
@@ -699,10 +611,13 @@ ScriptHandler.validateParameters = function (script, outScript) {
 		outScript.errors = errors;
 		return;
 	}
+
+	outScript.externals.parameters = [];
+
 	if (!externals.parameters) {
 		return;
 	}
-	outScript.externals.parameters = [];
+
 	var duplicateChecker = {};
 	for (var i = 0; i < externals.parameters.length; i++) {
 		var parameter = externals.parameters[i];
@@ -757,7 +672,6 @@ function setError(script, error) {
 
 		script.setup = null;
 		script.update = null;
-		script.lateUpdate = null;
 		script.run = null;
 		script.cleanup = null;
 		script.enter = null;

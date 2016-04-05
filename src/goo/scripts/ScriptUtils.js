@@ -3,6 +3,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 function ScriptUtils() {}
 
 ScriptUtils.DEFAULTS_BY_TYPE = {
+	'array': [],
 	'float': 0,
 	'int': 0,
 	'string': '',
@@ -15,7 +16,9 @@ ScriptUtils.DEFAULTS_BY_TYPE = {
 	'entity': null,
 	'image': null,
 	'sound': null,
-	'texture': null
+	'texture': null,
+	'json': null,
+	'text': null
 };
 
 ScriptUtils.REF_TYPES = [
@@ -24,7 +27,9 @@ ScriptUtils.REF_TYPES = [
 	'entity',
 	'image',
 	'sound',
-	'texture'
+	'texture',
+	'json',
+	'text'
 ];
 
 ScriptUtils.isRefType = function (type) {
@@ -58,7 +63,9 @@ ScriptUtils.TYPE_VALIDATORS = (function () {
 	};
 
 	return {
+		'array': ObjectUtils.isArray,
 		'float': ObjectUtils.isNumber,
+		'number': ObjectUtils.isNumber,
 		'string': ObjectUtils.isString,
 		'boolean': ObjectUtils.isBoolean,
 		'int': ObjectUtils.isInteger,
@@ -70,9 +77,91 @@ ScriptUtils.TYPE_VALIDATORS = (function () {
 		'entity': isRef('entity'),
 		'image': isRef('image'),
 		'sound': isRef('sound'),
-		'texture': isRef('texture')
+		'texture': isRef('texture'),
+		'json': isRef('json'),
+		'text': isRef('text'),
 	};
 })();
+
+// The types that are allowed for script parameters.
+ScriptUtils.PARAMETER_TYPES = [
+	'string',
+	'int',
+	'float',
+	'vec2',
+	'vec3',
+	'vec4',
+	'boolean',
+	'texture',
+	'sound',
+	'camera',
+	'entity',
+	'animation',
+	'json',
+	'text'
+];
+
+// Specifies which controls can be used with each type.
+ScriptUtils.PARAMETER_CONTROLS = (function () {
+	var typeControls = {
+		'string': ['key'],
+		'int': ['spinner', 'slider', 'jointSelector'],
+		'float': ['spinner', 'slider'],
+		'vec2': [],
+		'vec3': ['color'],
+		'vec4': ['color'],
+		'boolean': ['checkbox'],
+		'texture': [],
+		'sound': [],
+		'camera': [],
+		'entity': [],
+		'animation': [],
+		'json': [],
+		'text': []
+	};
+
+	// Add the controls that can be used with any type to the mapping of
+	// controls that ca be used for each type.
+	for (var type in typeControls) {
+		Array.prototype.push.apply(typeControls[type], ['dropdown', 'select']);
+	}
+
+	return typeControls;
+})();
+
+// Types used to validate the properties of a script parameter config.
+ScriptUtils.PROPERTY_TYPES = [
+	{
+		prop: 'key',
+		type: 'string',
+		mustBeDefined: true,
+		minLength: 1
+	},
+	{
+		prop: 'type',
+		type: 'string',
+		mustBeDefined: true,
+		minLength: 1,
+		getAllowedValues: function () {
+			return ScriptUtils.PARAMETER_TYPES;
+		}
+	},
+	{
+		prop: 'control',
+		type: 'string',
+		getAllowedValues: function (parameter) {
+			// Allowed controls depend on the parameter type.
+			return ScriptUtils.PARAMETER_CONTROLS[parameter.type];
+		}
+	},
+	{ prop: 'name', type: 'string' },
+	{ prop: 'min', type: 'number' },
+	{ prop: 'max', type: 'number' },
+	{ prop: 'scale', type: 'number' },
+	{ prop: 'decimals', type: 'number' },
+	{ prop: 'precision', type: 'number' },
+	{ prop: 'exponential', type: 'boolean' }
+];
 
 /**
  * Fill a passed parameters object with defaults from spec
