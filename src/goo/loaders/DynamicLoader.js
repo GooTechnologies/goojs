@@ -10,6 +10,7 @@ var ShapeCreatorMemoized = require('../util/ShapeCreatorMemoized');
 require('./handlers/ComponentHandler');
 require('./handlers/CameraComponentHandler');
 require('./handlers/EntityHandler');
+require('./handlers/JsonHandler');
 require('./handlers/LightComponentHandler');
 require('./handlers/MaterialHandler');
 require('./handlers/MeshDataComponentHandler');
