@@ -43,7 +43,7 @@ System.prototype.process = function (/*entities, tpf*/) {};
  * @param {array} entities
  * @param {number} fixedTpf
  */
-System.prototype.fixedProcess = function (/*entities, fixedTpf*/) {};
+System.prototype.fixedUpdate = function (/*entities, fixedTpf*/) {};
 
 /**
  * Called when an entity is added to the world and systems need to be informed
@@ -139,8 +139,8 @@ System.prototype._check = function (entity) {
 	}
 };
 
-System.prototype._fixedProcess = function (fixedTpf) {
-	this.fixedProcess(this._activeEntities, fixedTpf);
+System.prototype._fixedUpdate = function (fixedTpf) {
+	this.fixedUpdate(this._activeEntities, fixedTpf);
 };
 
 System.prototype._process = function (tpf) {

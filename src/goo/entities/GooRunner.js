@@ -40,8 +40,6 @@ var Material = require('../renderer/Material');
  * If no logo is desired then this parameter should have the 'false' value.
  * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
  * If the parameter is of type object then the logo will be positioned according to the 'position' key and will be colored according to the 'color' key
- * @param {number} [parameters.fixedTpf=1/60] The delta time for the fixed update loop.
- * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
  * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
  * @param {boolean} [parameters.useTryCatch=true]
  */
@@ -51,10 +49,12 @@ function GooRunner(parameters) {
 	GameUtils.initAllShims();
 
 	/**
-	 * Automatically created Goo world.
+	 * The Goo world.
 	 * @type {World}
 	 */
-	this.world = new World(this);
+	this.world = new World({
+		gooRunner: this
+	});
 
 	/**
 	 * Automatically created renderer.
@@ -74,11 +74,6 @@ function GooRunner(parameters) {
 
 	this.doProcess = true;
 	this.doRender = true;
-
-	this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
-
-	this.fixedTpf = parameters.fixedTpf !== undefined ? parameters.fixedTpf : 1 / 60;
-	this.maxSubSteps = parameters.maxSubSteps !== undefined ? parameters.maxSubSteps : 10;
 
 	if (parameters.showStats) {
 		this.addStats();
@@ -250,11 +245,9 @@ GooRunner.prototype._registerBaseComponents = function () {
  * @private
  * @param time
  */
-//! TODO: private until documented
 GooRunner.prototype.run = function (time) {
-	//! AT: move the conditional out; assign either variants to the run method
 	if (this.useTryCatch) {
-		this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
+		this._callSafe(this._updateFrame, time);
 	} else {
 		this._updateFrame(time);
 	}
@@ -292,9 +285,6 @@ GooRunner.prototype.setRenderSystem = function (system, idx) {
 	}
 };
 
-var tpfSmoothingArray = [];
-var tpfIndex = 0;
-
 GooRunner.prototype._updateFrame = function (time) {
 	if (this.start < 0) {
 		this.start = time;
@@ -308,22 +298,6 @@ GooRunner.prototype._updateFrame = function (time) {
 		return;
 	}
 
-	// Smooth out the tpf
-	tpfSmoothingArray[tpfIndex] = tpf;
-	tpfIndex = (tpfIndex + 1) % this.tpfSmoothingCount;
-	var avg = 0;
-	for (var i = 0; i < tpfSmoothingArray.length; i++) {
-		avg += tpfSmoothingArray[i];
-	}
-	avg /= tpfSmoothingArray.length;
-	this.world.smoothedTpf = avg;
-
-	this.world.tpf = tpf;
-	this.world.time += this.world.tpf;
-	World.time = this.world.time; // todo: get rid of this
-	World.tpf = this.world.tpf; // todo: get rid of this
-	World.fixedTpf = this.world.fixedTpf = this.fixedTpf;
-	this.world.maxSubSteps = this.maxSubSteps;
 	this.start = time;
 
 	// execute callbacks
@@ -334,12 +308,12 @@ GooRunner.prototype._updateFrame = function (time) {
 		if (this.useTryCatch) {
 			for (var i = 0; i < callbacksNextFrame.length; i++) {
 				var callback = callbacksNextFrame[i];
-				this._callSafe(callback, this.world.tpf);
+				this._callSafe(callback, tpf);
 			}
 		} else {
 			for (var i = 0; i < callbacksNextFrame.length; i++) {
 				var callback = callbacksNextFrame[i];
-				callback(this.world.tpf);
+				callback(tpf);
 			}
 		}
 	}
@@ -347,26 +321,18 @@ GooRunner.prototype._updateFrame = function (time) {
 	if (this.useTryCatch) {
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
 			var callback = this.callbacksPreProcess[i];
-			this._callSafe(callback, this.world.tpf);
+			this._callSafe(callback, tpf);
 		}
 	} else {
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
 			var callback = this.callbacksPreProcess[i];
-			callback(this.world.tpf);
+			callback(tpf);
 		}
 	}
 
 	// process the world
 	if (this.doProcess) {
-
-		var numSteps = 0;
-		while (this.world.fixedTpfTime + this.fixedTpf < this.world.time && numSteps < this.maxSubSteps) {
-			this.world.fixedTpfTime += this.fixedTpf;
-			numSteps++;
-			this.world.fixedProcess();
-		}
-
-		this.world.process();
+		this.world.update(tpf);
 	}
 
 	this.renderer.info.reset();
@@ -378,7 +344,7 @@ GooRunner.prototype._updateFrame = function (time) {
 
 		// run the prerender callbacks
 		for (var i = 0; i < this.callbacksPreRender.length; i++) {
-			this.callbacksPreRender[i](this.world.tpf);
+			this.callbacksPreRender[i](tpf);
 		}
 
 		// run all the renderers
@@ -417,12 +383,12 @@ GooRunner.prototype._updateFrame = function (time) {
 	if (this.useTryCatch) {
 		for (var i = 0; i < this.callbacks.length; i++) {
 			var callback = this.callbacks[i];
-			this._callSafe(callback, this.world.tpf);
+			this._callSafe(callback, tpf);
 		}
 	} else {
 		for (var i = 0; i < this.callbacks.length; i++) {
 			var callback = this.callbacks[i];
-			callback(this.world.tpf);
+			callback(tpf);
 		}
 	}
 

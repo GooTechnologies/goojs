@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FixedUpdate test</title>
+	<style>
+		#goo {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<script src="../../../lib/goo.js"></script>
+	<script src="../../../lib/scriptpack.js"></script>
+	<script src="../../../lib/animationpack.js"></script>
+	<script src="../../../lib/debugpack.js"></script>
+	<script src="../../lib/RNG.js"></script>
+	<script src="../../lib/purl.js"></script>
+	<script src="../../lib/V.js"></script>
+	<script src="../../lib/vtest.js"></script>
+	<script>
+		goo.V.attachToGlobal();
+		var gooRunner = V.initGoo();
+		var world = gooRunner.world;
+		V.addLights();
+		V.addOrbitCamera();
+
+		world.fixedTpf = 1 / 10;
+		var x = 1, v = 0, previousX = 1;
+
+		var entity = world.createEntity(V.getColoredMaterial(), new Sphere(8,8, 1), 'entity', [0, 2, 0]).addToWorld();
+
+		var interpolatedEntity = world.createEntity(V.getColoredMaterial(), new Sphere(10,10, 1), 'interpolatedEntity', [0, 0, 0], {
+			fixedUpdate: function(){
+				var f = -10 * x;
+				previousX = x;
+				v += f * world.fixedTpf;
+				x += v * world.fixedTpf;
+			},
+			update: function(){
+				var interpolatedX = MathUtils.lerp(world.interpolationTime, previousX, x);
+				interpolatedEntity.setTranslation(0, 0, interpolatedX);
+				entity.setTranslation(0, 2, x);
+			}
+		}).addToWorld();
+
+</script>
+</body>
+</html>

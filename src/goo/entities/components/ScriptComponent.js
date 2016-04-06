@@ -134,6 +134,23 @@ ScriptComponent.prototype.lateRun = function () {
 };
 
 /**
+ * Runs the lateUpdate function on every script attached to this entity.
+ * @private
+ */
+ScriptComponent.prototype.fixedUpdate = function () {
+	for (var i = 0; i < this.scripts.length; i++) {
+		var script = this.scripts[i];
+		if (script.fixedUpdate && (script.enabled === undefined || script.enabled)) {
+			try {
+				script.fixedUpdate(script.parameters, script.context, getGooClasses());
+			} catch (e) {
+				this._handleError(script, e, 'lateUpdate');
+			}
+		}
+	}
+};
+
+/**
  * Reverts any changes done by setup; called when the entity loses its ScriptComponent or is removed from the world.
  * @private
  */

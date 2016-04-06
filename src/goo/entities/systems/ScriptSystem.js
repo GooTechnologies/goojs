@@ -64,6 +64,14 @@ ScriptSystem.prototype.pause = function () {
 
 ScriptSystem.prototype.stop = ScriptSystem.prototype.pause;
 
+ScriptSystem.prototype.fixedUpdate = function (entities, fixedTpf) {
+	// Update scripts
+	for (var i = 0; i < entities.length; i++) {
+		var scriptComponent = entities[i].scriptComponent;
+		scriptComponent.fixedUpdate(entities[i], fixedTpf);
+	}
+};
+
 ScriptSystem.prototype.process = function (entities, tpf) {
 	// Update scripts
 	for (var i = 0; i < entities.length; i++) {
