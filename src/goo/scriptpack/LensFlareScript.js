@@ -321,7 +321,6 @@ FlareQuad.prototype.updatePosition = function (flareGeometry) {
 	quadTransform.rotation.set(flareGeometry.camRot);
 	quadTransform.translation.set(this.positionVector);
 
-	this.quad.transformComponent.updateTransform();
 	this.quad.transformComponent.setUpdated();
 };
 
