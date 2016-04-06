@@ -1,4 +1,5 @@
-var Ammo = window.Ammo; // make jslint happy
+/* global Ammo, gooRunner */
+
 function VehicleHelper(goo, ammoSystem, chassis, wheelRadius, suspensionLength, doCreateDebugTire) {
 	this.goo = goo;
 	this.chassis = chassis;
@@ -70,10 +71,10 @@ VehicleHelper.prototype.addWheel = function( x,y,z, isFrontWheel) {
 VehicleHelper.prototype.updateWheelTransform = function() {
 	for(var i=0;i<this.vehicle.getNumWheels();i++){
 		// synchronize the wheels with the (interpolated) chassis worldtransform
-		this.vehicle.updateWheelTransform(i,true);
+		this.vehicle.updateWheelTransform(i, true);
 		var origin = this.vehicle.getWheelInfo(i).get_m_worldTransform().getOrigin();
 		var dt = this.debugTires[i];
-		if( dt) {
+		if (dt) {
 			dt.transformComponent.setTranslation(origin.x(),origin.y(),origin.z());
 		}
 	}

@@ -233,7 +233,6 @@ describe('TransformComponent', function () {
 
 			expect(entity.transformComponent).toBe(transformComponent);
 			expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
-			expect(entity.transformComponent._dirty).toBeTruthy();
 		});
 
 		it('sets a TransformComponent when trying to add a {x, y, z} object', function () {

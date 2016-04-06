@@ -73,6 +73,11 @@ ScriptSystem.prototype.fixedUpdate = function (entities, fixedTpf) {
 };
 
 ScriptSystem.prototype.process = function (entities, tpf) {
+	// update play time
+	if (this._playing) {
+		this.context.playTime += tpf;
+	}
+
 	// Update scripts
 	for (var i = 0; i < entities.length; i++) {
 		var scriptComponent = entities[i].scriptComponent;
@@ -82,11 +87,6 @@ ScriptSystem.prototype.process = function (entities, tpf) {
 	for (var i = 0; i < entities.length; i++) {
 		var scriptComponent = entities[i].scriptComponent;
 		scriptComponent.lateRun(entities[i], tpf);
-	}
-
-	// update play time
-	if (this._playing) {
-		this.context.playTime += tpf;
 	}
 };
 

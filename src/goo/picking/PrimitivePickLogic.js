@@ -17,7 +17,7 @@ PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 		return null;
 	}
 
-	var worldTransform = entity.transformComponent.worldTransform;
+	var worldTransform = entity.transformComponent.sync().worldTransform;
 	this.invMatrix.copy(worldTransform.matrix).invert();
 	this.invRay.origin.set(pickRay.origin).applyPostPoint(this.invMatrix);
 	this.invRay.direction.set(pickRay.direction).applyPostVector(this.invMatrix);

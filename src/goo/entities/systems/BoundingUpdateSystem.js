@@ -29,10 +29,9 @@ BoundingUpdateSystem.prototype.process = function (entities) {
 
 		if (meshDataComponent.autoCompute) {
 			meshDataComponent.computeBoundFromPoints();
-			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
-		} else if (transformComponent._updated) {
-			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
-			// meshDataComponent.setDirty(false);
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.sync().worldTransform);
+		} else {
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.sync().worldTransform);
 		}
 	}
 	if (this._computeWorldBound && this._computeWorldBound instanceof Function) {

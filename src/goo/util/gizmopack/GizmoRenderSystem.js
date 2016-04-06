@@ -127,7 +127,7 @@ GizmoRenderSystem.prototype.show = function (entity) {
 };
 
 GizmoRenderSystem.prototype.showGizmo = function (gizmo) {
-	gizmo.copyTransform(this.entity.transformComponent.worldTransform);
+	gizmo.copyTransform(this.entity.transformComponent.sync().worldTransform);
 	if (!gizmo.visible) {
 		this.renderables = gizmo.renderables;
 		gizmo.visible = true;
@@ -178,11 +178,11 @@ GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 	var onTranslationChange = function (change) {
 		if (!this.entity) { return; }
 
-		var translation = this.entity.transformComponent.transform.translation;
+		var translation = this.entity.transformComponent.sync().transform.translation;
 		translation.copy(change);
 
 		if (this.entity.transformComponent.parent) {
-			inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
+			inverseTransformation.copy(this.entity.transformComponent.parent.sync().worldTransform.matrix);
 			inverseTransformation.invert();
 			translation.applyPostPoint(inverseTransformation);
 		}
@@ -198,10 +198,10 @@ GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 	var onRotationChange = function (change) {
 		if (!this.entity) { return; }
 
-		this.entity.transformComponent.transform.rotation.copy(change);
+		this.entity.transformComponent.sync().transform.rotation.copy(change);
 
 		if (this.entity.transformComponent.parent) {
-			inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
+			inverseRotation.copy(this.entity.transformComponent.parent.sync().worldTransform.rotation);
 			inverseRotation.invert();
 			this.entity.transformComponent.transform.rotation.mul(inverseRotation);
 		}
@@ -219,12 +219,12 @@ GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 	this.gizmos[4].onChange = function (change) {
 		if (!this.entity) { return; }
 
-		var scale = this.entity.transformComponent.transform.scale;
+		var scale = this.entity.transformComponent.sync().transform.scale;
 
 		scale.copy(change);
 
 		if (this.entity.transformComponent.parent) {
-			scale.div(this.entity.transformComponent.parent.worldTransform.scale);
+			scale.div(this.entity.transformComponent.parent.sync().worldTransform.scale);
 		}
 
 		this.entity.transformComponent.setUpdated();

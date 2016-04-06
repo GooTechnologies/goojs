@@ -39,8 +39,8 @@ function TransformComponent() {
 	 */
 	this.worldTransform = new Transform();
 
-	this._dirty = true;
-	this._updated = false;
+	this._localTransformDirty = true;
+	this._worldTransformDirty = true;
 
 	// #ifdef DEBUG
 	Object.seal(this);
@@ -382,7 +382,7 @@ TransformComponent.prototype.getTranslation = function () {
  */
 TransformComponent.prototype.setTranslation = function () {
 	this.transform.translation.set(Vector3.fromAny.apply(null, arguments));
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -412,7 +412,7 @@ TransformComponent.prototype.getScale = function () {
  */
 TransformComponent.prototype.setScale = function () {
 	this.transform.scale.set(Vector3.fromAny.apply(null, arguments));
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -429,7 +429,7 @@ TransformComponent.prototype.setScale = function () {
  */
 TransformComponent.prototype.addTranslation = function () {
 	this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -475,7 +475,7 @@ TransformComponent.prototype.addRotation = function () {
 		this.transform.rotation.fromAngles(tmpVec.x + arguments[0], tmpVec.y + arguments[1], tmpVec.z + arguments[2]);
 	}
 
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -502,7 +502,7 @@ TransformComponent.prototype.setRotation = function () {
 		this.transform.rotation.fromAngles(arguments[0], arguments[1], arguments[2]);
 	}
 
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -519,10 +519,7 @@ TransformComponent.prototype.lookAt = function (position, up) {
 	if (arguments.length === 3) {
 		this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
 	} else if (position.transformComponent) {
-		if (position.transformComponent._dirty) {
-			position.transformComponent.updateWorldTransform();
-		}
-		this.transform.lookAt(position.transformComponent.worldTransform.translation, up);
+		this.transform.lookAt(position.transformComponent.sync().worldTransform.translation, up);
 	} else {
 		if (Array.isArray(position)) {
 			position = Vector3.fromArray(position);
@@ -532,7 +529,7 @@ TransformComponent.prototype.lookAt = function (position, up) {
 		}
 		this.transform.lookAt(position, up);
 	}
-	this._dirty = true;
+	this.setUpdated();
 	return this;
 };
 
@@ -560,7 +557,7 @@ TransformComponent.prototype.move = (function () {
  * Mark the component for updates of world transform. Needs to be called after manually changing the transform without using helper functions.
  */
 TransformComponent.prototype.setUpdated = function () {
-	this._dirty = true;
+	this._worldTransformDirty = this._localTransformDirty = true;
 };
 
 /**
@@ -602,16 +599,14 @@ TransformComponent.prototype.attachChild = function (childComponent, keepTransfo
 	}
 
 	if (keepTransform) {
-		childComponent.updateTransform();
-		this.updateTransform();
-		this.updateWorldTransform();
+		childComponent.sync();
+		this.sync();
 		childComponent.transform.multiply(this.worldTransform.invert(), childComponent.transform);
+		childComponent.setUpdated();
 	}
 
 	childComponent.parent = this;
 	this.children.push(childComponent);
-
-	// childComponent.setUpdated();
 };
 
 /**
@@ -628,7 +623,7 @@ TransformComponent.prototype.detachChild = function (childComponent, keepTransfo
 	}
 
 	if (keepTransform) {
-		childComponent.transform.copy(childComponent.worldTransform);
+		childComponent.transform.copy(childComponent.sync().worldTransform);
 	}
 
 	var index = this.children.indexOf(childComponent);
@@ -637,7 +632,7 @@ TransformComponent.prototype.detachChild = function (childComponent, keepTransfo
 		this.children.splice(index, 1);
 	}
 
-	// childComponent.setUpdated();
+	childComponent.setUpdated();
 };
 
 /**
@@ -645,12 +640,17 @@ TransformComponent.prototype.detachChild = function (childComponent, keepTransfo
  */
 TransformComponent.prototype.updateTransform = function () {
 	this.transform.update();
+	this._localTransformDirty = false;
+	this._worldTransformDirty = true;
 };
 
 /**
  * Update component's world transform (resulting transform considering parent transformations).
  */
 TransformComponent.prototype.updateWorldTransform = function () {
+	if (this._localTransformDirty) {
+		this.updateTransform();
+	}
 	if (this.parent) {
 		this.worldTransform.multiply(this.parent.worldTransform, this.transform);
 	} else {
@@ -659,8 +659,7 @@ TransformComponent.prototype.updateWorldTransform = function () {
 
 	this.worldTransform.updateNormalMatrix();
 
-	this._dirty = false;
-	this._updated = true;
+	this._worldTransformDirty = false;
 };
 
 /**
@@ -679,11 +678,16 @@ TransformComponent.prototype.sync = (function () {
 		var update = false;
 		for (var i = parents.length - 1; i >= 0; i--) {
 			var component = parents[i];
-			if (component._dirty || update) {
+			if (component._worldTransformDirty || update) {
 				update = true; // update the rest of the tree branch
-				component.updateTransform();
 				component.updateWorldTransform();
-				component._dirty = false;
+
+				// Parent was dirty but we set it to undirty. The children still need to be dirty because we didn't update them yet.
+				var children = component.children;
+				var l = children.length;
+				while (l--) {
+					children[l]._worldTransformDirty = true;
+				}
 			}
 		}
 

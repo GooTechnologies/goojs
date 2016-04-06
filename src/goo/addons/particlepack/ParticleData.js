@@ -114,7 +114,7 @@ ParticleData.prototype.getWorldPosition = function (store) {
 
 	if (component.localSpace) {
 		// Transform to world space
-		var worldTransform = component.entity.transformComponent.worldTransform;
+		var worldTransform = component.entity.transformComponent.sync().worldTransform;
 		store.applyPost(worldTransform.rotation);
 		store.add(worldTransform.translation);
 	}

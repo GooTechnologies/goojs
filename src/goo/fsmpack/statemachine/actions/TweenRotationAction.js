@@ -77,7 +77,7 @@ TweenRotationAction.prototype.ready = function () {
 
 TweenRotationAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var transformComponent = entity.transformComponent;
+	var transformComponent = entity.transformComponent.sync();
 
 	this.startTime = fsm.getTime();
 
@@ -94,7 +94,7 @@ TweenRotationAction.prototype.update = function (fsm) {
 		return;
 	}
 	var entity = fsm.getOwnerEntity();
-	var transform = entity.transformComponent.transform;
+	var transform = entity.transformComponent.sync().transform;
 
 	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
 	var fT = this.easing(t);

@@ -118,7 +118,7 @@ PhysicsDebugRenderSystem.prototype.process = function (entities) {
  * @param  {Transform} targetTransform
  */
 PhysicsDebugRenderSystem.prototype.getWorldTransform = function (colliderEntity, collider, targetTransform) {
-	targetTransform.copy(colliderEntity.transformComponent.worldTransform);
+	targetTransform.copy(colliderEntity.transformComponent.sync().worldTransform);
 
 	if (collider instanceof SphereCollider) {
 		var scale = collider.radius;

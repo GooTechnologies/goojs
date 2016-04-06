@@ -70,21 +70,7 @@ AbstractColliderComponent.prototype.getBodyEntity = function () {
  * Updates the .worldCollider
  */
 AbstractColliderComponent.prototype.updateWorldCollider = function () {
-	// Update the world transform of the entity
-	// Get the root and update on the walk down
-	var updateEntities = [];
-	this.entity.traverseUp(function (entity) {
-		updateEntities.unshift(entity);
-	});
-	var len = updateEntities.length;
-	for (var i = 0; i !== len; i++) {
-		var entity = updateEntities[i];
-		var transformComponent = entity.transformComponent;
-		transformComponent.updateTransform(); // TODO: should not touch this
-		transformComponent.updateWorldTransform();
-	}
-
-	this.collider.transform(this.entity.transformComponent.worldTransform, this.worldCollider);
+	this.collider.transform(this.entity.transformComponent.sync().worldTransform, this.worldCollider);
 };
 
 /**

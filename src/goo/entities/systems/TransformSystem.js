@@ -17,14 +17,15 @@ function TransformSystem() {
 TransformSystem.prototype = Object.create(System.prototype);
 TransformSystem.prototype.constructor = TransformSystem;
 
-TransformSystem.prototype.process = function (entities) {
+TransformSystem.prototype.process = function () {
+	var entities = this._activeEntities;
+
 	numUpdates = 0;
 	var i, transformComponent;
 	var l = entities.length;
 	for (i = 0; i < l; i++) {
 		transformComponent = entities[i].transformComponent;
-		transformComponent._updated = false;
-		if (transformComponent._dirty) {
+		if (transformComponent._localTransformDirty) {
 			transformComponent.updateTransform();
 		}
 	}
@@ -42,13 +43,13 @@ TransformSystem.prototype.process = function (entities) {
 };
 
 function traverseFunc(entity) {
-	if (entity.transformComponent._dirty) {
+	if (entity.transformComponent._worldTransformDirty) {
 		entity.transformComponent.updateWorldTransform();
 		numUpdates++;
 		// Set children to dirty
 		var children = entity.transformComponent.children;
 		for (var j = 0; j < children.length; j++) {
-			children[j]._dirty = true;
+			children[j]._worldTransformDirty = true;
 		}
 	}
 }

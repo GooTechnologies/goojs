@@ -285,7 +285,7 @@ SoundSystem.prototype.process = function (entities, tpf) {
 
 		if (this._camera && !component._attachedToCamera) {
 			// Give the transform relative to the camera
-			relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
+			relativeTransform.mul2(viewMat, e.transformComponent.sync().worldTransform.matrix);
 			component.process(this, relativeTransform, tpf);
 		} else {
 			// Component is attached to camera.

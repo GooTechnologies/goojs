@@ -40,7 +40,7 @@ RenderInfo.prototype.fill = function (renderable) {
 	if (renderable instanceof Entity) {
 		this.meshData = renderable.meshDataComponent.meshData;
 		this.materials = renderable.meshRendererComponent.materials;
-		this.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
+		this.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.sync().worldTransform;
 		if (renderable.meshDataComponent.currentPose) {
 			this.currentPose = renderable.meshDataComponent.currentPose;
 		} else {

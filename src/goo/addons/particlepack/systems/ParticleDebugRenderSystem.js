@@ -131,7 +131,7 @@ ParticleDebugRenderSystem.prototype.render = function (renderer) {
 			renderable.meshData.indexModes = ['Lines'];
 
 			var transform = renderable.transform;
-			var worldTransform = entity.transformComponent.worldTransform;
+			var worldTransform = entity.transformComponent.sync().worldTransform;
 
 			transform.rotation.copy(this.offsetTransform.rotation);
 			transform.rotation.mul(worldTransform.rotation);

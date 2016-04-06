@@ -60,7 +60,7 @@ ColliderComponent.prototype.initialize = function () {
 
 	// Get transform from entity
 	var entity = this.entity;
-	var transform = entity.transformComponent.worldTransform;
+	var transform = entity.transformComponent.sync().worldTransform;
 	var position = new CANNON.Vec3();
 	var quaternion = new CANNON.Quaternion();
 	position.copy(transform.translation);

@@ -84,7 +84,7 @@ function checkInside(pos, pt1, pt2) {
 
 InBoxAction.prototype.checkInside = function (fsm) {
 	var entity = fsm.getOwnerEntity();
-	var translation = entity.transformComponent.worldTransform.translation;
+	var translation = entity.transformComponent.sync().worldTransform.translation;
 
 	var inside = checkInside([translation.x, translation.y, translation.z], this.point1, this.point2);
 

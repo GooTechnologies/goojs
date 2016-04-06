@@ -155,4 +155,14 @@ System.prototype.clear = function () {
 	this._activeEntities = [];
 };
 
+/**
+ * Called before the scene is being rendered
+ */
+System.prototype.onPreRender = function () {};
+
+/**
+ * Called after the scene is being rendered
+ */
+System.prototype.onPostRender = function () {};
+
 module.exports = System;

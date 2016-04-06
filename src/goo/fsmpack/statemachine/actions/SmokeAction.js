@@ -49,7 +49,7 @@ SmokeAction.prototype.enter = function (fsm) {
 		SmokeAction.material.renderQueue = 2001;
 	}
 
-	var entityScale = entity.transformComponent.worldTransform.scale;
+	var entityScale = entity.transformComponent.sync().worldTransform.scale;
 	var scale = (entityScale.x + entityScale.y + entityScale.z) / 3;
 	this.smokeEntity = ParticleSystemUtils.createParticleSystemEntity(
 		gooRunner.world,

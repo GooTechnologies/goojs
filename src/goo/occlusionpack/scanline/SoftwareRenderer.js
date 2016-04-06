@@ -185,7 +185,7 @@ SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
 	 */
 SoftwareRenderer.prototype._viewSpaceTransformAndCopyVertices = function (entity, cameraViewMatrix) {
 	var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
-	var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+	var entitityWorldTransformMatrix = entity.transformComponent.sync().worldTransform.matrix;
 	// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 	combinedMatrix.mul2(cameraViewMatrix, entitityWorldTransformMatrix);
 

@@ -15,7 +15,7 @@ function SkyboxHandler() {
 	// Skybox entity
 	var skybox = new Skybox('box', [], null, 0);
 	this._skybox = this.world.createEntity(skybox.meshData, skybox.materials[0], skybox.transform);
-	this._skybox.transformComponent.updateWorldTransform();
+	this._skybox.transformComponent.sync();
 	this._skybox.isSkybox = true;
 	this._skybox.name = 'Skybox_box';
 
@@ -29,7 +29,7 @@ function SkyboxHandler() {
 	// Skysphere entity
 	var skysphere = new Skybox('sphere', [], null, 0);
 	this._skysphere = this.world.createEntity(skysphere.meshData, skysphere.materials[0], skysphere.transform);
-	this._skysphere.transformComponent.updateWorldTransform();
+	this._skysphere.transformComponent.sync();
 	this._skysphere.isSkybox = true;
 	this._skysphere.name = 'Skybox_sphere';
 
