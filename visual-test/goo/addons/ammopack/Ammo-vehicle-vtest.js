@@ -62,6 +62,7 @@ function init() {
 	vehicleHelper.addRearWheel(  [ -1, 0.0, -1.0]);
 	vehicleHelper.addRearWheel(  [  1, 0.0, -1.0]);
 
+	// Pre-render: after the physics system updates and before rendering
 	gooRunner.callbacksPreRender.push(function() {
 		vehicleHelper.setSteeringValue( keys[37] * 0.3 + keys[39] * -0.3);
 		vehicleHelper.applyEngineForce( keys[38] * 1500 + keys[40] * -500, true);
