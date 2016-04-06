@@ -40,6 +40,7 @@ var Material = require('../renderer/Material');
  * If no logo is desired then this parameter should have the 'false' value.
  * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
  * If the parameter is of type object then the logo will be positioned according to the 'position' key and will be colored according to the 'color' key
+ * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
  * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
  * @param {boolean} [parameters.useTryCatch=true]
  */
@@ -53,7 +54,8 @@ function GooRunner(parameters) {
 	 * @type {World}
 	 */
 	this.world = new World({
-		gooRunner: this
+		gooRunner: this,
+		tpfSmoothingCount: parameters.tpfSmoothingCount
 	});
 
 	/**
