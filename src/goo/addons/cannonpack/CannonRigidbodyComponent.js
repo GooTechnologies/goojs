@@ -115,9 +115,7 @@ CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
 	var collider = CannonRigidbodyComponent.getCollider(entity);
 	if (!collider) {
 		// Needed for getting the Rigidbody-local transform of each collider
-		// entity.transformComponent.updateTransform();
-		// entity.transformComponent.updateWorldTransform();
-		var bodyTransform = entity.transformComponent.worldTransform;
+		var bodyTransform = entity.transformComponent.sync().worldTransform;
 		var invBodyTransform = new Transform();
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
@@ -129,10 +127,7 @@ CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
 			var collider = CannonRigidbodyComponent.getCollider(childEntity);
 			if (collider) {
 				// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
-				// childEntity.transformComponent.updateTransform();
-				// childEntity.transformComponent.updateWorldTransform();
-
-				gooTrans.copy(childEntity.transformComponent.worldTransform);
+				gooTrans.copy(childEntity.transformComponent.sync().worldTransform);
 				var gooTrans2 = new Transform();
 				Transform.combine(invBodyTransform, gooTrans, gooTrans2);
 				gooTrans2.update();

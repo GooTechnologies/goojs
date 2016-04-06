@@ -42,16 +42,16 @@ CopyJointTransformAction.prototype.update = function (fsm) {
 	jointTransform.matrix.getScale(entity.transformComponent.transform.scale);
 	jointTransform.matrix.getRotation(entity.transformComponent.transform.rotation);
 	updateWorldTransform(entity.transformComponent);
-	entity.transformComponent._dirty = true;
+	entity.transformComponent.setUpdated();
 };
 
 function updateWorldTransform(transformComponent) {
-	transformComponent.updateWorldTransform();
+	transformComponent.sync();
 	var entity = transformComponent.entity;
 	if (entity && entity.meshDataComponent && entity.meshRendererComponent) {
 		entity.meshRendererComponent.updateBounds(
 			entity.meshDataComponent.modelBound,
-			transformComponent.worldTransform
+			transformComponent.sync().worldTransform
 		);
 	}
 

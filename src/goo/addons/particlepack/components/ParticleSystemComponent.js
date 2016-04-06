@@ -1068,13 +1068,13 @@ ParticleSystemComponent.prototype._updateUniforms = function () {
 		// In local space:
 		// 1. Need to multiply the worldVelocity with the inverse rotation, to get local velocity
 		// 2. World velocity is good as it is
-		worldToLocalRotation.copy(this.meshEntity.transformComponent.worldTransform.rotation).invert();
+		worldToLocalRotation.copy(this.meshEntity.transformComponent.sync().worldTransform.rotation).invert();
 		localToWorldRotation.copy(Matrix3.IDENTITY);
 	} else {
 		// 1. Need to multiply the localVelocity with the world rotation, to get local velocity
 		// 2. Local velocity is good as it is
 		worldToLocalRotation.copy(Matrix3.IDENTITY);
-		localToWorldRotation.copy(this.entity.transformComponent.worldTransform.rotation);
+		localToWorldRotation.copy(this.entity.transformComponent.sync().worldTransform.rotation);
 	}
 
 	var localGravity = this._localGravity;
@@ -1482,7 +1482,7 @@ ParticleSystemComponent.prototype._updateBounds = function () {
 		return;
 	}
 	var bounds = this.meshEntity.meshRendererComponent.worldBound;
-	bounds.center.copy(this.entity.transformComponent.worldTransform.translation);
+	bounds.center.copy(this.entity.transformComponent.sync().worldTransform.translation);
 	var r = this.boundsRadius;
 	bounds.xExtent = bounds.yExtent = bounds.zExtent = r * 2;
 };
@@ -1544,7 +1544,7 @@ ParticleSystemComponent.prototype.process = function (tpf) {
 	this.meshEntity.meshRendererComponent.hidden = this.entity.isVisiblyHidden();
 
 	var entity = this.entity;
-	var worldTransform = entity.transformComponent.worldTransform;
+	var worldTransform = entity.transformComponent.sync().worldTransform;
 	var particles = this.particles;
 
 	if (this.localSpace) {
@@ -1552,7 +1552,7 @@ ParticleSystemComponent.prototype.process = function (tpf) {
 		// Copy the parent mesh translation and rotation.
 		var meshEntity = this.meshEntity;
 		copyPositionAndRotation(meshEntity.transformComponent.transform, entity.transformComponent.transform);
-		copyPositionAndRotation(meshEntity.transformComponent.worldTransform, entity.transformComponent.worldTransform);
+		copyPositionAndRotation(meshEntity.transformComponent.sync().worldTransform, entity.transformComponent.worldTransform);
 
 	}
 

@@ -119,7 +119,7 @@ function LensFlareScript() {
 			{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5 }
 		];
 
-		ctx.bounds = new BoundingSphere(ctx.entity.transformComponent.worldTransform.translation, 0);
+		ctx.bounds = new BoundingSphere(ctx.entity.transformComponent.sync().worldTransform.translation, 0);
 	}
 
 	function cleanup(/*args, ctx*/) {
@@ -127,8 +127,8 @@ function LensFlareScript() {
 		flares = [];
 	}
 
-	function update(args, ctx) {
-		ctx.bounds.center.copy(ctx.entity.transformComponent.worldTransform.translation);
+	function lateUpdate(args, ctx) {
+		ctx.bounds.center.copy(ctx.entity.transformComponent.sync().worldTransform.translation);
 		if (ctx.activeCameraEntity.cameraComponent.camera.contains(ctx.bounds)) {
 			flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
 			if (!isActive) {
@@ -151,7 +151,7 @@ function LensFlareScript() {
 
 	return {
 		setup: setup,
-		update: update,
+		lateUpdate: lateUpdate,
 		cleanup: cleanup
 	};
 }
@@ -241,16 +241,16 @@ function FlareGeometry(edgeRelevance) {
 }
 
 FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
-	this.camRot = cameraEntity.transformComponent.transform.rotation;
-	this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
-	this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
+	this.camRot = cameraEntity.transformComponent.sync().transform.rotation;
+	this.centerVector.set(cameraEntity.transformComponent.sync().worldTransform.translation);
+	this.displacementVector.set(lightEntity.transformComponent.sync().worldTransform.translation);
 	this.displacementVector.sub(this.centerVector);
 	this.distance = this.displacementVector.length();
 	this.distanceVector.setDirect(0, 0, -this.distance);
 	this.distanceVector.applyPost(this.camRot);
 	this.centerVector.add(this.distanceVector);
 	this.positionVector.set(this.centerVector);
-	this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
+	this.displacementVector.set(lightEntity.transformComponent.sync().worldTransform.translation);
 	this.displacementVector.sub(this.positionVector);
 	this.offset = this.displacementVector.length();
 	var positionVectorLength = this.positionVector.length();
@@ -320,8 +320,8 @@ FlareQuad.prototype.updatePosition = function (flareGeometry) {
 	quadTransform.scale.scale(scaleFactor);
 	quadTransform.rotation.set(flareGeometry.camRot);
 	quadTransform.translation.set(this.positionVector);
-	this.quad.transformComponent.updateTransform();
-	this.quad.transformComponent.updateWorldTransform();
+
+	this.quad.transformComponent.setUpdated();
 };
 
 module.exports = LensFlareScript;

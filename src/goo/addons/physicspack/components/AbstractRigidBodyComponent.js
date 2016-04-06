@@ -91,11 +91,7 @@ var trans2 = new Transform();
  * @param  {Function} callback A callback to be called for each collider below or on the same entity. The arguments to the callback are: colliderEntity, collider, localPosition and localQuaternion.
  */
 AbstractRigidBodyComponent.prototype.traverseColliders = function (entity, callback) {
-	// Needed for getting the RigidBody-local transform of each collider
-	entity.transformComponent.updateTransform();
-	entity.transformComponent.updateWorldTransform();
-
-	var bodyTransform = entity.transformComponent.worldTransform;
+	var bodyTransform = entity.transformComponent.sync().worldTransform;
 	inverseBodyTransform.copy(bodyTransform);
 	inverseBodyTransform.invert(inverseBodyTransform);
 
@@ -106,8 +102,7 @@ AbstractRigidBodyComponent.prototype.traverseColliders = function (entity, callb
 
 		var collider = childEntity.colliderComponent;
 		if (collider) {
-			childEntity.transformComponent.updateTransform();
-			childEntity.transformComponent.updateWorldTransform();
+			childEntity.transformComponent.sync();
 
 			// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 			trans.copy(childEntity.transformComponent.worldTransform);

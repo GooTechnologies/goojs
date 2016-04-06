@@ -72,7 +72,7 @@ Dom3dSystem.prototype.init = function () {
 			for (var j = 0; j < polygonVertices.length; j++) {
 				var vec = polygonVertices[j];
 				vec.set(offsets[j]);
-				vec.applyPostPoint(entity.transformComponent.worldTransform.matrix);
+				vec.applyPostPoint(entity.transformComponent.sync().worldTransform.matrix);
 			}
 
 			if (ray.intersects(polygonVertices, doPlanar, null, true)) {
@@ -255,12 +255,7 @@ Dom3dSystem.prototype.process = function (entities) {
 			component.domElement.style.display = '';
 		}
 
-		if (!component.updated && !entity.transformComponent._updated) {
-			continue;
-		}
-		component.updated = false;
-
-		var worldTransform = entity.transformComponent.worldTransform;
+		var worldTransform = entity.transformComponent.sync().worldTransform;
 		style = this.getEntityCSSMatrix(worldTransform.matrix) +
 				' scale(' + this.precisionScale / component.width +
 				', ' + this.precisionScale / component.height + ')';

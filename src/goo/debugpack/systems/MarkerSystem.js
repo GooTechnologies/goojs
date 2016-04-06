@@ -26,7 +26,7 @@ function MarkerSystem(goo) {
 			var entity = this.entities[i];
 			if (entity.hasComponent('MarkerComponent')) {
 				var transform = new Transform();
-				transform.copy(entity.transformComponent.worldTransform);
+				transform.copy(entity.transformComponent.sync().worldTransform);
 				transform.setRotationXYZ(0, 0, 0);
 				transform.scale.setDirect(1, 1, 1);
 				transform.update();

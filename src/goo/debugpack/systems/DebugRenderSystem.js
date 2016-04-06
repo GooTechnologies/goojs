@@ -93,8 +93,8 @@ DebugRenderSystem.prototype.process = function (entities, tpf) {
 
 				for (var k = 0; k < renderables.length; k++) {
 					var renderable = renderables[k];
-					renderable.transform.translation.set(entity.transformComponent.worldTransform.translation);
-					renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
+					renderable.transform.translation.set(entity.transformComponent.sync().worldTransform.translation);
+					renderable.transform.rotation.copy(entity.transformComponent.sync().worldTransform.rotation);
 					renderable.transform.scale.setDirect(1, 1, 1);
 					renderable.transform.update();
 				}
@@ -119,7 +119,7 @@ DebugRenderSystem.prototype.process = function (entities, tpf) {
 			}
 			for (var k = 0; k < renderables.length; k++) {
 				var renderable = renderables[k];
-				renderable.transform.copy(entity.transformComponent.worldTransform);
+				renderable.transform.copy(entity.transformComponent.sync().worldTransform);
 				this.renderList[count++] = renderable;
 			}
 		}

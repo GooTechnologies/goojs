@@ -44,7 +44,7 @@ function BoundingSphereOcclusionChecker(renderer) {
  * @returns {Boolean} occluded or not occluded
  */
 BoundingSphereOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
-	var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+	var entityWorldTransformMatrix = entity.transformComponent.sync().worldTransform.matrix;
 	combinedMatrix.mul2(cameraViewMatrix, entityWorldTransformMatrix);
 
 	var boundingSphere = entity.meshDataComponent.modelBound;

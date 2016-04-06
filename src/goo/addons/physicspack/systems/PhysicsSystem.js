@@ -479,23 +479,15 @@ PhysicsSystem.prototype.syncTransforms = function (entities) {
 		transform.translation.set(tmpVec);
 		transform.rotation.copyQuaternion(tmpQuat);
 
-		// Update transform manually
-		transformComponent.updateTransform();
-		transformComponent.updateWorldTransform();
-
 		var parent = transformComponent.parent;
 		if (parent) {
 			// The rigid body is a child, but we have its physics world transform
 			// and need to set the world transform of it.
-			parent.entity.transformComponent.worldTransform.invert(tmpTransform);
+			parent.entity.transformComponent.sync().worldTransform.invert(tmpTransform);
 			Transform.combine(tmpTransform, transform, tmpTransform);
 
 			transform.rotation.copy(tmpTransform.rotation);
 			transform.translation.copy(tmpTransform.translation);
-
-			// Update transform
-			transformComponent.updateTransform();
-			transformComponent.updateWorldTransform();
 		}
 
 		transformComponent.setUpdated();

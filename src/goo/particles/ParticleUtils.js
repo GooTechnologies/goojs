@@ -48,7 +48,7 @@ ParticleUtils.applyEntityTransformPoint = function (vec3, entity) {
 		return vec3;
 	}
 
-	return entity.transformComponent.worldTransform.applyForward(vec3, vec3);
+	return entity.transformComponent.sync().worldTransform.applyForward(vec3, vec3);
 };
 
 ParticleUtils.applyEntityTransformVector = function (vec3, entity) {
@@ -56,7 +56,7 @@ ParticleUtils.applyEntityTransformVector = function (vec3, entity) {
 		return vec3;
 	}
 
-	return entity.transformComponent.worldTransform.applyForwardVector(vec3, vec3);
+	return entity.transformComponent.sync().worldTransform.applyForwardVector(vec3, vec3);
 };
 
 ParticleUtils.applyTimeline = function (particle, timeline) {

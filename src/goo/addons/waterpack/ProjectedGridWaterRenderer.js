@@ -168,7 +168,7 @@ ProjectedGridWaterRenderer.prototype.process = function (renderer, entities, par
 		this.waterCamera.update();
 
 		if (this.skybox) {
-			var target = this.skybox.transformComponent.worldTransform;
+			var target = this.skybox.transformComponent.sync().worldTransform;
 			target.translation.set(camReflectPos);
 			target.update();
 		}
@@ -194,7 +194,7 @@ ProjectedGridWaterRenderer.prototype.process = function (renderer, entities, par
 
 	if (aboveWater && this.skybox) {
 		var source = camera.translation;
-		var target = this.skybox.transformComponent.worldTransform;
+		var target = this.skybox.transformComponent.sync().worldTransform;
 		target.translation.set(source);
 		target.update();
 	}

@@ -28,7 +28,7 @@ function AmmoSystem(settings) {
 	var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
 	var overlappingPairCache = new Ammo.btDbvtBroadphase();
 	var solver = new Ammo.btSequentialImpulseConstraintSolver();
-	this.ammoWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, overlappingPairCache, solver, collisionConfiguration );
+	this.ammoWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 	var gravity = this.settings.gravity;
 	if (gravity == null) {
 		gravity = -9.81;
@@ -41,7 +41,7 @@ AmmoSystem.prototype = Object.create(System.prototype);
 AmmoSystem.prototype.inserted = function (entity) {
 	if (entity.ammoComponent) {
 		entity.ammoComponent.initialize(entity);
-		this.ammoWorld.addRigidBody( entity.ammoComponent.body);
+		this.ammoWorld.addRigidBody(entity.ammoComponent.body);
 	} else {
 		console.log('Warning: missing entity.ammoComponent');
 	}
@@ -58,8 +58,8 @@ AmmoSystem.prototype.process = function (entities, tpf) {
 
 	for (var i = 0; i < entities.length; i++) {
 		var e = entities[i];
-		if ( e.ammoComponent.mass > 0) {
-			e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
+		if (e.ammoComponent.mass > 0) {
+			e.ammoComponent.copyPhysicalTransformToVisual(e);
 		}
 	}
 };

@@ -130,7 +130,7 @@ AmmoComponent.prototype.initialize = function (entity) {
 	var gooTransform = entity.transformComponent.transform;
 
 	if (this.useWorldTransform) {
-		gooTransform = entity.transformComponent.worldTransform;
+		gooTransform = entity.transformComponent.sync().worldTransform;
 	}
 
 	var gooPos = this.translation || gooTransform.translation;

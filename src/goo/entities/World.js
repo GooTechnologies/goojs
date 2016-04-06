@@ -446,6 +446,20 @@ World.prototype.process = function () {
 	}
 };
 
+World.prototype.onPreRender = function () {
+	for (var i = 0; i < this._systems.length; i++) {
+		var system = this._systems[i];
+		system.onPreRender();
+	}
+};
+
+World.prototype.onPostRender = function () {
+	for (var i = 0; i < this._systems.length; i++) {
+		var system = this._systems[i];
+		system.onPostRender();
+	}
+};
+
 World.prototype._check = function (entities, callback) {
 	// each entity needs to be "checked" against each system
 	for (var i = 0; i < entities.length; i++) {

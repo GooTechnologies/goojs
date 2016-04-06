@@ -14,32 +14,24 @@ function Box2DSystem() {
 	this.SCALE = 0.5;
 	this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
 
-	//! AT: vertices*; unused? why is it sitting here anyway?
-	this.sortVertexesClockWise = function (a, b) {
-		var aAngle = Math.atan2(a.get_y(), a.get_x());
-		var bAngle = Math.atan2(b.get_y(), b.get_x());
-		return aAngle > bAngle ? 1 : -1;
-	};
-
 	// Defaulted to recommended values 8 and 3
 	this.velocityIterations = 8;
 	this.positionIterations = 3;
+}
 
+function createPolygonShape(vertices) {
 	var FLOAT_SIZE = 4;
-
-	this.createPolygonShape = function (vertices) {
-		var shape = new Box2D.b2PolygonShape();
-		var buffer = Box2D.allocate(vertices.length * FLOAT_SIZE * 2, 'float', Box2D.ALLOC_STACK);
-		var offset = 0;
-		for (var i = 0; i < vertices.length; i++) {
-			Box2D.setValue(buffer + (offset), vertices[i].get_x(), 'float');
-			Box2D.setValue(buffer + (offset + FLOAT_SIZE), vertices[i].get_y(), 'float');
-			offset += FLOAT_SIZE * 2;
-		}
-		var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
-		shape.Set(ptr_wrapped, vertices.length);
-		return shape;
-	};
+	var shape = new Box2D.b2PolygonShape();
+	var buffer = Box2D.allocate(vertices.length * FLOAT_SIZE * 2, 'float', Box2D.ALLOC_STACK);
+	var offset = 0;
+	for (var i = 0; i < vertices.length; i++) {
+		Box2D.setValue(buffer + (offset), vertices[i].get_x(), 'float');
+		Box2D.setValue(buffer + (offset + FLOAT_SIZE), vertices[i].get_y(), 'float');
+		offset += FLOAT_SIZE * 2;
+	}
+	var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
+	shape.Set(ptr_wrapped, vertices.length);
+	return shape;
 }
 
 Box2DSystem.prototype = Object.create(System.prototype);
@@ -85,14 +77,11 @@ Box2DSystem.prototype.inserted = function (entity) {
 
 			++i;
 
-			entity.transformComponent.updateWorldTransform();
 			var v = new Box2D.b2Vec2(x, y);
 			polygon.push(v);
 		}
 
-		//polygon.sort(this.sortVertexesClockWise)
-
-		shape = this.createPolygonShape(polygon);
+		shape = createPolygonShape(polygon);
 		height = maxY - minY;
 		width = maxX - minX;
 	} else if (p.shape === 'polygon') {
@@ -103,7 +92,7 @@ Box2DSystem.prototype.inserted = function (entity) {
 			polygon.push(v);
 			++i;
 		}
-		shape = this.createPolygonShape(polygon);
+		shape = createPolygonShape(polygon);
 	}
 
 	var fd = new Box2D.b2FixtureDef(); // fd?
@@ -118,6 +107,7 @@ Box2DSystem.prototype.inserted = function (entity) {
 		bd.set_type(Box2D.b2_dynamicBody);
 	}
 
+	entity.transformComponent.sync();
 	bd.set_position(new Box2D.b2Vec2(entity.transformComponent.transform.translation.x + p.offsetX, entity.transformComponent.transform.translation.y + p.offsetY));
 	var rotAngles = entity.transformComponent.transform.rotation.toAngles();
 	bd.set_angle(rotAngles.z);

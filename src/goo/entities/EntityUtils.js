@@ -145,14 +145,16 @@ EntityUtils.getRoot = function (entity) {
 	return entity;
 };
 
-//! AT: undocumented and used only once, in MeshBuilder
-EntityUtils.updateWorldTransform = function (transformComponent) {
+/**
+ * @deprecated Deprecated with warning on 2016-04-06
+ */
+EntityUtils.updateWorldTransform = ObjectUtils.warnOnce('EntityUtils.updateWorldTransform is deprecated. Please use entity.transformComponent.sync instead', function (transformComponent) {
 	transformComponent.updateWorldTransform();
 
 	for (var i = 0; i < transformComponent.children.length; i++) {
 		EntityUtils.updateWorldTransform(transformComponent.children[i]);
 	}
-};
+});
 
 /**
  * Returns the merged bounding box of the entity and its children

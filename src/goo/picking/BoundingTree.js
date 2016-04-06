@@ -176,7 +176,7 @@ BoundingTree.prototype.findPick = function (ray, entity, result) {
 		for (var i = this.start, l = this.end; i < l; i++) {
 			vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
 			if (ray.intersects(vertices, false, vecStore)) {
-				var worldTransform = entity.transformComponent.worldTransform;
+				var worldTransform = entity.transformComponent.sync().worldTransform;
 
 				var point = new Vector3();
 				point.set(vecStore);
