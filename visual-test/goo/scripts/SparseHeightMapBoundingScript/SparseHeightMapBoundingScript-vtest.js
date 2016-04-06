@@ -1,31 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/geometrypack/Surface',
-	'goo/scriptpack/SparseHeightMapBoundingScript',
-	'goo/scripts/Scripts',
-	'lib/V',
-	'goo/scriptpack/ScriptRegister'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	Box,
-	ScriptComponent,
-	Vector3,
-	Surface,
-	SparseHeightMapBoundingScript,
-	Scripts,
-	V
-	/*ScriptRegister*/
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	function addSpheres(sparseHeightMapBoundingScript) {
 		var meshData = new Sphere(32, 32);
@@ -38,8 +12,8 @@ require([
 				run: function(entity) {
 					var translation = entity.transformComponent.transform.translation;
 
-					translation.data[0] = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
-					translation.data[2] = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+					translation.x = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+					translation.z = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
 
 					entity.transformComponent.setUpdated();
 				}
@@ -95,8 +69,8 @@ require([
 		return elevationData;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// add terrain
 	var elevationData = randomTerrain(50, 100, 100);
@@ -123,16 +97,15 @@ require([
 	// Camera control set up
 	var scriptComponent = new ScriptComponent([
 		Scripts.create('WASD', {
-			domElement : goo.renderer.domElement,
+			domElement : gooRunner.renderer.domElement,
 			walkSpeed : 25.0,
 			crawlSpeed : 10.0
 		}),
 		Scripts.create('MouseLookScript', {
-			domElement : goo.renderer.domElement
+			domElement : gooRunner.renderer.domElement
 		})
 	]);
 
 	cameraEntity.set(scriptComponent);
 
 	V.process();
-});

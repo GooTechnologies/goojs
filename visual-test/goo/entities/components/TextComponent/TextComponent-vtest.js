@@ -1,46 +1,60 @@
-require([
-	'goo/renderer/Material',
-	'goo/passpack/ShaderLibExtra',
-	'goo/math/Vector3',
-	'goo/entities/components/TextComponent',
-	'goo/renderer/TextureCreator',
-	'goo/entities/systems/TextSystem',
-	'lib/V'
-], function (
-	Material,
-	ShaderLibExtra,
-	Vector3,
-	TextComponent,
-	TextureCreator,
-	TextSystem,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Tests the TextComponent, which uses an image of the alphabet to display text.');
 
 	var resourcesPath = '../../../../resources/';
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addLights();
-	V.addOrbitCamera();
+	V.addOrbitCamera(new Vector3(50, Math.PI / 2, 0));
 
 	// add text system to world
 	world.setSystem(new TextSystem());
 
 	// get a font
-	var material = new Material(ShaderLibExtra.billboard);
-	var texture = new TextureCreator().loadTexture2D(resourcesPath + 'font.png');
-	material.setTexture('DIFFUSE_MAP', texture);
-	material.blendState.blending = 'AlphaBlending';
+	var material1 = new Material(ShaderLib.uber);
+	new TextureCreator().loadTexture2D(resourcesPath + 'font.png').then(function (texture) {
+		material1.setTexture('TRANSPARENCY_MAP', texture);
+
+	});
+	material1.blendState.blending = 'TransparencyBlending';
+	material1.uniforms.materialDiffuse = [0, 0, 0, 1];
+	material1.uniforms.materialEmissive = [1, 1, 1, 1];
+	material1.uniforms.useBWTransparency = true;
+	material1.uniforms.discardThreshold = 0.01;
+	material1.renderQueue = 2000;
+
+	var material2 = new Material(ShaderLib.uber);
+	new TextureCreator().loadTexture2D(resourcesPath + 'font.png').then(function (texture) {
+		material2.setTexture('EMISSIVE_MAP', texture);
+	});
+	material2.uniforms.materialDiffuse = [0, 0, 0, 1];
+	material2.uniforms.materialEmissive = [1, 1, 1, 1];
+
+	var material3 = new Material(ShaderLib.uber);
+	new TextureCreator().loadTexture2D(resourcesPath + 'font.png').then(function (texture) {
+		material3.setTexture('TRANSPARENCY_MAP', texture);
+	});
+	material3.blendState.blending = 'TransparencyBlending';
+	material3.uniforms.materialDiffuse = [0, 0, 0, 1];
+	material3.uniforms.materialEmissive = [1, 1, 1, 1];
+	material3.uniforms.useBWTransparency = true;
+	material3.uniforms.discardThreshold = 0.5;
 
 	// create text component with an initial text
-	var textComponent = new TextComponent('Vivos brunneis vulpes\nsalit super\npiger canis');
+	var textComponent = new TextComponent('ABCDEFGHIJKLMNOPQRSTUVXYZ\nabcdefghijklmnopqrstuvxyz\n0123456789');
+	world.createEntity(material1, textComponent, [0, 6, 0]).addToWorld();
 
-	// create text entity
-	var textEntity = world.createEntity(material, textComponent, [3, 3, 0]).addToWorld();
+	textComponent = new TextComponent('ABCDEFGHIJKLMNOPQRSTUVXYZ\nabcdefghijklmnopqrstuvxyz\n0123456789');
+	world.createEntity(material2, textComponent, [0, 2, 0]).addToWorld();
+
+	textComponent = new TextComponent('ABCDEFGHIJKLMNOPQRSTUVXYZ\nabcdefghijklmnopqrstuvxyz\n0123456789');
+	world.createEntity(material3, textComponent, [0, -2, 0]).addToWorld();
+
+	textComponent = new TextComponent('ABCDEFGHIJKLMNOPQRSTUVXYZ\nabcdefghijklmnopqrstuvxyz\n0123456789');
+	var textEntity = world.createEntity(material3, textComponent, [0, -6, 0]).addToWorld();
 
 	// change text
 	var text = 'The quick brown fox\njumps over\nthe lazy dog ';
@@ -53,4 +67,3 @@ require([
 	}, 100);
 
 	V.process();
-});

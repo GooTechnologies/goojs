@@ -1,7 +1,6 @@
 var path = require('path');
 var program = require('commander');
-require('coffee-script'); //! AT: unused?
-var toc = require(__dirname + '/../../tools/toc');
+var toc = require(__dirname + '/../../tools/table-of-contents');
 var ScreenShooter = require('./ScreenShooter');
 var exec = require('child_process').exec;
 var filterList = require('./filterList').filterList;
@@ -49,7 +48,7 @@ for (var i = 0; i < files.length; i++) {
 	urlToPathMap[url] = pngPath;
 }
 
-exec('rm -rf ' + __dirname + '/screenshots',function (err, out) {
+exec('rm -rf ' + __dirname + '/screenshots',function (err) {
 	if (err) {
 		throw err;
 	}

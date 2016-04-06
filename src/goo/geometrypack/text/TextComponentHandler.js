@@ -1,111 +1,89 @@
-define([
-	'goo/loaders/handlers/ComponentHandler',
-	'goo/geometrypack/text/TextComponent',
-	'goo/util/PromiseUtil'
-], function (
-	ComponentHandler,
-	TextComponent,
-	PromiseUtil
-) {
-	'use strict';
+/* global opentype */
 
-	/**
-	 * For handling loading of text components
-	 * @param {World} world The goo world
-	 * @param {function} getConfig The config loader function.
-	 * @param {function} updateObject The handler function.
-	 * @extends ComponentHandler
-	 * @hidden
-	 */
-	function TextComponentHandler() {
-		ComponentHandler.apply(this, arguments);
-		this._type = 'TextComponent';
-	}
+var ComponentHandler = require('../../loaders/handlers/ComponentHandler');
+var TextComponent = require('../../geometrypack/text/TextComponent');
+var PromiseUtils = require('../../util/PromiseUtils');
 
-	TextComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	TextComponentHandler.prototype.constructor = TextComponentHandler;
+/**
+ * For handling loading of text components
+ * @param {World} world The goo world
+ * @param {Function} getConfig The config loader function.
+ * @param {Function} updateObject The handler function.
+ * @extends ComponentHandler
+ * @hidden
+ */
+function TextComponentHandler() {
+	ComponentHandler.apply(this, arguments);
+	this._type = 'TextComponent';
+}
 
-	ComponentHandler._registerClass('text', TextComponentHandler);
+TextComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+TextComponentHandler.prototype.constructor = TextComponentHandler;
 
-	/**
-	 * Create a TextComponent object.
-	 * @returns {TextComponent} the created component object
-	 * @private
-	 */
-	TextComponentHandler.prototype._create = function () {
-		return new TextComponent();
-	};
+ComponentHandler._registerClass('text', TextComponentHandler);
 
-	/**
-	 * Removes the quadcomponent from the entity.
-	 * @param {Entity} entity
-	 * @private
-	 */
-	TextComponentHandler.prototype._remove = function (entity) {
-		//if (this.world && this.world.gooRunner) {
-		//	entity.textComponent.destroy(this.world.gooRunner.renderer.context);
-		//}
-		entity.clearComponent('TextComponent');
-	};
+/**
+ * Create a TextComponent object.
+ * @returns {TextComponent} the created component object
+ * @private
+ */
+TextComponentHandler.prototype._create = function () {
+	return new TextComponent();
+};
 
-	/**
-	 * Update engine textComponent object based on the config.
-	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
-	 * @param {object} options
-	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
-	 */
-	TextComponentHandler.prototype.update = function (entity, config, options) {
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
-			if (!component) { return; }
+/**
+ * Removes the quadcomponent from the entity.
+ * @param {Entity} entity
+ * @private
+ */
+TextComponentHandler.prototype._remove = function (entity) {
+	//if (this.world && this.world.gooRunner) {
+	//	entity.textComponent.destroy(this.world.gooRunner.renderer.context);
+	//}
+	entity.clearComponent('TextComponent');
+};
 
-			// load font
+/**
+ * Update engine textComponent object based on the config.
+ * @param {Entity} entity The entity on which this component should be added.
+ * @param {Object} config
+ * @param {Object} options
+ * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+ */
+TextComponentHandler.prototype.update = function (entity, config, options) {
+	return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
+		if (!component) { return; }
 
-			return PromiseUtil.createPromise(function (resolve, reject) {
-				opentype.load(config.font.fontRef, function (err, font) {
-					if (err) {
-						console.error(err);
-						resolve(component);
-						return;
-					}
+		// load font
 
-					var FONT_SIZE = 1;
-
-					// smoothness is between 0 and 1
-					// with 0 looking rough and choppy and 1 looking as smooth as possible
-					var computeStepLength = function (fontSize, smoothness) {
-						return ((1 - smoothness) * 0.08 + 0.01) * fontSize;
-					};
-
-					component.setFont(font);
-					component.setText(config.text, {
-						extrusion: config.extrusion,
-						fontSize: FONT_SIZE,
-						stepLength: computeStepLength(FONT_SIZE, config.smoothness),
-						simplifyPaths: true
-					});
-
+		return PromiseUtils.createPromise(function (resolve) {
+			opentype.load(config.font.fontRef, function (err, font) {
+				if (err) {
+					console.error(err);
 					resolve(component);
-				});
-			});
-			/*// Load material
-			return this._load(config.materialRef, options).then(function (material) {
-				// setting this here until the frontend sends good values
-				material.cullState.enabled = true;
-
-				// If the component already has these components, they need to be overridden
-				if (entity.meshDataComponent !== component.meshDataComponent) {
-					entity.setComponent(component.meshDataComponent);
+					return;
 				}
 
-				component.setMaterial(material);
-				component.setText();
-				component.meshDataComponent.autoCompute = true;
+				var FONT_SIZE = 1;
 
-				return component;
-			});*/
-		}.bind(this));
-	};
+				// smoothness is between 0 and 1
+				// with 0 looking rough and choppy and 1 looking as smooth as possible
+				var computeStepLength = function (fontSize, smoothness) {
+					return ((1 - smoothness) * 0.08 + 0.01) * fontSize;
+				};
 
-	return TextComponentHandler;
-});
+				component.setFont(font);
+				component.setText(config.text, {
+					extrusion: config.extrusion,
+					fontSize: FONT_SIZE,
+					stepLength: computeStepLength(FONT_SIZE, config.smoothness),
+					simplifyPaths: true
+				});
+
+				resolve(component);
+			});
+		});
+	});
+};
+
+module.exports = TextComponentHandler;

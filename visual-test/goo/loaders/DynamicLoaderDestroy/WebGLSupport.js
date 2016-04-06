@@ -2,7 +2,7 @@ define([
 ], function(
 ) {
 
-	'use strict';
+	goo.V.attachToGlobal();
 
 	var WebGLSupport = {
 		ERRORS: {

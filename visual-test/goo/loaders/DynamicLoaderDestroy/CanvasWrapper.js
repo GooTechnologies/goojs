@@ -1,7 +1,7 @@
 define([
 ], function(
 ) {
-	'use strict';
+	goo.V.attachToGlobal();
 	var _canvas, _config, _canvasInnerWrapper, _canvasOuterWrapper;
 
 	var CanvasWrapper = {

@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var async = require('async');
 var ScreenShooter = require('./ScreenShooter');
 var imgCompare = require(__dirname + '/../../tools/imgcompare2/imgCompare');
-var toc = require(__dirname + '/../../tools/toc');
+var toc = require(__dirname + '/../../tools/table-of-contents');
 var filterList = require('./filterList').filterList;
 
 function filterArray(array, filters) {
@@ -60,7 +60,6 @@ function report(url, problem) {
 }
 
 var DISS_THRESH = 0.08;
-
 async.eachSeries(testFiles, function (testFile, done) {
 	var info2 = getTestInfo(testFile);
 
@@ -83,7 +82,7 @@ async.eachSeries(testFiles, function (testFile, done) {
 			var severeLogEntries = [];
 			for (var j = 0; j < shooter.browserLog.length; j++) {
 				var entry = shooter.browserLog[j];
-				if (entry.level.name == 'SEVERE') {
+				if (entry.level.name == 'SEVERE' && entry.message.indexOf('favicon.ico') === -1) {
 					severeLogEntries.push(entry);
 				}
 			}

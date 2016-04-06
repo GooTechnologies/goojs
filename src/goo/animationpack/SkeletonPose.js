@@ -1,105 +1,104 @@
-define([
-	'goo/math/Transform',
-	'goo/animationpack/Joint',
-	'goo/math/Matrix4x4'
-], function (
-	Transform,
-	Joint,
-	Matrix4x4
-) {
-	'use strict';
+var Transform = require('../math/Transform');
+var Joint = require('../animationpack/Joint');
+var Matrix4 = require('../math/Matrix4');
 
-	/**
-	 * Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
-	 * @param {Skeleton} skeleton
-	 */
-	function SkeletonPose(skeleton) {
-		this._skeleton = skeleton;
+/**
+ * Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
+ * @param {Skeleton} skeleton
+ */
+function SkeletonPose(skeleton) {
+	this._skeleton = skeleton;
 
-		this._localTransforms = [];
-		this._globalTransforms = [];
-		this._matrixPalette = [];
-		this._poseListeners = [];
+	this._localTransforms = [];
+	this._globalTransforms = [];
+	this._matrixPalette = [];
+	this._poseListeners = [];
 
-		var jointCount = this._skeleton._joints.length;
+	var jointCount = this._skeleton._joints.length;
 
-		// init local transforms
-		for (var i = 0; i < jointCount; i++) {
-			this._localTransforms[i] = new Transform();
-		}
-
-		// init global transforms
-		for (var i = 0; i < jointCount; i++) {
-			this._globalTransforms[i] = new Transform();
-		}
-
-		// init palette
-		for (var i = 0; i < jointCount; i++) {
-			this._matrixPalette[i] = new Matrix4x4();
-		}
-
-		// start off in bind pose.
-		this.setToBindPose();
+	// init local transforms
+	for (var i = 0; i < jointCount; i++) {
+		this._localTransforms[i] = new Transform();
 	}
 
-	/**
-	 * Update our local joint transforms so that they reflect the skeleton in bind pose.
-	 */
-	SkeletonPose.prototype.setToBindPose = function () {
-		for (var i = 0; i < this._localTransforms.length; i++) {
-			// Set the localTransform to the inverted inverseBindPose, i e the bindpose
-			this._localTransforms[i].matrix.copy(this._skeleton._joints[i]._inverseBindPose.matrix).invert();
+	// init global transforms
+	for (var i = 0; i < jointCount; i++) {
+		this._globalTransforms[i] = new Transform();
+	}
 
-			// At this point we are in model space, so we need to remove our parent's transform (if we have one.)
-			var parentIndex = this._skeleton._joints[i]._parentIndex;
-			if (parentIndex !== Joint.NO_PARENT) {
-				// We remove the parent's transform simply by multiplying by its inverse bind pose.
-				Matrix4x4.combine(this._skeleton._joints[parentIndex]._inverseBindPose.matrix, this._localTransforms[i].matrix, this._localTransforms[i].matrix);
-			}
+	// init palette
+	for (var i = 0; i < jointCount; i++) {
+		this._matrixPalette[i] = new Matrix4();
+	}
+
+	// start off in bind pose.
+	this.setToBindPose();
+}
+
+/**
+ * Update our local joint transforms so that they reflect the skeleton in bind pose.
+ */
+SkeletonPose.prototype.setToBindPose = function () {
+	for (var i = 0; i < this._localTransforms.length; i++) {
+		// Set the localTransform to the inverted inverseBindPose, i e the bindpose
+		this._localTransforms[i].matrix.copy(this._skeleton._joints[i]._inverseBindPose.matrix).invert();
+
+		// At this point we are in model space, so we need to remove our parent's transform (if we have one.)
+		var parentIndex = this._skeleton._joints[i]._parentIndex;
+		if (parentIndex !== Joint.NO_PARENT) {
+			// We remove the parent's transform simply by multiplying by its inverse bind pose.
+			this._localTransforms[i].matrix.mul2(
+				this._skeleton._joints[parentIndex]._inverseBindPose.matrix,
+				this._localTransforms[i].matrix
+			);
 		}
-		this.updateTransforms();
-	};
+	}
+	this.updateTransforms();
+};
 
-	/**
-	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
-	 */
-	SkeletonPose.prototype.updateTransforms = function () {
-		var joints = this._skeleton._joints;
-		for (var i = 0, l = joints.length; i < l; i++) {
-
-			var parentIndex = joints[i]._parentIndex;
-			if (parentIndex !== Joint.NO_PARENT) {
-				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
-				Matrix4x4.combine(this._globalTransforms[parentIndex].matrix, this._localTransforms[i].matrix, this._globalTransforms[i].matrix);
-			} else {
-				// No parent so just set global to the local transform
-				this._globalTransforms[i].matrix.copy(this._localTransforms[i].matrix);
-			}
-
-			/*
-			 * At this point we have a local->model space transform for this joint, for skinning we multiply this by the
-			 * joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
-			 * vertex from bind pose (model space) to current pose (model space).
-			 */
-			Matrix4x4
-				.combine(this._globalTransforms[i].matrix, joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
+/**
+ * Update the global and palette transforms of our posed joints based on the current local joint transforms.
+ */
+SkeletonPose.prototype.updateTransforms = function () {
+	var joints = this._skeleton._joints;
+	for (var i = 0, l = joints.length; i < l; i++) {
+		var parentIndex = joints[i]._parentIndex;
+		if (parentIndex !== Joint.NO_PARENT) {
+			// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
+			this._globalTransforms[i].matrix.mul2(
+				this._globalTransforms[parentIndex].matrix,
+				this._localTransforms[i].matrix
+			);
+		} else {
+			// No parent so just set global to the local transform
+			this._globalTransforms[i].matrix.copy(this._localTransforms[i].matrix);
 		}
 
-		this.firePoseUpdated();
-	};
+		/*
+		 * At this point we have a local->model space transform for this joint, for skinning we multiply this by the
+		 * joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
+		 * vertex from bind pose (model space) to current pose (model space).
+		 */
+		this._matrixPalette[i].mul2(
+			this._globalTransforms[i].matrix,
+			joints[i]._inverseBindPose.matrix
+		);
+	}
 
-	/*
-	 * Notify any registered PoseListeners that this pose has been "updated".
-	 */
-	SkeletonPose.prototype.firePoseUpdated = function () {
-		for (var i = this._poseListeners.length - 1; i >= 0; i--) {
-			this._poseListeners[i].poseUpdated(this);
-		}
-	};
+	this.firePoseUpdated();
+};
 
-	SkeletonPose.prototype.clone = function () {
-		return new SkeletonPose(this._skeleton);
-	};
+/*
+ * Notify any registered PoseListeners that this pose has been "updated".
+ */
+SkeletonPose.prototype.firePoseUpdated = function () {
+	for (var i = this._poseListeners.length - 1; i >= 0; i--) {
+		this._poseListeners[i].poseUpdated(this);
+	}
+};
 
-	return SkeletonPose;
-});
+SkeletonPose.prototype.clone = function () {
+	return new SkeletonPose(this._skeleton);
+};
+
+module.exports = SkeletonPose;

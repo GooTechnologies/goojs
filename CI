@@ -2,6 +2,8 @@
 #
 # Continuous integration script
 #
-#rm -rf node_modules
-npm install
-./tools/release.py $VERSION
+rm -rf node_modules
+
+npm config set registry https://registry.npmjs.org
+npm install --verbose
+./tools/release.py $RELEASE_DIR $VERSION

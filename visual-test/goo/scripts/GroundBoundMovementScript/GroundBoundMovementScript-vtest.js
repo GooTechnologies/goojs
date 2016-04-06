@@ -1,55 +1,5 @@
-require([
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/entities/components/MovementComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
-	'goo/addons/terrainpack/TerrainSurface',
-	'goo/shapes/Sphere',
-	'goo/scriptpack/WorldFittedTerrainScript',
-	'goo/scriptpack/GroundBoundMovementScript',
-	'goo/scripts/Scripts',
-	'goo/renderer/TextureCreator',
-	'goo/util/CanvasUtils',
-	'lib/V',
-	'goo/scriptpack/ScriptRegister'
-], function (
-	World,
-	Material,
-	ShaderLib,
-	Camera,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MovementComponent,
-	MeshData,
-	MeshRendererComponent,
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
-	TerrainSurface,
-	Sphere,
-	WorldFittedTerrainScript,
-	GroundBoundMovementScript,
-	Scripts,
-	TextureCreator,
-	CanvasUtils,
-	V
-	/* ScriptRegister */
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	var worldFittedTerrainScript = new WorldFittedTerrainScript();
 
@@ -102,7 +52,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = goo.world.createEntity(meshData, material);
+			var sphereEntity = gooRunner.world.createEntity(meshData, material);
 			sphereEntity.transformComponent.transform.translation.setDirect(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setDirect(2, 3, 5);
 			addMovementToEntity(sphereEntity, worldFittedTerrainScript);
@@ -116,46 +66,46 @@ require([
 		var material = new Material(ShaderLib.simpleLit, '');
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
-		var rootEntity = goo.world.createEntity(meshData, material);
+		var rootEntity = gooRunner.world.createEntity(meshData, material);
 		rootEntity.transformComponent.transform.translation.setDirect(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 		rootEntity.transformComponent.transform.scale.setDirect(1, 1, 1);
 
-		var body = goo.world.createEntity(meshData, material);
+		var body = gooRunner.world.createEntity(meshData, material);
 		body.transformComponent.transform.translation.setDirect(0,0.7,0);
 		body.transformComponent.transform.scale.setDirect(2.2, 1.4, 5);
 		rootEntity.transformComponent.attachChild(body.transformComponent);
 
-		var wheel1 = goo.world.createEntity(meshData, material);
+		var wheel1 = gooRunner.world.createEntity(meshData, material);
 		wheel1.transformComponent.transform.translation.setDirect(1,0.4,2.0);
 		wheel1.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel1.transformComponent);
 
-		var wheel2 = goo.world.createEntity(meshData, material);
+		var wheel2 = gooRunner.world.createEntity(meshData, material);
 		wheel2.transformComponent.transform.translation.setDirect(-1,0.4,2.0);
 		wheel2.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel2.transformComponent);
 
-		var wheel3 = goo.world.createEntity(meshData, material);
+		var wheel3 = gooRunner.world.createEntity(meshData, material);
 		wheel3.transformComponent.transform.translation.setDirect(1,0.4,-2.0);
 		wheel3.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel3.transformComponent);
 
-		var wheel4 = goo.world.createEntity(meshData, material);
+		var wheel4 = gooRunner.world.createEntity(meshData, material);
 		wheel4.transformComponent.transform.translation.setDirect(-1,0.4,-2.0);
 		wheel4.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel4.transformComponent);
 
-		var light1 = goo.world.createEntity(meshData, material);
+		var light1 = gooRunner.world.createEntity(meshData, material);
 		light1.transformComponent.transform.translation.setDirect(0.8,1, 2.4);
 		light1.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		rootEntity.transformComponent.attachChild(light1.transformComponent);
 
-		var light2 = goo.world.createEntity(meshData, material);
+		var light2 = gooRunner.world.createEntity(meshData, material);
 		light2.transformComponent.transform.translation.setDirect(-0.8,1, 2.4);
 		light2.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		rootEntity.transformComponent.attachChild(light2.transformComponent);
 
-		var coup = goo.world.createEntity(meshData, material);
+		var coup = gooRunner.world.createEntity(meshData, material);
 		coup.transformComponent.transform.translation.setDirect(0,0.6,-0.12);
 		coup.transformComponent.transform.scale.setDirect(0.8, 1.3, 0.4);
 		body.transformComponent.attachChild(coup.transformComponent);
@@ -180,31 +130,31 @@ require([
 		var material = new Material(ShaderLib.simpleLit, '');
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
-		var rootEntity = goo.world.createEntity(meshData, material);
+		var rootEntity = gooRunner.world.createEntity(meshData, material);
 		rootEntity.transformComponent.transform.translation.setDirect(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 		rootEntity.transformComponent.transform.scale.setDirect(1, 1, 1);
 
-		var chest = goo.world.createEntity(meshData, material);
+		var chest = gooRunner.world.createEntity(meshData, material);
 		chest.transformComponent.transform.translation.setDirect(0,1.5,0);
 		chest.transformComponent.transform.scale.setDirect(1.7, 1.6, 1.3);
 		rootEntity.transformComponent.attachChild(chest.transformComponent);
 
-		var armr = goo.world.createEntity(meshData, material);
+		var armr = gooRunner.world.createEntity(meshData, material);
 		armr.transformComponent.transform.translation.setDirect(-0.6,-0.2,-0.1);
 		armr.transformComponent.transform.scale.setDirect(0.3, 0.9, 0.3);
 		chest.transformComponent.attachChild(armr.transformComponent);
 
-		var arml = goo.world.createEntity(meshData, material);
+		var arml = gooRunner.world.createEntity(meshData, material);
 		arml.transformComponent.transform.translation.setDirect(0.6,-0.2,-0.1);
 		arml.transformComponent.transform.scale.setDirect(0.3, 0.9, 0.3);
 		chest.transformComponent.attachChild(arml.transformComponent);
 
-		var head = goo.world.createEntity(meshData, material);
+		var head = gooRunner.world.createEntity(meshData, material);
 		head.transformComponent.transform.translation.setDirect(0,2.6,0);
 		head.transformComponent.transform.scale.setDirect(0.8, 0.8, 0.8);
 		rootEntity.transformComponent.attachChild(head.transformComponent);
 
-		var nose = goo.world.createEntity(meshData, material);
+		var nose = gooRunner.world.createEntity(meshData, material);
 		nose.transformComponent.transform.translation.setDirect(0,0,0.7);
 		nose.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		head.transformComponent.attachChild(nose.transformComponent);
@@ -214,10 +164,10 @@ require([
 
 	function addLight(dims) {
 		var light1 = new PointLight();
-		light1.color.set(0.8, 0.7,0.61);
-		var light1Entity = goo.world.createEntity('light');
+		light1.color.setDirect(0.8, 0.7,0.61);
+		var light1Entity = gooRunner.world.createEntity('light');
 		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+		light1Entity.transformComponent.transform.translation.setDirect( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
 		light1Entity.addToWorld();
 	}
 
@@ -225,8 +175,9 @@ require([
 		var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
 		var material = new Material(ShaderLib.texturedLit, '');
 
-		var texture = new TextureCreator().loadTexture2D(txPath);
-		material.setTexture('DIFFUSE_MAP', texture);
+		new TextureCreator().loadTexture2D(txPath).then(function (texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 
 		material.uniforms.materialAmbient = [
 			0.310305785123966943,
@@ -279,8 +230,8 @@ require([
 
 			var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
 
-		//	buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
-			buildTexturedGround(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world, '../../../resources/heightmap_walled.png');
+		//	buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", gooRunner.world);
+			buildTexturedGround(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", gooRunner.world, '../../../resources/heightmap_walled.png');
 
 
 			addSpheres(goo, worldFittedTerrainScript, dim1);
@@ -293,8 +244,8 @@ require([
 
 			// Add camera
 			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 50, 90);
+			var cameraEntity = gooRunner.world.createEntity("CameraEntity");
+			cameraEntity.transformComponent.transform.translation.setDirect(0, 50, 90);
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
@@ -302,12 +253,12 @@ require([
 			// Camera control set up
 			var scripts = new ScriptComponent();
 			scripts.scripts.push(Scripts.create('WASD', {
-				domElement : goo.renderer.domElement,
+				domElement : gooRunner.renderer.domElement,
 				walkSpeed : 25.0,
 				crawlSpeed : 10.0
 			}));
 			scripts.scripts.push(Scripts.create('MouseLookScript', {
-				domElement : goo.renderer.domElement
+				domElement : gooRunner.renderer.domElement
 			}));
 			scripts.scripts.push(worldFittedTerrainScript);
 			cameraEntity.setComponent(scripts);
@@ -326,16 +277,15 @@ require([
 			};
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
-				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../../resources/check.png');
-			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", gooRunner.world, '../../../resources/check.png');
+			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", gooRunner.world);
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addLight(dim);
 		});
 
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	groundBoundMovementScriptDemo();
-});

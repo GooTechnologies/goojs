@@ -1,50 +1,70 @@
-define([
-	'goo/picking/BoundingTree'
-], function (
-	BoundingTree
-) {
-	'use strict';
+var BoundingTree = require('../picking/BoundingTree');
+var Ray = require('../math/Ray');
+var Matrix4 = require('../math/Matrix4');
 
-	/**
-	 * Primitive pick logic
-	 */
-	function PrimitivePickLogic () {}
+/**
+ * Primitive pick logic
+ */
+function PrimitivePickLogic() {
+	this.invRay = new Ray();
+	this.invMatrix = new Matrix4();
+}
 
-	PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
-		// look in pick tree for intersection
-		var tree = entity.meshDataComponent.meshData.__boundingTree;
-		if (!tree) {
-			return null;
-		}
+PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
+	// look in pick tree for intersection
+	var tree = entity.meshDataComponent.meshData.__boundingTree;
+	if (!tree) {
+		return null;
+	}
 
-		return tree.findPick(pickRay, entity, {});
-	};
+	var worldTransform = entity.transformComponent.worldTransform;
+	this.invMatrix.copy(worldTransform.matrix).invert();
+	this.invRay.origin.set(pickRay.origin).applyPostPoint(this.invMatrix);
+	this.invRay.direction.set(pickRay.direction).applyPostVector(this.invMatrix);
 
-	PrimitivePickLogic.prototype.added = function (entity) {
-		// Build boundingtree if not existing
-		if (!this.isConstructed(entity)) {
-			this.rebuild(entity);
-		}
-	};
+	var result = tree.findPick(this.invRay, entity);
 
-	PrimitivePickLogic.prototype.removed = function (entity) {
-		// clear bounding tree
-		if( entity.meshDataComponent && entity.meshDataComponent.meshData) {
-			entity.meshDataComponent.meshData.__boundingTree = null;
-		}
-	};
+	var rebuildResult = {};
+	if (result.length > 0) {
+		result.sort(function (a, b) {
+			return a.distance - b.distance;
+		});
+		rebuildResult.distances = [];
+		rebuildResult.points = [];
+		rebuildResult.vertices = [];
+		result.forEach(function (value) {
+			rebuildResult.distances.push(value.distance);
+			rebuildResult.points.push(value.point);
+			rebuildResult.vertices.push(value.vertices);
+		});
+	}
+	return rebuildResult;
+};
 
-	PrimitivePickLogic.prototype.isConstructed = function (entity) {
-		return !!entity.meshDataComponent.meshData.__boundingTree;
-	};
+PrimitivePickLogic.prototype.added = function (entity) {
+	// Build boundingtree if not existing
+	if (!this.isConstructed(entity)) {
+		this.rebuild(entity);
+	}
+};
 
-	PrimitivePickLogic.prototype.rebuild = function (entity) {
-		// build bounding tree
-		entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
+PrimitivePickLogic.prototype.removed = function (entity) {
+	// clear bounding tree
+	if ( entity.meshDataComponent && entity.meshDataComponent.meshData) {
+		entity.meshDataComponent.meshData.__boundingTree = null;
+	}
+};
 
-		// calculate bounding tree.
-		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
-	};
+PrimitivePickLogic.prototype.isConstructed = function (entity) {
+	return !!entity.meshDataComponent.meshData.__boundingTree;
+};
 
-	return PrimitivePickLogic;
-});
+PrimitivePickLogic.prototype.rebuild = function (entity) {
+	// build bounding tree
+	entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
+
+	// calculate bounding tree.
+	entity.meshDataComponent.meshData.__boundingTree.construct(entity);
+};
+
+module.exports = PrimitivePickLogic;

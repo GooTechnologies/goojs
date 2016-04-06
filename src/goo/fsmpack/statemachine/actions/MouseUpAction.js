@@ -1,80 +1,73 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-	'use strict';
+var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	function MouseUpAction(/*id, settings*/) {
-		Action.apply(this, arguments);
+function MouseUpAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+}
 
-		this.everyFrame = true;
-		this.updated = false;
-		this.button = null;
+MouseUpAction.prototype = Object.create(Action.prototype);
+MouseUpAction.prototype.constructor = MouseUpAction;
 
-		this.mouseEventListener = function (event) {
-			this.button = event.button;
-			this.updated = true;
-		}.bind(this);
+MouseUpAction.external = {
+	key: 'Mouse Up / Touch end',
+	name: 'Mouse Up / Touch end',
+	type: 'controls',
+	description: 'Listens for a mouseup event (or touchend) on the canvas and performs a transition.',
+	canTransition: true,
+	parameters: [],
+	transitions: [{
+		key: 'mouseLeftUp',
+		description: 'State to transition to when the left mouse button is released.'
+	}, {
+		key: 'middleMouseUp',
+		description: 'State to transition to when the middle mouse button is released.'
+	}, {
+		key: 'rightMouseUp',
+		description: 'State to transition to when the right mouse button is released.'
+	}, {
+		key: 'touchUp',
+		description: 'State to transition to when the touch event ends.'
+	}]
+};
 
-		this.touchEventListener = function (event) {
-			this.button = 'touch';
-			this.updated = true;
-		}.bind(this);
-	}
+var labels = {
+	mouseLeftUp: 'On left mouse up',
+	middleMouseUp: 'On middle mouse up',
+	rightMouseUp: 'On right mouse up',
+	touchUp: 'On touch end'
+};
 
-	MouseUpAction.prototype = Object.create(Action.prototype);
-	MouseUpAction.prototype.constructor = MouseUpAction;
+MouseUpAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
+	return labels[transitionKey];
+};
 
-	MouseUpAction.external = {
-		name: 'Mouse Up',
-		type: 'controls',
-		description: 'Listens for a mouse button release and performs a transition',
-		canTransition: true,
-		parameters: [],
-		transitions: [{
-			key: 'mouseLeftUp',
-			name: 'Left mouse up',
-			description: 'State to transition to when the left mouse button is released'
-		}, {
-			key: 'middleMouseUp',
-			name: 'Middle mouse up',
-			description: 'State to transition to when the middle mouse button is released'
-		}, {
-			key: 'rightMouseUp',
-			name: 'Right mouse up',
-			description: 'State to transition to when the right mouse button is released'
-		}, {
-			key: 'touchUp',
-			name: 'Touch release',
-			description: 'State to transition to when the touch event ends'
-		}]
-	};
-
-	MouseUpAction.prototype._setup = function () {
-		document.addEventListener('mouseup', this.mouseEventListener);
-		document.addEventListener('touchend', this.touchEventListener);
-	};
-
-	MouseUpAction.prototype._run = function (fsm) {
-		if (this.updated) {
-			this.updated = false;
-			if (this.button === 'touch') {
-				fsm.send(this.transitions.touchUp);
-			} else {
-				fsm.send([
-					this.transitions.mouseLeftUp,
-					this.transitions.middleMouseUp,
-					this.transitions.rightMouseUp
-				][this.button]);
-			}
+MouseUpAction.prototype.enter = function (fsm) {
+	var update = function (button) {
+		if (button === 'touch') {
+			fsm.send(this.transitions.touchUp);
+		} else {
+			fsm.send([
+				this.transitions.mouseLeftUp,
+				this.transitions.middleMouseUp,
+				this.transitions.rightMouseUp
+			][button]);
 		}
-	};
+	}.bind(this);
 
-	MouseUpAction.prototype.exit = function () {
-		document.removeEventListener('mouseup', this.mouseEventListener);
-		document.removeEventListener('touchend', this.touchEventListener);
-	};
+	this.mouseEventListener = function (event) {
+		update(event.button);
+	}.bind(this);
 
-	return MouseUpAction;
-});
+	this.touchEventListener = function () {
+		update('touch');
+	}.bind(this);
+
+	document.addEventListener('mouseup', this.mouseEventListener);
+	document.addEventListener('touchend', this.touchEventListener);
+};
+
+MouseUpAction.prototype.exit = function () {
+	document.removeEventListener('mouseup', this.mouseEventListener);
+	document.removeEventListener('touchend', this.touchEventListener);
+};
+
+module.exports = MouseUpAction;

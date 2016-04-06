@@ -1,18 +1,10 @@
-require([
-	'goo/math/Vector3',
-	'goo/geometrypack/text/TextMeshGenerator',
-	'lib/V'
-], function (
-	Vector3,
-	TextMeshGenerator,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('The text mesh is generated based on a font-file');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(110, Math.PI / 2, 0));
 	V.addLights();
@@ -21,7 +13,7 @@ require([
 	V.rng.nextFloat();
 	V.rng.nextFloat();
 
-	opentype.load('Roboto-Black.ttf', function (err, font) {
+	opentype.load('../../../lib/Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
 		function print(text, y, extrusion) {
@@ -43,4 +35,3 @@ require([
 	});
 
 	V.process();
-});

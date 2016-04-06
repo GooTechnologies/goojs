@@ -1,40 +1,7 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'lib/V',
-
-	'goo/fsmpack/statemachine/StateMachineComponent',
-	'goo/fsmpack/statemachine/StateMachineSystem',
-	'goo/fsmpack/statemachine/State',
-	'goo/fsmpack/statemachine/Machine',
-	'goo/fsmpack/statemachine/actions/KeyDownAction',
-	'goo/fsmpack/statemachine/actions/KeyUpAction',
-	'goo/fsmpack/statemachine/actions/AddPositionAction'
-], function (
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	Vector3,
-	PointLight,
-	V,
-
-	FSMComponent,
-	FSMSystem,
-	State,
-	Machine,
-	KeyDownAction,
-	KeyUpAction,
-	AddPositionAction
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	function getFSMComponent(entity) {
-		var fsmComponent = new FSMComponent();
+		var fsmComponent = new StateMachineComponent();
 		// create action tied to listen to pick events
 		// tie pick event to a channel
 
@@ -110,7 +77,7 @@ require([
 		var lampMaterial = new Material(ShaderLib.simpleColored);
 		lampMaterial.uniforms.color = color;
 
-		var light = new PointLight(new Vector3(color[0], color[1], color[2]));
+		var light = new PointLight(Vector3.fromArray(color));
 		light.range = 10;
 
 		var lampEntity = world.createEntity(lampMeshData, lampMaterial, light, 'lamp1', [x, y, z]).addToWorld();
@@ -127,10 +94,10 @@ require([
 		return lampEntities;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
-	world.setSystem(new FSMSystem(goo));
+	world.setSystem(new StateMachineSystem(gooRunner));
 
 	V.addOrbitCamera();
 	addLamps();
@@ -138,4 +105,3 @@ require([
 	addCharacter(0, 0, 0);
 
 	V.process();
-});

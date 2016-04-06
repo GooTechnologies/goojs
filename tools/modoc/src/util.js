@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var isWin = /^win/.test(process.platform);
@@ -40,9 +41,40 @@ var deepClone = function (obj) {
 	}
 };
 
+var upperFirst = function (string) {
+	return string[0].toUpperCase() + string.slice(1);
+};
+
+var lowerFirst = function (string) {
+	return string[0].toLowerCase() + string.slice(1);
+};
+
+var tagToIdentifier = function (tagName) {
+	return lowerFirst(tagName.slice(1).split('-').map(upperFirst).join(''));
+};
+
+var createIdGenerator = function (prefix) {
+	var counter = 0;
+	return function (override) {
+		if (arguments.length) {
+			return prefix + override;
+		} else {
+			counter++;
+			return prefix + (counter - 1);
+		}
+	};
+};
+
 exports.getFileName = getFileName;
 exports.stringUntil = stringUntil;
 exports.stringFrom = stringFrom;
 exports.pipe = pipe;
 exports.deepClone = deepClone;
+
+exports.tagToIdentifier = tagToIdentifier;
+exports.upperFirst = upperFirst;
+exports.lowerFirst = lowerFirst;
+
+exports.createIdGenerator = createIdGenerator;
+
 exports.PATH_SEPARATOR = PATH_SEPARATOR;

@@ -1,48 +1,22 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/TextureCreator',
-	'goo/entities/components/LightComponent',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere'
-], function (
-	GooRunner,
-	Material,
-	ShaderLib,
-	Camera,
-	CameraComponent,
-	ScriptComponent,
-	MeshRendererComponent,
-	PointLight,
-	TextureCreator,
-	LightComponent,
-	Box,
-	Sphere
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	var resourcePath = '../../../resources/';
 
 	// initialize the engine and attach the rendering canvas to the page
-	var goo = new GooRunner();
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	var gooRunner = new GooRunner();
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	var boxMesh = new Box();
 	var sphereMesh = new Sphere(32, 32);
 
-	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
 	var material = new Material(ShaderLib.texturedLit);
-	material.setTexture('DIFFUSE_MAP', texture);
-
+	new TextureCreator().loadTexture2D(resourcePath + 'check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var box1 = world.createEntity(boxMesh, material).addToWorld();
 	var box2 = world.createEntity(boxMesh, material, [2, 2, 0]).addToWorld();
@@ -62,4 +36,3 @@ require([
 
 	// add a camera
 	world.createEntity(new Camera(), [0, 0, 15]).addToWorld();
-});

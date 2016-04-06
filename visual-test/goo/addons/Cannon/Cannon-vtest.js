@@ -1,46 +1,11 @@
-require([
-	'goo/renderer/Material',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Quad',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/math/Vector3',
-	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonBoxColliderComponent',
-	'goo/addons/cannonpack/CannonCylinderColliderComponent',
-	'goo/addons/cannonpack/CannonSphereColliderComponent',
-	'goo/addons/cannonpack/CannonPlaneColliderComponent',
-	'goo/addons/cannonpack/CannonDistanceJointComponent',
-	'lib/V'
-], function (
-	Material,
-	Sphere,
-	Box,
-	Cylinder,
-	Quad,
-	TextureCreator,
-	ShaderLib,
-	OrbitCamControlScript,
-	Vector3,
-	CannonSystem,
-	CannonRigidbodyComponent,
-	CannonBoxColliderComponent,
-	CannonCylinderColliderComponent,
-	CannonSphereColliderComponent,
-	CannonPlaneColliderComponent,
-	CannonDistanceJointComponent,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
+
+	goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a cannon component which updates their transform.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var cannonSystem = new CannonSystem({
 		gravity: new Vector3(0, -30, 0),
@@ -137,11 +102,11 @@ require([
 			h5 = new Vector3(4, 1, 1);
 
 		// Create 'sub entities' that, each holding a collider. Position is relative to the root entity.
-		var subEntity1 = world.createEntity(new Box(h1.x * 2, h1.y * 2, h1.z * 2), V.getColoredMaterial(), new Vector3(    0, 2,   0).mul(2));
-		var subEntity2 = world.createEntity(new Box(h2.x * 2, h2.y * 2, h2.z * 2), V.getColoredMaterial(), new Vector3( -1.5, 0,   0).mul(2));
-		var subEntity3 = world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), V.getColoredMaterial(), new Vector3(    1, 0,   0).mul(2));
-		var subEntity4 = world.createEntity(new Box(h4.x * 2, h4.y * 2, h4.z * 2), V.getColoredMaterial(), new Vector3(  1.5,-1,   0).mul(2));
-		var subEntity5 = world.createEntity(new Box(h5.x * 2, h5.y * 2, h5.z * 2), V.getColoredMaterial(), new Vector3(    0,-2,   0).mul(2));
+		var subEntity1 = world.createEntity(new Box(h1.x * 2, h1.y * 2, h1.z * 2), V.getColoredMaterial(), new Vector3(    0, 2,   0).scale(2));
+		var subEntity2 = world.createEntity(new Box(h2.x * 2, h2.y * 2, h2.z * 2), V.getColoredMaterial(), new Vector3( -1.5, 0,   0).scale(2));
+		var subEntity3 = world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), V.getColoredMaterial(), new Vector3(    1, 0,   0).scale(2));
+		var subEntity4 = world.createEntity(new Box(h4.x * 2, h4.y * 2, h4.z * 2), V.getColoredMaterial(), new Vector3(  1.5,-1,   0).scale(2));
+		var subEntity5 = world.createEntity(new Box(h5.x * 2, h5.y * 2, h5.z * 2), V.getColoredMaterial(), new Vector3(    0,-2,   0).scale(2));
 		subEntity1.set(new CannonBoxColliderComponent({ halfExtents:h1 }));
 		subEntity2.set(new CannonBoxColliderComponent({ halfExtents:h2 }));
 		subEntity3.set(new CannonBoxColliderComponent({ halfExtents:h3 }));
@@ -241,16 +206,16 @@ require([
 	createStaticBox(-10, -7.5,           0,      w, 5, 20);
 
 	var force = new Vector3();
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		if (forcefieldEnabled) {
 			// Add some force to all bodies
 			world.by.system('CannonSystem').each(function (entity) {
 				// Force is directed to the origin
-	            force.copy(entity.getTranslation(force)).mul(-1);
+	            force.copy(entity.getTranslation(force)).scale(-1);
 
 	            // Set a proper length of it
 	            force.normalize();
-	            force.mul(700);
+	            force.scale(700);
 
 	            // Apply it to the entity
 	            entity.setForce(force);
@@ -266,7 +231,7 @@ require([
 
             // Set a proper length of it
             force.normalize();
-            force.mul(5000);
+            force.scale(5000);
 
             // Apply it to the entity
             entity.setForce(force);
@@ -278,4 +243,3 @@ require([
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 
 	V.process();
-});

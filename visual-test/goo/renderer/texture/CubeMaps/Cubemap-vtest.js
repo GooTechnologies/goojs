@@ -1,39 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/Camera',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Texture',
-	'goo/renderer/Capabilities',
-	'goo/shapes/Sphere',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/renderer/TextureCreator',
-	'goo/scripts/Scripts',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	ShaderBuilder,
-	Camera,
-	MeshData,
-	Shader,
-	Texture,
-	Capabilities,
-	Sphere,
-	OrbitCamControlScript,
-	ScriptComponent,
-	Vector3,
-	MathUtils,
-	TextureCreator,
-	Scripts,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'Tests that cubemaps with mipmaps works with typed array images. Should display two spheres with checkerboard reflections (left using images and right using arrays).'
@@ -98,8 +64,8 @@ require([
 		return entity;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var settings = {};
 
@@ -112,9 +78,10 @@ require([
 		'../../../../resources/check.png',
 		'../../../../resources/check-alt.png'
 	];
-	var texture = new TextureCreator().loadTextureCube(images, settings);
-	var sphereEntity = createSphereEntity(texture);
-	sphereEntity.setTranslation(-1.5, 0, 0).addToWorld();
+	new TextureCreator().loadTextureCube(images, settings).then(function (texture) {
+		var sphereEntity = createSphereEntity(texture);
+		sphereEntity.setTranslation(-1.5, 0, 0).addToWorld();
+	});
 
 	// Typed array checkerboard of same size as above images
 	var size = 256;
@@ -129,10 +96,10 @@ require([
 			for (var xx = 0; xx < tileSize; xx++) {
 				for (var yy = 0; yy < tileSize; yy++) {
 					var index = (y * tileSize + yy) * size + (x * tileSize + xx);
-						imageData[index * 4 + 0] = r;
-						imageData[index * 4 + 1] = g;
-						imageData[index * 4 + 2] = b;
-						imageData[index * 4 + 3] = 255;
+					imageData[index * 4 + 0] = r;
+					imageData[index * 4 + 1] = g;
+					imageData[index * 4 + 2] = b;
+					imageData[index * 4 + 3] = 255;
 				}
 			}
 		}
@@ -141,9 +108,9 @@ require([
 	for (var i = 0; i < 6; i++) {
 		images[i] = image;
 	}
-	texture = new Texture(images, settings, size, size);
+	var texture = new Texture(images, settings, size, size);
 	texture.variant = 'CUBE';
-	sphereEntity = createSphereEntity(texture);
+	var sphereEntity = createSphereEntity(texture);
 	sphereEntity.setTranslation(1.5, 0, 0).addToWorld();
 
 	V.addLights();
@@ -151,4 +118,3 @@ require([
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0.5, 0));
 
 	V.process();
-});

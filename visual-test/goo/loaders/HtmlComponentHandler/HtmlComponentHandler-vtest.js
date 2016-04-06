@@ -1,36 +1,12 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'lib/V',
 
-	'goo/loaders/DynamicLoader',
-	'goo/loaders/handlers/HtmlComponentHandler',
-	'goo/entities/systems/HtmlSystem'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	V,
-
-	DynamicLoader,
-	HtmlComponentHandler,
-	HtmlSystem
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Html component handler');
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
-	var world = goo.world;
-	var htmlSystem = new HtmlSystem(goo.renderer);
+	var world = gooRunner.world;
+	var htmlSystem = new HtmlSystem(gooRunner.renderer);
 	world.add(htmlSystem);
 
 	// The loader takes care of loading the data
@@ -56,9 +32,8 @@ require([
 		return loader.load(projectId);
 	}).then(function () {
 		// This code will be called when the project has finished loading.
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		gooRunner.renderer.domElement.id = 'goo';
+		document.body.appendChild(gooRunner.renderer.domElement);
 	}).then(null, function (e) {
-
+		throw e;
 	});
-});

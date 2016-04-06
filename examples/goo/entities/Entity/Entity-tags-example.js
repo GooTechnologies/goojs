@@ -1,17 +1,12 @@
-require([
-	'goo/entities/GooRunner'
-], function(
-	GooRunner
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = new GooRunner();
+	var gooRunner = new GooRunner();
 
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
 	// ---
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	// the very short story of a banana
 	var banana = world.createEntity().setTag('fruit').setTag('green'); // initially bananas are green
@@ -39,4 +34,3 @@ require([
 	});
 
 	console.log('Hit any key to check the state of the banana');
-});

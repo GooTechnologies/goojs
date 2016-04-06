@@ -1,45 +1,16 @@
-require([
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/colliders/CylinderCollider',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'lib/V'
-], function (
-	Box,
-	Quad,
-	Vector3,
-	ColliderComponent,
-	PhysicsSystem,
-	ColliderSystem,
-	RigidBodyComponent,
-	BoxCollider,
-	CylinderCollider,
-	SphereCollider,
-	PlaneCollider,
-	PhysicsDebugRenderSystem,
-	V
-) {
-	'use strict';
+/* global CANNON */
 
-	/* global CANNON */
+goo.V.attachToGlobal();
 
 	V.describe('Custom physics engine features can be added via scripts. Control this CANNON.RaycastVehicle via the arrow keys.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
-	goo.setRenderSystem(new PhysicsDebugRenderSystem());
+	gooRunner.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function createGround() {
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
@@ -50,6 +21,7 @@ require([
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
+		rigidBodyComponent.initialize();
 	}
 
 	function createVehicle(x, y, z) {
@@ -167,4 +139,3 @@ require([
 	V.addLights();
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 	V.process();
-});

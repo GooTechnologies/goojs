@@ -1,523 +1,520 @@
-define([
-	'goo/math/MathUtils'
-], function (
-	MathUtils
-) {
-	'use strict';
+var ObjectUtils = require('../util/ObjectUtils');
+var MathUtils = require('./MathUtils');
+
+/**
+ * Abstract vector class
+ */
+function Vector(size) {
 
 	/**
-	 * Vector with N components.
-	 * @property {Float32Array} data Storage for the vector components.
-	 * @param {number} size Number of vector components.
-	 */
-	function Vector(size) {
-		this.data = new Float32Array(size);
-	}
-
-	/**
-	 * Binds aliases to the different vector components.
 	 * @hidden
-	 * @param {Object} prototype The prototype to bind to.
-	 * @param {string[][]} aliases Array of component aliases for each component index.
+	 * @deprecated
 	 */
-	Vector.setupAliases = function (prototype, aliases) {
-		aliases.forEach(function (aliasesPerComponent, index) {
-			aliasesPerComponent.forEach(function (alias) {
-				Object.defineProperty(prototype, alias, {
-					get: function () {
-						return this.data[index];
-					},
-					set: function (value) {
-						this.data[index] = value;
-						// #ifdef DEBUG
-						if (isNaN(this.data[index])) {
-							throw new Error('Tried setting NaN to vector component ' + alias);
-						}
-						// #endif
-					}
-				});
-			});
+	this._size = size;
+}
 
-			Object.defineProperty(prototype, index, {
+var COMPONENT_NAMES = ['x', 'y', 'z', 'w'];
+// @ifdef DEBUG
+var COMPONENT_NAMES = ['_x', '_y', '_z', '_w'];
+// @endif
+
+/**
+ * Binds aliases to the different vector components.
+ * @hidden
+ * @param {Object} prototype The prototype to bind to.
+ * @param {Array<Array<string>>} aliases Array of component aliases for each component index.
+ */
+Vector.setupAliases = function (prototype, aliases) {
+	aliases.forEach(function (aliasesPerComponent, index) {
+		var componentName = COMPONENT_NAMES[index];
+
+		aliasesPerComponent.forEach(function (alias) {
+			Object.defineProperty(prototype, alias, {
 				get: function () {
-					return this.data[index];
+					return this[componentName];
 				},
 				set: function (value) {
-					this.data[index] = value;
-					// #ifdef DEBUG
-					if (isNaN(this.data[index])) {
-						throw new Error('Tried setting NaN to vector component ' + index);
+					this[componentName] = value;
+
+					// @ifdef DEBUG
+					if (isNaN(this[componentName])) {
+						throw new Error('Tried setting NaN to vector component ' + alias);
 					}
-					// #endif
+					// @endif
 				}
 			});
 		});
+	});
+};
+
+// @ifdef DEBUG
+Vector.setupIndices = function (prototype, count) {
+	var raise = function () {
+		throw new Error('Vector component access through indices is not supported anymore');
 	};
 
-	// #ifdef DEBUG
-	/**
-	 * Throws an error if any of the vector's components are NaN
-	 */
-	Vector.prototype.checkIntegrity = function () {
-		for (var i = 0; i < this.data.length; i++) {
-			if (isNaN(this.data[i])) {
-				throw new Error('Vector contains NaN at index ' + i);
-			}
+	for (var i = 0; i < count; i++) {
+		Object.defineProperty(prototype, i, {
+			get: raise,
+			set: raise
+		});
+	}
+};
+
+/**
+ * Replaces the supplied method of object and wraps it in a integrity check
+ * @hidden
+ * @param {Object} object The object to attach the post-check to
+ * @param {string} methodName The name of the original method the check is attached to
+ */
+Vector.addReturnCheck = function (object, methodName) {
+	var originalMethod = object[methodName];
+	object[methodName] = function () {
+		var ret = originalMethod.apply(this, arguments);
+		if (isNaN(ret)) {
+			throw new Error('Vector method ' + methodName + ' returned NaN');
 		}
-	};
 
-	/**
-	 * Replaces the supplied method of object and wraps it in a integrity check
-	 * @hidden
-	 * @param {object} object The object to attach the post-check to
-	 * @param {string} methodName The name of the original method the check is attached to
-	 */
-	Vector.addPostCheck = function (object, methodName) {
-		var originalMethod = object[methodName];
-		object[methodName] = function () {
-			var ret = originalMethod.apply(this, arguments);
-			if (typeof ret === 'number') {
-				if (isNaN(ret)) {
-					throw new Error('Vector method ' + methodName + ' returned NaN');
+		return ret;
+	};
+};
+
+/**
+ * Adds more validators at once
+ * @hidden
+ * @param {Object} object
+ * @param {Array<string>} methodNames
+ */
+Vector.addReturnChecks = function (object, methodNames) {
+	methodNames.forEach(Vector.addReturnCheck.bind(null, object));
+};
+// @endif
+
+// SHIM START
+Object.defineProperty(Vector.prototype, 'data', {
+	get: ObjectUtils.warnOnce('The .data property of Vector was removed, please use the .x, .y, .z, .w properties instead.', function () {
+		var data = [];
+		var that = this;
+		Object.defineProperties(data, {
+			'0': {
+				get: function () {
+					return that.x;
+				},
+				set: function (value) {
+					that.x = value;
+				}
+			},
+			'1': {
+				get: function () {
+					return that.y;
+				},
+				set: function (value) {
+					that.y = value;
+				}
+			},
+			'2': {
+				get: function () {
+					return that.z;
+				},
+				set: function (value) {
+					that.z = value;
+				}
+			},
+			'3': {
+				get: function () {
+					return that.w;
+				},
+				set: function (value) {
+					that.w = value;
 				}
 			}
+		});
+		return data;
+	})
+});
 
-			this.checkIntegrity();
-			return ret;
-		};
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.add = ObjectUtils.warnOnce('Vector.add is deprecated.', function (lhs, rhs, target) {
+	var ldata = lhs.data || lhs;
+	var rdata = rhs.data || rhs;
+	var size = lhs._size;
 
-	/**
-	 * Adds more validators at once
-	 * @hidden
-	 * @param object
-	 * @param {string[]} methodNames
-	 */
-	Vector.addPostChecks = function (object, methodNames) {
-		methodNames.forEach(Vector.addPostCheck.bind(null, object));
-	};
-	// #endif
+	if (!target) {
+		target = new Vector(size);
+	}
 
-	/**
-	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @param {Vector} [target] Target vector for storage.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.add = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
+	for (var i = 0; i < size; i++) {
+		target.data[i] = ldata[i] + rdata[i];
+	}
 
-		if (!target) {
-			target = new Vector(size);
-		}
+	return target;
+});
 
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] + rdata[i];
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.add = ObjectUtils.warnOnce('Vector.prototype.add is deprecated.', function (rhs) {
+	return Vector.add(this, rhs, this);
+});
 
-		return target;
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.sub = ObjectUtils.warnOnce('Vector.sub is deprecated.', function (lhs, rhs, target) {
+	var ldata = lhs.data || lhs;
+	var rdata = rhs.data || rhs;
+	var size = lhs._size;
 
-	/**
-	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.add = function (rhs) {
-		return Vector.add(this, rhs, this);
-	};
+	if (!target) {
+		target = new Vector(size);
+	}
 
-	/**
-	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @param {Vector} [target] Target vector for storage.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.sub = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
+	for (var i = 0; i < size; i++) {
+		target.data[i] = ldata[i] - rdata[i];
+	}
 
-		if (!target) {
-			target = new Vector(size);
-		}
+	return target;
+});
 
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] - rdata[i];
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.sub = ObjectUtils.warnOnce('Vector.prototype.sub is deprecated.', function (rhs) {
+	return Vector.sub(this, rhs, this);
+});
 
-		return target;
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.mul = ObjectUtils.warnOnce('Vector.mul is deprecated.', function (lhs, rhs, target) {
+	var ldata = lhs.data || lhs;
+	var rdata = rhs.data || rhs;
+	var size = lhs._size;
 
-	/**
-	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this - rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.sub = function (rhs) {
-		return Vector.sub(this, rhs, this);
-	};
+	if (!target) {
+		target = new Vector(size);
+	}
 
-	/**
-	 * Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @param {Vector} [target] Target vector for storage.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.mul = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
+	for (var i = 0; i < size; i++) {
+		target.data[i] = ldata[i] * rdata[i];
+	}
 
-		if (!target) {
-			target = new Vector(size);
-		}
+	return target;
+});
 
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] * rdata[i];
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.mul = ObjectUtils.warnOnce('Vector.prototype.mul is deprecated.', function (rhs) {
+	return Vector.mul(this, rhs, this);
+});
 
-		return target;
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.div = ObjectUtils.warnOnce('Vector.div is deprecated.', function (lhs, rhs, target) {
+	var ldata = lhs.data || lhs;
+	var rdata = rhs.data || rhs;
+	var size = lhs._size;
 
-	/**
-	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this * rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.mul = function (rhs) {
-		return Vector.mul(this, rhs, this);
-	};
+	if (!target) {
+		target = new Vector(size);
+	}
 
-	/**
-	 * Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @param {Vector} [target] Target vector for storage.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.div = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
+	for (var i = 0; i < size; i++) {
+		target.data[i] = ldata[i] / rdata[i];
+	}
 
-		if (!target) {
-			target = new Vector(size);
-		}
+	return target;
+});
 
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] / rdata[i];
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.div = ObjectUtils.warnOnce('Vector.prototype.div is deprecated.', function (rhs) {
+	return Vector.div(this, rhs, this);
+});
 
-		return target;
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.copy = ObjectUtils.warnOnce('Vector.copy is deprecated.', function (source, target) {
+	var size = source._size;
 
-	/**
-	 * Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars.
-	 * @returns {Vector} Self for chaining.
-	 */
+	if (!target) {
+		target = new Vector(size);
+	}
 
-	Vector.prototype.div = function (rhs) {
-		return Vector.div(this, rhs, this);
-	};
+	for (var i=0; i<size; i++) {
+		target.data[i] = source.data[i];
+	}
 
-	/**
-	 * Copies component values and stores them in a separate vector. Equivalent of 'return (target = source);'.
-	 * @param {Vector} source Source vector.
-	 * @param {Vector} [target] Target vector.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.copy = function (source, target) {
-		var size = source.data.length;
+	return target;
+});
 
-		if (!target) {
-			target = new Vector(size);
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.copy = ObjectUtils.warnOnce('Vector.prototype.copy  is deprecated.', function (source) {
+	var size = source._size;
+	for (var i=0; i<size; i++) {
+		this.data[i] = source.data[i];
+	}
+	return this;
+});
 
-		target.data.set(source.data);
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.dot = ObjectUtils.warnOnce('Vector.dot is deprecated.', function (lhs, rhs) {
+	var ldata = lhs.data || lhs;
+	var rdata = rhs.data || rhs;
+	var size = lhs._size;
 
-		return target;
-	};
+	var sum = 0;
 
-	/**
-	 * Copies component values and stores them locally. Equivalent of 'return (this = source);'.
-	 * @param {Vector} source Source vector.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.copy = function (source) {
-		this.data.set(source.data);
-		return this;
-	};
+	for (var i = 0; i < size; i++) {
+		sum += ldata[i] * rdata[i];
+	}
 
-	/**
-	 * Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Dot product.
-	 */
-	Vector.dot = function (lhs, rhs) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
+	return sum;
+});
 
-		var sum = 0.0;
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.dot = ObjectUtils.warnOnce('Vector.prototype.dot is deprecated.', function (rhs) {
+	return Vector.dot(this, rhs);
+});
 
-		for (var i = 0; i < size; i++) {
-			sum += ldata[i] * rdata[i];
-		}
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.apply = ObjectUtils.warnOnce('Vector.apply is deprecated.', function (lhs, rhs, target) {
+	var rows = lhs.rows;
+	var cols = lhs.cols;
+	var size = rhs._size;
 
-		return sum;
-	};
+	if (!target) {
+		target = new Vector(rows);
+	}
 
-	/**
-	 * Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Dot product.
-	 */
-	Vector.prototype.dot = function (rhs) {
-		return Vector.dot(this, rhs);
-	};
+	if (target === rhs) {
+		return Vector.copy(Vector.apply(lhs, rhs), target);
+	}
 
-	/**
-	 * Applies a matrix to a vector and stores the result in a separate vector. Equivalent of 'return (target = lhs•rhs);'.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} [target] Target vector for storage.
-	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
-	 */
-	Vector.apply = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-		var size = rhs.data.length;
+	for (var c = 0; c < cols; c++) {
+		var o = c * rows;
 
-		if (!target) {
-			target = new Vector(rows);
-		}
+		for (var r = 0; r < rows; r++) {
+			var sum = 0.0;
 
-		if (target === rhs) {
-			return Vector.copy(Vector.apply(lhs, rhs), target);
-		}
-
-		for (var c = 0; c < cols; c++) {
-			var o = c * rows;
-
-			for (var r = 0; r < rows; r++) {
-				var sum = 0.0;
-
-				for (var i = 0; i < size; i++) {
-					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
-				}
-
-				target.data[o + r] = sum;
+			for (var i = 0; i < size; i++) {
+				sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
 			}
+
+			target.data[o + r] = sum;
 		}
+	}
 
-		return target;
-	};
+	return target;
+});
 
-	/**
-	 * Applys a matrix to a vector and stores the result locally. Equivalent of 'return (this = lhs•this);'.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.apply = ObjectUtils.warnOnce('Vector.prototype.apply is deprecated.', function (lhs) {
+	return Vector.apply(lhs, this, this);
+});
 
-	Vector.prototype.apply = function (lhs) {
-		return Vector.apply(lhs, this, this);
-	};
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.equals = ObjectUtils.warnOnce('Vector.equals is deprecated.', function (lhs, rhs) {
+	var lhsLength = lhs._size;
+	if (lhsLength !== rhs._size) {
+		return false;
+	}
 
-	/**
-	 * Compares two vectors for approximate equality. Equivalent of 'return (lhs ~ rhs);'.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Boolean} True if equal.
-	 */
-	Vector.equals = function (lhs, rhs) {
-		var lhsLength = lhs.data.length;
-		if (lhsLength !== rhs.data.length) {
+	for (var i = 0; i < lhsLength; i++) {
+		// why the backwards check? because otherwise if NaN is present in either lhs or rhs
+		// then Math.abs(NaN) is NaN which is neither bigger or smaller than EPSILON
+		// which never satisfies the condition
+		// NaN is not close to to NaN and we want to preserve that for vectors as well
+		if (!(Math.abs(lhs.data[i] - rhs.data[i]) <= MathUtils.EPSILON)) {
 			return false;
 		}
+	}
 
-		for (var i = 0; i < lhsLength; i++) {
-			// why the backwards check? because otherwise if NaN is present in either lhs or rhs
-			// then Math.abs(NaN) is NaN which is neither bigger or smaller than EPSILON
-			// which never satisfies the condition
-			// NaN is not close to to NaN and we want to preserve that for vectors as well
-			if (!(Math.abs(lhs.data[i] - rhs.data[i]) <= MathUtils.EPSILON)) {
-				return false;
-			}
-		}
-
-		return true;
-	};
-
-	/**
-	 * Compares two vectors for approximate equality. Equivalent of 'return (this ~ rhs);'
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Boolean} True if equal.
-	 */
-	Vector.prototype.equals = function (rhs) {
-		return Vector.equals(this, rhs);
-	};
-
-	/**
-	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - lhs)•(rhs - lhs);'. When comparing the relative
-	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
-	 *              operation.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Squared distance.
-	 */
-	Vector.distanceSquared = function (lhs, rhs) {
-		return Vector.sub(lhs, rhs).lengthSquared();
-	};
-
-	/**
-	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - this)•(rhs - this);'. When comparing the
-	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
-	 *              root operation.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Squared distance.
-	 */
-	Vector.prototype.distanceSquared = function (rhs) {
-		return Vector.sub(this, rhs).lengthSquared();
-	};
-
-	/**
-	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - lhs)•(rhs - lhs));'.
-	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Distance.
-	 */
-	Vector.distance = function (lhs, rhs) {
-		return Vector.sub(lhs, rhs).length();
-	};
-
-	/**
-	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - this)•(rhs - this));'.
-	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @returns {number} Distance.
-	 */
-	Vector.prototype.distance = function (rhs) {
-		return Vector.sub(this, rhs).length();
-	};
-
-	/**
-	 * Computes the squared length of the vector. Equivalent of 'return this•this;'.
-	 * @returns {number} Square length.
-	 */
-	Vector.prototype.lengthSquared = function () {
-		return Vector.dot(this, this);
-	};
-
-	/**
-	 * Computes the length of the vector. Equivalent of 'return sqrt(this•this);'.
-	 * @returns {number} Length.
-	 */
-	Vector.prototype.length = function () {
-		return Math.sqrt(Vector.dot(this, this));
-	};
-
-	/**
-	 * Scales the vector
-	 * @param {number} factor
-	 * @returns {Vector} this for chaining
-	 */
-	Vector.prototype.scale = function(factor) {
-		for (var i = this.data.length - 1; i >= 0; i--) {
-			this.data[i] *= factor;
-		}
-		return this;
-	};
-
-	/**
-	 * Inverts all component values of the vector. Equivalent of 'return (this = 0.0 - this);'.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.invert = function () {
-		for (var i = 0; i < this.data.length; i++) {
-			this.data[i] = 0.0 - this.data[i];
-		}
-
-		return this;
-	};
-
-	/**
-	 * Normalizes the vector to unit length. Equivalent of 'return (this = this/sqrt(this•this));'.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.normalize = function () {
-		var l = this.length();
-		var dataLength = this.data.length;
-
-		if (l < MathUtils.EPSILON) {
-			for (var i = 0; i < dataLength; i++) {
-				this.data[i] = 0;
-			}
-		} else {
-			l = 1.0 / l;
-			for (var i = 0; i < dataLength; i++) {
-				this.data[i] *= l;
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Clones the vector. Equivalent of 'return (clone = this)'.
-	 * @returns {Vector} Clone of self.
-	 */
-	Vector.prototype.clone = function () {
-		return Vector.copy(this);
-	};
-
-	/**
-	 * Sets the components of the vector.
-	 * @param {Vector|number[]|...number} arguments Component values.
-	 * @returns {Vector} Self for chaining.
-	 */
-	Vector.prototype.set = function () {
-		if (arguments.length === 1 && typeof arguments[0] === 'object') {
-			if (arguments[0] instanceof Vector) {
-				this.copy(arguments[0]);
-			} else {
-				for (var i = 0; i < arguments[0].length; i++) {
-					this.data[i] = arguments[0][i];
-				}
-			}
-		} else {
-			for (var i = 0; i < arguments.length; i++) {
-				this.data[i] = arguments[i];
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Converts the vector to a string.
-	 * @returns {String} String of component values.
-	 */
-	Vector.prototype.toString = function () {
-		var string = '';
-
-		string += '[';
-
-		for (var i = 0; i < this.data.length; i++) {
-			string += this.data[i];
-			string += i !== this.data.length - 1 ? ', ' : '';
-		}
-
-		string += ']';
-
-		return string;
-	};
-
-	return Vector;
+	return true;
 });
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.equals = ObjectUtils.warnOnce('Vector.prototype.equals is deprecated.', function (rhs) {
+	return Vector.equals(this, rhs);
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.distanceSquared = ObjectUtils.warnOnce('Vector.distanceSquared is deprecated.', function (lhs, rhs) {
+	return Vector.sub(lhs, rhs).lengthSquared();
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.distanceSquared = ObjectUtils.warnOnce('Vector.prototype.distanceSquared is deprecated.', function (rhs) {
+	return Vector.sub(this, rhs).lengthSquared();
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.distance = ObjectUtils.warnOnce('Vector.distance is deprecated.', function (lhs, rhs) {
+	return Vector.sub(lhs, rhs).length();
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.distance = ObjectUtils.warnOnce('Vector.prototype.distance is deprecated.', function (rhs) {
+	return Vector.sub(this, rhs).length();
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.lengthSquared = ObjectUtils.warnOnce('Vector.prototype.lengthSquared is deprecated.', function () {
+	return Vector.dot(this, this);
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.length = ObjectUtils.warnOnce('Vector.prototype.length is deprecated.', function () {
+	return Math.sqrt(Vector.dot(this, this));
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.scale = ObjectUtils.warnOnce('Vector.prototype.scale is deprecated.', function (factor) {
+	for (var i = this._size - 1; i >= 0; i--) {
+		this.data[i] *= factor;
+	}
+	return this;
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.invert = ObjectUtils.warnOnce('Vector.prototype.invert is deprecated.', function () {
+	for (var i = 0; i < this._size; i++) {
+		this.data[i] = 0.0 - this.data[i];
+	}
+
+	return this;
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.normalize = ObjectUtils.warnOnce('Vector.prototype.normalize is deprecated.', function () {
+	var l = this.length();
+	var dataLength = this._size;
+
+	if (l < MathUtils.EPSILON) {
+		for (var i = 0; i < dataLength; i++) {
+			this.data[i] = 0;
+		}
+	} else {
+		l = 1.0 / l;
+		for (var i = 0; i < dataLength; i++) {
+			this.data[i] *= l;
+		}
+	}
+
+	return this;
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.clone = ObjectUtils.warnOnce('Vector.prototype.clone is deprecated.', function () {
+	return Vector.copy(this);
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.set = ObjectUtils.warnOnce('Vector.prototype.set is deprecated.', function () {
+	if (arguments.length === 1 && typeof arguments[0] === 'object') {
+		if (arguments[0] instanceof Vector) {
+			this.copy(arguments[0]);
+		} else {
+			for (var i = 0; i < arguments[0].length; i++) {
+				this.data[i] = arguments[0][i];
+			}
+		}
+	} else {
+		for (var i = 0; i < arguments.length; i++) {
+			this.data[i] = arguments[i];
+		}
+	}
+
+	return this;
+});
+
+/**
+ * @hidden
+ * @deprecated
+ */
+Vector.prototype.toString = ObjectUtils.warnOnce('Vector.prototype.toString is deprecated.', function () {
+	var string = '';
+
+	string += '[';
+
+	for (var i = 0; i < this._size; i++) {
+		string += this.data[i];
+		string += i !== this._size - 1 ? ', ' : '';
+	}
+
+	string += ']';
+
+	return string;
+});
+// SHIM END
+
+module.exports = Vector;

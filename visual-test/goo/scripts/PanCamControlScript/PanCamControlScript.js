@@ -1,43 +1,13 @@
-require([
-	'goo/renderer/Camera',
-	'goo/entities/components/ScriptComponent',
-	'goo/scripts/Scripts',
-	'goo/math/Vector3',
-	'goo/entities/SystemBus',
-	'lib/V',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Torus',
-	'goo/renderer/Texture',
-	'goo/scriptpack/ScriptRegister'
-], function (
-	Camera,
-	ScriptComponent,
-	Scripts,
-	Vector3,
-	SystemBus,
-	V,
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	Quad,
-	Torus,
-	Texture
-	/*ScriptRegister*/
-) {
-	'use strict';
 
-	var goo = V.initGoo();
+	goo.V.attachToGlobal();
+
+	var gooRunner = V.initGoo();
 
 	V.addLights();
 
 	function createMesh(meshData, material, x, y, z) {
-		var entity = goo.world.createEntity(meshData, material);
-		entity.transformComponent.transform.translation.set(x, y, z);
+		var entity = gooRunner.world.createEntity(meshData, material);
+		entity.transformComponent.transform.translation.setDirect(x, y, z);
 		entity.addToWorld();
 	}
 
@@ -59,7 +29,7 @@ require([
 
 	// add camera
 	var camera = new Camera();
-	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0,0,10]).addToWorld();
+	var cameraEntity = gooRunner.world.createEntity(camera, 'CameraEntity', [0,0,10]).addToWorld();
 	camera.setProjectionMode(Camera.Parallel);
 	var size = 10;
 	camera.setFrustum(1, 100, -size, size, size, -size, 1);
@@ -75,4 +45,3 @@ require([
 	SystemBus.addListener('goo.scriptError', function(evt){
 		throw new Error(evt.message);
 	});
-});

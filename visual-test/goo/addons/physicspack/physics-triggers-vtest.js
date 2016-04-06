@@ -1,32 +1,9 @@
-require([
-	'goo/entities/SystemBus',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/colliders/SphereCollider',
-	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'lib/V'
-], function (
-	SystemBus,
-	Sphere,
-	Vector3,
-	ColliderComponent,
-	PhysicsSystem,
-	ColliderSystem,
-	RigidBodyComponent,
-	SphereCollider,
-	PhysicsDebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var physicsSystem = new PhysicsSystem();
 	physicsSystem.setGravity(Vector3.ZERO);
@@ -34,21 +11,22 @@ require([
 	world.setSystem(new ColliderSystem());
 	world.registerComponent(ColliderComponent);
 	world.registerComponent(RigidBodyComponent);
-	goo.setRenderSystem(new PhysicsDebugRenderSystem());
+	gooRunner.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	var material = V.getColoredMaterial();
 	var radius = 5;
-	var sphereMesh = new Sphere(20, 20, radius);
+	var sphereMesh = new Box(radius, radius, radius);
 
 	// Adding the components, style 1
-	var collider = new SphereCollider({ radius: radius });
+	var collider = new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) });
 	var body = new RigidBodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
 	world.createEntity(sphereMesh, material, collider, body).addToWorld();
+	body.initialize();
 
 	// Adding the components, style 2
-	world.createEntity(sphereMesh, material)
+	var entity = world.createEntity(sphereMesh, material)
 		.set(new ColliderComponent({
-			collider: new SphereCollider({ radius: radius }),
+			collider: new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) }),
 			isTrigger: true
 		}))
 		.set(new RigidBodyComponent({
@@ -56,25 +34,25 @@ require([
 		}))
 		.addToWorld();
 
-	SystemBus.addListener('goo.physics.beginContact', function (evt) {
+	entity.rigidBodyComponent.initialize();
+
+	SystemBus.addListener('gooRunner.physics.triggerEnter', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
-		console.log('Contact begins between', evt.entityA, 'and', evt.entityB);
+		console.log('Trigger is entered!', evt.entityA, evt.entityB);
 	});
 
-	SystemBus.addListener('goo.physics.duringContact', function (/*evt*/) {
-		console.log('During contact event is emitted!');
-		// evt.entityA
-		// evt.entityB
+	SystemBus.addListener('gooRunner.physics.triggerStay', function (/*evt*/) {
+		console.log('Object is staying inside the trigger!');
 	});
 
-	SystemBus.addListener('goo.physics.endContact', function (evt) {
+	SystemBus.addListener('gooRunner.physics.triggerExit', function (evt) {
 		material.uniforms.materialDiffuse = [0, 1, 0, 1];
-		console.log('Contact ends between', evt.entityA, 'and', evt.entityB);
+		console.log('Trigger exited!', evt.entityA, evt.entityB);
 	});
 
 	var position = new Vector3();
 	var velocity = new Vector3();
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		body.getPosition(position);
 		if (Math.abs(position.z) > radius * 3) {
 			body.getVelocity(velocity);
@@ -86,4 +64,3 @@ require([
 	V.addLights();
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 	V.process();
-});

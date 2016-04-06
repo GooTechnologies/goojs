@@ -1,42 +1,19 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/addons/waterpack/FlatWaterRenderer',
-	'goo/entities/systems/ParticlesSystem',
-	'goo/entities/components/ParticleComponent',
-	'goo/particles/ParticleUtils',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Quad,
-	Vector3,
-	TextureCreator,
-	FlatWaterRenderer,
-	ParticlesSystem,
-	ParticleComponent,
-	ParticleUtils,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Fire and water were at some point causing rendering artifacts. This scene serves as the minimal test case.');
 
-	function addFire(goo) {
+	function addFire(gooRunner) {
 		// particle material
 		var material = new Material(ShaderLib.particles);
-		var texture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
-		texture.generateMipmaps = true;
-		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';
 		material.cullState.enabled = false;
 		material.depthState.write = false;
 		material.renderQueue = 2001;
+		new TextureCreator().loadTexture2D('../../../resources/flare.png').then(function (texture) {
+			texture.generateMipmaps = true;
+			material.setTexture('DIFFUSE_MAP', texture);
+		});
 
 		// create particle component of the particle cloud entity
 		var particleComponent = new ParticleComponent({
@@ -70,7 +47,7 @@ require([
 		});
 
 		// create the particle cloud entity
-		goo.world.createEntity(particleComponent.meshData, material, particleComponent, [10, 0, 0])
+		gooRunner.world.createEntity(particleComponent.meshData, material, particleComponent, [10, 0, 0])
 			.addToWorld();
 	}
 
@@ -79,7 +56,7 @@ require([
 		var meshData = new Quad(10000, 10000, 10, 10);
 
 		var material = new Material(ShaderLib.simple);
-		var waterEntity = goo.world.createEntity(meshData, material);
+		var waterEntity = gooRunner.world.createEntity(meshData, material);
 		waterEntity.meshRendererComponent.isPickable = false;
 
 		waterEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
@@ -93,7 +70,7 @@ require([
 			useRefraction: false,
 			normalsUrl: '../../../resources/waternormals3.png'
 		});
-		goo.renderSystem.preRenderers.push(waterRenderer);
+		gooRunner.renderSystem.preRenderers.push(waterRenderer);
 
 		waterRenderer.setWaterEntity(waterEntity);
 		//waterRenderer.setSkyBox(skybox);
@@ -117,21 +94,20 @@ require([
 		return waterRenderer;
 	}
 
-	function addBox(goo) {
+	function addBox(gooRunner) {
 		var boxMeshData = new Box(10, 30, 10);
 		var boxMaterial = new Material(ShaderLib.simple);
-		goo.world.createEntity(boxMeshData, boxMaterial, [0, 15.01, 0])
+		gooRunner.world.createEntity(boxMeshData, boxMaterial, [0, 15.01, 0])
 			.addToWorld();
 	}
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0), new Vector3(0, 5, 0));
 	V.addLights();
 
-	addBox(goo);
+	addBox(gooRunner);
 	addWater(goo, 0);
-	addFire(goo);
+	addFire(gooRunner);
 
 	V.process();
-});

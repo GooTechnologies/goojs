@@ -1,30 +1,10 @@
-define([
-	'goo/shapes/Quad',
-	'goo/renderer/Camera',
-	'goo/math/Vector3'
-], function (
-	Quad,
-	Camera,
-	Vector3
-) {
-	'use strict';
+var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
 
-	/**
-	 * Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
-	 */
-	function FullscreenUtil() {
-	}
-
-	var camera = new Camera();
-	camera.projectionMode = Camera.Parallel;
-	camera.setFrustum(0, 1, -1, 1, 1, -1);
-	camera._left.copy(Vector3.UNIT_X).invert();
-	camera._up.copy(Vector3.UNIT_Y);
-	camera._direction.copy(Vector3.UNIT_Z);
-	camera.onFrameChange();
-	FullscreenUtil.camera = camera;
-
-	FullscreenUtil.quad = new Quad(2, 2);
-
-	return FullscreenUtil;
-});
+/**
+ * Fullscreen-related utilities
+ * @target-class FullscreenUtil FullscreenUtil constructor
+ * @require-pathvar FullscreenUtil = require('../../renderer/pass/FullscreenUtil');
+ * @group renderer/pass
+ * @deprecated Deprecated as of 0.14.x and scheduled for removal in 0.16.0; The class has been renamed to `goo/util/FullscreenUtils`
+ */
+module.exports = FullscreenUtils;

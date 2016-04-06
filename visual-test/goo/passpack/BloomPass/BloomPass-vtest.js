@@ -1,33 +1,9 @@
-require([
-	'goo/math/Vector3',
-	'goo/math/Vector4',
-	'goo/shapes/Box',
-	'lib/V',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/passpack/BloomPass',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Util'
-], function (
-	Vector3,
-	Vector4,
-	Box,
-	V,
-	ShaderLib,
-	Composer,
-	RenderPass,
-	FullscreenPass,
-	BloomPass,
-	RenderTarget,
-	Util
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Bloom is used as a posteffect');
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 	V.addLights();
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 	V.addBoxes();
@@ -41,17 +17,16 @@ require([
 	bloomPass.bcMaterial.uniforms.contrast = 0.1;
 	bloomPass.enabled = true;
 
-	var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
+	var renderPass = new RenderPass(gooRunner.world.getSystem('RenderSystem').renderList);
 	renderPass.clearColor = new Vector4(0, 0, 0, 0);
 
-	var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+	var outPass = new FullscreenPass(ObjectUtils.clone(ShaderLib.copy));
 	outPass.renderToScreen = true;
 
 	composer.addPass(renderPass);
 	composer.addPass(bloomPass);
 	composer.addPass(outPass);
 
-	goo.renderSystem.composers.push(composer);
+	gooRunner.renderSystem.composers.push(composer);
 
 	V.process();
-});

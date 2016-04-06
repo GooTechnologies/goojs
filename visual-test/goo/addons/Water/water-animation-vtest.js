@@ -1,81 +1,34 @@
-require([
-	'goo/renderer/Material',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Renderer',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Texture',
-	'goo/addons/waterpack/FlatWaterRenderer',
-	'lib/V',
-
-	'goo/animationpack/systems/AnimationSystem',
-	'goo/fsmpack/statemachine/StateMachineSystem',
-	'goo/entities/systems/HtmlSystem',
-	'goo/timelinepack/TimelineSystem',
-	'goo/loaders/DynamicLoader',
-
-	'goo/animationpack/handlers/AnimationHandlers',
-
-	'goo/fsmpack/StateMachineHandlers',
-	'goo/timelinepack/TimelineComponentHandler',
-	'goo/passpack/PosteffectsHandler',
-	'goo/quadpack/QuadComponentHandler',
-	'goo/scriptpack/ScriptHandlers',
-	'goo/scriptpack/ScriptRegister',
-	'goo/scripts/GooClassRegister'
-], function (
-	Material,
-	Box,
-	Quad,
-	TextureCreator,
-	ShaderLib,
-	Renderer,
-	Vector3,
-	MeshData,
-	Shader,
-	Texture,
-	FlatWaterRenderer,
-	V,
-	AnimationSystem,
-	StateMachineSystem,
-	HtmlSystem,
-	TimelineSystem,
-	DynamicLoader
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('The large quad should look like water, with ripples and a reflection of the skybox and the boxes above the quad\'s surface.');
 
 	var skybox = null;
 	var cameraEntity;
 
-	function loadSkybox () {
+	function loadSkybox() {
 		var environmentPath = 'resources/skybox/';
+		skybox = createBox(skyboxShader, 10, 10, 10);
 		// left, right, bottom, top, back, front
-		var textureCube = new TextureCreator().loadTextureCube([
+		new TextureCreator().loadTextureCube([
 			environmentPath + '1.jpg',
 			environmentPath + '3.jpg',
 			environmentPath + '5.jpg',
 			environmentPath + '6.jpg',
 			environmentPath + '4.jpg',
 			environmentPath + '2.jpg'
-		]);
-		skybox = createBox(skyboxShader, 10, 10, 10);
-		skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		]).then(function (textureCube) {
+			skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
+		});
 		skybox.meshRendererComponent.materials[0].cullState.cullFace = 'Front';
 		skybox.meshRendererComponent.materials[0].depthState.enabled = false;
 		skybox.meshRendererComponent.materials[0].renderQueue = 0;
 		skybox.meshRendererComponent.cullMode = 'Never';
 		skybox.addToWorld();
 
-		goo.callbacksPreRender.push(function () {
+		gooRunner.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
-			target.translation.setVector(source.translation);
+			target.translation.set(source.translation);
 			target.update();
 		});
 	}
@@ -159,28 +112,28 @@ require([
 		});
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
-	goo.world.add(new AnimationSystem());
-	goo.world.add(new StateMachineSystem(goo));
-	goo.world.add(new HtmlSystem(goo.renderer));
-	goo.world.add(new TimelineSystem());
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
+	world.add(new AnimationSystem());
+	world.add(new StateMachineSystem(gooRunner));
+	world.add(new HtmlSystem(gooRunner.renderer));
+	world.add(new TimelineSystem());
 
 	var transformSystem = world.getSystem('TransformSystem');
 	var cameraSystem = world.getSystem('CameraSystem');
 	var lightingSystem = world.getSystem('LightingSystem');
 	var boundingSystem = world.getSystem('BoundingUpdateSystem');
 	var renderSystem = world.getSystem('RenderSystem');
-	var renderer = goo.renderer;
+	var renderer = gooRunner.renderer;
 
 	// Load the project
-	loadProject(goo).then(function () {
+	loadProject(gooRunner).then(function () {
 		world.processEntityChanges();
 		transformSystem._process();
 		lightingSystem._process();
 		cameraSystem._process();
 		boundingSystem._process();
-		if (Renderer.mainCamera) { goo.renderer.checkResize(Renderer.mainCamera); }
+		if (Renderer.mainCamera) { gooRunner.renderer.checkResize(Renderer.mainCamera); }
 	}).then(function () {
 		var meshData = new Box(7, 7, 7);
 		var material = new Material(ShaderLib.simpleLit);
@@ -215,7 +168,7 @@ require([
 			normalsUrl: 'resources/water/waternormals3.png',
 			useRefraction: true
 		});
-		goo.renderSystem.preRenderers.push(waterRenderer);
+		gooRunner.renderSystem.preRenderers.push(waterRenderer);
 
 		waterRenderer.setWaterEntity(waterEntity);
 		waterRenderer.setSkyBox(skybox);
@@ -246,4 +199,3 @@ require([
 		// If something goes wrong, 'e' is the error message from the engine.
 		alert('Failed to load project: ' + e);
 	});
-});

@@ -1,51 +1,44 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
-], function(
-	Material,
-	ShaderLib
-	) {
-	'use strict';
+var Material = require('../../../src/goo/renderer/Material');
+var ShaderLib = require('../../../src/goo/renderer/shaders/ShaderLib');
 
-	describe('Material', function () {
-		describe('constructor', function () {
-			it('constructs a material given no parameters', function () {
-				var material = new Material();
+describe('Material', function () {
+	describe('constructor', function () {
+		it('constructs a material given no parameters', function () {
+			var material = new Material();
 
-				expect(material.name).toEqual('Default Material');
-				expect(material.shader).toBeNull();
-			});
+			expect(material.name).toEqual('Default Material');
+			expect(material.shader).toBeNull();
+		});
 
-			it('constructs a material given a name only', function () {
-				var name = 'alabalaportocala';
-				var material = new Material(name);
+		it('constructs a material given a name only', function () {
+			var name = 'alabalaportocala';
+			var material = new Material(name);
 
-				expect(material.name).toEqual(name);
-				expect(material.shader).toBeNull();
-			});
+			expect(material.name).toEqual(name);
+			expect(material.shader).toBeNull();
+		});
 
-			it('constructs a material given name shader definition only', function () {
-				var material = new Material(ShaderLib.simpleLit);
+		it('constructs a material given name shader definition only', function () {
+			var material = new Material(ShaderLib.simpleLit);
 
-				expect(material.name).toEqual('Default Material');
-				expect(material.shader).not.toBeNull();
-			});
+			expect(material.name).toEqual('Default Material');
+			expect(material.shader).not.toBeNull();
+		});
 
-			it('constructs a material given a name and a shader definition', function () {
-				var name = 'alabalaportocala';
-				var material = new Material(name, ShaderLib.simpleLit);
+		it('constructs a material given a name and a shader definition', function () {
+			var name = 'alabalaportocala';
+			var material = new Material(name, ShaderLib.simpleLit);
 
-				expect(material.name).toEqual(name);
-				expect(material.shader).not.toBeNull();
-			});
+			expect(material.name).toEqual(name);
+			expect(material.shader).not.toBeNull();
+		});
 
-			it('constructs a material given a shader definition and a name', function () {
-				var name = 'alabalaportocala';
-				var material = new Material(ShaderLib.simpleLit, name);
+		it('constructs a material given a shader definition and a name', function () {
+			var name = 'alabalaportocala';
+			var material = new Material(ShaderLib.simpleLit, name);
 
-				expect(material.name).toEqual(name);
-				expect(material.shader).not.toBeNull();
-			});
+			expect(material.name).toEqual(name);
+			expect(material.shader).not.toBeNull();
 		});
 	});
 });

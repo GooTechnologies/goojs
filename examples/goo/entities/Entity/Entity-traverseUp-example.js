@@ -1,17 +1,12 @@
-require([
-	'goo/entities/GooRunner'
-], function(
-	GooRunner
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = new GooRunner();
+	var gooRunner = new GooRunner();
 
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
 	// ---
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	var child11 = world.createEntity('child11').addToWorld();
 	var child12 = world.createEntity('child12').addToWorld();
@@ -36,4 +31,3 @@ require([
 	child21.traverseUp(function (entity) {
 		console.log(entity.name);
 	});
-});

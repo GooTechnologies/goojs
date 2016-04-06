@@ -1,28 +1,15 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/shapes/Cylinder',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	TextureCreator,
-	Cylinder,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Cylinders of different heights');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cylinder.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cylinder.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	// add normal cylinder
 	var normalCylinderMeshData = new Cylinder(8, 4, 4, 8);
@@ -49,4 +36,3 @@ require([
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 
 	V.process();
-});

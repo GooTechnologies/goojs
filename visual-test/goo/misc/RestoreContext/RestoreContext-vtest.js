@@ -1,37 +1,11 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util',
-	'goo/passpack/PassLib',
-	'goo/shapes/Cone',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'lib/V',
 
-	'goo/renderer/Renderer+ContextLost'
-], function (
-	Material,
-	ShaderLib,
-	Composer,
-	RenderPass,
-	FullscreenPass,
-	Util,
-	PassLib,
-	Cone,
-	Vector3,
-	TextureCreator,
-	V
-	) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('Recovering from a context lost');
 
-	var goo = V.initGoo();
-	var world = goo.world;
-	var renderer = goo.renderer;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
+	var renderer = gooRunner.renderer;
 	var renderSystem = world.getSystem('RenderSystem');
 	var extension = renderer.context.getExtension('WEBGL_lose_context');
 
@@ -45,15 +19,16 @@ require([
 
 	// --- test shape
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D('../../../resources/cone.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var coneMeshData = new Cone(64, 4, 8);
 	var coneEntity = world.createEntity(coneMeshData, material).addToWorld();
 	V.showNormals(coneEntity);
 
 	var renderPass = new RenderPass(renderSystem.renderList);
-	var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+	var outPass = new FullscreenPass(ObjectUtils.clone(ShaderLib.copy));
 	outPass.renderToScreen = true;
 
 //	var blur = new PassLib.Blur();
@@ -73,4 +48,3 @@ require([
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
 	V.process();
-});

@@ -1,60 +1,53 @@
-define([
-	'goo/math/Vector3',
-	'goo/renderer/light/Light'
-], function (
-	Vector3,
-	Light
-) {
-	'use strict';
+var Vector3 = require('../../math/Vector3');
+var Light = require('../../renderer/light/Light');
+
+/**
+ * A directional light
+ * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
+ * @extends Light
+ * @param {Vector3} [color=(1, 1, 1)] The color of the light
+ */
+function DirectionalLight(color) {
+	Light.call(this, color);
 
 	/**
-	 * A directional light
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
-	 * @extends Light
-	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
+	 * The direction vector of the light
+	 * @readonly
+	 * @type {Vector3}
 	 */
-	function DirectionalLight(color) {
-		Light.call(this, color);
+	this.direction = new Vector3();
 
-		/**
-		 * The direction vector of the light
-		 * @readonly
-		 * @type {Vector3}
-		 */
-		this.direction = new Vector3();
+	// @ifdef DEBUG
+	Object.seal(this);
+	// @endif
+}
 
-		// #ifdef DEBUG
-		Object.seal(this);
-		// #endif
-	}
+DirectionalLight.prototype = Object.create(Light.prototype);
+DirectionalLight.prototype.constructor = DirectionalLight;
 
-	DirectionalLight.prototype = Object.create(Light.prototype);
-	DirectionalLight.prototype.constructor = DirectionalLight;
+/**
+ * Updates the light's translation and orientation
+ * @hidden
+ * @param {Transform} transform
+ */
+DirectionalLight.prototype.update = function (transform) {
+	transform.matrix.getTranslation(this.translation);
+	this.direction.setDirect(0.0, 0.0, -1.0);
+	this.direction.applyPostVector(transform.matrix);
+};
 
-	/**
-	 * Updates the light's translation and orientation
-	 * @hidden
-	 * @param {Transform} transform
-	 */
-	DirectionalLight.prototype.update = function (transform) {
-		transform.matrix.getTranslation(this.translation);
-		this.direction.setDirect(0.0, 0.0, -1.0);
-		transform.matrix.applyPostVector(this.direction);
-	};
+DirectionalLight.prototype.copy = function (source) {
+	Light.prototype.copy.call(this, source);
 
-	DirectionalLight.prototype.copy = function (source) {
-		Light.prototype.copy.call(this, source);
+	this.direction.copy(source.direction);
 
-		this.direction.copy(source.direction);
+	return this;
+};
 
-		return this;
-	};
+DirectionalLight.prototype.clone = function () {
+	var clone = new DirectionalLight(this.color.clone());
+	clone.copy(this);
+	return clone;
+};
 
-	DirectionalLight.prototype.clone = function () {
-		var clone = new DirectionalLight(this.color.clone());
-		clone.copy(this);
-		return clone;
-	};
-
-	return DirectionalLight;
-});
+module.exports = DirectionalLight;

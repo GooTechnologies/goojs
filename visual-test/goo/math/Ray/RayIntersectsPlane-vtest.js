@@ -1,31 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData',
-	'goo/math/Ray',
-	'goo/math/Plane',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	MeshData,
-	Ray,
-	Plane,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('3 rays are intersecting 3 planes and all their points of intersection are marked with small spheres.');
 
 	// initialise goo
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// add some lights
 	V.addLights();
@@ -42,7 +21,9 @@ require([
 
 		var plane = world.createEntity(planeMesh, V.getColoredMaterial()).addToWorld().lookAt(lookAt);
 		plane.transformComponent.updateTransform(); // force update
-		var translation = plane.transformComponent.transform.rotation.applyPost(new Vector3(0, 0, -1)).scale(distance);
+		var translation = new Vector3(0, 0, -1)
+			.applyPost(plane.transformComponent.transform.rotation)
+			.scale(distance);
 		plane.setTranslation(translation);
 
 		planes.push(new Plane(lookAt, distance));
@@ -123,4 +104,3 @@ require([
 	// ---
 
 	V.process();
-});

@@ -1,29 +1,24 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-	'use strict';
+var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-	function ShowAction(/*id, settings*/) {
-		Action.apply(this, arguments);
-	}
+function ShowAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+}
 
-	ShowAction.prototype = Object.create(Action.prototype);
-	ShowAction.prototype.constructor = ShowAction;
+ShowAction.prototype = Object.create(Action.prototype);
+ShowAction.prototype.constructor = ShowAction;
 
-	ShowAction.external = {
-		name: 'Show',
-		type: 'display',
-		description: 'Makes an entity visible',
-		parameters: [],
-		transitions: []
-	};
+ShowAction.external = {
+	key: 'Show',
+	name: 'Show',
+	type: 'display',
+	description: 'Makes an entity visible.',
+	parameters: [],
+	transitions: []
+};
 
-	ShowAction.prototype._run = function(fsm) {
-		var entity = fsm.getOwnerEntity();
-		entity.show();
-	};
+ShowAction.prototype.enter = function (fsm) {
+	var entity = fsm.getOwnerEntity();
+	entity.show();
+};
 
-	return ShowAction;
-});
+module.exports = ShowAction;

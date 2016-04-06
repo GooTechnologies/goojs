@@ -1,109 +1,107 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/math/Vector3'
-], function (
-	Action,
-	Vector3
-) {
-	'use strict';
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var Vector3 = require('../../../math/Vector3');
+var Quaternion = require('../../../math/Quaternion');
+var TWEEN = require('../../../util/TWEEN');
 
-	function TweenLookAtAction(/*id, settings*/) {
-		Action.apply(this, arguments);
+function TweenLookAtAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+
+	this.quatFrom = new Quaternion();
+	this.quatTo = new Quaternion();
+	this.quatFinal = new Quaternion();
+	this.completed = false;
+}
+
+TweenLookAtAction.prototype = Object.create(Action.prototype);
+TweenLookAtAction.prototype.constructor = TweenLookAtAction;
+
+TweenLookAtAction.external = {
+	key: 'Tween Look At',
+	name: 'Tween Look At',
+	type: 'animation',
+	description: 'Transition the entity\'s rotation to face the set position.',
+	canTransition: true,
+	parameters: [{
+		name: 'Position',
+		key: 'to',
+		type: 'position',
+		description: 'Look at point.',
+		'default': [0, 0, 0]
+	}, {
+		name: 'Time (ms)',
+		key: 'time',
+		type: 'float',
+		description: 'Time it takes for this movement to complete.',
+		'default': 1000
+	}, {
+		name: 'Easing type',
+		key: 'easing1',
+		type: 'string',
+		control: 'dropdown',
+		description: 'Easing type.',
+		'default': 'Linear',
+		options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+	}, {
+		name: 'Direction',
+		key: 'easing2',
+		type: 'string',
+		control: 'dropdown',
+		description: 'Easing direction.',
+		'default': 'In',
+		options: ['In', 'Out', 'InOut']
+	}],
+	transitions: [{
+		key: 'complete',
+		description: 'State to transition to when the transition completes.'
+	}]
+};
+
+TweenLookAtAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
+	return transitionKey === 'complete' ? 'On Tween LookAt Complete' : undefined;
+};
+
+TweenLookAtAction.prototype.ready = function () {
+	if (this.easing1 === 'Linear') {
+		this.easing = TWEEN.Easing.Linear.None;
+	} else {
+		this.easing = TWEEN.Easing[this.easing1][this.easing2];
 	}
+};
 
-	TweenLookAtAction.prototype = Object.create(Action.prototype);
-	TweenLookAtAction.prototype.constructor = TweenLookAtAction;
+TweenLookAtAction.prototype.enter = function (fsm) {
+	var entity = fsm.getOwnerEntity();
+	var transform = entity.transformComponent.transform;
 
-	TweenLookAtAction.external = {
-		name: 'Tween Look At',
-		type: 'animation',
-		description: 'Transition the entity\'s rotation to face the set position.',
-		canTransition: true,
-		parameters: [{
-			name: 'Position',
-			key: 'to',
-			type: 'position',
-			description: 'Look at point',
-			'default': [0, 0, 0]
-		}, {
-			name: 'Time (ms)',
-			key: 'time',
-			type: 'number',
-			description: 'Time it takes for this movement to complete',
-			'default': 1000
-		}, {
-			name: 'Easing type',
-			key: 'easing1',
-			type: 'string',
-			control: 'dropdown',
-			description: 'Easing type',
-			'default': 'Linear',
-			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
-		}, {
-			name: 'Direction',
-			key: 'easing2',
-			type: 'string',
-			control: 'dropdown',
-			description: 'Easing direction',
-			'default': 'In',
-			options: ['In', 'Out', 'InOut']
-		}],
-		transitions: [{
-			key: 'complete',
-			name: 'On completion',
-			description: 'State to transition to when the transition completes'
-		}]
-	};
+	this.startTime = fsm.getTime();
 
-	TweenLookAtAction.prototype.configure = function(settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
-		this.time = settings.time;
-		if (settings.easing1 === 'Linear') {
-			this.easing = window.TWEEN.Easing.Linear.None;
-		} else {
-			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
-		}
-		this.eventToEmit = { channel: settings.transitions.complete };
-	};
+	this.quatFrom.fromRotationMatrix(transform.rotation);
 
-	TweenLookAtAction.prototype._setup = function() {
-		this.tween = new window.TWEEN.Tween();
-	};
+	var dir = Vector3.fromArray(this.to).sub(transform.translation);
+	this.rot = transform.rotation.clone();
+	this.rot.lookAt(dir, Vector3.UNIT_Y);
+	this.quatTo.fromRotationMatrix(this.rot);
 
-	TweenLookAtAction.prototype.cleanup = function (/*fsm*/) {
-		if (this.tween) {
-			this.tween.stop();
-		}
-	};
+	this.completed = false;
+};
 
-	TweenLookAtAction.prototype._run = function(fsm) {
-		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent;
-		var transform = transformComponent.transform;
+TweenLookAtAction.prototype.update = function (fsm) {
+	if (this.completed) {
+		return;
+	}
+	var entity = fsm.getOwnerEntity();
+	var transform = entity.transformComponent.transform;
 
-		var distance = Vector3.distance(new Vector3(this.to), transform.translation);
-		var time = entity._world.time * 1000;
+	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var fT = this.easing(t);
+	Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
 
-		var initialLookAt = new Vector3(0, 0, 1);
-		var orientation = transform.rotation;
-		orientation.applyPost(initialLookAt);
-		initialLookAt.scale(distance);
+	this.quatFinal.toRotationMatrix(transform.rotation);
+	entity.transformComponent.setUpdated();
 
-		var fakeFrom = { x: initialLookAt.x, y: initialLookAt.y, z: initialLookAt.z };
-		var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
-		var tmpVec3 = new Vector3();
+	if (t >= 1) {
+		fsm.send(this.transitions.complete);
+		this.completed = true;
+	}
+};
 
-		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-			tmpVec3.data[0] = this.x;
-			tmpVec3.data[1] = this.y;
-			tmpVec3.data[2] = this.z;
-			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
-			transformComponent.setUpdated();
-		}).onComplete(function() {
-			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(time);
-	};
-
-	return TweenLookAtAction;
-});
+module.exports = TweenLookAtAction;

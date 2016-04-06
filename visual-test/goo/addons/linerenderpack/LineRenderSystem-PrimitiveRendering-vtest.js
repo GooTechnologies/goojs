@@ -1,35 +1,12 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/math/Matrix4x4',
-	'goo/renderer/MeshData',
-	'goo/renderer/TextureCreator',
-	'goo/addons/linerenderpack/LineRenderSystem',
-	'lib/V'
-], function (Material,
-			 ShaderLib,
-			 Box,
-			 Quad,
-			 Sphere,
-			 Vector3,
-			 Matrix4x4,
-			 MeshData,
-			 TextureCreator,
-			 LineRenderSystem,
-			 V) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Rendering one non-rotated box, one rotated box, one crosses, and 3 colored lines.');
 
-	var goo = V.initGoo({showStats: true});
-	var world = goo.world;
+	var gooRunner = V.initGoo({showStats: true});
+	var world = gooRunner.world;
 	var lineRenderSystem = new LineRenderSystem(world);
 
-	goo.setRenderSystem(lineRenderSystem);
+	gooRunner.setRenderSystem(lineRenderSystem);
 
 	V.addOrbitCamera(new Vector3(Math.PI * 5, Math.PI / 2.3, 0.4));
 	V.addLights();
@@ -40,7 +17,7 @@ require([
 
 	var rotatedBoxMin = new Vector3(-1, -1, -1);
 	var rotatedBoxMax = new Vector3(1, 1, 1);
-	var rotationMatrix = new Matrix4x4();
+	var rotationMatrix = new Matrix4();
 
 	var crossPosition = new Vector3(2.5, 0, 0);
 
@@ -74,14 +51,13 @@ require([
 			}
 
 			coloredLinesStart.setDirect(4 + i, 1, 0);
-			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, -2, 0);
+			coloredLinesEnd.set(coloredLinesStart).addDirect(0, -2, 0);
 
 			lineRenderSystem.drawLine(coloredLinesStart, coloredLinesEnd, color);
 		}
 
 	};
 
-	goo.callbacks.push(update);
+	gooRunner.callbacks.push(update);
 
 	V.process();
-});

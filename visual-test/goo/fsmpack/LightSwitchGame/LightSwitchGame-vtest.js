@@ -1,40 +1,7 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'lib/V',
-
-	'goo/fsmpack/statemachine/StateMachineComponent',
-	'goo/fsmpack/statemachine/StateMachineSystem',
-	'goo/fsmpack/statemachine/State',
-	'goo/fsmpack/statemachine/Machine',
-	'goo/fsmpack/statemachine/actions/MouseDownAction',
-	'goo/fsmpack/statemachine/actions/SetLightRangeAction'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	Box,
-	Vector3,
-	PointLight,
-	V,
-
-	FSMComponent,
-	FSMSystem,
-	State,
-	Machine,
-	MouseDownAction,
-	SetLightRangeAction
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	function getFSMComponent(entity) {
-		var fsmComponent = new FSMComponent();
+		var fsmComponent = new StateMachineComponent();
 		var machine = new Machine('switch');
 
 		var stateOn = new State('on');
@@ -83,7 +50,7 @@ require([
 		var lampMaterial = new Material(ShaderLib.simpleColored);
 		lampMaterial.uniforms.color = color;
 
-		var light = new PointLight(new Vector3(color[0], color[1], color[2]));
+		var light = new PointLight(Vector3.fromArray(color));
 		light.range = 10;
 
 		var lampEntity = world.createEntity(lampMeshData, lampMaterial, light, 'lamp1', [x, y, z]).addToWorld();
@@ -100,10 +67,10 @@ require([
 		return lampEntities;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
-	world.setSystem(new FSMSystem(goo));
+	world.setSystem(new StateMachineSystem(gooRunner));
 
 	V.addOrbitCamera();
 	var lampEntities = addLamps();
@@ -111,4 +78,3 @@ require([
 	addBoxes(lampEntities[0]);
 
 	V.process();
-});

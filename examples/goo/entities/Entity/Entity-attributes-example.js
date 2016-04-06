@@ -1,17 +1,13 @@
-require([
-	'goo/entities/GooRunner'
-], function(
-	GooRunner
-) {
-	'use strict';
 
-	var goo = new GooRunner();
+	goo.V.attachToGlobal();
 
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	var gooRunner = new GooRunner();
+
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
 	// ---
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	// a very simple game
 	var hero = world.createEntity()
@@ -64,4 +60,3 @@ require([
 
 	console.log('Hit any key to hit the monster');
 	monsterAttacks();
-});

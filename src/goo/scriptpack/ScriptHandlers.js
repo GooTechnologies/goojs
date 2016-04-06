@@ -1,4 +1,2 @@
-define([
-	'goo/scriptpack/ScriptHandler',
-	'goo/scriptpack/ScriptComponentHandler'
-], function () {});
+require('./ScriptHandler');
+require('./ScriptComponentHandler');

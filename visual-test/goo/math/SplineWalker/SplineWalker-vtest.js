@@ -1,29 +1,12 @@
-require([
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/math/splines/Spline',
-	'goo/math/splines/SplineWalker',
-	'goo/geometrypack/PolyLine',
-	'lib/V'
-], function (
-	Sphere,
-	Box,
-	Vector3,
-	Spline,
-	SplineWalker,
-	PolyLine,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'The spheres on the spline to the left distributed by interpolating with a constant increment on `t`.',
 		'The spheres on the spline to the right are distributed uniformly by using a SplineWalker.'
 	].join(''));
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var lineMaterial = V.getColoredMaterial();
 
@@ -141,4 +124,3 @@ require([
 	V.addLights();
 
 	V.process();
-});

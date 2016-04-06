@@ -1,60 +1,51 @@
-define([
-	'goo/renderer/Material',
-	'goo/renderer/pass/FullscreenUtil',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/pass/Pass'
-], function (
-	Material,
-	FullscreenUtil,
-	ShaderLib,
-	Pass
-) {
-	'use strict';
+var Material = require('../../renderer/Material');
+var FullscreenUtils = require('../../renderer/pass/FullscreenUtils');
+var ShaderLib = require('../../renderer/shaders/ShaderLib');
+var Pass = require('../../renderer/pass/Pass');
 
-	/**
-	 * Fullscreen pass
-	 * @param shader
-	 */
-	function FullscreenPass(shader) {
-		this.material = new Material(shader || ShaderLib.simple);
-		this.useReadBuffer = true;
+/**
+ * Fullscreen pass
+ * @param shader
+ */
+function FullscreenPass(shader) {
+	this.material = new Material(shader || ShaderLib.simple);
+	this.useReadBuffer = true;
 
-		this.renderToScreen = false;
+	this.renderToScreen = false;
 
-		this.renderable = {
-			meshData: FullscreenUtil.quad,
-			materials: [this.material]
-		};
+	this.renderable = {
+		meshData: FullscreenUtils.quad,
+		materials: [this.material]
+	};
 
-		this.enabled = true;
-		this.clear = false;
-		this.needsSwap = true;
-		this.viewportSize = undefined;
+	this.enabled = true;
+	this.clear = false;
+	this.needsSwap = true;
+	this.viewportSize = undefined;
+}
+
+FullscreenPass.prototype = Object.create(Pass.prototype);
+FullscreenPass.prototype.constructor = FullscreenPass;
+
+FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
+	if (this.useReadBuffer) {
+		this.material.setTexture('DIFFUSE_MAP', readBuffer);
 	}
 
-	FullscreenPass.prototype = Object.create(Pass.prototype);
-	FullscreenPass.prototype.constructor = FullscreenPass;
+	if (this.renderToScreen) {
+		renderer.render(this.renderable, FullscreenUtils.camera, [], null, this.clear);
+	} else {
+		renderer.render(this.renderable, FullscreenUtils.camera, [], writeBuffer, this.clear);
+	}
+};
 
-	FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
-		if (this.useReadBuffer) {
-			this.material.setTexture('DIFFUSE_MAP', readBuffer);
-		}
+FullscreenPass.prototype.destroy = function (/* renderer */) {
+	this.material.shader.destroy();
+};
 
-		if (this.renderToScreen) {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], null, this.clear);
-		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
-		}
-	};
+FullscreenPass.prototype.invalidateHandles = function (renderer) {
+	renderer.invalidateMaterial(this.renderable.materials[0]);
+	renderer.invalidateMeshData(this.renderable.meshData);
+};
 
-	FullscreenPass.prototype.destroy = function (/* renderer */) {
-		this.material.shader.destroy();
-	};
-
-	FullscreenPass.prototype.invalidateHandles = function (renderer) {
-		renderer.invalidateMaterial(this.renderable.materials[0]);
-		renderer.invalidateMeshData(this.renderable.meshData);
-	};
-
-	return FullscreenPass;
-});
+module.exports = FullscreenPass;

@@ -1,29 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'goo/entities/SystemBus',
-	'lib/V'
-], function(
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	Vector3,
-	DebugRenderSystem,
-	SystemBus,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	var cameraState = {
 		spin: true,
@@ -41,12 +16,12 @@ require([
 
 	V.describe('Keys 1, 2 switch main camera\nkey 3 starts/stops the spinning of camera 1');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
 	debugRenderSystem.doRender.CameraComponent = true;
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	// add spheres to have the cameras view them
@@ -81,9 +56,9 @@ require([
 	camera1Entity.set(new ScriptComponent({
 		run: function(entity) {
 			if (cameraState.spin) {
-				cameraState.angle = Math.sin(goo.world.time);
+				cameraState.angle = Math.sin(gooRunner.world.time);
 				entity.setRotation(cameraState.angle, 0, 0);
-				entity.setTranslation(Math.sin(goo.world.time), Math.cos(goo.world.time), 3);
+				entity.setTranslation(Math.sin(gooRunner.world.time), Math.cos(gooRunner.world.time), 3);
 			}
 		}
 	}));
@@ -92,7 +67,6 @@ require([
 	setMainCamera(1, [camera1Entity, camera2Entity]);
 	cameraState.mainCameraId = 1;
 
-	goo.renderSystem.partitioningCamera = camera1Entity.cameraComponent.camera;
+	gooRunner.renderSystem.partitioningCamera = camera1Entity.cameraComponent.camera;
 
 	V.process();
-});

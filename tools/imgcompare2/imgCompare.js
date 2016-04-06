@@ -16,7 +16,12 @@ function extractNumber(string) {
 function compare(actual, expected, callback) {
 	var cmd = 'compare -metric RMSE ' + actual + ' ' + expected + ' ' + actual + '-diff.png';
 
+	console.log(cmd);
+
 	exec(cmd, function (error, stdout, stderr) {
+
+		console.log(stderr)
+
 		callback(extractNumber(stderr));
 	});
 }

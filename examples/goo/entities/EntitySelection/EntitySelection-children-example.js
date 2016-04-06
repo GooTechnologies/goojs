@@ -1,20 +1,13 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/entities/EntitySelection'
-], function(
-	GooRunner,
-	EntitySelection
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = new GooRunner({
+	var gooRunner = new GooRunner({
 		toolMode: true
 	});
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
 	// ---
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	var child11 = world.createEntity('child11').addToWorld();
 	var child12 = world.createEntity('child12').addToWorld();
@@ -29,4 +22,3 @@ require([
 	var children = new EntitySelection(parent1, parent2).children();
 
 	console.log('Children', children.get().map(function (entity) { return entity.name; }));
-});

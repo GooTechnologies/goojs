@@ -1,51 +1,9 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/util/SoundCreator',
-	'goo/entities/components/SoundComponent',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	ScriptComponent,
-	Vector3,
-	TextureCreator,
-	SoundCreator,
-	SoundComponent,
-	V
-	) {
-	'use strict';
-
-	V.describe([
-		'Both the sphere and the cube have sound components',
-		'',
-		'Controls:',
-		'1: boing',
-		'2: squigly',
-		'3: pause boing',
-		'4: pause squigly',
-		'5: remove cube',
-		'6: add cube'
-	].join('\n'));
-
-	V.button('1', key1);
-	V.button('2', key2);
-	V.button('3', key3);
-	V.button('4', key4);
-	V.button('5', key5);
-	V.button('6', key6);
+goo.V.attachToGlobal();
 
 	var resourcePath = '../../../resources/';
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var soundSystem = world.getSystem('SoundSystem');
 	console.log(soundSystem);
@@ -53,8 +11,9 @@ require([
 	// create panning cube
 	var meshData = new Box();
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	new TextureCreator().loadTexture2D(resourcePath + 'check.png').then(function (texture) {
+		material.setTexture('DIFFUSE_MAP', texture);
+	});
 
 	var cubeEntity = world.createEntity(meshData, material).addToWorld();
 
@@ -70,18 +29,20 @@ require([
 	var sounds = [];
 
 	var soundCreator = new SoundCreator();
-	urls.forEach(loadSound);
 
-	function loadSound(url) {
-		soundCreator.loadSound(url, {}, function (sound) {
+	function loadSound(url, loop) {
+		soundCreator.loadSound(url).then(function (sound) {
 			// Make the sounds loop when played.
-			sound._loop = true;
+			sound._loop = loop;
 			sounds.push(sound);
 			if (sounds.length >= urls.length) {
 				allLoaded();
 			}
 		});
 	}
+
+	loadSound(urls[0], true);
+	loadSound(urls[1], false);
 
 	function allLoaded() {
 		console.log('all loaded');
@@ -140,7 +101,7 @@ require([
 	// ---
 
 	function setupKeys() {
-		document.body.addEventListener('keypress', function(e) {
+		document.body.addEventListener('keypress', function (e) {
 			switch(e.which) {
 				case 49: key1(); break;
 				case 50: key2(); break;
@@ -158,5 +119,23 @@ require([
 
 	V.addOrbitCamera();
 
+	V.describe([
+		'Both the sphere and the cube have sound components (boing is looping, squigly is not)',
+		'',
+		'Controls:',
+		'1: boing',
+		'2: squigly',
+		'3: pause boing',
+		'4: pause squigly',
+		'5: remove cube',
+		'6: add cube'
+	].join('\n'));
+
+	V.button('1', key1);
+	V.button('2', key2);
+	V.button('3', key3);
+	V.button('4', key4);
+	V.button('5', key5);
+	V.button('6', key6);
+
 	V.process();
-});

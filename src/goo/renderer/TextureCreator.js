@@ -1,108 +1,110 @@
-define([
-	'goo/renderer/Texture',
-	'goo/renderer/Util',
-	'goo/loaders/handlers/TextureHandler',
-	'goo/util/Ajax',
-	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/util/rsvp'
-], function (
-	Texture,
-	Util,
-	TextureHandler,
-	Ajax,
-	StringUtil,
-	PromiseUtil,
-	RSVP
-) {
-	'use strict';
+var Texture = require('../renderer/Texture');
+var MathUtils = require('../math/MathUtils');
+var TextureHandler = require('../loaders/handlers/TextureHandler');
+var Ajax = require('../util/Ajax');
+var StringUtils = require('../util/StringUtils');
+var PromiseUtils = require('../util/PromiseUtils');
+var RSVP = require('../util/rsvp');
 
-	//! AT: shouldn't this stay in util?
+//! AT: shouldn't this stay in util?
 
-	/**
-	 * Takes away the pain of creating textures of various sorts.
-	 * @param {Settings} settings Texturing settings
-	 */
-	function TextureCreator() {
-		var ajax = this.ajax = new Ajax();
-		this.textureHandler = new TextureHandler(
-			{},
-			function (ref, options) {
-				return ajax.load(ref, options ? options.noCache : false);
-			},
-			function () {},
-			function (ref, options) {
-				return ajax.load(ref, options ? options.noCache : false);
-			}
-		);
-	}
+/**
+ * Takes away the pain of creating textures of various sorts.
+ * @param {Settings} settings Texturing settings
+ */
+function TextureCreator() {
+	var ajax = this.ajax = new Ajax();
+	this.textureHandler = new TextureHandler(
+		{},
+		function (ref, options) {
+			return ajax.load(ref, options ? options.noCache : false);
+		},
+		function () {},
+		function (ref, options) {
+			return ajax.load(ref, options ? options.noCache : false);
+		}
+	);
+}
 
-	//! AT: unused?
-	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
-	TextureCreator.clearCache = function () {};
+//! AT: unused?
+TextureCreator.UNSUPPORTED_FALLBACK = '.png';
+TextureCreator.clearCache = function () {};
 
-	/**
-	 * Releases any references to cached objects
-	 */
-	TextureCreator.prototype.clear = function () {
-		this.ajax.clear();
-		this.textureHandler.clear();
-	};
+/**
+ * Releases any references to cached objects
+ */
+TextureCreator.prototype.clear = function () {
+	this.ajax.clear();
+	this.textureHandler.clear();
+};
 
-	/**
-	 * Creates a texture and loads image into it
-	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
-	 * @param {string} imageUrl
-	 * @param {object} settings passed to the {Texture} constructor
-	 * @param {Function} callback
-	 * @returns {Texture}
-	 */
-	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings, callback) {
-		var id = StringUtil.createUniqueId('texture');
-		settings = settings || {};
-		settings.imageRef = imageUrl;
+/**
+ * Creates a texture and loads an image into it.
+ * @param {string} imageUrl
+ * @param {Object} settings passed to the {Texture} constructor
+ * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
+ * @example
+ * new TextureCreator().loadTexture2D('goo.jpg').then(function (texture) {
+ *     material.setTexture('DIFFUSE_MAP', texture);
+ * }, function () {
+ *     console.error('Error loading image.');
+ * });
+ */
+TextureCreator.prototype.loadTexture2D = function (imageUrl, settings) {
+	var id = StringUtils.createUniqueId('texture');
+	settings = settings || {};
+	settings.imageRef = imageUrl;
 
-		var texture = this.textureHandler._create();
-		this.textureHandler._objects.set(id, texture);
-		// texture.setImage(TextureHandler.WHITE, 1, 1);
-		this.textureHandler.update(id, settings).then(function () {
-			if (callback) {
-				callback(texture);
-			}
-		});
+	var texture = this.textureHandler._create();
+	this.textureHandler._objects.set(id, texture);
+	return this.textureHandler.update(id, settings);
+};
 
-		return texture;
-	};
+/**
+ * Creates a texture and loads a video into it
+ * @param {string} videoURL
+ * @param {Object} [options]
+ * @param {boolean} [options.loop=true]
+ * @param {boolean} [options.autoPlay=true]
+ * @param {boolean} [options.wrapS='EdgeClamp']
+ * @param {boolean} [options.wrapT='EdgeClamp']
+ * @returns {RSVP.Promise} Returns a promise that will resolve with the created Texture.
+ * @example
+ * new TextureCreator().loadTexture2D('goo.mp4').then(function (texture) {
+ *     material.setTexture('DIFFUSE_MAP', texture);
+ * }, function () {
+ *     console.error('Error loading video texture.');
+ * });
+ */
+TextureCreator.prototype.loadTextureVideo = function (videoURL, options) {
+	var id = StringUtils.createUniqueId('texture');
+	options = options || {};
+	options.imageRef = videoURL;
+	options.loop = options.loop !== undefined ? options.loop : true;
+	options.wrapS = options.wrapS !== undefined ? options.wrapS : 'EdgeClamp';
+	options.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
+	options.autoPlay = options.autoPlay !== undefined ? options.autoPlay : true;
+	options.texture = options.texture !== undefined ? options.texture : { dontwait: true };
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, settings, errorCallback) {
-		var id = StringUtil.createUniqueId('texture');
-		settings = settings || {};
-		settings.imageRef = videoURL;
-		settings.loop = loop;
-		settings.wrapS = 'EdgeClamp';
-		settings.wrapT = 'EdgeClamp';
-		settings.autoPlay = true;
+	var texture = this.textureHandler._create();
+	this.textureHandler._objects.set(id, texture);
 
-		var texture = this.textureHandler._create();
-		this.textureHandler._objects.set(id, texture);
+	return this.textureHandler.update(id, options, options);
+};
 
-		this.textureHandler.update(id, settings, {
-			texture: {
-				dontwait: true
-			}
-		}).then(null, function (err) {
-			errorCallback(err);
-		});
+/**
+ * Creates a video texture streamed from the webcam.
+ * @returns {RSVP.Promise} A promise that will resolve with the created Texture.
+ * @example
+ * new TextureCreator().loadTextureWebCam().then(function (texture) {
+ *     material.setTexture('DIFFUSE_MAP', texture);
+ * }, function () {
+ *     console.error('Error loading webcam texture.');
+ * });
+ */
+TextureCreator.prototype.loadTextureWebCam = function () {
 
-		return texture;
-	};
-
-	/**
-	 * Creates a video texture streamed from the webcam
-	 * @example yourMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
-	 * @returns {Texture}
-	 */
-	TextureCreator.prototype.loadTextureWebCam = function () {
+	return PromiseUtils.createPromise(function (resolve, reject) {
 		var video = document.createElement('video');
 		video.autoplay = true;
 		video.loop = true;
@@ -114,21 +116,23 @@ define([
 
 		texture.readyCallback = function () {
 			if (video.readyState >= 3) {
-				console.log('WebCam video ready: ' + video.videoWidth + ', ' + video.videoHeight);
 				video.width = video.videoWidth;
 				video.height = video.videoHeight;
 
 				// set minification filter based on pow2
-				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+				if (!(MathUtils.isPowerOfTwo(video.width) && MathUtils.isPowerOfTwo(video.height))) {
 					texture.generateMipmaps = false;
 					texture.minFilter = 'BilinearNoMipMaps';
 				}
 
 				video.dataReady = true;
+
 				return true;
 			}
+
 			return false;
 		};
+
 		texture.updateCallback = function () {
 			return !video.paused;
 		};
@@ -141,38 +145,36 @@ define([
 				video: true
 			}, function (stream) {
 				video.src = window.URL.createObjectURL(stream);
-			}, function (e) {
-				console.warn('Unable to capture WebCam. Please reload the page.', e);
-			});
+				resolve(texture);
+			}, reject);
 		} else {
-			console.warn('No support for WebCam getUserMedia found!');
+			reject(new Error('No support for WebCam getUserMedia found!'));
 		}
+	});
+};
 
-		return texture;
-	};
+/**
+ * Loads an array of six images into a Texture.
+ * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+ * @param {Object} settings Settings object to pass to the Texture constructor
+ * @returns {RSVP.Promise} A promise that will resolve with the resulting Texture
+ */
+TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
+	var texture = new Texture(null, settings);
+	texture.variant = 'CUBE';
 
-	/**
-	 *
-	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
-	 * @param {Object} settings
-	 * @param {Function} callback Called when loading has finished
-	 * @returns {Texture} cubemap
-	 */
-	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
-		var texture = new Texture(null, settings);
-		texture.variant = 'CUBE';
-
-		var promises = imageDataArray.map(function (queryImage) {
-			return PromiseUtil.createPromise(function (resolve, reject) {
-				if (typeof queryImage === 'string') {
-					this.ajax._loadImage(queryImage).then(resolve);
-				} else {
-					resolve(queryImage);
-				}
-			}.bind(this));
+	var promises = imageDataArray.map(function (queryImage) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
+			if (typeof queryImage === 'string') {
+				this.ajax._loadImage(queryImage).then(resolve, reject);
+			} else {
+				resolve(queryImage);
+			}
 		}.bind(this));
+	}.bind(this));
 
-		RSVP.all(promises).then(function (images) {
+	return RSVP.all(promises).then(function (images) {
+		return PromiseUtils.createPromise(function (resolve, reject) {
 			var width = images[0].width;
 			var height = images[0].height;
 			for (var i = 0; i < 6; i++) {
@@ -180,7 +182,8 @@ define([
 				if (width !== image.width || height !== image.height) {
 					texture.generateMipmaps = false;
 					texture.minFilter = 'BilinearNoMipMaps';
-					console.error('Images not all the same size!');
+					reject(new Error('The images passed to loadTextureCube() must be of the same size!'));
+					return;
 				}
 			}
 
@@ -189,31 +192,27 @@ define([
 			texture.image.width = width;
 			texture.image.height = height;
 
-			if (callback) {
-				callback();
-			}
+			resolve(texture);
 		});
+	});
+};
 
-		return texture;
-	};
-
-	//! AT: unused
-	TextureCreator._globalCallback = null;
-	TextureCreator._finishedLoading = function (image) {
-		if (TextureCreator._globalCallback) {
-			try {
-				TextureCreator._globalCallback(image);
-			} catch (e) {
-				console.error('Error in texture callback:', e);
-			}
+//! AT: unused
+TextureCreator._globalCallback = null;
+TextureCreator._finishedLoading = function (image) {
+	if (TextureCreator._globalCallback) {
+		try {
+			TextureCreator._globalCallback(image);
+		} catch (e) {
+			console.error('Error in texture callback:', e);
 		}
-	};
+	}
+};
 
-	// Add Object.freeze when fast enough in browsers
-	var colorInfo = new Uint8Array([255, 255, 255, 255]);
-	TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
-	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
-	TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
+// Add Object.freeze when fast enough in browsers
+var colorInfo = new Uint8Array([255, 255, 255, 255]);
+TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
+TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
+TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
 
-	return TextureCreator;
-});
+module.exports = TextureCreator;

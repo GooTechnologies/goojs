@@ -1,22 +1,9 @@
-require([
-	'goo/shapes/Box',
-	'goo/shapes/Cone',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	Box,
-	Cone,
-	Sphere,
-	Vector3,
-	V
-	) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The 2 cones look at the sphere using different methods');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 
 	function addCone() {
@@ -62,7 +49,7 @@ require([
 
 	var cone2 = addCone();
 	cone2.set(function (entity) {
-		var delta = getSphereTranslation().clone().subVector(entity.transformComponent.worldTransform.translation);
+		var delta = getSphereTranslation().clone().sub(entity.transformComponent.worldTransform.translation);
 		entity.transformComponent.transform.rotation.lookAt(delta, Vector3.UNIT_Y);
 		entity.transformComponent.setUpdated();
 	}).set([-5, 4, 3]);
@@ -72,4 +59,3 @@ require([
 	V.addLights();
 
 	V.process();
-});

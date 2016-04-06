@@ -1,20 +1,7 @@
-require([
-	'lib/V',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3'
-], function (
-	V,
-	Material,
-	ShaderLib,
-	Box,
-	Vector3
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 	V.addOrbitCamera(new Vector3(40, Math.PI / 3, Math.PI / 5));
 	V.addLights();
 
@@ -25,7 +12,7 @@ require([
 	material2.renderQueue = 2000;
 	material2.blendState.blending = 'CustomBlending';
 
-	var numBoxes = 20;
+	var numBoxes = 10;
 	var size = 0.7;
 	var box = new Box(size, size, size);
 	for (var i = 0; i < numBoxes; i++) {
@@ -38,4 +25,3 @@ require([
 			}
 		}
 	}
-});

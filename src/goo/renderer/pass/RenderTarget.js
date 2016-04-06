@@ -1,113 +1,106 @@
-define(['goo/math/Vector2'],
+var Vector2 = require('../../math/Vector2');
+var ObjectUtil = require('../../util/ObjectUtil');
 
-	function (Vector2) {
-	'use strict';
+/**
+ * Creates a new RenderTarget object
+ *
+ * Post processing handler
+ * @param {number} width Width of rendertarget
+ * @param {number} height Height of rendertarget
+ * @param {Object} options Options
+ */
+function RenderTarget(width, height, options) {
+	this.glTexture = null;
+	this._glRenderBuffer = null;
+	this._glFrameBuffer = null;
 
-	/**
-	 * Creates a new RenderTarget object
-	 *
-	 * Post processing handler
-	 * @param {Number} width Width of rendertarget
-	 * @param {Number} height Height of rendertarget
-	 * @param {Parameters} parameters Settings
-	 */
-	function RenderTarget(width, height, options) {
-		this.glTexture = null;
-		this._glRenderBuffer = null;
-		this._glFrameBuffer = null;
+	this.width = Math.max(Math.floor(width), 1);
+	this.height = Math.max(Math.floor(height), 1);
 
-		this.width = Math.floor(width);
-		this.height = Math.floor(height);
+	ObjectUtil.copyOptions(this, options, {
+		wrapS: 'EdgeClamp',
+		wrapT: 'EdgeClamp',
+		magFilter: 'Bilinear',
+		minFilter: 'BilinearNoMipMaps',
+		anisotropy: 1,
+		format: 'RGBA',
+		type: 'UnsignedByte',
+		generateMipmaps: false,
+		premultiplyAlpha: false,
+		unpackAlignment: 1,
+		flipY: true,
+		depthBuffer: true,
+		stencilBuffer: true
+	});
 
-		options = options || {};
+	this.variant = '2D'; // CUBE
 
-		this.wrapS = options.wrapS !== undefined ? options.wrapS : 'EdgeClamp';
-		this.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
+	this.offset = new Vector2(0, 0);
+	this.repeat = new Vector2(1, 1);
 
-		this.magFilter = options.magFilter !== undefined ? options.magFilter : 'Bilinear';
-		this.minFilter = options.minFilter !== undefined ? options.minFilter : 'BilinearNoMipMaps';
+	this.textureRecord = {};
+}
 
-		this.anisotropy = options.anisotropy !== undefined ? options.anisotropy : 1;
+RenderTarget.prototype.clone = function () {
+	var tmp = new RenderTarget(this.width, this.height);
 
-		this.format = options.format !== undefined ? options.format : 'RGBA';
-		this.type = options.type !== undefined ? options.type : 'UnsignedByte';
-		this.variant = '2D'; // CUBE
+	tmp.wrapS = this.wrapS;
+	tmp.wrapT = this.wrapT;
 
-		this.offset = new Vector2(0, 0);
-		this.repeat = new Vector2(1, 1);
+	tmp.magFilter = this.magFilter;
+	tmp.minFilter = this.minFilter;
 
-		this.generateMipmaps = options.generateMipmaps !== undefined ? options.generateMipmaps : false;
-		this.premultiplyAlpha = options.premultiplyAlpha !== undefined ? options.premultiplyAlpha : false;
-		this.unpackAlignment = options.unpackAlignment !== undefined ? options.unpackAlignment : 1;
-		this.flipY = options.flipY !== undefined ? options.flipY : true;
+	tmp.anisotropy = this.anisotropy;
 
-		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
-		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
+	tmp.format = this.format;
+	tmp.type = this.type;
+	tmp.variant = this.variant;
 
-		this.textureRecord = {};
+	tmp.offset.copy(this.offset);
+	tmp.repeat.copy(this.repeat);
+
+	tmp.generateMipmaps = this.generateMipmaps;
+	tmp.premultiplyAlpha = this.premultiplyAlpha;
+	tmp.unpackAlignment = this.unpackAlignment;
+	tmp.flipY = this.flipY;
+
+	tmp.depthBuffer = this.depthBuffer;
+	tmp.stencilBuffer = this.stencilBuffer;
+
+	return tmp;
+};
+
+/**
+ * Returns the number of bytes this render target occupies in memory
+ * @returns {number}
+ */
+RenderTarget.prototype.getSizeInMemory = function () {
+	var size = this.width * this.height * 4;
+
+	if (this.generateMipmaps) {
+		size = Math.ceil(size * 4 / 3);
 	}
 
-	RenderTarget.prototype.clone = function () {
-		var tmp = new RenderTarget(this.width, this.height);
+	return size;
+};
 
-		tmp.wrapS = this.wrapS;
-		tmp.wrapT = this.wrapT;
+/**
+ * Deallocates all allocated resources from the WebGL context.
+ * @param  {WebGLRenderingContext} context
+ */
+RenderTarget.prototype.destroy = function (context) {
+	if (this.glTexture) {
+		context.deleteTexture(this.glTexture);
+		this.glTexture = null;
+	}
+	if (this._glRenderBuffer) {
+		context.deleteRenderbuffer(this._glRenderBuffer);
+		this._glRenderBuffer = null;
+	}
+	if (this._glFrameBuffer) {
+		context.deleteFramebuffer(this._glFrameBuffer);
+		this._glFrameBuffer = null;
+	}
+};
 
-		tmp.magFilter = this.magFilter;
-		tmp.minFilter = this.minFilter;
-
-		tmp.anisotropy = this.anisotropy;
-
-		tmp.format = this.format;
-		tmp.type = this.type;
-		tmp.variant = this.variant;
-
-		tmp.offset.copy(this.offset);
-		tmp.repeat.copy(this.repeat);
-
-		tmp.generateMipmaps = this.generateMipmaps;
-		tmp.premultiplyAlpha = this.premultiplyAlpha;
-		tmp.unpackAlignment = this.unpackAlignment;
-		tmp.flipY = this.flipY;
-
-		tmp.depthBuffer = this.depthBuffer;
-		tmp.stencilBuffer = this.stencilBuffer;
-
-		return tmp;
-	};
-
-	/**
-	 * Returns the number of bytes this render target occupies in memory
-	 * @returns {number}
-	 */
-	RenderTarget.prototype.getSizeInMemory = function () {
-		var size = this.width * this.height * 4;
-		
-		if (this.generateMipmaps) {
-			size = Math.ceil(size * 4 / 3);
-		}
-
-		return size;
-	};
-
-	/**
-	 * Deallocates all allocated resources from the WebGL context.
-	 * @param  {WebGLContext} context
-	 */
-	RenderTarget.prototype.destroy = function (context) {
-		if (this.glTexture) {
-			context.deleteTexture(this.glTexture);
-			this.glTexture = null;
-		}
-		if (this._glRenderBuffer) {
-			context.deleteRenderbuffer(this._glRenderBuffer);
-			this._glRenderBuffer = null;
-		}
-		if (this._glFrameBuffer) {
-			context.deleteFramebuffer(this._glFrameBuffer);
-			this._glFrameBuffer = null;
-		}
-	};
-
-	return RenderTarget;
-});
+module.exports = RenderTarget;

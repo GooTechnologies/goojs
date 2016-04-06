@@ -1,28 +1,9 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/math/splines/Spline',
-	'goo/geometrypack/PolyLine',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	Vector3,
-	Spline,
-	PolyLine,
-	V
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('From left to right: cubic interpolation, spline interpolation, quadratic interpolation');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var lineMaterial = V.getColoredMaterial();
 
@@ -180,4 +161,3 @@ require([
 	V.addLights();
 
 	V.process();
-});

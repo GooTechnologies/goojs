@@ -1,71 +1,65 @@
-define([
-	'goo/entities/systems/System'
-], function (
-	System
-) {
-	'use strict';
+var System = require('../entities/systems/System');
 
-	/**
-	 * Manages entities with a TimelineComponent
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
-	 */
-	function TimelineSystem() {
-		System.call(this, 'TimelineSystem', ['TimelineComponent']);
+/**
+ * Manages entities with a TimelineComponent
+ * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
+ */
+function TimelineSystem() {
+	System.call(this, 'TimelineSystem', ['TimelineComponent']);
+}
+
+TimelineSystem.prototype = Object.create(System.prototype);
+TimelineSystem.prototype.constructor = TimelineSystem;
+
+TimelineSystem.prototype.process = function (entities, tpf) {
+	for (var i = 0; i < this._activeEntities.length; i++) {
+		var entity = this._activeEntities[i];
+
+		entity.timelineComponent.update(tpf);
 	}
+};
 
-	TimelineSystem.prototype = Object.create(System.prototype);
-	TimelineSystem.prototype.constructor = TimelineSystem;
-
-	//! AT: why do we pass entities when this._activeEntities is the same is beyond me
-	TimelineSystem.prototype.process = function (entities, tpf) {
-		if (this.resetRequest) {
-			var component;
-			this.resetRequest = false;
-			for (var i = 0; i < entities.length; i++) {
-				component = entities[i].timelineComponent;
-				component.setTime(0);
-			}
-			this.time = 0;
-			//! AT: but no TWEENS have been harmed in any way
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
-			this.passive = true;
-			return;
+/**
+ * Resumes updating the entities
+ */
+TimelineSystem.prototype.play = function () {
+	this.passive = false;
+	var entities = this._activeEntities;
+	for (var i = 0; i < entities.length; i++) {
+		var component = entities[i].timelineComponent;
+		if (component.autoStart) {
+			component.start();
 		}
+	}
+};
 
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			var entity = this._activeEntities[i];
+/**
+ * Stops updating the entities
+ */
+TimelineSystem.prototype.pause = function () {
+	this.passive = true;
+	var entities = this._activeEntities;
+	for (var i = 0; i < entities.length; i++) {
+		var component = entities[i].timelineComponent;
+		component.pause();
+	}
+};
 
-			entity.timelineComponent.update(tpf);
-		}
-	};
+/**
+ * Resumes updating the entities; an alias for `.play`
+ */
+TimelineSystem.prototype.resume = TimelineSystem.prototype.play;
 
-	/**
-	 * Stops updating the entities
-	 */
-	TimelineSystem.prototype.pause = function () {
-		this.passive = true;
-		this.paused = true;
-	};
+/**
+ * Stop updating entities and resets the state machines to their initial state
+ */
+TimelineSystem.prototype.stop = function () {
+	this.passive = true;
+	var entities = this._activeEntities;
+	for (var i = 0; i < entities.length; i++) {
+		var component = entities[i].timelineComponent;
+		component.stop();
+	}
+};
 
-	/**
-	 * Resumes updating the entities
-	 */
-	TimelineSystem.prototype.play = function () {
-		this.passive = false;
-		if (!this.paused) {
-			this.entered = true;
-		}
-		this.paused = false;
-	};
-
-	/**
-	 * Stop updating entities and resets the state machines to their initial state
-	 */
-	TimelineSystem.prototype.reset = function () {
-		this.passive = false;
-		this.resetRequest = true;
-		this.paused = false;
-	};
-
-	return TimelineSystem;
-});
+module.exports = TimelineSystem;

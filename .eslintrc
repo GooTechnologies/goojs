@@ -1,0 +1,42 @@
+{
+    "extends": "eslint:recommended",
+    "globals": {
+        "performance": true,
+        "jasmine": true,
+        "describe": true,
+        "xdescribe": true,
+        "beforeEach": true,
+        "afterEach": true,
+        "it": true,
+        "xit": true,
+        "expect": true,
+        "spyOn": true,
+        "Map": true,
+    },
+    "rules": {
+        "quotes": "off",
+        "no-underscore-dangle": 0,
+        "no-shadow": 0,
+        "no-loop-func": 0,
+        "eol-last": 0,
+        "no-use-before-define": 0,
+        "new-cap": 0,
+        "no-constant-condition": 0,
+        "no-cond-assign": "off",
+        "no-redeclare": 0,
+        "no-throw-literal": 2,
+        "indent": "off",
+        "consistent-this": "off",
+        "consistent-return": 0,
+        "no-lonely-if": "off",
+        "operator-assignment": [2, "always"],
+        "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }],
+        "no-console": "off"
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "amd": true,
+        "es6": true
+    }
+}

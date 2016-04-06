@@ -1,50 +1,42 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/fsmpack/statemachine/FSMUtil'
-	], function (
-	Action,
-	FSMUtil
-	) {
-	'use strict';
+var Action = require('../../../fsmpack/statemachine/actions/Action');
+var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-	function SetVariableAction(/*id, settings*/) {
-		Action.apply(this, arguments);
+function SetVariableAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+}
+
+SetVariableAction.prototype = Object.create(Action.prototype);
+SetVariableAction.prototype.constructor = SetVariableAction;
+
+SetVariableAction.external = {
+	key: 'Set Variable',
+	name: 'Set Variable',
+	type: 'variables',
+	description: '',
+	parameters: [{
+		name: 'Variable name',
+		key: 'variable',
+		type: 'identifier'
+	}, {
+		name: 'Value',
+		key: 'amount',
+		type: 'float'
+	}, {
+		name: 'On every frame',
+		key: 'everyFrame',
+		type: 'boolean',
+		description: 'Repeat this action every frame.',
+		'default': false
+	}],
+	transitions: []
+};
+
+SetVariableAction.prototype.enter = function (fsm) {
+	if (this.variable) {
+		fsm.applyOnVariable(this.variable, function () {
+			return FsmUtils.getValue(this.amount, fsm);
+		}.bind(this));
 	}
+};
 
-	SetVariableAction.prototype = Object.create(Action.prototype);
-
-	SetVariableAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame !== false;
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 0;
-	};
-
-	SetVariableAction.external = {
-		parameters: [{
-			name: 'Variable',
-			key: 'variable',
-			type: 'identifier'
-		}, {
-			name: 'Amount',
-			key: 'amount',
-			type: 'float'
-		}, {
-			name: 'On every frame',
-			key: 'everyFrame',
-			type: 'boolean',
-			description: 'Repeat this action every frame',
-			'default': false
-		}],
-		transitions: []
-	};
-
-	SetVariableAction.prototype._run = function(fsm) {
-		if (this.variable) {
-			fsm.applyOnVariable(this.variable, function() {
-				return FSMUtil.getValue(this.amount, fsm);
-			}.bind(this));
-		}
-	};
-
-	return SetVariableAction;
-});
+module.exports = SetVariableAction;
