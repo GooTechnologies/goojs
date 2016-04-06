@@ -1,29 +1,7 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera',
-	'lib/V'
-], function (
-	GooRunner,
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	PointLight,
-	Camera,
-	V
-	) {
-	'use strict';
 
-	var goo;
+	goo.V.attachToGlobal();
+
+	var gooRunner;
 
 	V.describe([
 		'Hit 1 to create a goo instance and 2 to destroy it.',
@@ -34,11 +12,11 @@ require([
 	V.button('2', key2);
 
 	function key1() {
-		if (!goo) { create(); }
+		if (!gooRunner) { create(); }
 	}
 
 	function key2() {
-		if (goo) { destroy(); }
+		if (gooRunner) { destroy(); }
 	}
 
 	window.addEventListener('keyup', function (e) {
@@ -53,11 +31,11 @@ require([
 		console.log('create');
 
 		// create goo
-		goo = new GooRunner({ logo: 'bottomleft' });
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		gooRunner = new GooRunner({ logo: 'bottomleft' });
+		gooRunner.renderer.domElement.id = 'goo';
+		document.body.appendChild(gooRunner.renderer.domElement);
 
-		var world = goo.world;
+		var world = gooRunner.world;
 
 		// some standard material
 		var material = new Material(ShaderLib.simpleLit);
@@ -78,7 +56,6 @@ require([
 	function destroy() {
 		console.log('destroy');
 
-		goo.clear();
-		goo = null;
+		gooRunner.clear();
+		gooRunner = null;
 	}
-});

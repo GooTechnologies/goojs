@@ -1,23 +1,4 @@
-require([
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
-	'goo/debugpack/systems/DebugRenderSystem',
-	'lib/V'
-], function(
-	Sphere,
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
-	DebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Shows visual feedback for lights using the DebugRenderSystem\nKeys 1 to 3 switch light on/off');
 
@@ -113,13 +94,13 @@ require([
 		lightsState.spotLightOn = false;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var debugRenderSystem = new DebugRenderSystem();
 	debugRenderSystem.doRender.CameraComponent = true;
 	debugRenderSystem.doRender.LightComponent = true;
-	goo.renderSystems.push(debugRenderSystem);
+	gooRunner.renderSystems.push(debugRenderSystem);
 	world.setSystem(debugRenderSystem);
 
 	// add spheres to cast light on
@@ -159,4 +140,3 @@ require([
 	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 
 	V.process();
-});

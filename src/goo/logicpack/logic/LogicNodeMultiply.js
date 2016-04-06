@@ -1,40 +1,33 @@
-define(
-	[
-		'goo/logic/LogicLayer',
-		'goo/logic/LogicNode',
-		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface'
-	],
+var LogicLayer = require('./LogicLayer');
+var LogicNode = require('./LogicNode');
+var LogicNodes = require('./LogicNodes');
+var LogicInterface = require('./LogicInterface');
 
-	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
-		'use strict';
+/**
+ * Logic node that multiplies two inputs.
+ * @private
+ */
+function LogicNodeMultiply() {
+	LogicNode.call(this);
+	this.logicInterface = LogicNodeMultiply.logicInterface;
+	this.type = 'LogicNodeMultiply';
+	this._x = this._y = 0; // REVIEW: unused ?
+}
 
-		/**
-		 * Logic node that multiplies two inputs.
-		 * @private
-		 */
-		function LogicNodeMultiply() {
-			LogicNode.call(this);
-			this.logicInterface = LogicNodeMultiply.logicInterface;
-			this.type = 'LogicNodeMultiply';
-			this._x = this._y = 0; // REVIEW: unused ?
-		}
+LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);
+LogicNodeMultiply.editorName = 'Multiply';
 
-		LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);
-		LogicNodeMultiply.editorName = 'Multiply';
+LogicNodeMultiply.prototype.onInputChanged = function (instDesc) {
+	var x = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportX);
+	var y = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportY);
+	LogicLayer.writeValue(instDesc, LogicNodeMultiply.outportProduct, x * y);
+};
 
-		LogicNodeMultiply.prototype.onInputChanged = function (instDesc) {
-			var x = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportX);
-			var y = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportY);
-			LogicLayer.writeValue(instDesc, LogicNodeMultiply.outportProduct, x * y);
-		};
+LogicNodeMultiply.logicInterface = new LogicInterface();
+LogicNodeMultiply.outportProduct = LogicNodeMultiply.logicInterface.addOutputProperty('product', 'float');
+LogicNodeMultiply.inportX = LogicNodeMultiply.logicInterface.addInputProperty('x', 'float', 0);
+LogicNodeMultiply.inportY = LogicNodeMultiply.logicInterface.addInputProperty('y', 'float', 0);
 
-		LogicNodeMultiply.logicInterface = new LogicInterface();
-		LogicNodeMultiply.outportProduct = LogicNodeMultiply.logicInterface.addOutputProperty('product', 'float');
-		LogicNodeMultiply.inportX = LogicNodeMultiply.logicInterface.addInputProperty('x', 'float', 0);
-		LogicNodeMultiply.inportY = LogicNodeMultiply.logicInterface.addInputProperty('y', 'float', 0);
+LogicNodes.registerType('LogicNodeMultiply', LogicNodeMultiply);
 
-		LogicNodes.registerType('LogicNodeMultiply', LogicNodeMultiply);
-
-		return LogicNodeMultiply;
-	});
+module.exports = LogicNodeMultiply;

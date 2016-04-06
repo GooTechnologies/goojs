@@ -1,51 +1,28 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'lib/V',
 
-	'goo/loaders/DynamicLoader',
-
-	'goo/timelinepack/TimelineComponentHandler',
-	'goo/timelinepack/TimelineSystem',
-
-	'goo/entities/SystemBus'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	V,
-
-	DynamicLoader,
-	TimelineComponentHandler,
-	TimelineSystem,
-
-	SystemBus
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	V.describe('The sphere has a timeline component which was loadd using the dynamic loader.');
 
 	function setupGUI() {
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
-		buttonReset.addEventListener('click', TimelineSystem.prototype.reset.bind(timelineSystem));
+		buttonReset.addEventListener('click', function(){
+			timelineSystem.stop();
+		});
 		document.body.appendChild(buttonReset);
 
 		var buttonPause = document.createElement('button');
 		buttonPause.innerHTML = 'pause';
-		buttonPause.addEventListener('click', TimelineSystem.prototype.pause.bind(timelineSystem));
+		buttonPause.addEventListener('click', function(){
+			timelineSystem.pause();
+		});
 		document.body.appendChild(buttonPause);
 
 		var buttonResume = document.createElement('button');
 		buttonResume.innerHTML = 'play';
-		buttonResume.addEventListener('click', TimelineSystem.prototype.play.bind(timelineSystem));
+		buttonResume.addEventListener('click', function(){
+			timelineSystem.play();
+		});
 		document.body.appendChild(buttonResume);
 	}
 
@@ -55,11 +32,11 @@ require([
 		});
 	}
 
-	var goo = V.initGoo({
+	var gooRunner = V.initGoo({
 		manuallyStartGameLoop: true
 	});
 
-	var world = goo.world;
+	var world = gooRunner.world;
 	var timelineSystem = new TimelineSystem();
 	world.add(timelineSystem);
 
@@ -89,17 +66,16 @@ require([
 		return loader.load(projectId);
 	}).then(function () {
 		// This code will be called when the project has finished loading.
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		gooRunner.renderer.domElement.id = 'goo';
+		document.body.appendChild(gooRunner.renderer.domElement);
 
-		goo.world.process();
+		gooRunner.world.process();
 
 		// Application code goes here!
 
 		// Start the rendering loop!
-		goo.startGameLoop();
+		gooRunner.startGameLoop();
 
 	}).then(null, function (e) {
 
 	});
-});

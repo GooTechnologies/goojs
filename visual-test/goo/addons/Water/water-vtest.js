@@ -1,29 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/renderer/Texture',
-	'goo/addons/waterpack/FlatWaterRenderer',
-	'lib/V'
-], function (
-	Material,
-	Box,
-	Quad,
-	TextureCreator,
-	ShaderLib,
-	Vector3,
-	MeshData,
-	Shader,
-	Texture,
-	FlatWaterRenderer,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('The large quad should look like water, with ripples and a reflection of the skybox and the boxes above the quad\'s surface.');
 
@@ -47,7 +22,7 @@ require([
 		skybox.meshRendererComponent.cullMode = 'Never';
 		skybox.addToWorld();
 
-		goo.callbacksPreRender.push(function () {
+		gooRunner.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
 			target.translation.set(source.translation);
@@ -103,8 +78,8 @@ require([
 		].join('\n')
 	};
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var skybox = null;
 
@@ -142,7 +117,7 @@ require([
 		normalsUrl: 'resources/water/waternormals3.png',
 		useRefraction: true
 	});
-	goo.renderSystem.preRenderers.push(waterRenderer);
+	gooRunner.renderSystem.preRenderers.push(waterRenderer);
 
 	waterRenderer.setWaterEntity(waterEntity);
 	waterRenderer.setSkyBox(skybox);
@@ -152,4 +127,3 @@ require([
 	waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 
 	V.process();
-});

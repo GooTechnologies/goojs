@@ -1,34 +1,28 @@
-define([
-	'goo/fsmpack/statemachine/actions/Action'
-], function (
-	Action
-) {
-	'use strict';
+var Action = require('./Action');
 
-	function PauseTimelineAction(/*id, settings*/) {
-		Action.apply(this, arguments);
-	}
+function PauseTimelineAction(/*id, settings*/) {
+	Action.apply(this, arguments);
+}
 
-	PauseTimelineAction.prototype = Object.create(Action.prototype);
-	PauseTimelineAction.prototype.constructor = PauseTimelineAction;
+PauseTimelineAction.prototype = Object.create(Action.prototype);
+PauseTimelineAction.prototype.constructor = PauseTimelineAction;
 
-	PauseTimelineAction.external = {
-		key: 'Pause Timeline',
-		name: 'Pause Timeline',
-		type: 'timeline',
-		description: 'Pauses the timeline.',
-		canTransition: true,
-		parameters: [],
-		transitions: []
-	};
+PauseTimelineAction.external = {
+	key: 'Pause Timeline',
+	name: 'Pause Timeline',
+	type: 'timeline',
+	description: 'Pauses the timeline.',
+	canTransition: true,
+	parameters: [],
+	transitions: []
+};
 
-	PauseTimelineAction.prototype.enter = function (fsm) {
-		var entity = fsm.getOwnerEntity();
+PauseTimelineAction.prototype.enter = function (fsm) {
+	var entity = fsm.getOwnerEntity();
 
-		if (!entity.hasComponent('TimelineComponent')) { return; }
+	if (!entity.hasComponent('TimelineComponent')) { return; }
 
-		entity.timelineComponent.pause();
-	};
+	entity.timelineComponent.pause();
+};
 
-	return PauseTimelineAction;
-});
+module.exports = PauseTimelineAction;

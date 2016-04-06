@@ -1,34 +1,11 @@
-require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera'
-], function(
-	GooRunner,
-	Material,
-	ShaderLib,
-	MeshDataComponent,
-	Vector3,
-	Box,
-	Sphere,
-	Torus,
-	PointLight,
-	Camera
-) {
-	'use strict';
+	goo.V.attachToGlobal();
 
 	// initialize the engine and attach the rendering canvas to the page
-	var goo = new GooRunner();
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	var gooRunner = new GooRunner();
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	// get some meshes
 	var boxMesh = new Box();
@@ -64,4 +41,3 @@ require([
 
 	// add a camera
 	world.createEntity(new Camera(), [0, 0, 15]).addToWorld();
-});

@@ -1,27 +1,13 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/shapes/Box',
-	'goo/util/GameUtils',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	Box,
-	GameUtils,
-	V
-) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('1 = requestFullScreen, 2 = exitFullScreen, 3 = toggleFullScreen\n' +
 				'4 = requestPointerLock, 5 = exitPointerLock, 6 = togglePointerLock');
 
-	var goo = V.initGoo();
+	var gooRunner = V.initGoo();
 
 	var box = new Box(0.3, 1, 1.6);
-	goo.world.createEntity(box, new Material(ShaderLib.uber), function (entity, tpf) {
+	gooRunner.world.createEntity(box, new Material(ShaderLib.uber), function (entity, tpf) {
 		entity.addRotation(0, tpf, 0);
 	}).addToWorld();
 
@@ -77,4 +63,3 @@ require([
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, Math.PI / 8));
 
 	V.process();
-});

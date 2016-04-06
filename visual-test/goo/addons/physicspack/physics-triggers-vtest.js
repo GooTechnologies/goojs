@@ -1,32 +1,9 @@
-require([
-	'goo/entities/SystemBus',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/addons/physicspack/components/ColliderComponent',
-	'goo/addons/physicspack/systems/PhysicsSystem',
-	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/colliders/BoxCollider',
-	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'lib/V'
-], function (
-	SystemBus,
-	Box,
-	Vector3,
-	ColliderComponent,
-	PhysicsSystem,
-	ColliderSystem,
-	RigidBodyComponent,
-	BoxCollider,
-	PhysicsDebugRenderSystem,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var physicsSystem = new PhysicsSystem();
 	physicsSystem.setGravity(Vector3.ZERO);
@@ -34,7 +11,7 @@ require([
 	world.setSystem(new ColliderSystem());
 	world.registerComponent(ColliderComponent);
 	world.registerComponent(RigidBodyComponent);
-	goo.setRenderSystem(new PhysicsDebugRenderSystem());
+	gooRunner.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	var material = V.getColoredMaterial();
 	var radius = 5;
@@ -59,23 +36,23 @@ require([
 
 	entity.rigidBodyComponent.initialize();
 
-	SystemBus.addListener('goo.physics.triggerEnter', function (evt) {
+	SystemBus.addListener('gooRunner.physics.triggerEnter', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
 		console.log('Trigger is entered!', evt.entityA, evt.entityB);
 	});
 
-	SystemBus.addListener('goo.physics.triggerStay', function (/*evt*/) {
+	SystemBus.addListener('gooRunner.physics.triggerStay', function (/*evt*/) {
 		console.log('Object is staying inside the trigger!');
 	});
 
-	SystemBus.addListener('goo.physics.triggerExit', function (evt) {
+	SystemBus.addListener('gooRunner.physics.triggerExit', function (evt) {
 		material.uniforms.materialDiffuse = [0, 1, 0, 1];
 		console.log('Trigger exited!', evt.entityA, evt.entityB);
 	});
 
 	var position = new Vector3();
 	var velocity = new Vector3();
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		body.getPosition(position);
 		if (Math.abs(position.z) > radius * 3) {
 			body.getVelocity(velocity);
@@ -87,4 +64,3 @@ require([
 	V.addLights();
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 	V.process();
-});

@@ -1,32 +1,9 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/renderer/TextureCreator',
-	'goo/util/SoundCreator',
-	'goo/entities/components/SoundComponent',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Sphere,
-	Box,
-	ScriptComponent,
-	Vector3,
-	TextureCreator,
-	SoundCreator,
-	SoundComponent,
-	V
-	) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	var resourcePath = '../../../resources/';
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var soundSystem = world.getSystem('SoundSystem');
 	console.log(soundSystem);
@@ -162,4 +139,3 @@ require([
 	V.button('6', key6);
 
 	V.process();
-});

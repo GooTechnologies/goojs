@@ -1,30 +1,4 @@
-require([
-	'lib/V',
-	'goo/addons/gamepadpack/GamepadSystem',
-	'goo/addons/gamepadpack/GamepadComponent',
-	'goo/shapes/Box',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/entities/GooRunner',
-	'goo/entities/EntityUtils',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera'
-], function (
-	V,
-	GamepadSystem,
-	GamepadComponent,
-	Box,
-	Material,
-	ShaderLib,
-	Vector3,
-	GooRunner,
-	EntityUtils,
-	PointLight,
-	Camera
-	) {
-
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Use a gamepad to control the box.');
 
@@ -36,11 +10,11 @@ require([
 		manuallyStartGameLoop: true,
 		showStats: true
 	};
-	var goo = new GooRunner(options);
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	var gooRunner = new GooRunner(options);
+	gooRunner.renderer.domElement.id = 'goo';
+	document.body.appendChild(gooRunner.renderer.domElement);
 
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	world.setSystem(new GamepadSystem());
 
@@ -115,5 +89,4 @@ require([
 	var camEntity = world.createEntity(camera, [0, 3, 10]);
 	camEntity.addToWorld();
 
-	goo.startGameLoop();
-});
+	gooRunner.startGameLoop();

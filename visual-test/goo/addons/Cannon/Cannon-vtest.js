@@ -1,46 +1,11 @@
-require([
-	'goo/renderer/Material',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Quad',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/math/Vector3',
-	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonBoxColliderComponent',
-	'goo/addons/cannonpack/CannonCylinderColliderComponent',
-	'goo/addons/cannonpack/CannonSphereColliderComponent',
-	'goo/addons/cannonpack/CannonPlaneColliderComponent',
-	'goo/addons/cannonpack/CannonDistanceJointComponent',
-	'lib/V'
-], function (
-	Material,
-	Sphere,
-	Box,
-	Cylinder,
-	Quad,
-	TextureCreator,
-	ShaderLib,
-	OrbitCamControlScript,
-	Vector3,
-	CannonSystem,
-	CannonRigidbodyComponent,
-	CannonBoxColliderComponent,
-	CannonCylinderColliderComponent,
-	CannonSphereColliderComponent,
-	CannonPlaneColliderComponent,
-	CannonDistanceJointComponent,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
+
+	goo.V.attachToGlobal();
 
 	V.describe('The entities in the scene hold a cannon component which updates their transform.');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	var cannonSystem = new CannonSystem({
 		gravity: new Vector3(0, -30, 0),
@@ -241,7 +206,7 @@ require([
 	createStaticBox(-10, -7.5,           0,      w, 5, 20);
 
 	var force = new Vector3();
-	goo.callbacks.push(function () {
+	gooRunner.callbacks.push(function () {
 		if (forcefieldEnabled) {
 			// Add some force to all bodies
 			world.by.system('CannonSystem').each(function (entity) {
@@ -278,4 +243,3 @@ require([
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 
 	V.process();
-});

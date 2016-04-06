@@ -1,61 +1,4 @@
-require([
-	'lib/V',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/math/MathUtils',
-	'goo/renderer/MeshData',
-	'goo/geometrypack/Surface',
-	'goo/renderer/Camera',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/TextureCreator',
-
-
-	'goo/animationpack/components/AnimationComponent',
-	'goo/animationpack/SkeletonPose',
-	'goo/animationpack/Skeleton',
-	'goo/animationpack/Joint',
-	'goo/animationpack/state/SteadyState',
-	'goo/animationpack/blendtree/ClipSource',
-	'goo/animationpack/clip/AnimationClip',
-	'goo/animationpack/clip/JointChannel',
-	'goo/animationpack/clip/AbstractAnimationChannel',
-	'goo/animationpack/systems/AnimationSystem',
-
-	'goo/geometrypack/PolyLine'
-
-], function (
-	V,
-	Material,
-	ShaderLib,
-	Box,
-	Vector3,
-	Quaternion,
-	MathUtils,
-	MeshData,
-	Surface,
-	Camera,
-	MeshDataComponent,
-	MeshRendererComponent,
-	TextureCreator,
-
-	AnimationComponent,
-	SkeletonPose,
-	Skeleton,
-	Joint,
-	SteadyState,
-	ClipSource,
-	AnimationClip,
-	JointChannel,
-	AbstractAnimationChannel,
-	AnimationSystem,
-
-	PolyLine
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	V.describe('Skeleton Animation Test. Use shift + number keys [1 - 8] to toggle different rendering modes. Use mouse click and drag or touch drag on the X-axis, to take manual control over the animation.');
 
@@ -78,7 +21,7 @@ require([
 		for (var i =0; i < joints.length; i++) {
 			meshData.paletteMap[i] = i;
 		}
-		
+
 
 	}
 
@@ -86,7 +29,7 @@ require([
 	* Recurse through the joints' parents to get the complete inverse translation
 	*/
 	function getInvT(joint, joints, tArray) {
-		
+
 		if (joint._parentIndex != Joint.NO_PARENT) {
 			var parentJoint = joints[joint._parentIndex];
 			var invT = parentJoint._inverseBindPose.translation;
@@ -104,7 +47,7 @@ require([
 	*/
 	function createJointChannel(joint, joints, times, t, r, s, blendType, channels) {
 
-		// The channel's transform keyframes needs to be cobined with the joint's 
+		// The channel's transform keyframes needs to be cobined with the joint's
 		// inverse bind pose, it uses the offset from it to create the resulting transform
 
 		// TODO : Rotation and scale.
@@ -139,14 +82,14 @@ require([
 	* Sets the joints bindpose with the T (translation) and R (rotation)
 	*/
 	function setJointBindPose(joint, T, R) {
-		
+
 		var trans = joint._inverseBindPose;
 		trans.setIdentity();
-		
+
 		if (T) {
-			trans.translation.setDirect(T[0], T[1], T[2]);	
+			trans.translation.setDirect(T[0], T[1], T[2]);
 		}
-		
+
 		if (R) {
 			trans.setRotationXYZ(R[0], R[1], R[2]);
 		}
@@ -157,7 +100,7 @@ require([
 	}
 
 	function createNewJoint(jointName, jointIndex, parentJoint, joints, bindPosition) {
-		
+
 		var joint = new Joint(jointName);
 		joint._index = jointIndex;
 		if (parentJoint) {
@@ -176,7 +119,7 @@ require([
 	}
 
 	/**
-	* Smooth out the weight affection on the first and second joint indices, 
+	* Smooth out the weight affection on the first and second joint indices,
 	* based on the distance and the bleed distance.
 	*/
 	function smoothWeights(d, bleedDistance, weightData, quadIndex) {
@@ -191,9 +134,9 @@ require([
 	* Sets the Joint Data to have the first index point to the given joint, second to the joint's parent.
 	*/
 	function loopSetJoints(joint, vertIndexArray, jointData) {
-		var quadIndex; 
+		var quadIndex;
 		for (var i = 0; i < vertIndexArray.length; i++) {
-			quadIndex = vertIndexArray[i] * 4; 
+			quadIndex = vertIndexArray[i] * 4;
 			jointData[quadIndex] = joint._index;
 			jointData[quadIndex + 1] = joint._parentIndex;
 		}
@@ -249,7 +192,7 @@ require([
 		var skeleton = new Skeleton('PaperSkeleton', joints);
 		var skeletonPose = new SkeletonPose(skeleton);
 		var animComp = new AnimationComponent(skeletonPose);
-		
+
 		var times = [0, 0.5, 1.2];
 		var rots = [];
 		var q1 = new Quaternion();
@@ -274,12 +217,12 @@ require([
 		var animChannels = [];
 
 		var rootChannel = createJointChannel(
-			rootJoint, 
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
+			rootJoint,
+			joints,
+			times,
+			trans,
+			rots,
+			scales,
 			AbstractAnimationChannel.BLENDTYPES.QUINTIC,
 			animChannels
 		);
@@ -302,12 +245,12 @@ require([
 			1,1,1,
 		];
 		var midChannel = createJointChannel(
-			midJoint, 
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
+			midJoint,
+			joints,
+			times,
+			trans,
+			rots,
+			scales,
 			AbstractAnimationChannel.BLENDTYPES.QUADRATIC,
 			animChannels
 		);
@@ -328,12 +271,12 @@ require([
 			0,0.25,0,
 		];
 		var topChannel = createJointChannel(
-			topJoint, 
-			joints, 
-			times, 
-			trans, 
-			rots, 
-			scales, 
+			topJoint,
+			joints,
+			times,
+			trans,
+			rots,
+			scales,
 			AbstractAnimationChannel.BLENDTYPES.QUINTIC,
 			animChannels
 		);
@@ -347,7 +290,7 @@ require([
 		var animLayer = animComp.layers[0];  // Default animation layer
 		animLayer.setState('RootRotateState', animState);
 		animLayer.setCurrentState(animState, true);
-		
+
 		addSkeltonAttributeData(meshData, joints);
 
 		var weightData = meshData.dataViews.WEIGHTS;
@@ -383,35 +326,35 @@ require([
 		}
 
 		var jointData = meshData.dataViews.JOINTIDS;
-		
+
 		loopSetJoints(midJoint, midVerts, jointData);
 		loopSetJoints(topJoint, topVerts, jointData);
-		
+
 		var material = new Material(ShaderLib.uber);
 		material.uniforms.materialDiffuse = diffuse;
 		material.cullState.enabled = true;
 		new TextureCreator().loadTexture2D('../../resources/check.png').then(function (texture) {
 			material.setTexture('DIFFUSE_MAP', texture);
 		});
-		
+
 		entity.setComponent(new MeshDataComponent(meshData));
 		entity.setComponent(new MeshRendererComponent(material));
-		
+
 		entity.setComponent(animComp);
 		entity.meshDataComponent.currentPose = entity.animationComponent._skeletonPose;
 		return entity;
 	}
-	
+
 	var entity;
-	var goo;
+	var gooRunner;
 
 	function init() {
 
-		goo = V.initGoo();
-		goo._addDebugKeys();
-		var world = goo.world;
+		gooRunner = V.initGoo();
+		gooRunner._addDebugKeys();
+		var world = gooRunner.world;
 
-		// The animationsystem calls the animation components, updating 
+		// The animationsystem calls the animation components, updating
 		// the animation data every frame.
 		var animSystem = new AnimationSystem();
 		world.setSystem(animSystem);
@@ -440,10 +383,10 @@ require([
 	var sensitivity = 2.5;
 	var domElement;
 	var resumeAnimationTimeout;
-	
+
 	function addInputListeners() {
-		
-		domElement = goo.renderer.domElement;
+
+		domElement = gooRunner.renderer.domElement;
 
 		window.addEventListener('mousedown', function(event) {
 			mouseDown = true;
@@ -453,7 +396,7 @@ require([
 
 		window.addEventListener('mouseup', function(event) {
 			mouseDown = false;
-			
+
 		});
 
 		window.addEventListener('mousemove', function(event) {
@@ -477,7 +420,7 @@ require([
 	}
 
 	function toggleResumeTimeout() {
-		window.clearTimeout(resumeAnimationTimeout);	
+		window.clearTimeout(resumeAnimationTimeout);
 		resumeAnimationTimeout = window.setTimeout(resumeAnimation, 5000);
 	}
 
@@ -492,7 +435,7 @@ require([
 		// Pick the animationState wanted
 		var animState = layer.getStateById('RootRotateState');
 		var clipSource = animState._sourceTree;
-		layer.setCurrentState(animState); // Set currentstate 
+		layer.setCurrentState(animState); // Set currentstate
 		clipSource._clipInstance._active = true;
 
 		var maxTime = clipSource._clip._maxTime;
@@ -502,7 +445,7 @@ require([
 		animationComponent.apply(entity.transformComponent);
 	}
 
-	
+
 	function updateAnimationTime(x) {
 		var width = domElement.width;
 		var t = (lastX - x) / width;
@@ -515,4 +458,3 @@ require([
 	};
 
 	init();
-});

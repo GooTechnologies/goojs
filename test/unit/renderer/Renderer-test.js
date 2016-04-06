@@ -1,71 +1,64 @@
-define([
-	'goo/renderer/Renderer',
-	'goo/renderer/RendererRecord'
-], function (
-	Renderer,
-	RendererRecord
-) {
-	'use strict';
-	
-	describe('Renderer', function () {
-		describe('findOrCacheMaterialShader', function () {
-			var renderer;
-			beforeEach(function () {
-				renderer = {};
-				renderer.rendererRecord = new RendererRecord();
-				renderer.findOrCacheMaterialShader = Renderer.prototype.findOrCacheMaterialShader.bind(renderer);
-			});
+var RendererRecord = require('../../../src/goo/renderer/RendererRecord');
+var Renderer = require('../../../src/goo/renderer/Renderer');
 
-			function getShader(key, uniforms) {
-				return {
-					defineKey: key,
-					getDefineKey: function () { return key; },
-					endFrame: function () {},
-					uniforms: uniforms,
-					clone: function () { return { key: 'phony' }; }
-				};
-			}
+describe('Renderer', function () {
+	describe('findOrCacheMaterialShader', function () {
+		var renderer;
+		beforeEach(function () {
+			renderer = {};
+			renderer.rendererRecord = new RendererRecord();
+			renderer.findOrCacheMaterialShader = Renderer.prototype.findOrCacheMaterialShader.bind(renderer);
+		});
 
-			it('creates a new shader and caches it', function () {
-				var shader = getShader('k1', {});
-				var material = {
-					shader: shader
-				};
+		function getShader(key, uniforms) {
+			return {
+				defineKey: key,
+				getDefineKey: function () { return key; },
+				endFrame: function () {},
+				uniforms: uniforms,
+				clone: function () { return { key: 'phony' }; }
+			};
+		}
 
-				renderer.findOrCacheMaterialShader(material, {});
+		it('creates a new shader and caches it', function () {
+			var shader = getShader('k1', {});
+			var material = {
+				shader: shader
+			};
 
-				expect(renderer.rendererRecord.shaderCache.get('k1')).toBe(material.shader);
-				expect(material.shader).not.toBe(shader);
-			});
+			renderer.findOrCacheMaterialShader(material, {});
 
-			it('finds a shader with the exact same defines and uses it', function () {
-				var shader = getShader('k1', {});
+			expect(renderer.rendererRecord.shaderCache.get('k1')).toBe(material.shader);
+			expect(material.shader).not.toBe(shader);
+		});
 
-				renderer.rendererRecord.shaderCache.set('k1', shader);
+		it('finds a shader with the exact same defines and uses it', function () {
+			var shader = getShader('k1', {});
 
-				var material = {
-					shader: shader
-				};
+			renderer.rendererRecord.shaderCache.set('k1', shader);
 
-				renderer.findOrCacheMaterialShader(material, {});
+			var material = {
+				shader: shader
+			};
 
-				expect(material.shader).toBe(shader);
-			});
+			renderer.findOrCacheMaterialShader(material, {});
 
-			it('finds a shader with the exact same defines and overrides its uniforms', function () {
-				var shader = getShader('k1', { u1: 0, u2: 0 });
+			expect(material.shader).toBe(shader);
+		});
 
-				renderer.rendererRecord.shaderCache.set('k1', shader);
+		it('finds a shader with the exact same defines and overrides its uniforms', function () {
+			var shader = getShader('k1', { u1: 0, u2: 0 });
 
-				var material = {
-					shader: getShader('k1', { u1: 123, u2: 456, u3: [7, 8, 9] })
-				};
+			renderer.rendererRecord.shaderCache.set('k1', shader);
 
-				renderer.findOrCacheMaterialShader(material, {});
+			var material = {
+				shader: getShader('k1', { u1: 123, u2: 456, u3: [7, 8, 9] })
+			};
 
-				expect(material.shader.uniforms).toEqual({ u1: 123, u2: 456, u3: [7, 8, 9] });
-				expect(material.shader.uniforms.u3).not.toBe(shader.u3);
-			});
+			renderer.findOrCacheMaterialShader(material, {});
+
+			expect(material.shader.uniforms).toEqual({ u1: 123, u2: 456, u3: [7, 8, 9] });
+			expect(material.shader.uniforms.u3).not.toBe(shader.u3);
 		});
 	});
 });

@@ -1,27 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/shapes/Quad',
-	'goo/entities/components/ScriptComponent',
-	'goo/math/Vector3',
-	'goo/entities/systems/PortalSystem',
-	'goo/entities/components/PortalComponent',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	Quad,
-	ScriptComponent,
-	Vector3,
-	PortalSystem,
-	PortalComponent,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
     V.describe([
         '4 portals with different properties',
@@ -35,9 +12,9 @@ require([
     V.button('2', key2);
 
 	function addPortalSystem() {
-		var renderingSystem = goo.world.getSystem('RenderSystem');
-		var renderer = goo.renderer;
-		goo.world.setSystem(new PortalSystem(renderer, renderingSystem));
+		var renderingSystem = gooRunner.world.getSystem('RenderSystem');
+		var renderer = gooRunner.renderer;
+		gooRunner.world.setSystem(new PortalSystem(renderer, renderingSystem));
 	}
 
 	function addPortal(camera, x, y, z, dim, options, overrideMaterial) {
@@ -80,8 +57,8 @@ require([
 		return V.addOrbitCamera(new Vector3(25, Math.PI / 4, 0)).cameraComponent.camera;
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	// basic setup
 	V.addColoredSpheres();
@@ -142,4 +119,3 @@ require([
 	});
 
 	V.process(6);
-});

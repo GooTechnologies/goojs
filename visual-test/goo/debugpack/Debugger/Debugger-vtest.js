@@ -1,29 +1,4 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Torus',
-	'goo/renderer/Texture',
-	'goo/math/Vector3',
-	'goo/debugpack/Debugger',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	Box,
-	Quad,
-	Torus,
-	Texture,
-	Vector3,
-	Debugger,
-	V
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	function createMesh(meshData, material, x, y, z) {
 		var entity = world.createEntity(meshData, material);
@@ -45,8 +20,8 @@ require([
 		createMesh(new Torus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	createShapes();
 
@@ -56,7 +31,6 @@ require([
 		.lookAt([0, 0, 0])
 		.addToWorld();
 
-	new Debugger(true, true).inject(goo);
+	new Debugger(true, true).inject(gooRunner);
 
 	V.process();
-});

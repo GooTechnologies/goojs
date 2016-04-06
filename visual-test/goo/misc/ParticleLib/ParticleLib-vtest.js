@@ -1,19 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/Vector3',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Vector3,
-	ParticleLib,
-	ParticleSystemUtils,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Particle system presets covered by ParticleLib');
 
@@ -60,8 +46,8 @@ require([
 		.addToWorld();
 	}
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
 
@@ -69,4 +55,3 @@ require([
 	addSmoke([-10, 0, 0]);
 
 	V.process();
-});

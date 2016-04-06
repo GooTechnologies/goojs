@@ -1,31 +1,5 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/renderer/Renderer',
-	'goo/math/Plane',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Camera,
-	Sphere,
-	Box,
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	Renderer,
-	Plane,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe([
 		'This vtest shows how to get an image from a canvas.',
@@ -64,7 +38,7 @@ require([
 		for (var i = 0; i < nSpheres; i++) {
 			for (var j = 0; j < nSpheres; j++) {
 				var sphereMaterial = new Material(ShaderLib.simpleLit);
-				goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres / 2, j - nSpheres / 2, 0]).addToWorld();
+				gooRunner.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres / 2, j - nSpheres / 2, 0]).addToWorld();
 			}
 		}
 	}
@@ -78,10 +52,10 @@ require([
 
 	function assembleShots() {
 		// stop goo
-		goo.stopGameLoop();
+		gooRunner.stopGameLoop();
 
 		// remove the webgl canvas
-		goo.renderer.domElement.parentNode.removeChild(goo.renderer.domElement);
+		gooRunner.renderer.domElement.parentNode.removeChild(gooRunner.renderer.domElement);
 
 		// start animatinig the shots
 		var angle = 0;
@@ -121,9 +95,9 @@ require([
 	function takeShotInRange(start, end, i) {
 		visibleInRange(start, end);
 
-		goo.renderer.clear(true, true, true);
-		goo.world.getSystem('RenderSystem').render(goo.renderer);
-		var dataURI = goo.renderer.domElement.toDataURL();
+		gooRunner.renderer.clear(true, true, true);
+		gooRunner.world.getSystem('RenderSystem').render(gooRunner.renderer);
+		var dataURI = gooRunner.renderer.domElement.toDataURL();
 
 		// create an image to hold our screenshot
 		var img = document.createElement('img');
@@ -167,20 +141,20 @@ require([
 
 		var zInterval = (max - min) / nShots;
 		for (var i = 0, zOffset = min; i < nShots; i++, zOffset += zInterval) {
-			goo.world.process();
+			gooRunner.world.process();
 			takeShotInRange(zOffset, zOffset + zInterval, i);
 		}
 	}
 	// ---
 
 	// --- setting up everything
-	var goo = V.initGoo({
+	var gooRunner = V.initGoo({
 		antialias: false, // for some reason lines don't render nice when using antialias on some hardware
 		alpha: true,
 		logo: { position: 'bottomright', color: '#FFF' }
 	});
 
-	var world = goo.world;
+	var world = gooRunner.world;
 
 	// we don't want any scrollbars when the images will be moving
 	document.body.style.overflow = 'hidden';
@@ -196,11 +170,11 @@ require([
 	// camera
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-	goo.renderer.setClearColor(0.05, 0.05, 0.05, 0.0);
+	gooRunner.renderer.setClearColor(0.05, 0.05, 0.05, 0.0);
 
 	function keyA() {
 		// getting all entities in an array
-		allEntities = goo.world.getEntities();
+		allEntities = gooRunner.world.getEntities();
 
 		takeAllShots();
 	}
@@ -215,5 +189,3 @@ require([
 	});
 
 	console.log('A - take screenshots and animate');
-	// ---
-});

@@ -1,30 +1,10 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/TextureCreator',
-	'lib/V'
-], function (
-	Material,
-	ShaderLib,
-	Box,
-	Quad,
-	Sphere,
-	Vector3,
-	MeshData,
-	TextureCreator,
-	V
-	) {
-	'use strict';
+
+	goo.V.attachToGlobal();
 
 	V.describe('Alters all attributes but marks only position as dirty');
 
-	var goo = V.initGoo();
-	var world = goo.world;
+	var gooRunner = V.initGoo();
+	var world = gooRunner.world;
 
 	V.addOrbitCamera(new Vector3(2, Math.PI / 2, 0));
 	V.addLights();
@@ -69,4 +49,3 @@ require([
 	}, 1000);
 
 	V.process();
-});

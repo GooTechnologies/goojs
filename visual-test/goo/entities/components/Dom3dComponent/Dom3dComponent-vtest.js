@@ -1,65 +1,10 @@
-require([
-	'goo/renderer/Camera',
-	'goo/entities/SystemBus',
-	'goo/entities/components/Dom3dComponent',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/math/Vector3',
-	'goo/math/Transform',
-	'goo/math/MathUtils',
-	'goo/util/gizmopack/GizmoRenderSystem',
-	'goo/util/Skybox',
-	'lib/V',
-	'goo/scripts/Scripts',
-	'goo/renderer/Renderer',
-
-	'goo/animationpack/systems/AnimationSystem',
-	'goo/fsmpack/statemachine/StateMachineSystem',
-	'goo/entities/systems/Dom3dSystem',
-	'goo/timelinepack/TimelineSystem',
-	'goo/loaders/DynamicLoader',
-
-	'goo/scriptpack/OrbitNPanControlScript',
-
-	'goo/animationpack/handlers/AnimationHandlers',
-
-	'goo/fsmpack/StateMachineHandlers',
-	'goo/timelinepack/TimelineComponentHandler',
-	'goo/passpack/PosteffectsHandler',
-	'goo/quadpack/QuadComponentHandler',
-	'goo/scriptpack/ScriptHandlers',
-	'goo/scriptpack/ScriptRegister'
-], function(
-	Camera,
-	SystemBus,
-	Dom3dComponent,
-	Material,
-	ShaderLib,
-	Box,
-	Quad,
-	Vector3,
-	Transform,
-	MathUtils,
-	GizmoRenderSystem,
-	Skybox,
-	V,
-	Scripts,
-	Renderer,
-	AnimationSystem,
-	StateMachineSystem,
-	Dom3dSystem,
-	TimelineSystem,
-	DynamicLoader,
-	OrbitNPanControlScript
-) {
-	'use strict';
+goo.V.attachToGlobal();
 
 	// V.describe('Testing the matching of CSS3D transformed DOM elements to our entities');
 
 	var gizmoRenderSystem;
 	var entitySelected;
+	var gooRunner;
 
 	function key1() {
 		gizmoRenderSystem.setActiveGizmo(0);
@@ -86,10 +31,10 @@ require([
 					key3();
 					break;
 				case 52: // 4
-					goo.renderer.domElement.style.pointerEvents = 'none';
+					gooRunner.renderer.domElement.style.pointerEvents = 'none';
 					break;
 				case 53: // 5
-					goo.renderer.domElement.style.pointerEvents = 'inherit';
+					gooRunner.renderer.domElement.style.pointerEvents = 'inherit';
 					break;
 				case 54: // 6
 					if (entitySelected) {
@@ -128,7 +73,7 @@ require([
 
 			if (e.id < 16000) {
 				if (e.id >= 0) {
-					entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
+					entitySelected = world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
 					gizmoRenderSystem.show(); // actually hides
@@ -138,8 +83,8 @@ require([
 			}
 		}
 
-		goo.addEventListener('mousedown', onPick);
-		goo.addEventListener('touchstart', onPick);
+		gooRunner.addEventListener('mousedown', onPick);
+		gooRunner.addEventListener('touchstart', onPick);
 
 		function onUnpick() {
 			gizmoRenderSystem.deactivate();
@@ -152,7 +97,7 @@ require([
 	function setupGizmos() {
 		gizmoRenderSystem = new GizmoRenderSystem();
 		gizmoRenderSystem.setActiveGizmo(0);
-		goo.setRenderSystem(gizmoRenderSystem);
+		gooRunner.setRenderSystem(gizmoRenderSystem);
 	}
 
 	function addOrbitCamera(spherical, lookAt, dragButton) {
@@ -166,7 +111,7 @@ require([
 		var camera = new Camera();
 
 		var orbitCamOptions = {
-			domElement: goo.renderer.domElement,
+			domElement: gooRunner.renderer.domElement,
 			releaseVelocity: true,
 			interpolationSpeed: 7,
 			dragButton: dragButton || 'Any',
@@ -193,7 +138,7 @@ require([
 		};
 
 		var orbitScript = Scripts.create(OrbitNPanControlScript, orbitCamOptions);
-		var entity = V.goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
+		var entity = gooRunner.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 		return entity;
 	}
 
@@ -228,42 +173,42 @@ require([
 		});
 	}
 
-	var goo = V.initGoo({
+	gooRunner = V.initGoo({
 		alpha: true,
 		showStats: true
 	});
-	var world = goo.world;
-	goo.world.add(new AnimationSystem());
-	goo.world.add(new StateMachineSystem(goo));
-	goo.world.add(new Dom3dSystem(goo.renderer));
-	goo.world.add(new TimelineSystem());
-	// var Dom3dSystem = new Dom3dSystem(goo.renderer);
-	// goo.world.setSystem(Dom3dSystem);
+	var world = gooRunner.world;
+	world.add(new AnimationSystem());
+	world.add(new StateMachineSystem(gooRunner));
+	world.add(new Dom3dSystem(gooRunner.renderer));
+	world.add(new TimelineSystem());
+	// var Dom3dSystem = new Dom3dSystem(gooRunner.renderer);
+	// world.setSystem(Dom3dSystem);
 
 	var transformSystem = world.getSystem('TransformSystem');
 	var cameraSystem = world.getSystem('CameraSystem');
 	var lightingSystem = world.getSystem('LightingSystem');
 	var boundingSystem = world.getSystem('BoundingUpdateSystem');
 	var renderSystem = world.getSystem('RenderSystem');
-	var renderer = goo.renderer;
+	var renderer = gooRunner.renderer;
 
-	SystemBus.addListener('goo.dom3d.enabled', function (val) {
+	SystemBus.addListener('gooRunner.dom3d.enabled', function (val) {
 		if (val) {
-			goo.renderer.domElement.style.pointerEvents = 'none';
+			gooRunner.renderer.domElement.style.pointerEvents = 'none';
 		} else {
-			goo.renderer.domElement.style.pointerEvents = '';
+			gooRunner.renderer.domElement.style.pointerEvents = '';
 		}
 	});
 
 	// Load the project
-	loadProject(goo).then(function() {
+	loadProject(gooRunner).then(function() {
 		world.processEntityChanges();
 		transformSystem._process();
 		lightingSystem._process();
 		cameraSystem._process();
 		boundingSystem._process();
 		if (Renderer.mainCamera) {
-			goo.renderer.checkResize(Renderer.mainCamera);
+			gooRunner.renderer.checkResize(Renderer.mainCamera);
 		}
 	}).then(function() {
 		// var goon = world.by.name('goon_mesh').first();
@@ -272,7 +217,7 @@ require([
 		// goon.setScale(20, 20, 20);
 		// goon.hide();
 
-		goo.renderSystems[0].composers.length = 0;
+		gooRunner.renderSystems[0].composers.length = 0;
 
 		// add the gizmo render system
 		setupGizmos();
@@ -288,7 +233,7 @@ require([
 		camEntity.setAsMainCamera();
 
 		// console.log(window.WindowHelper);
-		// window.WindowHelper.install(Dom3dSystem.rootDom, goo.renderer.domElement);
+		// window.WindowHelper.install(Dom3dSystem.rootDom, gooRunner.renderer.domElement);
 
 		var material2 = new Material(ShaderLib.uber);
 		material2.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
@@ -338,7 +283,7 @@ require([
 			environmentPath + '2.jpg'
 		];
 		var skybox = new Skybox(Skybox.BOX, images, null, 0);
-		var skyEnt = goo.world.createEntity(
+		var skyEnt = world.createEntity(
 			skybox.transform,
 			skybox.materials[0],
 			skybox.meshData
@@ -355,5 +300,3 @@ require([
 		// If something goes wrong, 'e' is the error message from the engine.
 		alert('Failed to load project: ' + e);
 	});
-
-});
