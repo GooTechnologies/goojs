@@ -1,30 +1,21 @@
 var InBoxAction = require('../../../../../src/goo/fsmpack/statemachine/actions/InBoxAction');
 var Vector3 = require('../../../../../src/goo/math/Vector3');
+var World = require('../../../../../src/goo/entities/World');
 
 describe('InBoxAction', function () {
 	describe('Check pos against boxes', function () {
 		var inBoxAction;
 		var fakeFunc = function () {};
 
-		var setEntityData = function (entity, data) {
-			entity.transformComponent.worldTransform.translation = data;
-		};
-
 		var mockFsm = {
 			send: fakeFunc
 		};
 
-		var entity = {
-			transformComponent: {
-				worldTransform: {
-					translation: {
-						data: []
-					}
-				}
-			}
-		};
+		var entity, world;
 
 		beforeEach(function () {
+			world = new World();
+			entity = world.createEntity([0,0,0]);
 			mockFsm.entity = entity;
 			mockFsm.getOwnerEntity = function () {
 				return entity;
@@ -44,8 +35,7 @@ describe('InBoxAction', function () {
 
 			inBoxAction = new InBoxAction('testId', settings);
 
-
-			setEntityData(entity, new Vector3(1, 1, 1));
+			entity.transformComponent.setTranslation(new Vector3(1, 1, 1));
 			spyOn(mockFsm, 'send');
 
 			inBoxAction.update(mockFsm);
@@ -65,7 +55,7 @@ describe('InBoxAction', function () {
 
 			inBoxAction = new InBoxAction('testId', settings);
 
-			setEntityData(entity, new Vector3(3, 3, 3));
+			entity.transformComponent.setTranslation(new Vector3(3, 3, 3));
 			spyOn(mockFsm, 'send');
 			inBoxAction.update(mockFsm);
 			expect(mockFsm.send).toHaveBeenCalledWith(settings.transitions.outside);
@@ -83,7 +73,7 @@ describe('InBoxAction', function () {
 
 			inBoxAction = new InBoxAction('testId', settings);
 
-			setEntityData(entity, new Vector3(-100, 0, 0));
+			entity.transformComponent.setTranslation(new Vector3(-100, 0, 0));
 			spyOn(mockFsm, 'send');
 			inBoxAction.update(mockFsm);
 			expect(mockFsm.send).toHaveBeenCalledWith(settings.transitions.inside);
