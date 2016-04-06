@@ -42,7 +42,6 @@ Actions.allActionsArray = function () {
 };
 
 
-// TODO: check
 var allActions = {
 	ArrowsAction: require('./ArrowsAction'),
 	DomEventAction: require('./DomEventAction'),
@@ -130,7 +129,8 @@ var allActions = {
 	PauseTimelineAction: require('./PauseTimelineAction'),
 	StopTimelineAction: require('./StopTimelineAction'),
 	SetTimelineTimeAction: require('./SetTimelineTimeAction'),
-	SetHtmlTextAction: require('./SetHtmlTextAction')
+	SetHtmlTextAction: require('./SetHtmlTextAction'),
+	SpriteAnimationAction: require('./SpriteAnimationAction')
 };
 
 for(var actionName in allActions){
