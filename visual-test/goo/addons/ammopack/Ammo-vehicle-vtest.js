@@ -62,7 +62,7 @@ function init() {
 	vehicleHelper.addRearWheel(  [ -1, 0.0, -1.0]);
 	vehicleHelper.addRearWheel(  [  1, 0.0, -1.0]);
 
-	gooRunner.callbacksPreProcess.push(function() {
+	gooRunner.callbacksPreRender.push(function() {
 		vehicleHelper.setSteeringValue( keys[37] * 0.3 + keys[39] * -0.3);
 		vehicleHelper.applyEngineForce( keys[38] * 1500 + keys[40] * -500, true);
 		vehicleHelper.updateWheelTransform();
@@ -71,12 +71,14 @@ function init() {
 	var aboveCar = new Vector3();
 	var behindCar = new Vector3();
 	var camScriptObject = {};
+
 	camScriptObject.run = function(entity) {
 		var transform = chassis.transformComponent.transform;
 		var pos = transform.translation;
 		behindCar.setDirect(0,0,-16);
 		behindCar.applyPost(transform.rotation);
 		behindCar.add(pos).addDirect(0,15,0);
+		// TODO: this will always produce some lag. Should be in a fixed update loop
 		entity.transformComponent.transform.translation.lerp(behindCar,0.05);
 		entity.lookAt(aboveCar.set(pos).addDirect(0,1,0),Vector3.UNIT_Y);
 	};
