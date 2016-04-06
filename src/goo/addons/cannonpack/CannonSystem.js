@@ -104,15 +104,14 @@ CannonSystem.prototype.process = function (entities) {
 		}
 
 		// Get the world transform from the entity and set on the body
-		// entity.transformComponent.updateWorldTransform();
 		if (!rbComponent._initialPosition) {
-			entity.setPosition(transformComponent.transform.translation);
+			entity.setPosition(transformComponent.sync().transform.translation);
 		} else {
 			entity.setPosition(rbComponent._initialPosition);
 		}
 		entity.setVelocity(rbComponent._initialVelocity);
 		var q = tmpQuat;
-		q.fromRotationMatrix(transformComponent.transform.rotation);
+		q.fromRotationMatrix(transformComponent.sync().transform.rotation);
 		body.quaternion.set(q.x, q.y, q.z, q.w);
 
 		world.add(body);
@@ -154,7 +153,7 @@ CannonSystem.prototype.process = function (entities) {
 		// Add center of mass offset
 		cannonQuat.vmult(cannonComponent.centerOfMassOffset, tmpVec);
 		position.vadd(tmpVec, tmpVec);
-		entity.transformComponent.setTranslation(tmpVec.x, tmpVec.y, tmpVec.z);
+		entity.transformComponent.transform.translation.setDirect(tmpVec.x, tmpVec.y, tmpVec.z);
 
 		tmpQuat.setDirect(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 		entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);

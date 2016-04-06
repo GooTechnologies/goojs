@@ -25,7 +25,7 @@ TransformSystem.prototype.process = function () {
 	var l = entities.length;
 	for (i = 0; i < l; i++) {
 		transformComponent = entities[i].transformComponent;
-		if (transformComponent._dirty) {
+		if (transformComponent._localTransformDirty) {
 			transformComponent.updateTransform();
 		}
 	}
@@ -43,13 +43,13 @@ TransformSystem.prototype.process = function () {
 };
 
 function traverseFunc(entity) {
-	if (entity.transformComponent._dirty) {
+	if (entity.transformComponent._worldTransformDirty) {
 		entity.transformComponent.updateWorldTransform();
 		numUpdates++;
 		// Set children to dirty
 		var children = entity.transformComponent.children;
 		for (var j = 0; j < children.length; j++) {
-			children[j]._dirty = true;
+			children[j]._worldTransformDirty = true;
 		}
 	}
 }
