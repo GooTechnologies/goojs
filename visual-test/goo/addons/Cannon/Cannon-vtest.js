@@ -211,14 +211,14 @@ goo.V.attachToGlobal();
 			// Add some force to all bodies
 			world.by.system('CannonSystem').each(function (entity) {
 				// Force is directed to the origin
-	            force.copy(entity.getTranslation(force)).scale(-1);
+				force.copy(entity.getTranslation(force)).scale(-1);
 
-	            // Set a proper length of it
-	            force.normalize();
-	            force.scale(700);
+				// Set a proper length of it
+				force.normalize();
+				force.scale(700);
 
-	            // Apply it to the entity
-	            entity.setForce(force);
+				// Apply it to the entity
+				entity.setForce(force);
 			});
 		}
 	});
