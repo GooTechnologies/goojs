@@ -27,7 +27,7 @@ describe('World with Systems', function () {
 	});
 
 	it('cannot add the same system twice', function () {
-		var systemA = { type: 'A', priority: 0 };
+		var systemA = new System('A', []);
 
 		world.setSystem(systemA);
 		world.setSystem(systemA);
@@ -36,8 +36,8 @@ describe('World with Systems', function () {
 	});
 
 	it('adds a system with default priority to the world', function () {
-		var systemA = { type: 'A', priority: 0 };
-		var systemB = { type: 'B', priority: 0 };
+		var systemA = new System('A', []);
+		var systemB = new System('B', []);
 
 		world.setSystem(systemA);
 		world.setSystem(systemB);
@@ -46,9 +46,10 @@ describe('World with Systems', function () {
 	});
 
 	it ('adds a system with high priority to the world', function () {
-		var systemA = { type: 'A', priority: 0 };
-		var systemB = { type: 'B', priority: 0 };
-		var systemC = { type: 'B', priority: -1 };
+		var systemA = new System('A', []);
+		var systemB = new System('B', []);
+		var systemC = new System('A', []);
+		systemC.priority = -1;
 
 		world.setSystem(systemA);
 		world.setSystem(systemB);
@@ -60,9 +61,10 @@ describe('World with Systems', function () {
 	it('adds a system with low priority to the world', function () {
 		var world = new World();
 
-		var systemA = { type: 'A', priority: 0 };
-		var systemB = { type: 'B', priority: 0 };
-		var systemC = { type: 'C', priority: 5 };
+		var systemA = new System('A', []);
+		var systemB = new System('B', []);
+		var systemC = new System('C', []);
+		systemC.priority = 5;
 
 		world.setSystem(systemA);
 		world.setSystem(systemB);
@@ -72,9 +74,12 @@ describe('World with Systems', function () {
 	});
 
 	it('adds a system with medium priority to the world', function () {
-		var systemA = { type: 'A', priority: 3 };
-		var systemB = { type: 'B', priority: 1 };
-		var systemC = { type: 'C', priority: 2 };
+		var systemA = new System('A', []);
+		systemA.priority = 3;
+		var systemB = new System('B', []);
+		systemB.priority = 1;
+		var systemC = new System('C', []);
+		systemC.priority = 2;
 
 		world.setSystem(systemA);
 		world.setSystem(systemB);
@@ -84,8 +89,10 @@ describe('World with Systems', function () {
 	});
 
 	it('removes a system', function () {
-		var systemA = { type: 'A', priority: 3 };
-		var systemB = { type: 'B', priority: 1 };
+		var systemA = new System('A', []);
+		systemA.priority = 3;
+		var systemB = new System('B', []);
+		systemB.priority = 1;
 
 		world.setSystem(systemA);
 		world.setSystem(systemB);
@@ -96,10 +103,8 @@ describe('World with Systems', function () {
 	});
 
 	it('calls the cleanup function of a system when removing it from the world', function () {
-		var systemA = {
-			type: 'A',
-			cleanup: jasmine.createSpy('cleanup')
-		};
+		var systemA = new System('A', []);
+		spyOn(systemA, 'cleanup').and.callThrough();
 
 		world.setSystem(systemA);
 

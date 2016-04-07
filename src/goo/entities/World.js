@@ -265,7 +265,8 @@ World.prototype.setSystem = function (system) {
 	}
 	this._systems.splice(i, 0, system);
 
-	if (system.setup) { system.setup(this); }
+	system.world = this;
+	system.setup(this);
 
 	return this;
 };
@@ -297,9 +298,8 @@ World.prototype.clearSystem = function (type) {
 	for (var i = 0; i < this._systems.length; i++) {
 		var system = this._systems[i];
 		if (system.type === type) {
-			if (system.cleanup) {
-				system.cleanup();
-			}
+			system.cleanup();
+			system.world = null;
 			this._systems.splice(i, 1);
 		}
 	}
@@ -461,9 +461,7 @@ World.prototype.changedEntity = function (entity, component, eventType) {
  */
 World.prototype.processEntityChanges = function () {
 	this._check(this._addedEntities, function (observer, entity) {
-		if (observer.added) {
-			observer.added(entity);
-		}
+		observer.added(entity);
 
 		// not in use by any system
 		if (observer.addedComponent) {
@@ -473,9 +471,7 @@ World.prototype.processEntityChanges = function () {
 		}
 	});
 	this._check(this._changedEntities, function (observer, event) {
-		if (observer.changed) {
-			observer.changed(event.entity);
-		}
+		observer.changed(event.entity);
 		if (event.eventType !== undefined) {
 			if (observer[event.eventType]) {
 				observer[event.eventType](event.entity, event.component);
@@ -483,9 +479,7 @@ World.prototype.processEntityChanges = function () {
 		}
 	});
 	this._check(this._removedEntities, function (observer, entity) {
-		if (observer.removed) {
-			observer.removed(entity);
-		}
+		observer.removed(entity);
 
 		// not in use by any system
 		if (observer.removedComponent) {
