@@ -33,7 +33,7 @@ function CannonSystem(settings) {
 
 	this.priority = 1; // make sure it processes after transformsystem
 
-	var world = this.world = new CANNON.World();
+	var world = this.physicsWorld = new CANNON.World();
 	world.gravity.x = settings.gravity.x;
 	world.gravity.y = settings.gravity.y;
 	world.gravity.z = settings.gravity.z;
@@ -74,14 +74,14 @@ CannonSystem.prototype.deleted = function (entity) {
 
 	if (rbComponent && rbComponent.body) {
 		// TODO: remove joints?
-		this.world.remove(rbComponent.body);
+		this.physicsWorld.remove(rbComponent.body);
 		rbComponent.body = null;
 	}
 };
 
 var tmpVec = new Vector3();
 CannonSystem.prototype.process = function (entities) {
-	var world = this.world;
+	var world = this.physicsWorld;
 
 	// Add unadded entities
 	for (var i = 0; i < entities.length; i++) {
@@ -166,7 +166,7 @@ CannonSystem.prototype.process = function (entities) {
  * @param {string} algorithm One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
  */
 CannonSystem.prototype.setBroadphaseAlgorithm = function (algorithm) {
-	var world = this.world;
+	var world = this.physicsWorld;
 	switch (algorithm) {
 	case 'naive':
 		world.broadphase = new CANNON.NaiveBroadphase();

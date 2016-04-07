@@ -24,7 +24,7 @@ function P2System(settings) {
 
 	settings = settings || {};
 
-	this.world = new p2.World({
+	this.physicsWorld = new p2.World({
 		gravity: settings.gravity || [0, -9.82]
 	});
 
@@ -82,7 +82,7 @@ P2System.prototype.inserted = function (entity) {
 	p2Component.body = body;
 	updateTransform(transformComponent, p2Component);
 
-	this.world.addBody(body);
+	this.physicsWorld.addBody(body);
 };
 
 P2System.prototype.deleted = function (entity) {
@@ -91,12 +91,12 @@ P2System.prototype.deleted = function (entity) {
 	//REVIEW: not gonna be true if you remove the component from the entity
 	// gotta research how to do this properly
 	if (p2Component) {
-		this.world.removeBody(p2Component.body);
+		this.physicsWorld.removeBody(p2Component.body);
 	}
 };
 
 P2System.prototype.process = function (entities /*, tpf */) {
-	this.world.step(1 / this.stepFrequency);
+	this.physicsWorld.step(1 / this.stepFrequency);
 
 	for (var i = 0; i < entities.length; i++) {
 		var entity = entities[i];
