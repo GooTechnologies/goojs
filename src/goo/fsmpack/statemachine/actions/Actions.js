@@ -116,6 +116,7 @@ var allActions = {
 	ApplyForceAction: require('./ApplyForceAction'),
 	ApplyTorqueAction: require('./ApplyTorqueAction'),
 	SetRigidBodyPositionAction: require('./SetRigidBodyPositionAction'),
+	SetRigidBodyRotationAction: require('./SetRigidBodyRotationAction'),
 	SetRigidBodyVelocityAction: require('./SetRigidBodyVelocityAction'),
 	SetRigidBodyAngularVelocityAction: require('./SetRigidBodyAngularVelocityAction'),
 	CompareCounterAction: require('./CompareCounterAction'),
