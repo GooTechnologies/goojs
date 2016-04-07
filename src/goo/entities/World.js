@@ -491,7 +491,7 @@ World.prototype.processEntityChanges = function () {
 };
 
 /**
- * Update the world. This will run process and fixedProcess.
+ * Update the world. This will run process and fixedUpdate.
  * @param  {number} tpf Time since last called, in seconds.
  * @return {World} the self object
  */
