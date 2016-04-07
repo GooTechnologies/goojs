@@ -200,6 +200,7 @@ World.prototype.setSystem = function (system) {
 	}
 	this._systems.splice(i, 0, system);
 
+	system.world = this;
 	system.setup(this);
 
 	return this;
@@ -233,6 +234,7 @@ World.prototype.clearSystem = function (type) {
 		var system = this._systems[i];
 		if (system.type === type) {
 			system.cleanup();
+			system.world = null;
 			this._systems.splice(i, 1);
 		}
 	}

@@ -14,7 +14,20 @@
  * @property {Array<String>} interests Array of component types this system is interested in
  */
 function System(type, interests) {
+
+	/**
+	 * @type {World}
+	 */
+	this.world = null;
+
+	/**
+	 * @type {string}
+	 */
 	this.type = type;
+
+	/**
+	 * @type {array}
+	 */
 	this.interests = interests;
 
 	this._activeEntities = [];
