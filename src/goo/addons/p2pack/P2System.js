@@ -1,6 +1,10 @@
+var Vector2 = require('../../math/Vector2');
 var System = require('../../entities/systems/System');
-
-/* global p2 */
+var Body = require('p2/src/objects/Body');
+var World = require('p2/src/objects/World');
+var Rectangle = require('p2/src/objects/Rectangle');
+var Circle = require('p2/src/objects/Circle');
+var Plane = require('p2/src/objects/Plane');
 
 /**
  * Handles integration with p2.js.
@@ -9,7 +13,6 @@ var System = require('../../entities/systems/System');
  * See also {@link P2Component}
  * @extends System
  * @param {Object} [settings]
- * @param {number} [settings.stepFrequency=60]
  * @param {Array<number>} [settings.gravity=[0,-9.82]]
  * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
  * @example
@@ -24,40 +27,25 @@ function P2System(settings) {
 
 	settings = settings || {};
 
-	this.physicsWorld = new p2.World({
+	this.physicsWorld = new World({
 		gravity: settings.gravity || [0, -9.82]
 	});
-
-	this.stepFrequency = settings.stepFrequency || 60;
 }
 
 P2System.prototype = Object.create(System.prototype);
 P2System.prototype.constructor = P2System;
 
-function updateTransform(transformComponent, p2Component) {
-	var position = p2Component.body.position,
-		scale = p2Component.scale;
-
-	transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, 0);
-	transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
-	transformComponent.setUpdated();
-}
-
 P2System.prototype.inserted = function (entity) {
 	var p2Component = entity.p2Component;
 	var transformComponent = entity.transformComponent;
 
-	// what's up with this body?! it gets overridden by the following one!
-	var body = new p2.Body({
-		mass: p2Component.mass,
-		damping: p2Component.damping,
-		angularDamping: p2Component.angularDamping
-	});
-
 	// Create shapes
-	var body = p2Component.body = new p2.Body({
+	var body = p2Component.body = new Body({
 		mass: p2Component.mass,
-		position: [transformComponent.transform.translation.x, transformComponent.transform.translation.y]
+		position: [
+			transformComponent.transform.translation.x,
+			transformComponent.transform.translation.y
+		]
 	});
 
 	for (var i = 0; i < p2Component.shapes.length; i++) {
@@ -65,13 +53,13 @@ P2System.prototype.inserted = function (entity) {
 			p2shape;
 		switch (shape.type) {
 			case 'box':
-				p2shape = new p2.Rectangle(shape.width, shape.height);
+				p2shape = new Rectangle(shape.width, shape.height);
 				break;
 			case 'circle':
-				p2shape = new p2.Circle(shape.radius);
+				p2shape = new Circle(shape.radius);
 				break;
 			case 'plane':
-				p2shape = new p2.Plane();
+				p2shape = new Plane();
 				break;
 			default:
 				throw new Error("p2 shape '" + shape.type + "' not recognized");
@@ -80,7 +68,7 @@ P2System.prototype.inserted = function (entity) {
 	}
 
 	p2Component.body = body;
-	updateTransform(transformComponent, p2Component);
+	updateTransform(transformComponent, p2Component, 1);
 
 	this.physicsWorld.addBody(body);
 };
@@ -95,14 +83,29 @@ P2System.prototype.deleted = function (entity) {
 	}
 };
 
-P2System.prototype.process = function (entities /*, tpf */) {
-	this.physicsWorld.step(1 / this.stepFrequency);
+P2System.prototype.fixedUpdate = function (entities, fixedTpf) {
+	this.physicsWorld.step(fixedTpf);
+};
 
+P2System.prototype.process = function (entities/*, tpf*/) {
 	for (var i = 0; i < entities.length; i++) {
 		var entity = entities[i];
-		var p2Component = entity.p2Component;
-		updateTransform(entity.transformComponent, p2Component);
+		var component = entity.component;
+		updateTransform(entity.transformComponent, component, this.world.interpolationTime);
 	}
 };
+
+var previousPosition = new Vector2();
+var position = new Vector2();
+function updateTransform(transformComponent, component, t) {
+	previousPosition.setArray(component.body.previousPosition);
+	position.setArray(component.body.position);
+
+	previousPosition.lerp(position, t);
+
+	transformComponent.transform.translation.setDirect(previousPosition.x, previousPosition.y, 0);
+	transformComponent.transform.rotation.fromAngles(0, 0, component.body.angle);
+	transformComponent.setUpdated();
+}
 
 module.exports = P2System;
