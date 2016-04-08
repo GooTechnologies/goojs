@@ -351,33 +351,33 @@ TransformComponent.entitySelectionAPI = {
 var tmpVec = new Vector3();
 
 /**
- * Gets the value of transformComponent.transform.translation.
- * To change the translation, the returned object can be modified
- * after which transformComponent.setUpdated() must be called.
- * Alternatively, use setTranslation or addTranslation which call
- * setUpdated() automatically.
- * <br /><i>Injected into entity when adding component.</i>
+ * Returns the local translation vector. Do not modify the returned value, use .setTranslation() instead.
+ * @returns {Vector3}
  * @example
- * var boxTranslation1 = boxEntity.transformComponent.getTranslation();
- * var boxTranslation2 = boxEntity.getTranslation();
- * console.log(boxTranslation1 === boxTranslation2); // true
- *
- * @returns {Vector3} translation
+ * var translation = entity.transformComponent.getTranslation();
  */
 TransformComponent.prototype.getTranslation = function () {
-	return this.transform.translation;
+	return this.sync().transform.translation;
 };
 
 /**
- * Sets this transform's translation.
- * <br /><i>Injected into entity when adding component.</i>
+ * Returns the world translation vector. Do not modify the returned value, use .setTranslation() instead.
+ * @returns {Vector3}
  * @example
- * // The lines below are equivalent.
- * sphereEntity.transformComponent.setTranslation(1, 1, 0);
- * sphereEntity.setTranslation(1, 1, 0);
- * sphereEntity.setTranslation(new Vector3(1, 1, 0));
+ * var worldTranslation = entity.transformComponent.getWorldTranslation();
+ */
+TransformComponent.prototype.getWorldTranslation = function () {
+	return this.sync().worldTransform.translation;
+};
+
+/**
+ * Set the local translation vector.
+ * @example
+ * entity.transformComponent.setTranslation(1, 1, 0);
+ * entity.transformComponent.setTranslation(new Vector3(1, 1, 0));
+ * entity.transformComponent.setTranslation([1, 1, 0]);
  *
- * @param {(Vector | Array<number>)} translation Component values.
+ * @param {(Vector | Array<number>)} translation
  * @returns {TransformComponent} Self for chaining.
  */
 TransformComponent.prototype.setTranslation = function () {
@@ -387,28 +387,49 @@ TransformComponent.prototype.setTranslation = function () {
 };
 
 /**
- * Gets the value of transformComponent.transform.scale.
- * To change the scale, the returned object can be modified
- * after which transformComponent.setUpdated() must be called.
- * Alternatively, use setScale which calls setUpdated() automatically.
- * <br /><i>Injected into entity when adding component.</i>
+ * Adds to this transform's local translation.
  * @example
- * var scale1 = entity.transformComponent.getScale();
- * var scale2 = entity.getScale();
- * console.log(scale1 === scale2); // true
- *
- * @returns {Vector3} scale
- */
-TransformComponent.prototype.getScale = function () {
-	return this.transform.scale;
-};
-
-/**
- * Sets this transform's scale.
- * <br /><i>Injected into entity when adding component.</i>
+ * entity.transformComponent.addTranslation(1, 2, 1);
+ * entity.transformComponent.addTranslation(new Vector3(1, 2, 1));
+ * entity.transformComponent.addTranslation([1, 2, 1]);
  *
  * @param {(Vector | Array<number>)} Component values.
  * @returns {TransformComponent} Self for chaining.
+ */
+TransformComponent.prototype.addTranslation = function () {
+	this.sync().transform.translation.add(Vector3.fromAny.apply(null, arguments));
+	this.setUpdated();
+	return this;
+};
+
+/**
+ * Get the local transform scale. Do not modify the returned value, use .setScale() instead.
+ * @returns {Vector3}
+ * @example
+ * var scale = entity.transformComponent.getScale();
+ */
+TransformComponent.prototype.getScale = function () {
+	return this.sync().transform.scale;
+};
+
+/**
+ * Get the world transform scale. Do not modify the returned value, use .setScale() instead.
+ * @returns {Vector3}
+ * @example
+ * var scale = entity.transformComponent.getWorldScale();
+ */
+TransformComponent.prototype.getWorldScale = function () {
+	return this.sync().worldTransform.scale;
+};
+
+/**
+ * Sets this transform local scale.
+ * @param {(Vector | Array<number>)} Component values.
+ * @returns {TransformComponent} Self for chaining
+ * @example
+ * entity.transformComponent.setScale(1, 1, 0);
+ * entity.transformComponent.setScale(new Vector3(1, 1, 0));
+ * entity.transformComponent.setScale([1, 1, 0]);
  */
 TransformComponent.prototype.setScale = function () {
 	this.transform.scale.set(Vector3.fromAny.apply(null, arguments));
@@ -416,51 +437,63 @@ TransformComponent.prototype.setScale = function () {
 	return this;
 };
 
+
 /**
- * Adds to this transform's translation.
- * <br /><i>Injected into entity when adding component.</i>
+ * Returns the local rotation matrix. Do not modify the returned value, use .setRotationMatrix() instead.
+ * @returns {Matrix3}
  * @example
- * // Lines below are equivalent
- * boxEntity.addTranslation(new Vector(1, 2, 1));
- * boxEntity.transformComponent.addTranslation(1, 2, 1);
- *
- * @param {(Vector | Array<number>)} Component values.
- * @returns {TransformComponent} Self for chaining.
+ * var matrix = entity.transformComponent.getRotationMatrix();
  */
-TransformComponent.prototype.addTranslation = function () {
-	this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
+TransformComponent.prototype.getRotationMatrix = function () {
+	return this.sync().transform.rotation;
+};
+
+/**
+ * Sets the local rotation matrix.
+ * @returns {TransformComponent} Self for chaining
+ * @example
+ * entity.transformComponent.setRotationMatrix(new Matrix3());
+ */
+TransformComponent.prototype.setRotationMatrix = function (matrix) {
+	this.transform.rotation.copy(matrix);
 	this.setUpdated();
 	return this;
 };
 
 /**
- * Gets the value of transformComponent.transform.rotation in Euler angles (in radians, Euler order YZX).
- * Returns a new Vector3 that cannot be used for modifying the rotation.
- * <br /><i>Injected into entity when adding component.</i>.
+ * Returns the world rotation matrix. Do not modify the returned value, use .setRotationMatrix() instead.
+ * @returns {Matrix3}
  * @example
- * var rot1 = sphereEntity.getRotation();
- * var rot2 = sphereEntity.transformComponent.getRotation();
- * console.log(rot1 === rot2); // true
+ * var worldRotation = entity.transformComponent.getWorldRotationMatrix();
+ */
+TransformComponent.prototype.getWorldRotationMatrix = function () {
+	return this.sync().worldTransform.rotation;
+};
+
+/**
+ * Gets the local rotation in Euler angles (in radians, Euler order YZX).
+ * @param {Vector3} [target] Target vector for storage. If not provided, a new vector object will be created and returned.
+ * @returns {Vector3}
  *
- * @param {Vector3} [target] Target vector for storage.
- * @returns {Vector3} rotation
+ * @example
+ * var localRotation = entity.transformComponent.getRotation(); // warning: creates a new Vector3 object
+ * var localRotation2 = new Vector3();
+ * entity.transformComponent.getRotation(localRotation2); // stores the result without creating a new object
  */
 TransformComponent.prototype.getRotation = function (target) {
 	target = target || new Vector3();
-	return this.transform.rotation.toAngles(target);
+	return this.sync().transform.rotation.toAngles(target);
 };
 
 /**
  * Adds to this transform's rotation using Euler angles (in radians, Euler order YZX).
- * <br /><i>Injected into entity when adding component.</i>
- * @example
- * boxEntity.setRotation(Math.PI/4.0, 0, 0);
- * console.log(boxEntity.getRotation().toString()); // [0.79, 0, 0]
- * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD * 45.0, 0, 0));
- * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
- *
  * @param {(Vector | Array<number>)} Component values.
  * @returns {TransformComponent} Self for chaining.
+ *
+ * @example
+ * entity.transformComponent.addRotation(Math.PI / 4, 0, 0);
+ * entity.transformComponent.addRotation(new Vector3(Math.PI / 4, 0, 0));
+ * entity.transformComponent.addRotation([Math.PI / 4, 0, 0]);
  */
 TransformComponent.prototype.addRotation = function () {
 	this.getRotation(tmpVec);
@@ -480,15 +513,14 @@ TransformComponent.prototype.addRotation = function () {
 };
 
 /**
- * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX).
- * The rotation is applied in X, Y, Z order.
- * <br /><i>Injected into entity when adding component.</i>
- * @example
- * boxEntity.setRotation(Math.PI, 0, 0);
- * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
- *
+ * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX). The rotation is applied in X, Y, Z order.
  * @param {(Vector | Array<number>)} Component values.
  * @returns {TransformComponent} Self for chaining.
+ *
+ * @example
+ * entity.transformComponent.setRotation(Math.PI / 4, 0, 0);
+ * entity.transformComponent.setRotation(new Vector3(Math.PI / 4, 0, 0));
+ * entity.transformComponent.setRotation([Math.PI / 4, 0, 0]);
  */
 TransformComponent.prototype.setRotation = function () {
 	if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
@@ -513,9 +545,20 @@ TransformComponent.prototype.setRotation = function () {
  * @param {(Vector3|Entity)} position Target position.
  * @param {Vector3} [up=(0, 1, 0)] Up vector.
  * @returns {TransformComponent} Self for chaining.
+ *
+ * @example
+ * // Omitted up vector assumes Y is up:
+ * entity.transformComponent.lookAt(1, 2, 3);
+ * entity.transformComponent.lookAt([1, 2, 3]);
+ * entity.transformComponent.lookAt(new Vector3(1, 2, 3));
+ * entity.transformComponent.lookAt(otherEntity);
+ *
+ * // However, you can pass the up vector as well:
+ * entity.transformComponent.lookAt([1, 2, 3], [0, 1, 0]);
+ * entity.transformComponent.lookAt(new Vector3(1, 2, 3), new Vector3(0, 1, 0));
+ * entity.transformComponent.lookAt(otherEntity, new Vector3(0, 1, 0));
  */
 TransformComponent.prototype.lookAt = function (position, up) {
-	//! AT: needs updating of transform before the actual lookAt to account for changes in translation
 	if (arguments.length === 3) {
 		this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
 	} else if (position.transformComponent) {
@@ -534,14 +577,13 @@ TransformComponent.prototype.lookAt = function (position, up) {
 };
 
 /**
- * Adds to the translation in a local direction.<br/>
- * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
- * So for example move(0, 0, -1) moves forward (because of the right handed coordinate system).<br/>
- * <i>Injected into entity when adding component.</i>
- *
- * @function
+ * Adds to the translation in a local direction.
  * @param {(Vector | Array<number>)} component values.
  * @returns {TransformComponent} Self for chaining.
+ *
+ * @example
+ * // Move the spaceShip entity in its own forward direction
+ * spaceShip.transformComponent.move(new Vector3(0, 0, -1));
  */
 TransformComponent.prototype.move = (function () {
 	var moveWorldDirection = new Vector3();
