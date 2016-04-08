@@ -36,7 +36,12 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 [Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
 
-## How to run unit tests and visual tests
+## Unit testing
+
+* Run `grunt unittest` to run all tests using Karma
+* Run `npm test` to test the parts of the engine that are supported in Node.js
+
+## Visual testing
 
 Start a web server, e.g. using:
 
@@ -44,18 +49,18 @@ Start a web server, e.g. using:
     st --port 8000
 
 And then open:
-* Unit tests: http://localhost:8000/test/test.html
+
 * Visual tests: http://localhost:8000/visual-test/
 
-## Style checks
+## Code style checks
 
-To make sure that no incorrectly styled content appears, install the pre-commit hook:
+To make sure that no incorrectly styled code gets committed, install the pre-commit hook:
 
     grunt init-git
 
 This makes Git check whether all added and modified files pass the style check before allowing a commit.
 
-## JS Doc
+## Documentation
 
 `grunt jsdoc` - outputs to `out-doc`
 
@@ -63,9 +68,9 @@ GooJS uses a custom documentation compiler, *modoc*; see `tools/modoc/README.md`
 
 ## Building details
 
-+ Minified and mangled: `grunt minify`
-+ Minified: `grunt minify-no-mangle`
-+ Concatenated: `grunt minify-dev`
+* Minified and mangled: `grunt minify`
+* Minified: `grunt minify-no-mangle`
+* Concatenated: `grunt minify-dev`
 
 ## License
 

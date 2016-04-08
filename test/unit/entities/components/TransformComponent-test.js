@@ -1,4 +1,5 @@
 var Vector3 = require('../../../../src/goo/math/Vector3');
+var Matrix3 = require('../../../../src/goo/math/Matrix3');
 var Transform = require('../../../../src/goo/math/Transform');
 var TransformSystem = require('../../../../src/goo/entities/systems/TransformSystem');
 var TransformComponent = require('../../../../src/goo/entities/components/TransformComponent');
@@ -71,14 +72,100 @@ describe('TransformComponent', function () {
 		expect(transformComponent.getRotation()).toBeCloseToVector(new Vector3(0.2, 0.4, 0.6 + 0.5));
 	});
 
-	//! AT: if any method fails the whole spec fails
-	it('can set, add and get translation', function () {
+	it('can set translation', function () {
 		var tc = new TransformComponent();
-		tc.setTranslation(1, 2, 2);
-		var vec = tc.getTranslation();
-		expect(vec).toEqual(new Vector3(1, 2, 2));
+		var translation;
+
+		tc.setTranslation(1, 2, 3);
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(1, 2, 3));
+
+		tc.setTranslation([4, 5, 6]);
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(4, 5, 6));
+
+		tc.setTranslation(7, 8, 9);
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(7, 8, 9));
+	});
+
+	it('can get world translation', function () {
+		var parent = new TransformComponent();
+		var child = new TransformComponent();
+		parent.attachChild(child);
+		var translation;
+
+		parent.setTranslation(1, 0, 0);
+		child.setTranslation(1, 2, 3);
+		translation = child.getWorldTranslation();
+		expect(translation).toEqual(new Vector3(2, 2, 3));
+	});
+
+	it('can add translation', function () {
+		var tc = new TransformComponent();
+		var translation;
+
+		tc.setTranslation(1, 2, 3);
 		tc.addTranslation(0, 0, 1);
-		expect(vec).toEqual(new Vector3(1, 2, 3));
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(1, 2, 4));
+
+		tc.setTranslation([1, 2, 3]);
+		tc.addTranslation([0, 0, 1]);
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(1, 2, 4));
+
+		tc.setTranslation(new Vector3(1, 2, 3));
+		tc.addTranslation(new Vector3(0, 0, 1));
+		translation = tc.getTranslation();
+		expect(translation).toEqual(new Vector3(1, 2, 4));
+	});
+
+	it('can set scale', function () {
+		var tc = new TransformComponent();
+		var scale;
+
+		tc.setScale(1, 2, 3);
+		scale = tc.getScale();
+		expect(scale).toEqual(new Vector3(1, 2, 3));
+
+		tc.setScale([4, 5, 6]);
+		scale = tc.getScale();
+		expect(scale).toEqual(new Vector3(4, 5, 6));
+
+		tc.setScale(7, 8, 9);
+		scale = tc.getScale();
+		expect(scale).toEqual(new Vector3(7, 8, 9));
+	});
+
+	it('can get world scale', function () {
+		var parent = new TransformComponent();
+		var child = new TransformComponent();
+		parent.attachChild(child);
+		var scale;
+
+		parent.setScale(2, 1, 1);
+		child.setScale(1, 2, 3);
+		scale = child.getWorldScale();
+		expect(scale).toEqual(new Vector3(2, 2, 3));
+	});
+
+	it('can set rotation matrix', function () {
+		var tc = new TransformComponent();
+		var matrix;
+
+		tc.setRotationMatrix(new Matrix3([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+		matrix = tc.getRotationMatrix();
+		expect(matrix).toEqual(new Matrix3([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+	});
+
+	it('can get world rotation matrix', function () {
+		var tc = new TransformComponent();
+		var matrix;
+
+		tc.setRotationMatrix(new Matrix3([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+		matrix = tc.getWorldRotationMatrix();
+		expect(matrix).toEqual(new Matrix3([1, 2, 3, 4, 5, 6, 7, 8, 9]));
 	});
 
 	it('can move', function () {
@@ -123,7 +210,7 @@ describe('TransformComponent', function () {
 		expect(transformComponent.entity).toBeFalsy();
 	});
 
-	it('returns the parent host entity when calling setTranslation on it', function () {
+	it('returns the host entity when calling setTranslation on it', function () {
 		var entity = world.createEntity();
 		entity.setComponent(new TransformComponent());
 
@@ -136,13 +223,12 @@ describe('TransformComponent', function () {
 		expect(entity.getTranslation()).toBe(entity.transformComponent.getTranslation());
 	});
 
-	it('returns the parent host entity when calling any transform related method on it', function () {
+	it('returns the host entity when calling any transform related method on it', function () {
 		var entity = world.createEntity();
 		entity.setComponent(new TransformComponent());
 
 		expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
 		expect(entity.setScale(new Vector3(1, 2, 3))).toBe(entity);
-//			expect(entity.addTranslation(new Vector3(1, 2, 3))).toBe(entity);
 		expect(entity.setRotation(new Vector3(1, 2, 3))).toBe(entity);
 		expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
 	});
