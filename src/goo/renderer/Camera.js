@@ -488,28 +488,52 @@ Camera.prototype.onFrameChange = function () {
  * Updates the value of our projection matrix.
  */
 Camera.prototype.updateProjectionMatrix = function () {
+	var d = this.projection.data;
+	var right = this._frustumRight;
+	var left = this._frustumLeft;
+	var top = this._frustumTop;
+	var bottom = this._frustumBottom;
+	var far = this._frustumFar;
+	var near = this._frustumNear;
+
 	if (this.projectionMode === Camera.Parallel) {
-		this.projection.setIdentity();
 
-		var d = this.projection.data;
-		d[0] = 2.0 / (this._frustumRight - this._frustumLeft);
-		d[5] = 2.0 / (this._frustumTop - this._frustumBottom);
-		d[10] = -2.0 / (this._frustumFar - this._frustumNear);
-		d[12] = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-		d[13] = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
-		d[14] = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+		d[0] = 2.0 / (right - left);
+		d[1] = 0.0;
+		d[2] = 0.0;
+		d[3] = 0.0;
+		d[4] = 0.0;
+		d[5] = 2.0 / (top - bottom);
+		d[6] = 0.0;
+		d[7] = 0.0;
+		d[8] = 0.0;
+		d[9] = 0.0;
+		d[10] = -2.0 / (far - near);
+		d[11] = 0.0;
+		d[12] = -(right + left) / (right - left);
+		d[13] = -(top + bottom) / (top - bottom);
+		d[14] = -(far + near) / (far - near);
+		d[15] = 1.0;
+
 	} else if (this.projectionMode === Camera.Perspective) {
-		this.projection.setIdentity();
 
-		var d = this.projection.data;
-		d[0] = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
-		d[5] = 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom);
-		d[8] = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-		d[9] = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
-		d[10] = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+		d[0] = 2.0 * near / (right - left);
+		d[1] = 0.0;
+		d[2] = 0.0;
+		d[3] = 0.0;
+		d[4] = 0.0;
+		d[5] = 2.0 * near / (top - bottom);
+		d[6] = 0.0;
+		d[7] = 0.0;
+		d[8] = (right + left) / (right - left);
+		d[9] = (top + bottom) / (top - bottom);
+		d[10] = -(far + near) / (far - near);
 		d[11] = -1.0;
-		d[14] = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
-		d[15] = -0.0;
+		d[12] = 0.0;
+		d[13] = 0.0;
+		d[14] = -(2.0 * far * near) / (far - near);
+		d[15] = 0.0;
+
 	}
 };
 
