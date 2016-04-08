@@ -119,7 +119,7 @@ MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 				array[vertexPos + i + 0] = vert.x;
 				array[vertexPos + i + 1] = vert.y;
 				array[vertexPos + i + 2] = vert.z;
-				array[vertexPos + i + 3] = view.w;
+				array[vertexPos + i + 3] = view[i + 3];
 			}
 		} else {
 			for (var i = 0; i < viewLength; i++) {
