@@ -12,7 +12,7 @@ Manager.prototype.applyAPI = function (worldBy) {
 			worldBy[key] = api[key];
 			this.installedAPI[key] = true;
 		} else {
-			console.warn('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
+			throw new Error('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
 		}
 	}
 };

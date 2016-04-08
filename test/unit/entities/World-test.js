@@ -313,7 +313,9 @@ describe('World with Components', function () {
 		var world = new World();
 
 		world.setManager(new FishManager());
-		world.setManager(new BananaManager());
+		expect(function () {
+			world.setManager(new BananaManager());
+		}).toThrow(new Error('Could not install method color of BananaManager as it is already taken'))
 
 		world.by.color();
 

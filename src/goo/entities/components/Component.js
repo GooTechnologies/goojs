@@ -59,7 +59,7 @@ Component.prototype.applyAPI = function (entity) {
 			entity[key] = api[key];
 			this.installedAPI.add(key);
 		} else {
-			console.warn('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
+			throw new Error('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
 		}
 	}
 };
@@ -84,7 +84,7 @@ Component.applyEntitySelectionAPI = function (entitySelectionAPI, componentType)
 		if (typeof EntitySelection[key] === 'undefined') {
 			EntitySelection.installMethod(entitySelectionAPI[key], key, componentType);
 		} else {
-			console.warn('Could not install method ' + key + ' on EntitySelection as it is already taken');
+			throw new Error('Could not install method ' + key + ' on EntitySelection as it is already taken');
 		}
 	}
 };

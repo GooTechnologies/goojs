@@ -243,7 +243,10 @@ describe('Entity', function () {
 		var entity = new Entity(world);
 
 		entity.setComponent(new FishComponent());
-		entity.setComponent(new BananaComponent());
+
+		expect(function () {
+			entity.setComponent(new BananaComponent());
+		}).toThrow(new Error("Could not install method swim of BananaComponent as it is already taken"));
 
 		entity.swim();
 
@@ -277,7 +280,10 @@ describe('Entity', function () {
 		var entity = new Entity(world);
 
 		entity.setComponent(new FishComponent());
-		entity.setComponent(new BananaComponent());
+
+		expect(function () {
+			entity.setComponent(new BananaComponent());
+		}).toThrow(new Error("Could not install method swim of BananaComponent as it is already taken"));
 
 		entity.clearComponent('BananaComponent');
 
