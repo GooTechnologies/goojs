@@ -397,7 +397,7 @@ TransformComponent.prototype.setTranslation = function () {
  * @returns {TransformComponent} Self for chaining.
  */
 TransformComponent.prototype.addTranslation = function () {
-	this.sync().transform.translation.add(Vector3.fromAny.apply(null, arguments));
+	this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
 	this.setUpdated();
 	return this;
 };
