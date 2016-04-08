@@ -14,7 +14,20 @@
  * @property {Array<String>} interests Array of component types this system is interested in
  */
 function System(type, interests) {
+
+	/**
+	 * @type {World}
+	 */
+	this.world = null;
+
+	/**
+	 * @type {string}
+	 */
 	this.type = type;
+
+	/**
+	 * @type {array}
+	 */
 	this.interests = interests;
 
 	this._activeEntities = [];
@@ -39,12 +52,25 @@ function System(type, interests) {
 System.prototype.process = function (/*entities, tpf*/) {};
 
 /**
- * Called when an entity is added to the world and systems need to be informed
+ * Called when an entity is added to the world and systems need to be informed. Called by the world.
+ * @hidden
  * @param entity
  */
 System.prototype.added = function (entity) {
 	this._check(entity);
 };
+
+/**
+ * Called when an entity is added to the world and systems need to be informed. To be implemented in subclasses.
+ * @param entity
+ */
+System.prototype.inserted = function (/*entity*/) {};
+
+/**
+ * Called when an entity is remove from the world and systems need to be informed. To be implemented in subclasses.
+ * @param entity
+ */
+System.prototype.deleted = function (/*entity*/) {};
 
 /**
  * Called when an entity gets/loses components
@@ -62,9 +88,7 @@ System.prototype.removed = function (entity) {
 	var index = this._activeEntities.indexOf(entity);
 	if (index !== -1) {
 		this._activeEntities.splice(index, 1);
-		if (this.deleted) {
-			this.deleted(entity);
-		}
+		this.deleted(entity);
 	}
 };
 
@@ -84,11 +108,9 @@ System.prototype.setup = function (world) {
  * By default it will call the deleted method on all entities it is keeping track of.
  */
 System.prototype.cleanup = function () {
-	if (this.deleted) {
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			var entity = this._activeEntities[i];
-			this.deleted(entity);
-		}
+	for (var i = 0; i < this._activeEntities.length; i++) {
+		var entity = this._activeEntities[i];
+		this.deleted(entity);
 	}
 };
 
@@ -121,14 +143,10 @@ System.prototype._check = function (entity) {
 	var index = this._activeEntities.indexOf(entity);
 	if (isInterested && index === -1) {
 		this._activeEntities.push(entity);
-		if (this.inserted) {
-			this.inserted(entity);
-		}
+		this.inserted(entity);
 	} else if (!isInterested && index !== -1) {
 		this._activeEntities.splice(index, 1);
-		if (this.deleted) {
-			this.deleted(entity);
-		}
+		this.deleted(entity);
 	}
 };
 
@@ -141,7 +159,7 @@ System.prototype._lateProcess = function (tpf) {
 };
 
 System.prototype.clear = function () {
-	this._activeEntities = [];
+	this._activeEntities.length  = 0;
 };
 
 /**

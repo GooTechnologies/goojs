@@ -22,7 +22,7 @@ var world = gooRunner.world;
 
 var p2System = new goo.P2System();
 world.setSystem(p2System);
-p2System.world.gravity[1] = -20;
+p2System.physicsWorld.gravity[1] = -20;
 
 function addPrimitives() {
 	for (var i = 0; i < 40; i++) {

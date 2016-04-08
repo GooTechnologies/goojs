@@ -121,7 +121,7 @@ goo.V.attachToGlobal();
 		// Need to do a process to make the CannonSystem add rigid bodies to the entities
 		gooRunner.world.processEntityChanges();
 
-		var world = cannonSystem.world;
+		var world = cannonSystem.physicsWorld;
 
         var wheelMaterial = new CANNON.Material("wheelMaterial");
         var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, world.defaultMaterial, {
