@@ -241,7 +241,7 @@ describe('PhysicsSystem', function () {
 		rbcA.initialize(); // Needed to initialize bodies
 		rbcB.initialize();
 
-		world.process();
+		world.fixedUpdate();
 
 		expect(numBeginContact).toEqual(0);
 		expect(numDuringContact).toEqual(0);
@@ -250,13 +250,13 @@ describe('PhysicsSystem', function () {
 		rbcA.setPosition(new Vector3(0, 0, 0.1));
 		rbcB.setPosition(new Vector3(0, 0, -0.1));
 
-		world.process();
+		world.fixedUpdate();
 
 		expect(numBeginContact).toEqual(1);
 		expect(numDuringContact).toEqual(1);
 		expect(numEndContact).toEqual(0);
 
-		world.process();
+		world.fixedUpdate();
 
 		expect(numBeginContact).toEqual(1);
 		expect(numDuringContact).toEqual(2);
@@ -265,7 +265,7 @@ describe('PhysicsSystem', function () {
 		rbcA.setPosition(new Vector3(0, 0, 3));
 		rbcB.setPosition(new Vector3(0, 0, -3));
 
-		world.process();
+		world.fixedUpdate();
 
 		expect(numBeginContact).toEqual(1);
 		expect(numDuringContact).toEqual(2);
@@ -384,7 +384,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider();
 				createStaticCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -398,7 +398,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider(0);
 				createRigidBodyCollider(0.1);
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -412,7 +412,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider();
 				createKinematicRigidBodyCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -426,7 +426,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider();
 				createStaticTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -440,7 +440,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider();
 				createRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -454,7 +454,7 @@ describe('PhysicsSystem', function () {
 				createStaticCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -470,7 +470,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyCollider();
 				createRigidBodyCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -484,7 +484,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyCollider();
 				createKinematicRigidBodyCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -498,7 +498,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyCollider();
 				createStaticTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -512,7 +512,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyCollider();
 				createRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -526,7 +526,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -544,7 +544,7 @@ describe('PhysicsSystem', function () {
 				createKinematicRigidBodyCollider();
 				createKinematicRigidBodyCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -558,7 +558,7 @@ describe('PhysicsSystem', function () {
 				createKinematicRigidBodyCollider();
 				createStaticTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -572,7 +572,7 @@ describe('PhysicsSystem', function () {
 				createKinematicRigidBodyCollider();
 				createRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -586,7 +586,7 @@ describe('PhysicsSystem', function () {
 				createKinematicRigidBodyCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -603,7 +603,7 @@ describe('PhysicsSystem', function () {
 				createStaticTriggerCollider();
 				createStaticTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(0);
 				expect(numTriggerStay).toEqual(0);
@@ -617,7 +617,7 @@ describe('PhysicsSystem', function () {
 				createStaticTriggerCollider();
 				createRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -631,7 +631,7 @@ describe('PhysicsSystem', function () {
 				createStaticTriggerCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -648,7 +648,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyTriggerCollider();
 				createRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -662,7 +662,7 @@ describe('PhysicsSystem', function () {
 				createRigidBodyTriggerCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -679,7 +679,7 @@ describe('PhysicsSystem', function () {
 				createKinematicRigidBodyTriggerCollider();
 				createKinematicRigidBodyTriggerCollider();
 
-				world.process();
+				world.fixedUpdate();
 
 				expect(numTriggerEnter).toEqual(1);
 				expect(numTriggerStay).toEqual(1);
@@ -710,7 +710,7 @@ describe('PhysicsSystem', function () {
 			SystemBus.addListener(key, listeners[key]);
 		}
 
-		world.process();
+		world.fixedUpdate();
 
 		expect(substeps).toEqual(1);
 
@@ -745,14 +745,14 @@ describe('PhysicsSystem', function () {
 
 		rbcA.initialize();
 		rbcB.initialize();
-		world.process();
+		world.fixedUpdate();
 
 		expect(numBeginContact).toEqual(1);
 
 		rbcA.collisionMask = 0; // none
 		rbcB.collisionMask = 0;
 
-		world.process(); // Needed to initialize bodies
+		world.fixedUpdate(); // Needed to initialize bodies
 
 		expect(numBeginContact).toEqual(1);
 
@@ -784,13 +784,13 @@ describe('PhysicsSystem', function () {
 		});
 		world.createEntity(rbcA, ccA).addToWorld();
 
-		world.process();
+		world.fixedUpdate();
 
 		system.stop();
 
-		world.process();
+		world.fixedUpdate();
 
 		system.play();
-		world.process();
+		world.fixedUpdate();
 	});
 });

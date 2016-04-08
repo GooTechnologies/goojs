@@ -5,19 +5,73 @@ var Manager = require('./managers/Manager');
 var System = require('./systems/System');
 var Component = require('./components/Component');
 var EntitySelection = require('./EntitySelection');
+var ObjectUtils = require('../util/ObjectUtils');
+
+var lastInstantiatedWorld;
 
 /**
  * Main handler for an entity world. The World keeps track of managers and systems,
  * and also provides methods to create, select and remove entities.
  * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
  * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
- * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
+ * @param {object} [options]
+ * @param {GooRunner} [options.gooRunner]
+ * @param {boolean} [options.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
  */
-function World(gooRunner) {
+function World(options) {
+	if (options && options._registerBaseComponents) {
+		console.warn('World constructor changed! Please use it like this instead: new World({ gooRunner: gooRunner })');
+		var tmp = options;
+		options = {};
+		options.gooRunner = tmp;
+	}
+
+	options = options || {};
+
 	/** GooRunner for updating the world and calling the renderers.
 	 * @type {GooRunner}
 	 */
-	this.gooRunner = gooRunner;
+	this.gooRunner = options.gooRunner !== undefined ? options.gooRunner : null;
+
+	/** Accumulated time per frames(tpf) the world has been running.  Calculated at the start of each frame.
+	 * @type {number}
+	 */
+	this.time = 0;
+
+	/** Current fixed step accumulated time.
+	 * @type {number}
+	 */
+	this.fixedTpfTime = 0;
+
+	/** The fixed time step to use for physics and other fixed-updates.
+	 * @type {number}
+	 */
+	this.fixedTpf = options.fixedTpf !== undefined ? options.fixedTpf : 1 / 60;
+
+	/** Max fixed steps to use for the fixed update loop.
+	 * @type {number}
+	 */
+	this.maxSubSteps = options.maxSubSteps !== undefined ? options.maxSubSteps : 10;
+
+	/** Time since last frame in seconds.
+	 * @type {number}
+	 */
+	this.tpf = 1.0;
+
+	/** The tpf, averaged by a number of samples.
+	 * @type {number}
+	 */
+	this.smoothedTpf = this.tpf;
+
+	/** Interpolation alpha time value: a number between 0 and 1. Use to interpolate between two fixed updates from the frame update.
+	 * @type {number}
+	 */
+	this.interpolationTime = 0;
+
+	/** Number of samples to use for smoothing the tpf.
+	 * @type {number}
+	 */
+	this.tpfSmoothingCount = options.tpfSmoothingCount !== undefined ? options.tpfSmoothingCount : 10;
 
 	this._managers = [];
 	this._systems = [];
@@ -35,23 +89,34 @@ function World(gooRunner) {
 	this.entityManager = new EntityManager();
 	this.setManager(this.entityManager);
 
-	/** Accumulated time per frames(tpf) the world has been running.  Calculated at the start of each frame.
-	 * @type {number}
-	 */
-	this.time = 0.0;
-
-	/** Time since last frame in seconds.
-	 * @type {number}
-	 */
-	this.tpf = 1.0;
-
 	this._components = [];
+
+	this._tpfIndex = 0;
+	this._tpfSmoothingArray = [];
+	this._accumulator = 0;
+
+	lastInstantiatedWorld = this;
 }
 
-//! AT: these need to go
-World.time = 0.0;
-World.tpf = 1.0;
-
+// Deprecated these with warnings on 2016-04-06
+Object.defineProperties(World, {
+	time: {
+		get: ObjectUtils.warnOnce('World.time is deprecated, use world.time instead.', function () {
+			return lastInstantiatedWorld && lastInstantiatedWorld.time || 0;
+		}),
+		set: function () {
+			throw new Error('Don\'t set World.time!');
+		}
+	},
+	tpf: {
+		get: ObjectUtils.warnOnce('World.tpf is deprecated, use world.tpf instead.', function () {
+			return lastInstantiatedWorld && lastInstantiatedWorld.tpf || 1;
+		}),
+		set: function () {
+			throw new Error('Don\'t set World.time!');
+		}
+	}
+});
 
 /** Entity selector. Its methods return an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
  * <br><i>Will get additional methods when an {@link EntityManager} is attached.</i>
@@ -426,6 +491,68 @@ World.prototype.processEntityChanges = function () {
 };
 
 /**
+ * Update the world. This will run process and fixedUpdate.
+ * @param  {number} tpf Time since last called, in seconds.
+ * @return {World} the self object
+ */
+World.prototype.update = function (tpf) {
+	// Increment time
+	var time = this.time;
+	time += tpf;
+
+	// Set current values
+	this.time = time;
+	this.tpf = tpf;
+
+	// Compute .smoothedTpf
+	var tpfSmoothingArray = this._tpfSmoothingArray;
+	this._tpfSmoothingArray[this._tpfIndex] = tpf;
+	this._tpfIndex = (this._tpfIndex + 1) % this.tpfSmoothingCount;
+	var avg = 0;
+	for (var i = 0; i < tpfSmoothingArray.length; i++) {
+		avg += tpfSmoothingArray[i];
+	}
+	avg /= this.tpfSmoothingCount;
+	this.smoothedTpf = avg;
+
+	// Fixed updates
+	var numSteps = 0;
+	var fixedTpf = this.fixedTpf;
+	var fixedTpfTime = this.fixedTpfTime;
+	var maxSubSteps = this.maxSubSteps;
+	var accumulator = this._accumulator;
+
+	accumulator += tpf;
+	while (accumulator >= fixedTpf && numSteps < maxSubSteps) {
+		fixedTpfTime += fixedTpf;
+		numSteps++;
+		this.fixedUpdate();
+		accumulator -= fixedTpf;
+	}
+	this.fixedTpfTime = fixedTpfTime;
+	this.interpolationTime = (accumulator % fixedTpf) / fixedTpf;
+	this._accumulator = accumulator;
+
+	// Frame update (process)
+	this.process();
+
+	return this;
+};
+
+/**
+ * Do a fixed time update of all systems.
+ */
+World.prototype.fixedUpdate = function () {
+	this.processEntityChanges();
+	for (var i = 0; i < this._systems.length; i++) {
+		var system = this._systems[i];
+		if (!system.passive) {
+			system._fixedUpdate(this.fixedTpf);
+		}
+	}
+};
+
+/**
  * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
  * Has to be called between adding an entity to the world and getting it back.
  */
@@ -495,6 +622,11 @@ World.prototype.clear = function () {
 
 	// severe the connection to gooRunner
 	this.gooRunner = null;
+
+	// todo: remove when World.time is removed
+	if(lastInstantiatedWorld === this){
+		lastInstantiatedWorld = undefined;
+	}
 };
 
 module.exports = World;

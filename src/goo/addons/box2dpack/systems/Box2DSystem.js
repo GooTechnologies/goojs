@@ -12,7 +12,7 @@ function Box2DSystem() {
 	System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);
 
 	this.SCALE = 0.5;
-	this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
+	this.physicsWorld = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
 
 	// Defaulted to recommended values 8 and 3
 	this.velocityIterations = 8;
@@ -111,13 +111,13 @@ Box2DSystem.prototype.inserted = function (entity) {
 	bd.set_position(new Box2D.b2Vec2(entity.transformComponent.transform.translation.x + p.offsetX, entity.transformComponent.transform.translation.y + p.offsetY));
 	var rotAngles = entity.transformComponent.transform.rotation.toAngles();
 	bd.set_angle(rotAngles.z);
-	var body = this.world.CreateBody(bd);
+	var body = this.physicsWorld.CreateBody(bd);
 	body.CreateFixture(fd);
 	body.SetLinearDamping(0.95);
 	body.SetAngularDamping(0.6);
 
 	p.body = body;
-	p.world = this.world;
+	p.world = this.physicsWorld;
 	// should not be stored on the entity level
 	entity.body = body;
 	entity.body.h = height;
@@ -125,12 +125,11 @@ Box2DSystem.prototype.inserted = function (entity) {
 };
 
 Box2DSystem.prototype.deleted = function (entity) {
-	this.world.DestroyBody(entity.body);
+	this.physicsWorld.DestroyBody(entity.body);
 };
 
 Box2DSystem.prototype.process = function (entities, tpf) {
-	// do physics steps in a Worker
-	this.world.Step(tpf, this.velocityIterations, this.positionIterations);
+	this.physicsWorld.Step(tpf, this.velocityIterations, this.positionIterations);
 
 	for (var i = 0; i < entities.length; i++) {
 		var entity = entities[i];
@@ -139,11 +138,6 @@ Box2DSystem.prototype.process = function (entities, tpf) {
 		var position = entity.body.GetPosition();
 		var posX = position.get_x();
 		var posY = position.get_y();
-		//! schteppe: This is ugly. Should at least be possile to turn off. A more general implementation would be a "P2KillerPlane" component
-		if (posY < -10) {
-			entity.removeFromWorld();
-			continue;
-		}
 		transform.translation.x = posX - entity.box2DComponent.offsetX;
 		transform.translation.y = posY - entity.box2DComponent.offsetY;
 		transformComponent.setRotation(0, 0, entity.body.GetAngle());

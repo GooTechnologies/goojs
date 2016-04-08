@@ -7,6 +7,7 @@ var MeshCollider = require('../../../addons/physicspack/colliders/MeshCollider')
 var BallJoint = require('../../../addons/physicspack/joints/BallJoint');
 var HingeJoint = require('../../../addons/physicspack/joints/HingeJoint');
 var ColliderComponent = require('../../../addons/physicspack/components/ColliderComponent');
+var MathUtils = require('../../../math/MathUtils');
 
 /* global CANNON */
 var tmpQuat = new Quaternion();
@@ -401,10 +402,18 @@ RigidBodyComponent.prototype.getPosition = function (targetVector) {
  * @param {Vector3} targetVector
  */
 RigidBodyComponent.prototype.getInterpolatedPosition = function (targetVector) {
-	if (this.cannonBody) {
-		var position = this.cannonBody.interpolatedPosition;
-		targetVector.setDirect(position.x, position.y, position.z);
+	if (!this.cannonBody) {
+		return;
 	}
+
+	var prevPosition = this.cannonBody.previousPosition;
+	var currentPosition = this.cannonBody.position;
+	var t = this._system.world.interpolationTime;
+	targetVector.setDirect(
+		MathUtils.lerp(t, prevPosition.x, currentPosition.x),
+		MathUtils.lerp(t, prevPosition.y, currentPosition.y),
+		MathUtils.lerp(t, prevPosition.z, currentPosition.z)
+	);
 };
 
 /**
@@ -436,15 +445,19 @@ RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
  * @param {Quaternion} targetQuat
  */
 RigidBodyComponent.prototype.getInterpolatedQuaternion = function (targetQuat) {
-	if (this.cannonBody) {
-		var cannonQuaternion = this.cannonBody.interpolatedQuaternion;
-		targetQuat.setDirect(
-			cannonQuaternion.x,
-			cannonQuaternion.y,
-			cannonQuaternion.z,
-			cannonQuaternion.w
-		);
+	if (!this.cannonBody) {
+		return;
 	}
+
+	var prevQuat = this.cannonBody.previousQuaternion;
+	var currentQuat = this.cannonBody.quaternion;
+	var t = this._system.world.interpolationTime;
+	targetQuat.setDirect(
+		MathUtils.lerp(t, prevQuat.x, currentQuat.x),
+		MathUtils.lerp(t, prevQuat.y, currentQuat.y),
+		MathUtils.lerp(t, prevQuat.z, currentQuat.z),
+		MathUtils.lerp(t, prevQuat.w, currentQuat.w)
+	);
 };
 
 Object.defineProperties(RigidBodyComponent.prototype, {
@@ -789,15 +802,6 @@ RigidBodyComponent.prototype.clone = function () {
 		sleepingThreshold: this._sleepingThreshold,
 		sleepingTimeLimit: this._sleepingTimeLimit
 	});
-};
-
-/**
- * @private
- * @param entity
- */
-RigidBodyComponent.prototype.attached = function (entity) {
-	this._entity = entity;
-	this._system = entity._world.getSystem('PhysicsSystem');
 };
 
 RigidBodyComponent.prototype.api = {};

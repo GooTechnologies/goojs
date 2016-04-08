@@ -138,6 +138,15 @@ AbstractRigidBodyComponent.prototype.attached = function (/*entity*/) {};
  * @private
  * @param entity
  */
+AbstractRigidBodyComponent.prototype.attached = function (entity) {
+	this._entity = entity;
+	this._system = entity._world.getSystem('PhysicsSystem');
+};
+
+/**
+ * @private
+ * @param entity
+ */
 AbstractRigidBodyComponent.prototype.detached = function (/*entity*/) {
 	this._entity = null;
 	this._system = null;

@@ -52,6 +52,13 @@ function System(type, interests) {
 System.prototype.process = function (/*entities, tpf*/) {};
 
 /**
+ * Called on each physics tick, if the system is not passive.
+ * @param {array} entities
+ * @param {number} fixedTpf
+ */
+System.prototype.fixedUpdate = function (/*entities, fixedTpf*/) {};
+
+/**
  * Called when an entity is added to the world and systems need to be informed. Called by the world.
  * @hidden
  * @param entity
@@ -148,6 +155,10 @@ System.prototype._check = function (entity) {
 		this._activeEntities.splice(index, 1);
 		this.deleted(entity);
 	}
+};
+
+System.prototype._fixedUpdate = function (fixedTpf) {
+	this.fixedUpdate(this._activeEntities, fixedTpf);
 };
 
 System.prototype._process = function (tpf) {
