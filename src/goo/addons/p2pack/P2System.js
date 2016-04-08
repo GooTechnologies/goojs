@@ -17,7 +17,6 @@ var Plane = require('p2/src/objects/Plane');
  * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
  * @example
  * var p2System = new P2System({
- *     stepFrequency: 60,
  *     gravity: [0, -10]
  * });
  * goo.world.setSystem(p2System);
