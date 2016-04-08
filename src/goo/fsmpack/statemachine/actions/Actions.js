@@ -130,7 +130,10 @@ var allActions = {
 	StopTimelineAction: require('./StopTimelineAction'),
 	SetTimelineTimeAction: require('./SetTimelineTimeAction'),
 	SetHtmlTextAction: require('./SetHtmlTextAction'),
-	SpriteAnimationAction: require('./SpriteAnimationAction')
+	SpriteAnimationAction: require('./SpriteAnimationAction'),
+	PauseParticleSystemAction: require('./PauseParticleSystemAction'),
+	StopParticleSystemAction: require('./StopParticleSystemAction'),
+	StartParticleSystemAction: require('./StartParticleSystemAction')
 };
 
 for(var actionName in allActions){
