@@ -55,7 +55,10 @@ MachineHandler.prototype._update = function (ref, config, options) {
 	var that = this;
 	return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (machine) {
 		if (!machine) { return; }
+		machine.id = ref;
 		machine.name = config.name;
+		machine.maxLoopDepth = config.maxLoopDepth;
+		machine.asyncMode = config.asyncMode;
 
 		// Remove old states
 		for (var key in machine._states) {
