@@ -175,7 +175,7 @@ module.exports = {
 	StringUtil: require('./util/StringUtil'),
 	StringUtils: require('./util/StringUtils'),
 	TangentGenerator: require('./util/TangentGenerator'),
-	TWEEN: require('./util/TWEEN')
+	Easing: require('./util/Easing')
 };
 
 if (typeof(window) !== 'undefined') {
