@@ -30,6 +30,7 @@
         "consistent-return": 0,
         "no-lonely-if": "off",
         "operator-assignment": [2, "always"],
+        "keyword-spacing": "error",
         "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }],
         "no-console": "off"
     },

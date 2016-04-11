@@ -624,7 +624,7 @@ World.prototype.clear = function () {
 	this.gooRunner = null;
 
 	// todo: remove when World.time is removed
-	if(lastInstantiatedWorld === this){
+	if (lastInstantiatedWorld === this) {
 		lastInstantiatedWorld = undefined;
 	}
 };

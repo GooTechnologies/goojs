@@ -35,7 +35,7 @@ Debugger.prototype._setUpREPL = function () {
 			var resultStr = '';
 			try {
 				resultStr += eval(commStr);
-			} catch(err) {
+			} catch (err) {
 				resultStr += err;
 			}
 			replinElemHandle.value = 'entity.';

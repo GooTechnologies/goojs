@@ -154,7 +154,9 @@ ParticleDebugRenderSystem.prototype.cleanup = function () {};
  * @private
  */
 ParticleDebugRenderSystem.prototype.update = function () {
-	if(this.passive) return;
+	if (this.passive) {
+		return;
+	}
 
 	var entities = this._activeEntities;
 	var l = entities.length;

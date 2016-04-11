@@ -338,7 +338,7 @@ Renderer.prototype.checkResize = function (camera, skipSetSize) {
 	}
 
 	var aspect = adjustWidth / adjustHeight;
-	if(!skipSetSize){
+	if (!skipSetSize) {
 		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
 	}
 

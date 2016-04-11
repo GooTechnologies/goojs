@@ -83,7 +83,7 @@ DebugDrawHelper.update = function (renderables, component, camera, renderer) {
 			renderer.checkResize(camera, true);
 		}
 
-		if(component.camera.changedProperties){
+		if (component.camera.changedProperties) {
 			if (renderables.length > 1 &&
 				((camera.far / camera.near) !== renderables[1].farNear ||
 					camera.fov !== renderables[1].fov ||
