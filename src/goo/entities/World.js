@@ -38,6 +38,11 @@ function World(options) {
 	 */
 	this.time = 0;
 
+	/**
+	 * @type {number}
+	 */
+	this.timeScale = 1;
+
 	/** Current fixed step accumulated time.
 	 * @type {number}
 	 */
@@ -522,7 +527,7 @@ World.prototype.processEntityChanges = function () {
 World.prototype.update = function (tpf) {
 	// Increment time
 	var time = this.time;
-	time += tpf;
+	time += tpf * this.timeScale;
 
 	// Set current values
 	this.time = time;

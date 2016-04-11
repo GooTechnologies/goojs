@@ -54,9 +54,6 @@ DebugRenderSystem.prototype.setup = function () {
 	SystemBus.addListener('goo.setLights', this.lightsListener);
 };
 
-DebugRenderSystem.prototype.inserted = function (/*entity*/) {
-};
-
 DebugRenderSystem.prototype.deleted = function (entity) {
 	delete this._renderablesTree[entity.id];
 };

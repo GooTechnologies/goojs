@@ -5,25 +5,19 @@ var SystemBus = require('../../entities/SystemBus');
  * Processes all entities with script components, running the scripts where applicable
  * @extends System
  */
-function ScriptSystem(world) {
+function ScriptSystem() {
 	System.call(this, 'ScriptSystem', ['ScriptComponent']);
 
-	//! AT: why this?
-	this._world = world;
-
-	var renderer = this._world.gooRunner.renderer;
 	// General world environment
 	this.context = {
-		domElement: renderer.domElement,
-		viewportWidth: renderer.viewportWidth,
-		viewportHeight: renderer.viewportHeight,
-		world: world,
+		domElement: 0,
+		viewportWidth: 0,
+		viewportHeight: 0,
+		world: null,
 		activeCameraEntity: null,
 		worldData: {},
 		playTime: 0
 	};
-
-	this._playing = true;
 
 	SystemBus.addListener('goo.setCurrentCamera', function (data) {
 		this.context.activeCameraEntity = data.entity;
@@ -34,35 +28,32 @@ function ScriptSystem(world) {
 		this.context.viewportHeight = data.height;
 	}.bind(this));
 
-	this.manualSetup = false;
-
 	this.priority = 500;
 }
 
 ScriptSystem.prototype = Object.create(System.prototype);
 ScriptSystem.prototype.constructor = ScriptSystem;
 
-/*
+ScriptSystem.prototype.setup = function (world) {
+	this.checkEntities(world);
+
+	var context = this.context;
+	var renderer = world.gooRunner.renderer;
+
+	context.domElement = renderer.domElement;
+	context.viewportWidth = renderer.viewportWidth;
+	context.viewportHeight = renderer.viewportHeight;
+	context.world = world;
+	context.activeCameraEntity = null;
+	context.worldData = {};
+	context.playTime = 0;
+};
+
 ScriptSystem.prototype.inserted = function (entity) {
-	if (!this.manualSetup) {
+	if (this.world.playing) {
 		entity.scriptComponent.setup(entity);
 	}
-};*/
-
-ScriptSystem.prototype.play = function () {
-	this.context.playTime = 0;
-	this._playing = true;
 };
-
-ScriptSystem.prototype.resume = function () {
-	this._playing = true;
-};
-
-ScriptSystem.prototype.pause = function () {
-	this._playing = false;
-};
-
-ScriptSystem.prototype.stop = ScriptSystem.prototype.pause;
 
 ScriptSystem.prototype.fixedUpdate = function (entities, fixedTpf) {
 	// Update scripts
@@ -73,10 +64,7 @@ ScriptSystem.prototype.fixedUpdate = function (entities, fixedTpf) {
 };
 
 ScriptSystem.prototype.process = function (entities, tpf) {
-	// update play time
-	if (this._playing) {
-		this.context.playTime += tpf;
-	}
+	this.context.playTime += tpf;
 
 	// Update scripts
 	for (var i = 0; i < entities.length; i++) {
@@ -90,24 +78,48 @@ ScriptSystem.prototype.process = function (entities, tpf) {
 	}
 };
 
+ScriptSystem.prototype.playModeChanged = function () {
+	var entities = this._activeEntities;
+	var context = this.context;
+
+	if (this.world.playing) {
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			entity.scriptComponent.setup(entity);
+		}
+	} else {
+		for (var i = 0; i < entities.length; i++) {
+			entities[i].scriptComponent.cleanup();
+		}
+
+		// Clear worldData
+		var worldData = context.worldData;
+		var keys = Object.keys(worldData);
+		for (var i = 0; i < keys.length; i++) {
+			delete worldData[keys[i]];
+		}
+	}
+
+	context.playTime = 0;
+};
+
 ScriptSystem.prototype.addedComponent = function (entity, component) {
-	if (component.type === 'ScriptComponent' && !this.manualSetup) {
+	if (component.type === 'ScriptComponent' && this.world.playing) {
 		component.setup(entity);
 	}
 };
 
 ScriptSystem.prototype.removedComponent = function (entity, component) {
-	if (component.type === 'ScriptComponent' && !this.manualSetup) {
+	if (component.type === 'ScriptComponent' && this.world.playing) {
 		component.cleanup();
 	}
 };
 
-/*
 ScriptSystem.prototype.deleted = function (entity) {
-	if (entity.scriptComponent && !this.manualSetup) {
+	if (entity.scriptComponent) {
 		entity.scriptComponent.cleanup();
 	}
-};*/
+};
 
 ScriptSystem.prototype.clear = function () {
 	for (var i = 0; i < this._activeEntities.length; i++) {
@@ -115,7 +127,6 @@ ScriptSystem.prototype.clear = function () {
 		entity.scriptComponent.cleanup();
 	}
 
-	this._world = null;
 	this.context = null;
 
 	System.prototype.clear.call(this);

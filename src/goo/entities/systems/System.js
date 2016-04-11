@@ -74,7 +74,7 @@ System.prototype.added = function (entity) {
 System.prototype.inserted = function (/*entity*/) {};
 
 /**
- * Called when an entity is remove from the world and systems need to be informed. To be implemented in subclasses.
+ * Called when an Entity is removed from the World. To be implemented in subclasses.
  * @param entity
  */
 System.prototype.deleted = function (/*entity*/) {};
