@@ -49,7 +49,7 @@ var labels = {
 };
 
 CompareCounterAction.getTransitionLabel = function (transitionKey, actionConfig){
-	if(labels[transitionKey]){
+	if (labels[transitionKey]) {
 		return 'On ' + (actionConfig.options.name || 'Counter') + labels[transitionKey];
 	}
 };

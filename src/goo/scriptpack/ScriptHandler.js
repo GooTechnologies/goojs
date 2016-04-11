@@ -638,7 +638,7 @@ ScriptHandler.validateParameters = function validateParameters(script, outScript
 			parameter['default'] = ScriptUtils.DEFAULTS_BY_TYPE[parameter.type];
 		}
 
-		if(parameter.key && duplicateChecker[parameter.key]){
+		if (parameter.key && duplicateChecker[parameter.key]) {
 			errors.push({
 				message: 'Duplicate parameter key: "' + parameter.key + '"'
 			});

@@ -707,7 +707,7 @@ TWEEN.Interpolation = {
 
 };
 
-if(typeof(window) !== 'undefined'){
+if (typeof(window) !== 'undefined') {
 	window.TWEEN = TWEEN; // ask Martin, Ray
 }
 

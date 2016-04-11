@@ -137,7 +137,7 @@ var allActions = {
 	StartParticleSystemAction: require('./StartParticleSystemAction')
 };
 
-for(var actionName in allActions){
+for (var actionName in allActions) {
 	var action = allActions[actionName];
 	Actions.register(action.external.key, action);
 }

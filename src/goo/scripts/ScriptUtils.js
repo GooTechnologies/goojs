@@ -79,7 +79,7 @@ ScriptUtils.TYPE_VALIDATORS = (function () {
 		'sound': isRef('sound'),
 		'texture': isRef('texture'),
 		'json': isRef('json'),
-		'text': isRef('text'),
+		'text': isRef('text')
 	};
 })();
 

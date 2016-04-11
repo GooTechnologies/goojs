@@ -43,9 +43,9 @@ SetHtmlTextAction.prototype.enter = function (fsm) {
 	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
 	if (entity && entity.htmlComponent && this.selector.length > 0) {
 		var elements = entity.htmlComponent.domElement.querySelectorAll(this.selector);
-		for(var i=0; i<elements.length; i++){
+		for (var i=0; i<elements.length; i++) {
 			var element = elements[i];
-			if(this.html){
+			if (this.html) {
 				element.innerHTML = this.content;
 			} else {
 				element.innerText = this.content;

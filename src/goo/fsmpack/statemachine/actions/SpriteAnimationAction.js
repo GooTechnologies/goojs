@@ -75,7 +75,9 @@ SpriteAnimationAction.prototype.enter = function (fsm) {
 };
 
 SpriteAnimationAction.prototype.update = function (fsm) {
-	if(!this.texture || this.completed) return;
+	if (!this.texture || this.completed) {
+		return;
+	}
 
 	var time = fsm.getTime() - this.startTime;
 	var numTiles = this.tiling[0] * this.tiling[1];
