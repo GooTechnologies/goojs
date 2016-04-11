@@ -1,5 +1,4 @@
 var System = require('../../entities/systems/System');
-var TWEEN = require('../../util/TWEEN');
 
 /**
  * Processes all entities with a FSM component
@@ -66,10 +65,8 @@ StateMachineSystem.prototype.process = function (entities, tpf) {
 		}
 	}
 
-	TWEEN.update(this.engine.world.time * 1000); // this should not stay here
-
 	for (var i = 0; i < entities.length; i++) {
-		component = entities[i].stateMachineComponent;
+		var component = entities[i].stateMachineComponent;
 		component.update(tpf);
 	}
 };
@@ -129,7 +126,6 @@ StateMachineSystem.prototype.stop = function () {
 		component.cleanup();
 	}
 	this.time = 0;
-	TWEEN.removeAll();
 
 	for (var key in this._listeners) {
 		document.removeEventListener(key, this._listeners[key]);

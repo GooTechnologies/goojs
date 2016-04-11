@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector2 = require('../../../math/Vector2');
-var TWEEN = require('../../../util/TWEEN');
+var Easing = require('../../../util/Easing');
 
 function TweenTextureOffsetAction(/*id, settings*/) {
 	Action.apply(this, arguments);
@@ -72,9 +72,9 @@ TweenTextureOffsetAction.getTransitionLabel = function (transitionKey/*, actionC
 
 TweenTextureOffsetAction.prototype.ready = function () {
 	if (this.easing1 === 'Linear') {
-		this.easing = TWEEN.Easing.Linear.None;
+		this.easing = Easing.Linear.None;
 	} else {
-		this.easing = TWEEN.Easing[this.easing1][this.easing2];
+		this.easing = Easing[this.easing1][this.easing2];
 	}
 };
 

@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Quaternion = require('../../../math/Quaternion');
 var Matrix3 = require('../../../math/Matrix3');
 var MathUtils = require('../../../math/MathUtils');
-var TWEEN = require('../../../util/TWEEN');
+var Easing = require('../../../util/Easing');
 
 function TweenRotationAction(/*id, settings*/) {
 	Action.apply(this, arguments);
@@ -69,9 +69,9 @@ TweenRotationAction.getTransitionLabel = function (transitionKey/*, actionConfig
 
 TweenRotationAction.prototype.ready = function () {
 	if (this.easing1 === 'Linear') {
-		this.easing = TWEEN.Easing.Linear.None;
+		this.easing = Easing.Linear.None;
 	} else {
-		this.easing = TWEEN.Easing[this.easing1][this.easing2];
+		this.easing = Easing[this.easing1][this.easing2];
 	}
 };
 
