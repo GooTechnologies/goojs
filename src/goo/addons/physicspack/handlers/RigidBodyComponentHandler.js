@@ -30,7 +30,13 @@ RigidBodyComponentHandler.prototype._prepare = function (config) {
 		velocity: [0, 0, 0],
 		angularVelocity: [0, 0, 0],
 		linearDrag: 0,
-		angularDrag: 0
+		angularDrag: 0,
+		freezePositionX: false,
+		freezePositionY: false,
+		freezePositionZ: false,
+		freezeRotationX: false,
+		freezeRotationY: false,
+		freezeRotationZ: false
 	});
 };
 
@@ -68,6 +74,15 @@ RigidBodyComponentHandler.prototype.update = function (entity, config, options) 
 		component.setAngularVelocity(new Vector3(config.angularVelocity));
 		component.linearDamping = config.linearDrag;
 		component.angularDamping = config.angularDrag;
+
+		component.constraints = (
+			(config.freezePositionX ? RigidBodyComponent.FREEZE_POSITION_X : 0) |
+			(config.freezePositionY ? RigidBodyComponent.FREEZE_POSITION_Y : 0) |
+			(config.freezePositionZ ? RigidBodyComponent.FREEZE_POSITION_Z : 0) |
+			(config.freezeRotationX ? RigidBodyComponent.FREEZE_ROTATION_X : 0) |
+			(config.freezeRotationY ? RigidBodyComponent.FREEZE_ROTATION_Y : 0) |
+			(config.freezeRotationZ ? RigidBodyComponent.FREEZE_ROTATION_Z : 0)
+		);
 
 		return component;
 	});
