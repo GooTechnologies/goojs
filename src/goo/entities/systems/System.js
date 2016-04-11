@@ -100,15 +100,39 @@ System.prototype.removed = function (entity) {
 };
 
 /**
+ * Called when a component was added to an entity.
+ * @param {Entity} entity
+ * @param {Component} component
+ */
+System.prototype.addedComponent = function (/*entity, component*/) {};
+
+/**
+ * Called when a component was removed from an entity.
+ * @param {Entity} entity
+ * @param {Component} component
+ */
+System.prototype.removedComponent = function (/*entity, component*/) {};
+
+/**
  * Called when the system is added to the world.
- * This method is called automatically when the system is added to a world.
- * By default it will go through all entities
- * accounted by the entity manager and try to add them to this system.
  * @param {World} world
  */
 System.prototype.setup = function (world) {
+	this.checkEntities(world);
+};
+
+/**
+ * Adds the current entities from the world to this._activeEntities.
+ * @param {World} world
+ */
+System.prototype.checkEntities = function (world) {
 	world.entityManager.getEntities().forEach(this._check.bind(this));
 };
+
+/**
+ * Called when the world changes play mode.
+ */
+System.prototype.playModeChanged = function () {};
 
 /**
  * Called when the system is removed from the world.

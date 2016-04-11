@@ -96,7 +96,30 @@ function World(options) {
 	this._accumulator = 0;
 
 	lastInstantiatedWorld = this;
+
+	this.playing = options.playing !== undefined ? options.playing : true;
 }
+
+Object.defineProperties(World.prototype, {
+	/**
+	 * True if the world is in play mode.
+	 * @target-class World playing member
+	 * @type {boolean}
+	 */
+	playing: {
+		get: function () {
+			return this._playing;
+		},
+		set: function (value) {
+			this._playing = !!value;
+
+			var systems = this._systems;
+			for (var i = 0; i < systems.length; i++) {
+				systems.playModeChanged();
+			}
+		}
+	}
+});
 
 // Deprecated these with warnings on 2016-04-06
 Object.defineProperties(World, {
@@ -458,6 +481,7 @@ World.prototype.changedEntity = function (entity, component, eventType) {
 
 /**
  * Processes newly added entities, changed entities and removed entities
+ * @todo Should probably not be done in the process loop but rather synchronously.
  */
 World.prototype.processEntityChanges = function () {
 	this._check(this._addedEntities, function (observer, entity) {

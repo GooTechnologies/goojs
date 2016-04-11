@@ -35,6 +35,7 @@ var Material = require('../renderer/Material');
  * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
  * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
  * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
+ * @param {boolean} [parameters.startInPlayMode=true]
  * @param {(boolean | string | { position, color })} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
  * If the parameter is not specified then the logo is placed in the top right corner.
  * If no logo is desired then this parameter should have the 'false' value.
@@ -55,7 +56,8 @@ function GooRunner(parameters) {
 	 */
 	this.world = new World({
 		gooRunner: this,
-		tpfSmoothingCount: parameters.tpfSmoothingCount
+		tpfSmoothingCount: parameters.tpfSmoothingCount,
+		playing: parameters.startInPlayMode
 	});
 
 	/**
