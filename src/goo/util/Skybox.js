@@ -16,7 +16,7 @@ var Transform = require('../math/Transform');
 function Skybox(type, images, textureMode, yRotation) {
 	var promise;
 	if (type === Skybox.SPHERE) {
-		this.meshData = new Sphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
+		this.meshData = new Sphere(16, 32, 1, textureMode || Sphere.TextureModes.Projected);
 		if (images instanceof Array) {
 			images = images[0];
 		}
@@ -35,24 +35,24 @@ function Skybox(type, images, textureMode, yRotation) {
 	} else {
 		throw new Error('Unknown geometry type');
 	}
-	var material = new Material(shaders[type], 'Skybox material');
 
+	var material = new Material(shaders[type], 'Skybox material');
+	material.cullState.cullFace = 'Front';
+	material.depthState.enabled = false;
+	material.renderQueue = 1;
 	if (promise) {
 		promise.then(function (texture) {
 			material.setTexture(Shader.DIFFUSE_MAP, texture);
 		});
 	}
 
-	material.cullState.cullFace = 'Front';
-	material.depthState.enabled = false;
-
-	material.renderQueue = 1;
-
 	this.materials = [material];
+
 	this.transform = new Transform();
 	var xAngle = (type === Skybox.SPHERE) ? Math.PI / 2 : 0;
 	this.transform.rotation.fromAngles(xAngle, yRotation, 0);
 	this.transform.update();
+
 	this.active = true;
 }
 
@@ -65,48 +65,38 @@ shaders.box = {
 		vertexPosition: MeshData.POSITION
 	},
 	uniforms: {
+		normalMatrix: Shader.NORMAL_MATRIX,
 		viewMatrix: Shader.VIEW_MATRIX,
 		projectionMatrix: Shader.PROJECTION_MATRIX,
-		worldMatrix: Shader.WORLD_MATRIX,
-		cameraPosition: Shader.CAMERA,
 		near: Shader.NEAR_PLANE,
 		diffuseMap: Shader.DIFFUSE_MAP
 	},
 	vshader: [
 		'attribute vec3 vertexPosition;',
 
+		'uniform mat3 normalMatrix;',
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
 		'uniform float near;',
 
 		'varying vec3 eyeVec;',
 
 		'void main(void) {',
-		'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);',
-		' worldPos += vec4(cameraPosition, 0.0);',
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
-		'	eyeVec = worldPos.xyz - cameraPosition;',
-		' eyeVec.x = -eyeVec.x;',
-		' eyeVec = (worldMatrix * vec4(eyeVec, 0.0)).xyz;',
-		'}'//
+		'	eyeVec = vertexPosition * normalMatrix * near * 10.0;',
+		'	vec3 worldPos = mat3(viewMatrix) * eyeVec;',
+		'	gl_Position = projectionMatrix * vec4(worldPos, 1.0);',
+		'}'
 	].join('\n'),
 	fshader: [
-		'precision mediump float;',
-
 		'uniform samplerCube diffuseMap;',
 
 		'varying vec3 eyeVec;',
 
-		'void main(void)',
-		'{',
+		'void main(void) {',
 		'	vec4 cube = textureCube(diffuseMap, eyeVec);',
-		' if (cube.a < 0.05) discard;',
+		'	if (cube.a < 0.05) discard;',
 		'	gl_FragColor = cube;',
-
-		//' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
-		'}'//
+		'}'
 	].join('\n')
 };
 shaders.sphere = {
@@ -115,33 +105,29 @@ shaders.sphere = {
 		vertexUV0: MeshData.TEXCOORD0
 	},
 	uniforms: {
+		normalMatrix: Shader.NORMAL_MATRIX,
 		viewMatrix: Shader.VIEW_MATRIX,
 		projectionMatrix: Shader.PROJECTION_MATRIX,
-		worldMatrix: Shader.WORLD_MATRIX,
-		cameraPosition: Shader.CAMERA,
 		near: Shader.NEAR_PLANE,
-		diffuseMap: Shader.DIFFUSE_MAP
+		diffuseMap: Shader.DIFFUSE_MAP,
 	},
 	vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
+		'uniform mat3 normalMatrix;',
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
 		'uniform float near;',
 
 		'varying vec2 texCoord0;',
-		'varying vec3 eyeVec;',
 
 		'void main(void) {',
 		'	texCoord0 = vertexUV0;',
-		'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);',
-		' worldPos += vec4(cameraPosition, 0.0);',
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
-		'	eyeVec = cameraPosition - worldPos.xyz;',
-		'}'//
+
+		'	vec3 worldPos = mat3(viewMatrix) * normalMatrix * vertexPosition * near * 10.0;',
+		'	gl_Position = projectionMatrix * vec4(worldPos, 1.0);',
+		'}'
 	].join('\n'),
 	fshader: [
 		'precision mediump float;',
@@ -152,10 +138,10 @@ shaders.sphere = {
 
 		'void main(void)',
 		'{',
-		' vec4 sphere = texture2D(diffuseMap, texCoord0);',
-		' if (sphere.a < 0.05) discard;',
+		'	vec4 sphere = texture2D(diffuseMap, texCoord0);',
+		'	if (sphere.a < 0.05) discard;',
 		'	gl_FragColor = sphere;',
-		'}'//
+		'}'
 	].join('\n')
 };
 

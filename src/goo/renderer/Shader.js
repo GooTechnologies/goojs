@@ -126,9 +126,9 @@ function Shader(name, shaderDefinition) {
 	this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 	this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 // Shader.id = 0;
@@ -786,8 +786,8 @@ Shader.SPECULAR = 'SPECULAR';
 Shader.SPECULAR_POWER = 'SPECULAR_POWER';
 Shader.NEAR_PLANE = 'NEAR_PLANE';
 Shader.FAR_PLANE = 'FAR_PLANE';
-Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
-Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
+Shader.MAIN_NEAR_PLANE = 'MAIN_NEAR_PLANE';
+Shader.MAIN_FAR_PLANE = 'MAIN_FAR_PLANE';
 Shader.MAIN_DEPTH_SCALE = 'DEPTH_SCALE';
 Shader.TIME = 'TIME';
 Shader.TPF = 'TPF';

@@ -42,9 +42,9 @@ function TransformComponent() {
 	this._localTransformDirty = true;
 	this._worldTransformDirty = true;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 TransformComponent.type = 'TransformComponent';

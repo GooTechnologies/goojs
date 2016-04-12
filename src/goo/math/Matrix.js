@@ -30,11 +30,11 @@ Matrix.setupAliases = function (prototype, aliases) {
 				},
 				set: function (value) {
 					this.data[index] = value;
-					// #ifdef DEBUG
+					// @ifdef DEBUG
 					if (isNaN(this.data[index])) {
 						throw new Error('Tried setting NaN to matrix component ' + alias);
 					}
-					// #endif
+					// @endif
 				}
 			});
 		});
@@ -45,17 +45,17 @@ Matrix.setupAliases = function (prototype, aliases) {
 			},
 			set: function (value) {
 				this.data[index] = value;
-				// #ifdef DEBUG
+				// @ifdef DEBUG
 				if (isNaN(this.data[index])) {
 					throw new Error('Tried setting NaN to matrix component ' + index);
 				}
-				// #endif
+				// @endif
 			}
 		});
 	});
 };
 
-// #ifdef DEBUG
+// @ifdef DEBUG
 /**
  * Throws an error if any of the matrix's components are NaN
  * @hidden
@@ -98,7 +98,7 @@ Matrix.addPostCheck = function (object, methodName) {
 Matrix.addPostChecks = function (object, methodNames) {
 	methodNames.forEach(Matrix.addPostCheck.bind(null, object));
 };
-// #endif
+// @endif
 
 // SHIM START
 /**
