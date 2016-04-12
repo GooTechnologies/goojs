@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var MathUtils = require('../../../math/MathUtils');
-var TWEEN = require('../../../util/TWEEN');
+var Easing = require('../../../util/Easing');
 
 function ShakeAction(/*id, settings*/) {
 	Action.apply(this, arguments);
@@ -67,7 +67,7 @@ ShakeAction.prototype.configure = function (settings) {
 	this.endLevel = settings.endLevel;
 	this.time = settings.time;
 	this.speed = { Fast: 1, Medium: 2, Slow: 4 }[settings.speed];
-	this.easing = TWEEN.Easing.Quadratic.InOut;
+	this.easing = Easing.Quadratic.InOut;
 	this.eventToEmit = settings.transitions.complete;
 };
 

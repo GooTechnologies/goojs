@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Quaternion = require('../../../math/Quaternion');
-var TWEEN = require('../../../util/TWEEN');
+var Easing = require('../../../util/Easing');
 
 function TweenLookAtAction(/*id, settings*/) {
 	Action.apply(this, arguments);
@@ -62,9 +62,9 @@ TweenLookAtAction.getTransitionLabel = function (transitionKey/*, actionConfig*/
 
 TweenLookAtAction.prototype.ready = function () {
 	if (this.easing1 === 'Linear') {
-		this.easing = TWEEN.Easing.Linear.None;
+		this.easing = Easing.Linear.None;
 	} else {
-		this.easing = TWEEN.Easing[this.easing1][this.easing2];
+		this.easing = Easing[this.easing1][this.easing2];
 	}
 };
 
