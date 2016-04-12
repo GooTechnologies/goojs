@@ -707,7 +707,10 @@ TransformComponent.prototype.updateWorldTransform = (function () {
 
 		this.worldTransform.updateNormalMatrix();
 
-		this.entity.fire(transformUpdatedEvent);
+		var entity = this.entity;
+		if (entity) {
+			entity.fire(transformUpdatedEvent);
+		}
 		this._worldTransformDirty = false;
 		this.updatedDuringLastFrame = true;
 	};
