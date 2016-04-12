@@ -10,6 +10,12 @@ function Component() {
 	 */
 	this.enabled = true;
 
+	/**
+	 * The entity the component is added to.
+	 * @type {Entity|null}
+	 */
+	this.entity = null;
+
 	this.installedAPI = new Set();
 
 	/**
