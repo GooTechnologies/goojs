@@ -49,9 +49,7 @@ module.exports = function (grunt) {
 				dest: 'out',
 				expand: true,
 				options: {
-					context : {
-						DEBUG: false
-					}
+					context : {}
 				}
 			}
 		},
