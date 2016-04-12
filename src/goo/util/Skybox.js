@@ -109,7 +109,7 @@ shaders.sphere = {
 		viewMatrix: Shader.VIEW_MATRIX,
 		projectionMatrix: Shader.PROJECTION_MATRIX,
 		near: Shader.NEAR_PLANE,
-		diffuseMap: Shader.DIFFUSE_MAP,
+		diffuseMap: Shader.DIFFUSE_MAP
 	},
 	vshader: [
 		'attribute vec3 vertexPosition;',
