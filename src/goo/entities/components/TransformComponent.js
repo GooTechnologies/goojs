@@ -14,12 +14,12 @@ function TransformComponent() {
 
 	this.type = 'TransformComponent';
 
-	this.entity = null;
 	/**
 	 * Parent TransformComponent in the "scene graph".
 	 * @type {TransformComponent}
 	 */
 	this.parent = null;
+
 	/**
 	 * Child TransformComponents in the "scene graph".
 	 * @type {Array<TransformComponent>}
@@ -691,21 +691,27 @@ TransformComponent.prototype.updateTransform = function () {
 /**
  * Update component's world transform (resulting transform considering parent transformations).
  */
-TransformComponent.prototype.updateWorldTransform = function () {
-	if (this._localTransformDirty) {
-		this.updateTransform();
-	}
-	if (this.parent) {
-		this.worldTransform.multiply(this.parent.worldTransform, this.transform);
-	} else {
-		this.worldTransform.copy(this.transform);
-	}
+TransformComponent.prototype.updateWorldTransform = (function () {
+	var transformUpdatedEvent = {
+		type: 'transformUpdated'
+	};
+	return function () {
+		if (this._localTransformDirty) {
+			this.updateTransform();
+		}
+		if (this.parent) {
+			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
+		} else {
+			this.worldTransform.copy(this.transform);
+		}
 
-	this.worldTransform.updateNormalMatrix();
+		this.worldTransform.updateNormalMatrix();
 
-	this._worldTransformDirty = false;
-	this.updatedDuringLastFrame = true;
-};
+		this.entity.fire(transformUpdatedEvent);
+		this._worldTransformDirty = false;
+		this.updatedDuringLastFrame = true;
+	};
+})();
 
 /**
  * Update the local and world transforms of the entity tree above this component (and the component itself).
