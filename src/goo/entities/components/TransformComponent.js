@@ -699,13 +699,17 @@ TransformComponent.prototype.updateWorldTransform = (function () {
 		if (this._localTransformDirty) {
 			this.updateTransform();
 		}
+
+		var worldTransform = this.worldTransform;
+		var transform = this.transform;
+
 		if (this.parent) {
-			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
+			worldTransform.multiply(this.parent.worldTransform, transform);
 		} else {
-			this.worldTransform.copy(this.transform);
+			worldTransform.copy(transform);
 		}
 
-		this.worldTransform.updateNormalMatrix();
+		worldTransform.updateNormalMatrix();
 
 		var entity = this.entity;
 		if (entity) {
