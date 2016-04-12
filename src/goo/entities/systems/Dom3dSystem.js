@@ -255,7 +255,7 @@ Dom3dSystem.prototype.process = function (entities) {
 			component.domElement.style.display = '';
 		}
 
-		if (!component.updated && !entity.transformComponent.updatedDuringLastFrame) {
+		if (!component.updated && !component._transformDirty) {
 			continue;
 		}
 		component.updated = false;

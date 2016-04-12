@@ -54,7 +54,7 @@ LightingSystem.prototype.process = function (entities) {
 			var lightComponent = entity.lightComponent;
 
 			transformComponent.sync();
-			if (transformComponent.updatedDuringLastFrame || this._needsUpdate) {
+			if (lightComponent._transformDirty || this._needsUpdate) {
 				lightComponent.updateLight(transformComponent.worldTransform);
 			}
 

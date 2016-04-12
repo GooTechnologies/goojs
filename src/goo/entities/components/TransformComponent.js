@@ -42,8 +42,6 @@ function TransformComponent() {
 	this._localTransformDirty = true;
 	this._worldTransformDirty = true;
 
-	this.updatedDuringLastFrame = true;
-
 	// @ifdef DEBUG
 	Object.seal(this);
 	// @endif
@@ -716,7 +714,6 @@ TransformComponent.prototype.updateWorldTransform = (function () {
 			entity.fire(transformUpdatedEvent);
 		}
 		this._worldTransformDirty = false;
-		this.updatedDuringLastFrame = true;
 	};
 })();
 

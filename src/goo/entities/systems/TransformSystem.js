@@ -25,7 +25,6 @@ TransformSystem.prototype.process = function () {
 	var l = entities.length;
 	for (i = 0; i < l; i++) {
 		transformComponent = entities[i].transformComponent;
-		transformComponent.updatedDuringLastFrame = false;
 		if (transformComponent._localTransformDirty) {
 			transformComponent.updateTransform();
 		}

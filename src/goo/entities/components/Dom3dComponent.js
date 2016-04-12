@@ -34,6 +34,9 @@ function Dom3dComponent(domElement, settings) {
 	this.meshDataComponent = new MeshDataComponent(this.meshData);
 	this.meshRendererComponent = new MeshRendererComponent();
 
+	this._transformDirty = true;
+	this._transformUpdatedListener = null;
+
 	// @ifdef DEBUG
 	Object.seal(this);
 	// @endif
@@ -47,6 +50,10 @@ Dom3dComponent.prototype.constructor = Dom3dComponent;
 Dom3dComponent.prototype.attached = function (entity) {
 	entity.setComponent(this.meshDataComponent);
 	entity.setComponent(this.meshRendererComponent);
+	var that = this;
+	this.entity.on('transformUpdated', this._transformUpdatedListener = function () {
+		that._transformDirty = true;
+	});
 };
 
 Dom3dComponent.prototype.detached = function (entity) {
@@ -55,6 +62,8 @@ Dom3dComponent.prototype.detached = function (entity) {
 	}
 	entity.clearComponent('meshRendererComponent');
 	entity.clearComponent('meshDataComponent');
+	this.entity.off('transformUpdated', this._transformUpdatedListener);
+	this._transformUpdatedListener = null;
 };
 
 Dom3dComponent.prototype.initDom = function (domElement) {
