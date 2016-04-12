@@ -97,16 +97,10 @@ ScriptComponent.prototype.setup = function (entity) {
  * @private
  * @param entity {Entity}
  */
-ScriptComponent.prototype.run = function (entity) {
+ScriptComponent.prototype.process = function (/*entity*/) {
 	for (var i = 0; i < this.scripts.length; i++) {
 		var script = this.scripts[i];
-		if (script && script.run && (script.enabled === undefined || script.enabled)) {
-			try {
-				script.run(entity, entity._world.tpf, script.context, script.parameters);
-			} catch (e) {
-				this._handleError(script, e, 'run');
-			}
-		} else if (script.update && (script.enabled === undefined || script.enabled)) {
+		if (script.update && (script.enabled === undefined || script.enabled)) {
 			try {
 				script.update(script.parameters, script.context, getGooClasses());
 			} catch (e) {
@@ -120,7 +114,7 @@ ScriptComponent.prototype.run = function (entity) {
  * Runs the lateUpdate function on every script attached to this entity.
  * @private
  */
-ScriptComponent.prototype.lateRun = function () {
+ScriptComponent.prototype.lateProcess = function () {
 	for (var i = 0; i < this.scripts.length; i++) {
 		var script = this.scripts[i];
 		if (script.lateUpdate && (script.enabled === undefined || script.enabled)) {
@@ -144,7 +138,7 @@ ScriptComponent.prototype.fixedUpdate = function () {
 			try {
 				script.fixedUpdate(script.parameters, script.context, getGooClasses());
 			} catch (e) {
-				this._handleError(script, e, 'lateUpdate');
+				this._handleError(script, e, 'fixedUpdate');
 			}
 		}
 	}
@@ -231,14 +225,14 @@ ScriptComponent.prototype._handleError = function (script, error, phase) {
 //ScriptComponent.prototype.detached = ScriptComponent.prototype.cleanup;
 
 /**
- * Attempts to add a script to an entity. The object can be a { run: Function } object or a Function. The entity is supposed to get a ScriptComponent with a script created out of the passed object
+ * Attempts to add a script to an entity. The object can be a { update: Function } object or a Function. The entity is supposed to get a ScriptComponent with a script created out of the passed object
  * @private
- * @param obj {Function | { run: Function }}
+ * @param obj {Function | { update: Function }}
  * @param entity {Entity}
  * @returns {boolean}
  */
 ScriptComponent.applyOnEntity = function (obj, entity) {
-	if (obj instanceof Function || (obj && obj.run instanceof Function) || (obj && obj.update instanceof Function)) {
+	if (obj instanceof Function || (obj && obj.update instanceof Function)) {
 		var scriptComponent;
 		if (!entity.scriptComponent) {
 			scriptComponent = new ScriptComponent();
@@ -246,7 +240,7 @@ ScriptComponent.applyOnEntity = function (obj, entity) {
 		} else {
 			scriptComponent = entity.scriptComponent;
 		}
-		scriptComponent.scripts.push(obj.run instanceof Function || obj.update instanceof Function ? obj : { run: obj });
+		scriptComponent.scripts.push(obj.update instanceof Function ? obj : { run: obj });
 
 		return true;
 	}

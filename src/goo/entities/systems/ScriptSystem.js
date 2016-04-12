@@ -52,6 +52,8 @@ ScriptSystem.prototype.setup = function (world) {
 ScriptSystem.prototype.inserted = function (entity) {
 	if (this.world.playing) {
 		entity.scriptComponent.setup(entity);
+	} else {
+		entity.scriptComponent.editModeSetup(entity);
 	}
 };
 
@@ -64,17 +66,21 @@ ScriptSystem.prototype.fixedUpdate = function (entities, fixedTpf) {
 };
 
 ScriptSystem.prototype.process = function (entities, tpf) {
-	this.context.playTime += tpf;
+	if (this.world.playing) {
+		this.context.playTime += tpf;
 
-	// Update scripts
-	for (var i = 0; i < entities.length; i++) {
-		var scriptComponent = entities[i].scriptComponent;
-		scriptComponent.run(entities[i], tpf);
+		// Update scripts
+		for (var i = 0; i < entities.length; i++) {
+			var scriptComponent = entities[i].scriptComponent;
+			scriptComponent.process(entities[i], tpf);
+		}
 	}
+};
 
+ScriptSystem.prototype.lateProcess = function (entities, tpf) {
 	for (var i = 0; i < entities.length; i++) {
 		var scriptComponent = entities[i].scriptComponent;
-		scriptComponent.lateRun(entities[i], tpf);
+		scriptComponent.lateProcess(entities[i], tpf);
 	}
 };
 

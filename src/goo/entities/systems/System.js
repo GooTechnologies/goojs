@@ -52,6 +52,12 @@ function System(type, interests) {
 System.prototype.process = function (/*entities, tpf*/) {};
 
 /**
+ * @param {array} entities
+ * @param {number} tpf
+ */
+System.prototype.lateProcess = function (/*entities, tpf*/) {};
+
+/**
  * Called on each physics tick, if the system is not passive.
  * @param {array} entities
  * @param {number} fixedTpf

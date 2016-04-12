@@ -120,7 +120,7 @@ Object.defineProperties(World.prototype, {
 
 			var systems = this._systems;
 			for (var i = 0; i < systems.length; i++) {
-				systems.playModeChanged();
+				systems[i].playModeChanged();
 			}
 		}
 	}
@@ -565,6 +565,9 @@ World.prototype.update = function (tpf) {
 	// Frame update (process)
 	this.process();
 
+	// Late process
+	this.lateProcess();
+
 	return this;
 };
 
@@ -573,6 +576,7 @@ World.prototype.update = function (tpf) {
  */
 World.prototype.fixedUpdate = function () {
 	this.processEntityChanges();
+
 	for (var i = 0; i < this._systems.length; i++) {
 		var system = this._systems[i];
 		if (!system.passive) {
@@ -592,6 +596,19 @@ World.prototype.process = function () {
 		var system = this._systems[i];
 		if (!system.passive) {
 			system._process(this.tpf);
+		}
+	}
+};
+
+/**
+ */
+World.prototype.lateProcess = function () {
+	this.processEntityChanges();
+
+	for (var i = 0; i < this._systems.length; i++) {
+		var system = this._systems[i];
+		if (!system.passive) {
+			system._lateProcess(this.tpf);
 		}
 	}
 };
