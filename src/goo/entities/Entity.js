@@ -143,10 +143,10 @@ Entity.prototype.setComponent = function (component) {
 	}
 	this[getTypeAttributeName(component.type)] = component;
 
+	component.entity = this;
+
 	// inform the component it's being attached to an entity
-	if (component.attached) {
-		component.attached(this);
-	}
+	component.attached(this);
 
 	component.applyAPI(this);
 
@@ -191,9 +191,9 @@ Entity.prototype.clearComponent = function (type) {
 
 	if (!!component && this._components.indexOf(component) > -1) {
 		// inform the component it's being detached from the entity
-		if (component.detached) {
-			component.detached(this);
-		}
+		component.detached(this);
+
+		component.entity = null;
 
 		// removing API
 		component.removeAPI(this);
