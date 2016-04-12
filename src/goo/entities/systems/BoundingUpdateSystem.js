@@ -27,11 +27,13 @@ BoundingUpdateSystem.prototype.process = function (entities) {
 		var transformComponent = entity.transformComponent;
 		var meshRendererComponent = entity.meshRendererComponent;
 
+		transformComponent.sync();
+
 		if (meshDataComponent.autoCompute) {
 			meshDataComponent.computeBoundFromPoints();
-			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.sync().worldTransform);
-		} else {
-			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.sync().worldTransform);
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
+		} else if (transformComponent.updatedDuringLastFrame) {
+			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
 		}
 	}
 	if (this._computeWorldBound && this._computeWorldBound instanceof Function) {

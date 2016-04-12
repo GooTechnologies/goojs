@@ -40,6 +40,11 @@ TransformSystem.prototype.process = function () {
 	}
 
 	this.numUpdates = numUpdates;
+
+	for (i = 0; i < l; i++) {
+		transformComponent = entities[i].transformComponent;
+		transformComponent.updatedDuringLastFrame = false;
+	}
 };
 
 function traverseFunc(entity) {

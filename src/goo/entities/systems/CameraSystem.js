@@ -48,7 +48,10 @@ CameraSystem.prototype.onPreRender = function () {
 		var entity = this._activeEntities[i];
 		var transformComponent = entity.transformComponent;
 		var cameraComponent = entity.cameraComponent;
-		cameraComponent.updateCamera(transformComponent.sync().worldTransform);
+		transformComponent.sync();
+		if (transformComponent.updatedDuringLastFrame) {
+			cameraComponent.updateCamera(transformComponent.worldTransform);
+		}
 	}
 };
 
