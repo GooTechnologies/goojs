@@ -64,14 +64,6 @@ TweenScaleAction.getTransitionLabel = function (transitionKey/*, actionConfig*/)
 	return transitionKey === 'complete' ? 'On Tween Scale Complete' : undefined;
 };
 
-TweenScaleAction.prototype.ready = function () {
-	if (this.easing1 === 'Linear') {
-		this.easing = Easing.Linear.None;
-	} else {
-		this.easing = Easing[this.easing1][this.easing2];
-	}
-};
-
 TweenScaleAction.prototype.enter = function (fsm) {
 	var transformComponent = fsm.getOwnerEntity().transformComponent;
 
@@ -92,7 +84,7 @@ TweenScaleAction.prototype.update = function (fsm) {
 	var transformComponent = fsm.getOwnerEntity().transformComponent;
 
 	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
-	var fT = this.easing(t);
+	var fT = Easing[this.easing1][this.easing2](t);
 
 	transformComponent.transform.scale.set(this.fromScale).lerp(this.toScale, fT);
 	transformComponent.setUpdated();

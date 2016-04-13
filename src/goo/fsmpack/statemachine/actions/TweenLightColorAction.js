@@ -58,14 +58,6 @@ TweenLightColorAction.getTransitionLabel = function (transitionKey/*, actionConf
 	return transitionKey === 'complete' ? 'On Tween Light Complete' : undefined;
 };
 
-TweenLightColorAction.prototype.ready = function () {
-	if (this.easing1 === 'Linear') {
-		this.easing = Easing.Linear.None;
-	} else {
-		this.easing = Easing[this.easing1][this.easing2];
-	}
-};
-
 TweenLightColorAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
 	if (!entity.lightComponent) {
@@ -91,7 +83,7 @@ TweenLightColorAction.prototype.update = function (fsm) {
 	}
 
 	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
-	var fT = this.easing(t);
+	var fT = Easing[this.easing1][this.easing2](t);
 
 	var color = entity.lightComponent.light.color;
 	color.set(this.fromCol).lerp(this.toCol, fT);

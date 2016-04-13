@@ -64,14 +64,6 @@ DollyZoomAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Dolly Zoom Complete';
 };
 
-DollyZoomAction.prototype.ready = function () {
-	if (this.easing1 === 'Linear') {
-		this.easing = Easing.Linear.None;
-	} else {
-		this.easing = Easing[this.easing1][this.easing2];
-	}
-};
-
 DollyZoomAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
 	this.completed = false;
@@ -113,7 +105,7 @@ DollyZoomAction.prototype.update = function (fsm) {
 		var camera = entity.cameraComponent.camera;
 
 		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
-		var fT = this.easing(t);
+		var fT = Easing[this.easing1][this.easing2](t);
 
 		transformComponent.transform.translation.set(this.from).lerp(this.to, fT);
 		transformComponent.setUpdated();

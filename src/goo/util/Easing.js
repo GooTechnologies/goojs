@@ -5,6 +5,15 @@ var Easing = {
 	Linear: {
 		None: function (k) {
 			return k;
+		},
+		In: function (k) {
+			return k;
+		},
+		Out: function (k) {
+			return k;
+		},
+		InOut: function (k) {
+			return k;
 		}
 	},
 	Quadratic: {
