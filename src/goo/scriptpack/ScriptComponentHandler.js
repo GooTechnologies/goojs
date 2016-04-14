@@ -76,6 +76,11 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 			script.externals,
 			options
 		)
+		.then(function () {
+			if (newScript.argsUpdated && newScript.context) {
+				newScript.argsUpdated(newScript.parameters, newScript.context, window.goo);
+			}
+		})
 		.then(ObjectUtils.constant(newScript));
 	});
 };

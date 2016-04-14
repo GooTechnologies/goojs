@@ -76,9 +76,9 @@ function cloneEntity(world, entity, settings) {
 					if (script.setup) { newScript.setup = script.setup; }
 					if (script.update) { newScript.update = script.update; }
 					if (script.cleanup) { newScript.cleanup = script.cleanup; }
-
 					if (script.fixedUpdate) { newScript.fixedUpdate = script.fixedUpdate; }
 					if (script.lateUpdate) { newScript.lateUpdate = script.lateUpdate; }
+					if (script.argsUpdated) { newScript.argsUpdated = script.argsUpdated; }
 					if (script.enter) { newScript.enter = script.enter; }
 					if (script.exit) { newScript.exit = script.exit; }
 
