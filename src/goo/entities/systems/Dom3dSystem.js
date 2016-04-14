@@ -215,7 +215,8 @@ Dom3dSystem.prototype.inserted = function (entity) {
 	component.meshRendererComponent.materials = this.materials;
 };
 
-Dom3dSystem.prototype.process = function (entities) {
+Dom3dSystem.prototype.onPreRender = function () {
+	var entities = this._activeEntities;
 	var camera = this.camera;
 	if (!camera || entities.length === 0) {
 		return;
