@@ -1,3 +1,39 @@
+v0.15.44 --- 2016-04-14
+
+### Additions
+
+  + Engine is now completely based on CommonJS
+  + Added fixedUpdate, lateUpdate and argsUpdated methods to scripts
+  + onPreRender and onPostRender methods on System
+  + Can now properly handle live updates
+  + Removed TWEEN.js and added Easing.js
+  + If you were injecting APIs on the entity instances from components, and the method  already was taken, now you get an error instead of a warning
+  + The transform components now update lazily. Getters now sync before returning. Use transformComponent.sync() to mark dirty
+  + Added getWorldTranslation, getWorldScale, getRotationMatrix, setRotationMatrix, getWorldRotationMatrix
+  + Added a fixed update loop
+  + Added Pause/Start/StopParticleSystemAction
+  + Added SetRigidBodyRotationAction
+
+### Fixes
+
+ * Removed internal Map impl from EntityCombiner. Added EntityCombiner visual test
+ * Added normalmap+entitycombine visual test and fixed bug in meshbuilder for tangent coords
+ * Lots of eslint cleanups
+ * Remove doppler factor support
+ * Allow passing a custom epsilon to Matrix4.prototype.equals
+ * Update ctx.playTime before running script.update
+ * System instances keep a reference to the World
+ * Using the World fixed update loop in the PhysicsSystem
+ * Optimize Camera.prototype.updateProjectionMatrix
+ * Don't update ParticleDebugRenderSystem if passive
+ * Added updating of constraints to the RigidBodyComponentHandler
+ * Added keyword-spacing and curls to eslint checks and fixed related errors
+ * Adding .entity to components
+ * Optimized Skybox rendering
+ * Don't transition more than once in WaitAction
+ * Entity now inherits from EventTarget
+ * Update dom3d in preRender
+
 v0.15.43 --- 2016-03-30
 
 ### Fixes
