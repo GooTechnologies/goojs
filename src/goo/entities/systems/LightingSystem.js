@@ -56,6 +56,7 @@ LightingSystem.prototype.process = function (entities) {
 			transformComponent.sync();
 			if (lightComponent._transformDirty || this._needsUpdate) {
 				lightComponent.updateLight(transformComponent.worldTransform);
+				lightComponent._transformDirty = false;
 			}
 
 			if (!lightComponent.hidden) {

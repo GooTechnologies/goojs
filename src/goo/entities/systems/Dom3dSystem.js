@@ -259,6 +259,7 @@ Dom3dSystem.prototype.process = function (entities) {
 			continue;
 		}
 		component.updated = false;
+		component._transformDirty = false;
 
 		var worldTransform = entity.transformComponent.sync().worldTransform;
 		style = this.getEntityCSSMatrix(worldTransform.matrix) +

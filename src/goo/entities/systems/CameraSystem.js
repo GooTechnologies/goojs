@@ -51,6 +51,7 @@ CameraSystem.prototype.onPreRender = function () {
 		transformComponent.sync();
 		if (cameraComponent._transformDirty) {
 			cameraComponent.updateCamera(transformComponent.worldTransform);
+			cameraComponent._transformDirty = false;
 		}
 	}
 };
