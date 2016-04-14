@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 		webpack: {
 			packsAndCore: {
 				entry: {
-					goo: ['./src/goo'],
+					goo: ['./index'],
 					animationpack: ['./src/goo/animationpack'],
 					fsmpack: ['./src/goo/fsmpack'],
 					geometrypack: ['./src/goo/geometrypack'],
