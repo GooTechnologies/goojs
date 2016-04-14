@@ -15,7 +15,7 @@ AnimationSystem.prototype.process = function () {
 	for (var i = 0; i < this._activeEntities.length; i++) {
 		var entity = this._activeEntities[i];
 		var animationComponent = entity.animationComponent;
-		animationComponent.update(World.time);
+		animationComponent.update(this.world.time);
 		animationComponent.apply(entity.transformComponent);
 		animationComponent.postUpdate();
 	}

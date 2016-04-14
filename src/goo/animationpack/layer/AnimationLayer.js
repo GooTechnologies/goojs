@@ -99,7 +99,7 @@ AnimationLayer.prototype.postUpdate = function () {
 /**
  * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
  * @param {string} state
- * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+ * @param {number} globalTime start time for the transition, defaults to current time
  * @param {Function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
  * @returns {boolean} true if a transition was found and started
  */
@@ -156,18 +156,17 @@ AnimationLayer.prototype._doTransition = function (transition, source, target, c
  * Sets the current state to the given state. Generally for transitional state use.
  * @param {AbstractState} state our new state. If null, then no state is currently set on this layer.
  * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
- * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+ * @param {number} globalTime start time for the transition, defaults to current time
  * @param {Function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
  */
 AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime, finishCallback) {
-	globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 	this._currentState = state;
 	if (state) {
 		if (rewind) {
 			state.resetClips(globalTime);
 		}
 		state.onFinished = function () {
-			this.setCurrentState(state._targetState || null, false, undefined, finishCallback);
+			this.setCurrentState(state._targetState || null, false, globalTime, finishCallback);
 			if (state instanceof SteadyState && finishCallback instanceof Function) {
 				finishCallback();
 			}
@@ -188,7 +187,7 @@ AnimationLayer.prototype.getCurrentState = function () {
  * Set the current state by state id.
  * @param {string} id
  * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
- * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+ * @param {number} globalTime start time for the transition, defaults to current time
  * @param {Function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
  */
 AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime, callback) {
@@ -223,7 +222,7 @@ AnimationLayer.prototype.getStateByName = function (name) {
  * Force the current state of the machine to the state with the given name.
  * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
  * @param {boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
- * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+ * @param {number} globalTime start time for the transition, defaults to current time
  * @returns {boolean} true if succeeds
  */
 AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
@@ -274,7 +273,7 @@ AnimationLayer.prototype.clearCurrentState = function () {
 
 AnimationLayer.prototype.resetClips = function (globalTime) {
 	if (this._currentState) {
-		this._currentState.resetClips(typeof globalTime !== 'undefined' ? globalTime : World.time);
+		this._currentState.resetClips(globalTime);
 	}
 };
 
