@@ -1,8 +1,5 @@
-var World = require('../../entities/World');
-
 /**
- * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
- *        instance, etc.
+ * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the instance, etc.
  */
 function AnimationClipInstance() {
 	this._active = true;
@@ -17,10 +14,8 @@ function AnimationClipInstance() {
 /**
  * Sets the timescale of the animation, speeding it up or slowing it down
  * @param {number} scale
- * @param {number} [globalTime=World.time]
  */
 AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
-	globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 	if (this._active && this._timeScale !== scale) {
 		if (this._timeScale !== 0.0 && scale !== 0.0) {
 			// move startTime to account for change in scale

@@ -82,7 +82,7 @@ AnimationComponent.prototype.update = function (globalTime) {
 	}
 
 	// grab current global time
-	globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
+	globalTime = typeof globalTime !== 'undefined' ? globalTime : this.entity._world.time;
 
 	// check throttle
 	if (this._updateRate !== 0.0) {
@@ -198,14 +198,15 @@ AnimationComponent.prototype.shiftClipTime = function (shiftTime) {
 };
 
 AnimationComponent.prototype.setTimeScale = function (timeScale) {
+	var globalTime = this.entity._world.time;
 	for (var i = 0; i < this.layers.length; i++) {
-		this.layers[i].setTimeScale(timeScale);
+		this.layers[i].setTimeScale(timeScale, globalTime);
 	}
 };
 
 AnimationComponent.prototype.pause = function () {
 	if (!this.paused) {
-		this.lastTimeOfPause = World.time;
+		this.lastTimeOfPause = this.entity._world.time;
 		this.paused = true;
 	}
 };
@@ -221,9 +222,9 @@ AnimationComponent.prototype.stop = function () {
 AnimationComponent.prototype.resume = function () {
 	if (this.paused || this.lastTimeOfPause === -1) {
 		if (this.lastTimeOfPause === -1) {
-			this.resetClips(World.time);
+			this.resetClips(this.entity._world.time);
 		} else {
-			this.shiftClipTime(World.time - this.lastTimeOfPause);
+			this.shiftClipTime(this.entity._world.time - this.lastTimeOfPause);
 		}
 	}
 	this.paused = false;

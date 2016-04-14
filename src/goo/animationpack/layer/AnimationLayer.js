@@ -82,7 +82,7 @@ AnimationLayer.prototype.getTransitions = function () {
  */
 AnimationLayer.prototype.update = function (globalTime) {
 	if (this._currentState) {
-		this._currentState.update(typeof globalTime !== 'undefined' ? globalTime : World.time);
+		this._currentState.update(globalTime);
 	}
 };
 
@@ -104,7 +104,6 @@ AnimationLayer.prototype.postUpdate = function () {
  * @returns {boolean} true if a transition was found and started
  */
 AnimationLayer.prototype.transitionTo = function (state, globalTime, finishCallback) {
-	globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 	var cState = this._currentState;
 	var transition;
 	if (this._steadyStates[state] === cState) {
@@ -285,9 +284,9 @@ AnimationLayer.prototype.shiftClipTime = function (shiftTime) {
 	}
 };
 
-AnimationLayer.prototype.setTimeScale = function (timeScale) {
+AnimationLayer.prototype.setTimeScale = function (timeScale, globalTime) {
 	if (this._currentState) {
-		this._currentState.setTimeScale(timeScale);
+		this._currentState.setTimeScale(timeScale, globalTime);
 	}
 };
 

@@ -130,8 +130,8 @@ ClipSource.prototype.shiftClipTime = function (shiftTime) {
 /**
  * @private
  */
-ClipSource.prototype.setTimeScale = function (timeScale) {
-	this._clipInstance.setTimeScale(timeScale);
+ClipSource.prototype.setTimeScale = function (timeScale, globalTime) {
+	this._clipInstance.setTimeScale(timeScale, globalTime);
 };
 
 /**

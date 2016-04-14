@@ -75,9 +75,9 @@ BinaryLerpSource.prototype.shiftClipTime = function (shiftTime) {
  * Sets the time scale for sources A and B
  * @param {number} timeScale
  */
-BinaryLerpSource.prototype.setTimeScale = function (timeScale) {
-	this._sourceA.setTimeScale(timeScale);
-	this._sourceB.setTimeScale(timeScale);
+BinaryLerpSource.prototype.setTimeScale = function (timeScale, globalTime) {
+	this._sourceA.setTimeScale(timeScale, globalTime);
+	this._sourceB.setTimeScale(timeScale, globalTime);
 };
 
 /**

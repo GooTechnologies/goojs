@@ -63,8 +63,8 @@ SteadyState.prototype.shiftClipTime = function (shiftTime) {
 	this._sourceTree.shiftClipTime(shiftTime);
 };
 
-SteadyState.prototype.setTimeScale = function (timeScale) {
-	this._sourceTree.setTimeScale(timeScale);
+SteadyState.prototype.setTimeScale = function (timeScale, globalTime) {
+	this._sourceTree.setTimeScale(timeScale, globalTime);
 };
 
 SteadyState.prototype.clone = function () {
