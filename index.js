@@ -98,6 +98,7 @@ module.exports = {
 	ParticleUtils: require('./src/goo/particles/ParticleUtils'),
 	BoundingTree: require('./src/goo/picking/BoundingTree'),
 	PrimitivePickLogic: require('./src/goo/picking/PrimitivePickLogic'),
+	BoundingPicker: require('./src/goo/renderer/bounds/BoundingPicker'),
 	BoundingBox: require('./src/goo/renderer/bounds/BoundingBox'),
 	BoundingSphere: require('./src/goo/renderer/bounds/BoundingSphere'),
 	BoundingVolume: require('./src/goo/renderer/bounds/BoundingVolume'),
