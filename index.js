@@ -178,6 +178,7 @@ module.exports = {
 	StringUtil: require('./src/goo/util/StringUtil'),
 	StringUtils: require('./src/goo/util/StringUtils'),
 	TangentGenerator: require('./src/goo/util/TangentGenerator'),
+	JsonHandler: require('./src/goo/loaders/handlers/JsonHandler'),
 	Easing: require('./src/goo/util/Easing')
 };
 
