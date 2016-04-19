@@ -19,11 +19,16 @@ function OrbitNPan() {
 		panScript.cleanup(parameters, environment, goo);
 		orbitScript.cleanup(parameters, environment, goo);
 	}
+	function argsUpdated(parameters, environment, goo) {
+		panScript.argsUpdated(parameters, environment, goo);
+		orbitScript.argsUpdated(parameters, environment, goo);
+	}
 
 	return {
 		setup: setup,
 		cleanup: cleanup,
-		update: update
+		update: update,
+		argsUpdated: argsUpdated
 	};
 }
 

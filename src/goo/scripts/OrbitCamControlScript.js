@@ -34,7 +34,7 @@ function setup(args, ctx) {
 	ctx.xSamples = [0, 0, 0, 0, 0];
 	ctx.ySamples = [0, 0, 0, 0, 0];
 	ctx.sample = 0;
-	ctx.velocity = new Vector2(0, 0);
+	ctx.velocity = new Vector2();
 	ctx.cartesian = new Vector3();
 	ctx.worldUpVector = Vector3.UNIT_Y.clone();
 	ctx.maxSampleTimeMS = 200;
@@ -45,16 +45,7 @@ function setup(args, ctx) {
 		lastY: NaN
 	};
 
-	// Making more linear perception
-	ctx.smoothness = Math.pow(MathUtils.clamp(args.smoothness, 0, 1), 0.3);
-	ctx.inertia = Math.pow(MathUtils.clamp(args.drag, 0, 1), 0.3);
-
-	ctx.dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(args.dragButton) - 1;
-	if (ctx.dragButton < -1) {
-		ctx.dragButton = -1;
-	} else if (ctx.dragButton === 4) {
-		ctx.dragButton = null;
-	}
+	argsUpdated(args, ctx);
 
 	var spherical;
 	if (args.lookAtDistance) {
@@ -374,7 +365,6 @@ function update(args, ctx/*, goo*/) {
 	deltaX /= sd.x;
 	updateFrustumSize(deltaX, ctx);
 
-
 	MathUtils.sphericalToCartesian(sd.x, sd.y, sd.z, cartesian);
 
 	transform.translation.set(cartesian.add(lookAtPoint));
@@ -406,11 +396,28 @@ function cleanup(args, ctx) {
 	}
 }
 
+function argsUpdated(args, ctx) {
+
+	// Making more linear perception
+	ctx.smoothness = Math.pow(MathUtils.clamp(args.smoothness, 0, 1), 0.3);
+	ctx.inertia = Math.pow(MathUtils.clamp(args.drag, 0, 1), 0.3);
+
+	ctx.dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(args.dragButton) - 1;
+	if (ctx.dragButton < -1) {
+		ctx.dragButton = -1;
+	} else if (ctx.dragButton === 4) {
+		ctx.dragButton = null;
+	}
+
+	ctx.dirty = true;
+}
+
 function OrbitCamControlScript() {
 	return {
 		setup: setup,
 		update: update,
-		cleanup: cleanup
+		cleanup: cleanup,
+		argsUpdated: argsUpdated
 	};
 }
 

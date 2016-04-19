@@ -5,7 +5,6 @@ var Camera = require('../renderer/Camera');
 
 function PanCamScript() {
 	var fwdVector, leftVector, calcVector, calcVector2;
-	var panButton;
 	var lookAtPoint;
 	var mouseState;
 	var listeners;
@@ -29,10 +28,8 @@ function PanCamScript() {
 	}
 
 	function setup(parameters, environment) {
-		panButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.panButton) - 1;
-		if (panButton < -1) {
-			panButton = -1;
-		}
+		argsUpdated(parameters, environment);
+
 		lookAtPoint = environment.goingToLookAt;
 		fwdVector = Vector3.UNIT_Y.clone();
 		leftVector = Vector3.UNIT_X.clone().negate();
@@ -63,7 +60,7 @@ function PanCamScript() {
 							button = 1;
 						}
 					}
-					if (button === panButton || panButton === -1) {
+					if (button === environment.panButton || environment.panButton === -1) {
 						mouseState.down = true;
 						var x = (event.offsetX !== undefined) ? event.offsetX : event.layerX;
 						var y = (event.offsetY !== undefined) ? event.offsetY : event.layerY;
@@ -222,10 +219,19 @@ function PanCamScript() {
 		}
 	}
 
+	function argsUpdated(parameters, environment) {
+		environment.panButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.panButton) - 1;
+		if (environment.panButton < -1) {
+			environment.panButton = -1;
+		}
+		environment.dirty = true;
+	}
+
 	return {
 		setup: setup,
 		update: update,
-		cleanup: cleanup
+		cleanup: cleanup,
+		argsUpdated: argsUpdated
 	};
 }
 
