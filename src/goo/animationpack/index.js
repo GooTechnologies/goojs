@@ -1,4 +1,5 @@
 module.exports = {
+	Source: require('./blendtree/Source'),
 	BinaryLerpSource: require('./blendtree/BinaryLerpSource'),
 	ClipSource: require('./blendtree/ClipSource'),
 	FrozenClipSource: require('./blendtree/FrozenClipSource'),

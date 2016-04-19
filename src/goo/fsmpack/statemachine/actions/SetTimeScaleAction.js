@@ -1,14 +1,14 @@
 var Action = require('./Action');
 
-function SetTimeScale(/*id, settings*/) {
+function SetTimeScaleAction(/*id, settings*/) {
 	Action.apply(this, arguments);
 	this.everyFrame = false;
 }
 
-SetTimeScale.prototype = Object.create(Action.prototype);
-SetTimeScale.prototype.constructor = SetTimeScale;
+SetTimeScaleAction.prototype = Object.create(Action.prototype);
+SetTimeScaleAction.prototype.constructor = SetTimeScaleAction;
 
-SetTimeScale.external = {
+SetTimeScaleAction.external = {
 	key: 'Set Animation Time Scale',
 	name: 'Set Animation Time Scale',
 	type: 'animation',
@@ -23,11 +23,11 @@ SetTimeScale.external = {
 	transitions: []
 };
 
-SetTimeScale.prototype.enter = function (fsm) {
+SetTimeScaleAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
 	if (entity.animationComponent) {
-		entity.animationComponent.setTimeScale(this.scale);
+		entity.animationComponent.setTimeScaleAction(this.scale);
 	}
 };
 
-module.exports = SetTimeScale;
+module.exports = SetTimeScaleAction;
