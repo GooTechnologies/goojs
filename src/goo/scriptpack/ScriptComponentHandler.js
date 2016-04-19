@@ -61,7 +61,15 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 		var newScript = null;
 		if (script.context) {
 			newScript = script;
-			newScript.parameters = {};
+			if (newScript.parameters) {
+				// Re-use the parameters object, but clean it before updating it.
+				var keys = Object.keys(newScript.parameters);
+				for (var i=0; i<keys.length; i++) {
+					delete newScript.parameters[keys[i]];
+				}
+			} else {
+				newScript.parameters = {};
+			}
 		} else {
 			// We need to duplicate the script so we can have multiple
 			// similar scripts with different parameters.
