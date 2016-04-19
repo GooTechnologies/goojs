@@ -1,4 +1,3 @@
-// we presume there is support
 var supported = true;
 
 var AudioContext = typeof(window) !== 'undefined' && (window.AudioContext || window.webkitAudioContext);
@@ -10,6 +9,17 @@ if (!AudioContext) {
 
 var context;
 
+/**
+ * AudioContext is a global to check for support and instantiate an audio context. Should not be used as a constructor.
+ * @target-class AudioContext AudioContext constructor
+ * @require-pathvar AudioContext = require('../../sound/AudioContext');
+ * @group sound
+ * @example
+ * if(AudioContext.isSupported()){
+ *     var context = AudioContext.getContext();
+ *     // ...operate on context...
+ * }
+ */
 module.exports = {
 	getContext: function () {
 		// try to get a context if it's supposedly supported or not cached
