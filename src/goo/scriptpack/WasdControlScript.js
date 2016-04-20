@@ -6,12 +6,14 @@ function WasdControlScript() {
 	var _parameters;
 
 	var moveState;
+	var bypass = false;
 
 	var fwdVector = new Vector3(0, 0, -1);
 	var leftVector = new Vector3(-1, 0, 0);
 
 	var moveVector = new Vector3();
 	var calcVector = new Vector3();
+	var translation = new Vector3();
 
 	// ---
 	function updateMovementVector() {
@@ -24,7 +26,7 @@ function WasdControlScript() {
 
 		switch (ScriptUtils.keyForCode(event.keyCode)) {
 			case _parameters.crawlKey:
-				moveState.speed = _parameters.crawlSpeed;
+				moveState.crawling = true;
 				break;
 
 			case _parameters.forwardKey:
@@ -52,7 +54,7 @@ function WasdControlScript() {
 
 		switch (ScriptUtils.keyForCode(event.keyCode)) {
 			case _parameters.crawlKey:
-				moveState.speed = _parameters.walkSpeed;
+				moveState.crawling = false;
 				break;
 
 			case _parameters.forwardKey:
@@ -88,20 +90,27 @@ function WasdControlScript() {
 			strafeRight: 0,
 			forward: 0,
 			back: 0,
-			crawling: false,
-			speed: parameters.walkSpeed
+			crawling: false
 		};
 
 		entity = environment.entity;
 		transformComponent = entity.transformComponent;
 		transform = transformComponent.transform;
+		translation.copy(transform.translation);
 
 		setupKeyControls(environment.domElement);
 	}
 
 	function update(parameters, environment) {
-		if (moveVector.equals(Vector3.ZERO)) { return; }
-		if (parameters.whenUsed && environment.entity !== environment.activeCameraEntity) { return; }
+		if (!bypass && moveVector.equals(Vector3.ZERO)) {
+			return;
+		}
+
+		if (!bypass && (parameters.whenUsed && environment.entity !== environment.activeCameraEntity)) {
+			return;
+		}
+
+		bypass = false;
 
 		// direction of movement in local coords
 		calcVector.setDirect(
@@ -112,7 +121,7 @@ function WasdControlScript() {
 		calcVector.normalize();
 
 		// move speed for this run...
-		var moveMult = environment.world.tpf * moveState.speed;
+		var moveMult = environment.world.tpf * (moveState.crawling ? parameters.crawlSpeed : parameters.walkSpeed);
 
 		// scale by speed
 		calcVector.scale(moveMult);
@@ -124,7 +133,8 @@ function WasdControlScript() {
 		calcVector.applyPost(orient);
 
 		// add to our transform
-		transform.translation.add(calcVector);
+		translation.add(calcVector);
+		transform.translation.copy(translation);
 
 		// set our component updated.
 		transformComponent.setUpdated();
@@ -135,10 +145,15 @@ function WasdControlScript() {
 		env.domElement.removeEventListener('keyup', keyUp, false);
 	}
 
+	function argsUpdated() {
+		bypass = true;
+	}
+
 	return {
 		setup: setup,
 		update: update,
-		cleanup: cleanup
+		cleanup: cleanup,
+		argsUpdated: argsUpdated
 	};
 }
 
