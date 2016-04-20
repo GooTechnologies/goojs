@@ -60,28 +60,33 @@ function PickAndRotateScript() {
 			mouseState.ax += deltaX;
 			mouseState.ay += deltaY;
 
-			ctx.entity.transformComponent.transform.rotation.setIdentity();
-			ctx.entity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
-			ctx.entity.transformComponent.transform.rotation.rotateY(mouseState.ax / 200 * args.xMultiplier);
-
-			ctx.entity.transformComponent.setUpdated();
+			updateRotation();
 		}
+	}
+
+	function updateRotation(){
+		ctx.entity.transformComponent.transform.rotation.setIdentity();
+		ctx.entity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
+		ctx.entity.transformComponent.transform.rotation.rotateY(mouseState.ax / 200 * args.xMultiplier);
+		ctx.entity.transformComponent.setUpdated();
 	}
 
 	function mouseUp() {
 		mouseState.down = false;
 	}
 
-	function setup(_args, _ctx) {
+	function argsUpdated(_args, _ctx) {
 		args = _args;
 		ctx = _ctx;
-
 		ctx.dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(args.dragButton) - 1;
 		if (ctx.dragButton < -1) {
 			ctx.dragButton = -1;
 		}
+		updateRotation();
+	}
 
-		gooRunner = ctx.world.gooRunner;
+	function setup(_args, _ctx) {
+		gooRunner = _ctx.world.gooRunner;
 
 		gooRunner.addEventListener('mousedown', mouseDown);
 		gooRunner.addEventListener('touchstart', mouseDown);
@@ -99,6 +104,7 @@ function PickAndRotateScript() {
 			ax: 0,
 			ay: 0
 		};
+		argsUpdated(_args, _ctx);
 	}
 
 	function update(/* args, ctx */) {}
@@ -116,7 +122,8 @@ function PickAndRotateScript() {
 	return {
 		setup: setup,
 		update: update,
-		cleanup: cleanup
+		cleanup: cleanup,
+		argsUpdated: argsUpdated
 	};
 }
 
