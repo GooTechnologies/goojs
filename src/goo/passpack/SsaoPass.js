@@ -13,7 +13,6 @@ var Pass = require('../renderer/pass/Pass');
 /**
  * Screen Space Ambient Occlusion pass
  * @param renderList
- * @hidden
  */
 function SsaoPass(renderList) {
 	this.depthPass = new RenderPass(renderList);

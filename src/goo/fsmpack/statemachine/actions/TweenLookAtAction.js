@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Quaternion = require('../../../math/Quaternion');
-var TWEEN = require('../../../util/TWEEN');
+var Easing = require('../../../util/Easing');
 
 function TweenLookAtAction(/*id, settings*/) {
 	Action.apply(this, arguments);
@@ -60,14 +60,6 @@ TweenLookAtAction.getTransitionLabel = function (transitionKey/*, actionConfig*/
 	return transitionKey === 'complete' ? 'On Tween LookAt Complete' : undefined;
 };
 
-TweenLookAtAction.prototype.ready = function () {
-	if (this.easing1 === 'Linear') {
-		this.easing = TWEEN.Easing.Linear.None;
-	} else {
-		this.easing = TWEEN.Easing[this.easing1][this.easing2];
-	}
-};
-
 TweenLookAtAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
 	var transform = entity.transformComponent.transform;
@@ -92,7 +84,7 @@ TweenLookAtAction.prototype.update = function (fsm) {
 	var transform = entity.transformComponent.transform;
 
 	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
-	var fT = this.easing(t);
+	var fT = Easing[this.easing1][this.easing2](t);
 	Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
 
 	this.quatFinal.toRotationMatrix(transform.rotation);

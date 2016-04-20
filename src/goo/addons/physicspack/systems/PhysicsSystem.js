@@ -66,7 +66,7 @@ function PhysicsSystem(settings) {
 			}
 		}
 
-		if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+		if ((entityA.colliderComponent && entityA.colliderComponent.isTrigger) || (entityB.colliderComponent && entityB.colliderComponent.isTrigger)) {
 			this.emitTriggerExit(entityA, entityB);
 		} else {
 			this.emitEndContact(entityA, entityB);
@@ -79,7 +79,7 @@ function PhysicsSystem(settings) {
 		for (var i = 0; i < stayingEntities.length; i += 2) {
 			var entityA = stayingEntities[i];
 			var entityB = stayingEntities[i + 1];
-			if (entityA.colliderComponent.isTrigger || entityB.colliderComponent.isTrigger) {
+			if ((entityA.colliderComponent && entityA.colliderComponent.isTrigger) || (entityB.colliderComponent && entityB.colliderComponent.isTrigger)) {
 				this.emitTriggerStay(entityA, entityB);
 			} else {
 				this.emitDuringContact(entityA, entityB);

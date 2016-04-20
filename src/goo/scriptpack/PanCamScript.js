@@ -5,10 +5,10 @@ var Camera = require('../renderer/Camera');
 
 function PanCamScript() {
 	var fwdVector, leftVector, calcVector, calcVector2;
-	var panButton;
 	var lookAtPoint;
 	var mouseState;
 	var listeners;
+	var tmpOverride = false;
 
 	function getTouchCenter(touches) {
 		var cx = 0;
@@ -29,15 +29,14 @@ function PanCamScript() {
 	}
 
 	function setup(parameters, environment) {
-		panButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.panButton) - 1;
-		if (panButton < -1) {
-			panButton = -1;
-		}
+		argsUpdated(parameters, environment);
+
 		lookAtPoint = environment.goingToLookAt;
 		fwdVector = Vector3.UNIT_Y.clone();
 		leftVector = Vector3.UNIT_X.clone().negate();
 		calcVector = new Vector3();
 		calcVector2 = new Vector3();
+		environment.translation = environment.entity.transformComponent.transform.translation.clone();
 
 		var renderer = environment.world.gooRunner.renderer;
 		environment.devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
@@ -63,7 +62,7 @@ function PanCamScript() {
 							button = 1;
 						}
 					}
-					if (button === panButton || panButton === -1) {
+					if (button === environment.panButton || environment.panButton === -1) {
 						mouseState.down = true;
 						var x = (event.offsetX !== undefined) ? event.offsetX : event.layerX;
 						var y = (event.offsetY !== undefined) ? event.offsetY : event.layerY;
@@ -138,10 +137,12 @@ function PanCamScript() {
 		}
 		mouseState.dx = mouseState.x - mouseState.ox;
 		mouseState.dy = mouseState.y - mouseState.oy;
-		if (mouseState.dx === 0 && mouseState.dy === 0) {
+		if (mouseState.dx === 0 && mouseState.dy === 0 && !tmpOverride) {
 			environment.dirty = !!environment.lookAtPoint;
 			return;
 		}
+
+		tmpOverride = false;
 
 		if (parameters.invertX) {
 			mouseState.dx = -mouseState.dx;
@@ -205,8 +206,8 @@ function PanCamScript() {
 			} else {
 				calcVector.scale(parameters.panSpeed);
 			}
-			entity.transformComponent.transform.translation.add(calcVector);
-			entity.transformComponent.setUpdated();
+			environment.translation.add(calcVector);
+			entity.transformComponent.setTranslation(environment.translation);
 			environment.dirty = false;
 		}
 		SystemBus.emit('goo.cameraPositionChanged', {
@@ -222,10 +223,20 @@ function PanCamScript() {
 		}
 	}
 
+	function argsUpdated(parameters, environment) {
+		environment.panButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.panButton) - 1;
+		if (environment.panButton < -1) {
+			environment.panButton = -1;
+		}
+		environment.dirty = true;
+		tmpOverride = true;
+	}
+
 	return {
 		setup: setup,
 		update: update,
-		cleanup: cleanup
+		cleanup: cleanup,
+		argsUpdated: argsUpdated
 	};
 }
 

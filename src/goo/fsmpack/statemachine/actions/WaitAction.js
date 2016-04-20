@@ -18,6 +18,8 @@ function WaitAction(/*id, settings*/) {
 	 * @type {number}
 	 */
 	this.totalWait = 0;
+
+	this.completed = false;
 }
 
 WaitAction.prototype = Object.create(Action.prototype);
@@ -53,13 +55,15 @@ WaitAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 };
 
 WaitAction.prototype.enter = function () {
+	this.completed = false;
 	this.currentTime = 0;
 	this.totalWait = parseFloat(this.waitTime) + Math.random() * parseFloat(this.randomTime);
 };
 
 WaitAction.prototype.update = function (fsm) {
 	this.currentTime += fsm.getTpf() * 1000;
-	if (this.currentTime >= this.totalWait) {
+	if (this.currentTime >= this.totalWait && !this.completed) {
+		this.completed = true;
 		fsm.send(this.transitions.timeUp);
 	}
 };

@@ -11,7 +11,6 @@ module.exports = {
 	RigidBodyComponent: require('./components/RigidBodyComponent'),
 	ColliderComponentHandler: require('./handlers/ColliderComponentHandler'),
 	RigidBodyComponentHandler: require('./handlers/RigidBodyComponentHandler'),
-	index: require('./index'),
 	BallJoint: require('./joints/BallJoint'),
 	HingeJoint: require('./joints/HingeJoint'),
 	PhysicsJoint: require('./joints/PhysicsJoint'),

@@ -152,12 +152,12 @@ State.prototype.enter = function () {
 };
 
 State.prototype.update = function () {
-	SystemBus.emit('goo.fsm.update', {
-		entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
-		machineName: this.parent ? this.parent.name : '',
-		stateId: this.uuid,
-		stateName: this.name
-	});
+	// SystemBus.emit('goo.fsm.update', {
+	// 	entityId: this._fsm && this._fsm.entity ? this._fsm.entity.id : '',
+	// 	machineName: this.parent ? this.parent.name : '',
+	// 	stateId: this.uuid,
+	// 	stateName: this.name
+	// });
 
 	// do on update of self
 	var depth = this.depth;

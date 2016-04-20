@@ -21,6 +21,9 @@ function MeshRendererComponent(materials) {
 	 */
 	this.worldBound = null;
 
+	this._worldBoundDirty = true;
+	this._transformUpdatedListener = null;
+
 	/** Culling mode. Other valid values: 'Never'
 	 * @type {string}
 	 * @default
@@ -105,6 +108,17 @@ MeshRendererComponent.entitySelectionAPI = {
 	setDiffuse: MeshRendererComponent.prototype.api.setDiffuse
 };
 
+MeshRendererComponent.prototype.attached = function () {
+	var that = this;
+	this.entity.on('transformUpdated', this._transformUpdatedListener = function () {
+		that._worldBoundDirty = true;
+	});
+};
+
+MeshRendererComponent.prototype.detached = function () {
+	this.entity.off('transformUpdated', this._transformUpdatedListener);
+};
+
 /**
  * Update world bounding
  *
@@ -113,6 +127,7 @@ MeshRendererComponent.entitySelectionAPI = {
  */
 MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
 	this.worldBound = bounding.transform(transform, this.worldBound);
+	this._worldBoundDirty = false;
 };
 
 /**

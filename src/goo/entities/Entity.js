@@ -1,5 +1,6 @@
 var Component = require('../entities/components/Component');
 var StringUtils = require('../util/StringUtils');
+var EventTarget = require('../util/EventTarget');
 
 /**
  * An Entity is a generic container of data.
@@ -12,6 +13,8 @@ var StringUtils = require('../util/StringUtils');
  * @param {number} [id] Entity id.
  */
 function Entity(world, name, id) {
+	EventTarget.apply(this);
+
 	this._world = world;
 	this._components = [];
 	this.id = id !== undefined ? id : StringUtils.createUniqueId('entity');
@@ -63,6 +66,8 @@ function Entity(world, name, id) {
 
 	Entity.entityCount++;
 }
+Entity.prototype = Object.create(EventTarget.prototype);
+Entity.prototype.constructor = Entity;
 
 //! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 /**

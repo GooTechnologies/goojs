@@ -61,7 +61,7 @@ function World(options) {
 	/** Time since last frame in seconds.
 	 * @type {number}
 	 */
-	this.tpf = 1.0;
+	this.tpf = 0;
 
 	/** The tpf, averaged by a number of samples.
 	 * @type {number}

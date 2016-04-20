@@ -13,9 +13,9 @@ function TextComponent(text) {
 	this.text = text || '';
 	this.dirty = true;
 
-	// #ifdef DEBUG
+	// @ifdef DEBUG
 	Object.seal(this);
-	// #endif
+	// @endif
 }
 
 TextComponent.type = 'TextComponent';

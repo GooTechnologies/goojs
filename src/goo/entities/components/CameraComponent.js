@@ -40,6 +40,9 @@ function CameraComponent(camera) {
 	 */
 	this.dirVec = new Vector3(0, 0, -1);
 
+	this._transformUpdatedListener = null;
+	this._transformDirty = true;
+
 	// @ifdef DEBUG
 	Object.seal(this);
 	// @endif
@@ -78,6 +81,18 @@ CameraComponent.prototype.setUpVector = function (axisId) {
 		this.upVec.setDirect(0, 1, 0);
 		this.dirVec.setDirect(0, 0, -1);
 	}
+};
+
+CameraComponent.prototype.attached = function () {
+	var that = this;
+	this.entity.on('transformUpdated', this._transformUpdatedListener = function () {
+		that._transformDirty = true;
+	});
+};
+
+CameraComponent.prototype.detached = function () {
+	this.entity.off('transformUpdated', this._transformUpdatedListener);
+	this._transformUpdatedListener = null;
 };
 
 /**

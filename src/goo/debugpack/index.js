@@ -4,7 +4,6 @@ module.exports = {
 	DebugDrawHelper: require('./DebugDrawHelper'),
 	Debugger: require('./Debugger'),
 	EntityCounter: require('./EntityCounter'),
-	index: require('./index'),
 	CameraDebug: require('./shapes/CameraDebug'),
 	LightDebug: require('./shapes/LightDebug'),
 	MeshRendererDebug: require('./shapes/MeshRendererDebug'),

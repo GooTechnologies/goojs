@@ -61,11 +61,20 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 		var newScript = null;
 		if (script.context) {
 			newScript = script;
-			newScript.parameters = {};
+			if (newScript.parameters) {
+				// Re-use the parameters object, but clean it before updating it.
+				var keys = Object.keys(newScript.parameters);
+				for (var i=0; i<keys.length; i++) {
+					delete newScript.parameters[keys[i]];
+				}
+			} else {
+				newScript.parameters = {};
+			}
 		} else {
 			// We need to duplicate the script so we can have multiple
 			// similar scripts with different parameters.
 			newScript = Object.create(script);
+			newScript.instanceId = instanceConfig.id;
 			newScript.parameters = {};
 			newScript.enabled = false;
 		}
@@ -76,6 +85,11 @@ ScriptComponentHandler.prototype._updateScriptInstance = function (component, in
 			script.externals,
 			options
 		)
+		.then(function () {
+			if (newScript.argsUpdated && newScript.context) {
+				newScript.argsUpdated(newScript.parameters, newScript.context, window.goo);
+			}
+		})
 		.then(ObjectUtils.constant(newScript));
 	});
 };
@@ -98,20 +112,11 @@ ScriptComponentHandler.prototype._createOrLoadScript = function (component, inst
 	var ref = instanceConfig.scriptRef;
 	var isEngineScript = ref.indexOf(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX) === 0;
 
-	var promise = null;
-
 	if (isEngineScript) {
-		promise = this._createOrLoadEngineScript(component, instanceConfig);
+		return this._createOrLoadEngineScript(component, instanceConfig);
 	} else {
-		promise = this._createOrLoadCustomScript(component, instanceConfig);
+		return this._createOrLoadCustomScript(component, instanceConfig);
 	}
-
-	return promise.then(function (script) {
-		// Save the instance identifier so we can find the instance later
-		// when updating again.
-		script.instanceId = instanceConfig.id;
-		return script;
-	});
 };
 
 /**
@@ -125,7 +130,7 @@ ScriptComponentHandler.prototype._createOrLoadScript = function (component, inst
  * @private
  */
 ScriptComponentHandler.prototype._createOrLoadEngineScript = function (component, instanceConfig) {
-	var existingScript = this._findScript(component, instanceConfig.id);
+	var existingScript = this._findScriptInstance(component, instanceConfig.id);
 	var prefix = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX;
 
 	if (existingScript) {
@@ -152,7 +157,7 @@ ScriptComponentHandler.prototype._createOrLoadCustomScript = function (component
 	// Need to load the script (note that we are not reloading yet) so we
 	// can compare the new body with the old one.
 	return this._load(ref).then(function (script) {
-		var existingScript = that._findScript(component, instanceConfig.id);
+		var existingScript = that._findScriptInstance(component, instanceConfig.id);
 
 		if (existingScript && existingScript.body === script.body) {
 			return existingScript;
@@ -164,8 +169,7 @@ ScriptComponentHandler.prototype._createOrLoadCustomScript = function (component
 };
 
 /**
- * Searches the specified component to try to find the specified script
- * instance.
+ * Searches the specified component to try to find the specified script instance.
  *
  * @param {ScriptComponent} component
  *        The component which is to be searched.
@@ -175,7 +179,7 @@ ScriptComponentHandler.prototype._createOrLoadCustomScript = function (component
  * @return {object} The script which was found, or undefined if none was found.
  * @private
  */
-ScriptComponentHandler.prototype._findScript = function (component, instanceId) {
+ScriptComponentHandler.prototype._findScriptInstance = function (component, instanceId) {
 	return ObjectUtils.find(component.scripts, function (script) {
 		return script.instanceId === instanceId;
 	});

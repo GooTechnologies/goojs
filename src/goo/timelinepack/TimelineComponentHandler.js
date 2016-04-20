@@ -5,7 +5,7 @@ var EventChannel = require('../timelinepack/EventChannel');
 var ArrayUtils = require('../util/ArrayUtils');
 var SystemBus = require('../entities/SystemBus');
 var ObjectUtils = require('../util/ObjectUtils');
-var TWEEN = require('../util/TWEEN');
+var Easing = require('../util/Easing');
 
 /**
  * @hidden
@@ -40,12 +40,12 @@ TimelineComponentHandler.tweenMap = {
 
 function getEasingFunction(easingString) {
 	if (!easingString) {
-		return TWEEN.Easing.Linear.None;
+		return Easing.Linear.None;
 	}
 	var separator = easingString.indexOf('.');
 	var easingType = easingString.substr(0, separator);
 	var easingDirection = easingString.substr(separator + 1);
-	return TWEEN.Easing[easingType][easingDirection];
+	return Easing[easingType][easingDirection];
 }
 
 function updateValueChannelKeyframe(keyframeConfig, keyframeId, channel) {

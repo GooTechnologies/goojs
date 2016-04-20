@@ -23,6 +23,9 @@ function LightComponent(light) {
 	 */
 	this.hidden = false;
 
+	this._transformDirty = true;
+	this._transformUpdatedListener = null;
+
 	// @ifdef DEBUG
 	Object.seal(this);
 	// @endif
@@ -32,6 +35,18 @@ LightComponent.type = 'LightComponent';
 
 LightComponent.prototype = Object.create(Component.prototype);
 LightComponent.prototype.constructor = LightComponent;
+
+LightComponent.prototype.attached = function () {
+	var that = this;
+	this.entity.on('transformUpdated', this._transformUpdatedListener = function () {
+		that._transformDirty = true;
+	});
+};
+
+LightComponent.prototype.detached = function () {
+	this.entity.off('transformUpdated', this._transformUpdatedListener);
+	this._transformUpdatedListener = null;
+};
 
 LightComponent.prototype.updateLight = function (transform) {
 	this.light.update(transform);

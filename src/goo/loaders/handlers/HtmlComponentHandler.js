@@ -67,20 +67,9 @@ HtmlComponentHandler.prototype.update = function (entity, config, options) {
 		component.useTransformComponent = config.useTransformComponent !== false;
 		component.pixelPerfect = config.pixelPerfect !== undefined ? config.pixelPerfect : true;
 
-		var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
-		var styleChanged = config.style !== domElement.prevStyle;
-		domElement.prevInnerHtml = config.innerHtml;
-		domElement.prevStyle = config.style;
-
-		var promise = null;
-
-		if (innerHtmlChanged || styleChanged) {
-			promise = that._updateHtml(domElement, entity, config, options);
-		} else {
-			promise = that._updateAttributes(domElement, entity, config);
-		}
-
-		return promise.then(function () {
+		return that._updateHtml(domElement, entity, config, options)
+		.then(function () {
+			that._updateAttributes(domElement, entity, config);
 			return component;
 		});
 	});
@@ -186,14 +175,12 @@ HtmlComponentHandler.prototype._attachDomElement = function (domElement, entity)
  * @private
  */
 HtmlComponentHandler.prototype._updateHtml = function (domElement, entity, config, options) {
-	var wrappedStyle = '';
-	if (config.style) {
-		var processedStyle = config.style.replace('__entity', '#' + getSafeEntityId(entity.id));
-		wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
+	if (config.innerHtml === domElement.prevInnerHtml) {
+		return PromiseUtils.resolve();
 	}
 
-	domElement.innerHTML = wrappedStyle + config.innerHtml;
-	this._updateAttributes(domElement, entity, config);
+	domElement.prevInnerHtml = config.innerHtml;
+	domElement.innerHTML = config.innerHtml;
 
 	return this._loadImages(domElement, options);
 };
@@ -244,24 +231,39 @@ HtmlComponentHandler.prototype._loadImages = function (domElement, options) {
  * @private
  */
 HtmlComponentHandler.prototype._updateAttributes = function (domElement, entity, config) {
-	var attrs = config.attributes || {};
-	var attrNames = Object.keys(attrs);
-	while (attrNames.length) {
-		var name = attrNames.pop();
-		var value = config.attributes[name];
-		domElement.setAttribute(name, value);
+	var i, attribute, attributeValue;
+	var prevAttributes = domElement.prevAttributes || {};
+	var prevAttributeNames = Object.keys(prevAttributes);
+
+	var newAttributes = config.attributes || {};
+	var newAttributeNames = Object.keys(newAttributes);
+
+	// Remove old attributes that are not used anymore.
+	for (i = 0; i < prevAttributeNames.length; ++i) {
+		attribute = prevAttributeNames[i];
+		if (newAttributes[attribute] === undefined) {
+			domElement.removeAttribute(prevAttributeNames[i]);
+		}
 	}
 
+	// Add new attributes that have changed.
+	for (i = 0; i < newAttributeNames.length; ++i) {
+		attribute = newAttributeNames[i];
+		attributeValue = newAttributes[attribute];
+		if (attributeValue !== prevAttributes[attribute]) {
+			domElement.setAttribute(attribute, attributeValue);
+		}
+	}
+
+	domElement.prevAttributes = config.attributes;
+
 	// Set default styles if no style was set by the user.
-	if (!attrs.style) {
+	if (!newAttributes.style) {
 		domElement.setAttribute('style', 'position: absolute; top: 0; left: 0; z-index: 1; display: none');
 	}
 
-	// We need to have the HTML system update again so we clear the style
-	// cache.
+	// Force the HTML system to update again.
 	entity._world.getSystem('HtmlSystem').clearStyleCache(domElement);
-
-	return PromiseUtils.resolve();
 };
 
 HtmlComponentHandler.prototype._remove = function (entity) {

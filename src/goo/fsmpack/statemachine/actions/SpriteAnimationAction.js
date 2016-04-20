@@ -109,7 +109,7 @@ SpriteAnimationAction.prototype.update = function (fsm) {
 	var tileY = Math.floor((this.tiling[1] * t) % this.tiling[1]);
 
 	this.texture.offset.setDirect(tileX, tileY).mul(this.texture.repeat);
-	this.texture.offset.y = -1 / this.tiling[1] - this.texture.offset.y;
+	this.texture.offset.y = -1 / this.tiling[1] - this.texture.offset.y + 1;
 };
 
 SpriteAnimationAction.prototype.exit = function (/*fsm*/) {};
