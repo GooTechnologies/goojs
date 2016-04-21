@@ -43,11 +43,39 @@ function ScriptComponent(scripts) {
 	Object.seal(this);
 	// @endif
 }
-
 ScriptComponent.type = 'ScriptComponent';
-
 ScriptComponent.prototype = Object.create(Component.prototype);
 ScriptComponent.prototype.constructor = ScriptComponent;
+
+ScriptComponent.prototype.editModeSetup = function () {
+	var entity = this.entity;
+	var systemContext = entity._world.getSystem('ScriptSystem').context;
+	var componentContext = Object.create(systemContext);
+	ObjectUtils.extend(componentContext, {
+		entity: entity,
+		entityData: {}
+	});
+	for (var i = 0; i < this.scripts.length; i++) {
+		var script = this.scripts[i];
+		if (!script.context) {
+			script.context = Object.create(componentContext);
+
+			if (script.parameters && script.parameters.enabled !== undefined) {
+				script.enabled = script.parameters.enabled;
+			} else {
+				script.enabled = true;
+			}
+
+			if (script.setup && script.enabled) {
+				try {
+					script.setup(script.parameters, script.context, getGooClasses());
+				} catch (e) {
+					this._handleError(script, e, 'setup');
+				}
+			}
+		}
+	}
+};
 
 /**
  * Runs the .setup method on each script; called when the ScriptComponent is

@@ -7,6 +7,24 @@ var SystemBus = require('../entities/SystemBus');
 var ZOOM_DISTANCE_FACTOR = 0.035;
 var EPSILON = 1e-6;
 
+function editModeSetup(args, ctx) {
+	if (args.editMode) {
+		setup(args, ctx);
+	}
+}
+
+function editModeUpdate(args, ctx) {
+	if (args.editMode) {
+		update(args, ctx);
+	}
+}
+
+function editModeCleanup(args, ctx) {
+	if (args.editMode) {
+		cleanup(args, ctx);
+	}
+}
+
 /**
  * @param {Object} args
  * @param {boolean} args.whenUsed When current entity is the camera in use
@@ -414,6 +432,9 @@ function argsUpdated(args, ctx) {
 
 function OrbitCamControlScript() {
 	return {
+		editModeSetup: editModeSetup,
+		editModeUpdate: editModeUpdate,
+		editModeCleanup: editModeCleanup,
 		setup: setup,
 		update: update,
 		cleanup: cleanup,
@@ -516,6 +537,10 @@ OrbitCamControlScript.externals = {
 		'default': 15,
 		type: 'float',
 		min: 0.001
+	}, {
+		key: 'editMode',
+		'default': true,
+		type: 'boolean'
 	}]
 };
 
