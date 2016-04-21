@@ -1,3 +1,18 @@
+v0.16.3 --- 2016-04-21
+
+### Fixes
+
+ * Made BoundingPicker and JsonHandler available in goo namespace
+ * Removed occlusionpack
+ * Renamed SetTimeScale -> SetTimeScaleAction
+ * Document AudioContext
+ * alphabetically sort the exports in index.js
+ * Re-use the args/parameters object if possible, to make live edit implementations simpler
+ * Properly remove unused html element attributes
+ * Updated OrbitNPan, PanCam and OrbitCamControlScript to work in live edit
+ * Make WASD script work in live edit
+ * Update PickAndRotateScript to work in live edit
+
 v0.16.2 --- 2016-04-18
 
 ### Fixes
