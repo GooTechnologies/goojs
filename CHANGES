@@ -1,3 +1,9 @@
+v0.16.4 --- 2016-04-21
+
+### Fixes
+
+ * Made set render target action (portals) work with several in view
+ 
 v0.16.3 --- 2016-04-21
 
 ### Fixes
