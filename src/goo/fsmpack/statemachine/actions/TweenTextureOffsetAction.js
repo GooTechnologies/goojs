@@ -23,18 +23,12 @@ TweenTextureOffsetAction.external = {
 		name: 'X Offset',
 		key: 'toX',
 		type: 'float',
-		control: 'slider',
-		min: 0,
-		max: 1,
 		description: 'X Offset.',
 		'default': 1
 	}, {
 		name: 'Y Offset',
 		key: 'toY',
 		type: 'float',
-		control: 'slider',
-		min: 0,
-		max: 1,
 		description: 'Y Offset.',
 		'default': 1
 	}, {
