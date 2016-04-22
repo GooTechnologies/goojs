@@ -176,4 +176,4 @@
 			callback.call(context, value, value, self);
 		});
 	}
-})(this);
+})(typeof(window) !== 'undefined' && window || this);
