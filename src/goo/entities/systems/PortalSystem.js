@@ -32,17 +32,15 @@ PortalSystem.prototype.process = function (entities) {
 			var secondaryTarget = portalComponent.secondaryTarget;
 			var overrideMaterial = portalComponent.overrideMaterial;
 
-			if (portalComponent.alwaysRender || entity.isVisible) {
-				this.render(this.renderer, camera, target, overrideMaterial);
+			this.render(this.renderer, camera, target, overrideMaterial);
 
-				var material = entity.meshRendererComponent.materials[0];
-				material.setTexture('DIFFUSE_MAP', target);
+			var material = entity.meshRendererComponent.materials[0];
+			material.setTexture('DIFFUSE_MAP', target);
 
-				if (portalComponent.options.preciseRecursion) {
-					var tmp = target;
-					portalComponent.target = secondaryTarget;
-					portalComponent.secondaryTarget = tmp;
-				}
+			if (portalComponent.options.preciseRecursion) {
+				var tmp = target;
+				portalComponent.target = secondaryTarget;
+				portalComponent.secondaryTarget = tmp;
 			}
 		}
 	}
