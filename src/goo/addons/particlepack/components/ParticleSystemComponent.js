@@ -12,6 +12,13 @@ var Quad = require('../../../shapes/Quad');
 var ConstantCurve = require('../../../addons/particlepack/curves/ConstantCurve');
 var ObjectUtils = require('../../../util/ObjectUtils');
 
+// Polyfill, needed for CocoonJS
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt
+Math.cbrt = Math.cbrt || function (x) {
+  var y = Math.pow(Math.abs(x), 1/3);
+  return x < 0 ? -y : y;
+};
+
 function mod(a,b) {
 	return ((a % b) + b) % b;
 }
