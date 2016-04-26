@@ -268,7 +268,7 @@ ShaderLib.uber = {
 				'#if defined(TANGENT) && defined(NORMAL_MAP) && defined(TEXCOORD0)',
 					'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 					'vec3 tangentNormal = texture2D(normalMap, texCoord0, lodBias).xyz * vec3(2.0) - vec3(1.0);',
-					'tangentNormal = mix(vec3(0, 0, 1), tangentNormal, normalMultiplier);',
+					'tangentNormal = mix(vec3(0.0, 0.0, 1.0), tangentNormal, normalMultiplier);',
 					'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 					'N = normalize(worldNormal);',
 				'#endif',
