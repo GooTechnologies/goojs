@@ -26,7 +26,7 @@ SetTimeScaleAction.external = {
 SetTimeScaleAction.prototype.enter = function (fsm) {
 	var entity = fsm.getOwnerEntity();
 	if (entity.animationComponent) {
-		entity.animationComponent.setTimeScaleAction(this.scale);
+		entity.animationComponent.setTimeScale(this.scale);
 	}
 };
 
