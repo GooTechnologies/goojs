@@ -16,7 +16,7 @@ SetMaterialColorAction.external = {
 		name: 'Entity (optional)',
 		key: 'entity',
 		type: 'entity',
-		description: 'Entity that has a materia.l'
+		description: 'Entity that has a material.'
 	}, {
 		name: 'Color type',
 		key: 'type',
