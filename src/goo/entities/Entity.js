@@ -64,6 +64,11 @@ function Entity(world, name, id) {
 	 */
 	this.static = false;
 
+	/** Entity layer.
+	 * @type {number}
+	 */
+	this.layer = 1;
+
 	Entity.entityCount++;
 }
 Entity.prototype = Object.create(EventTarget.prototype);
