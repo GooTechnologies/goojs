@@ -1,3 +1,17 @@
+v0.16.5 --- 2016-04-27
+
+### Additions
+
+  + Added TweenMaterialColorAction
+
+### Fixes
+
+ * Make map/set polyfill work in CocoonJS canvas+
+ * Polyfilling Math.cbrt for CocoonJS
+ * No tween texture limits
+ * Fix normal multiplier in übershader to lerp instead of multiply the xy components
+ * Fix bug in SetTimeScaleAction
+
 v0.16.4 --- 2016-04-21
 
 ### Fixes
