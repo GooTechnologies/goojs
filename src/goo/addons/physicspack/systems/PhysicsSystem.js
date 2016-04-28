@@ -101,11 +101,64 @@ function PhysicsSystem(settings) {
 
 	this.initialized = false;
 
+	// Collision masks
+	this.masks = [];
+	for (var i=0; i<32; i++) {
+		this.masks.push(-1); // Everything collides with everything by default
+	}
+
 	AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 }
-
 PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 PhysicsSystem.prototype.constructor = PhysicsSystem;
+
+/**
+ * @param  {number} layerA
+ * @param  {number} layerB
+ * @param  {boolean} [ignore=true]
+ */
+PhysicsSystem.prototype.ignoreLayerCollision = function (layerA, layerB, ignore) {
+	ignore = ignore !== undefined ? ignore : true;
+	var indexA = Math.log2(layerA);
+	var indexB = Math.log2(layerB);
+	var masks = this.masks;
+	if (ignore) {
+		masks[indexA] |= layerB;
+		masks[indexB] |= layerA;
+	} else {
+		masks[indexA] &= ~layerB;
+		masks[indexB] &= ~layerA;
+	}
+
+	// TODO: update all physics components
+	this.updateLayersAndMasks();
+};
+
+PhysicsSystem.prototype.updateLayersAndMasks = function () {
+	var entities = this._activeColliderEntities;
+	for (var i=0; i<entities.length; i++) {
+		entities[i].colliderComponent.updateLayerAndMask();
+	}
+};
+
+/**
+ * @param  {number} layerA
+ * @param  {number} layerB
+ */
+PhysicsSystem.prototype.getIgnoreLayerCollision = function (layerA, layerB) {
+	var indexA = Math.log2(layerA);
+	return !!(this.masks[indexA] & layerB);
+};
+
+/**
+ * Returns the current layer mask for the given layer.
+ * @param  {number} layer
+ * @return {number}
+ */
+PhysicsSystem.prototype.getLayerMask = function (layer) {
+	var index = Math.log2(layer);
+	return this.masks[index];
+};
 
 /**
  * @param {Vector3} gravityVector

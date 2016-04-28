@@ -140,11 +140,11 @@ describe('PhysicsSystem', function () {
 		rbc.initialize(); // Needed to initialize body
 
 		var result = new RaycastResult();
-		system.raycastAny(start, direction, distance, { collisionGroup: -1 }, result);
+		system.raycastAny(start, direction, distance, { collisionMask: -1 }, result);
 		expect(result.entity).toBeTruthy();
 
 		result = new RaycastResult();
-		system.raycastAny(start, direction, distance, { collisionGroup: 2 }, result);
+		system.raycastAny(start, direction, distance, { collisionMask: 2 }, result);
 		expect(result.entity).toBeFalsy();
 	});
 

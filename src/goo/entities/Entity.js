@@ -64,15 +64,31 @@ function Entity(world, name, id) {
 	 */
 	this.static = false;
 
-	/** Entity layer.
-	 * @type {number}
-	 */
-	this.layer = 1;
+	this._layer = 1;
 
 	Entity.entityCount++;
 }
 Entity.prototype = Object.create(EventTarget.prototype);
 Entity.prototype.constructor = Entity;
+
+Object.defineProperties(Entity.prototype, {
+
+	/**
+	 * @target-class Entity layer member
+	 * @type {number}
+	 */
+	layer: {
+		get: function () {
+			return this._layer;
+		},
+		set: function (value) {
+			this._layer = value;
+			this.fire({
+				type: 'layerChanged'
+			});
+		}
+	}
+});
 
 //! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 /**

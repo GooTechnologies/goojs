@@ -90,6 +90,7 @@ AbstractColliderComponent.prototype.attached = function (entity) {
  */
 AbstractColliderComponent.prototype.detached = function (/*entity*/) {
 	this.entity = null;
+	this.system = null;
 };
 
 /**

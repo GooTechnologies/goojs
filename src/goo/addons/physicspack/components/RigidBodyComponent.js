@@ -773,6 +773,8 @@ RigidBodyComponent.prototype.addCollider = function (entity, position, quaternio
 
 	cannonShape.collisionResponse = !colliderComponent.isTrigger;
 
+	ColliderComponent.updateLayerAndMask(entity);
+
 	// Add the shape
 	var cannonPos = new CANNON.Vec3();
 	if (position) {

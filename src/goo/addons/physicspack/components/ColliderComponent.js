@@ -46,6 +46,8 @@ ColliderComponent.type = 'ColliderComponent';
  * Initialize the collider as a static rigid body in the physics world.
  */
 ColliderComponent.prototype.initialize = function () {
+	var entity = this.entity;
+
 	var material = null;
 	if (this.material) {
 		material = new CANNON.Material();
@@ -56,10 +58,11 @@ ColliderComponent.prototype.initialize = function () {
 	var cannonShape = this.cannonShape = ColliderComponent.getCannonShape(this.worldCollider);
 	cannonShape.material = material;
 
+	this.updateLayerAndMask();
+
 	cannonShape.collisionResponse = !this.isTrigger;
 
 	// Get transform from entity
-	var entity = this.entity;
 	var transform = entity.transformComponent.sync().worldTransform;
 	var position = new CANNON.Vec3();
 	var quaternion = new CANNON.Quaternion();
@@ -165,6 +168,19 @@ ColliderComponent.applyOnEntity = function (obj, entity) {
 			collider: obj
 		}));
 		return true;
+	}
+};
+
+ColliderComponent.prototype.updateLayerAndMask = function () {
+	ColliderComponent.updateLayerAndMask(this.entity);
+};
+
+ColliderComponent.updateLayerAndMask = function (entity) {
+	var layer = entity.layer;
+	var cannonShape = entity.colliderComponent.cannonShape;
+	if (cannonShape) {
+		cannonShape.collisionFilterMask = entity._world.getSystem('PhysicsSystem').getLayerMask(layer);
+		cannonShape.collisionFilterGroup = layer;
 	}
 };
 
