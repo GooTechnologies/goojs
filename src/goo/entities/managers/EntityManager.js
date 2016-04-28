@@ -6,9 +6,7 @@ var EntitySelection = require('../../entities/EntitySelection');
  * @extends Manager
  */
 function EntityManager() {
-	Manager.call(this);
-
-	this.type = 'EntityManager';
+	Manager.call(this, { type: 'EntityManager' });
 
 	this._entitiesById = new Map();
 	this._entitiesByIndex = new Map();

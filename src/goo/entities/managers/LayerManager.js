@@ -5,7 +5,8 @@ var Manager = require('./Manager');
  * @extends Manager
  */
 function LayerManager() {
-
+	Manager.call(this, { type: 'LayerManager' });
+	
 	// All the layer names
 	this.layers = [];
 
