@@ -1051,7 +1051,10 @@ ShaderLib.lightDepth = {
 	].join('\n'),
 	fshader: [
 	'#if SHADOW_TYPE == 2',
+		'#extension GL_OES_standard_derivatives : enable',
 		'uniform float cameraScale;',
+		'uniform float near;',
+		'uniform float far;',
 	'#endif',
 
 	'varying vec4 worldPosition;',
@@ -1065,8 +1068,11 @@ ShaderLib.lightDepth = {
 		'#elif SHADOW_TYPE == 1',
 			'gl_FragColor = packDepth(gl_FragCoord.z);',
 		'#elif SHADOW_TYPE == 2',
-			'float linearDepth = length(worldPosition) * cameraScale;',
-			'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
+			'float depth = length(worldPosition) * cameraScale;',
+			'float dx = dFdx(depth);',
+			'float dy = dFdy(depth);',
+			'gl_FragColor = vec4(depth, pow(depth, 2.0) + 0.25*(dx*dx + dy*dy), 0.0, 1.0);',
+
 		'#endif',
 	'}'
 	].join('\n')

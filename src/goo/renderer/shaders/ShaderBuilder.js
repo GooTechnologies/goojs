@@ -418,16 +418,17 @@ ShaderBuilder.light = {
 			'uniform vec4 materialSpecular;',
 			'uniform vec2 wrapSettings;',
 
-			// 'float VsmFixLightBleed(in float pMax, in float amount) {',
-			// 	'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
-			// '}',
+			'float linstep(float low, float high, float v) {',
+				'return clamp((v-low)/(high-low), 0.0, 1.0);',
+			'}',
 
-			'float ChebychevInequality(in vec2 moments, in float t) {',
-				'if ( t <= moments.x ) return 1.0;',
-				'float variance = moments.y - (moments.x * moments.x);',
-				'variance = max(variance, 0.02);',
-				'float d = t - moments.x;',
-				'return variance / (variance + d * d);',
+			'float VSM(sampler2D depths, vec2 uv, float compare) {',
+				'vec2 moments = texture2D(depths, uv).xy;',
+				'float p = smoothstep(compare-0.02, compare, moments.x);',
+				'float variance = max(moments.y - moments.x*moments.x, -0.001);',
+				'float d = compare - moments.x;',
+				'float p_max = linstep(0.2, 1.0, variance / (variance + d*d));',
+				'return clamp(max(p, p_max), 0.0, 1.0);',
 			'}'
 		);
 
@@ -582,11 +583,8 @@ ShaderBuilder.light = {
 						} else if (light.shadowSettings.shadowType === 'VSM') {
 							fragment.push(
 								'depth.z = length(vWorldPos.xyz - shadowLightPositions' + i + ') * cameraScales' + i + ';',
-								'vec4 texel = texture2D(shadowMaps' + i + ', depth.xy);',
-								'vec2 moments = vec2(texel.x, texel.y);',
-								'shadow = ChebychevInequality(moments, depth.z);',
-								// 'shadow = VsmFixLightBleed(shadow, 0.5);'
-								'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
+								'shadow = VSM(shadowMaps' + i + ', depth.xy, depth.z);'
+								// 'shadow = pow(shadow, shadowDarkness' + i + ' * 8.0);'
 							);
 						} else {
 							fragment.push(

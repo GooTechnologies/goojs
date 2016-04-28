@@ -8,6 +8,7 @@ var RenderTarget = require('../../renderer/pass/RenderTarget');
 var Vector4 = require('../../math/Vector4');
 var PointLight = require('../../renderer/light/PointLight');
 var SpotLight = require('../../renderer/light/SpotLight');
+var BoundingSphere = require('../../renderer/bounds/BoundingSphere');
 
 /**
  * Handles shadow techniques
@@ -91,6 +92,21 @@ ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, 
 		this.first = false;
 		return;
 	}
+
+	this.shadowList.length = 0;
+	for (var j = 0; j < entities.length; j++) {
+		var entity = entities[j];
+		if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows && !entity.isSkybox) {
+			this.shadowList.push(entity);
+		}
+	}
+
+	var bounds = new BoundingSphere();
+	for (var j = 0; j < this.shadowList.length; j++) {
+		var entity = this.shadowList[j];
+		bounds.merge(entity.meshRendererComponent.worldBound);
+	}
+
 	for (var i = 0; i < lights.length; i++) {
 		var light = lights[i];
 
@@ -113,6 +129,14 @@ ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, 
 				lightCamera.lookAt(tmpVec, shadowSettings.upVector);
 			} else {
 				lightCamera.lookAt(Vector3.ZERO, shadowSettings.upVector);
+			}
+			
+			var vec = new Vector3();
+			var dist = vec.set(light.translation).sub(bounds.center).length();
+			shadowSettings.near = Math.max(dist - bounds.radius, 1);
+			shadowSettings.far = dist + bounds.radius;
+			if (light.range) {
+				shadowSettings.far = Math.min(shadowSettings.far, light.range);
 			}
 
 			// Update settings
@@ -152,7 +176,7 @@ ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, 
 				record.size = shadowSettings.size;
 			}
 
-			if (shadowSettings.shadowType === 'VSM' && record.shadowType !== shadowSettings.shadowType) {
+			if (record.shadowType !== shadowSettings.shadowType) {
 				this._createShadowData(shadowSettings, renderer);
 
 				record.shadowType = shadowSettings.shadowType;
@@ -173,13 +197,6 @@ ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, 
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
 
-				this.shadowList.length = 0;
-				for (var j = 0; j < entities.length; j++) {
-					var entity = entities[j];
-					if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows && !entity.isSkybox) {
-						this.shadowList.push(entity);
-					}
-				}
 				partitioner.process(lightCamera, this.shadowList, this.renderList);
 				renderer.render(this.renderList, lightCamera, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
 
