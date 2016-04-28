@@ -6,7 +6,7 @@ var Manager = require('./Manager');
  */
 function LayerManager() {
 	Manager.call(this, { type: 'LayerManager' });
-	
+
 	// All the layer names
 	this.layers = [];
 
@@ -32,7 +32,7 @@ LayerManager.prototype.getMaskFromLayers = function (layers) {
 	var mask = 0;
 	var l = layers.length;
 	while (l--) {
-		mask |= layers[l];
+		mask |= Math.pow(2, layers[l]);
 	}
 	return mask;
 };
@@ -43,8 +43,7 @@ LayerManager.prototype.getMaskFromLayers = function (layers) {
  * @param {string} name
  */
 LayerManager.prototype.setName = function (layer, name) {
-	var index = Math.log2(layer);
-	this.layers[index] = name;
+	this.layers[layer] = name;
 };
 
 /**
@@ -67,21 +66,16 @@ LayerManager.prototype.getMaskFromNames = function (names) {
  * @returns {string}
  */
 LayerManager.prototype.layerToName = function (layer) {
-	var index = Math.log2(layer);
-	return this.layers[index];
+	return this.layers[layer];
 };
 
 /**
- * Returns the layer for the given name, or 0 if the name does not exist.
+ * Returns the layer for the given name, or -1 if the name does not exist.
  * @param {string} name
  * @returns {number}
  */
 LayerManager.prototype.nameToLayer = function (name) {
-	var index = this.layers.indexOf(name);
-	if (index === -1) {
-		return -1;
-	}
-	return this.layers[index];
+	return this.layers.indexOf(name);
 };
 
 module.exports = LayerManager;

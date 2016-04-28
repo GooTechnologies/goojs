@@ -89,6 +89,7 @@ EntityHandler.prototype._update = function (ref, config, options) {
 		if (!entity) { return; }
 		entity.id = ref;
 		entity.name = config.name;
+		entity.layer = config.layer;
 		entity.static = !!config.static;
 
 		updateTags(entity, config.tags);

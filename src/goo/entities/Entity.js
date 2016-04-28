@@ -64,7 +64,7 @@ function Entity(world, name, id) {
 	 */
 	this.static = false;
 
-	this._layer = 1;
+	this._layer = 0;
 
 	Entity.entityCount++;
 }

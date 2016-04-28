@@ -180,7 +180,7 @@ ColliderComponent.updateLayerAndMask = function (entity) {
 	var cannonShape = entity.colliderComponent.cannonShape;
 	if (cannonShape) {
 		cannonShape.collisionFilterMask = entity._world.getSystem('PhysicsSystem').getLayerMask(layer);
-		cannonShape.collisionFilterGroup = layer;
+		cannonShape.collisionFilterGroup = Math.pow(2, layer);
 	}
 };
 

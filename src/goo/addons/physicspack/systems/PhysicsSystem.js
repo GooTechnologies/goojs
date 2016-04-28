@@ -113,25 +113,33 @@ PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 PhysicsSystem.prototype.constructor = PhysicsSystem;
 
 /**
+ * Make the system ignore (or un-ignore) collisions between layerA or layerB.
  * @param  {number} layerA
  * @param  {number} layerB
  * @param  {boolean} [ignore=true]
  */
 PhysicsSystem.prototype.ignoreLayerCollision = function (layerA, layerB, ignore) {
 	ignore = ignore !== undefined ? ignore : true;
-	var indexA = Math.log2(layerA);
-	var indexB = Math.log2(layerB);
+	var maskA = Math.pow(2, layerA);
+	var maskB = Math.pow(2, layerB);
 	var masks = this.masks;
 	if (ignore) {
-		masks[indexA] |= layerB;
-		masks[indexB] |= layerA;
+		masks[layerA] &= ~maskB;
+		masks[layerB] &= ~maskA;
 	} else {
-		masks[indexA] &= ~layerB;
-		masks[indexB] &= ~layerA;
+		masks[layerA] |= maskB;
+		masks[layerB] |= maskA;
 	}
 
-	// TODO: update all physics components
 	this.updateLayersAndMasks();
+};
+
+/**
+ * @param  {number} layerA
+ * @param  {number} layerB
+ */
+PhysicsSystem.prototype.getIgnoreLayerCollision = function (layerA, layerB) {
+	return !(this.masks[layerA] & Math.pow(2, layerB));
 };
 
 PhysicsSystem.prototype.updateLayersAndMasks = function () {
@@ -142,22 +150,12 @@ PhysicsSystem.prototype.updateLayersAndMasks = function () {
 };
 
 /**
- * @param  {number} layerA
- * @param  {number} layerB
- */
-PhysicsSystem.prototype.getIgnoreLayerCollision = function (layerA, layerB) {
-	var indexA = Math.log2(layerA);
-	return !!(this.masks[indexA] & layerB);
-};
-
-/**
  * Returns the current layer mask for the given layer.
  * @param  {number} layer
  * @return {number}
  */
 PhysicsSystem.prototype.getLayerMask = function (layer) {
-	var index = Math.log2(layer);
-	return this.masks[index];
+	return this.masks[layer];
 };
 
 /**
