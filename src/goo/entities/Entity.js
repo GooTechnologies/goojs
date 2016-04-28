@@ -74,6 +74,7 @@ Entity.prototype.constructor = Entity;
 Object.defineProperties(Entity.prototype, {
 
 	/**
+	 * The layer the entity is in. A layer is in the range 0 to 31. Layers can be used for selective rendering from cameras or ignoring raycasts.
 	 * @target-class Entity layer member
 	 * @type {number}
 	 */
