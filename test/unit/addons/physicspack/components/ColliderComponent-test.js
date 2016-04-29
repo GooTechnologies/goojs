@@ -46,9 +46,6 @@ describe('ColliderComponent', function () {
 		entity.layer = layer;
 		system.ignoreLayerCollision(4,5);
 
-		expect(system.getIgnoreLayerCollision(4,5)).toBeTruthy();
-		expect(system.getIgnoreLayerCollision(4,6)).toBeFalsy();
-
 		colliderComponent.initialize();
 
 		expect(colliderComponent.cannonShape.collisionFilterGroup).toBe(Math.pow(2, 4));

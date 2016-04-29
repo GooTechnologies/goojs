@@ -793,4 +793,22 @@ describe('PhysicsSystem', function () {
 		system.play();
 		world.fixedUpdate();
 	});
+
+	it('can ignore layer collision', function () {
+		system.ignoreLayerCollision(4,5);
+
+		expect(system.getIgnoreLayerCollision(4,5)).toBeTruthy();
+		expect(system.getIgnoreLayerCollision(4,6)).toBeFalsy();
+
+		system.ignoreLayerCollision(4,5, false);
+
+		expect(system.getIgnoreLayerCollision(4,5)).toBeFalsy();
+	});
+
+	it('can get a layer mask', function () {
+		system.ignoreLayerCollision(4,5);
+
+		var mask = system.getLayerMask(4);
+		expect(mask).toBe(-1 & (~Math.pow(2, 5))); // Everything minus 5
+	});
 });
