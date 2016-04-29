@@ -621,53 +621,46 @@ Matrix4.prototype.scale = function (scale) {
 	return this;
 };
 
-Matrix4.prototype.decompose = (function () {
-	var vector;
-	return function (position, rotation, scale) {
-		if (vector === undefined) {
-			vector = new Vector3();
-		}
+Matrix4.prototype.decompose = function (position, rotation, scale) {
+	var te = this.data;
+	var sx = position.set(te[0], te[1], te[2]).length();
+	var sy = position.set(te[4], te[5], te[6]).length();
+	var sz = position.set(te[8], te[9], te[10]).length();
 
-		var te = this.data;
-		var sx = vector.set(te[ 0 ], te[ 1 ], te[ 2 ]).length();
-		var sy = vector.set(te[ 4 ], te[ 5 ], te[ 6 ]).length();
-		var sz = vector.set(te[ 8 ], te[ 9 ], te[ 10 ]).length();
+	// if determine is negative, we need to invert one scale
+	var det = this.determinant();
+	if ( det < 0 ) {
+		sx = - sx;
+	}
 
-		// if determine is negative, we need to invert one scale
-		var det = this.determinant();
-		if ( det < 0 ) {
-			sx = - sx;
-		}
+	position.x = te[12];
+	position.y = te[13];
+	position.z = te[14];
 
-		position.x = te[ 12 ];
-		position.y = te[ 13 ];
-		position.z = te[ 14 ];
+	// scale the rotation part
+	rotation.copyMatrix4(this);
 
-		// scale the rotation part
-		rotation.copyMatrix4(this); // at this point matrix is incomplete so we can't use .copy()
+	var invSX = 1 / sx;
+	var invSY = 1 / sy;
+	var invSZ = 1 / sz;
 
-		var invSX = 1 / sx;
-		var invSY = 1 / sy;
-		var invSZ = 1 / sz;
+	var rt = rotation.data;
+	rt[ 0 ] *= invSX;
+	rt[ 1 ] *= invSX;
+	rt[ 2 ] *= invSX;
+	rt[ 3 ] *= invSY;
+	rt[ 4 ] *= invSY;
+	rt[ 5 ] *= invSY;
+	rt[ 6 ] *= invSZ;
+	rt[ 7 ] *= invSZ;
+	rt[ 8 ] *= invSZ;
 
-		var rt = rotation.data;
-		rt[ 0 ] *= invSX;
-		rt[ 1 ] *= invSX;
-		rt[ 2 ] *= invSX;
-		rt[ 3 ] *= invSY;
-		rt[ 4 ] *= invSY;
-		rt[ 5 ] *= invSY;
-		rt[ 6 ] *= invSZ;
-		rt[ 7 ] *= invSZ;
-		rt[ 8 ] *= invSZ;
+	scale.x = sx;
+	scale.y = sy;
+	scale.z = sz;
 
-		scale.x = sx;
-		scale.y = sy;
-		scale.z = sz;
-
-		return this;
-	};
-})();
+	return this;
+};
 
 /**
  * Compares two matrices for approximate equality
