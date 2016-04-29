@@ -59,8 +59,6 @@ Vector.setupAliases(Vector4.prototype, [['x'], ['y'], ['z'], ['w']]);
 Vector.setupIndices(Vector4.prototype, 4);
 // @endif
 
-Vector.setupAliases(Vector4.prototype, [['r'], ['g'], ['b'], ['a']]);
-
 /**
  * Zero-vector (0, 0, 0, 0)
  * @type {Vector4}

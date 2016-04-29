@@ -71,14 +71,6 @@ describe('Vector3', function () {
 			expect(vector.x).toBeCloseTo(11);
 			expect(vector.y).toBeCloseTo(22);
 			expect(vector.z).toBeCloseTo(33);
-
-			expect(vector.u).toBeCloseTo(11);
-			expect(vector.v).toBeCloseTo(22);
-			expect(vector.w).toBeCloseTo(33);
-
-			expect(vector.r).toBeCloseTo(11);
-			expect(vector.g).toBeCloseTo(22);
-			expect(vector.b).toBeCloseTo(33);
 		});
 
 		it('can be modified through aliases', function () {
@@ -89,18 +81,6 @@ describe('Vector3', function () {
 			vector.z = 33;
 
 			expect(vector).toBeCloseToVector(new Vector3(11, 22, 33));
-
-			vector.u = 22;
-			vector.v = 33;
-			vector.w = 44;
-
-			expect(vector).toBeCloseToVector(new Vector3(22, 33, 44));
-
-			vector.r = 33;
-			vector.g = 44;
-			vector.b = 55;
-
-			expect(vector).toBeCloseToVector(new Vector3(33, 44, 55));
 		});
 	});
 

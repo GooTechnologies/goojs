@@ -149,11 +149,76 @@ describe('Matrix4', function () {
 		expect(new Matrix4().setScale(new Vector3(1, 2, 3))).toBeCloseToMatrix(new Matrix4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1));
 	});
 
+	it('can set scale the matrix', function () {
+		expect(new Matrix4().setScale(new Vector3(1, 2, 3)).scale(new Vector3(1, 2, 3))).toBeCloseToMatrix(new Matrix4(1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1));
+	});
+
 	it('can get rotational part', function () {
 		var original = new Matrix4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
 		var rotation = new Matrix3();
 		original.getRotation(rotation);
 		expect(rotation).toBeCloseToMatrix(new Matrix3(10, 20, 30, 50, 60, 70, 90, 100, 110));
+	});
+
+	describe('decompose', function () {
+		it('can decompose with translation', function () {
+			var matrix = new Matrix4();
+			matrix.setTranslation(new Vector3(1, 2, 3));
+
+			var position = new Vector3();
+			var rotation = new Matrix3();
+			var scale = new Vector3();
+			matrix.decompose(position, rotation, scale);
+
+			expect(position).toBeCloseToVector(new Vector3(1, 2, 3));
+			expect(rotation).toBeCloseToMatrix(new Matrix3());
+			expect(scale).toBeCloseToVector(new Vector3(1, 1, 1));
+		});
+
+		it('can decompose with rotation', function () {
+			var matrix = new Matrix4();
+			matrix.setRotationFromVector(new Vector3(0, Math.PI / 4, 0));
+
+			var position = new Vector3();
+			var rotation = new Matrix3();
+			var scale = new Vector3();
+			matrix.decompose(position, rotation, scale);
+
+			expect(position).toBeCloseToVector(new Vector3(0, 0, 0));
+			var a = 1.0 / Math.sqrt(2.0);
+			expect(rotation).toBeCloseToMatrix(new Matrix3(a, 0, -a, 0, 1, 0, a, 0, a));
+			expect(scale).toBeCloseToVector(new Vector3(1, 1, 1));
+		});
+
+		it('can decompose with scale', function () {
+			var matrix = new Matrix4();
+			matrix.setScale(new Vector3(1, 2, 3));
+
+			var position = new Vector3();
+			var rotation = new Matrix3();
+			var scale = new Vector3();
+			matrix.decompose(position, rotation, scale);
+
+			expect(position).toBeCloseToVector(new Vector3(0, 0, 0));
+			expect(rotation).toBeCloseToMatrix(new Matrix3());
+			expect(scale).toBeCloseToVector(new Vector3(1, 2, 3));
+		});
+
+		it('can decompose with rotation and translation', function () {
+			var matrix = new Matrix4();
+			matrix.setRotationFromVector(new Vector3(0, Math.PI / 4, 0));
+			matrix.setTranslation(new Vector3(1, 2, 3));
+
+			var position = new Vector3();
+			var rotation = new Matrix3();
+			var scale = new Vector3();
+			matrix.decompose(position, rotation, scale);
+
+			expect(position).toBeCloseToVector(new Vector3(1, 2, 3));
+			var a = 1.0 / Math.sqrt(2.0);
+			expect(rotation).toBeCloseToMatrix(new Matrix3(a, 0, -a, 0, 1, 0, a, 0, a));
+			expect(scale).toBeCloseToVector(new Vector3(1, 1, 1));
+		});
 	});
 
 	describe('add', function () {

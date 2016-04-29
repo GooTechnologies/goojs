@@ -76,10 +76,6 @@ describe('Vector4', function () {
 			expect(a.y).toEqual(2);
 			expect(a.z).toEqual(3);
 			expect(a.w).toEqual(4);
-			expect(a.r).toEqual(1);
-			expect(a.g).toEqual(2);
-			expect(a.b).toEqual(3);
-			expect(a.a).toEqual(4);
 		});
 
 		it('can be modified through aliases', function () {
@@ -91,13 +87,6 @@ describe('Vector4', function () {
 			a.w = 4;
 
 			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-
-			a.r = 2;
-			a.g = 3;
-			a.b = 4;
-			a.a = 5;
-
-			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 		});
 	});
 

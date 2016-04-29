@@ -463,15 +463,16 @@ Matrix4.prototype.setRotationFromVector = function (angles) {
 	var sz = Math.sin(angles.z);
 	var cz = Math.cos(angles.z);
 
-	this.e00 = cz * cy;
-	this.e10 = sz * cy;
-	this.e20 = 0.0 - sy;
-	this.e01 = cz * sy * sx - sz * cx;
-	this.e11 = sz * sy * sx + cz * cx;
-	this.e21 = cy * sx;
-	this.e02 = cz * sy * cx + sz * sx;
-	this.e12 = sz * sy * cx - cz * sx;
-	this.e22 = cy * cx;
+	var d = this.data;
+	d[0] = cz * cy;
+	d[1] = sz * cy;
+	d[2] = 0.0 - sy;
+	d[4] = cz * sy * sx - sz * cx;
+	d[5] = sz * sy * sx + cz * cx;
+	d[6] = cy * sx;
+	d[8] = cz * sy * cx + sz * sx;
+	d[9] = sz * sy * cx - cz * sx;
+	d[10] = cy * cx;
 
 	return this;
 };
@@ -500,15 +501,16 @@ Matrix4.prototype.setRotationFromQuaternion = function (quaternion) {
 	var yc = quaternion.y * c;
 	var zc = quaternion.z * c;
 
-	this.e00 = 1.0 - yb - zc;
-	this.e10 = xb + wc;
-	this.e20 = xc - wb;
-	this.e01 = xb - wc;
-	this.e11 = 1.0 - xa - zc;
-	this.e21 = yc + wa;
-	this.e02 = xc + wb;
-	this.e12 = yc - wa;
-	this.e22 = 1.0 - xa - yb;
+	var d = this.data;
+	d[0] = 1.0 - yb - zc;
+	d[1] = xb + wc;
+	d[2] = xc - wb;
+	d[4] = xb - wc;
+	d[5] = 1.0 - xa - zc;
+	d[6] = yc + wa;
+	d[8] = xc + wb;
+	d[9] = yc - wa;
+	d[10] = 1.0 - xa - yb;
 
 	return this;
 };
@@ -519,9 +521,9 @@ Matrix4.prototype.setRotationFromQuaternion = function (quaternion) {
  * @returns {Matrix4} Self for chaining.
  */
 Matrix4.prototype.setTranslation = function (translation) {
-	this.e03 = translation.x;
-	this.e13 = translation.y;
-	this.e23 = translation.z;
+	this.data[12] = translation.x;
+	this.data[13] = translation.y;
+	this.data[14] = translation.z;
 
 	return this;
 };
@@ -585,20 +587,41 @@ Matrix4.prototype.getScale = function (store) {
  * @returns {Matrix4} Self for chaining.
  */
 Matrix4.prototype.setScale = function (scale) {
-	this.e00 *= scale.x;
-	this.e10 *= scale.y;
-	this.e20 *= scale.z;
-	this.e01 *= scale.x;
-	this.e11 *= scale.y;
-	this.e21 *= scale.z;
-	this.e02 *= scale.x;
-	this.e12 *= scale.y;
-	this.e22 *= scale.z;
+	var td = this.data;
+	var x = scale.x, y = scale.y, z = scale.z;
+
+	td[0] = x;
+	td[5] = y;
+	td[10] = z;
 
 	return this;
 };
 
-Matrix4.prototype.decompose = function () {
+/**
+ * Scales the matrix.
+ * @param {Vector3} scale Scale vector.
+ * @returns {Matrix4} Self for chaining.
+ */
+Matrix4.prototype.scale = function (scale) {
+	var td = this.data;
+	var x = scale.x, y = scale.y, z = scale.z;
+
+	td[0] *= x;
+	td[1] *= y;
+	td[2] *= z;
+
+	td[4] *= x;
+	td[5] *= y;
+	td[6] *= z;
+
+	td[8] *= x;
+	td[9] *= y;
+	td[10] *= z;
+
+	return this;
+};
+
+Matrix4.prototype.decompose = (function () {
 	var vector;
 	return function (position, rotation, scale) {
 		if (vector === undefined) {
@@ -644,7 +667,7 @@ Matrix4.prototype.decompose = function () {
 
 		return this;
 	};
-};
+})();
 
 /**
  * Compares two matrices for approximate equality
