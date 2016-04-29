@@ -1,21 +1,23 @@
 goo.V.attachToGlobal();
 
-V.describe('GridRenderSystem Test');
+V.describe('VRRenderSystem Test');
 
 var gooRunner = V.initGoo();
 var world = gooRunner.world;
 
-var gridRenderSystem = new GridRenderSystem();
-gooRunner.renderSystems.push(gridRenderSystem);
-world.setSystem(gridRenderSystem);
+var vrRenderSystem = new VRRenderSystem(gooRunner.renderer);
+gooRunner.setRenderSystem(vrRenderSystem, 0);
+
 
 V.addLights();
 
 document.body.addEventListener('keypress', function (e) {
 	switch (e.keyCode) {
 		case 49:
+			vrRenderSystem.setFullScreen(true);
 			break;
 		case 50:
+			GameUtils.toggleFullScreen();
 			break;
 		case 51:
 			break;
@@ -27,27 +29,19 @@ document.body.addEventListener('keypress', function (e) {
 // cameraEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
 
 // add camera
-var camera = new Camera(undefined, undefined, 1, 10000);
-var cameraEntity = gooRunner.world.createEntity(camera, 'CameraEntity', [0, 10, 20]).lookAt([0, 0, 0]).addToWorld();
+var camera = new Camera(undefined, undefined, 1, 1000);
+var cameraEntity = world.createEntity(camera, 'CameraEntity').addToWorld();
 
 // camera control set up
 var scripts = new ScriptComponent();
-var wasdScript = Scripts.create('WASD', {
-	domElement: gooRunner.renderer.domElement,
-	walkSpeed: 1000,
-	crawlSpeed: 20
+var wasdScript = Scripts.create('VRControllerScript', {
 });
-
-// WASD control script to move around
 scripts.scripts.push(wasdScript);
-
-// the FPCam script itself that locks the pointer and moves the camera
-var fpScript = Scripts.create('MouseLookScript', {
-	domElement: gooRunner.renderer.domElement
-});
-scripts.scripts.push(fpScript);
-
 cameraEntity.setComponent(scripts);
+
+var entity = world.createEntity('ParentEntity').addToWorld();
+entity.attachChild(cameraEntity);
+entity.setTranslation(0, 2, 10);
 
 world.createEntity('Box', new Box(20, 0.1, 20), new Material(ShaderLib.simpleLit)).addToWorld();
 world.createEntity('Sphere', new Sphere(8, 8, 1), new Material(ShaderLib.simpleLit)).addToWorld();

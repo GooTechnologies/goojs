@@ -394,6 +394,14 @@ Renderer.prototype.setSize = function (width, height, fullWidth, fullHeight) {
 };
 
 /**
+ * Gets viewport size
+ * @returns {object} Viewport size { width: vieportWidth, height: viewportHeight }
+ */
+Renderer.prototype.getSize = function () {
+	return { width: this.viewportWidth, height: this.viewportHeight };
+};
+
+/**
  * Sets this.viewportX and viewportY to the parameters or to 0.
  * Sets this.viewportWidth and viewportHeight to the parameters or to this.domElement.width and height.
  * Finally it calls this.context.viewport(x, y, w, h) with the resulting values.
@@ -417,6 +425,14 @@ Renderer.prototype.setViewport = function (x, y, width, height) {
 		width: this.viewportWidth,
 		height: this.viewportHeight
 	}, true);
+};
+
+Renderer.prototype.getPixelRatio = function () {
+	return this.devicePixelRatio;	
+};
+
+Renderer.prototype.setPixelRatio = function (ratio) {
+	this.devicePixelRatio = ratio;	
 };
 
 /**

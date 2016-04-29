@@ -27,11 +27,13 @@ function RenderSystem() {
 	this.partitioningCamera = null;
 
 	this.camera = null;
+	this.cameraEntity = null;
 	this.lights = [];
 	this.currentTpf = 0.0;
 
 	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 		this.camera = newCam.camera;
+		this.cameraEntity = newCam.entity;
 	}.bind(this));
 
 	SystemBus.addListener('goo.setLights', function (lights) {

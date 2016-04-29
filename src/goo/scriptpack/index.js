@@ -18,6 +18,7 @@ module.exports = {
 	ScriptHandlers: require('./ScriptHandlers'),
 	ScriptRegister: require('./ScriptRegister'),
 	SparseHeightMapBoundingScript: require('./SparseHeightMapBoundingScript'),
+	VRControllerScript: require('./VRControllerScript'),
 	WasdControlScript: require('./WasdControlScript'),
 	WorldFittedTerrainScript: require('./WorldFittedTerrainScript')
 };

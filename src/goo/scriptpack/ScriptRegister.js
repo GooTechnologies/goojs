@@ -10,7 +10,8 @@ var scripts = {
 	WasdControlScript: require('./WasdControlScript'),
 	ButtonScript: require('./ButtonScript'),
 	PickAndRotateScript: require('./PickAndRotateScript'),
-	LensFlareScript: require('./LensFlareScript')
+	LensFlareScript: require('./LensFlareScript'),
+	VRControllerScript: require('./VRControllerScript')
 };
 
 for (var key in scripts) {

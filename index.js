@@ -179,6 +179,7 @@ module.exports = {
 	Vector3: require('./src/goo/math/Vector3'),
 	Vector4: require('./src/goo/math/Vector4'),
 	Vector: require('./src/goo/math/Vector'),
+	VRRenderSystem: require('./src/goo/entities/systems/VRRenderSystem'),
 	World: require('./src/goo/entities/World')
 };
 
