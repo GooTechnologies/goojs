@@ -66,9 +66,9 @@ EventChannel.prototype.update = function (time) {
 };
 
 /**
- * No events need be fired when scrubbing the timeline
+ * Scrubbing the time. No events need be fired here.
  * @private
- * @param time
+ * @param {number} time
  */
 EventChannel.prototype.setTime = function (time) {
 	if (!this.enabled) { return this; }
