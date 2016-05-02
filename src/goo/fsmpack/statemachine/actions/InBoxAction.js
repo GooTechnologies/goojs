@@ -88,11 +88,7 @@ InBoxAction.prototype.checkInside = function () {
 
 	var inside = checkInside([translation.x, translation.y, translation.z], this.point1, this.point2);
 
-	if (inside) {
-		this.sendEvent('inside');
-	} else {
-		this.sendEvent('outside');
-	}
+	this.sendEvent(inside ? 'inside' : 'outside');
 };
 
 InBoxAction.prototype.enter = function () {

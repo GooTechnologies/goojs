@@ -4,6 +4,7 @@ var StateMachineComponent = require('../StateMachineComponent');
 /**
  * @param {object} [options]
  * @param {string} [options.id]
+ * @param {Object} [options.transitions]
  * @param {Object} [options.settings]
  * @param {State} [options.parent]
  * @private
@@ -35,16 +36,21 @@ function Action(options) {
 	}
 }
 
+/**
+ * Returns the (root) entity that the action is on.
+ * @returns {Entity}
+ */
 Action.prototype.getEntity = function () {
-	if (this.parent instanceof State) {
-		return this.parent.machine.getEntity();
-	} else if (this.parent instanceof StateMachineComponent) {
-		return this.parent.entity;
+	var parent = this.parent;
+	if (parent instanceof State) {
+		return parent.machine.getEntity();
+	} else if (parent instanceof StateMachineComponent) {
+		return parent.entity;
 	}
 };
 
 /**
- * Send an event to signal that something happened in the Action.
+ * Send an event, to trigger a transition. The event name must be listed among the transitions.
  * @param {object} settings
  */
 Action.prototype.sendEvent = function (eventName) {
