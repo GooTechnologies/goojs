@@ -3,7 +3,6 @@ var _actions = {};
 var Actions = function () {};
 
 var IGNORED_ACTIONS = [
-	'Eval',
 	'HTMLPick',
 	'Remove',
 	'Collides',
@@ -77,7 +76,6 @@ var allActions = {
 	RandomTransitionAction: require('./RandomTransitionAction'),
 	EmitAction: require('./EmitAction'),
 	TransitionOnMessageAction: require('./TransitionOnMessageAction'),
-	EvalAction: require('./EvalAction'),
 	HideAction: require('./HideAction'),
 	ShowAction: require('./ShowAction'),
 	RemoveAction: require('./RemoveAction'),

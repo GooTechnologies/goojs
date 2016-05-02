@@ -2,7 +2,7 @@ var Action = require('./Action');
 var Vector3 = require('../../../math/Vector3');
 var SystemBus = require('../../../entities/SystemBus');
 
-function ApplyForceAction(/*id, settings*/) {
+function ApplyForceAction() {
 	Action.apply(this, arguments);
 }
 

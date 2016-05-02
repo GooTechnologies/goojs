@@ -7,7 +7,7 @@ var keys = {
 	39: 'right'
 };
 
-function ArrowsAction(/*id, settings*/) {
+function ArrowsAction() {
 	Action.apply(this, arguments);
 }
 

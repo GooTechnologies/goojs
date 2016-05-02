@@ -82,28 +82,28 @@ function checkInside(pos, pt1, pt2) {
 	return inside;
 }
 
-InBoxAction.prototype.checkInside = function (fsm) {
-	var entity = fsm.getOwnerEntity();
-	var translation = entity.transformComponent.sync().worldTransform.translation;
+InBoxAction.prototype.checkInside = function () {
+	var entity = this.getEntity();
+	var translation = entity.transformComponent.getWorldTranslation();
 
 	var inside = checkInside([translation.x, translation.y, translation.z], this.point1, this.point2);
 
 	if (inside) {
-		fsm.send(this.transitions.inside);
+		this.sendEvent('inside');
 	} else {
-		fsm.send(this.transitions.outside);
+		this.sendEvent('outside');
 	}
 };
 
-InBoxAction.prototype.enter = function (fsm) {
+InBoxAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.checkInside(fsm);
+		this.checkInside();
 	}
 };
 
-InBoxAction.prototype.update = function (fsm) {
+InBoxAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.checkInside(fsm);
+		this.checkInside();
 	}
 };
 

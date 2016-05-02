@@ -74,7 +74,4 @@ ScriptAction.prototype.exit = function () {
 	}
 };
 
-ScriptAction.prototype.onDestroy = function () {
-};
-
 module.exports = ScriptAction;

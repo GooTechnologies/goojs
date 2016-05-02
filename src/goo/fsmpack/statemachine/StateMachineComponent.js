@@ -3,22 +3,48 @@ var ArrayUtils = require('../../util/ArrayUtils');
 var SystemBus = require('../../entities/SystemBus');
 
 /**
- * StateMachineComponent
- * @private
+ * StateMachineComponent.
+ * @extends {Component}
  */
 function StateMachineComponent() {
 	Component.apply(this, arguments);
 
 	this.type = 'StateMachineComponent';
 
-	this._machines = [];
-	this._machinesById = {};
-	this.entity = null;
+	/**
+	 * @type {Array<Machine>}
+	 */
+	this.machines = [];
+
+	/**
+	 * @type {object}
+	 */
+	this.machinesById = {};
+
+	/**
+	 * @type {object}
+	 */
 	this.vars = {};
+
+	/**
+	 * Read only, set by the StateMachineSystem.
+	 * @type {StateMachineSystem}
+	 */
 	this.system = null;
+
+	/**
+	 * @type {number}
+	 */
 	this.time = 0;
+
+	/**
+	 * @type {boolean}
+	 */
 	this.entered = false;
 
+	/**
+	 * @type {boolean}
+	 */
 	this.active = true;
 }
 
@@ -68,15 +94,15 @@ StateMachineComponent.applyOnVariable = function (name, fun) {
 
 StateMachineComponent.prototype.addMachine = function (machine) {
 	machine.parent = this;
-	machine.setRefs(this);
-	this._machines.push(machine);
-	this._machinesById[machine.id] = machine;
+	this.machines.push(machine);
+	this.machinesById[machine.id] = machine;
 };
 
 StateMachineComponent.prototype.removeMachine = function (machine) {
+	machine.parent = null;
 	machine.recursiveRemove();
-	ArrayUtils.remove(this._machines, machine);
-	delete this._machinesById[machine.id];
+	ArrayUtils.remove(this.machines, machine);
+	delete this.machinesById[machine.id];
 };
 
 /**
@@ -90,24 +116,23 @@ StateMachineComponent.prototype.removeMachine = function (machine) {
  *         machine is not in the component.
  */
 StateMachineComponent.prototype.getMachineById = function (id) {
-	return this._machinesById[id] || null;
+	return this.machinesById[id] || null;
 };
 
 /**
  * Resets all state machines to their initial state
  */
 StateMachineComponent.prototype.init = function () {
-	for (var i = 0; i < this._machines.length; i++) {
-		var machine = this._machines[i];
-		machine.setRefs(this);
+	for (var i = 0; i < this.machines.length; i++) {
+		var machine = this.machines[i];
 		machine.reset();
 		machine.ready();
 	}
 };
 
 StateMachineComponent.prototype.doEnter = function () {
-	for (var i = 0; i < this._machines.length; i++) {
-		var machine = this._machines[i];
+	for (var i = 0; i < this.machines.length; i++) {
+		var machine = this.machines[i];
 		machine.enter();
 	}
 };
@@ -116,8 +141,8 @@ StateMachineComponent.prototype.doEnter = function () {
  * Kills the state machines triggering exit functions in all current states
  */
 StateMachineComponent.prototype.kill = function () {
-	for (var i = 0; i < this._machines.length; i++) {
-		var machine = this._machines[i];
+	for (var i = 0; i < this.machines.length; i++) {
+		var machine = this.machines[i];
 		machine.kill();
 	}
 };
@@ -126,8 +151,8 @@ StateMachineComponent.prototype.kill = function () {
  * Performs a cleanup; undoes any changes not undone by exit methods
  */
 StateMachineComponent.prototype.cleanup = function () {
-	for (var i = 0; i < this._machines.length; i++) {
-		var machine = this._machines[i];
+	for (var i = 0; i < this.machines.length; i++) {
+		var machine = this.machines[i];
 		machine.cleanup();
 	}
 };
@@ -136,11 +161,12 @@ StateMachineComponent.prototype.cleanup = function () {
  * Updates the state machines
  */
 StateMachineComponent.prototype.update = function () {
-	if (this.active) {
-		for (var i = 0; i < this._machines.length; i++) {
-			var machine = this._machines[i];
-			machine.update();
-		}
+	if (!this.active) {
+		return;
+	}
+	for (var i = 0; i < this.machines.length; i++) {
+		var machine = this.machines[i];
+		machine.update();
 	}
 };
 

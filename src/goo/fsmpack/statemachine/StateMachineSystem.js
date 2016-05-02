@@ -1,13 +1,11 @@
 var System = require('../../entities/systems/System');
 
 /**
- * Processes all entities with a FSM component
- * @private
+ * StateMachine system.
  */
-function StateMachineSystem(engine) {
+function StateMachineSystem() {
 	System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
 
-	this.engine = engine;
 	this.passive = false;
 	this.paused = false;
 
@@ -16,13 +14,6 @@ function StateMachineSystem(engine) {
 	 * @type {number}
 	 */
 	this.time = 0;
-
-	this.evalProxy = {
-		// Add things that are useful from user scripts
-		test: function () {
-			console.log('test');
-		}
-	};
 
 	// actions triggered by this system typically need to run after all other systems do their job
 	this.priority = 1000;
@@ -73,8 +64,6 @@ StateMachineSystem.prototype.process = function (entities, tpf) {
 
 StateMachineSystem.prototype.inserted = function (entity) {
 	var component = entity.stateMachineComponent;
-
-	component.entity = entity;
 	component.system = this;
 	component.init();
 };

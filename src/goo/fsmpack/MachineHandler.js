@@ -61,16 +61,18 @@ MachineHandler.prototype._update = function (ref, config, options) {
 		machine.asyncMode = config.asyncMode;
 
 		// Remove old states
-		for (var key in machine._states) {
-			if (!config.states[key]) {
-				machine.removeState(key);
+		for (var id in machine.states) {
+			if (!machine.getStateById(id)) {
+				machine.removeState(id);
 			}
 		}
+
 		// Update existing states and create new ones
 		var promises = [];
-		for (var key in config.states) {
-			promises.push(that._updateState(machine, config.states[key], options));
+		for (var id in config.states) {
+			promises.push(that._updateState(machine, config.states[id], options));
 		}
+
 		return RSVP.all(promises).then(function () {
 			machine.setInitialState(config.initialState);
 			return machine;
@@ -86,32 +88,35 @@ MachineHandler.prototype._update = function (ref, config, options) {
  */
 MachineHandler.prototype._updateActions = function (state, stateConfig) {
 	// Remove old actions
-	for (var i = 0; i < state._actions.length; i++) {
-		var action = state._actions[i];
+	for (var i = 0; i < state.actions.length; i++) {
+		var action = state.actions[i];
 		if (!stateConfig.actions || !stateConfig.actions[action.id]) {
 			state.removeAction(action);
 			i--;
 		}
 	}
 
-	// Update new and existing ones
-	// For actions, order is (or will be) important
+	// Update new and existing ones.
+	// For actions, order is important.
 	var actions = [];
 	ObjectUtils.forEach(stateConfig.actions, function (actionConfig) {
-		var action = state.getAction(actionConfig.id);
+		var action = state.getActionById(actionConfig.id);
 		if (!action) {
-			var Action = Actions.actionForType(actionConfig.type);
-			action = new Action(actionConfig.id, actionConfig.options);
-			if (action.onCreate) {
-				action.onCreate(state.proxy);
-			}
-			//state.addAction(action);
+			var ActionConstructor = Actions.actionForType(actionConfig.type);
+			action = new ActionConstructor({
+				id: actionConfig.id,
+				settings: actionConfig.options
+			});
 		} else {
 			action.configure(actionConfig.options);
 		}
 		actions.push(action);
 	}, null, 'sortValue');
-	state._actions = actions;
+
+	state.removeAllActions();
+	for (var i=0; i<actions.length; i++){
+		state.addAction(actions[i]);
+	}
 };
 
 /**
@@ -120,11 +125,11 @@ MachineHandler.prototype._updateActions = function (state, stateConfig) {
  * @param {Object} config
  * @private
  */
-MachineHandler.prototype._updateTransitions = function (state, stateConfig) {
-	state._transitions = {};
-	for (var key in stateConfig.transitions) {
-		var transition = stateConfig.transitions[key];
-		state.setTransition(transition.id, transition.targetState);
+MachineHandler.prototype._updateTransitions = function (state, stateConfig, machine) {
+	state.transitions = {};
+	for (var id in stateConfig.transitions) {
+		var transition = stateConfig.transitions[id];
+		state.setTransition(transition.id, machine.getStateById(transition.targetState));
 	}
 };
 
@@ -134,48 +139,25 @@ MachineHandler.prototype._updateTransitions = function (state, stateConfig) {
  * @param {Object} config
  * @private
  */
-MachineHandler.prototype._updateState = function (machine, stateConfig, options) {
+MachineHandler.prototype._updateState = function (machine, stateConfig/*, options*/) {
 	var state;
-	if (machine._states && machine._states[stateConfig.id]) {
-		state = machine._states[stateConfig.id];
+	if (machine.states && machine.states[stateConfig.id]) {
+		state = machine.states[stateConfig.id];
 	} else {
-		state = new State(stateConfig.id);
+		state = new State({
+			id: stateConfig.id
+		});
 		machine.addState(state);
 	}
 	state.name = stateConfig.name;
 
 	// Actions
 	this._updateActions(state, stateConfig);
+
 	// Transitions
-	this._updateTransitions(state, stateConfig);
-	// Child machines
-	// Removing
-	for (var i = 0; i < state._machines; i++) {
-		var childMachine = state._machines[i];
-		if (!stateConfig.childMachines[childMachine.id]) {
-			state.removeMachine(childMachine);
-			i--;
-		}
-	}
-	// Updating
-	var promises = [];
-	for (var key in stateConfig.childMachines) {
-		promises.push(this._load(stateConfig.childMachines[key].machineRef, options));
-	}
+	this._updateTransitions(state, stateConfig, machine);
 
-	/*
-	// TODO: Test and use this. Will make the promises sorted correctly.
-	ObjectUtils.forEach(stateConfig.childMachines, function (childMachineConfig) {
-		promises.push(that._load(childMachineConfig.machineRef, options));
-	}, null, 'sortValue');
-	*/
-
-	return RSVP.all(promises).then(function (machines) {
-		for (var i = 0; i < machines; i++) {
-			state.addMachine(machines[i]);
-		}
-		return state;
-	});
+	return Promise.resolve(state);
 };
 
 module.exports = MachineHandler;

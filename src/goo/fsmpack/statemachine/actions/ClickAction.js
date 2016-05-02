@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function ClickAction(/*id, settings*/) {
+function ClickAction() {
 	Action.apply(this, arguments);
 
 	this.selected = false;

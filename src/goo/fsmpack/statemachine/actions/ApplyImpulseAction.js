@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 
-function ApplyImpulseAction(/*id, settings*/) {
+function ApplyImpulseAction() {
 	Action.apply(this, arguments);
 }
 

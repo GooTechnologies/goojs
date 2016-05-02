@@ -1,28 +1,5 @@
 function FsmUtils() {}
 
-FsmUtils.setParameters = function (settings, externalParameters) {
-	for (var i = 0; i < externalParameters.length; i++) {
-		var externalParameter = externalParameters[i];
-		var key = externalParameter.key;
-
-		if (typeof settings[key] !== 'undefined') {
-			this[key] = settings[key];
-		} else {
-			this[key] = externalParameter['default'];
-		}
-	}
-};
-
-FsmUtils.setTransitions = function (settings, externalTransitions) {
-	for (var i = 0; i < externalTransitions.length; i++) {
-		var externalTransition = externalTransitions[i];
-		var key = externalTransition.key;
-
-		this.transitions = this.transitions || {};
-		this.transitions[key] = settings.transitions[key];
-	}
-};
-
 FsmUtils.getKey = function (str) {
 	if (FsmUtils.keys[str]) {
 		return FsmUtils.keys[str];

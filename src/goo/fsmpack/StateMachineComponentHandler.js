@@ -32,8 +32,8 @@ StateMachineComponentHandler.prototype._create = function () {
 StateMachineComponentHandler.prototype._remove = function (entity) {
 	var component = entity.stateMachineComponent;
 	if (component) {
-		for (var i = component._machines.length - 1; i >= 0; i--) {
-			var machine = component._machines[i];
+		for (var i = component.machines.length - 1; i >= 0; i--) {
+			var machine = component.machines[i];
 			machine.cleanup();
 			component.removeMachine(machine);
 		}
@@ -66,18 +66,21 @@ StateMachineComponentHandler.prototype.update = function (entity, config, option
 		}, null, 'sortValue');
 
 		return RSVP.all(promises).then(function (machines) {
-			// Adding new machines
+
+			// Add new machines
 			for (var i = 0; i < machines.length; i++) {
-				if (component._machines.indexOf(machines[i]) === -1) {
+				if (component.machines.indexOf(machines[i]) === -1) {
 					component.addMachine(machines[i]);
 				}
 			}
-			// Removing old machines
-			for (var i = component._machines.length - 1; i >= 0; i--) {
-				if (machines.indexOf(component._machines[i]) === -1) {
-					component.removeMachine(component._machines[i]);
+
+			// Remove old machines
+			for (var i = component.machines.length - 1; i >= 0; i--) {
+				if (machines.indexOf(component.machines[i]) === -1) {
+					component.removeMachine(component.machines[i]);
 				}
 			}
+
 			return component;
 		});
 	});
