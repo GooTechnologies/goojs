@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function ToggleMuteAction(/*id, settings*/) {
+function ToggleMuteAction() {
 	Action.apply(this, arguments);
 }
 ToggleMuteAction.prototype = Object.create(Action.prototype);
@@ -16,8 +16,8 @@ ToggleMuteAction.external = {
 	transitions: []
 };
 
-ToggleMuteAction.prototype.enter = function (fsm) {
-	var world = fsm.getWorld();
+ToggleMuteAction.prototype.enter = function () {
+	var world = this.getEntity()._world;
 	if (!world) { return; }
 
 	var soundSystem = world.getSystem('SoundSystem');

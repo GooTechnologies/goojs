@@ -1,15 +1,11 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function WasdAction(/*id, settings*/) {
+function WasdAction() {
 	Action.apply(this, arguments);
 }
 
 WasdAction.prototype = Object.create(Action.prototype);
 WasdAction.prototype.constructor = WasdAction;
-
-WasdAction.prototype.configure = function (settings) {
-	this.targets = settings.transitions;
-};
 
 var keys = {
 	87: 'w',
@@ -51,14 +47,11 @@ WasdAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-WasdAction.prototype.enter = function (fsm) {
+WasdAction.prototype.enter = function () {
 	this.eventListener = function (event) {
 		var keyname = keys[event.which];
 		if (keyname) {
-			var target = this.targets[keyname];
-			if (typeof target === 'string') {
-				fsm.send(target);
-			}
+			this.sendEvent(keyname);
 		}
 	}.bind(this);
 

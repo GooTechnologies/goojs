@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function ShowAction(/*id, settings*/) {
+function ShowAction() {
 	Action.apply(this, arguments);
 }
 
@@ -16,9 +16,8 @@ ShowAction.external = {
 	transitions: []
 };
 
-ShowAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
-	entity.show();
+ShowAction.prototype.enter = function () {
+	this.getEntity().show();
 };
 
 module.exports = ShowAction;

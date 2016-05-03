@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function NumberCompareAction(/*id, settings*/) {
+function NumberCompareAction() {
 	Action.apply(this, arguments);
 }
 
@@ -13,9 +13,6 @@ NumberCompareAction.prototype.configure = function (settings) {
 	this.leftHand = settings.leftHand || 0;
 	this.rightHand = settings.rightHand || 0;
 	this.tolerance = settings.tolerance || 0.0001;
-	this.lessThanEvent = { channel: settings.transitions.less };
-	this.equalEvent = { channel: settings.transitions.equal };
-	this.greaterThanEvent = { channel: settings.transitions.greater };
 };
 
 NumberCompareAction.external = {
@@ -61,29 +58,29 @@ NumberCompareAction.getTransitionLabel = function (transitionKey /*, actionConfi
 	return labels[transitionKey];
 };
 
-NumberCompareAction.prototype.compare = function (fsm) {
-	var leftHand = FsmUtils.getValue(this.leftHand, fsm);
-	var rightHand = FsmUtils.getValue(this.rightHand, fsm);
+NumberCompareAction.prototype.compare = function () {
+	var leftHand = FsmUtils.getValue(this.leftHand);
+	var rightHand = FsmUtils.getValue(this.rightHand);
 	var diff = rightHand - leftHand;
 
 	if (Math.abs(diff) <= this.tolerance) {
-		if (this.equalEvent.channel) { fsm.send(this.equalEvent.channel); }
+		this.sendEvent('equal');
 	} else if (diff > 0) {
-		if (this.lessThanEvent.channel) { fsm.send(this.lessThanEvent.channel); }
+		this.sendEvent('less');
 	} else {
-		if (this.greaterThanEvent.channel) { fsm.send(this.greaterThanEvent.channel); }
+		this.sendEvent('greater');
 	}
 };
 
-NumberCompareAction.prototype.enter = function (fsm) {
+NumberCompareAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 
-NumberCompareAction.prototype.update = function (fsm) {
+NumberCompareAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 

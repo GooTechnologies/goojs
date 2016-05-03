@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 
-function TriggerEnterAction(/*id, settings*/) {
+function TriggerEnterAction() {
 	Action.apply(this, arguments);
 	this.entity = null;
 }
@@ -26,14 +26,14 @@ TriggerEnterAction.getTransitionLabel = function (transitionKey/*, actionConfig*
 	return transitionKey === 'enter' ? 'On Trigger Enter' : undefined;
 };
 
-TriggerEnterAction.prototype.enter = function (fsm) {
-	this.entity = fsm.getOwnerEntity();
+TriggerEnterAction.prototype.enter = function () {
+	this.entity = this.getEntity();
 	var that = this;
 	this.listener = function (triggerEnterEvent) {
 		if (that.entity && triggerEnterEvent.entityA === that.entity || triggerEnterEvent.entityB === that.entity) {
 			that.entity = null;
 			// TODO: should this happen on postStep instead? Maybe the user will remove the entity here...
-			fsm.send(that.transitions.enter);
+			that.sendEvent('enter');
 		}
 	};
 	SystemBus.addListener('goo.physics.triggerEnter', this.listener);

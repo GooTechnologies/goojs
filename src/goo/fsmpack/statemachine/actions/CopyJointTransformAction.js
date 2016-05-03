@@ -24,10 +24,10 @@ CopyJointTransformAction.external = {
 	transitions: []
 };
 
-CopyJointTransformAction.prototype.update = function (fsm) {
+CopyJointTransformAction.prototype.update = function () {
 	if (this.jointIndex === null) { return; }
 
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	var parent = entity.transformComponent.parent;
 	if (!parent) { return; }
 

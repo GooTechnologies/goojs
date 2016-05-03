@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var BoundingPicker = require('./../../../renderer/bounds/BoundingPicker');
 
-function HoverExitAction(/*id, settings*/) {
+function HoverExitAction() {
 	Action.apply(this, arguments);
 
 	this.first = true;
@@ -41,7 +41,7 @@ HoverExitAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Entity Hover Exit';
 };
 
-HoverExitAction.prototype.enter = function (fsm) {
+HoverExitAction.prototype.enter = function () {
 	var that = this;
 	var isHit = function (entity) {
 		if (!entity) {
@@ -61,7 +61,7 @@ HoverExitAction.prototype.enter = function (fsm) {
 		var hit = isHit(entity);
 
 		if ((that.first || that.hit) && !hit) {
-			fsm.send(that.transitions.exit);
+			that.sendEvent('exit');
 		}
 		that.hit = hit;
 		that.first = false;
@@ -95,7 +95,7 @@ HoverExitAction.prototype.enter = function (fsm) {
 		checkExit(pickedEntity);
 	};
 
-	this.ownerEntity = fsm.getOwnerEntity();
+	this.ownerEntity = this.getEntity();
 	this.goo = this.ownerEntity._world.gooRunner;
 
 	document.addEventListener('mousemove', this.moveListener);

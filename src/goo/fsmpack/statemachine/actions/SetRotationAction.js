@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function SetRotationAction(/*id, settings*/) {
+function SetRotationAction() {
 	Action.apply(this, arguments);
 }
 
@@ -52,26 +52,26 @@ SetRotationAction.external = {
 	transitions: []
 };
 
-SetRotationAction.prototype.setRotation = function (fsm) {
+SetRotationAction.prototype.setRotation = function () {
 	if (this.entity !== null) {
 		this.entity.transformComponent.transform.setRotationXYZ(
-			FsmUtils.getValue(this.amountX, fsm),
-			FsmUtils.getValue(this.amountY, fsm),
-			FsmUtils.getValue(this.amountZ, fsm)
+			FsmUtils.getValue(this.amountX),
+			FsmUtils.getValue(this.amountY),
+			FsmUtils.getValue(this.amountZ)
 		);
 		this.entity.transformComponent.setUpdated();
 	}
 };
 
-SetRotationAction.prototype.enter = function (fsm) {
+SetRotationAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.setRotation(fsm);
+		this.setRotation();
 	}
 };
 
-SetRotationAction.prototype.update = function (fsm) {
+SetRotationAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.setRotation(fsm);
+		this.setRotation();
 	}
 };
 

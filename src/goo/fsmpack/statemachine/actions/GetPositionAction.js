@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function GetPositionAction(/*id, settings*/) {
+function GetPositionAction() {
 	Action.apply(this, arguments);
 }
 
@@ -38,21 +38,21 @@ GetPositionAction.external = {
 	transitions: []
 };
 
-GetPositionAction.prototype.update = function (fsm) {
+GetPositionAction.prototype.update = function () {
 	var translation = this.entity.transformComponent.transform.translation;
 	if (this.entity !== null) {
 		if (this.variableX) {  // !== undefined
-			fsm.applyOnVariable(this.variableX, function () {
+			this.applyOnVariable(this.variableX, function () {
 				return translation.x;
 			});
 		}
 		if (this.variableY) {
-			fsm.applyOnVariable(this.variableY, function () {
+			this.applyOnVariable(this.variableY, function () {
 				return translation.y;
 			});
 		}
 		if (this.variableZ) {
-			fsm.applyOnVariable(this.variableZ, function () {
+			this.applyOnVariable(this.variableZ, function () {
 				return translation.z;
 			});
 		}

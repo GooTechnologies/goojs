@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function CompareCounterAction(/*id, settings*/) {
+function CompareCounterAction() {
 	Action.apply(this, arguments);
 }
 CompareCounterAction.prototype = Object.create(Action.prototype);
@@ -54,31 +54,28 @@ CompareCounterAction.getTransitionLabel = function (transitionKey, actionConfig)
 	}
 };
 
-CompareCounterAction.prototype.compare = function (fsm) {
-	var value1 = fsm.getFsm().getVariable(this.name);
-	// if (value1 === undefined) {
-	// 	return;
-	// }
+CompareCounterAction.prototype.compare = function () {
+	var value1 = this.getVariable(this.name);
 	var value2 = +this.value;
 
 	if (value1 > value2) {
-		fsm.send(this.transitions.greater);
+		this.sendEvent('greater');
 	} else if (value1 === value2) {
-		fsm.send(this.transitions.equal);
+		this.sendEvent('equal');
 	} else {
-		fsm.send(this.transitions.less);
+		this.sendEvent('less');
 	}
 };
 
-CompareCounterAction.prototype.enter = function (fsm) {
+CompareCounterAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 
-CompareCounterAction.prototype.update = function (fsm) {
+CompareCounterAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 

@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SetTimeScaleAction(/*id, settings*/) {
+function SetTimeScaleAction() {
 	Action.apply(this, arguments);
 	this.everyFrame = false;
 }
@@ -23,8 +23,8 @@ SetTimeScaleAction.external = {
 	transitions: []
 };
 
-SetTimeScaleAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetTimeScaleAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.animationComponent) {
 		entity.animationComponent.setTimeScale(this.scale);
 	}

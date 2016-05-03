@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var MathUtils = require('../../../math/MathUtils');
 
-function RotateAction(/*id, settings*/) {
+function RotateAction() {
 	Action.apply(this, arguments);
 }
 
@@ -77,15 +77,15 @@ RotateAction.prototype.applyRotation = function () {
 	entity.transformComponent.setUpdated();
 };
 
-RotateAction.prototype.enter = function (fsm) {
+RotateAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.applyRotation(fsm);
+		this.applyRotation();
 	}
 };
 
-RotateAction.prototype.update = function (fsm) {
+RotateAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.applyRotation(fsm);
+		this.applyRotation();
 	}
 };
 

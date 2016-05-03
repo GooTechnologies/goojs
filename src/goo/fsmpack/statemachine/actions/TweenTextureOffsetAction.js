@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector2 = require('../../../math/Vector2');
 var Easing = require('../../../util/Easing');
 
-function TweenTextureOffsetAction(/*id, settings*/) {
+function TweenTextureOffsetAction() {
 	Action.apply(this, arguments);
 
 	this.fromOffset = new Vector2();
@@ -64,8 +64,8 @@ TweenTextureOffsetAction.getTransitionLabel = function (transitionKey/*, actionC
 	return transitionKey === 'complete' ? 'On UV Tween Complete' : undefined;
 };
 
-TweenTextureOffsetAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+TweenTextureOffsetAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var meshRendererComponent = entity.meshRendererComponent;
 	this.texture = null;
 	if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
@@ -83,11 +83,11 @@ TweenTextureOffsetAction.prototype.enter = function (fsm) {
 		this.toOffset.add(this.fromOffset);
 	}
 
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 	this.completed = false;
 };
 
-TweenTextureOffsetAction.prototype.update = function (fsm) {
+TweenTextureOffsetAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
@@ -95,13 +95,13 @@ TweenTextureOffsetAction.prototype.update = function (fsm) {
 		return;
 	}
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = Easing[this.easing1][this.easing2](t);
 
 	this.texture.offset.set(this.fromOffset).lerp(this.toOffset, fT);
 
 	if (t >= 1) {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		this.completed = true;
 	}
 };

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function RandomTransitionAction(/*id, settings*/) {
+function RandomTransitionAction() {
 	Action.apply(this, arguments);
 }
 
@@ -41,12 +41,9 @@ RandomTransitionAction.getTransitionLabel = function (transitionKey /*, actionCo
 	return labels[transitionKey];
 };
 
-RandomTransitionAction.prototype.enter = function (fsm) {
-	var transitions = this.transitions;
-	var a = transitions.transition1;
-	var b = transitions.transition2;
-	var transition = Math.random() < this.skewness ? a : b;
-	fsm.send(transition);
+RandomTransitionAction.prototype.enter = function () {
+	var event = Math.random() < this.skewness ? 'transition1' : 'transition2';
+	this.sendEvent(event);
 };
 
 module.exports = RandomTransitionAction;

@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function MuteAction(/*id, settings*/) {
+function MuteAction() {
 	Action.apply(this, arguments);
 }
 MuteAction.prototype = Object.create(Action.prototype);
@@ -16,8 +16,8 @@ MuteAction.external = {
 	transitions: []
 };
 
-MuteAction.prototype.enter = function (fsm) {
-	var world = fsm.getWorld();
+MuteAction.prototype.enter = function () {
+	var world = this.getEntity()._world;
 	if (!world) { return; }
 
 	var soundSystem = world.getSystem('SoundSystem');

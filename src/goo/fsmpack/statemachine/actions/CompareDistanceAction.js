@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Renderer = require('../../../renderer/Renderer');
 
-function CompareDistanceAction(/*id, settings*/) {
+function CompareDistanceAction() {
 	Action.apply(this, arguments);
 }
 CompareDistanceAction.prototype = Object.create(Action.prototype);
@@ -73,8 +73,8 @@ CompareDistanceAction.getTransitionLabel = function (transitionKey /*, actionCon
 	return labels[transitionKey];
 };
 
-CompareDistanceAction.prototype.compare = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+CompareDistanceAction.prototype.compare = function () {
+	var entity = this.getEntity();
 	var translation = entity.transformComponent.sync().worldTransform.translation;
 	var delta;
 
@@ -93,23 +93,23 @@ CompareDistanceAction.prototype.compare = function (fsm) {
 	var diff = this.value - distance;
 
 	if (Math.abs(diff) <= this.tolerance) {
-		fsm.send(this.transitions.equal);
+		this.sendEvent('equal');
 	} else if (diff > 0) {
-		fsm.send(this.transitions.less);
+		this.sendEvent('less');
 	} else {
-		fsm.send(this.transitions.greater);
+		this.sendEvent('greater');
 	}
 };
 
-CompareDistanceAction.prototype.enter = function (fsm) {
+CompareDistanceAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 
-CompareDistanceAction.prototype.update = function (fsm) {
+CompareDistanceAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.compare(fsm);
+		this.compare();
 	}
 };
 

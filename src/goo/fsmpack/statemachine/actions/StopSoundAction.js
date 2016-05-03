@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function StopSoundAction(/*id, settings*/) {
+function StopSoundAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,8 +22,8 @@ StopSoundAction.external = {
 	transitions: []
 };
 
-StopSoundAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+StopSoundAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.hasComponent('SoundComponent')) {
 		var sound = entity.soundComponent.getSoundById(this.sound);
 		if (sound) {

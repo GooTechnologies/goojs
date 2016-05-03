@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var PromiseUtil = require('../../../util/PromiseUtil');
 
-function SoundFadeInAction(/*id, settings*/) {
+function SoundFadeInAction() {
 	Action.apply(this, arguments);
 }
 
@@ -46,8 +46,8 @@ SoundFadeInAction.getTransitionLabel = function (transitionKey /*, actionConfig*
 	return labels[transitionKey];
 };
 
-SoundFadeInAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SoundFadeInAction.prototype.enter = function () {
+	var entity = this.getEntity();
 
 	if (!entity.hasComponent('SoundComponent')) { return; }
 
@@ -67,7 +67,7 @@ SoundFadeInAction.prototype.enter = function (fsm) {
 	}
 
 	endPromise.then(function () {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 	}.bind(this));
 };
 

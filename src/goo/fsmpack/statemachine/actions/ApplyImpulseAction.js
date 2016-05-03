@@ -40,8 +40,8 @@ ApplyImpulseAction.external = {
 
 var impulseVector = new Vector3();
 var applyPoint = new Vector3();
-ApplyImpulseAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+ApplyImpulseAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (!entity.rigidBodyComponent) { return; }
 
 	impulseVector.setArray(this.impulse);

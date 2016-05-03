@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function StartParticleSystemAction(/*id, settings*/) {
+function StartParticleSystemAction() {
 	Action.apply(this, arguments);
 }
 StartParticleSystemAction.prototype = Object.create(Action.prototype);
@@ -16,8 +16,8 @@ StartParticleSystemAction.external = {
 	transitions: []
 };
 
-StartParticleSystemAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+StartParticleSystemAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (!entity || !entity.particleSystemComponent) { return; }
 	entity.particleSystemComponent.play();
 };

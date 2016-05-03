@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Easing = require('../../../util/Easing');
 
-function TweenMoveAction(/*id, settings*/) {
+function TweenMoveAction() {
 	Action.apply(this, arguments);
 
 	this.fromPos = new Vector3();
@@ -66,8 +66,8 @@ TweenMoveAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return transitionKey === 'complete' ? 'On Tween Move Complete' : undefined;
 };
 
-TweenMoveAction.prototype.enter = function (fsm) {
-	var transformComponent = fsm.getOwnerEntity().transformComponent.sync();
+TweenMoveAction.prototype.enter = function () {
+	var transformComponent = this.getEntity().transformComponent.sync();
 
 	this.fromPos.set(transformComponent.transform.translation);
 	this.toPos.setDirect(this.to[0], this.to[1], this.to[2]);
@@ -76,17 +76,17 @@ TweenMoveAction.prototype.enter = function (fsm) {
 		this.toPos.add(this.fromPos);
 	}
 
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 	this.completed = false;
 };
 
-TweenMoveAction.prototype.update = function (fsm) {
+TweenMoveAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
-	var transformComponent = fsm.getOwnerEntity().transformComponent.sync();
+	var transformComponent = this.getEntity().transformComponent.sync();
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = Easing[this.easing1][this.easing2](t);
 
 	if (this.relative) {
@@ -100,7 +100,7 @@ TweenMoveAction.prototype.update = function (fsm) {
 	transformComponent.setUpdated();
 
 	if (t >= 1) {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		this.completed = true;
 	}
 };

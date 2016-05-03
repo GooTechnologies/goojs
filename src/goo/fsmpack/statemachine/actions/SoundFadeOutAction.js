@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function SoundFadeOutAction(/*id, settings*/) {
+function SoundFadeOutAction() {
 	Action.apply(this, arguments);
 }
 
@@ -39,13 +39,13 @@ SoundFadeOutAction.getTransitionLabel = function (transitionKey /*, actionConfig
 	return labels[transitionKey];
 };
 
-SoundFadeOutAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SoundFadeOutAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.hasComponent('SoundComponent')) {
 		var sound = entity.soundComponent.getSoundById(this.sound);
 		if (sound) {
 			sound.fadeOut(this.time / 1000).then(function () {
-				fsm.send(this.transitions.complete);
+				this.sendEvent('complete');
 			}.bind(this));
 		}
 	}

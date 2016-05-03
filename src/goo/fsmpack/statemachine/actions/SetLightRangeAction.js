@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SetLightRangeAction(/*id, settings*/) {
+function SetLightRangeAction() {
 	Action.apply(this, arguments);
 }
 
@@ -39,11 +39,9 @@ SetLightRangeAction.external = {
 	transitions: []
 };
 
-SetLightRangeAction.prototype.enter = function (/*fsm*/) {
+SetLightRangeAction.prototype.enter = function () {
 	var entity = this.entity;
-	if (entity &&
-		entity.lightComponent &&
-		entity.lightComponent.light) {
+	if (entity && entity.lightComponent && entity.lightComponent.light) {
 		entity.lightComponent.light.range = this.range;
 	}
 };

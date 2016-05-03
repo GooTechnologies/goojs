@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SetLightPropertiesAction(/*id, settings*/) {
+function SetLightPropertiesAction() {
 	Action.apply(this, arguments);
 }
 
@@ -45,15 +45,20 @@ SetLightPropertiesAction.external = {
 	transitions: []
 };
 
-SetLightPropertiesAction.prototype.enter = function (fsm) {
-	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
-	if (entity &&
-		entity.lightComponent &&
-		entity.lightComponent.light) {
-		entity.lightComponent.light.color.setDirect(this.color[0], this.color[1], this.color[2]);
-		entity.lightComponent.light.intensity = this.intensity;
-		entity.lightComponent.light.specularIntensity = this.specularIntensity;
-		entity.lightComponent.light.range = this.range;
+SetLightPropertiesAction.prototype.enter = function () {
+	var entity;
+	if (this.entity) {
+		entity = this.entity._world.entityManager.getEntityById(this.entity.entityRef);
+	} else {
+		entity = this.getEntity();
+	}
+
+	if (entity && entity.lightComponent && entity.lightComponent.light) {
+		var light = entity.lightComponent.light;
+		light.color.setArray(this.color);
+		light.intensity = this.intensity;
+		light.specularIntensity = this.specularIntensity;
+		light.range = this.range;
 	}
 };
 

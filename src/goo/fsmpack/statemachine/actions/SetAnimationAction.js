@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function SetAnimationAction(/*id, settings*/) {
+function SetAnimationAction() {
 	Action.apply(this, arguments);
 	this._transitioned = false;
 	this._loopAtStart = null;
@@ -47,13 +47,13 @@ SetAnimationAction.prototype.enter = function () {
 	this._previousLoop = 0;
 };
 
-SetAnimationAction.prototype.update = function (fsm) {
+SetAnimationAction.prototype.update = function () {
 	// If we already made the transition, bail
 	if (this._transitioned) {
 		return;
 	}
 
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	var that = this;
 
 	if (this.animation && entity.animationComponent) {
@@ -85,7 +85,7 @@ SetAnimationAction.prototype.update = function (fsm) {
 		}
 
 		if (shouldTransition) {
-			fsm.send(that.transitions.complete);
+			this.sendEvent('complete');
 			this._transitioned = true;
 		}
 

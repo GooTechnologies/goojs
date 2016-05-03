@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var Vector3 = require('./../../../math/Vector3');
 
-function SetRigidBodyVelocityAction(/*id, settings*/) {
+function SetRigidBodyVelocityAction() {
 	Action.apply(this, arguments);
 }
 SetRigidBodyVelocityAction.prototype = Object.create(Action.prototype);
@@ -24,8 +24,8 @@ SetRigidBodyVelocityAction.external = {
 };
 
 var tmpVector = new Vector3();
-SetRigidBodyVelocityAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetRigidBodyVelocityAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (!entity || !entity.rigidBodyComponent) { return; }
 	tmpVector.setArray(this.velocity);
 	entity.rigidBodyComponent.setVelocity(tmpVector);

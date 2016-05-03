@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SetHtmlTextAction(/*id, settings*/) {
+function SetHtmlTextAction() {
 	Action.apply(this, arguments);
 }
 
@@ -39,8 +39,14 @@ SetHtmlTextAction.external = {
 	transitions: []
 };
 
-SetHtmlTextAction.prototype.enter = function (fsm) {
-	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
+SetHtmlTextAction.prototype.enter = function () {
+	var entity;
+	if (this.entity) {
+		entity = this.entity._world.entityManager.getEntityById(this.entity.entityRef);
+	} else {
+		entity = this.getEntity();
+	}
+
 	if (entity && entity.htmlComponent && this.selector.length > 0) {
 		var elements = entity.htmlComponent.domElement.querySelectorAll(this.selector);
 		for (var i=0; i<elements.length; i++) {

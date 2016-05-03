@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 
-function TransitionOnMessageAction(/*id, settings*/) {
+function TransitionOnMessageAction() {
 	Action.apply(this, arguments);
 }
 
@@ -32,14 +32,14 @@ TransitionOnMessageAction.getTransitionLabel = function (transitionKey, actionCo
 	return transitionKey === 'transition' ? 'On ' + label + ' event' : 'On Message';
 };
 
-TransitionOnMessageAction.prototype.enter = function (fsm) {
+TransitionOnMessageAction.prototype.enter = function () {
 	this.eventListener = function (/*data*/) {
-		fsm.send(this.transitions.transition);
+		this.sendEvent('transition');
 	}.bind(this);
 	SystemBus.addListener(this.channel, this.eventListener, false);
 };
 
-TransitionOnMessageAction.prototype.exit = function (/*fsm*/) {
+TransitionOnMessageAction.prototype.exit = function () {
 	SystemBus.removeListener(this.channel, this.eventListener);
 };
 

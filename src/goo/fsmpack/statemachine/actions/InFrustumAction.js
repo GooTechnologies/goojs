@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Camera = require('../../../renderer/Camera');
 var BoundingSphere = require('../../../renderer/bounds/BoundingSphere');
 
-function InFrustumAction(/*id, settings*/) {
+function InFrustumAction() {
 	Action.apply(this, arguments);
 }
 
@@ -52,40 +52,40 @@ InFrustumAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-InFrustumAction.prototype.checkFrustum = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+InFrustumAction.prototype.checkFrustum = function () {
+	var entity = this.getEntity();
 
 	if (this.current) {
 		if (entity.isVisible) {
-			fsm.send(this.transitions.inside);
+			this.sendEvent('inside');
 		} else {
-			fsm.send(this.transitions.outside);
+			this.sendEvent('outside');
 		}
 	} else {
 		var boundingVolume = entity.meshRendererComponent ? entity.meshRendererComponent.worldBound : new BoundingSphere(entity.transformComponent.sync().worldTransform.translation, 0.001);
 		if (this.camera.contains(boundingVolume) === Camera.Outside) {
-			fsm.send(this.transitions.outside);
+			this.sendEvent('outside');
 		} else {
-			fsm.send(this.transitions.inside);
+			this.sendEvent('inside');
 		}
 	}
 };
 
-InFrustumAction.prototype.enter = function (fsm) {
+InFrustumAction.prototype.enter = function () {
 	if (!this.current) {
-		var world = fsm.getOwnerEntity()._world;
+		var world = this.getEntity()._world;
 		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		this.camera = cameraEntity.cameraComponent.camera;
 	}
 
 	if (!this.everyFrame) {
-		this.checkFrustum(fsm);
+		this.checkFrustum();
 	}
 };
 
-InFrustumAction.prototype.update = function (fsm) {
+InFrustumAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.checkFrustum(fsm);
+		this.checkFrustum();
 	}
 };
 

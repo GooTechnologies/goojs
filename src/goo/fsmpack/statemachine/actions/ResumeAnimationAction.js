@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function ResumeAnimationAction(/*id, settings*/) {
+function ResumeAnimationAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,13 +22,13 @@ ResumeAnimationAction.external = {
 	transitions: []
 };
 
-ResumeAnimationAction.prototype.enter = function (fsm) {
+ResumeAnimationAction.prototype.enter = function () {
 	if (this.onAll) {
-		var world = fsm.getWorld();
+		var world = this.getEntity()._world;
 		var animationSystem = world.getSystem('AnimationSystem');
 		animationSystem.resume();
 	} else {
-		var entity = fsm.getOwnerEntity();
+		var entity = this.getEntity();
 		if (entity.animationComponent) {
 			entity.animationComponent.resume();
 		}

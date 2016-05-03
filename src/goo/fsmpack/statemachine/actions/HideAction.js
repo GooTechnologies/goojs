@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function HideAction(/*id, settings*/) {
+function HideAction() {
 	Action.apply(this, arguments);
 }
 
@@ -16,8 +16,8 @@ HideAction.external = {
 	transitions: []
 };
 
-HideAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+HideAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	entity.hide();
 };
 

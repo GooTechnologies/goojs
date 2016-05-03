@@ -50,6 +50,60 @@ Action.prototype.getEntity = function () {
 };
 
 /**
+ * @param {string} name
+ * @returns {boolean}
+ */
+Action.prototype.getInputState = function (key) {
+	var parent = this.parent;
+	if (parent instanceof State) {
+		return parent.machine.getInputState(key);
+	} else if (parent instanceof StateMachineComponent) {
+		return parent.system.getInputState(key);
+	}
+	return false;
+};
+
+/**
+ * @param {string} name
+ * @returns {number}
+ */
+Action.prototype.getVariable = function (name) {
+	if (this.vars[name] !== undefined) {
+		return this.vars[name];
+	} else if (parent instanceof StateMachineComponent) {
+		return this.parent.getVariable(name);
+	}
+};
+
+/**
+ * Apply an operation on a variable.
+ * @param {string} name
+ * @param {Function} fun
+ */
+Action.prototype.applyOnVariable = function (name, fun) {
+	if (this.vars[name] !== undefined) {
+		this.vars[name] = fun(this.vars[name]);
+	} else {
+		this.parent.applyOnVariable(name, fun);
+	}
+};
+
+/**
+ * @param {string} name
+ * @param {Function} initialValue
+ */
+Action.prototype.defineVariable = function (name, initialValue) {
+	this.vars[name] = initialValue;
+};
+
+/**
+ * @param {string} name
+ */
+Action.prototype.removeVariable = function (name) {
+	delete this.vars[name];
+};
+
+/**
  * Send an event, to trigger a transition. The event name must be listed among the transitions.
  * @param {object} settings
  */

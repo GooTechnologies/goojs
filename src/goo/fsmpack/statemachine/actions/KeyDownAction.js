@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function KeyDownAction(/*id, settings*/) {
+function KeyDownAction() {
 	Action.apply(this, arguments);
 }
 
@@ -37,10 +37,10 @@ KeyDownAction.prototype.configure = function (settings) {
 	this.transitions = { keydown: settings.transitions.keydown };
 };
 
-KeyDownAction.prototype.enter = function (fsm) {
+KeyDownAction.prototype.enter = function () {
 	this.eventListener = function (event) {
 		if (this.key && event.which === +this.key) {
-			fsm.send(this.transitions.keydown);
+			this.sendEvent('keydown');
 		}
 	}.bind(this);
 	document.addEventListener('keydown', this.eventListener);

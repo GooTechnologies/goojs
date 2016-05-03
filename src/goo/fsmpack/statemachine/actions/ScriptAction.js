@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function ScriptAction(/*id, settings*/) {
+function ScriptAction() {
 	Action.apply(this, arguments);
 }
 
@@ -21,8 +21,8 @@ ScriptAction.external = {
 	transitions: []
 };
 
-ScriptAction.prototype.ready = function (fsm) {
-	var entities = fsm.getWorld().by.component('ScriptComponent').toArray();
+ScriptAction.prototype.ready = function () {
+	var entities = this.getEntity()._world.by.component('ScriptComponent').toArray();
 	for (var i = 0; i < entities.length; i++) {
 		var entity = entities[i];
 		for (var j = 0; j < entity.scriptComponent.scripts.length; j++) {
@@ -39,9 +39,9 @@ ScriptAction.prototype.ready = function (fsm) {
 
 	this.args = {};
 	this.ctx = {
-		entity: fsm.getOwnerEntity(),
-		world: fsm.getWorld(),
-		fsm: fsm
+		entity: this.getEntity(),
+		world: this.getEntity()._world,
+		action: this
 	};
 
 	if (this.script && this.script.setup) {

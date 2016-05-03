@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function PickAndExitAction(/*id, settings*/) {
+function PickAndExitAction() {
 	Action.apply(this, arguments);
 
 	this.eventListener = function (event) {
@@ -72,8 +72,8 @@ PickAndExitAction.external = {
 	transitions: []
 };
 
-PickAndExitAction.prototype.enter = function (fsm) {
-	this.ownerEntity = fsm.getOwnerEntity();
+PickAndExitAction.prototype.enter = function () {
+	this.ownerEntity = this.getEntity();
 	this.goo = this.ownerEntity._world.gooRunner;
 	this.canvasElement = this.goo.renderer.domElement;
 	//

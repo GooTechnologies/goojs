@@ -4,7 +4,7 @@ var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 var ParticleLib = require('../../../particles/ParticleLib');
 var ParticleSystemUtils = require('../../../util/ParticleSystemUtils');
 
-function SmokeAction(/*id, settings*/) {
+function SmokeAction() {
 	Action.apply(this, arguments);
 	this.smokeEntity = null;
 }
@@ -30,8 +30,8 @@ SmokeAction.external = {
 	transitions: []
 };
 
-SmokeAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SmokeAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (this.smokeEntity && entity.transformComponent.children.indexOf(this.smokeEntity.transformComponent) !== -1) {
 		return;
 	}

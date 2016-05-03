@@ -1,5 +1,4 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
-var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 function AddVariableAction() {
 	Action.apply(this, arguments);
@@ -31,21 +30,21 @@ AddVariableAction.external = {
 	transitions: []
 };
 
-AddVariableAction.prototype.add = function (fsm) {
-	fsm.applyOnVariable(this.variable, function (v) {
-		return v + FsmUtils.getValue(this.amount, fsm);
+AddVariableAction.prototype.add = function () {
+	this.applyOnVariable(this.variable, function (v) {
+		return v + this.getValue(this.amount);
 	}.bind(this));
 };
 
-AddVariableAction.prototype.enter = function (fsm) {
+AddVariableAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.add(fsm);
+		this.add();
 	}
 };
 
-AddVariableAction.prototype.update = function (fsm) {
+AddVariableAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.add(fsm);
+		this.add();
 	}
 };
 

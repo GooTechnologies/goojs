@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function TogglePostFxAction(/*id, settings*/) {
+function TogglePostFxAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,8 +22,8 @@ TogglePostFxAction.external = {
 	transitions: []
 };
 
-TogglePostFxAction.prototype.enter = function (fsm) {
-	var renderSystem = fsm.getWorld().gooRunner.renderSystem;
+TogglePostFxAction.prototype.enter = function () {
+	var renderSystem = this.getEntity()._world.gooRunner.renderSystem;
 	if (renderSystem) {
 		renderSystem.enableComposers(this.enabled);
 	}

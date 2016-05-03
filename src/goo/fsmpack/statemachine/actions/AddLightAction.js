@@ -62,8 +62,8 @@ AddLightAction.external = {
 	transitions: []
 };
 
-AddLightAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+AddLightAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.lightComponent) {
 		this._untouched = true;
 		return;
@@ -82,15 +82,15 @@ AddLightAction.prototype.enter = function (fsm) {
 		light.range = +this.range;
 	}
 
-	light.color.setDirect(this.color[0], this.color[1], this.color[2]);
+	light.color.setArray(this.color);
 
 	entity.setComponent(new LightComponent(light));
 };
 
-AddLightAction.prototype.cleanup = function (fsm) {
+AddLightAction.prototype.cleanup = function () {
 	if (this._untouched) { return; }
 
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	if (entity) {
 		entity.clearComponent('LightComponent');
 	}

@@ -40,16 +40,16 @@ CollidesAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-CollidesAction.prototype.ready = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+CollidesAction.prototype.ready = function () {
+	var entity = this.getEntity();
 	var world = entity._world;
 	if (!world.getSystem('ProximitySystem')) {
 		world.setSystem(new ProximitySystem());
 	}
 };
 
-CollidesAction.prototype.update = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+CollidesAction.prototype.update = function () {
+	var entity = this.getEntity();
 	var world = entity._world;
 	var proximitySystem = world.getSystem('ProximitySystem');
 
@@ -86,7 +86,7 @@ CollidesAction.prototype.update = function (fsm) {
 		}
 	});
 
-	fsm.send(collides ? this.transitions.collides : this.transitions.notCollides);
+	this.sendEvent(collides ? 'collides' : 'notCollides');
 };
 
 module.exports = CollidesAction;

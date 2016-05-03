@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function SetCounterAction(/*id, settings*/) {
+function SetCounterAction() {
 	Action.apply(this, arguments);
 }
 
@@ -27,12 +27,12 @@ SetCounterAction.external = {
 	transitions: []
 };
 
-SetCounterAction.prototype.enter = function (fsm) {
-	fsm.getFsm().defineVariable(this.name, +this.value);
+SetCounterAction.prototype.enter = function () {
+	this.defineVariable(this.name, +this.value);
 };
 
-SetCounterAction.prototype.cleanup = function (fsm) {
-	fsm.getFsm().removeVariable(this.name);
+SetCounterAction.prototype.cleanup = function () {
+	this.removeVariable(this.name);
 };
 
 module.exports = SetCounterAction;

@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var FsmUtils = require('../FsmUtils');
 
-function CopyVariableAction(/*id, settings*/) {
+function CopyVariableAction() {
 	Action.apply(this, arguments);
 }
 
@@ -35,27 +35,27 @@ CopyVariableAction.external = {
 	transitions: []
 };
 
-CopyVariableAction.prototype.enter = function (fsm) {
+CopyVariableAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.copy(fsm);
+		this.copy();
 	}
 };
 
-CopyVariableAction.prototype.update = function (fsm) {
+CopyVariableAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.copy(fsm);
+		this.copy();
 	}
 };
 
-CopyVariableAction.prototype.copy = function (fsm) {
-	var ownerEntity = fsm.getOwnerEntity();
+CopyVariableAction.prototype.copy = function () {
+	var ownerEntity = this.getEntity();
 	if (this.variableTarget && ownerEntity) {
 		try {
 			var val;
 			if (this.variableSource) {
-				val = FsmUtils.getValue(this.variableSource, fsm);
+				val = this.getValue(this.variableSource);
 			} else {
-				val = FsmUtils.getValue(this.value, fsm);
+				val = this.getValue(this.value);
 			}
 			ownerEntity[this.variableTarget] = val;
 		} catch (err) {

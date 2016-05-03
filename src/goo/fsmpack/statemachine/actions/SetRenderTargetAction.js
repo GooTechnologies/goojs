@@ -4,7 +4,7 @@ var PortalSystem = require('../../../entities/systems/PortalSystem');
 var Material = require('../../../renderer/Material');
 var ShaderLib = require('../../../renderer/shaders/ShaderLib');
 
-function SetRenderTargetAction(/*id, settings*/) {
+function SetRenderTargetAction() {
 	Action.apply(this, arguments);
 }
 
@@ -26,8 +26,8 @@ SetRenderTargetAction.external = {
 	transitions: []
 };
 
-SetRenderTargetAction.prototype.ready = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetRenderTargetAction.prototype.ready = function () {
+	var entity = this.getEntity();
 	var world = entity._world;
 	if (!world.getSystem('PortalSystem')) {
 		var renderSystem = world.getSystem('RenderSystem');
@@ -36,8 +36,8 @@ SetRenderTargetAction.prototype.ready = function (fsm) {
 	}
 };
 
-SetRenderTargetAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetRenderTargetAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var world = entity._world;
 
 	var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
@@ -55,8 +55,8 @@ SetRenderTargetAction.prototype.enter = function (fsm) {
 	entity.setComponent(portalComponent);
 };
 
-SetRenderTargetAction.prototype.cleanup = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetRenderTargetAction.prototype.cleanup = function () {
+	var entity = this.getEntity();
 	if (entity) {
 		if (this.oldMaterials && entity.meshRendererComponent) {
 			entity.meshRendererComponent.materials = this.oldMaterials;

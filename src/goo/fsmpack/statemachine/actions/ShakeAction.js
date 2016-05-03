@@ -3,7 +3,7 @@ var Vector3 = require('../../../math/Vector3');
 var MathUtils = require('../../../math/MathUtils');
 var Easing = require('../../../util/Easing');
 
-function ShakeAction(/*id, settings*/) {
+function ShakeAction() {
 	Action.apply(this, arguments);
 
 	this.oldVal = new Vector3();
@@ -68,27 +68,26 @@ ShakeAction.prototype.configure = function (settings) {
 	this.time = settings.time;
 	this.speed = { Fast: 1, Medium: 2, Slow: 4 }[settings.speed];
 	this.easing = Easing.Quadratic.InOut;
-	this.eventToEmit = settings.transitions.complete;
 };
 
-ShakeAction.prototype.enter = function (fsm) {
+ShakeAction.prototype.enter = function () {
 	this.oldVal.set(Vector3.ZERO);
 	this.target.set(Vector3.ZERO);
 	this.vel.set(Vector3.ZERO);
 	this.iter = 0;
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 	this.completed = false;
 };
 
-ShakeAction.prototype.update = function (fsm) {
+ShakeAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	var transformComponent = entity.transformComponent;
 	var translation = transformComponent.transform.translation;
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = this.easing(t);
 
 	var level = MathUtils.lerp(fT, this.startLevel, this.endLevel);
@@ -118,7 +117,7 @@ ShakeAction.prototype.update = function (fsm) {
 		translation.sub(this.oldVal);
 		transformComponent.setUpdated();
 		this.completed = true;
-		fsm.send(this.eventToEmit);
+		this.sendEvent('complete');
 	}
 };
 

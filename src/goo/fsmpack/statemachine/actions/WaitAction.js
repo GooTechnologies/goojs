@@ -4,7 +4,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
  * @private
  * @extends Action
  */
-function WaitAction(/*id, settings*/) {
+function WaitAction() {
 	Action.apply(this, arguments);
 
 	/**

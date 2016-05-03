@@ -51,13 +51,10 @@ ArrowsAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-ArrowsAction.prototype.enter = function (fsm) {
+ArrowsAction.prototype.enter = function () {
 	this.eventListener = function (event) {
 		var keyname = keys[event.which];
-		var target = this.targets[keyname];
-		if (target) {
-			fsm.send(target);
-		}
+		this.sendEvent(keyname);
 	}.bind(this);
 	document.addEventListener('keydown', this.eventListener);
 };

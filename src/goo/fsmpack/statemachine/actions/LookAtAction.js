@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 
-function LookAtAction(/*id, settings*/) {
+function LookAtAction() {
 	Action.apply(this, arguments);
 }
 
@@ -29,23 +29,23 @@ LookAtAction.external = {
 	transitions: []
 };
 
-LookAtAction.prototype.doLookAt = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+LookAtAction.prototype.doLookAt = function () {
+	var entity = this.getEntity();
 	var transformComponent = entity.transformComponent;
 
-	transformComponent.transform.lookAt(new Vector3(this.lookAt), Vector3.UNIT_Y);
+	transformComponent.transform.lookAt(new Vector3(this.lookAt), Vector3.UNIT_Y); // TODO: dont create new vectors each frame
 	transformComponent.setUpdated();
 };
 
-LookAtAction.prototype.enter = function (fsm) {
+LookAtAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.doLookAt(fsm);
+		this.doLookAt();
 	}
 };
 
-LookAtAction.prototype.update = function (fsm) {
+LookAtAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.doLookAt(fsm);
+		this.doLookAt();
 	}
 };
 

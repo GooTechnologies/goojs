@@ -69,15 +69,15 @@ AddPositionAction.prototype.addPosition = function () {
 	);
 };
 
-AddPositionAction.prototype.enter = function (fsm) {
+AddPositionAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.addPosition(fsm);
+		this.addPosition();
 	}
 };
 
-AddPositionAction.prototype.update = function (fsm) {
+AddPositionAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.addPosition(fsm);
+		this.addPosition();
 	}
 };
 

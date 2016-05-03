@@ -3,7 +3,7 @@ var Vector3 = require('../../../math/Vector3');
 var MathUtils = require('../../../math/MathUtils');
 var Easing = require('../../../util/Easing');
 
-function DollyZoomAction(/*id, settings*/) {
+function DollyZoomAction() {
 	Action.apply(this, arguments);
 
 	this.from = new Vector3();
@@ -64,8 +64,8 @@ DollyZoomAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Dolly Zoom Complete';
 };
 
-DollyZoomAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+DollyZoomAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	this.completed = false;
 
 	if (entity.cameraComponent && entity.cameraComponent.camera) {
@@ -88,23 +88,23 @@ DollyZoomAction.prototype.enter = function (fsm) {
 		this.from.set(initialTranslation.x, initialTranslation.y, initialTranslation.z);
 		this.to.setDirect(toVec.x, toVec.y, toVec.z);
 
-		this.startTime = fsm.getTime();
+		this.startTime = entity._world.time;
 	} else {
 		this.eyeTargetScale = null;
 	}
 };
 
-DollyZoomAction.prototype.update = function (fsm) {
+DollyZoomAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
 
 	if (this.eyeTargetScale) {
-		var entity = fsm.getOwnerEntity();
+		var entity = this.getEntity();
 		var transformComponent = entity.transformComponent;
 		var camera = entity.cameraComponent.camera;
 
-		var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+		var t = Math.min((entity._world.time - this.startTime) * 1000 / this.time, 1);
 		var fT = Easing[this.easing1][this.easing2](t);
 
 		transformComponent.transform.translation.set(this.from).lerp(this.to, fT);
@@ -115,7 +115,7 @@ DollyZoomAction.prototype.update = function (fsm) {
 		camera.setFrustumPerspective(fov);
 
 		if (t >= 1) {
-			fsm.send(this.transitions.complete);
+			this.sendEvent('complete');
 			this.completed = true;
 		}
 	}

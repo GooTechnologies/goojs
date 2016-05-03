@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SpriteAnimationAction(/*id, settings*/) {
+function SpriteAnimationAction() {
 	Action.apply(this, arguments);
 	this.completed = false;
 }
@@ -56,8 +56,8 @@ SpriteAnimationAction.getTransitionLabel = function (/*transitionKey, actionConf
 	return 'Sprite Animation complete';
 };
 
-SpriteAnimationAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SpriteAnimationAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var meshRendererComponent = entity.meshRendererComponent;
 	this.texture = null;
 	if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
@@ -68,18 +68,18 @@ SpriteAnimationAction.prototype.enter = function (fsm) {
 	if (!this.texture) {
 		return;
 	}
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 	this.completed = false;
 
 	this.texture.repeat.setDirect(1 / this.tiling[0], 1 / this.tiling[1]);
 };
 
-SpriteAnimationAction.prototype.update = function (fsm) {
+SpriteAnimationAction.prototype.update = function () {
 	if (!this.texture || this.completed) {
 		return;
 	}
 
-	var time = fsm.getTime() - this.startTime;
+	var time = this.getEntity()._world.time - this.startTime;
 	var numTiles = this.tiling[0] * this.tiling[1];
 	var endTile = this.endTile;
 
@@ -96,7 +96,7 @@ SpriteAnimationAction.prototype.update = function (fsm) {
 
 	if (loop >= this.loops && this.loops !== -1) {
 		this.completed = true;
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		return;
 	}
 
@@ -112,6 +112,6 @@ SpriteAnimationAction.prototype.update = function (fsm) {
 	this.texture.offset.y = -1 / this.tiling[1] - this.texture.offset.y + 1;
 };
 
-SpriteAnimationAction.prototype.exit = function (/*fsm*/) {};
+SpriteAnimationAction.prototype.exit = function () {};
 
 module.exports = SpriteAnimationAction;

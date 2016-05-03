@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 
-function MoveAction(/*id, settings*/) {
+function MoveAction() {
 	Action.apply(this, arguments);
 }
 
@@ -41,21 +41,21 @@ MoveAction.external = {
 	transitions: []
 };
 
-MoveAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+MoveAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.sync().transform;
 	this.forward = Vector3.fromArray(this.translation);
 	var orientation = transform.rotation;
 	this.forward.applyPost(orientation);
 
 	if (!this.everyFrame) {
-		this.applyMove(fsm);
+		this.applyMove();
 	}
 };
 
-MoveAction.prototype.update = function (fsm) {
+MoveAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.applyMove(fsm);
+		this.applyMove();
 	}
 };
 
@@ -89,7 +89,7 @@ MoveAction.prototype.applyMove = function () {
 				translation.addDirect(this.translation[0], this.translation[1], this.translation[2]);
 			}
 		} else {
-			translation.setDirect(this.translation[0], this.translation[1], this.translation[2]);
+			translation.setArrat(this.translation);
 		}
 	}
 

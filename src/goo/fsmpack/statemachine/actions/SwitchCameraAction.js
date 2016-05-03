@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 var Renderer = require('../../../renderer/Renderer');
 
-function SwitchCameraAction(/*id, settings*/) {
+function SwitchCameraAction() {
 	Action.apply(this, arguments);
 	this._camera = null;
 }
@@ -25,12 +25,12 @@ SwitchCameraAction.external = {
 	transitions: []
 };
 
-SwitchCameraAction.prototype.ready = function (/*fsm*/) {
+SwitchCameraAction.prototype.ready = function () {
 	this._camera = Renderer.mainCamera; // make this into get activeCamera
 };
 
-SwitchCameraAction.prototype.enter = function (fsm) {
-	var world = fsm.getOwnerEntity()._world;
+SwitchCameraAction.prototype.enter = function () {
+	var world = this.getEntity()._world;
 	var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 	if (cameraEntity && cameraEntity.cameraComponent) {
 		SystemBus.emit('goo.setCurrentCamera', {
@@ -40,7 +40,7 @@ SwitchCameraAction.prototype.enter = function (fsm) {
 	}
 };
 
-SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
+SwitchCameraAction.prototype.cleanup = function () {
 };
 
 module.exports = SwitchCameraAction;

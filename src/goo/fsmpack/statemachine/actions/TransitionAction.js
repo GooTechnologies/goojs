@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function TransitionAction(/*id, settings*/) {
+function TransitionAction() {
 	Action.apply(this, arguments);
 }
 
@@ -28,8 +28,8 @@ TransitionAction.getTransitionLabel = function (transitionKey /*, actionConfig*/
 	return labels[transitionKey];
 };
 
-TransitionAction.prototype.enter = function (fsm) {
-	fsm.send(this.transitions.transition);
+TransitionAction.prototype.enter = function () {
+	this.sendEvent('transition');
 };
 
 module.exports = TransitionAction;

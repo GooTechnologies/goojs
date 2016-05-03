@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function LogMessageAction(/*id, settings*/) {
+function LogMessageAction() {
 	Action.apply(this, arguments);
 }
 
@@ -27,13 +27,13 @@ LogMessageAction.external = {
 	transitions: []
 };
 
-LogMessageAction.prototype.enter = function (/*fsm*/) {
+LogMessageAction.prototype.enter = function () {
 	if (!this.everyFrame) {
 		console.log(this.message);
 	}
 };
 
-LogMessageAction.prototype.update = function (/*fsm*/) {
+LogMessageAction.prototype.update = function () {
 	if (this.everyFrame) {
 		console.log(this.message);
 	}

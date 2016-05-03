@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var GameUtils = require('./../../../util/GameUtils');
 
-function ToggleFullscreenAction(/*id, settings*/) {
+function ToggleFullscreenAction() {
 	Action.apply(this, arguments);
 }
 
@@ -17,7 +17,7 @@ ToggleFullscreenAction.external = {
 	transitions: []
 };
 
-ToggleFullscreenAction.prototype.enter = function (/*fsm*/) {
+ToggleFullscreenAction.prototype.enter = function () {
 	GameUtils.toggleFullScreen();
 };
 

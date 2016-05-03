@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var BoundingPicker = require('./../../../renderer/bounds/BoundingPicker');
 
-function HoverEnterAction(/*id, settings*/) {
+function HoverEnterAction() {
 	Action.apply(this, arguments);
 
 	this.first = true;
@@ -41,7 +41,7 @@ HoverEnterAction.getTransitionLabel = function (/*transitionKey, actionConfig*/)
 	return 'On Entity Hover Enter';
 };
 
-HoverEnterAction.prototype.enter = function (fsm) {
+HoverEnterAction.prototype.enter = function () {
 	var that = this;
 	var isHit = function (entity) {
 		if (!entity) {
@@ -61,7 +61,7 @@ HoverEnterAction.prototype.enter = function (fsm) {
 		var hit = isHit(entity);
 
 		if ((that.first || !that.hit) && hit) {
-			fsm.send(that.transitions.enter);
+			that.sendEvent('enter');
 		}
 		that.first = false;
 		that.hit = hit;
@@ -96,7 +96,7 @@ HoverEnterAction.prototype.enter = function (fsm) {
 		checkEnter(pickedEntity);
 	};
 
-	this.ownerEntity = fsm.getOwnerEntity();
+	this.ownerEntity = this.getEntity();
 	this.goo = this.ownerEntity._world.gooRunner;
 
 	document.addEventListener('mousemove', this.moveListener);

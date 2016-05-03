@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function KeyUpAction(/*id, settings*/) {
+function KeyUpAction() {
 	Action.apply(this, arguments);
 }
 
@@ -37,10 +37,10 @@ KeyUpAction.prototype.configure = function (settings) {
 	this.transitions = { keyup: settings.transitions.keyup };
 };
 
-KeyUpAction.prototype.enter = function (fsm) {
+KeyUpAction.prototype.enter = function () {
 	this.eventListener = function (event) {
 		if (!this.key || event.which === +this.key) {
-			fsm.send(this.transitions.keyup);
+			this.sendEvent('keyup');
 		}
 	}.bind(this);
 	document.addEventListener('keyup', this.eventListener);

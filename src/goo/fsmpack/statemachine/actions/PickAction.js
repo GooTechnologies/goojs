@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var SystemBus = require('../../../entities/SystemBus');
 
-function PickAction(/*id, settings*/) {
+function PickAction() {
 	Action.apply(this, arguments);
 }
 
@@ -30,8 +30,8 @@ PickAction.getTransitionLabel = function (transitionKey /*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-PickAction.prototype.enter = function (fsm) {
-	this.ownerEntity = fsm.getOwnerEntity();
+PickAction.prototype.enter = function () {
+	this.ownerEntity = this.getEntity();
 	this.goo = this.ownerEntity._world.gooRunner;
 
 	var that = this;
@@ -58,7 +58,7 @@ PickAction.prototype.enter = function (fsm) {
 
 		pickedEntity.traverseUp(function (entity) {
 			if (entity === that.ownerEntity) {
-				fsm.send(that.transitions.pick);
+				that.sendEvent('pick');
 				return false;
 			}
 		});

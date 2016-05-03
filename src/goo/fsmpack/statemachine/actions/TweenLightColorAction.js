@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Easing = require('../../../util/Easing');
 
-function TweenLightColorAction(/*id, settings*/) {
+function TweenLightColorAction() {
 	Action.apply(this, arguments);
 
 	this.fromCol = new Vector3();
@@ -58,38 +58,38 @@ TweenLightColorAction.getTransitionLabel = function (transitionKey/*, actionConf
 	return transitionKey === 'complete' ? 'On Tween Light Complete' : undefined;
 };
 
-TweenLightColorAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+TweenLightColorAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (!entity.lightComponent) {
 		return;
 	}
 
 	this.fromCol.set(entity.lightComponent.light.color);
-	this.toCol.setDirect(this.to[0], this.to[1], this.to[2]);
+	this.toCol.setArray(this.to);
 
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 
 	this.completed = false;
 };
 
-TweenLightColorAction.prototype.update = function (fsm) {
+TweenLightColorAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
 
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	if (!entity.lightComponent) {
 		return;
 	}
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = Easing[this.easing1][this.easing2](t);
 
 	var color = entity.lightComponent.light.color;
 	color.set(this.fromCol).lerp(this.toCol, fT);
 
 	if (t >= 1) {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		this.completed = true;
 	}
 };

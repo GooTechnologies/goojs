@@ -28,7 +28,7 @@ ClickAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On Click/Tap Entity';
 };
 
-ClickAction.prototype.enter = function (fsm) {
+ClickAction.prototype.enter = function () {
 	var that = this;
 	this.downListener = function (event) {
 		var x, y;
@@ -92,13 +92,13 @@ ClickAction.prototype.enter = function (fsm) {
 
 		pickedEntity.traverseUp(function (entity) {
 			if (entity === that.ownerEntity) {
-				fsm.send(that.transitions.click);
+				that.sendEvent('click');
 				return false;
 			}
 		});
 	};
 
-	this.ownerEntity = fsm.getOwnerEntity();
+	this.ownerEntity = this.getEntity();
 	this.gooRunner = this.ownerEntity._world.gooRunner;
 
 	document.addEventListener('mousedown', this.downListener);

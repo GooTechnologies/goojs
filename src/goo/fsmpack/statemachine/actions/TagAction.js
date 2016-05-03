@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var ProximityComponent = require('../../../fsmpack/proximity/ProximityComponent');
 
-function TagAction(/*id, settings*/) {
+function TagAction() {
 	Action.apply(this, arguments);
 }
 
@@ -25,8 +25,8 @@ TagAction.external = {
 	transitions: []
 };
 
-TagAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+TagAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.proximityComponent) {
 		if (entity.proximityComponent.tag !== this.tag) {
 			entity.clearComponent('ProximityComponent');
@@ -37,8 +37,8 @@ TagAction.prototype.enter = function (fsm) {
 	}
 };
 
-TagAction.prototype.cleanup = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+TagAction.prototype.cleanup = function () {
+	var entity = this.getEntity();
 	if (entity) {
 		entity.clearComponent('ProximityComponent');
 	}

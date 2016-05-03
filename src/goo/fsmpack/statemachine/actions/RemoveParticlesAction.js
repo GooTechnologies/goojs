@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function RemoveParticlesAction(/*id, settings*/) {
+function RemoveParticlesAction() {
 	Action.apply(this, arguments);
 }
 
@@ -16,8 +16,8 @@ RemoveParticlesAction.external = {
 	transitions: []
 };
 
-RemoveParticlesAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+RemoveParticlesAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	entity.children().each(function (child) {
 		if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
 			child.removeFromWorld();

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function IncrementCounterAction(/*id, settings*/) {
+function IncrementCounterAction() {
 	Action.apply(this, arguments);
 }
 
@@ -33,33 +33,33 @@ IncrementCounterAction.external = {
 	transitions: []
 };
 
-IncrementCounterAction.prototype.incrementCounter = function (fsm) {
+IncrementCounterAction.prototype.incrementCounter = function () {
 	var increment = +this.increment;
 
-	if (fsm.getFsm().vars[this.name] === undefined) {
-		fsm.getFsm().defineVariable(this.name, increment);
+	if (this.vars[this.name] === undefined) {
+		this.defineVariable(this.name, increment);
 		return;
 	}
 
-	fsm.getFsm().applyOnVariable(this.name, function (oldValue) {
+	this.applyOnVariable(this.name, function (oldValue) {
 		return oldValue + increment;
 	});
 };
 
-IncrementCounterAction.prototype.enter = function (fsm) {
+IncrementCounterAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.incrementCounter(fsm);
+		this.incrementCounter();
 	}
 };
 
-IncrementCounterAction.prototype.update = function (fsm) {
+IncrementCounterAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.incrementCounter(fsm);
+		this.incrementCounter();
 	}
 };
 
-IncrementCounterAction.prototype.cleanup = function (fsm) {
-	fsm.getFsm().removeVariable(this.name);
+IncrementCounterAction.prototype.cleanup = function () {
+	this.removeVariable(this.name);
 };
 
 module.exports = IncrementCounterAction;

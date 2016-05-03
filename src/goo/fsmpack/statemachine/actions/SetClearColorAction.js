@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function SetClearColorAction(/*id, settings*/) {
+function SetClearColorAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,8 +22,8 @@ SetClearColorAction.external = {
 	transitions: []
 };
 
-SetClearColorAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+SetClearColorAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var color = this.color;
 	entity._world.gooRunner.renderer.setClearColor(color[0], color[1], color[2], color[3]);
 };

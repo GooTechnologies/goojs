@@ -3,7 +3,7 @@ var Matrix3 = require('../../../math/Matrix3');
 var Quaternion = require('../../../math/Quaternion');
 var MathUtils = require('../../../math/MathUtils');
 
-function SetRigidBodyRotationAction(/*id, settings*/) {
+function SetRigidBodyRotationAction() {
 	Action.apply(this, arguments);
 }
 
@@ -37,8 +37,8 @@ SetRigidBodyRotationAction.prototype.setRotation = (function () {
 	var quaternion = new Quaternion();
 	var quaternion2 = new Quaternion();
 	var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
-	return function (fsm) {
-		var entity = fsm.getOwnerEntity();
+	return function () {
+		var entity = this.getEntity();
 		if (entity && entity.rigidBodyComponent) {
 			var rotation = this.rotation;
 			matrix.fromAngles(
@@ -59,8 +59,8 @@ SetRigidBodyRotationAction.prototype.setRotation = (function () {
 	};
 })();
 
-SetRigidBodyRotationAction.prototype.enter = function (fsm) {
-	this.setRotation(fsm);
+SetRigidBodyRotationAction.prototype.enter = function () {
+	this.setRotation();
 };
 
 module.exports = SetRigidBodyRotationAction;

@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function PauseParticleSystemAction(/*id, settings*/) {
+function PauseParticleSystemAction() {
 	Action.apply(this, arguments);
 }
 PauseParticleSystemAction.prototype = Object.create(Action.prototype);
@@ -16,8 +16,8 @@ PauseParticleSystemAction.external = {
 	transitions: []
 };
 
-PauseParticleSystemAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+PauseParticleSystemAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (!entity || !entity.particleSystemComponent) { return; }
 	entity.particleSystemComponent.pause();
 };

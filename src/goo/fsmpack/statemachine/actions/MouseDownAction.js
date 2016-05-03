@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function MouseDownAction(/*id, settings*/) {
+function MouseDownAction() {
 	Action.apply(this, arguments);
 }
 
@@ -40,15 +40,15 @@ MouseDownAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-MouseDownAction.prototype.enter = function (fsm) {
+MouseDownAction.prototype.enter = function () {
 	var update = function (button) {
 		if (button === 'touch') {
-			fsm.send(this.transitions.touchDown);
+			this.sendEvent('touchDown');
 		} else {
-			fsm.send([
-				this.transitions.mouseLeftDown,
-				this.transitions.middleMouseDown,
-				this.transitions.rightMouseDown
+			this.sendEvent([
+				'mouseLeftDown',
+				'middleMouseDown',
+				'rightMouseDown'
 			][button]);
 		}
 	}.bind(this);

@@ -2,7 +2,7 @@ var Action = require('../../../fsmpack/statemachine/actions/Action');
 var Vector3 = require('../../../math/Vector3');
 var Easing = require('../../../util/Easing');
 
-function TweenMaterialColorAction(/*id, settings*/) {
+function TweenMaterialColorAction() {
 	Action.apply(this, arguments);
 
 	this.fromColor = new Vector3();
@@ -80,35 +80,42 @@ TweenMaterialColorAction.getTransitionLabel = function (transitionKey, actionCon
 	return transitionKey === 'complete' ? 'On Tween ' + (actionConfig.options.type || 'Color') + ' Complete' : undefined;
 };
 
-TweenMaterialColorAction.prototype.enter = function (fsm) {
-	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
+TweenMaterialColorAction.prototype.enter = function () {
+	var entity = (this.entity && this.getEntity()._world.entityManager.getEntityById(this.entity.entityRef)) || this.getEntity();
 	var meshRendererComponent = entity.meshRendererComponent;
 	if (!meshRendererComponent) {
 		return;
 	}
 
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 
 	this.material = meshRendererComponent.materials[0];
 	this.typeName = MAPPING[this.type];
 	this.materialColor = this.material.uniforms[this.typeName] = this.material.uniforms[this.typeName] || [1, 1, 1, 1];
-	this.fromColor.setDirect(this.materialColor[0], this.materialColor[1], this.materialColor[2]);
-	this.toColor.setDirect(this.color[0], this.color[1], this.color[2]);
+	this.fromColor.setArray(this.materialColor);
+	this.toColor.setArray(this.color);
 
 	this.completed = false;
 };
 
-TweenMaterialColorAction.prototype.update = function (fsm) {
+TweenMaterialColorAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
-	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
+
+	var entity;
+	if (this.entity) {
+		entity = this.entity._world.entityManager.getEntityById(this.entity.entityRef);
+	} else {
+		entity = this.getEntity();
+	}
+
 	var meshRendererComponent = entity.meshRendererComponent;
 	if (!meshRendererComponent) {
 		return;
 	}
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = Easing[this.easing1][this.easing2](t);
 
 	this.calc.set(this.fromColor).lerp(this.toColor, fT);
@@ -117,7 +124,7 @@ TweenMaterialColorAction.prototype.update = function (fsm) {
 	this.materialColor[2] = this.calc.z;
 
 	if (t >= 1) {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		this.completed = true;
 	}
 };

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function PauseAnimationAction(/*id, settings*/) {
+function PauseAnimationAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,13 +22,13 @@ PauseAnimationAction.external = {
 	transitions: []
 };
 
-PauseAnimationAction.prototype.enter = function (fsm) {
+PauseAnimationAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (this.onAll) {
-		var world = fsm.getWorld();
+		var world = entity._world;
 		var animationSystem = world.getSystem('AnimationSystem');
 		animationSystem.pause();
 	} else {
-		var entity = fsm.getOwnerEntity();
 		if (entity.animationComponent) {
 			entity.animationComponent.pause();
 		}

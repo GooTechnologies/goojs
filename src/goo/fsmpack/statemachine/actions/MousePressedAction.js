@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function MousePressedAction(/*id, settings*/) {
+function MousePressedAction() {
 	Action.apply(this, arguments);
 }
 
@@ -38,15 +38,15 @@ MousePressedAction.getTransitionLabel = function (transitionKey, actionConfig){
 	}
 };
 
-MousePressedAction.prototype.enter = function (fsm) {
-	if (fsm.getInputState(this.button)) {
-		fsm.send(this.transitions.mousedown);
+MousePressedAction.prototype.enter = function () {
+	if (this.getInputState(this.button)) {
+		this.sendEvent('mousedown');
 	}
 };
 
-MousePressedAction.prototype.update = function (fsm) {
-	if (fsm.getInputState(this.button)) {
-		fsm.send(this.transitions.mousedown);
+MousePressedAction.prototype.update = function () {
+	if (this.getInputState(this.button)) {
+		this.sendEvent('mousedown');
 	}
 };
 

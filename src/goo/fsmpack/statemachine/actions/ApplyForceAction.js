@@ -41,9 +41,9 @@ ApplyForceAction.external = {
 
 var forceVector = new Vector3();
 var applyPoint = new Vector3();
-ApplyForceAction.prototype.enter = function (fsm) {
+ApplyForceAction.prototype.enter = function () {
 	SystemBus.addListener('goo.physics.substep', this.substepListener = function () {
-		var entity = fsm.getOwnerEntity();
+		var entity = this.getEntity();
 		if (!entity || !entity.rigidBodyComponent) { return; }
 
 		forceVector.setArray(this.force);

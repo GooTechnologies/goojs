@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function SetVariableAction(/*id, settings*/) {
+function SetVariableAction() {
 	Action.apply(this, arguments);
 }
 
@@ -31,10 +31,10 @@ SetVariableAction.external = {
 	transitions: []
 };
 
-SetVariableAction.prototype.enter = function (fsm) {
+SetVariableAction.prototype.enter = function () {
 	if (this.variable) {
-		fsm.applyOnVariable(this.variable, function () {
-			return FsmUtils.getValue(this.amount, fsm);
+		this.applyOnVariable(this.variable, function () {
+			return FsmUtils.getValue(this.amount);
 		}.bind(this));
 	}
 };

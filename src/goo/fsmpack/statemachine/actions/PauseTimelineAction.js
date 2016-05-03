@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function PauseTimelineAction(/*id, settings*/) {
+function PauseTimelineAction() {
 	Action.apply(this, arguments);
 }
 
@@ -17,8 +17,8 @@ PauseTimelineAction.external = {
 	transitions: []
 };
 
-PauseTimelineAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+PauseTimelineAction.prototype.enter = function () {
+	var entity = this.getEntity();
 
 	if (!entity.hasComponent('TimelineComponent')) { return; }
 

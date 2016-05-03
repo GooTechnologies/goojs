@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function HtmlAction(/*id, settings*/) {
+function HtmlAction() {
 	Action.apply(this, arguments);
 }
 
@@ -24,19 +24,19 @@ HtmlAction.getTransitionLabel = function (/*transitionKey, actionConfig*/){
 	return 'On HTML Pick';
 };
 
-HtmlAction.prototype.enter = function (fsm) {
-	var ownerEntity = fsm.getOwnerEntity();
+HtmlAction.prototype.enter = function () {
+	var ownerEntity = this.getEntity();
 	if (ownerEntity.htmlComponent) {
 		this.eventListener = function () {
-			fsm.send(this.transitions.pick);
+			this.sendEvent('pick');
 		}.bind(this);
 		this.domElement = ownerEntity.htmlComponent.domElement;
 		this.domElement.addEventListener('click', this.eventListener);
 	}
 };
 
-HtmlAction.prototype.exit = function (fsm) {
-	var ownerEntity = fsm.getOwnerEntity();
+HtmlAction.prototype.exit = function () {
+	var ownerEntity = this.getEntity();
 	if (ownerEntity.htmlComponent && this.domElement) {
 		this.domElement.removeEventListener('click', this.eventListener);
 	}

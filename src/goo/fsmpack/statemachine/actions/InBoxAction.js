@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function InBoxAction(/*id, settings*/) {
+function InBoxAction() {
 	Action.apply(this, arguments);
 }
 

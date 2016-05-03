@@ -1,7 +1,7 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-function MultiplyVariableAction(/*id, settings*/) {
+function MultiplyVariableAction() {
 	Action.apply(this, arguments);
 }
 
@@ -31,9 +31,9 @@ MultiplyVariableAction.external = {
 	transitions: []
 };
 
-MultiplyVariableAction.prototype.update = function (fsm) {
-	fsm.applyOnVariable(this.variable, function (v) {
-		return v * FsmUtils.getValue(this.amount, fsm);
+MultiplyVariableAction.prototype.update = function () {
+	this.applyOnVariable(this.variable, function (v) {
+		return v * FsmUtils.getValue(this.amount);
 	}.bind(this));
 };
 

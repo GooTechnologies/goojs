@@ -146,18 +146,6 @@ FsmUtils.keyForCode = function (code) {
 	return 'FsmUtils.keyForCode: key not found for code ' + code;
 };
 
-var s4 = function () {
-	return Math.floor((1 + Math.random()) * 0x10000)
-		.toString(16)
-		.substring(1);
-};
-
-// Random unique id
-FsmUtils.guid = function () {
-	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		s4() + '-' + s4() + s4() + s4();
-};
-
 FsmUtils.getValue = function (par, fsm) {
 	if (typeof par === 'number') {
 		return par;

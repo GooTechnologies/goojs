@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function RemoveLightAction(/*id, settings*/) {
+function RemoveLightAction() {
 	Action.apply(this, arguments);
 }
 
@@ -16,8 +16,8 @@ RemoveLightAction.external = {
 	transitions: []
 };
 
-RemoveLightAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+RemoveLightAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	if (entity.hasComponent('LightComponent')) {
 		entity.clearComponent('LightComponent');
 	}

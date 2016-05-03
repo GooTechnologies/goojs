@@ -34,9 +34,9 @@ ApplyTorqueAction.external = {
 };
 
 var torqueVector = new Vector3();
-ApplyTorqueAction.prototype.enter = function (fsm) {
+ApplyTorqueAction.prototype.enter = function () {
 	SystemBus.addListener('goo.physics.substep', this.substepListener = function () {
-		var entity = fsm.getOwnerEntity();
+		var entity = this.getEntity();
 		if (!entity || !entity.rigidBodyComponent) { return; }
 
 		torqueVector.setArray(this.torque);

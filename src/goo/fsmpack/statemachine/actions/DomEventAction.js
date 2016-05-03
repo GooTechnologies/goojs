@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function DomEventAction(/*id, settings*/) {
+function DomEventAction() {
 	Action.apply(this, arguments);
 
 	this.domElements = null;
@@ -38,9 +38,9 @@ DomEventAction.getTransitionLabel = function (transitionKey, actionConfig) {
 	return 'On ' + actionConfig.options.eventName;
 };
 
-DomEventAction.prototype.enter = function (fsm) {
+DomEventAction.prototype.enter = function () {
 	this.eventListener = function () {
-		fsm.send(this.transitions.event);
+		this.sendEvent('event');
 	}.bind(this);
 
 	var elements = this.domElements = document.querySelectorAll(this.querySelector);

@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function RemoveAction(/*id, settings*/) {
+function RemoveAction() {
 	Action.apply(this, arguments);
 }
 
@@ -22,8 +22,8 @@ RemoveAction.external = {
 	transitions: []
 };
 
-RemoveAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+RemoveAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	entity.removeFromWorld(this.recursive);
 };
 

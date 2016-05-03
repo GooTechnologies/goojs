@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function ScaleAction(/*id, settings*/) {
+function ScaleAction() {
 	Action.apply(this, arguments);
 }
 
@@ -70,15 +70,15 @@ ScaleAction.prototype.applyScale = function () {
 	entity.transformComponent.setUpdated();
 };
 
-ScaleAction.prototype.enter = function (fsm) {
+ScaleAction.prototype.enter = function () {
 	if (!this.everyFrame) {
-		this.applyScale(fsm);
+		this.applyScale();
 	}
 };
 
-ScaleAction.prototype.update = function (fsm) {
+ScaleAction.prototype.update = function () {
 	if (this.everyFrame) {
-		this.applyScale(fsm);
+		this.applyScale();
 	}
 };
 

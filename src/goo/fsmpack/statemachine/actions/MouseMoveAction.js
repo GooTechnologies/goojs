@@ -1,6 +1,6 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
 
-function MouseMoveAction(/*id, settings*/) {
+function MouseMoveAction() {
 	Action.apply(this, arguments);
 }
 
@@ -32,12 +32,12 @@ MouseMoveAction.getTransitionLabel = function (transitionKey/*, actionConfig*/){
 	return labels[transitionKey];
 };
 
-MouseMoveAction.prototype.enter = function (fsm) {
+MouseMoveAction.prototype.enter = function () {
 	var update = function (type) {
 		if (type === 'mouse') {
-			fsm.send(this.transitions.mousemove);
+			this.sendEvent('mousemove');
 		} else {
-			fsm.send(this.transitions.touchmove);
+			this.sendEvent('touchmove');
 		}
 	}.bind(this);
 

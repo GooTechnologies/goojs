@@ -3,7 +3,7 @@ var Vector3 = require('../../../math/Vector3');
 var Quaternion = require('../../../math/Quaternion');
 var Easing = require('../../../util/Easing');
 
-function TweenLookAtAction(/*id, settings*/) {
+function TweenLookAtAction() {
 	Action.apply(this, arguments);
 
 	this.quatFrom = new Quaternion();
@@ -60,11 +60,11 @@ TweenLookAtAction.getTransitionLabel = function (transitionKey/*, actionConfig*/
 	return transitionKey === 'complete' ? 'On Tween LookAt Complete' : undefined;
 };
 
-TweenLookAtAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+TweenLookAtAction.prototype.enter = function () {
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.transform;
 
-	this.startTime = fsm.getTime();
+	this.startTime = this.getEntity()._world.time;
 
 	this.quatFrom.fromRotationMatrix(transform.rotation);
 
@@ -76,14 +76,14 @@ TweenLookAtAction.prototype.enter = function (fsm) {
 	this.completed = false;
 };
 
-TweenLookAtAction.prototype.update = function (fsm) {
+TweenLookAtAction.prototype.update = function () {
 	if (this.completed) {
 		return;
 	}
-	var entity = fsm.getOwnerEntity();
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.transform;
 
-	var t = Math.min((fsm.getTime() - this.startTime) * 1000 / this.time, 1);
+	var t = Math.min((this.getEntity()._world.time - this.startTime) * 1000 / this.time, 1);
 	var fT = Easing[this.easing1][this.easing2](t);
 	Quaternion.slerp(this.quatFrom, this.quatTo, fT, this.quatFinal);
 
@@ -91,7 +91,7 @@ TweenLookAtAction.prototype.update = function (fsm) {
 	entity.transformComponent.setUpdated();
 
 	if (t >= 1) {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 		this.completed = true;
 	}
 };

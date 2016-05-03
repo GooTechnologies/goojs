@@ -1,7 +1,7 @@
 var Action = require('./Action');
 var PromiseUtil = require('./../../../util/PromiseUtil');
 
-function PlaySoundAction(/*id, settings*/) {
+function PlaySoundAction() {
 	Action.apply(this, arguments);
 }
 
@@ -34,8 +34,8 @@ PlaySoundAction.getTransitionLabel = function (transitionKey /*, actionConfig*/)
 	return labels[transitionKey];
 };
 
-PlaySoundAction.prototype.enter = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+PlaySoundAction.prototype.enter = function () {
+	var entity = this.getEntity();
 
 	if (!entity.hasComponent('SoundComponent')) { return; }
 
@@ -51,7 +51,7 @@ PlaySoundAction.prototype.enter = function (fsm) {
 	}
 
 	endPromise.then(function () {
-		fsm.send(this.transitions.complete);
+		this.sendEvent('complete');
 	}.bind(this));
 };
 

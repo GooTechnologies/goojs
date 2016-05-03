@@ -1,6 +1,6 @@
 var Action = require('./Action');
 
-function SetMaterialColorAction(/*id, settings*/) {
+function SetMaterialColorAction() {
 	Action.apply(this, arguments);
 }
 
@@ -43,8 +43,14 @@ var MAPPING = {
 	Ambient: 'materialAmbient'
 };
 
-SetMaterialColorAction.prototype.enter = function (fsm) {
-	var entity = (this.entity && fsm.getEntityById(this.entity.entityRef)) || fsm.getOwnerEntity();
+SetMaterialColorAction.prototype.enter = function () {
+	var entity;
+	if (this.entity) {
+		entity = this.entity._world.entityManager.getEntityById(this.entity.entityRef);
+	} else {
+		entity = this.getEntity();
+	}
+
 	if (entity && entity.meshRendererComponent) {
 		var material = entity.meshRendererComponent.materials[0];
 		var typeName = MAPPING[this.type];
