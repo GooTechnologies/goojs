@@ -50,9 +50,7 @@ StateMachineSystem.prototype.process = function (entities, tpf) {
 	for (var i = 0; i < entities.length; i++) {
 		var component = entities[i].stateMachineComponent;
 		if (!component.entered) {
-			// component.init(); // why was this done?
-			component.doEnter();
-			component.entered = true;
+			component.enter();
 		}
 	}
 
@@ -77,8 +75,7 @@ StateMachineSystem.prototype.play = function () {
 		// Un-enter entered components
 		var entities = this._activeEntities;
 		for (var i = 0; i < entities.length; i++) {
-			var component = entities[i].stateMachineComponent;
-			component.entered = false;
+			entities[i].stateMachineComponent.exit();
 		}
 
 		for (var key in this._listeners) {

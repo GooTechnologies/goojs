@@ -52,6 +52,26 @@ StateMachineComponent.prototype = Object.create(Component.prototype);
 
 StateMachineComponent.vars = {};
 
+/**
+ * Add a machine.
+ * @param {Machine} machine
+ */
+StateMachineComponent.prototype.addMachine = function (machine) {
+	machine.parent = this;
+	this.machines.push(machine);
+	this.machinesById.set(machine.id, machine);
+};
+
+/**
+ * Remove a machine.
+ * @param {Machine} machine
+ */
+StateMachineComponent.prototype.removeMachine = function (machine) {
+	machine.parent = null;
+	ArrayUtils.remove(this.machines, machine);
+	this.machinesById.delete(machine.id);
+};
+
 StateMachineComponent.getVariable = function (name) {
 	return StateMachineComponent.vars[name];
 };
@@ -92,18 +112,6 @@ StateMachineComponent.applyOnVariable = function (name, fun) {
 	}
 };
 
-StateMachineComponent.prototype.addMachine = function (machine) {
-	machine.parent = this;
-	this.machines.push(machine);
-	this.machinesById.set(machine.id, machine);
-};
-
-StateMachineComponent.prototype.removeMachine = function (machine) {
-	machine.parent = null;
-	ArrayUtils.remove(this.machines, machine);
-	this.machinesById.delete(machine.id);
-};
-
 /**
  * Gets the state machine with the specified identifier.
  *
@@ -129,11 +137,12 @@ StateMachineComponent.prototype.init = function () {
 	}
 };
 
-StateMachineComponent.prototype.doEnter = function () {
+StateMachineComponent.prototype.enter = function () {
 	for (var i = 0; i < this.machines.length; i++) {
 		var machine = this.machines[i];
 		machine.enter();
 	}
+	this.entered = true;
 };
 
 /**
@@ -144,6 +153,7 @@ StateMachineComponent.prototype.exit = function () {
 		var machine = this.machines[i];
 		machine.exit();
 	}
+	this.entered = false;
 };
 
 /**
