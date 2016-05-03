@@ -59,10 +59,11 @@ MoveAction.prototype.update = function (fsm) {
 	}
 };
 
-MoveAction.prototype.applyMove = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+MoveAction.prototype.applyMove = function () {
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.sync().transform;
 	var translation = transform.translation;
+	var tpf = entity._world.tpf;
 
 	if (this.oriented) {
 		if (this.relative) {
@@ -71,7 +72,7 @@ MoveAction.prototype.applyMove = function (fsm) {
 			forward.applyPost(orientation);
 
 			if (this.everyFrame) {
-				forward.scale(fsm.getTpf());
+				forward.scale(tpf);
 				translation.add(forward);
 			} else {
 				translation.add(forward);
@@ -82,7 +83,7 @@ MoveAction.prototype.applyMove = function (fsm) {
 	} else {
 		if (this.relative) {
 			if (this.everyFrame) {
-				var tpf = fsm.getTpf();
+				var tpf = tpf;
 				translation.addDirect(this.translation[0] * tpf, this.translation[1] * tpf, this.translation[2] * tpf);
 			} else {
 				translation.addDirect(this.translation[0], this.translation[1], this.translation[2]);

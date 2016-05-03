@@ -44,9 +44,6 @@ function State(options) {
 		getInputState: function (key) {
 			return this.component.system.getInputState(key);
 		}.bind(this),
-		getTpf: function () {
-			return this.component.entity._world.tpf;
-		}.bind(this),
 		getWorld: function () {
 			return this.component.entity._world;
 		}.bind(this),
@@ -72,12 +69,6 @@ function State(options) {
 				}
 			}
 		}.bind(this),
-		addListener: function (channelName, callback) {
-			this.component._bus.addListener(channelName, callback);
-		}.bind(this),
-		removeListener: function (channelName, callback) {
-			this.component._bus.removeListener(channelName, callback);
-		}.bind(this),
 		defineVariable: function (name, initialValue) {
 			this.vars[name] = initialValue;
 		}.bind(this),
@@ -98,9 +89,6 @@ function State(options) {
 				this.component.applyOnVariable(name, fun);
 			}
 		}.bind(this),
-		getEvalProxy: function () {
-			return this.component.system.evalProxy;
-		}.bind(this)
 	};
 	*/
 }

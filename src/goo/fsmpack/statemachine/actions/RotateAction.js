@@ -37,8 +37,8 @@ RotateAction.external = {
 
 var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
 
-RotateAction.prototype.applyRotation = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+RotateAction.prototype.applyRotation = function () {
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.sync().transform;
 
 	var rotationX = this.rotation[0];
@@ -48,7 +48,7 @@ RotateAction.prototype.applyRotation = function (fsm) {
 	if (this.relative) {
 		var rotationMatrix = transform.rotation;
 		if (this.everyFrame) {
-			var tpf = fsm.getTpf();
+			var tpf = entity._world.tpf;
 			rotationMatrix.rotateX(rotationX * DEG_TO_RAD * tpf);
 			rotationMatrix.rotateY(rotationY * DEG_TO_RAD * tpf);
 			rotationMatrix.rotateZ(rotationZ * DEG_TO_RAD * tpf);
@@ -59,7 +59,7 @@ RotateAction.prototype.applyRotation = function (fsm) {
 		}
 	} else {
 		if (this.everyFrame) {
-			var tpf = fsm.getTpf();
+			var tpf = entity._world.tpf;
 			transform.setRotationXYZ(
 				rotationX * DEG_TO_RAD * tpf,
 				rotationY * DEG_TO_RAD * tpf,

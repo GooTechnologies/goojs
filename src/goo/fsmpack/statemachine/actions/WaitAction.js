@@ -60,11 +60,11 @@ WaitAction.prototype.enter = function () {
 	this.totalWait = parseFloat(this.waitTime) + Math.random() * parseFloat(this.randomTime);
 };
 
-WaitAction.prototype.update = function (fsm) {
-	this.currentTime += fsm.getTpf() * 1000;
+WaitAction.prototype.update = function () {
+	this.currentTime += this.getEntity._world.tpf * 1000;
 	if (this.currentTime >= this.totalWait && !this.completed) {
 		this.completed = true;
-		fsm.send(this.transitions.timeUp);
+		this.sendEvent('timeUp');
 	}
 };
 

@@ -40,13 +40,13 @@ ScaleAction.external = {
 	transitions: []
 };
 
-ScaleAction.prototype.applyScale = function (fsm) {
-	var entity = fsm.getOwnerEntity();
+ScaleAction.prototype.applyScale = function () {
+	var entity = this.getEntity();
 	var transform = entity.transformComponent.transform;
 	if (this.relative) {
 		if (this.multiply) {
 			if (this.everyFrame) {
-				var tpf = fsm.getTpf() * 10;
+				var tpf = entity._world.tpf * 10;
 				transform.scale.x *= this.scale[0] * tpf;
 				transform.scale.y *= this.scale[1] * tpf;
 				transform.scale.z *= this.scale[2] * tpf;
@@ -55,7 +55,7 @@ ScaleAction.prototype.applyScale = function (fsm) {
 			}
 		} else {
 			if (this.everyFrame) {
-				var tpf = fsm.getTpf() * 10;
+				var tpf = entity._world.tpf * 10;
 				transform.scale.x += this.scale[0] * tpf;
 				transform.scale.y += this.scale[1] * tpf;
 				transform.scale.z += this.scale[2] * tpf;

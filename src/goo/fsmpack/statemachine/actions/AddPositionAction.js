@@ -1,5 +1,4 @@
 var Action = require('../../../fsmpack/statemachine/actions/Action');
-var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
 function AddPositionAction() {
 	Action.apply(this, arguments);
@@ -48,22 +47,26 @@ AddPositionAction.external = {
 	transitions: []
 };
 
-AddPositionAction.prototype.addPosition = function (fsm) {
-	if (this.entity) {
-		var tpf = fsm.getTpf();
+AddPositionAction.prototype.addPosition = function () {
+	var entity = this.entity;
 
-		var dx = FsmUtils.getValue(this.amountX, fsm);
-		var dy = FsmUtils.getValue(this.amountY, fsm);
-		var dz = FsmUtils.getValue(this.amountZ, fsm);
-
-		this.entity.transformComponent.transform.translation.addDirect(
-			dx * this.speed * tpf,
-			dy * this.speed * tpf,
-			dz * this.speed * tpf
-		);
-
-		this.entity.transformComponent.setUpdated();
+	if (!entity) {
+		return;
 	}
+
+	var tpf = entity._world.tpf;
+
+	var dx = this.amountX;
+	var dy = this.amountY;
+	var dz = this.amountZ;
+
+	var speedTpf = this.speed * tpf;
+
+	entity.transformComponent.addTranslation(
+		dx * speedTpf,
+		dy * speedTpf,
+		dz * speedTpf
+	);
 };
 
 AddPositionAction.prototype.enter = function (fsm) {
