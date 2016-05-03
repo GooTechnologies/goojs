@@ -17,9 +17,9 @@ function StateMachineComponent() {
 	this.machines = [];
 
 	/**
-	 * @type {object}
+	 * @type {Map}
 	 */
-	this.machinesById = {};
+	this.machinesById = new Map();
 
 	/**
 	 * @type {object}
@@ -95,14 +95,13 @@ StateMachineComponent.applyOnVariable = function (name, fun) {
 StateMachineComponent.prototype.addMachine = function (machine) {
 	machine.parent = this;
 	this.machines.push(machine);
-	this.machinesById[machine.id] = machine;
+	this.machinesById.set(machine.id, machine);
 };
 
 StateMachineComponent.prototype.removeMachine = function (machine) {
 	machine.parent = null;
-	machine.recursiveRemove();
 	ArrayUtils.remove(this.machines, machine);
-	delete this.machinesById[machine.id];
+	this.machinesById.delete(machine.id);
 };
 
 /**
@@ -116,7 +115,7 @@ StateMachineComponent.prototype.removeMachine = function (machine) {
  *         machine is not in the component.
  */
 StateMachineComponent.prototype.getMachineById = function (id) {
-	return this.machinesById[id] || null;
+	return this.machinesById.get(id);
 };
 
 /**
@@ -138,12 +137,12 @@ StateMachineComponent.prototype.doEnter = function () {
 };
 
 /**
- * Kills the state machines triggering exit functions in all current states
+ * Trigger exit in all machines.
  */
-StateMachineComponent.prototype.kill = function () {
+StateMachineComponent.prototype.exit = function () {
 	for (var i = 0; i < this.machines.length; i++) {
 		var machine = this.machines[i];
-		machine.kill();
+		machine.exit();
 	}
 };
 

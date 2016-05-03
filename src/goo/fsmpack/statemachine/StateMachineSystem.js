@@ -111,7 +111,7 @@ StateMachineSystem.prototype.stop = function () {
 
 	for (var i = 0; i < this._activeEntities.length; i++) {
 		var component = this._activeEntities[i].stateMachineComponent;
-		component.kill();
+		component.exit();
 		component.cleanup();
 	}
 	this.time = 0;

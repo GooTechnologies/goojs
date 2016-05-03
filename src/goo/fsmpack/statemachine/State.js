@@ -25,9 +25,10 @@ function State(options) {
 	this.actions = [];
 
 	/**
-	 * @type {object}
+	 * Maps transition ID's to State instances.
+	 * @type {Map}
 	 */
-	this.transitions = {};
+	this.transitions = new Map();
 
 	/**
 	 * @type {object}
@@ -93,16 +94,51 @@ function State(options) {
 	*/
 }
 
+/**
+ * @param {Action} action
+ */
+State.prototype.addAction = function (action) {
+	// check if action is already added
+	if (this.actions.indexOf(action) !== -1) {
+		throw new Error('Action ' + action.id + ' was already added.');
+	}
+
+	action.parent = this;
+	this.actions.push(action);
+};
+
+/**
+ * @param {Action} action
+ */
+State.prototype.removeAction = function (action) {
+	ArrayUtils.remove(this.actions, action);
+};
+
+State.prototype.removeAllActions = function () {
+	while (this.actions.length) {
+		this.removeAction(this.actions[0]);
+	}
+};
+
+/**
+ * Sets the current .depth to 0
+ */
 State.prototype.resetDepth = function () {
 	this.depth = 0;
 };
 
+/**
+ * @returns {boolean}
+ */
 State.prototype.isCurrentState = function () {
 	return this === this.machine.currentState;
 };
 
+/**
+ * @param {string} transitionId
+ */
 State.prototype.handleTransition = function (transitionId) {
-	var state = this.transitions[transitionId];
+	var state = this.transitions.get(transitionId);
 	this.requestTransition(state);
 };
 
@@ -132,7 +168,7 @@ State.prototype.requestTransition = function (targetState) {
 		}
 
 		if (targetState && this.machine.containsState(targetState)) {
-			this.machine.currentState.kill();
+			this.machine.currentState.exit();
 			this.machine.setState(targetState);
 		}
 	} else {
@@ -141,15 +177,18 @@ State.prototype.requestTransition = function (targetState) {
 };
 
 /**
- * @param {string} eventName
+ * @param {string} transitionId
  * @param {State} targetState
  */
 State.prototype.setTransition = function (transitionId, targetState) {
-	this.transitions[transitionId] = targetState;
+	this.transitions.set(transitionId, targetState);
 };
 
+/**
+ * @param {string} transitionId
+ */
 State.prototype.clearTransition = function (transitionId) {
-	delete this.transitions[transitionId];
+	this.transitions.delete(transitionId);
 };
 
 State.prototype.enter = function () {
@@ -194,7 +233,10 @@ State.prototype.update = function () {
 	}
 };
 
-State.prototype.kill = function () {
+/**
+ * Exit this state.
+ */
+State.prototype.exit = function () {
 	SystemBus.emit('goo.fsm.exit', {
 		entityId: this.component && this.component.entity ? this.component.entity.id : '',
 		machineName: this.machine ? this.machine.name : '',
@@ -223,6 +265,10 @@ State.prototype.cleanup = function () {
 	}
 };
 
+/**
+ * @param {string} id
+ * @return {Action}
+ */
 State.prototype.getActionById = function (id) {
 	for (var i = 0; i < this.actions.length; i++) {
 		var action = this.actions[i];
@@ -230,27 +276,6 @@ State.prototype.getActionById = function (id) {
 			return action;
 		}
 	}
-};
-
-State.prototype.addAction = function (action) {
-
-	// check if action is already added
-	if (this.actions.indexOf(action) !== -1) {
-		throw new Error('Action ' + action.id + ' was already added.');
-	}
-
-	action.parent = this;
-	this.actions.push(action);
-};
-
-State.prototype.removeAllActions = function () {
-	while (this.actions.length) {
-		this.removeAction(this.actions[0]);
-	}
-};
-
-State.prototype.removeAction = function (action) {
-	ArrayUtils.remove(this.actions, action);
 };
 
 module.exports = State;

@@ -18,7 +18,9 @@ UnmuteAction.external = {
 
 UnmuteAction.prototype.enter = function () {
 	var world = this.getEntity()._world.time;
-	if (!world) { return; }
+	if (!world) {
+		return;
+	}
 
 	var soundSystem = world.getSystem('SoundSystem');
 	if (soundSystem) {

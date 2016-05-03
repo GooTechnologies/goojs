@@ -61,11 +61,11 @@ MachineHandler.prototype._update = function (ref, config, options) {
 		machine.asyncMode = config.asyncMode;
 
 		// Remove old states
-		for (var id in machine.states) {
-			if (!machine.getStateById(id)) {
-				machine.removeState(id);
+		machine.states.forEach(function (state) {
+			if (!config.states[state.id]) {
+				machine.removeState(state);
 			}
-		}
+		});
 
 		// Update existing states and create new ones
 		var promises = [];
@@ -74,7 +74,7 @@ MachineHandler.prototype._update = function (ref, config, options) {
 		}
 
 		return RSVP.all(promises).then(function () {
-			machine.setInitialState(config.initialState);
+			machine.setInitialState(machine.getStateById(config.initialState));
 			return machine;
 		});
 	});
@@ -126,10 +126,11 @@ MachineHandler.prototype._updateActions = function (state, stateConfig) {
  * @private
  */
 MachineHandler.prototype._updateTransitions = function (state, stateConfig, machine) {
-	state.transitions = {};
+	state.transitions.clear();
 	for (var id in stateConfig.transitions) {
 		var transition = stateConfig.transitions[id];
-		state.setTransition(transition.id, machine.getStateById(transition.targetState));
+		var targetState = machine.getStateById(transition.targetState);
+		state.setTransition(transition.id, targetState);
 	}
 };
 
@@ -140,10 +141,8 @@ MachineHandler.prototype._updateTransitions = function (state, stateConfig, mach
  * @private
  */
 MachineHandler.prototype._updateState = function (machine, stateConfig/*, options*/) {
-	var state;
-	if (machine.states && machine.states[stateConfig.id]) {
-		state = machine.states[stateConfig.id];
-	} else {
+	var state = machine.getStateById(stateConfig.id);
+	if (!state) {
 		state = new State({
 			id: stateConfig.id
 		});

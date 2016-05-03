@@ -23,9 +23,9 @@ function Machine(options) {
 	this.name = options.name || 'Machine';
 
 	/**
-	 * @type {object}
+	 * @type {Set}
 	 */
-	this.states = {};
+	this.states = new Set();
 
 	/**
 	 * Initial state. Set it using .setInitialState()
@@ -40,7 +40,7 @@ function Machine(options) {
 	this.currentState = null;
 
 	/**
-	 * @type {StateMachineComponent|State}
+	 * @type {StateMachineComponent|State|null}
 	 */
 	this.parent = null;
 
@@ -55,6 +55,39 @@ function Machine(options) {
 	this.asyncMode = options.asyncMode !== undefined ? options.asyncMode : false;
 }
 
+/**
+ * Add a state
+ * @param {State} state
+ * @returns {Machine}
+ */
+Machine.prototype.addState = function (state) {
+	state.machine = this;
+	this.states.add(state);
+	return this;
+};
+
+/**
+ * Remove a state
+ * @param {State} state
+ * @returns {Machine}
+ */
+Machine.prototype.removeState = function (state) {
+	if (!this.states.has(state)) {
+		return;
+	}
+	if (this.initialState === state) {
+		throw new Error('Cannot remove initial state');
+	}
+	if (this.currentState === state) {
+		this.reset();
+	}
+	delete this.states.delete(state);
+	return this;
+};
+
+/**
+ * @return {Entity}
+ */
 Machine.prototype.getEntity = function () {
 	if (this.parent instanceof State) {
 		return this.parent.machine.getEntity();
@@ -63,18 +96,42 @@ Machine.prototype.getEntity = function () {
 	}
 };
 
+/**
+ * @param {State} state
+ * @return {boolean}
+ */
 Machine.prototype.containsState = function (state) {
-	return !!this.states[state.id];
+	return this.states.has(state);
 };
 
+/**
+ * @param {string} id
+ * @return {State}
+ */
 Machine.prototype.getStateById = function (id) {
-	return this.states[id];
+	var result;
+	this.states.forEach(function (state) {
+		if (state.id === id) {
+			result = state;
+		}
+	});
+	return result;
 };
 
+/**
+ * @param {State} state
+ * @return {Machine}
+ */
 Machine.prototype.setInitialState = function (state) {
 	this.initialState = state;
+	return this;
 };
 
+/**
+ * Set current state.
+ * @param {State} state
+ * @return {Machine}
+ */
 Machine.prototype.setState = function (state) {
 	// change state
 	this.currentState = state;
@@ -84,8 +141,14 @@ Machine.prototype.setState = function (state) {
 
 	// do on enter of new state
 	this.currentState.enter();
+
+	return this;
 };
 
+/**
+ * Reset the machine.
+ * @return {Machine}
+ */
 Machine.prototype.reset = function () {
 	// reset self
 	this.currentState = this.initialState;
@@ -94,41 +157,48 @@ Machine.prototype.reset = function () {
 	if (this.currentState) {
 		this.currentState.reset();
 	}
+
+	return this;
 };
 
+/**
+ * @returns {Machine}
+ */
 Machine.prototype.ready = function () {
-	var keys = Object.keys(this.states);
-	for (var i = 0; i < keys.length; i++) {
-		var state = this.states[keys[i]];
+	this.states.forEach(function (state) {
 		state.ready();
-	}
+	});
+	return this;
 };
 
+/**
+ * @returns {Machine}
+ */
 Machine.prototype.cleanup = function () {
-	var keys = Object.keys(this.states);
-	for (var i = 0; i < keys.length; i++) {
-		var state = this.states[keys[i]];
+	this.states.forEach(function (state) {
 		state.cleanup();
-	}
+	});
+	return this;
 };
 
+function resetDepth(state) {
+	state.resetDepth();
+}
+
+/**
+ * @returns {Machine}
+ */
 Machine.prototype.enter = function () {
-	var keys = Object.keys(this.states);
-	for (var i = 0; i < keys.length; i++) {
-		var state = this.states[keys[i]];
-		state.resetDepth();
-	}
+	this.states.forEach(resetDepth);
 	if (this.currentState) {
 		this.currentState.enter();
 	}
+	return this;
 };
 
 Machine.prototype.update = function () {
-	var keys = Object.keys(this.states);
-	for (var i = 0; i < keys.length; i++) {
-		var state = this.states[keys[i]];
-		state.resetDepth();
-	}
+	this.states.forEach(resetDepth);
+
 	if (this.currentState) {
 		if (!this.asyncMode) {
 			this.currentState.update();
@@ -137,7 +207,7 @@ Machine.prototype.update = function () {
 			var jumpState = this.currentState.update();
 
 			if (jumpState) {
-				this.currentState.kill();
+				this.currentState.exit();
 				this.setState(jumpState);
 			}
 
@@ -146,46 +216,14 @@ Machine.prototype.update = function () {
 	}
 };
 
-Machine.prototype.kill = function () {
+/**
+ * @returns {Machine}
+ */
+Machine.prototype.exit = function () {
 	if (this.currentState) {
-		this.currentState.kill();
+		this.currentState.exit();
 	}
-};
-
-Machine.prototype.addState = function (state) {
-	state.machine = this;
-	this.states[state.id] = state;
-};
-
-Machine.prototype.removeFromParent = function () {
-	if (this.parent && this.parent instanceof StateMachineComponent) {
-		this.parent.removeMachine(this);
-	}
-};
-
-Machine.prototype.recursiveRemove = function () {
-	var keys = Object.keys(this.states);
-	for (var i = 0; i < keys.length; i++) {
-		var state = this.states[keys[i]];
-		state.recursiveRemove();
-	}
-	for (var key in this.states) {
-		delete this.states[key];
-	}
-};
-
-Machine.prototype.removeState = function (state) {
-	var id = state.id;
-	if (!this.states[id]) {
-		return;
-	}
-	if (this.initialState === state) {
-		throw new Error('Cannot remove initial state');
-	}
-	if (this.currentState === state) {
-		this.reset();
-	}
-	delete this.states[id];
+	return this;
 };
 
 module.exports = Machine;
