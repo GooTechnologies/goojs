@@ -4,6 +4,7 @@ var SystemBus = require('../../entities/SystemBus');
 /**
  * @param {object} [options]
  * @param {number} [options.id]
+ * @param {Array<Action>} [options.actions]
  */
 function State(options) {
 	options = options || {};
@@ -11,7 +12,7 @@ function State(options) {
 	/**
 	 * @type {string}
 	 */
-	this.id = options.id;
+	this.id = options.id || 'defaultStateId';
 
 	/**
 	 * The host machine.
@@ -40,65 +41,16 @@ function State(options) {
 	 */
 	this.depth = 0;
 
-	/*
-	this.proxy = {
-		getInputState: function (key) {
-			return this.component.system.getInputState(key);
-		}.bind(this),
-		getWorld: function () {
-			return this.component.entity._world;
-		}.bind(this),
-		getTime: function () {
-			return this.component.system.time;
-		}.bind(this),
-		getState: function () {
-			return this;
-		}.bind(this),
-		getFsm: function () {
-			return this.component;
-		}.bind(this),
-		getOwnerEntity: function () {
-			return this.component && this.component.entity;
-		}.bind(this),
-		getEntityById: function (id) {
-			return this.component.entity._world.by.id(id).first();
-		}.bind(this),
-		send: function (channels) {
-			if (channels) {
-				if (typeof channels === 'string' && this.transitions[channels]) {
-					this.requestTransition(this.transitions[channels]);
-				}
-			}
-		}.bind(this),
-		defineVariable: function (name, initialValue) {
-			this.vars[name] = initialValue;
-		}.bind(this),
-		removeVariable: function (name) {
-			delete this.vars[name];
-		}.bind(this),
-		getVariable: function (name) {
-			if (this.vars[name] !== undefined) {
-				return this.vars[name];
-			} else {
-				return this.component.getVariable(name);
-			}
-		}.bind(this),
-		applyOnVariable: function (name, fun) {
-			if (this.vars[name] !== undefined) {
-				this.vars[name] = fun(this.vars[name]);
-			} else {
-				this.component.applyOnVariable(name, fun);
-			}
-		}.bind(this),
-	};
-	*/
+	var actions = options.actions || [];
+	for (var i = 0; i < actions.length; i++) {
+		this.addAction(actions[i]);
+	}
 }
 
 /**
  * @param {Action} action
  */
 State.prototype.addAction = function (action) {
-	// check if action is already added
 	if (this.actions.indexOf(action) !== -1) {
 		throw new Error('Action ' + action.id + ' was already added.');
 	}

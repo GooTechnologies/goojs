@@ -8,6 +8,8 @@ var State = require('./State');
  * @param {string} [options.name]
  * @param {number} [options.maxLoopDepth=100]
  * @param {number} [options.asyncMode=false]
+ * @param {Array<State>} [options.states]
+ * @param {State} [options.initialState]
  */
 function Machine(options) {
 	options = options || {};
@@ -53,6 +55,16 @@ function Machine(options) {
 	 * @type {boolean}
 	 */
 	this.asyncMode = options.asyncMode !== undefined ? options.asyncMode : false;
+
+	if (options.states) {
+		for (var i=0; i<options.states.length; i++) {
+			this.addState(options.states[i]);
+		}
+	}
+
+	if (options.initialState) {
+		this.setInitialState(options.initialState);
+	}
 }
 
 /**

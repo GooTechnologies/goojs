@@ -10,161 +10,161 @@ describe('StateMachineComponent', function () {
 		component = new StateMachineComponent();
 	});
 
-	it('can run enter on init on all machines', function () {
-		var gotData1 = 0;
-		var gotData2 = 0;
+	function createAction(methods, id) {
+		function TestAction() {
+			Action.apply(this, arguments);
+		}
+		TestAction.prototype = Object.create(Action.prototype);
+		TestAction.prototype.constructor = TestAction;
+		TestAction.external = {
+			key: 'TestAction',
+			name: 'TestAction',
+			type: 'test',
+			description: '',
+			parameters: [],
+			transitions: []
+		};
+		for (var key in methods) {
+			TestAction.prototype[key] = methods[key];
+		}
+		return new TestAction({ id: id||'testActionId' });
+	}
+
+	it('enters, updates and exits all actions in all machines', function () {
+		var action1enter = 0;
+		var action2enter = 0;
+		var action3enter = 0;
+		var action1update = 0;
+		var action2update = 0;
+		var action3update = 0;
+		var action1exit = 0;
+		var action2exit = 0;
+		var action3exit = 0;
 
 		// set up machine 1
+		var action1 = createAction({
+			enter: function () { action1enter++; },
+			update: function () { action1update++; },
+			exit: function () { action1exit++; }
+		});
+		var state1 = new State({
+			actions: [action1]
+		});
 		var machine1 = new Machine({
-			asyncMode: true
+			asyncMode: true,
+			states: [state1],
+			initialState: state1
 		});
 		component.addMachine(machine1);
-
-		var state1 = new State({
-			id: 'entry'
-		});
-		machine1.addState(state1);
-		machine1.setInitialState(state1);
-
-		state1.addAction({
-			ready: function () {},
-			enter: function () { gotData1 += 123; },
-			exit: function () {},
-			update: function () {}
-		});
 
 
 		// set up machine 2
+		var action2 = createAction({
+			enter: function () { action2enter++; },
+			update: function () { action2update++; },
+			exit: function () { action2exit++; }
+		});
+		var action3 = createAction({
+			enter: function () { action3enter++; },
+			update: function () { action3update++; },
+			exit: function () { action3exit++; }
+		});
+		var state2 = new State({
+			actions: [action2, action3]
+		});
 		var machine2 = new Machine({
-			asyncMode: true
+			asyncMode: true,
+			states: [state2],
+			initialState: state2
 		});
 		component.addMachine(machine2);
 
-		var state2 = new State({
-			id: 'entry'
-		});
-		machine2.addState(state2);
-		machine2.setInitialState(state2);
 
-		state2.addAction({
-			ready: function () {},
-			enter: function () { gotData2 += 234; },
-			exit: function () {},
-			update: function () {}
-		});
-
-
-		// init
 		component.init();
-		component.doEnter();
+		component.enter();
 
-		expect(gotData1).toBe(123);
-		expect(gotData2).toBe(234);
+		expect(action1enter).toBe(1);
+		expect(action2enter).toBe(1);
+		expect(action3enter).toBe(1);
+		expect(action1update).toBe(0);
+		expect(action2update).toBe(0);
+		expect(action3update).toBe(0);
+		expect(action1exit).toBe(0);
+		expect(action2exit).toBe(0);
+		expect(action3exit).toBe(0);
+
+		component.update();
+
+		expect(action1enter).toBe(1);
+		expect(action2enter).toBe(1);
+		expect(action3enter).toBe(1);
+		expect(action1update).toBe(1);
+		expect(action2update).toBe(1);
+		expect(action3update).toBe(1);
+		expect(action1exit).toBe(0);
+		expect(action2exit).toBe(0);
+		expect(action3exit).toBe(0);
+
+		component.exit();
+
+		expect(action1enter).toBe(1);
+		expect(action2enter).toBe(1);
+		expect(action3enter).toBe(1);
+		expect(action1update).toBe(1);
+		expect(action2update).toBe(1);
+		expect(action3update).toBe(1);
+		expect(action1exit).toBe(1);
+		expect(action2exit).toBe(1);
+		expect(action3exit).toBe(1);
 	});
 
-	it('can run enter on init only on the initial state', function () {
-		var gotData1 = 0, gotData2 = 0;
+	it('runs enter on the initial state only', function () {
+		var gotData1 = 0;
+		var gotData2 = 0;
 
-		// set up machine 1
-		var machine1 = new Machine({
-			asyncMode: true
+		var action1 = createAction({
+			enter: function () { gotData1 += 123; }
 		});
-
 		var state1 = new State({
-			id: 'first'
+			actions: [action1]
 		});
-		state1.addAction({
-			ready: function () {},
-			enter: function () { gotData1 += 123; },
-			exit: function () {},
-			update: function () {}
+		var action2 = createAction({
+			enter: function () { gotData2 += 234; }
 		});
-
 		var state2 = new State({
-			id: 'second'
-		});
-		state2.addAction({
-			ready: function () {},
-			enter: function () { gotData2 += 234; },
-			exit: function () {},
-			update: function () {}
+			actions: [action2]
 		});
 
-		machine1.addState(state1);
-		machine1.addState(state2);
-		machine1.setInitialState(state1);
+		var machine1 = new Machine({
+			asyncMode: true,
+			states: [state1, state2],
+			initialState: state1
+		});
 
 		component.addMachine(machine1);
 
-		// init
 		component.init();
-		component.doEnter();
+		component.enter();
 
 		expect(gotData1).toBe(123);
 		expect(gotData2).toBe(0);
 	});
 
-	it('can run update', function () {
-		var gotData1 = 0, gotData2 = 0;
-
-		// set up machine 1
-		var state1 = new State({ id: 'entry' });
-		state1.addAction({
-			ready: function () {},
-			enter: function () {},
-			exit: function () {},
-			update: function () { gotData1 += 123; }
-		});
-
-		var machine1 = new Machine({
-			asyncMode: true
-		});
-		machine1.addState(state1);
-		machine1.setInitialState(state1);
-
-
-		// set up machine 2
-		var state2 = new State({ id: 'entry' });
-		state2.addAction({
-			ready: function () {},
-			enter: function () {},
-			exit: function () {},
-			update: function () { gotData2 += 234; }
-		});
-		var machine2 = new Machine({
-			asyncMode: true
-		});
-		machine2.addState(state2);
-		machine2.setInitialState(state2);
-
-		component.addMachine(machine1);
-		component.addMachine(machine2);
-
-		// init
-		component.init();
-		component.doEnter();
-
-		// do update
-		component.update();
-
-		expect(gotData1).toBe(123);
-		expect(gotData2).toBe(234);
-	});
-
 	it('can transition on the same level', function () {
-		var gotData1 = 0, gotData2 = 0, gotData3 = 0;
+		var gotData1 = 0;
+		var gotData2 = 0;
+		var gotData3 = 0;
 
 		// set up machine 1
-		var machine1 = new Machine({
-			id: 'machine1',
+		var machine = new Machine({
 			asyncMode: true
 		});
 		var state1 = new State({
 			id: 'entry'
 		});
-		machine1.addState(state1);
-		machine1.setState(state1);
-		machine1.setInitialState(state1);
+		machine.addState(state1);
+		machine.setState(state1);
+		machine.setInitialState(state1);
 
 		var action = new Action({
 			transitions: {
@@ -179,10 +179,8 @@ describe('StateMachineComponent', function () {
 		};
 		state1.addAction(action);
 
-		var state2 = new State({
-			id: 'second'
-		});
-		machine1.addState(state2);
+		var state2 = new State({ id: 'second' });
+		machine.addState(state2);
 		state2.addAction({
 			ready: function () {},
 			enter: function () {
@@ -196,11 +194,11 @@ describe('StateMachineComponent', function () {
 
 		state1.setTransition('toSecond', state2);
 
-		component.addMachine(machine1);
+		component.addMachine(machine);
 
 		// init
 		component.init();
-		component.doEnter();
+		component.enter();
 
 		// jump to second state
 		component.update();
@@ -269,7 +267,7 @@ describe('StateMachineComponent', function () {
 
 		// init
 		component.init();
-		component.doEnter();
+		component.enter();
 
 		// jump to second state
 		component.update();
