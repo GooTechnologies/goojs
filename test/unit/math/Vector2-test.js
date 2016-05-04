@@ -63,6 +63,8 @@ describe('Vector2', function () {
 
 			expect(a.x).toEqual(11);
 			expect(a.y).toEqual(22);
+			expect(a.u).toEqual(11);
+			expect(a.v).toEqual(22);
 		});
 
 		it('can be modified through aliases', function () {
@@ -70,6 +72,11 @@ describe('Vector2', function () {
 			v1.x = 11;
 			v1.y = 22;
 			expect(v1).toBeCloseToVector(new Vector2(11, 22));
+
+			var v2 = new Vector2();
+			v2.u = 22;
+			v2.v = 33;
+			expect(v2).toBeCloseToVector(new Vector2(22, 33));
 		});
 	});
 
