@@ -71,6 +71,7 @@ var allActions = {
 	ResumeAnimationAction: require('./ResumeAnimationAction'),
 	SetAnimationAction: require('./SetAnimationAction'),
 	SetTimeScaleAction: require('./SetTimeScaleAction'),
+	SetAnimationOffsetAction: require('./SetAnimationOffsetAction'),
 	WaitAction: require('./WaitAction'),
 	TransitionAction: require('./TransitionAction'),
 	NextFrameAction: require('./NextFrameAction'),
