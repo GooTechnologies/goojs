@@ -1,3 +1,15 @@
+v0.16.6 --- 2016-05-04
+
+### Additions
+
+  + Added SetAnimationOffsetAction
+  + Added decompose method to Matrix4
+  + Added matrix scale and made setScale just set scale
+
+### Fixes
+
+ * Fixed custom matcher printing for vectors.
+
 v0.16.5 --- 2016-04-27
 
 ### Additions
