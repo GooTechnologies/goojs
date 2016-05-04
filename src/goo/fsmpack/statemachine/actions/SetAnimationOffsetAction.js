@@ -11,9 +11,9 @@ SetAnimationOffsetAction.external = {
 	key: 'Set Animation Offset',
 	name: 'Set Animation Offset',
 	type: 'animation',
-	description: 'Sets animation offset.',
+	description: 'Sets animation clip offset.',
 	parameters: [{
-		name: 'Offset',
+		name: 'Offset (sec)',
 		key: 'offset',
 		type: 'float',
 		description: 'Animation offset',
