@@ -2,7 +2,7 @@
 
 Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
-## Project examples
+## Showcases
 
 <p>
 <a href="http://goocreate.com/showcase/case/mountains-of-mouthness/"><img src="http://labs.gooengine.com/github-images/mountains.jpg"/></a>
@@ -15,20 +15,53 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 <br>
 </p>
 
-[See more showcases](http://goocreate.com/)
+[More showcases...](http://goocreate.com/)
 
-## How to build
+## Install
 
-    npm install
-    npm install -g grunt-cli
-    grunt minify
+Browser: add the following to your webpage.
+
+```html
+<script src="http://code.gooengine.com/latest/lib/goo.js"></script>
+```
+
+Node.js: 
+
+```js
+npm install --save goojs
+```
+
+## Sample code
+
+[Open on codepen](http://codepen.io/rherlitz/pen/yKruG)
+
+```js
+// var goo = require('goojs'); // (for node.js)
+
+// Create a runner
+var gooRunner = new goo.GooRunner();
+var world = gooRunner.world;
+
+// Add the canvas to the DOM
+document.body.appendChild(gooRunner.renderer.domElement);
+
+// Add a light entity
+world.createEntity(new goo.PointLight(), [100, 100, 100]).addToWorld();
+
+// Add a camera entity
+world.createEntity(new goo.Camera(), new goo.OrbitCamControlScript({spherical: [5,0,0]})).addToWorld();
+
+// Add a box entity with a rotation script
+world.createEntity(new goo.Box(), goo.Material.createMaterial(goo.ShaderLib.simpleLit), function update(entity) {
+    entity.setRotation(world.time, world.time, 0);
+}).addToWorld();
+```
 
 ## Documentation
 
-* [Learn pages](http://learn.goocreate.com/)
 * [API Reference](http://code.gooengine.com/latest/docs/)
+* [Learn pages](http://learn.goocreate.com/)
 * [Forum](http://forum.goocreate.com/)
-* [Hello world codepen](http://codepen.io/rherlitz/pen/yKruG)
 
 ## Releases
 
@@ -38,12 +71,18 @@ Goo Engine is an open-source 3D engine using HTML5 and WebGL for rendering.
 
 [Goo Create](http://goocreate.com/) is a complete 3D authoring platform built on top of the Goo Engine.
 
+## How to build
+
+    npm install
+    npm install -g grunt-cli
+    grunt minify
+
 ## Unit testing
 
 * Run `grunt unittest` to run all tests using Karma
 * Run `npm test` to test the parts of the engine that are supported in Node.js
 
-## Visual testing
+## Visual tests
 
 Start a web server, e.g. using:
 
@@ -52,7 +91,7 @@ Start a web server, e.g. using:
 
 And then open:
 
-* Visual tests: http://localhost:8000/visual-test/
+* Visual tests: [http://localhost:8000/visual-test/](http://localhost:8000/visual-test/)
 
 ## Code style checks
 
