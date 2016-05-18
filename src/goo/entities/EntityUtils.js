@@ -119,6 +119,13 @@ function cloneEntity(world, entity, settings) {
  * @param {boolean} [settings.shareTextures=false] Cloning entities clones their materials' textures by default
  * @param {function (entity: Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
  * @returns {Entity} The cloned entity.
+ * @example
+ *     var clonedEntity = EntityUtils.clone(world, entity, {
+ *         shareMeshData: false,
+ *         shareMaterials: false,
+ *         shareUniforms: false,
+ *         shareTextures: false
+ *     });
  */
 EntityUtils.clone = function (world, entity, settings) {
 	settings = settings || {};
