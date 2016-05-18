@@ -104,7 +104,7 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 				return component;
 			});
 		} else {
-			console.warn('MeshDataComponent config does not contain a primitive spec or a reference to a mesh');
+			component.meshData = null;
 		}
 	});
 };
