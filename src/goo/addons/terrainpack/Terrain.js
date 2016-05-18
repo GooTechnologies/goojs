@@ -632,7 +632,7 @@ Terrain.prototype.createQuadEntity = function (world, material, level, parentEnt
 	entity.meshDataComponent.modelBound.yExtent = 255;
 	entity.meshDataComponent.modelBound.zExtent = h * 0.5;
 	entity.meshDataComponent.modelBound.center.setDirect(w * 0.5, 128, h * 0.5);
-	entity.meshDataComponent.autoCompute = false;
+	entity.meshDataComponent.modelBoundDirty = false;
 	entity.meshRendererComponent.isPickable = false;
 
 	entity.setTranslation(x, 0, y);

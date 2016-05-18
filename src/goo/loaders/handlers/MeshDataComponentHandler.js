@@ -67,6 +67,10 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 	var that = this;
 	return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 		if (!component) { return; }
+
+		component.meshData = null;
+		component.currentPose = null;
+
 		if (config.shape) {
 			var shapeCreator = ShapeCreatorMemoized['create' + StringUtils.capitalize(config.shape)];
 			if (shapeCreator) {
@@ -93,14 +97,12 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 				promises.push(that._load(config.poseRef, options).then(function (pose) {
 					component.currentPose = pose;
 				}));
-			} else {
-				component.currentPose = null;
 			}
 			return RSVP.all(promises).then(function () {
 				return component;
 			});
 		} else {
-			component.meshData = null;
+			// No mesh. Need to reset the bounding box.
 			component.modelBoundDirty = true;
 		}
 	});
