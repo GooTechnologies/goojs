@@ -29,7 +29,7 @@ BoundingUpdateSystem.prototype.process = function (entities) {
 
 		transformComponent.sync();
 
-		if (meshDataComponent.autoCompute) {
+		if (meshDataComponent.modelBoundDirty) {
 			meshDataComponent.computeBoundFromPoints();
 			meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
 		} else if (meshRendererComponent._worldBoundDirty) {

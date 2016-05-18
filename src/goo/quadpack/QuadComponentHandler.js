@@ -66,7 +66,7 @@ QuadComponentHandler.prototype.update = function (entity, config, options) {
 
 			component.setMaterial(material);
 			component.rebuildMeshData();
-			component.meshDataComponent.autoCompute = true;
+			component.meshDataComponent.modelBoundDirty = true;
 
 			return component;
 		});

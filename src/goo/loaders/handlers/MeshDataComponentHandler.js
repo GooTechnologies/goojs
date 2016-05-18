@@ -71,7 +71,7 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 			var shapeCreator = ShapeCreatorMemoized['create' + StringUtils.capitalize(config.shape)];
 			if (shapeCreator) {
 				component.meshData = shapeCreator(config.shapeOptions, component.meshData);
-				component.autoCompute = true;
+				component.modelBoundDirty = true;
 				return component;
 			}
 		} else if (config.meshRef) {
@@ -101,7 +101,7 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 			});
 		} else {
 			component.meshData = null;
-			component.autoCompute = true;
+			component.modelBoundDirty = true;
 		}
 	});
 };

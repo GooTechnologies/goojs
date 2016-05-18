@@ -23,11 +23,11 @@ function MeshDataComponent(meshData) {
 	 */
 	this.modelBound = new BoundingBox();
 
-	/** Automatically compute bounding fit.
+	/**
 	 * @type {boolean}
 	 * @default
 	 */
-	this.autoCompute = true;
+	this.modelBoundDirty = true;
 
 	/**
 	 * @type {SkeletonPose}
@@ -49,25 +49,25 @@ MeshDataComponent.prototype.constructor = MeshDataComponent;
  * Set the bounding volume type (sphere, box etc).
  *
  * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component.
- * @param {boolean} autoCompute If true, automatically compute bounding fit.
+ * @param {boolean} [setBoundsDirty=true] Whether to set modelBoundDirty=true.
  */
-MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
+MeshDataComponent.prototype.setModelBound = function (modelBound, setBoundsDirty) {
 	this.modelBound = modelBound;
-	this.autoCompute = autoCompute;
+	this.modelBoundDirty = setBoundsDirty !== undefined ? setBoundsDirty : true;
 };
 
 /**
  * Compute bounding center and bounds for this mesh.
  */
 MeshDataComponent.prototype.computeBoundFromPoints = function () {
-	if (!this.autoCompute) {
+	if (!this.modelBoundDirty) {
 		return;
 	}
 	if (this.modelBound !== null && this.meshData) {
 		var verts = this.meshData.getAttributeBuffer('POSITION');
 		if (verts !== undefined) {
 			this.modelBound.computeFromPoints(verts);
-			this.autoCompute = false;
+			this.modelBoundDirty = false;
 		}
 	} else {
 		this.modelBound.reset();
@@ -93,7 +93,7 @@ MeshDataComponent.prototype.clone = function (options) {
 		clone.modelBound = this.modelBound.clone();
 	}
 
-	clone.autoCompute = this.autoCompute;
+	clone.modelBoundDirty = this.modelBoundDirty;
 
 	return clone;
 };

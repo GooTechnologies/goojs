@@ -59,7 +59,7 @@ Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTextur
 			meshDataComponent.modelBound.xExtent = this.patchSize;
 			meshDataComponent.modelBound.yExtent = 500;
 			meshDataComponent.modelBound.zExtent = this.patchSize;
-			meshDataComponent.autoCompute = false;
+			meshDataComponent.modelBoundDirty = false;
 			entity.set(meshDataComponent);
 			entity.addToWorld();
 			this.grid[x][z] = entity;

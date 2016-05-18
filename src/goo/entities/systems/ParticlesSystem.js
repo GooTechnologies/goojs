@@ -111,7 +111,7 @@ ParticlesSystem.prototype.updateParticles = function (particleEntity, particleCo
 	// tell particle meshdata we are updated.
 	if (needsUpdate) {
 		particleComponent.meshData.vertexData._dataNeedsRefresh = true;
-		particleEntity.meshDataComponent.autoCompute = true;
+		particleEntity.meshDataComponent.modelBoundDirty = true;
 	}
 };
 
