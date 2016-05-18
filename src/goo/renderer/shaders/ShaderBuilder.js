@@ -172,6 +172,9 @@ ShaderBuilder.uber = {
 	},
 
 	processor: function (shader, shaderInfo) {
+		if (!shaderInfo.meshData) {
+			return;
+		}
 		var attributeMap = shaderInfo.meshData.attributeMap;
 		var material = shaderInfo.material;
 		var textureMaps = material._textureMaps;
