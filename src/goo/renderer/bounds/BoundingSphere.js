@@ -24,6 +24,11 @@ var tmpVec = new Vector3();
 BoundingSphere.prototype = Object.create(BoundingVolume.prototype);
 BoundingSphere.prototype.constructor = BoundingSphere;
 
+BoundingSphere.prototype.reset = function () {
+	this.radius = 1;
+	BoundingVolume.prototype.reset.call(this);
+};
+
 BoundingSphere.prototype.computeFromPoints = function (verts) {
 	var l = verts.length;
 	if (l < 3) {

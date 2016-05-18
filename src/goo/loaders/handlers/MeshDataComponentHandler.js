@@ -5,6 +5,7 @@ var ShapeCreatorMemoized = require('../../util/ShapeCreatorMemoized');
 var RSVP = require('../../util/rsvp');
 var ObjectUtils = require('../../util/ObjectUtils');
 var StringUtils = require('../../util/StringUtils');
+var Vector3 = require('../../math/Vector3');
 
 /**
  * For handling loading of meshdatacomponents
@@ -82,14 +83,9 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 					var min = meshData.boundingBox.min;
 					var max = meshData.boundingBox.max;
 					var size = [max[0] - min[0], max[1] - min[1], max[2] - min[2]];
-					var center = [(max[0] + min[0]) * 0.5, (max[1] + min[1]) * 0.5, (max[2] + min[2]) * 0.5];
-					var bounding = new BoundingBox();
-					bounding.xExtent = size[0] / 2;
-					bounding.yExtent = size[1] / 2;
-					bounding.zExtent = size[2] / 2;
-					bounding.center.setDirect(center[0], center[1], center[2]);
-					component.modelBound = bounding;
-					component.autoCompute = false;
+					var center = new Vector3(max[0] + min[0], max[1] + min[1], max[2] + min[2]).scale(0.5);
+					var bounding = new BoundingBox(center, size[0] / 2, size[1] / 2, size[2] / 2);
+					component.setModelBound(bounding, false);
 				}
 			}));
 			// Skeleton pose
@@ -105,6 +101,7 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 			});
 		} else {
 			component.meshData = null;
+			component.autoCompute = true;
 		}
 	});
 };

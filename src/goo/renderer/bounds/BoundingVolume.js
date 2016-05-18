@@ -18,6 +18,17 @@ function BoundingVolume(center) {
 }
 
 /**
+ * Sets the state to its initial value.
+ * @returns {BoundingVolume}
+ */
+BoundingVolume.prototype.reset = function () {
+	this.center.setDirect(0,0,0);
+	this.min.setDirect(Infinity, Infinity, Infinity);
+	this.max.setDirect(-Infinity, -Infinity, -Infinity);
+	return this;
+};
+
+/**
  * Copies data from another bounding volume
  * @param {BoundingVolume} source
  * @returns {BoundingVolume}

@@ -60,12 +60,17 @@ MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
  * Compute bounding center and bounds for this mesh.
  */
 MeshDataComponent.prototype.computeBoundFromPoints = function () {
-	if (this.autoCompute && this.modelBound !== null && this.meshData) {
+	if (!this.autoCompute) {
+		return;
+	}
+	if (this.modelBound !== null && this.meshData) {
 		var verts = this.meshData.getAttributeBuffer('POSITION');
 		if (verts !== undefined) {
 			this.modelBound.computeFromPoints(verts);
 			this.autoCompute = false;
 		}
+	} else {
+		this.modelBound.reset();
 	}
 };
 

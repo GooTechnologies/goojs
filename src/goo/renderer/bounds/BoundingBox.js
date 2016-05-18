@@ -35,6 +35,13 @@ for (var i = 0; i < 8; i++) {
 BoundingBox.prototype = Object.create(BoundingVolume.prototype);
 BoundingBox.prototype.constructor = BoundingBox;
 
+BoundingBox.prototype.reset = function () {
+	this.xExtent = 1;
+	this.yExtent = 1;
+	this.zExtent = 1;
+	BoundingVolume.prototype.reset.call(this);
+};
+
 BoundingBox.prototype.computeFromPoints = function (verts) {
 	var l = verts.length;
 	if (l < 3) {
