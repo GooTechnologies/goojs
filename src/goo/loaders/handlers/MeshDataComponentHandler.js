@@ -96,6 +96,12 @@ MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 			if (config.poseRef) {
 				promises.push(that._load(config.poseRef, options).then(function (pose) {
 					component.currentPose = pose;
+
+					entity.traverseUp(function (parentEntity) {
+						if (parentEntity.animationComponent) {
+							parentEntity.animationComponent._skeletonPose = pose;
+						}
+					});
 				}));
 			}
 			return RSVP.all(promises).then(function () {

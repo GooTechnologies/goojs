@@ -21,11 +21,12 @@ SkeletonHandler.prototype = Object.create(ConfigHandler.prototype);
 SkeletonHandler.prototype.constructor = SkeletonHandler;
 ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
+var counter = 0;
 SkeletonHandler.prototype._create = function () {
-	console.log('create skeleton');
-
+	console.log('create skeleton')
 	var skeleton = new Skeleton('', []);
 	var pose = new SkeletonPose(skeleton);
+	pose.temp = counter++;
 	return pose;
 };
 
@@ -38,7 +39,6 @@ SkeletonHandler.prototype._create = function () {
  * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
  */
 SkeletonHandler.prototype._update = function (ref, config, options) {
-	var that = this;
 	return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (pose) {
 		if (!config) {
 			return PromiseUtils.resolve();
@@ -53,6 +53,7 @@ SkeletonHandler.prototype._update = function (ref, config, options) {
 			joints.push(joint);
 		}, null, 'index');
 
+		pose.id = config.id;
 		pose._skeleton._name = config.name;
 		pose._skeleton._joints = joints;
 		pose.allocateTransforms();

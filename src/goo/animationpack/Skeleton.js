@@ -7,6 +7,7 @@ var Joint = require('./Joint');
  * @param {Array<Joint>} joints
  */
 function Skeleton(name, joints) {
+	this.id = '';
 	this._name = name;
 	this._joints = joints;
 }
