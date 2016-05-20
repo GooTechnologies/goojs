@@ -798,8 +798,10 @@ ShaderBuilder.animation = {
 			var refMat;
 			for (var index = 0; index < skMesh.paletteMap.length; index++) {
 				refMat = palette[skMesh.paletteMap[index]];
-				for (var i = 0; i < 12; i++) {
-					store[index * 12 + i] = refMat.data[ShaderBuilder.animation.order[i]];
+				if (refMat) {
+					for (var i = 0; i < 12; i++) {
+						store[index * 12 + i] = refMat.data[ShaderBuilder.animation.order[i]];
+					}
 				}
 				/*
 				for (var row = 0; row < 3; row++) {
