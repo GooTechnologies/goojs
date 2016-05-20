@@ -14,6 +14,13 @@ function SkeletonPose(skeleton) {
 	this._matrixPalette = [];
 	this._poseListeners = [];
 
+	this.allocateTransforms();
+
+	// start off in bind pose.
+	this.setToBindPose();
+}
+
+SkeletonPose.prototype.allocateTransforms = function () {
 	var jointCount = this._skeleton._joints.length;
 
 	// init local transforms
@@ -30,10 +37,7 @@ function SkeletonPose(skeleton) {
 	for (var i = 0; i < jointCount; i++) {
 		this._matrixPalette[i] = new Matrix4();
 	}
-
-	// start off in bind pose.
-	this.setToBindPose();
-}
+};
 
 /**
  * Update our local joint transforms so that they reflect the skeleton in bind pose.

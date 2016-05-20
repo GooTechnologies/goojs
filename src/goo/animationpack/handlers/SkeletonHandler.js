@@ -21,6 +21,14 @@ SkeletonHandler.prototype = Object.create(ConfigHandler.prototype);
 SkeletonHandler.prototype.constructor = SkeletonHandler;
 ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
+SkeletonHandler.prototype._create = function () {
+	console.log('create skeleton');
+
+	var skeleton = new Skeleton('', []);
+	var pose = new SkeletonPose(skeleton);
+	return pose;
+};
+
 /**
  * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
  * are rarely updated.
@@ -29,8 +37,9 @@ ConfigHandler._registerClass('skeleton', SkeletonHandler);
  * @param {Object} options
  * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
  */
-SkeletonHandler.prototype._update = function (ref, config/*, options*/) {
-	if (!this._objects.has(ref)) {
+SkeletonHandler.prototype._update = function (ref, config, options) {
+	var that = this;
+	return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (pose) {
 		if (!config) {
 			return PromiseUtils.resolve();
 		}
@@ -44,13 +53,13 @@ SkeletonHandler.prototype._update = function (ref, config/*, options*/) {
 			joints.push(joint);
 		}, null, 'index');
 
-		var skeleton = new Skeleton(config.name, joints);
-		var pose = new SkeletonPose(skeleton);
+		pose._skeleton._name = config.name;
+		pose._skeleton._joints = joints;
+		pose.allocateTransforms();
 		pose.setToBindPose();
-		this._objects.set(ref, pose);
-	}
 
-	return PromiseUtils.resolve(this._objects.get(ref));
+		return PromiseUtils.resolve(pose);
+	});
 };
 
 module.exports = SkeletonHandler;
