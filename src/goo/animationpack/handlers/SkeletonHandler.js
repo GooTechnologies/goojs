@@ -21,12 +21,9 @@ SkeletonHandler.prototype = Object.create(ConfigHandler.prototype);
 SkeletonHandler.prototype.constructor = SkeletonHandler;
 ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
-var counter = 0;
 SkeletonHandler.prototype._create = function () {
-	console.log('create skeleton')
 	var skeleton = new Skeleton('', []);
 	var pose = new SkeletonPose(skeleton);
-	pose.temp = counter++;
 	return pose;
 };
 
