@@ -1,3 +1,14 @@
+v0.16.7 --- 2016-05-23
+
+### Fixes
+
+* HTML components dont set the styling unless `useTransformComponent` is enabled.
+* Fix crash when using a meshData-less MeshDataComponent.
+
+### Changes
+
+* Renamed `MeshDataComponent#autoCompute` to `.modelBoundDirty`.
+
 v0.16.6 --- 2016-05-04
 
 ### Additions
@@ -29,7 +40,7 @@ v0.16.4 --- 2016-04-21
 ### Fixes
 
  * Made set render target action (portals) work with several in view
- 
+
 v0.16.3 --- 2016-04-21
 
 ### Fixes
