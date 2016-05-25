@@ -265,7 +265,7 @@ function ParticleSystemComponent(options) {
 			'    vec3 position = getPosition(invWorldRotation, worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
 
 			'    #ifdef FOG',
-			'    vec3 viewPosition = cameraPosition - position;',
+			'    vec3 viewPosition = cameraPosition - (worldMatrix * vec4(position, 0.0)).xyz;',
 			'    float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
 			'    color.rgb = mix(color.rgb, fogColor, d);',
 			'    #endif',
