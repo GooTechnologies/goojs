@@ -1,4 +1,5 @@
 import Action = require('./Action');
+import {External} from './IAction';
 
 var LightComponent = require('../../../entities/components/LightComponent');
 var PointLight = require('../../../renderer/light/PointLight');
@@ -13,11 +14,11 @@ class AddLightAction extends Action {
 	penumbra: number;
 	color: Array<number>;
 
-	constructor(id, options){
+	constructor(id: string, options: any){
 		super(id, options);
 	}
 
-	static external = {
+	static external: External = {
 		key: 'Add Light',
 		name: 'Add Light',
 		description: 'Adds a point light to the entity.',

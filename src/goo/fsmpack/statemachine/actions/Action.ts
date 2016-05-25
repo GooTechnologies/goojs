@@ -2,8 +2,8 @@ var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 import {External} from './IAction';
 
 class Action {
-    id: any;
-    constructor(id, settings){
+    id: string;
+    constructor(id: string, settings: any){
         this.id = id;
         this.configure(settings || {});
     }

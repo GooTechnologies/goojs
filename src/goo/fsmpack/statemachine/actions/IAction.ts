@@ -11,7 +11,7 @@ export interface Parameter {
     type: string;
     control?: string;
     description: string;
-    default: string|number|Array<number>;
+    default?: string|number|Array<number>|boolean;
     options?: Array<string>;
     min?: number;
     max?: number;
