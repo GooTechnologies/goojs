@@ -1,26 +1,27 @@
-export interface IAction {
-	(): void;
-	external: {
-		parameters: Array<{
-            name: string;
-            key: string;
-            type: string;
-            control?: string;
-            description: string;
-            default: string|number|Array<number>;
-            options?: Array<string>;
-            min?: number;
-            max?: number;
-        }>;
-		key: string;
-		name: string;
-		description: string;
-		type: string;
-		transitions: Array<{
-            key: string;
-            description: string;
-        }>;
-	};
-}
+var FsmUtils = require('../FsmUtils');
 
-export default IAction;
+export interface Transition {
+    key: string;
+    description: string;
+};
+
+export interface Parameter {
+    name: string;
+    key: string;
+    type: string;
+    control?: string;
+    description: string;
+    default: string|number|Array<number>;
+    options?: Array<string>;
+    min?: number;
+    max?: number;
+};
+
+export interface External {
+    parameters: Array<Parameter>;
+    key: string;
+    name: string;
+    description: string;
+    type: string;
+	transitions: Array<Transition>;
+};
