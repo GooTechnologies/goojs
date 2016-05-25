@@ -104,5 +104,4 @@ class AddLightAction extends Action {
 	}
 }
 
-
 export = AddLightAction;

@@ -24,4 +24,5 @@ export interface External {
     description: string;
     type: string;
 	transitions: Array<Transition>;
+    canTransition?: boolean;
 };
