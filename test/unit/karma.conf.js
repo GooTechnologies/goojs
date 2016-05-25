@@ -87,8 +87,16 @@ module.exports = function (config) {
 
 		webpack: {
 			resolve: {
+				extensions: ['', '.ts', '.js'],
+
 				// Everything relative to repo root
 				root: path.resolve(path.join(__dirname, '..', '..'))
+			},
+			module: {
+				loaders: [{
+					test: /\.ts$/,
+					loader: 'ts-loader'
+				}]
 			},
 			plugins: [
 				new webpack.ProvidePlugin(require('./karmaWebpackProvidePluginSettings'))
