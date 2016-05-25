@@ -33,6 +33,15 @@ module.exports = function (grunt) {
 					gizmopack: ['./src/goo/util/gizmopack'],
 					logicpack: ['./src/goo/logicpack']
 				},
+				resolve: {
+					extensions: ['', '.ts', '.js']
+				},
+				module: {
+					loaders: [{
+						test: /\.ts$/,
+						loader: 'ts-loader'
+					}]
+				},
 				output: {
 					filename: 'out/[name].js'
 				},
@@ -93,7 +102,7 @@ module.exports = function (grunt) {
 
 		watch: {
 			dev: {
-				files: ['src/**/*.js'],
+				files: ['src/**/*.js', 'src/**/*.ts'],
 				tasks: ['minify-dev'],
 				options: {
 					spawn: false

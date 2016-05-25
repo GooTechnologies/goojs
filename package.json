@@ -13,7 +13,10 @@
       "url": "http://opensource.org/licenses/mit-license.php"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10"
+  },
   "devDependencies": {
     "async": "~0.9.0",
     "colors": "~1.1.0",

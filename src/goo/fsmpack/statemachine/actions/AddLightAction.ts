@@ -1,12 +1,15 @@
-var Action = require('../../../fsmpack/statemachine/actions/Action');
+declare function require(path: string) : any;
+interface F { (): any; external: any; }
+
+var Action = require('./Action');
 var LightComponent = require('../../../entities/components/LightComponent');
 var PointLight = require('../../../renderer/light/PointLight');
 var DirectionalLight = require('../../../renderer/light/DirectionalLight');
 var SpotLight = require('../../../renderer/light/SpotLight');
 
-function AddLightAction(/*id, settings*/) {
+var AddLightAction = <F>function AddLightAction(/*id, settings*/) {
 	Action.apply(this, arguments);
-}
+};
 
 AddLightAction.prototype = Object.create(Action.prototype);
 AddLightAction.prototype.constructor = AddLightAction;
@@ -96,4 +99,4 @@ AddLightAction.prototype.cleanup = function (fsm) {
 	}
 };
 
-module.exports = AddLightAction;
+export = AddLightAction;

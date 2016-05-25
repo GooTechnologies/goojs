@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": false
+  },
+  "files": [
+      "index.js",
+      "./src/goo/fsmpack/statemachine/actions/Action.js",
+      "./src/goo/fsmpack/statemachine/actions/AddLightAction.ts"
+  ]
+}
