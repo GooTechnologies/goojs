@@ -6,6 +6,7 @@ var Material = require('../../../renderer/Material');
 var MeshRendererComponent = require('../../../entities/components/MeshRendererComponent');
 var Component = require('../../../entities/components/Component');
 var Shader = require('../../../renderer/Shader');
+var ShaderBuilder = require('../../../renderer/shaders/ShaderBuilder');
 var ParticleData = require('../../../addons/particlepack/ParticleData');
 var Renderer = require('../../../renderer/Renderer');
 var Quad = require('../../../shapes/Quad');
@@ -99,6 +100,9 @@ function ParticleSystemComponent(options) {
 
 	this.material = new Material({
 		defines: ObjectUtils.clone(defines),
+		processors: [
+			ShaderBuilder.uber.fog
+		],
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			timeInfo: 'TIME_INFO',
@@ -126,7 +130,10 @@ function ParticleSystemComponent(options) {
 			uColor: [1, 1, 1, 1],
 			uStartSize: 1,
 			uStartAngle: 1,
-			uRotationSpeed: 1
+			uRotationSpeed: 1,
+
+			fogSettings: [0, 10000],
+			fogColor: [1, 1, 1]
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -151,6 +158,11 @@ function ParticleSystemComponent(options) {
 			'uniform float uStartSize;',
 			'uniform float uStartAngle;',
 			'uniform float uRotationSpeed;',
+
+			'#ifdef FOG',
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
+			'#endif',
 
 			'varying vec4 color;',
 			'varying vec2 coords;',
@@ -251,6 +263,13 @@ function ParticleSystemComponent(options) {
 			'    #endif',
 
 			'    vec3 position = getPosition(invWorldRotation, worldRotation, age, startPos.xyz, startDir.xyz, gravity, emitRandom, duration);',
+
+			'    #ifdef FOG',
+			'    vec3 viewPosition = cameraPosition - position;',
+			'    float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+			'    color.rgb = mix(color.rgb, fogColor, d);',
+			'    #endif',
+
 			'    #ifdef BILLBOARD',
 			'    vec2 offset = ((spinMatrix * vertexPosition)).xy * startSize * getScale(unitAge, emitRandom) * active;',
 			'    mat4 matPos = worldMatrix * mat4(vec4(0),vec4(0),vec4(0),vec4(position,0));',
