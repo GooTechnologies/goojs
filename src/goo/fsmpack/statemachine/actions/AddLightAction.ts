@@ -1,5 +1,4 @@
-declare function require(path: string) : any;
-interface F { (): any; external: any; }
+import IAction from './IAction';
 
 var Action = require('./Action');
 var LightComponent = require('../../../entities/components/LightComponent');
@@ -7,7 +6,7 @@ var PointLight = require('../../../renderer/light/PointLight');
 var DirectionalLight = require('../../../renderer/light/DirectionalLight');
 var SpotLight = require('../../../renderer/light/SpotLight');
 
-var AddLightAction = <F>function AddLightAction(/*id, settings*/) {
+var AddLightAction = <IAction>function AddLightAction(/*id, settings*/) {
 	Action.apply(this, arguments);
 };
 

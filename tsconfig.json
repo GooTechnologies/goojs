@@ -6,6 +6,7 @@
   },
   "files": [
       "index.js",
+      "./typings/index.d.ts",
       "./src/goo/fsmpack/statemachine/actions/Action.js",
       "./src/goo/fsmpack/statemachine/actions/AddLightAction.ts"
   ]
