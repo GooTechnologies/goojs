@@ -1,5 +1,9 @@
 var FsmUtils = require('../FsmUtils');
 
+export interface GetTransitionLabelFunc {
+    (transitionKey: string, actionConfig: any): string;
+}
+
 export interface Transition {
     key: string;
     description: string;

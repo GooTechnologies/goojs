@@ -2,54 +2,44 @@ import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-class AddVariableAction extends Action {
+class MultiplyVariableAction extends Action {
 	variable: string;
+	amount: number;
 	everyFrame: boolean;
-
 	constructor(id: string, options: any){
-		super(id, options)
+		super(id, options);
 	}
 
-	static external = {
-		key: 'Add Variable',
-		name: 'Add Variable',
+	static external: External = {
+		key: 'Multiply Variable',
+		name: 'Multiply Variable',
 		type: 'variables',
 		description: '',
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
+			description: 'Variable',
 			type: 'identifier'
 		}, {
 			name: 'Amount',
 			key: 'amount',
+			description: 'Amount',
 			type: 'float'
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Repeat this action every frame.',
+			description: 'Repeat this action every frame',
 			'default': false
 		}],
 		transitions: []
 	};
 
-	add(fsm) {
+	update (fsm) {
 		fsm.applyOnVariable(this.variable, function (v) {
-			return v + FsmUtils.getValue(this.amount, fsm);
+			return v * FsmUtils.getValue(this.amount, fsm);
 		}.bind(this));
-	};
-
-	enter(fsm) {
-		if (!this.everyFrame) {
-			this.add(fsm);
-		}
-	};
-
-	update(fsm) {
-		if (this.everyFrame) {
-			this.add(fsm);
-		}
 	};
 }
 
-export = AddVariableAction;
+export = MultiplyVariableAction;

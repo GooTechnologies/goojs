@@ -1,5 +1,5 @@
 import Action = require('./Action');
-import {External} from './IAction';
+import {External, GetTransitionLabelFunc} from './IAction';
 
 var LightComponent = require('../../../entities/components/LightComponent');
 var PointLight = require('../../../renderer/light/PointLight');

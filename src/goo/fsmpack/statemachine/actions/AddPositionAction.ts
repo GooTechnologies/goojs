@@ -1,5 +1,5 @@
 import Action = require('./Action');
-import {External} from './IAction';
+import {External, GetTransitionLabelFunc} from './IAction';
 var FsmUtils = require('../FsmUtils');
 
 class AddPositionAction extends Action {

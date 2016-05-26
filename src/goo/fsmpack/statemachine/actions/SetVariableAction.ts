@@ -2,25 +2,27 @@ import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
 var FsmUtils = require('../../../fsmpack/statemachine/FsmUtils');
 
-class AddVariableAction extends Action {
+class SetVariableAction extends Action {
 	variable: string;
+	amount: number;
 	everyFrame: boolean;
-
 	constructor(id: string, options: any){
-		super(id, options)
+		super(id, options);
 	}
 
-	static external = {
-		key: 'Add Variable',
-		name: 'Add Variable',
+	static external: External = {
+		key: 'Set Variable',
+		name: 'Set Variable',
 		type: 'variables',
 		description: '',
 		parameters: [{
-			name: 'Variable',
+			name: 'Variable name',
+			description: 'Variable name',
 			key: 'variable',
 			type: 'identifier'
 		}, {
-			name: 'Amount',
+			name: 'Value',
+			description: 'Value',
 			key: 'amount',
 			type: 'float'
 		}, {
@@ -33,23 +35,13 @@ class AddVariableAction extends Action {
 		transitions: []
 	};
 
-	add(fsm) {
-		fsm.applyOnVariable(this.variable, function (v) {
-			return v + FsmUtils.getValue(this.amount, fsm);
-		}.bind(this));
-	};
-
-	enter(fsm) {
-		if (!this.everyFrame) {
-			this.add(fsm);
-		}
-	};
-
-	update(fsm) {
-		if (this.everyFrame) {
-			this.add(fsm);
+	enter (fsm) {
+		if (this.variable) {
+			fsm.applyOnVariable(this.variable, function () {
+				return FsmUtils.getValue(this.amount, fsm);
+			}.bind(this));
 		}
 	};
 }
 
-export = AddVariableAction;
+export = SetVariableAction;

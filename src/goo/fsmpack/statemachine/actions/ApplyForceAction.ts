@@ -1,4 +1,4 @@
-import {External} from './IAction';
+import {External, GetTransitionLabelFunc} from './IAction';
 import Action = require('./Action');
 
 var Vector3 = require('../../../math/Vector3');
