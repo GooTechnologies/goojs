@@ -107,6 +107,7 @@ var allActions = {
 	SetRenderTargetAction: require('./SetRenderTargetAction'),
 	TweenTextureOffsetAction: require('./TweenTextureOffsetAction'),
 	SetMaterialColorAction: require('./SetMaterialColorAction'),
+	SetTextureAction: require('./SetTextureAction'),
 	TweenMaterialColorAction: require('./TweenMaterialColorAction'),
 	LogMessageAction: require('./LogMessageAction'),
 	TweenOpacityAction: require('./TweenOpacityAction'),
