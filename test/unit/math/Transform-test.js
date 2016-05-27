@@ -169,9 +169,9 @@ describe('Transform', function () {
 			var result = Transform.combine(transform1, transform2);
 			expect(result.translation.equals(new Vector3(1, 2, 3).add(new Vector3(11, 22, 33)))).toBeTruthy();
 
-			expect(result.matrix[12]).toBeCloseTo(1 + 11);
-			expect(result.matrix[13]).toBeCloseTo(2 + 22);
-			expect(result.matrix[14]).toBeCloseTo(3 + 33);
+			expect(result.matrix.data[12]).toBeCloseTo(1 + 11);
+			expect(result.matrix.data[13]).toBeCloseTo(2 + 22);
+			expect(result.matrix.data[14]).toBeCloseTo(3 + 33);
 		});
 	});
 
