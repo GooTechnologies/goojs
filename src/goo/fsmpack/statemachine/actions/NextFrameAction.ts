@@ -19,7 +19,6 @@ class NextFrameAction extends Action {
 		parameters: [],
 		transitions: [{
 			key: 'transition',
-			name: 'On Next Frame',
 			description: 'State to transition to on next frame.'
 		}]
 	};

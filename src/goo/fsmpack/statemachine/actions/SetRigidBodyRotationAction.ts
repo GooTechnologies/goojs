@@ -4,6 +4,12 @@ var Matrix3 = require('../../../math/Matrix3');
 var Quaternion = require('../../../math/Quaternion');
 var MathUtils = require('../../../math/MathUtils');
 
+var matrix = new Matrix3();
+var matrix2 = new Matrix3();
+var quaternion = new Quaternion();
+var quaternion2 = new Quaternion();
+var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
+
 class SetRigidBodyRotationAction extends Action {
 	relative: boolean;
 	rotation: Array<number>;
@@ -33,37 +39,30 @@ class SetRigidBodyRotationAction extends Action {
 		transitions: []
 	};
 
-	SetRigidBodyRotationAction.prototype.setRotation = (function () {
-		var matrix = new Matrix3();
-		var matrix2 = new Matrix3();
-		var quaternion = new Quaternion();
-		var quaternion2 = new Quaternion();
-		var DEG_TO_RAD = MathUtils.DEG_TO_RAD;
-		return function (fsm) {
-			var entity = fsm.getOwnerEntity();
-			if (entity && entity.rigidBodyComponent) {
-				var rotation = this.rotation;
-				matrix.fromAngles(
-					rotation[0] * DEG_TO_RAD,
-					rotation[1] * DEG_TO_RAD,
-					rotation[2] * DEG_TO_RAD
-				);
+	setRotation (fsm) {
+		var entity = fsm.getOwnerEntity();
+		if (entity && entity.rigidBodyComponent) {
+			var rotation = this.rotation;
+			matrix.fromAngles(
+				rotation[0] * DEG_TO_RAD,
+				rotation[1] * DEG_TO_RAD,
+				rotation[2] * DEG_TO_RAD
+			);
 
-				if (this.relative) {
-					entity.rigidBodyComponent.getQuaternion(quaternion2);
-					matrix2.copyQuaternion(quaternion2);
-					matrix.mul2(matrix2, matrix);
-				}
-
-				quaternion.fromRotationMatrix(matrix);
-				entity.rigidBodyComponent.setQuaternion(quaternion);
+			if (this.relative) {
+				entity.rigidBodyComponent.getQuaternion(quaternion2);
+				matrix2.copyQuaternion(quaternion2);
+				matrix.mul2(matrix2, matrix);
 			}
-		};
-	})();
+
+			quaternion.fromRotationMatrix(matrix);
+			entity.rigidBodyComponent.setQuaternion(quaternion);
+		}
+	}
 
 	enter (fsm) {
 		this.setRotation(fsm);
-	};
+	}
 }
 
 export = SetRigidBodyRotationAction;

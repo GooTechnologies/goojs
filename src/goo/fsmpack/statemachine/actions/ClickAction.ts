@@ -7,8 +7,8 @@ class ClickAction extends Action {
 	selected: boolean;
 	ownerEntity: any;
 	gooRunner: any;
-	upListener: () => void;
-	downListener: () => void;
+	upListener: (event: any) => void;
+	downListener: (event: any) => void;
 	constructor(id: string, options: any){
 		super(id, options)
 		this.selected = false;

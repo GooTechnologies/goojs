@@ -3,6 +3,12 @@ import {External, GetTransitionLabelFunc} from './IAction';
 var BoundingPicker = require('./../../../renderer/bounds/BoundingPicker');
 
 class HoverEnterAction extends Action {
+	first: boolean;
+	hit: boolean;
+	ownerEntity: any;
+	moveListener: (event: any) => void;
+	goo: any;
+	type: string;
 	constructor(id: string, options: any){
 		super(id, options);
 		this.first = true;
