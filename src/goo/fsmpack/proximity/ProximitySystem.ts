@@ -77,4 +77,4 @@ ProximitySystem.prototype.process = function (/*entities*/) {
 	*/
 };
 
-module.exports = ProximitySystem;
+export = ProximitySystem;

@@ -83,4 +83,4 @@ StateMachineComponentHandler.prototype.update = function (entity, config, option
 	});
 };
 
-module.exports = StateMachineComponentHandler;
+export = StateMachineComponentHandler;
