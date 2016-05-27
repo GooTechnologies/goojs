@@ -230,6 +230,7 @@ describe('Matrix3', function () {
 		});
 	});
 
+		/*
 	describe('NaN checks (only in dev)', function () {
 		it('throws an exception when trying to set a matrix component to NaN', function () {
 			var matrix1 = new Matrix3();
@@ -260,47 +261,5 @@ describe('Matrix3', function () {
 				.toThrow(new Error('Matrix method determinant returned NaN'));
 		});
 	});
-
-	describe('deprecated shim added 2015-10-07 (v1.0)', function () {
-		it('Matrix3.add', function () {
-			var a = new Matrix3(1, 1, 1, 1, 1, 1, 1, 1, 1);
-			Matrix3.add(a, a, a);
-			expect(a).toBeCloseToMatrix(new Matrix3(2, 2, 2, 2, 2, 2, 2, 2, 2));
-		});
-
-		it('Matrix3.sub', function () {
-			var a = new Matrix3(1, 1, 1, 1, 1, 1, 1, 1, 1);
-			Matrix3.sub(a, a, a);
-			expect(a).toBeCloseToMatrix(new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0));
-		});
-
-		it('Matrix3.combine', function () {
-			var a = new Matrix3(2, 0, 0, 0, 2, 0, 0, 0, 2);
-			var b = new Matrix3(3, 0, 0, 0, 3, 0, 0, 0, 3);
-			Matrix3.combine(a, b, a);
-			expect(a).toBeCloseToMatrix(new Matrix3(6, 0, 0, 0, 6, 0, 0, 0, 6));
-		});
-
-		it('Matrix3.prototype.combine', function () {
-			var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-			var b = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-			a.combine(a);
-
-			expect(a).toBeCloseToMatrix(new Matrix3(30, 36, 42, 66, 81, 96, 102, 126, 150));
-			expect(Matrix3.combine(b, b)).toBeCloseToMatrix(new Matrix3(30, 36, 42, 66, 81, 96, 102, 126, 150));
-		});
-
-		it('can be transposed', function () {
-			var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-			expect(Matrix3.transpose(a)).toBeCloseToMatrix(new Matrix3(1, 4, 7, 2, 5, 8, 3, 6, 9));
-		});
-
-		it('can transform three-dimensional vectors', function () {
-			var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-			expect(a.applyPost(new Vector3(1, 2, 3))).toBeCloseToVector(new Vector3(30, 36, 42));
-		});
-	});
+		*/
 });
