@@ -1,5 +1,5 @@
 var Vector = require('../../../src/goo/math/Vector');
-var Matrix = require('../../../src/goo/math/Matrix');
+var Matrix2 = require('../../../src/goo/math/Matrix2');
 var CustomMatchers = require('../../../test/unit/CustomMatchers');
 
 describe('Vector', function () {
@@ -77,13 +77,12 @@ describe('Vector', function () {
 
 	it('can apply matrices', function () {
 		var a = new Vector(2).set(1, 2);
-		var c = new Matrix(2, 2).set(1, 2, 3, 4);
+		var c = new Matrix2().setArray([1, 2, 3, 4]);
 
 		a.apply(c);
 
 		expect(a).toBeCloseToVector(new Vector(2).set(7, 10));
 	});
-
 
 	describe('equals', function () {
 		it('can be tested for approximate equaltiy', function () {
