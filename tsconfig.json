@@ -5,6 +5,8 @@
     "noImplicitAny": false
   },
   "files": [
-      "./typings/index.d.ts"
+      "./typings/index.d.ts",
+      "index.ts",
+      "src/goo/fsmpack/index.ts"
   ]
 }

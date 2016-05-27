@@ -2,7 +2,7 @@ if (typeof window !== 'undefined') {
 	require('./tools/MapSetPolyfill');
 }
 
-module.exports = {
+let allModules = {
 	Ajax: require('./src/goo/util/Ajax'),
 	ArrayUtil: require('./src/goo/util/ArrayUtil'),
 	ArrayUtils: require('./src/goo/util/ArrayUtils'),
@@ -182,6 +182,8 @@ module.exports = {
 	World: require('./src/goo/entities/World')
 };
 
+export = allModules;
+
 if (typeof(window) !== 'undefined') {
-	window.goo = module.exports;
+	(<any>window).goo = allModules;
 }

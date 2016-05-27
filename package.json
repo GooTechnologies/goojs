@@ -5,7 +5,8 @@
   "description": "Goo Engine - the WebGL graphics engine",
   "homepage": "http://goocreate.com/",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "postinstall": "tsc"
   },
   "licenses": [
     {
