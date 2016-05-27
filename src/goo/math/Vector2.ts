@@ -564,4 +564,4 @@ Vector.addReturnChecks(Vector2.prototype, [
 ]);
 // @endif
 
-module.exports = Vector2;
+export = Vector2;

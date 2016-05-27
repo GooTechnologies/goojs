@@ -1,5 +1,5 @@
 var MathUtils = require('./MathUtils');
-var Vector = require('./Vector');
+import Vector = require('./Vector');
 
 /**
  * Vector with 4 components
@@ -656,4 +656,4 @@ Vector.addReturnChecks(Vector4.prototype, [
 ]);
 // @endif
 
-module.exports = Vector4;
+export = Vector4;

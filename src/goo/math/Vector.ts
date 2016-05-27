@@ -87,4 +87,4 @@ Vector.addReturnChecks = function (object, methodNames) {
 };
 // @endif
 
-module.exports = Vector;
+export = Vector;
