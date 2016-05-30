@@ -1,18 +1,18 @@
-var Gizmo = require('../../util/gizmopack/Gizmo');
+import Gizmo = require('../../util/gizmopack/Gizmo');
 var MeshData = require('../../renderer/MeshData');
 var MeshBuilder = require('../../util/MeshBuilder');
 var Disk = require('../../shapes/Disk');
 var Quad = require('../../shapes/Quad');
-var Transform = require('../../math/Transform');
-var Vector3 = require('../../math/Vector3');
-var Ray = require('../../math/Ray');
+import Transform = require('../../math/Transform');
+import Vector3 = require('../../math/Vector3');
+import Ray = require('../../math/Ray');
 var Renderer = require('../../renderer/Renderer');
 
 /**
  * @extends Gizmo
  * @hidden
  */
-function TranslationGizmo() {
+var TranslationGizmo: any = function TranslationGizmo() {
 	Gizmo.call(this, 'TranslationGizmo');
 
 	this.realTranslation = new Vector3();
@@ -186,4 +186,4 @@ function buildArrowMesh() {
 	return mergedMeshData;
 }
 
-module.exports = TranslationGizmo;
+export = TranslationGizmo;

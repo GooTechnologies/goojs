@@ -1,18 +1,18 @@
-var Gizmo = require('../../util/gizmopack/Gizmo');
+import Gizmo = require('../../util/gizmopack/Gizmo');
 var MeshData = require('../../renderer/MeshData');
 var MeshBuilder = require('../../util/MeshBuilder');
 var Box = require('../../shapes/Box');
-var Transform = require('../../math/Transform');
+import Transform = require('../../math/Transform');
 var Renderer = require('../../renderer/Renderer');
-var Vector3 = require('../../math/Vector3');
-var Ray = require('../../math/Ray');
-var MathUtils = require('../../math/MathUtils');
+import Vector3 = require('../../math/Vector3');
+import Ray = require('../../math/Ray');
+import MathUtils = require('../../math/MathUtils');
 
 /**
  * @extends Gizmo
  * @hidden
  */
-function ScaleGizmo(gizmoRenderSystem) {
+var ScaleGizmo: any = function ScaleGizmo(gizmoRenderSystem) {
 	Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 
 	this._transformScale = new Vector3(1, 1, 1);
@@ -156,4 +156,4 @@ function buildArrowMesh() {
 	return mergedMeshData;
 }
 
-module.exports = ScaleGizmo;
+export = ScaleGizmo;

@@ -2,9 +2,9 @@ var System = require('../../entities/systems/System');
 var SystemBus = require('../../entities/SystemBus');
 var Material = require('../../renderer/Material');
 var ShaderFragment = require('../../renderer/shaders/ShaderFragment');
-var Matrix3 = require('../../math/Matrix3');
-var Matrix4 = require('../../math/Matrix4');
-var Vector2 = require('../../math/Vector2');
+import Matrix3 = require('../../math/Matrix3');
+import Matrix4 = require('../../math/Matrix4');
+import Vector2 = require('../../math/Vector2');
 var MeshData = require('../../renderer/MeshData');
 var Shader = require('../../renderer/Shader');
 var Gizmo = require('../../util/gizmopack/Gizmo');
@@ -20,7 +20,7 @@ var ScaleGizmo = require('../../util/gizmopack/ScaleGizmo');
  * @property {boolean} doRender Only render if set to true
  * @extends System
  */
-function GizmoRenderSystem(callbacks) {
+var GizmoRenderSystem: any = function GizmoRenderSystem(callbacks) {
 	System.call(this, 'GizmoRenderSystem', null);
 
 	this.renderables = [];
@@ -360,4 +360,4 @@ var customPickingShader = {
 	].join('\n')
 };
 
-module.exports = GizmoRenderSystem;
+export = GizmoRenderSystem;

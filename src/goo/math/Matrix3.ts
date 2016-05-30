@@ -229,7 +229,8 @@ class Matrix3 extends Matrix {
 	 * @param {Matrix3} [target] Target matrix.
 	 * @returns {Matrix3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-	static invert(source, target?) {
+	static invert(source: Matrix3, target?: Matrix3): Matrix3 {
+
 		if (!target) {
 			target = new Matrix3();
 		}
@@ -765,7 +766,7 @@ class Matrix3 extends Matrix {
 	 * @returns {Matrix3} Self to allow chaining
 	 */
 	set(m){
-		this.copy(m);
+		return this.copy(m);
 	}
 
 	/**

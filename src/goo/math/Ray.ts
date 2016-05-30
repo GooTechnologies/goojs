@@ -13,7 +13,7 @@ var tmpVec5 = new Vector3();
 class Ray {
 	origin: any;
 	direction: any;
-	constructor(origin, direction) {
+	constructor(origin?, direction?) {
 		this.origin = origin ? origin.clone() : new Vector3();
 		this.direction = direction ? direction.clone() : Vector3.UNIT_Z.clone();
 
