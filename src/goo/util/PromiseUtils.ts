@@ -31,7 +31,7 @@ class PromiseUtils {
 	 * Creates a promise that resolves with the given argument.
 	 * @param value
 	 */
-	static resolve(value) {
+	static resolve(value?) {
 		var promise = new RSVP.Promise();
 		promise.resolve(value);
 		return promise;
