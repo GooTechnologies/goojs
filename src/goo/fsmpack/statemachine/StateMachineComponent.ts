@@ -1,12 +1,12 @@
 var Component = require('../../entities/components/Component');
-var ArrayUtils = require('../../util/ArrayUtils');
+import ArrayUtils = require('../../util/ArrayUtils');
 var SystemBus = require('../../entities/SystemBus');
 
 /**
  * StateMachineComponent
  * @private
  */
-function StateMachineComponent() {
+var StateMachineComponent: any = function StateMachineComponent() {
 	Component.apply(this, arguments);
 
 	this.type = 'StateMachineComponent';
@@ -160,4 +160,4 @@ StateMachineComponent.prototype.play = function () {
 	SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.play');
 };
 
-module.exports = StateMachineComponent;
+export = StateMachineComponent;

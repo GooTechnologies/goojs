@@ -1,3 +1,3 @@
 var FsmUtils = require('./FsmUtils');
 
-module.exports = FsmUtils;
+export = FsmUtils;

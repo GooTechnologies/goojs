@@ -42,7 +42,7 @@ class ArrayUtils {
 		}
 	};
 
-	static remove(array, value, equals) {
+	static remove(array, value, equals?) {
 		var idx = -1;
 		if (typeof equals === 'function') {
 			for (var i = 0; i < array.length; i++) {
