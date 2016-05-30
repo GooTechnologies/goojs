@@ -1,8 +1,8 @@
 var ObjectUtils = require('../util/ObjectUtils');
-var MathUtils = require('./MathUtils');
-var Vector = require('./Vector');
-var Vector3 = require('./Vector3');
-var Vector4 = require('./Vector4');
+import MathUtils = require('./MathUtils');
+import Vector = require('./Vector');
+import Vector3 = require('./Vector3');
+import Vector4 = require('./Vector4');
 
 /**
  * Vector with 2 components

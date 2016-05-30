@@ -1,7 +1,7 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Vector3 = require('../../../math/Vector3');
-var Easing = require('../../../util/Easing');
+import Vector3 = require('../../../math/Vector3');
+import Easing = require('../../../util/Easing');
 
 class TweenScaleAction extends Action {
 	fromScale: any;

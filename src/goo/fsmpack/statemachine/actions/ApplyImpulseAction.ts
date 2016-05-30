@@ -1,6 +1,6 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Vector3 = require('../../../math/Vector3');
+import Vector3 = require('../../../math/Vector3');
 
 var impulseVector = new Vector3();
 var applyPoint = new Vector3();

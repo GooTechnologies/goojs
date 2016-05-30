@@ -1,9 +1,9 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Quaternion = require('../../../math/Quaternion');
-var Matrix3 = require('../../../math/Matrix3');
-var MathUtils = require('../../../math/MathUtils');
-var Easing = require('../../../util/Easing');
+import Quaternion = require('../../../math/Quaternion');
+import Matrix3 = require('../../../math/Matrix3');
+import MathUtils = require('../../../math/MathUtils');
+import Easing = require('../../../util/Easing');
 
 class TweenRotationAction extends Action {
 	quatFrom: any;

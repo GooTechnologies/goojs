@@ -1,7 +1,7 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Easing = require('../../../util/Easing');
-var MathUtils = require('../../../math/MathUtils');
+import Easing = require('../../../util/Easing');
+import MathUtils = require('../../../math/MathUtils');
 
 class TweenOpacityAction extends Action {
 	completed: boolean;

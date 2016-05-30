@@ -1,5 +1,5 @@
-var Vector3 = require('./Vector3');
-var MathUtils = require('./MathUtils');
+import Vector3 = require('./Vector3');
+import MathUtils = require('./MathUtils');
 
 var tmpVec1 = new Vector3();
 var tmpVec2 = new Vector3();

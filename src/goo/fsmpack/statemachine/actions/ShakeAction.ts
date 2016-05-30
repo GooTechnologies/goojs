@@ -1,8 +1,8 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Vector3 = require('../../../math/Vector3');
-var MathUtils = require('../../../math/MathUtils');
-var Easing = require('../../../util/Easing');
+import Vector3 = require('../../../math/Vector3');
+import MathUtils = require('../../../math/MathUtils');
+import Easing = require('../../../util/Easing');
 
 var labels = {
 	complete: 'On Shake Complete'

@@ -1,6 +1,6 @@
-var MathUtils = require('./MathUtils');
+import MathUtils = require('./MathUtils');
 import Matrix = require('./Matrix');
-var Vector3 = require('./Vector3');
+import Vector3 = require('./Vector3');
 var ObjectUtils = require('../util/ObjectUtils');
 
 /**

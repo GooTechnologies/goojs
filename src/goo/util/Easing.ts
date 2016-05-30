@@ -230,4 +230,4 @@ var Easing = {
 	}
 };
 
-module.exports = Easing;
+export = Easing;

@@ -1,7 +1,7 @@
 import Action = require('./Action');
 import {External, GetTransitionLabelFunc} from './IAction';
-var Vector2 = require('../../../math/Vector2');
-var Easing = require('../../../util/Easing');
+import Vector2 = require('../../../math/Vector2');
+import Easing = require('../../../util/Easing');
 
 class TweenTextureOffsetAction extends Action {
 	fromOffset: any;

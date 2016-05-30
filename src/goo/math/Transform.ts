@@ -1,7 +1,7 @@
-var Vector3 = require('./Vector3');
-var Matrix3 = require('./Matrix3');
-var Matrix4 = require('./Matrix4');
-var MathUtils = require('./MathUtils');
+import Vector3 = require('./Vector3');
+import Matrix3 = require('./Matrix3');
+import Matrix4 = require('./Matrix4');
+import MathUtils = require('./MathUtils');
 
 var tmpVec = new Vector3();
 var tmpVec2 = new Vector3();

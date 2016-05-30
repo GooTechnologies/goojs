@@ -1,4 +1,4 @@
-var Vector3 = require('./Vector3');
+import Vector3 = require('./Vector3');
 
 var p0 = new Vector3();
 

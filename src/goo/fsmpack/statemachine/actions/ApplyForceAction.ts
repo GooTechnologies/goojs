@@ -1,7 +1,7 @@
 import {External, GetTransitionLabelFunc} from './IAction';
 import Action = require('./Action');
 
-var Vector3 = require('../../../math/Vector3');
+import Vector3 = require('../../../math/Vector3');
 var SystemBus = require('../../../entities/SystemBus');
 
 class ApplyForceAction extends Action {
