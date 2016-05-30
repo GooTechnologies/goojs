@@ -1,6 +1,6 @@
 var System = require('../../entities/systems/System');
 var SystemBus = require('../../entities/SystemBus');
-var StringUtils = require('../../util/StringUtils');
+import StringUtils = require('../../util/StringUtils');
 
 /**
  * Processes all entities with a proximity component
