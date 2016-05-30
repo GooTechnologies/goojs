@@ -1,6 +1,6 @@
 var supported = true;
 
-var AudioContext = typeof(window) !== 'undefined' && (window.AudioContext || window.webkitAudioContext);
+var AudioContext = typeof(window) !== 'undefined' && ((<any>window).AudioContext || (<any>window).webkitAudioContext);
 if (!AudioContext) {
 	// warn once
 	console.warn('WebAudio not supported');
@@ -20,7 +20,7 @@ var context;
  *     // ...operate on context...
  * }
  */
-module.exports = {
+export = {
 	getContext: function () {
 		// try to get a context if it's supposedly supported or not cached
 		if (!context && supported) {
