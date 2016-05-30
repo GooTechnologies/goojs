@@ -1,6 +1,8 @@
-var config = {};
+declare var process; // TODO: Add node.js typedefs
 
-var browserGlobal = (typeof window !== 'undefined') ? window : {};
+var config = {} as any;
+
+var browserGlobal: any = (typeof window !== 'undefined') ? window : {};
 var MutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
 
 if (typeof process !== 'undefined' &&
@@ -284,7 +286,7 @@ function configure(name, value) {
 	config[name] = value;
 }
 
-module.exports = {
+export = {
 	Promise: Promise,
 	Event: Event,
 	EventTarget: EventTarget,
