@@ -10,7 +10,7 @@ var Easing = require('../util/Easing');
 /**
  * @hidden
  */
-function TimelineComponentHandler() {
+var TimelineComponentHandler: any = function TimelineComponentHandler() {
 	ComponentHandler.apply(this, arguments);
 	this._type = 'TimelineComponent';
 }
@@ -154,7 +154,7 @@ function updateChannel(channelConfig, channelId, component, entityResolver, rota
 	if (channelConfig.propertyKey) {
 		for (var keyframeId in channelConfig.keyframes) {
 			var keyframeConfig = channelConfig.keyframes[keyframeId];
-			var updateResult = updateValueChannelKeyframe(keyframeConfig, keyframeId, channel, channelConfig);
+			var updateResult = updateValueChannelKeyframe(keyframeConfig, keyframeId, channel);
 			needsResorting = needsResorting || updateResult.needsResorting;
 		}
 	} else {
@@ -207,4 +207,4 @@ TimelineComponentHandler.prototype.update = function (entity, config, options) {
 	});
 };
 
-module.exports = TimelineComponentHandler;
+export = TimelineComponentHandler;

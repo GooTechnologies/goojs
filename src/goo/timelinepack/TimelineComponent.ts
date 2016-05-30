@@ -4,7 +4,7 @@ var Component = require('../entities/components/Component');
  * Timeline component
  * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
  */
-function TimelineComponent() {
+var TimelineComponent: any = function TimelineComponent() {
 	Component.apply(this, arguments);
 
 	this.type = 'TimelineComponent';
@@ -133,4 +133,4 @@ TimelineComponent.prototype.getValues = function () {
 	return retVal;
 };
 
-module.exports = TimelineComponent;
+export = TimelineComponent;
