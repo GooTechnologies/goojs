@@ -19,6 +19,9 @@ import Vector4 = require('./Vector4');
  * a.add(b).sub(c); // a = a + b - c
  */
 class Vector3 {
+	x: number;
+	y: number;
+	z: number;
 	constructor(...args) {
 		/*
 		// @ifdef DEBUG
@@ -439,21 +442,18 @@ class Vector3 {
 		return this;
 	};
 
-	(function () {
+	/**
+	 * Reflects a vector relative to the plane obtained from the normal parameter.
+	 * @param {Vector3} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	reflect(normal) {
 		var tmpVec = new Vector3();
-
-		/**
-		 * Reflects a vector relative to the plane obtained from the normal parameter.
-		 * @param {Vector3} normal Defines the plane that reflects the vector. Assumed to be of unit length.
-		 * @returns {Vector3} Self to allow chaining
-		 */
-		reflect(normal) {
-			tmpVec.copy(normal);
-			tmpVec.scale(2 * this.dot(normal));
-			this.sub(tmpVec);
-			return this;
-		};
-	})();
+		tmpVec.copy(normal);
+		tmpVec.scale(2 * this.dot(normal));
+		this.sub(tmpVec);
+		return this;
+	}
 
 	/**
 	 * Sets the vector's values from another vector's values
@@ -494,6 +494,16 @@ class Vector3 {
 
 		return this;
 	};
+
+	setValue(componentIndex, value){
+		if (componentIndex === 0) {
+			this.x = value;
+		} else if (componentIndex === 1) {
+			this.y = value;
+		} else if (componentIndex === 2) {
+			this.z = value;
+		}
+	}
 
 	/**
 	 * Calculates the squared length/magnitude of the current Vector3.
@@ -674,7 +684,7 @@ class Vector3 {
 	 * @returns {Vector3} Self to allow chaining
 	 */
 	copy(v){
-		this.set(v);
+		return this.set(v);
 	}
 
 	/**
@@ -712,7 +722,7 @@ class Vector3 {
 	 * Creates a Vector3 given 3 numbers, an array, an {x, y, z} object or another Vector3
 	 * @returns {Vector3}
 	 */
-	Vector3.fromAny = function () {
+	static fromAny() {
 		if (arguments.length === 3) {
 			return Vector3.fromArray(arguments);
 		} else if (arguments[0] instanceof Array) {
@@ -734,14 +744,16 @@ class Vector3 {
 
 		return this;
 	};
-/*
+
+	/*
 	// @ifdef DEBUG
 	Vector.addReturnChecks(Vector3.prototype, [
 		'dot', 'dotDirect',
 		'length', 'lengthSquared',
 		'distance', 'distanceSquared'
 	]);
-	// @endif*/
+	// @endif
+	*/
 }
 
 export = Vector3;

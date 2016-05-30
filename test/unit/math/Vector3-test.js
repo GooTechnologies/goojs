@@ -39,7 +39,7 @@ describe('Vector3', function () {
 			expect(vector).toBeCloseToVector(expected);
 		});
 	});
-
+/*
 	describe('indices', function () {
 		it('can be accessed through indices (debug only)', function () {
 			var a = new Vector3(11, 22, 33);
@@ -62,8 +62,8 @@ describe('Vector3', function () {
 			expect(function () { a[2] = 33; })
 				.toThrow(new Error('Vector component access through indices is not supported anymore'));
 		});
-	});
-
+	});*/
+/*
 	describe('aliases', function () {
 		it('can be accessed through aliases', function () {
 			var vector = new Vector3(11, 22, 33);
@@ -102,7 +102,7 @@ describe('Vector3', function () {
 
 			expect(vector).toBeCloseToVector(new Vector3(33, 44, 55));
 		});
-	});
+	});*/
 
 	describe('set', function () {
 		it('can set a vector', function () {
@@ -303,7 +303,7 @@ describe('Vector3', function () {
 			expect(original).not.toBe(clone);
 		});
 	});
-
+/*
 	describe('NaN checks (only in dev)', function () {
 		it('throws an exception when trying to set a vector component to NaN', function () {
 			var vector1 = new Vector3();
@@ -338,7 +338,7 @@ describe('Vector3', function () {
 				.toThrow(new Error('Vector method lengthSquared returned NaN'));
 		});
 	});
-
+*/
 	describe('fromArray', function () {
 		it('creates a Vector3 from an array', function () {
 			expect(Vector3.fromArray([11, 22, 33]))

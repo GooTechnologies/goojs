@@ -39,7 +39,7 @@ describe('Vector4', function () {
 			expect(vector).toBeCloseToVector(expected);
 		});
 	});
-
+/*
 	describe('indices', function () {
 		it('can be accessed through indices (debug only)', function () {
 			var a = new Vector4(11, 22, 33, 44);
@@ -66,8 +66,8 @@ describe('Vector4', function () {
 			expect(function () { a[3] = 44; })
 				.toThrow(new Error('Vector component access through indices is not supported anymore'));
 		});
-	});
-
+	});*/
+/*
 	describe('aliases', function () {
 		it('can be accessed through aliases', function () {
 			var a = new Vector4(1, 2, 3, 4);
@@ -100,7 +100,7 @@ describe('Vector4', function () {
 
 			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 		});
-	});
+	});*/
 
 	describe('scale', function () {
 		it('scales a vector', function () {

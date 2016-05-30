@@ -36,7 +36,7 @@ describe('Vector2', function () {
 			expect(vector).toBeCloseToVector(expected);
 		});
 	});
-
+/*
 	describe('indices', function () {
 		it('can be accessed through indices (debug only)', function () {
 			var a = new Vector2(11, 22);
@@ -78,7 +78,7 @@ describe('Vector2', function () {
 			v2.v = 33;
 			expect(v2).toBeCloseToVector(new Vector2(22, 33));
 		});
-	});
+	});*/
 
 	describe('scale', function () {
 		it('scales a vector', function () {
