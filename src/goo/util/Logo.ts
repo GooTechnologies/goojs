@@ -1,8 +1,3 @@
-var defaults = {
-	color: Logo.white,
-	shadow: false
-};
-
 /**
  * Get logo svg in different formats
  * Only used to define the class. Should never be instantiated.
@@ -26,6 +21,10 @@ class Logo {
 	 */
 	static getLogo(properties) {
 		properties = properties || {};
+		var defaults = {
+			color: Logo.white,
+			shadow: false
+		};
 		for (var key in defaults) {
 			if (properties[key] === undefined) {
 				properties[key] = defaults[key];
