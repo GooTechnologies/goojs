@@ -44,9 +44,19 @@ class Sphere extends MeshData {
 	constructor(zSamples: number = 8, radialSamples: number = 8, radius: number = 0.5, textureMode: string = Sphere.TextureModes.Polar) {
 		// sharedVert = pole vertex that represents a whole layer. When not using shared vertices,
 		// full layers are used for both poles.
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			zSamples = props.zSamples;
+			radialSamples = props.radialSamples;
+			radius = props.radius;
+			textureMode = props.textureMode;
+		}
+		if (typeof textureMode === 'string') {
+			textureMode = Sphere.TextureModes[textureMode];
+		}
 		var _useSharedPoleVertices = (textureMode !== Sphere.TextureModes.Projected) && (textureMode !== Sphere.TextureModes.Linear);
 		var sharedVerts = _useSharedPoleVertices ? 2 : 0;
-
+		zSamples++;
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 		var samples = (textureMode === Sphere.TextureModes.Chromeball) ? zSamples + 1 : zSamples;
 
@@ -58,19 +68,10 @@ class Sphere extends MeshData {
 
 		this._useSharedPoleVertices = _useSharedPoleVertices;
 
-		if (arguments.length === 1 && arguments[0] instanceof Object) {
-			var props = arguments[0];
-			zSamples = props.zSamples;
-			radialSamples = props.radialSamples;
-			radius = props.radius;
-			textureMode = props.textureMode;
-		}
-		this.zSamples = (zSamples !== undefined ? zSamples : 8) + 1;
-		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
+		this.zSamples = zSamples;
+		this.radialSamples = radialSamples;
 		this.radius = radius !== undefined ? radius : 0.5;
-		if (typeof textureMode === 'string') {
-			textureMode = Sphere.TextureModes[textureMode];
-		}
+
 		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Polar;
 		this.viewInside = false;
 
