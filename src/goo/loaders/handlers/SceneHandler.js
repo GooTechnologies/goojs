@@ -99,48 +99,42 @@ SceneHandler.prototype._update = function (ref, config, options) {
  */
 SceneHandler.prototype._handleEntities = function (config, scene, options) {
 	var that = this;
-	var promises = [];
 
-	var addedEntityIds = ObjectUtils.clone(config.entities);
-	var removedEntityIds = [];
+	var removedEntityIds = Object.keys(scene.entities).filter(function (id) {
+		return !config.entities[id];
+	});
 
-	for (var id in scene.entities) {
-		//var engineEntity = scene.entities[id];
-		if (addedEntityIds[id]) {
-			delete addedEntityIds[id];
+	return RSVP.all([
+		this._loadEntities(Object.keys(config.entities)),
+		this._loadEntities(removedEntityIds)
+	])
+	.then(function (result) {
+		that._addEntities(scene, result[0])
+		that._removeEntities(scene, result[1]);
+	});
+};
+
+SceneHandler.prototype._loadEntities = function (ids, options) {
+	var that = this;
+
+	return RSVP.all(ids.map(function (id) {
+		return that._load(id, options);
+	}));
+};
+
+SceneHandler.prototype._addEntities = function (scene, entities) {
+	entities.forEach(function (entity) {
+		scene.entities[entity.id] = entity;
+		if (!entity._world.entityManager.containsEntity(entity)) {
+			entity.addToWorld();
 		}
-		else {
-			removedEntityIds[id] = id;
-		}
-	}
+	});
+};
 
-	ObjectUtils.forEach(config.entities, function (entityConfig) {
-		promises.push(that._load(entityConfig.entityRef, options));
-	}, null, 'sortValue');
-
-	return RSVP.all(promises).then(function (entities) {
-		// Adding new entities
-		for (var i = 0; i < entities.length; i++) {
-			var entity = entities[i];
-			if (addedEntityIds[entity.id]) {
-				entity.addToWorld();
-			}
-
-			// readding back entities removed by the scripts/fsm
-			if (!addedEntityIds[entity.id] &&
-				!removedEntityIds[entity.id] &&
-				!entity._world.entityManager.containsEntity(entity)) {
-				entity.addToWorld();
-			}
-
-			scene.entities[entity.id] = entity;
-		}
-
-		// Removing old entities from the handler cache
-		// Removing them from the world is handled by the EntityHandler
-		for (var id in removedEntityIds) {
-			delete scene.entities[id];
-		}
+SceneHandler.prototype._removeEntities = function (scene, entities) {
+	entities.forEach(function (entity) {
+		entity.removeFromWorld();
+		delete scene.entities[entity.id];
 	});
 };
 
