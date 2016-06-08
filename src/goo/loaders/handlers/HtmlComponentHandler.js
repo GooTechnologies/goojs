@@ -258,11 +258,15 @@ HtmlComponentHandler.prototype._updateAttributes = function (domElement, entity,
 	domElement.prevAttributes = config.attributes;
 
 	// Set default styles if no style was set by the user.
-	var style = 'position: absolute; z-index: 1;';
-	if (!newAttributes.style && config.useTransformComponent === true) {
-		style += ' top: 0; left: 0; z-index: 1; display: block;';
+	if (!newAttributes.style) {
+		var style = 'position: absolute; z-index: 1;';
+
+		if (config.useTransformComponent !== true) {
+			style += ' top: 0; left: 0; display: block;';
+		}
+
+		domElement.setAttribute('style', style);
 	}
-	domElement.setAttribute('style', style);
 
 	// Force the HTML system to update again.
 	entity._world.getSystem('HtmlSystem').clearStyleCache(domElement);
