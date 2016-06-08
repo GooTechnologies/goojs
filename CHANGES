@@ -1,3 +1,10 @@
+v0.16.8 --- 2016-06-08
+
+### Fixes
+
+* SceneHandler now properly adds/removes entities from the world.
+* HTML components now set default styles from attributes only if no style was set by the user.
+
 v0.16.7 --- 2016-05-23
 
 ### Fixes
