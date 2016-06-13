@@ -216,7 +216,7 @@ function setupMouseControls(args, ctx) {
 		wheelDelta: 0
 	};
 
-	ctx.prevent = function (e) {
+	ctx.preventScroll = function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 	}
