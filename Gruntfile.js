@@ -9,6 +9,7 @@ module.exports = function (grunt) {
 
 		webpack: {
 			packsAndCore: {
+				recordsPath: 'webpack.records.json',
 				entry: {
 					goo: ['./index'],
 					animationpack: ['./src/goo/animationpack'],
