@@ -75,12 +75,14 @@ SpriteAnimationAction.prototype.enter = function (fsm) {
 };
 
 SpriteAnimationAction.prototype.update = function (fsm) {
-	if (!this.texture || this.completed) {
+	var texture = this.texture;
+	if (!texture || this.completed) {
 		return;
 	}
 
+	var tiling = this.tiling;
 	var time = fsm.getTime() - this.startTime;
-	var numTiles = this.tiling[0] * this.tiling[1];
+	var numTiles = tiling[0] * tiling[1];
 	var endTile = this.endTile;
 
 	// endTile === -1 means the last tile
@@ -105,11 +107,11 @@ SpriteAnimationAction.prototype.update = function (fsm) {
 	t *= numViewTiles / numTiles;
 	t += timeOffset;
 
-	var tileX = Math.floor(this.tiling[0] * this.tiling[1] * t % this.tiling[1]);
-	var tileY = Math.floor((this.tiling[1] * t) % this.tiling[1]);
+	var tileX = Math.floor(numTiles * t) % tiling[0];
+	var tileY = Math.floor((tiling[1] * t) % tiling[1]);
 
-	this.texture.offset.setDirect(tileX, tileY).mul(this.texture.repeat);
-	this.texture.offset.y = -1 / this.tiling[1] - this.texture.offset.y + 1;
+	texture.offset.setDirect(tileX, tileY).mul(texture.repeat);
+	texture.offset.y = -1 / tiling[1] - texture.offset.y + 1;
 };
 
 SpriteAnimationAction.prototype.exit = function (/*fsm*/) {};
