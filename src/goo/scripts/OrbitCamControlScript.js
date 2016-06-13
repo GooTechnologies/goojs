@@ -216,6 +216,13 @@ function setupMouseControls(args, ctx) {
 		wheelDelta: 0
 	};
 
+	ctx.prevent = function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	}
+	ctx.domElement.addEventListener('mousewheel', ctx.preventScroll, true);
+	ctx.domElement.addEventListener('DOMMouseScroll', ctx.preventScroll, true);
+
 	ctx.listeners = {
 		mousedown: function (event) {
 			if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
@@ -394,6 +401,8 @@ function cleanup(args, ctx) {
 	for (var event in ctx.listeners) {
 		ctx.domElement.removeEventListener(event, ctx.listeners[event]);
 	}
+	ctx.domElement.removeEventListener('mousewheel', ctx.preventScroll);
+	ctx.domElement.removeEventListener('DOMMouseScroll', ctx.preventScroll);
 }
 
 function argsUpdated(args, ctx) {
