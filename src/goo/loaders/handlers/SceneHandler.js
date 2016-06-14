@@ -125,15 +125,16 @@ SceneHandler.prototype._loadEntities = function (ids, options) {
 SceneHandler.prototype._addEntities = function (scene, entities) {
 	entities.forEach(function (entity) {
 		scene.entities[entity.id] = entity;
-		if (!entity._world.entityManager.containsEntity(entity)) {
-			entity.addToWorld();
-		}
+		entity.addToWorld();
 	});
 };
 
 SceneHandler.prototype._removeEntities = function (scene, entities) {
 	entities.forEach(function (entity) {
-		entity.removeFromWorld();
+		if (!entity.parent().first()) {
+			var recursive = false;
+			entity.removeFromWorld(recursive);
+		}
 		delete scene.entities[entity.id];
 	});
 };
