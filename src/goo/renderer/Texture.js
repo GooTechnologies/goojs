@@ -227,7 +227,7 @@ Texture.prototype.getSizeInMemory = function () {
 
 	if (this.format === 'Luminance' || this.format === 'Alpha') {
 		size *= 1;
-	} else if (this.format === 'Lumin`anceAlpha') {
+	} else if (this.format === 'LuminanceAlpha') {
 		size *= 2;
 	} else if (this.format === 'RGB') {
 		size *= 3; // some dubious video cards may use 4 bits anyway
