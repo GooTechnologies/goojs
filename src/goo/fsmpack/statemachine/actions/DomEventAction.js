@@ -27,6 +27,24 @@ DomEventAction.external = {
 		type: 'string',
 		description: 'Query selector that matches your DOM element(s). For example, set "canvas" if you want to match all <canvas> elements, or ".myClass" to match all elements with your class.',
 		'default': 'body'
+	},{
+		name: 'Use capture',
+		key: 'useCapture',
+		type: 'boolean',
+		description: '',
+		'default': true
+	},{
+		name: 'Stop propagation',
+		key: 'stopPropagation',
+		type: 'boolean',
+		description: '',
+		'default': true
+	},{
+		name: 'Prevent Default',
+		key: 'preventDefault',
+		type: 'boolean',
+		description: '',
+		'default': false
 	}],
 	transitions: [{
 		key: 'event',
@@ -39,13 +57,19 @@ DomEventAction.getTransitionLabel = function (transitionKey, actionConfig) {
 };
 
 DomEventAction.prototype.enter = function (fsm) {
-	this.eventListener = function () {
+	this.eventListener = function (evt) {
 		fsm.send(this.transitions.event);
+		if (this.stopPropagation) {
+			evt.stopPropagation();
+		}
+		if (this.preventDefault) {
+			evt.preventDefault();
+		}
 	}.bind(this);
 
 	var elements = this.domElements = document.querySelectorAll(this.querySelector);
 	for (var i = 0; i < elements.length; i++) {
-		elements[i].addEventListener(this.eventName, this.eventListener);
+		elements[i].addEventListener(this.eventName, this.eventListener, !!this.useCapture);
 	}
 };
 
