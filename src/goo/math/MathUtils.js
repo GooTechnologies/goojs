@@ -409,4 +409,44 @@ MathUtils.warnNaN = function (object, property) {
 	});
 };
 
+/**
+ * Gradually changes a value towards a desired goal over time. The value is smoothed by some spring-damper like function, which will never overshoot. The function can be used to smooth any kind of value, positions, colors, scalars.
+ * @param {number} current The current position.
+ * @param {number} target The position we are trying to reach.
+ * @param {Vector2} store An object to store the current position and velocity in.
+ * @param {number} deltaTime The time since the last call to this function.
+ * @param {number} [smoothTime=0.3] Approximately the time it will take to reach the target. A smaller value will reach the target faster.
+ * @param {number} [maxSpeed=1e7] Optionally allows you to clamp the maximum speed.
+ */
+MathUtils.smoothDamp = function (current, target, store, deltaTime, smoothTime, maxSpeed) {
+	if (smoothTime === undefined) {
+		smoothTime = 0.3;
+	}
+	if (maxSpeed === undefined) {
+		maxSpeed = 1e7;
+	}
+
+	smoothTime = Math.max(0.0001, smoothTime);
+	var num = 2 / smoothTime;
+	var num2 = num * deltaTime;
+	var num3 = 1 / (1 + num2 + 0.48 * num2 * num2 + 0.235 * num2 * num2 * num2);
+	var num4 = current - target;
+	var num5 = target;
+	var num6 = maxSpeed * smoothTime;
+	num4 = Math.max(-num6, Math.min(num6, num4));
+	target = current - num4;
+	var currentVelocity = store.y;
+	var num7 = (currentVelocity + num * num4) * deltaTime;
+	currentVelocity = (currentVelocity - num * num7) * num3;
+	var num8 = target + (num4 + num7) * num3;
+	if (num5 - current > 0 === num8 > num5){
+		num8 = num5;
+		currentVelocity = (num8 - num5) / deltaTime;
+	}
+	store.x = num8;
+	store.y = currentVelocity;
+
+	return num8;
+};
+
 module.exports = MathUtils;

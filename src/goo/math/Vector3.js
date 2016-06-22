@@ -1,6 +1,7 @@
 var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('./MathUtils');
 var Vector = require('./Vector');
+var Vector2 = require('./Vector2');
 var Vector4 = require('./Vector4');
 
 /**
@@ -731,6 +732,31 @@ Vector3.prototype.setArray = function (array) {
 
 	return this;
 };
+
+/**
+ * Gradually changes the vector value value towards a desired goal over time. See MathUtils.smoothDamp.
+ * @param {Vector3} target The position we are trying to reach.
+ * @param {Vector3} currentVelocity An object to store the current position and velocity in.
+ * @param {number} deltaTime The time since the last call to this function.
+ * @param {number} [smoothTime=0.3] Approximately the time it will take to reach the target. A smaller value will reach the target faster.
+ * @param {number} [maxSpeed=1e7] Optionally allows you to clamp the maximum speed.
+ */
+Vector3.prototype.smoothDamp = (function () {
+	var tempVec2 = new Vector2();
+	return function (target, currentVelocity, deltaTime, smoothTime, maxSpeed) {
+		tempVec2.y = currentVelocity.x;
+		this.x = MathUtils.smoothDamp(this.x, target.x, tempVec2, deltaTime, smoothTime, maxSpeed);
+		currentVelocity.x = tempVec2.y;
+
+		tempVec2.y = currentVelocity.y;
+		this.y = MathUtils.smoothDamp(this.y, target.y, tempVec2, deltaTime, smoothTime, maxSpeed);
+		currentVelocity.y = tempVec2.y;
+
+		tempVec2.y = currentVelocity.z;
+		this.z = MathUtils.smoothDamp(this.z, target.z, tempVec2, deltaTime, smoothTime, maxSpeed);
+		currentVelocity.z = tempVec2.y;
+	};
+})();
 
 // SHIM START
 Object.defineProperty(Vector3.prototype, 'data', {

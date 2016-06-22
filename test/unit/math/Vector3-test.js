@@ -377,6 +377,14 @@ describe('Vector3', function () {
 		});
 	});
 
+	describe('smoothDamp', function () {
+		it('can smoothDamp', function () {
+			var target = new Vector3(1,1,1);
+			var currentVelocity = new Vector3();
+			expect(new Vector3().smoothDamp(target, currentVelocity, 0.1, 0.3, 1e7)).not.toEqual([0, 0, 0]);
+		});
+	});
+
 	describe('deprecated shim added 2015-10-07 (v1.0)', function () {
 		describe('.data', function () {
 			it('has working getters', function () {
