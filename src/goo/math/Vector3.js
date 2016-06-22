@@ -1,7 +1,6 @@
 var ObjectUtils = require('../util/ObjectUtils');
 var MathUtils = require('./MathUtils');
 var Vector = require('./Vector');
-var Vector2 = require('./Vector2');
 var Vector4 = require('./Vector4');
 
 /**
@@ -742,7 +741,7 @@ Vector3.prototype.setArray = function (array) {
  * @param {number} [maxSpeed=1e7] Optionally allows you to clamp the maximum speed.
  */
 Vector3.prototype.smoothDamp = (function () {
-	var tempVec2 = new Vector2();
+	var tempVec2 = { x: 0, y: 0 };
 	return function (target, currentVelocity, deltaTime, smoothTime, maxSpeed) {
 		tempVec2.y = currentVelocity.x;
 		this.x = MathUtils.smoothDamp(this.x, target.x, tempVec2, deltaTime, smoothTime, maxSpeed);
