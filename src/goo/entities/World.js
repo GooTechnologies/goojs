@@ -2,6 +2,7 @@ var Entity = require('./Entity');
 var EntityManager = require('./managers/EntityManager');
 var TransformComponent = require('./components/TransformComponent');
 var Manager = require('./managers/Manager');
+var LayerManager = require('./managers/LayerManager');
 var System = require('./systems/System');
 var Component = require('./components/Component');
 var EntitySelection = require('./EntitySelection');
@@ -76,6 +77,7 @@ function World(options) {
 	this._managers = [];
 	this._systems = [];
 
+	// Such antipattern. Should just add/change/remove entities directly.
 	this._addedEntities = [];
 	this._changedEntities = [];
 	this._removedEntities = [];
@@ -88,6 +90,12 @@ function World(options) {
 	 */
 	this.entityManager = new EntityManager();
 	this.setManager(this.entityManager);
+	
+	/**
+	 * @type {LayerManager}
+	 */
+	this.layerManager = new LayerManager();
+	this.setManager(this.layerManager);
 
 	this._components = [];
 

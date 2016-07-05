@@ -64,10 +64,32 @@ function Entity(world, name, id) {
 	 */
 	this.static = false;
 
+	this._layer = 0;
+
 	Entity.entityCount++;
 }
 Entity.prototype = Object.create(EventTarget.prototype);
 Entity.prototype.constructor = Entity;
+
+Object.defineProperties(Entity.prototype, {
+
+	/**
+	 * The layer the entity is in. A layer is in the range 0 to 31. Layers can be used for selective rendering from cameras or ignoring raycasts.
+	 * @target-class Entity layer member
+	 * @type {number}
+	 */
+	layer: {
+		get: function () {
+			return this._layer;
+		},
+		set: function (value) {
+			this._layer = value;
+			this.fire({
+				type: 'layerChanged'
+			});
+		}
+	}
+});
 
 //! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 /**

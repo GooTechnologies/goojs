@@ -37,6 +37,21 @@ describe('ColliderComponent', function () {
 		expect(colliderComponent.worldCollider.radius).toBe(3);
 	});
 
+	it('updates its mask and layer', function () {
+		var colliderComponent = new ColliderComponent({
+			collider: new SphereCollider({ radius: 1 })
+		});
+		var entity = world.createEntity(colliderComponent).addToWorld();
+		var layer = 4;
+		entity.layer = layer;
+		system.ignoreLayerCollision(4,5);
+
+		colliderComponent.initialize();
+
+		expect(colliderComponent.cannonShape.collisionFilterGroup).toBe(Math.pow(2, 4));
+		expect(colliderComponent.cannonShape.collisionFilterMask).toBe(-1 & (~Math.pow(2, 5)));
+	});
+
 	it('instantiates as a static body without a rigid body component', function () {
 		var material = new PhysicsMaterial({
 			friction: 0.6,

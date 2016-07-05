@@ -140,11 +140,11 @@ describe('PhysicsSystem', function () {
 		rbc.initialize(); // Needed to initialize body
 
 		var result = new RaycastResult();
-		system.raycastAny(start, direction, distance, { collisionGroup: -1 }, result);
+		system.raycastAny(start, direction, distance, { collisionMask: -1 }, result);
 		expect(result.entity).toBeTruthy();
 
 		result = new RaycastResult();
-		system.raycastAny(start, direction, distance, { collisionGroup: 2 }, result);
+		system.raycastAny(start, direction, distance, { collisionMask: 2 }, result);
 		expect(result.entity).toBeFalsy();
 	});
 
@@ -792,5 +792,23 @@ describe('PhysicsSystem', function () {
 
 		system.play();
 		world.fixedUpdate();
+	});
+
+	it('can ignore layer collision', function () {
+		system.ignoreLayerCollision(4,5);
+
+		expect(system.getIgnoreLayerCollision(4,5)).toBeTruthy();
+		expect(system.getIgnoreLayerCollision(4,6)).toBeFalsy();
+
+		system.ignoreLayerCollision(4,5, false);
+
+		expect(system.getIgnoreLayerCollision(4,5)).toBeFalsy();
+	});
+
+	it('can get a layer mask', function () {
+		system.ignoreLayerCollision(4,5);
+
+		var mask = system.getLayerMask(4);
+		expect(mask).toBe(-1 & (~Math.pow(2, 5))); // Everything minus 5
 	});
 });
