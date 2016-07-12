@@ -402,11 +402,11 @@ function meshesForText(text, font, options) {
 			meshBuilder.addMeshData(meshData, transform);
 		}
 	
-		if (options.backface)
-		  frontFace();
-      		else // If the back face shouldn't be visible, set extrusion to 0s
+		if (options.backface) {
+			frontFace();
+		} else { // If the back face shouldn't be visible, set extrusion to 0s
 			options.extrusion = 0;
-
+		}
       		backFace();
 
 		if (options.extrusion) {
