@@ -364,6 +364,7 @@ function dataForGlyph(glyph, options) {
  */
 function meshesForText(text, font, options) {
 	options = options || {};
+	options.backface = options.backface !== undefined ? options.backface : true;
 	options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
 	options.stepLength = options.stepLength || 1;
 	options.fontSize = options.fontSize || 48;
