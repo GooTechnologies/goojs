@@ -359,10 +359,12 @@ function dataForGlyph(glyph, options) {
  * @param {number} [options.extrusion=4] Extrusion amount
  * @param {number} [options.fontSize=48]
  * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
+ * @param {bool}   [options.backface=true] If text should be backfaced
  * @returns {Array<MeshData>}
  */
 function meshesForText(text, font, options) {
 	options = options || {};
+	options.backface = options.backface !== undefined ? options.backface : true;
 	options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
 	options.stepLength = options.stepLength || 1;
 	options.fontSize = options.fontSize || 48;
@@ -384,15 +386,6 @@ function meshesForText(text, font, options) {
 
 	function meshForGlyph(data, x, y, options) {
 		function frontFace() {
-			var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
-			var transform = new Transform();
-			transform.translation.setDirect(x, y, -options.extrusion / 2);
-			transform.scale.setDirect(1, -1, 1);
-			transform.update();
-			meshBuilder.addMeshData(meshData, transform);
-		}
-
-		function backFace() {
 			var meshData = new FilledPolygon(data.surfaceVerts, invertWinding(data.surfaceIndices));
 			var transform = new Transform();
 			transform.translation.setDirect(x, y, options.extrusion / 2);
@@ -401,10 +394,23 @@ function meshesForText(text, font, options) {
 			meshBuilder.addMeshData(meshData, transform);
 		}
 
-		frontFace();
-		backFace();
+      function backFace() {
+		var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
+		var transform = new Transform();
+		transform.translation.setDirect(x, y, -options.extrusion / 2);
+		transform.scale.setDirect(1, -1, 1);
+		transform.update();
+		meshBuilder.addMeshData(meshData, transform);
+	}
 
-		if (options.extrusion) {
+	if (options.backface) {
+		backFace();
+	} else { // If the back face shouldn't be visible, set extrusion to 0s
+		options.extrusion = 0;
+	}
+	frontFace();
+	
+      	if (options.extrusion) {
 			data.extrusions.forEach(function (polygon) {
 				var contourVerts = getVerts(polygon);
 				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
@@ -422,7 +428,6 @@ function meshesForText(text, font, options) {
 			});
 		}
 	}
-
 
 	// get the total bounds; it's enough to merge the first and last chars
 	var firstDataSet = dataSets[0];
