@@ -386,15 +386,6 @@ function meshesForText(text, font, options) {
 
 	function meshForGlyph(data, x, y, options) {
 		function frontFace() {
-			var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
-			var transform = new Transform();
-			transform.translation.setDirect(x, y, -options.extrusion / 2);
-			transform.scale.setDirect(1, -1, 1);
-			transform.update();
-			meshBuilder.addMeshData(meshData, transform);
-		}
-	
-		function backFace() {
 			var meshData = new FilledPolygon(data.surfaceVerts, invertWinding(data.surfaceIndices));
 			var transform = new Transform();
 			transform.translation.setDirect(x, y, options.extrusion / 2);
@@ -402,28 +393,38 @@ function meshesForText(text, font, options) {
 			transform.update();
 			meshBuilder.addMeshData(meshData, transform);
 		}
-	
-		if (options.backface) {
-			frontFace();
-		} else { // If the back face shouldn't be visible, set extrusion to 0s
-			options.extrusion = 0;
-		}
-      		backFace();
+			
+      function backFace() {
+		var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
+		var transform = new Transform();
+		transform.translation.setDirect(x, y, -options.extrusion / 2);
+		transform.scale.setDirect(1, -1, 1);
+		transform.update();
+		meshBuilder.addMeshData(meshData, transform);
+	}
 
-		if (options.extrusion) {
+      frontFace();
+
+      if (options.backface) {
+		backFace();
+      } else { // If the back face shouldn't be visible, set extrusion to 0s
+		options.extrusion = 0;
+      }
+
+      if (options.extrusion) {
 			data.extrusions.forEach(function (polygon) {
 				var contourVerts = getVerts(polygon);
 				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
-	
+
 				var contourPolyLine = new PolyLine(contourVerts, true);
 				var extrusionPolyLine = new PolyLine([0, 0, -options.extrusion / 2, 0, 0, options.extrusion / 2]);
 				var meshData = contourPolyLine.mul(extrusionPolyLine);
-	
+
 				var transform = new Transform();
 				transform.translation.setDirect(x, y, 0);
 				transform.scale.setDirect(1, -1, -1);
 				transform.update();
-	
+
 				meshBuilder.addMeshData(meshData, transform);
 			});
 		}
