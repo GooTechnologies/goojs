@@ -393,7 +393,7 @@ function meshesForText(text, font, options) {
 			transform.update();
 			meshBuilder.addMeshData(meshData, transform);
 		}
-			
+
       function backFace() {
 		var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
 		var transform = new Transform();
@@ -403,15 +403,14 @@ function meshesForText(text, font, options) {
 		meshBuilder.addMeshData(meshData, transform);
 	}
 
-      frontFace();
-
-      if (options.backface) {
+	if (options.backface) {
 		backFace();
-      } else { // If the back face shouldn't be visible, set extrusion to 0s
+	} else { // If the back face shouldn't be visible, set extrusion to 0s
 		options.extrusion = 0;
-      }
-
-      if (options.extrusion) {
+	}
+	frontFace();
+	
+      	if (options.extrusion) {
 			data.extrusions.forEach(function (polygon) {
 				var contourVerts = getVerts(polygon);
 				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
@@ -429,7 +428,6 @@ function meshesForText(text, font, options) {
 			});
 		}
 	}
-
 
 	// get the total bounds; it's enough to merge the first and last chars
 	var firstDataSet = dataSets[0];
